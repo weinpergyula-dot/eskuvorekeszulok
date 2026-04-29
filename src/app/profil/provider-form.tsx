@@ -132,12 +132,12 @@ export function ProviderForm({ userId, role, provider }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
+        <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
           {error}
         </div>
       )}
       {success && (
-        <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-xl border border-green-200">
+        <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
           ✓ {role === "visitor" ? "Profil létrehozva! Jóváhagyásra vár." : "Módosítások elküldve!"}
         </div>
       )}
@@ -154,7 +154,7 @@ export function ProviderForm({ userId, role, provider }: Props) {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={avatarPreview} alt="avatar" className="w-full h-full object-cover" />
             ) : (
-              <span className="text-3xl">📷</span>
+              <span className="text-5xl">📷</span>
             )}
           </div>
           <Button type="button" variant="outline" size="sm" onClick={() => avatarInputRef.current?.click()}>

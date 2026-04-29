@@ -95,12 +95,12 @@ export function AccountForm({ userId, initialName, email }: Props) {
           />
         </div>
         {nameError && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <p className="text-lg text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
             {nameError}
           </p>
         )}
         {nameSuccess && (
-          <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+          <p className="text-lg text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
             ✓ Név mentve.
           </p>
         )}
@@ -113,7 +113,7 @@ export function AccountForm({ userId, initialName, email }: Props) {
 
       {/* Password */}
       <form onSubmit={handleChangePassword} className="space-y-4">
-        <h3 className="text-sm font-semibold text-gray-900">Jelszó módosítása</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Jelszó módosítása</h3>
         <div className="space-y-1.5">
           <Label htmlFor="newPassword">Új jelszó</Label>
           <Input
@@ -137,12 +137,12 @@ export function AccountForm({ userId, initialName, email }: Props) {
           />
         </div>
         {pwError && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <p className="text-lg text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
             {pwError}
           </p>
         )}
         {pwSuccess && (
-          <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+          <p className="text-lg text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
             ✓ Jelszó sikeresen megváltoztatva.
           </p>
         )}

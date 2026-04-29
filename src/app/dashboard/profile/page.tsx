@@ -139,21 +139,21 @@ export default function EditProfilePage() {
       <div className="mb-6">
         <Link
           href="/dashboard"
-          className="text-sm text-gray-900 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
+          className="text-lg text-gray-900 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
         >
           ← Vissza a dashboardra
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
+        <h1 className="text-4xl font-bold text-gray-900 mb-1">
           Profil szerkesztése
         </h1>
-        <p className="text-sm text-gray-900">
+        <p className="text-lg text-gray-900">
           A módosítások az adminisztrátori jóváhagyás után jelennek meg
           nyilvánosan.
         </p>
       </div>
 
       {success && (
-        <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-xl border border-green-200 mb-6">
+        <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200 mb-6">
           ✓ Módosítások elküldve! Átirányítás...
         </div>
       )}
@@ -163,7 +163,7 @@ export default function EditProfilePage() {
         className="bg-white border border-gray-200 rounded-lg p-6 space-y-5"
       >
         {error && (
-          <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
+          <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
             {error}
           </div>
         )}
@@ -184,7 +184,7 @@ export default function EditProfilePage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-3xl">📷</span>
+                <span className="text-5xl">📷</span>
               )}
             </div>
             <Button

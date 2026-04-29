@@ -37,14 +37,14 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-2xl font-bold text-gray-900">
+            <span className="text-4xl font-bold text-gray-900">
               {provider.full_name.charAt(0)}
             </span>
           )}
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-900 text-center text-base mb-1 group-hover:text-[#2a9d8f] transition-colors">
+        <h3 className="font-bold text-gray-900 text-center text-xl mb-1 group-hover:text-[#2a9d8f] transition-colors">
           {provider.full_name}
         </h3>
 
@@ -61,16 +61,16 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
               )}
             />
           ))}
-          <span className="text-sm font-semibold text-gray-900 ml-1">
+          <span className="text-lg font-semibold text-gray-900 ml-1">
             {rating > 0 ? rating.toFixed(1) : "–"}
           </span>
           {reviewCount > 0 && (
-            <span className="text-sm text-gray-900">({reviewCount})</span>
+            <span className="text-lg text-gray-900">({reviewCount})</span>
           )}
         </div>
 
         {/* Category badge */}
-        <Badge variant="secondary" className="text-xs mt-1">
+        <Badge variant="secondary" className="text-base mt-1">
           {CATEGORY_LABELS[provider.category as keyof typeof CATEGORY_LABELS] ?? provider.category}
         </Badge>
 
@@ -84,7 +84,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
                 ? "rejected"
                 : "pending"
             }
-            className="mt-2 text-xs"
+            className="mt-2 text-base"
           >
             {provider.approval_status === "approved"
               ? "Jóváhagyva"
@@ -112,12 +112,12 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
         {provider.description && (
           <div className="flex gap-2.5">
             <MessageSquare className="h-4 w-4 text-gray-900 shrink-0 mt-0.5" />
-            <p className="text-xs text-gray-900 line-clamp-3 leading-relaxed">
+            <p className="text-base text-gray-900 line-clamp-3 leading-relaxed">
               {provider.description}
             </p>
           </div>
         )}
-        <p className="text-xs text-gray-900">{provider.county}</p>
+        <p className="text-base text-gray-900">{provider.county}</p>
       </div>
 
       {/* Footer */}
@@ -131,7 +131,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
             className={cn("h-4 w-4", liked && "fill-red-500 text-red-500")}
           />
         </button>
-        <div className="flex items-center gap-1 text-gray-900 text-xs">
+        <div className="flex items-center gap-1 text-gray-900 text-base">
           <Eye className="h-3.5 w-3.5" />
           <span>{viewCount}</span>
         </div>
@@ -157,12 +157,12 @@ function ContactRow({
           href={value.startsWith("http") ? value : `https://${value}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-[#2a9d8f] hover:underline break-all"
+          className="text-base text-[#2a9d8f] hover:underline break-all"
         >
           {value}
         </a>
       ) : (
-        <span className="text-xs text-gray-900 break-all">{value}</span>
+        <span className="text-base text-gray-900 break-all">{value}</span>
       )}
     </div>
   );

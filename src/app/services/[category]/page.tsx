@@ -54,13 +54,13 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       {/* Full-width header */}
       <div className="w-full bg-gradient-to-br from-[#2a9d8f]/20 to-[#2a9d8f]/5 border-b border-[#2a9d8f]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <nav className="text-sm text-[#2a9d8f]/80 mb-2">
+          <nav className="text-lg text-[#2a9d8f]/80 mb-2">
             <a href="/services" className="hover:text-[#2a9d8f]">
               Szolgáltatások
             </a>{" "}
             / <span className="text-[#1e7268] font-medium">{label}</span>
           </nav>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1e7268]">{label}</h1>
+          <h1 className="text-5xl md:text-6xl font-bold text-[#1e7268]">{label}</h1>
         </div>
       </div>
 
@@ -84,7 +84,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         <div className="flex-1">
           {providers && providers.length > 0 ? (
             <>
-              <p className="text-sm text-gray-900 mb-4">
+              <p className="text-lg text-gray-900 mb-4">
                 {providers.length} szolgáltató található{county ? ` – ${county}` : ""}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -95,11 +95,11 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <p className="text-4xl mb-4">🔍</p>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <p className="text-6xl mb-4">🔍</p>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                 Nincs találat
               </h3>
-              <p className="text-gray-900 text-sm">
+              <p className="text-gray-900 text-lg">
                 {county
                   ? `${county} megyében egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`
                   : `Egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`}

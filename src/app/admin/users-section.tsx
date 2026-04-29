@@ -107,7 +107,7 @@ export function UsersSection() {
     setDeleting(null);
   };
 
-  if (loading) return <p className="text-gray-900 text-sm">Betöltés...</p>;
+  if (loading) return <p className="text-gray-900 text-lg">Betöltés...</p>;
 
   return (
     <>
@@ -116,13 +116,13 @@ export function UsersSection() {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
         <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
           <h3 className="font-bold text-gray-900 mb-2">Felhasználó törlése</h3>
-          <p className="text-sm text-gray-900 mb-1">
+          <p className="text-lg text-gray-900 mb-1">
             Biztosan véglegesen törlöd ezt a felhasználót?
           </p>
-          <p className="text-sm font-medium text-gray-900 mb-4">
+          <p className="text-lg font-medium text-gray-900 mb-4">
             {confirmDelete.full_name || confirmDelete.email}
           </p>
-          <p className="text-xs text-red-600 mb-5">
+          <p className="text-base text-red-600 mb-5">
             Ez a művelet nem visszavonható. A felhasználó összes adata törlődik.
           </p>
           <div className="flex gap-3 justify-end">
@@ -155,7 +155,7 @@ export function UsersSection() {
             <button
               key={r}
               onClick={() => handleRole(r)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md text-base font-medium border transition-colors cursor-pointer ${
                 roleFilter === r
                   ? "bg-[#2a9d8f] text-white border-[#2a9d8f]"
                   : "bg-white text-gray-900 border-gray-200 hover:border-[#2a9d8f]"
@@ -167,16 +167,16 @@ export function UsersSection() {
         </div>
       </div>
 
-      <p className="text-xs text-gray-900">{filtered.length} felhasználó</p>
+      <p className="text-base text-gray-900">{filtered.length} felhasználó</p>
 
       {error && (
-        <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
+        <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
           {error}
         </div>
       )}
 
       {paginated.length === 0 && (
-        <p className="text-gray-900 text-sm">Nincs találat.</p>
+        <p className="text-gray-900 text-lg">Nincs találat.</p>
       )}
 
       <div className="space-y-3">
@@ -187,13 +187,13 @@ export function UsersSection() {
           >
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                <span className="font-medium text-gray-900 text-sm">{u.full_name || "–"}</span>
-                <Badge variant={ROLE_BADGE[u.role]} className="text-xs">
+                <span className="font-medium text-gray-900 text-lg">{u.full_name || "–"}</span>
+                <Badge variant={ROLE_BADGE[u.role]} className="text-base">
                   {ROLE_LABELS[u.role]}
                 </Badge>
               </div>
-              <p className="text-xs text-gray-900">{u.email}</p>
-              <p className="text-xs text-gray-900 mt-0.5">
+              <p className="text-base text-gray-900">{u.email}</p>
+              <p className="text-base text-gray-900 mt-0.5">
                 Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}
               </p>
             </div>
@@ -205,7 +205,7 @@ export function UsersSection() {
                   variant="outline"
                   disabled={updating === u.user_id}
                   onClick={() => setRole(u.user_id, "admin")}
-                  className="text-xs cursor-pointer"
+                  className="text-base cursor-pointer"
                 >
                   Admin legyen
                 </Button>
@@ -216,7 +216,7 @@ export function UsersSection() {
                   variant="outline"
                   disabled={updating === u.user_id}
                   onClick={() => setRole(u.user_id, "visitor")}
-                  className="text-xs cursor-pointer"
+                  className="text-base cursor-pointer"
                 >
                   Admin jog elvétele
                 </Button>
@@ -226,7 +226,7 @@ export function UsersSection() {
                 variant="destructive"
                 disabled={deleting === u.user_id}
                 onClick={() => setConfirmDelete(u)}
-                className="text-xs cursor-pointer"
+                className="text-base cursor-pointer"
               >
                 Törlés
               </Button>
@@ -247,7 +247,7 @@ export function UsersSection() {
           >
             ← Előző
           </Button>
-          <span className="text-sm text-gray-900">
+          <span className="text-lg text-gray-900">
             {page} / {totalPages}
           </span>
           <Button

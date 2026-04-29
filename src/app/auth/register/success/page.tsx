@@ -6,14 +6,14 @@ export default function RegisterSuccessPage() {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md text-center">
         <span className="text-6xl mb-6 block">🎉</span>
-        <h1 className="text-2xl font-bold text-gray-900 mb-3">
+        <h1 className="text-4xl font-bold text-gray-900 mb-3">
           Sikeres regisztráció!
         </h1>
         <p className="text-gray-900 mb-2">
           Köszönjük a regisztrációt! Ellenőrizd az email postaládádat és
           erősítsd meg a fiókod.
         </p>
-        <p className="text-gray-900 mb-8 text-sm">
+        <p className="text-gray-900 mb-8 text-lg">
           Szolgáltatói profilod az adminisztrátori jóváhagyás után jelenik meg a
           nyilvános oldalon.
         </p>

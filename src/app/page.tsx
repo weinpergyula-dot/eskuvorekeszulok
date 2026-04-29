@@ -37,12 +37,12 @@ export default function HomePage() {
       <section className="relative bg-gradient-to-r from-white via-gray-50 to-[#e8f7f5] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="max-w-xl">
-            <h1 className="text-4xl md:text-5xl text-gray-900 mb-4 leading-tight" style={{ fontWeight: 950 }}>
+            <h1 className="text-6xl md:text-5xl text-gray-900 mb-4 leading-tight" style={{ fontWeight: 950 }}>
               <span className="text-[#2a9d8f]">ESKÜVŐRE</span>{" "}
               <span className="text-gray-900">KÉSZÜLSZ?</span>
             </h1>
             <div className="w-16 h-0.5 bg-[#2a9d8f] mb-6" />
-            <p className="text-lg text-gray-900 mb-8">
+            <p className="text-2xl text-gray-900 mb-8">
               Találj meg mindent egy helyen a nagy napodra!
             </p>
             <div className="flex flex-wrap gap-3">
@@ -63,7 +63,7 @@ export default function HomePage() {
       {/* Services section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
         <div className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             Szolgáltatások
           </h2>
           <p className="text-gray-900">
@@ -90,16 +90,16 @@ export default function HomePage() {
 function CategoryCard({ category }: { category: ServiceCategory }) {
   return (
     <div className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-xl p-5 hover:border-[#2a9d8f] hover:shadow-md transition-all group">
-      <span className="text-3xl mb-3">{CATEGORY_ICONS[category]}</span>
-      <h3 className="font-semibold text-gray-900 text-lg mb-1 leading-tight">
+      <span className="text-5xl mb-3">{CATEGORY_ICONS[category]}</span>
+      <h3 className="font-semibold text-gray-900 text-2xl mb-1 leading-tight">
         {CATEGORY_LABELS[category]}
       </h3>
       <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#2a9d8f] transition-colors mb-2" />
-      <p className="text-base text-gray-900 mb-4 line-clamp-2">
+      <p className="text-xl text-gray-900 mb-4 line-clamp-2">
         {CATEGORY_DESCRIPTIONS[category]}
       </p>
       <Link href={`/services/${category}`} className="mt-auto">
-        <Button size="sm" className="text-sm px-4">
+        <Button size="sm" className="text-lg px-4">
           Megnézem
         </Button>
       </Link>

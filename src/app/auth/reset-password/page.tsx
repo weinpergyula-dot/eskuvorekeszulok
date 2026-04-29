@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Új jelszó</h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-2">Új jelszó</h1>
           <p className="text-gray-900">Add meg az új jelszavadat</p>
         </div>
 
@@ -54,7 +54,7 @@ export default function ResetPasswordPage() {
           className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
         >
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
+            <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
               {error}
             </div>
           )}

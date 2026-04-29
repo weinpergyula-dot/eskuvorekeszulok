@@ -56,7 +56,7 @@ function LoginForm() {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Belépés</h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-2">Belépés</h1>
           <p className="text-gray-900">Lépj be a fiókodba</p>
         </div>
 
@@ -65,18 +65,18 @@ function LoginForm() {
           className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
         >
           {registered && (
-            <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-xl border border-green-200">
+            <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
               Sikeres regisztráció! Ellenőrizd az email fiókodat, majd lépj be.
             </div>
           )}
           {reset && (
-            <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-xl border border-green-200">
+            <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
               Jelszavad sikeresen megváltozott. Lépj be az új jelszavaddal.
             </div>
           )}
 
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
+            <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
               {error}
             </div>
           )}
@@ -110,13 +110,13 @@ function LoginForm() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-gray-900 mt-4">
+        <p className="text-center text-lg text-gray-900 mt-4">
           Még nincs fiókod?{" "}
           <Link href="/auth/register" className="text-[#2a9d8f] hover:underline">
             Regisztrálj
           </Link>
         </p>
-        <p className="text-center text-sm text-gray-900 mt-2">
+        <p className="text-center text-lg text-gray-900 mt-2">
           <Link href="/auth/forgot-password" className="text-[#2a9d8f] hover:underline">
             Elfelejtett jelszó?
           </Link>
