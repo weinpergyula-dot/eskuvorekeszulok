@@ -175,7 +175,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           </div>
 
           {/* Right: contact card */}
-          <div>
+          <div className="md:col-span-2">
             <div className="bg-gray-50 rounded-xl border border-gray-200 p-5 space-y-4 sticky top-24">
               <h2 className="text-base font-semibold text-gray-800">
                 Elérhetőség
