@@ -56,8 +56,8 @@ function LoginForm() {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Belépés</h1>
-          <p className="text-gray-700">Lépj be a fiókodba</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Belépés</h1>
+          <p className="text-gray-900">Lépj be a fiókodba</p>
         </div>
 
         <form
@@ -110,13 +110,13 @@ function LoginForm() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-gray-700 mt-4">
+        <p className="text-center text-sm text-gray-900 mt-4">
           Még nincs fiókod?{" "}
           <Link href="/auth/register" className="text-[#2a9d8f] hover:underline">
             Regisztrálj
           </Link>
         </p>
-        <p className="text-center text-sm text-gray-700 mt-2">
+        <p className="text-center text-sm text-gray-900 mt-2">
           <Link href="/auth/forgot-password" className="text-[#2a9d8f] hover:underline">
             Elfelejtett jelszó?
           </Link>

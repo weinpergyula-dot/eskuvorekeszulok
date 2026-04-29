@@ -55,7 +55,7 @@ export default async function AdminPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-2xl font-bold text-gray-800 mb-8">Admin Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
@@ -77,7 +77,7 @@ export default async function AdminPage() {
 
       {/* Pending registrations */}
       <section className="mb-10">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           Új regisztrációk jóváhagyása
           {!!pendingProviders?.length && (
             <span className="inline-flex items-center justify-center w-5 h-5 text-xs bg-yellow-400 text-white rounded-full">
@@ -87,7 +87,7 @@ export default async function AdminPage() {
         </h2>
 
         {!pendingProviders?.length ? (
-          <p className="text-gray-700 text-sm">Nincs jóváhagyásra váró regisztráció.</p>
+          <p className="text-gray-900 text-sm">Nincs jóváhagyásra váró regisztráció.</p>
         ) : (
           <div className="space-y-4">
             {pendingProviders.map((provider) => (
@@ -103,7 +103,7 @@ export default async function AdminPage() {
 
       {/* Users */}
       <section className="mb-10">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
           Felhasználók kezelése
         </h2>
         <UsersSection />
@@ -111,7 +111,7 @@ export default async function AdminPage() {
 
       {/* Pending edits */}
       <section>
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           Profil módosítások jóváhagyása
           {!!pendingChanges?.length && (
             <span className="inline-flex items-center justify-center w-5 h-5 text-xs bg-blue-400 text-white rounded-full">
@@ -121,7 +121,7 @@ export default async function AdminPage() {
         </h2>
 
         {!pendingChanges?.length ? (
-          <p className="text-gray-700 text-sm">Nincs jóváhagyásra váró módosítás.</p>
+          <p className="text-gray-900 text-sm">Nincs jóváhagyásra váró módosítás.</p>
         ) : (
           <div className="space-y-4">
             {pendingChanges.map((provider) => (
@@ -169,7 +169,7 @@ function ProviderRow({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-xl font-bold text-gray-700">
+              <span className="text-xl font-bold text-gray-900">
                 {String(displayData.full_name ?? "?").charAt(0)}
               </span>
             )}
@@ -177,20 +177,20 @@ function ProviderRow({
 
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <span className="font-semibold text-gray-800">
+              <span className="font-semibold text-gray-900">
                 {String(displayData.full_name ?? "")}
               </span>
               <Badge variant={type === "edit" ? "default" : "pending"} className="text-xs">
                 {type === "edit" ? "Módosítás" : "Új regisztráció"}
               </Badge>
             </div>
-            <p className="text-xs text-gray-700 mb-0.5">{String(displayData.email ?? "")}</p>
-            <p className="text-xs text-gray-700 mb-0.5">{String(displayData.phone ?? "")}</p>
-            <p className="text-xs text-gray-700 mb-0.5">
+            <p className="text-xs text-gray-900 mb-0.5">{String(displayData.email ?? "")}</p>
+            <p className="text-xs text-gray-900 mb-0.5">{String(displayData.phone ?? "")}</p>
+            <p className="text-xs text-gray-900 mb-0.5">
               {categoryLabel} – {String(displayData.county ?? "")}
             </p>
             {displayData.description ? (
-              <p className="text-xs text-gray-700 mt-2 line-clamp-2 max-w-md">
+              <p className="text-xs text-gray-900 mt-2 line-clamp-2 max-w-md">
                 {String(displayData.description)}
               </p>
             ) : null}
@@ -235,8 +235,8 @@ function StatCard({
       }`}
     >
       <div className="text-2xl mb-1">{icon}</div>
-      <div className="text-2xl font-bold text-gray-800">{value}</div>
-      <div className="text-xs text-gray-700 mt-0.5">{label}</div>
+      <div className="text-2xl font-bold text-gray-900">{value}</div>
+      <div className="text-xs text-gray-900 mt-0.5">{label}</div>
     </div>
   );
 }

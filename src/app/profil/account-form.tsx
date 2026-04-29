@@ -83,7 +83,7 @@ export function AccountForm({ userId, initialName, email }: Props) {
       <form onSubmit={handleSaveName} className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="email">E-mail cím</Label>
-          <Input id="email" value={email} disabled className="bg-gray-50 text-gray-700" />
+          <Input id="email" value={email} disabled className="bg-gray-50 text-gray-900" />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="name">Teljes név</Label>
@@ -113,7 +113,7 @@ export function AccountForm({ userId, initialName, email }: Props) {
 
       {/* Password */}
       <form onSubmit={handleChangePassword} className="space-y-4">
-        <h3 className="text-sm font-semibold text-gray-800">Jelszó módosítása</h3>
+        <h3 className="text-sm font-semibold text-gray-900">Jelszó módosítása</h3>
         <div className="space-y-1.5">
           <Label htmlFor="newPassword">Új jelszó</Label>
           <Input

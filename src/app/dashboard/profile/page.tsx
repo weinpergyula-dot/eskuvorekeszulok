@@ -129,7 +129,7 @@ export default function EditProfilePage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-gray-700">Betöltés...</div>
+        <div className="text-gray-900">Betöltés...</div>
       </div>
     );
   }
@@ -139,14 +139,14 @@ export default function EditProfilePage() {
       <div className="mb-6">
         <Link
           href="/dashboard"
-          className="text-sm text-gray-700 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
+          className="text-sm text-gray-900 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
         >
           ← Vissza a dashboardra
         </Link>
-        <h1 className="text-2xl font-bold text-gray-800 mb-1">
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">
           Profil szerkesztése
         </h1>
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-gray-900">
           A módosítások az adminisztrátori jóváhagyás után jelennek meg
           nyilvánosan.
         </p>

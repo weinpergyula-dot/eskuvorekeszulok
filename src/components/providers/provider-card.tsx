@@ -37,14 +37,14 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-2xl font-bold text-gray-700">
+            <span className="text-2xl font-bold text-gray-900">
               {provider.full_name.charAt(0)}
             </span>
           )}
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-800 text-center text-base mb-1 group-hover:text-[#2a9d8f] transition-colors">
+        <h3 className="font-bold text-gray-900 text-center text-base mb-1 group-hover:text-[#2a9d8f] transition-colors">
           {provider.full_name}
         </h3>
 
@@ -61,11 +61,11 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
               )}
             />
           ))}
-          <span className="text-sm font-semibold text-gray-700 ml-1">
+          <span className="text-sm font-semibold text-gray-900 ml-1">
             {rating > 0 ? rating.toFixed(1) : "–"}
           </span>
           {reviewCount > 0 && (
-            <span className="text-sm text-gray-700">({reviewCount})</span>
+            <span className="text-sm text-gray-900">({reviewCount})</span>
           )}
         </div>
 
@@ -100,38 +100,38 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
 
       {/* Contact info */}
       <div className="px-5 py-4 space-y-2 flex-1">
-        <ContactRow icon={<Phone className="h-4 w-4 text-gray-700" />} value={provider.phone} />
-        <ContactRow icon={<Mail className="h-4 w-4 text-gray-700" />} value={provider.email} />
+        <ContactRow icon={<Phone className="h-4 w-4 text-gray-900" />} value={provider.phone} />
+        <ContactRow icon={<Mail className="h-4 w-4 text-gray-900" />} value={provider.email} />
         {provider.website && (
           <ContactRow
-            icon={<Globe className="h-4 w-4 text-gray-700" />}
+            icon={<Globe className="h-4 w-4 text-gray-900" />}
             value={provider.website}
             isLink
           />
         )}
         {provider.description && (
           <div className="flex gap-2.5">
-            <MessageSquare className="h-4 w-4 text-gray-700 shrink-0 mt-0.5" />
-            <p className="text-xs text-gray-700 line-clamp-3 leading-relaxed">
+            <MessageSquare className="h-4 w-4 text-gray-900 shrink-0 mt-0.5" />
+            <p className="text-xs text-gray-900 line-clamp-3 leading-relaxed">
               {provider.description}
             </p>
           </div>
         )}
-        <p className="text-xs text-gray-700">{provider.county}</p>
+        <p className="text-xs text-gray-900">{provider.county}</p>
       </div>
 
       {/* Footer */}
       <div className="border-t border-gray-100 px-5 py-3 flex items-center justify-between">
         <button
           onClick={(e) => { e.preventDefault(); setLiked(!liked); }}
-          className="text-gray-700 hover:text-red-500 transition-colors cursor-pointer"
+          className="text-gray-900 hover:text-red-500 transition-colors cursor-pointer"
           aria-label="Kedvenc"
         >
           <Heart
             className={cn("h-4 w-4", liked && "fill-red-500 text-red-500")}
           />
         </button>
-        <div className="flex items-center gap-1 text-gray-700 text-xs">
+        <div className="flex items-center gap-1 text-gray-900 text-xs">
           <Eye className="h-3.5 w-3.5" />
           <span>{viewCount}</span>
         </div>
@@ -162,7 +162,7 @@ function ContactRow({
           {value}
         </a>
       ) : (
-        <span className="text-xs text-gray-700 break-all">{value}</span>
+        <span className="text-xs text-gray-900 break-all">{value}</span>
       )}
     </div>
   );

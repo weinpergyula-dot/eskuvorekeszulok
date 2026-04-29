@@ -156,8 +156,8 @@ export default function RegisterPage() {
       <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Regisztráció</h1>
-            <p className="text-gray-700">Melyik típusú fiókot szeretnéd létrehozni?</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Regisztráció</h1>
+            <p className="text-gray-900">Melyik típusú fiókot szeretnéd létrehozni?</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
@@ -166,8 +166,8 @@ export default function RegisterPage() {
               className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#2a9d8f] hover:shadow-md transition-all group"
             >
               <span className="text-4xl mb-3">👰</span>
-              <span className="font-semibold text-gray-800 group-hover:text-[#2a9d8f]">Látogató</span>
-              <span className="text-xs text-gray-700 mt-1 text-center">
+              <span className="font-semibold text-gray-900 group-hover:text-[#2a9d8f]">Látogató</span>
+              <span className="text-xs text-gray-900 mt-1 text-center">
                 Böngészem a szolgáltatókat
               </span>
             </button>
@@ -176,14 +176,14 @@ export default function RegisterPage() {
               className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#2a9d8f] hover:shadow-md transition-all group"
             >
               <span className="text-4xl mb-3">💼</span>
-              <span className="font-semibold text-gray-800 group-hover:text-[#2a9d8f]">Szolgáltató</span>
-              <span className="text-xs text-gray-700 mt-1 text-center">
+              <span className="font-semibold text-gray-900 group-hover:text-[#2a9d8f]">Szolgáltató</span>
+              <span className="text-xs text-gray-900 mt-1 text-center">
                 Hirdetem a szolgáltatásom
               </span>
             </button>
           </div>
 
-          <p className="text-center text-sm text-gray-700">
+          <p className="text-center text-sm text-gray-900">
             Már van fiókod?{" "}
             <Link href="/auth/login" className="text-[#2a9d8f] hover:underline">
               Lépj be
@@ -202,14 +202,14 @@ export default function RegisterPage() {
           <div className="mb-6">
             <button
               onClick={() => setStep("role")}
-              className="text-sm text-gray-700 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
+              className="text-sm text-gray-900 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
             >
               ← Vissza
             </button>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">
               {role === "provider" ? "Szolgáltató regisztráció" : "Látogató regisztráció"}
             </h1>
-            <p className="text-gray-700 text-sm">Alapadatok megadása</p>
+            <p className="text-gray-900 text-sm">Alapadatok megadása</p>
           </div>
 
           {/* Progress */}
@@ -270,7 +270,7 @@ export default function RegisterPage() {
             </Button>
           </form>
 
-          <p className="text-center text-sm text-gray-700 mt-4">
+          <p className="text-center text-sm text-gray-900 mt-4">
             Már van fiókod?{" "}
             <Link href="/auth/login" className="text-[#2a9d8f] hover:underline">
               Lépj be
@@ -288,12 +288,12 @@ export default function RegisterPage() {
         <div className="mb-6">
           <button
             onClick={() => setStep("basic")}
-            className="text-sm text-gray-700 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
+            className="text-sm text-gray-900 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
           >
             ← Vissza
           </button>
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">Szolgáltatói adatok</h1>
-          <p className="text-gray-700 text-sm">
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Szolgáltatói adatok</h1>
+          <p className="text-gray-900 text-sm">
             Regisztráció után az admin jóváhagyja a profilod.
           </p>
         </div>
@@ -432,7 +432,7 @@ export default function RegisterPage() {
               className="cursor-pointer"
             />
             {galleryFiles.length > 0 && (
-              <p className="text-xs text-gray-700">{galleryFiles.length} kép kiválasztva</p>
+              <p className="text-xs text-gray-900">{galleryFiles.length} kép kiválasztva</p>
             )}
           </div>
 
@@ -440,7 +440,7 @@ export default function RegisterPage() {
             {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
           </Button>
 
-          <p className="text-xs text-gray-700 text-center">
+          <p className="text-xs text-gray-900 text-center">
             A regisztrációt az adminisztrátornak kell jóváhagynia, mielőtt a
             profilod megjelenik az oldalon.
           </p>

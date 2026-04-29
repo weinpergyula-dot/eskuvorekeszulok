@@ -34,10 +34,10 @@ export default function ServicesPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
           Összes kategória
         </h1>
-        <p className="text-gray-700">
+        <p className="text-gray-900">
           Válassz kategóriát és böngészd az elérhető szolgáltatókat!
         </p>
       </div>
@@ -50,11 +50,11 @@ export default function ServicesPage() {
             className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-xl p-5 hover:border-[#2a9d8f] hover:shadow-md transition-all group"
           >
             <span className="text-3xl mb-3">{CATEGORY_ICONS[category]}</span>
-            <h3 className="font-semibold text-gray-800 text-sm mb-1 leading-tight">
+            <h3 className="font-semibold text-gray-900 text-sm mb-1 leading-tight">
               {CATEGORY_LABELS[category]}
             </h3>
             <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#2a9d8f] transition-colors mb-2" />
-            <p className="text-xs text-gray-700 line-clamp-2">
+            <p className="text-xs text-gray-900 line-clamp-2">
               {CATEGORY_DESCRIPTIONS[category]}
             </p>
           </Link>

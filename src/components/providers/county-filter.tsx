@@ -31,7 +31,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
           !selected
             ? "bg-[#2a9d8f] text-white font-medium"
-            : "text-gray-700 hover:bg-gray-100"
+            : "text-gray-900 hover:bg-gray-100"
         )}
       >
         Összes megye
@@ -44,7 +44,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
             "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
             selected === county
               ? "bg-[#2a9d8f] text-white font-medium"
-              : "text-gray-700 hover:bg-gray-100"
+              : "text-gray-900 hover:bg-gray-100"
           )}
         >
           {county}
@@ -59,7 +59,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
       <div className="lg:hidden">
         <button
           onClick={() => setOpen((v) => !v)}
-          className="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 cursor-pointer"
+          className="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-900 cursor-pointer"
         >
           <span className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4 text-[#2a9d8f]" />
@@ -67,7 +67,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           </span>
           <ChevronDown
             className={cn(
-              "h-4 w-4 text-gray-700 transition-transform",
+              "h-4 w-4 text-gray-900 transition-transform",
               open && "rotate-180"
             )}
           />

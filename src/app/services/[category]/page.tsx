@@ -71,7 +71,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         <aside className="lg:w-64 shrink-0">
           {/* Desktop card wrapper */}
           <div className="hidden lg:block bg-white border border-gray-200 rounded-xl p-5 sticky top-24">
-            <h2 className="font-semibold text-gray-800 mb-4">Szűrés megye szerint</h2>
+            <h2 className="font-semibold text-gray-900 mb-4">Szűrés megye szerint</h2>
             <CountyFilter counties={COUNTIES as unknown as string[]} selected={county} category={category} />
           </div>
           {/* Mobile collapsible (no card wrapper, CountyFilter handles it) */}
@@ -84,7 +84,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         <div className="flex-1">
           {providers && providers.length > 0 ? (
             <>
-              <p className="text-sm text-gray-700 mb-4">
+              <p className="text-sm text-gray-900 mb-4">
                 {providers.length} szolgáltató található{county ? ` – ${county}` : ""}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -96,10 +96,10 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <p className="text-4xl mb-4">🔍</p>
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Nincs találat
               </h3>
-              <p className="text-gray-700 text-sm">
+              <p className="text-gray-900 text-sm">
                 {county
                   ? `${county} megyében egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`
                   : `Egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`}
