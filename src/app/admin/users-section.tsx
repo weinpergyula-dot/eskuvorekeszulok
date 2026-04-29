@@ -34,6 +34,8 @@ export function UsersSection() {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
@@ -87,9 +89,59 @@ export function UsersSection() {
     setUpdating(null);
   };
 
+  const deleteUser = async (u: UserProfile) => {
+    setDeleting(u.user_id);
+    setError(null);
+    setConfirmDelete(null);
+    const res = await fetch("/api/admin/users", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: u.user_id }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error ?? "Hiba történt.");
+    } else {
+      setUsers((prev) => prev.filter((x) => x.user_id !== u.user_id));
+    }
+    setDeleting(null);
+  };
+
   if (loading) return <p className="text-gray-400 text-sm">Betöltés...</p>;
 
   return (
+    <>
+    {/* Confirm delete dialog */}
+    {confirmDelete && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
+          <h3 className="font-bold text-gray-800 mb-2">Felhasználó törlése</h3>
+          <p className="text-sm text-gray-600 mb-1">
+            Biztosan véglegesen törlöd ezt a felhasználót?
+          </p>
+          <p className="text-sm font-medium text-gray-800 mb-4">
+            {confirmDelete.full_name || confirmDelete.email}
+          </p>
+          <p className="text-xs text-red-600 mb-5">
+            Ez a művelet nem visszavonható. A felhasználó összes adata törlődik.
+          </p>
+          <div className="flex gap-3 justify-end">
+            <Button size="sm" variant="outline" onClick={() => setConfirmDelete(null)}>
+              Mégse
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              disabled={deleting === confirmDelete.user_id}
+              onClick={() => deleteUser(confirmDelete)}
+            >
+              {deleting === confirmDelete.user_id ? "Törlés..." : "Végleges törlés"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    )}
+    <div
     <div className="space-y-4">
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
@@ -162,7 +214,7 @@ export function UsersSection() {
               {u.role === "admin" && (
                 <Button
                   size="sm"
-                  variant="destructive"
+                  variant="outline"
                   disabled={updating === u.user_id}
                   onClick={() => setRole(u.user_id, "visitor")}
                   className="text-xs cursor-pointer"
@@ -170,6 +222,15 @@ export function UsersSection() {
                   Admin jog elvétele
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={deleting === u.user_id}
+                onClick={() => setConfirmDelete(u)}
+                className="text-xs cursor-pointer"
+              >
+                Törlés
+              </Button>
             </div>
           </div>
         ))}
@@ -202,5 +263,6 @@ export function UsersSection() {
         </div>
       )}
     </div>
+    </>
   );
 }
