@@ -157,8 +157,8 @@ export function UsersSection() {
               onClick={() => handleRole(r)}
               className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
                 roleFilter === r
-                  ? "bg-[#2a9d8f] text-white border-[#2a9d8f]"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-[#2a9d8f]"
+                  ? "bg-[#5a8480] text-white border-[#5a8480]"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-[#5a8480]"
               }`}
             >
               {r === "all" ? "Összes" : ROLE_LABELS[r]}

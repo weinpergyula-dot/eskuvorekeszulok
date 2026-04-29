@@ -30,7 +30,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
         className={cn(
           "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
           !selected
-            ? "bg-[#2a9d8f] text-white font-medium"
+            ? "bg-[#5a8480] text-white font-medium"
             : "text-gray-600 hover:bg-gray-100"
         )}
       >
@@ -43,7 +43,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           className={cn(
             "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
             selected === county
-              ? "bg-[#2a9d8f] text-white font-medium"
+              ? "bg-[#5a8480] text-white font-medium"
               : "text-gray-600 hover:bg-gray-100"
           )}
         >
@@ -62,8 +62,8 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           className="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 cursor-pointer"
         >
           <span className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-[#2a9d8f]" />
-            Szűrés: <span className="text-[#2a9d8f]">{selectedLabel}</span>
+            <SlidersHorizontal className="h-4 w-4 text-[#5a8480]" />
+            Szűrés: <span className="text-[#5a8480]">{selectedLabel}</span>
           </span>
           <ChevronDown
             className={cn(

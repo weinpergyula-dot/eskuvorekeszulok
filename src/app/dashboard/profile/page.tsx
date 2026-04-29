@@ -139,7 +139,7 @@ export default function EditProfilePage() {
       <div className="mb-6">
         <Link
           href="/dashboard"
-          className="text-sm text-gray-500 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
+          className="text-sm text-gray-500 hover:text-[#5a8480] mb-4 flex items-center gap-1"
         >
           ← Vissza a dashboardra
         </Link>
@@ -173,7 +173,7 @@ export default function EditProfilePage() {
           <Label>Profilkép</Label>
           <div className="flex items-center gap-4">
             <div
-              className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#2a9d8f] overflow-hidden bg-gray-50"
+              className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#5a8480] overflow-hidden bg-gray-50"
               onClick={() => avatarInputRef.current?.click()}
             >
               {avatarPreview ? (

@@ -70,7 +70,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             <Link
               href="/"
-              className="text-sm text-gray-600 hover:text-[#2a9d8f] transition-colors"
+              className="text-sm text-gray-600 hover:text-[#5a8480] transition-colors"
             >
               Kezdőlap
             </Link>
@@ -80,7 +80,7 @@ export function Navbar() {
               <button
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
-                className="flex items-center gap-1 text-sm text-gray-600 hover:text-[#2a9d8f] transition-colors"
+                className="flex items-center gap-1 text-sm text-gray-600 hover:text-[#5a8480] transition-colors"
               >
                 Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
               </button>
@@ -94,7 +94,7 @@ export function Navbar() {
                     <Link
                       key={cat}
                       href={`/services/${cat}`}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#2a9d8f]/10 hover:text-[#2a9d8f]"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#5a8480]/10 hover:text-[#5a8480]"
                     >
                       {CATEGORY_LABELS[cat]}
                     </Link>
@@ -102,7 +102,7 @@ export function Navbar() {
                   <div className="border-t border-gray-100 mt-1 pt-1">
                     <Link
                       href="/services"
-                      className="block px-4 py-2 text-sm text-[#2a9d8f] font-medium hover:bg-[#2a9d8f]/10"
+                      className="block px-4 py-2 text-sm text-[#5a8480] font-medium hover:bg-[#5a8480]/10"
                     >
                       Összes kategória →
                     </Link>
@@ -113,7 +113,7 @@ export function Navbar() {
 
             <Link
               href="/contact"
-              className="text-sm text-gray-600 hover:text-[#2a9d8f] transition-colors"
+              className="text-sm text-gray-600 hover:text-[#5a8480] transition-colors"
             >
               Kapcsolat
             </Link>
@@ -151,7 +151,7 @@ export function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-xl text-gray-600 hover:text-[#2a9d8f]"
+            className="md:hidden p-2 rounded-xl text-gray-600 hover:text-[#5a8480]"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
