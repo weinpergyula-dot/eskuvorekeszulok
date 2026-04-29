@@ -66,7 +66,7 @@ export default function HomePage() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Szolgáltatások
           </h2>
-          <p className="text-gray-500 max-w-2xl">
+          <p className="text-gray-500">
             Egy esküvő életünk egyik legfontosabb eseménye, ezért különösen
             lényeges, hogy a lehető legjobb szolgáltatókat válasszuk. A
             tapasztalt szakemberek – legyen szó fotósról, zenészről vagy
