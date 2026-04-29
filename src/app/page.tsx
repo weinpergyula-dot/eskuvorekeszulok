@@ -33,7 +33,8 @@ export default function HomePage() {
       </section>
 
       {/* Services section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+      <section className="bg-gradient-to-b from-[#2a9d8f]/8 via-[#2a9d8f]/5 to-transparent">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
         <div className="mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Szolgáltatások
@@ -50,6 +51,7 @@ export default function HomePage() {
         </div>
 
         <CategorySearch />
+      </div>
       </section>
     </>
   );

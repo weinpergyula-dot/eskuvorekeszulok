@@ -25,6 +25,13 @@ export function Navbar() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const supabase = createClient();
 
   useEffect(() => {
@@ -53,7 +60,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <nav className={`sticky top-0 z-50 border-b transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-md border-gray-200/60 shadow-sm" : "bg-white border-gray-200 shadow-sm"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
