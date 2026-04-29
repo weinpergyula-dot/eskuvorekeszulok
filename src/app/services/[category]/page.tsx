@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, COUNTIES, type ServiceCategory } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
