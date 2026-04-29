@@ -11,25 +11,35 @@ export default function HomePage() {
         <img
           src="/hero.png"
           alt="Esküvői háttérkép"
-          className="w-full h-[520px] sm:h-[380px] lg:h-auto object-cover object-right lg:object-center block"
+          className="w-full h-[480px] sm:h-[400px] lg:h-auto object-cover object-right lg:object-center block"
         />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-xl">
-              <h1 className="text-gray-900 mb-4 leading-tight" style={{ fontWeight: 950, fontSize: "65px" }}>
-                <span className="text-[#2a9d8f]">ESKÜVŐRE</span>{" "}
-                <span className="text-gray-900">KÉSZÜLSZ?</span>
+            <div className="w-[52%] sm:w-[45%] lg:max-w-xl lg:w-auto">
+              <h1 className="text-gray-900 mb-4 leading-tight" style={{ fontWeight: 950 }}>
+                <span
+                  className="text-[#2a9d8f] block"
+                  style={{ fontSize: "clamp(32px, 9vw, 65px)" }}
+                >
+                  ESKÜVŐRE
+                </span>
+                <span
+                  className="text-gray-900 block"
+                  style={{ fontSize: "clamp(32px, 9vw, 65px)" }}
+                >
+                  KÉSZÜLSZ?
+                </span>
               </h1>
-              <div className="w-16 h-0.5 bg-[#2a9d8f] mb-6" />
-              <p className="text-lg text-gray-900 mb-8">
+              <div className="w-12 h-0.5 bg-[#2a9d8f] mb-4" />
+              <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
                 Találj meg mindent egy helyen a nagy napodra!
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                 <Link href="/services">
-                  <Button size="lg">Megnézem a szolgáltatókat</Button>
+                  <Button size="lg" className="w-full sm:w-auto">Megnézem a szolgáltatókat</Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button variant="outline" size="lg">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
                     Hirdetem a szolgáltatásom
                   </Button>
                 </Link>
