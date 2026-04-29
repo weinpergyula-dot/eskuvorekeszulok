@@ -2,8 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, CATEGORY_SEO_DESCRIPTIONS, COUNTIES, type ServiceCategory } from "@/lib/types";
-import { ProviderCard } from "@/components/providers/provider-card";
-import { CountyFilter } from "@/components/providers/county-filter";
+import { CategoryContent } from "@/components/providers/category-content";
 import { notFound } from "next/navigation";
 import type { Provider } from "@/lib/types";
 
@@ -73,49 +72,13 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       </div>
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Sidebar filter */}
-        <aside className="lg:w-64 shrink-0">
-          {/* Desktop card wrapper */}
-          <div className="hidden lg:block bg-white border border-gray-200 rounded-xl p-5 sticky top-24">
-            <h2 className="font-semibold text-gray-900 mb-4">Szűrés megye szerint</h2>
-            <CountyFilter counties={COUNTIES as unknown as string[]} selected={county} category={category} />
-          </div>
-          {/* Mobile collapsible (no card wrapper, CountyFilter handles it) */}
-          <div className="lg:hidden">
-            <CountyFilter counties={COUNTIES as unknown as string[]} selected={county} category={category} />
-          </div>
-        </aside>
-
-        {/* Provider grid */}
-        <div className="flex-1">
-          {providers && providers.length > 0 ? (
-            <>
-              <p className="text-lg text-gray-900 mb-4">
-                {providers.length} szolgáltató található{county ? ` – ${county}` : ""}
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {providers.map((provider) => (
-                  <ProviderCard key={provider.id} provider={provider} />
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <p className="text-4xl mb-4">🔍</p>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Nincs találat
-              </h3>
-              <p className="text-gray-900 text-lg">
-                {county
-                  ? `${county} megyében egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`
-                  : `Egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`}
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
+      <CategoryContent
+        providers={providers}
+        counties={COUNTIES as unknown as string[]}
+        selected={county}
+        category={category}
+        label={label}
+      />
     </div>
     </div>
   );
