@@ -8,7 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { ProviderCard } from "@/components/providers/provider-card";
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
+  let supabase: Awaited<ReturnType<typeof createClient>>;
+  try {
+    supabase = await createClient();
+  } catch {
+    redirect("/auth/login");
+  }
 
   const {
     data: { user },

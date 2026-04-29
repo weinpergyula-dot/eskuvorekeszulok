@@ -7,7 +7,12 @@ import { ApproveButton } from "./approve-button";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 
 export default async function AdminPage() {
-  const supabase = await createClient();
+  let supabase: Awaited<ReturnType<typeof createClient>>;
+  try {
+    supabase = await createClient();
+  } catch {
+    redirect("/auth/login");
+  }
 
   const {
     data: { user },

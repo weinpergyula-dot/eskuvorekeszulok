@@ -5,6 +5,7 @@ import { CATEGORY_LABELS, COUNTIES, type ServiceCategory } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { CountyFilter } from "@/components/providers/county-filter";
 import { notFound } from "next/navigation";
+import type { Provider } from "@/lib/types";
 
 interface PageProps {
   params: Promise<{ category: string }>;
@@ -25,20 +26,27 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   const label = CATEGORY_LABELS[category as ServiceCategory];
   if (!label) notFound();
 
-  const supabase = await createClient();
+  let providers: Provider[] = [];
 
-  let query = supabase
-    .from("providers_with_stats")
-    .select("*")
-    .eq("category", category)
-    .eq("approval_status", "approved")
-    .order("average_rating", { ascending: false });
+  try {
+    const supabase = await createClient();
 
-  if (county) {
-    query = query.eq("county", county);
+    let query = supabase
+      .from("providers_with_stats")
+      .select("*")
+      .eq("category", category)
+      .eq("approval_status", "approved")
+      .order("average_rating", { ascending: false });
+
+    if (county) {
+      query = query.eq("county", county);
+    }
+
+    const { data } = await query;
+    providers = (data as Provider[]) ?? [];
+  } catch {
+    // Supabase not configured yet
   }
-
-  const { data: providers } = await query;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
