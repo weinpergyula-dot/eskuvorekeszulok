@@ -37,7 +37,7 @@ export default function HomePage() {
       <section className="relative bg-gradient-to-r from-white via-gray-50 to-[#e8f7f5] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="max-w-xl">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 leading-tight">
+            <h1 className="text-4xl md:text-5xl text-gray-800 mb-4 leading-tight" style={{ fontWeight: 950 }}>
               <span className="text-[#2a9d8f]">ESKÜVŐRE</span>{" "}
               <span className="text-gray-700">KÉSZÜLSZ?</span>
             </h1>
