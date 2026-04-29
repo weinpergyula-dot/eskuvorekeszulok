@@ -1,311 +1,137 @@
 -- ============================================================
 -- Teszt adatok – Esküvőre Készülök
--- Futtasd a Supabase SQL Editorban a schema.sql UTÁN
+-- Futtasd a schema.sql UTÁN a Supabase SQL Editorban
 -- ============================================================
 
--- Először hozzunk létre auth felhasználókat és profilokat,
--- majd a providers táblába szúrjuk be az adatokat.
--- FONTOS: Ez a seed közvetlen INSERT-et használ, ezért
--- a providers táblába user_id-ként dummy UUID-kat szúrunk.
+-- 1. Ideiglenes auth felhasználók létrehozása (seed célra)
+INSERT INTO auth.users (
+  id, instance_id, email, encrypted_password,
+  email_confirmed_at, created_at, updated_at,
+  raw_app_meta_data, raw_user_meta_data, aud, role
+)
+VALUES
+  ('00000001-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000000', 's01@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000000', 's02@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000000', 's03@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000000', 's04@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000000', 's05@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000000', 's06@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000000', 's07@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000000', 's08@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000009', '00000000-0000-0000-0000-000000000000', 's09@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000010', '00000000-0000-0000-0000-000000000000', 's10@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000000', 's11@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000012', '00000000-0000-0000-0000-000000000000', 's12@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000013', '00000000-0000-0000-0000-000000000000', 's13@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000014', '00000000-0000-0000-0000-000000000000', 's14@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000015', '00000000-0000-0000-0000-000000000000', 's15@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000016', '00000000-0000-0000-0000-000000000000', 's16@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000017', '00000000-0000-0000-0000-000000000000', 's17@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000018', '00000000-0000-0000-0000-000000000000', 's18@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000019', '00000000-0000-0000-0000-000000000000', 's19@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000020', '00000000-0000-0000-0000-000000000000', 's20@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000000', 's21@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000022', '00000000-0000-0000-0000-000000000000', 's22@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000023', '00000000-0000-0000-0000-000000000000', 's23@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000024', '00000000-0000-0000-0000-000000000000', 's24@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000025', '00000000-0000-0000-0000-000000000000', 's25@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000026', '00000000-0000-0000-0000-000000000000', 's26@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000027', '00000000-0000-0000-0000-000000000000', 's27@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000028', '00000000-0000-0000-0000-000000000000', 's28@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000029', '00000000-0000-0000-0000-000000000000', 's29@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000030', '00000000-0000-0000-0000-000000000000', 's30@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000031', '00000000-0000-0000-0000-000000000000', 's31@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000032', '00000000-0000-0000-0000-000000000000', 's32@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000033', '00000000-0000-0000-0000-000000000000', 's33@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000034', '00000000-0000-0000-0000-000000000000', 's34@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000035', '00000000-0000-0000-0000-000000000000', 's35@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000036', '00000000-0000-0000-0000-000000000000', 's36@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000037', '00000000-0000-0000-0000-000000000000', 's37@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000038', '00000000-0000-0000-0000-000000000000', 's38@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000039', '00000000-0000-0000-0000-000000000000', 's39@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000040', '00000000-0000-0000-0000-000000000000', 's40@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000041', '00000000-0000-0000-0000-000000000000', 's41@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000042', '00000000-0000-0000-0000-000000000000', 's42@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000043', '00000000-0000-0000-0000-000000000000', 's43@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000044', '00000000-0000-0000-0000-000000000000', 's44@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000045', '00000000-0000-0000-0000-000000000000', 's45@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000046', '00000000-0000-0000-0000-000000000000', 's46@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000047', '00000000-0000-0000-0000-000000000000', 's47@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000048', '00000000-0000-0000-0000-000000000000', 's48@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000049', '00000000-0000-0000-0000-000000000000', 's49@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated'),
+  ('00000001-0000-0000-0000-000000000050', '00000000-0000-0000-0000-000000000000', 's50@seed.test', '', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"role":"provider"}'::jsonb, 'authenticated', 'authenticated')
+ON CONFLICT (id) DO NOTHING;
 
--- Teszt szolgáltatók beszúrása (approved státusszal)
+-- 2. Szolgaltatok beszurasa
 INSERT INTO public.providers (
-  id, user_id, full_name, email, phone, description, category, county,
-  website, avatar_url, approval_status, view_count, created_at
+  id, user_id, full_name, email, phone, description,
+  category, county, website, avatar_url, approval_status, view_count, created_at
 ) VALUES
+('10000001-0000-0000-0000-000000000001','00000001-0000-0000-0000-000000000001','Nagy Albert Gabor','nagy.albert@gmail.com','+36707888787','Vallalok fotozast eskuvokre! 30 eves szaktudással rendelkezem, rugalmasan dolgozom. Riport es beallitott kepek egyarant.','fotosok-videosok','Budapest','https://www.nagyalbertfoto.hu',null,'approved',36,now() - interval '30 days'),
+('10000001-0000-0000-0000-000000000002','00000001-0000-0000-0000-000000000002','Kovacs Peter Fotografia','kovacs.peter.foto@gmail.com','+36301234567','Eskuvoi fotos es videos vagyok, modern stilusban dolgozom. Dron felvetelekkel is tudok szolgalni. Egesz napos jelenlет vallalhato.','fotosok-videosok','Pest','https://kovacsfilm.hu',null,'approved',89,now() - interval '45 days'),
+('10000001-0000-0000-0000-000000000003','00000001-0000-0000-0000-000000000003','Szabo Reka Wedding Photography','reka.szabo.foto@gmail.com','+36209876543','Intim, eletkoveli kepek a ti nagy napotokrol. Riportstitlusú fotokas, termeszetes pillanatok megörökítése a szivugyem.','fotosok-videosok','Győr-Moson-Sopron',null,null,'approved',54,now() - interval '20 days'),
+('10000001-0000-0000-0000-000000000004','00000001-0000-0000-0000-000000000004','Horvath Filmstudio','horvath.film@outlook.com','+36706543210','4K video es foto csomag eskuvokre. Drone felveteleк, highlight film, teljes nap rogzitese. Dijnyertes munkak.','fotosok-videosok','Baranya','https://horvathfilm.hu',null,'approved',112,now() - interval '60 days'),
+('10000001-0000-0000-0000-000000000005','00000001-0000-0000-0000-000000000005','Kiss Balazs Eskuvoi Fotos','kissbalazsfoto@gmail.com','+36301112233','Termeszetes feny, valodi erзelmek. Budapest es videk, utazasi dij nelkul 150 km-ig.','fotosok-videosok','Fejér',null,null,'approved',41,now() - interval '15 days'),
+('10000001-0000-0000-0000-000000000006','00000001-0000-0000-0000-000000000006','Fekete Adam Videography','adam.fekete.video@gmail.com','+36209998877','Cinematic eskuvoi videok. Storytelling megkozelites, profi hangfelvеtel. Elozetеs megtekintheto a weboldalon.','fotosok-videosok','Borsod-Abaúj-Zemplén','https://feketeadam.hu',null,'approved',67,now() - interval '25 days'),
+('10000001-0000-0000-0000-000000000007','00000001-0000-0000-0000-000000000007','Molnar Zsuzsanna Fotostudio','molnar.zsu.foto@gmail.com','+36701234000','Eskuvoi fotozas Debrecenben es kornyeken. Parfotozas lehetseges a nagy nap elott is.','fotosok-videosok','Hajdú-Bihar',null,null,'approved',28,now() - interval '10 days'),
+('10000001-0000-0000-0000-000000000008','00000001-0000-0000-0000-000000000008','DJ Tamas Eskuvoi Zenész','djtamas@gmail.com','+36305556677','Eskuvoi DJ es MC szolgaltatas. 15 eves tapasztalat, profi hangrendszer, fenytechnika. Az esti buli garantalt!','elo-zene-dj','Budapest','https://djtamas.hu',null,'approved',95,now() - interval '40 days'),
+('10000001-0000-0000-0000-000000000009','00000001-0000-0000-0000-000000000009','Harmonia Zenekar','harmonia.zenekar@gmail.com','+36204445566','5 tagu elozene zenekar. Magyar nota, pop, jazz es rock repertoar. Vonos kvartett lehetoseg a szertartashoz.','elo-zene-dj','Pest','https://harmoniazenekar.hu',null,'approved',78,now() - interval '35 days'),
+('10000001-0000-0000-0000-000000000010','00000001-0000-0000-0000-000000000010','Varga Norbert Szaxofonista','varga.norbi.szax@gmail.com','+36703334455','Szoliban vagy kisegyuttessel vallalok eskuvoi zenei szolgaltatast. Jazz, soul, pop – barmelyik hangulathoz.','elo-zene-dj','Győr-Moson-Sopron',null,null,'approved',33,now() - interval '18 days'),
+('10000001-0000-0000-0000-000000000011','00000001-0000-0000-0000-000000000011','DJ Krisztian Sound','djkrisztian@gmail.com','+36301231234','Profi DJ es fenytechnika. Minden zenei stilus, interaktiv musorvezetes. Referenciаk megtekinthetok.','elo-zene-dj','Somogy',null,null,'approved',44,now() - interval '22 days'),
+('10000001-0000-0000-0000-000000000012','00000001-0000-0000-0000-000000000012','Melodia Vonosnegyes','melodia.vonos@gmail.com','+36207778899','Klasszikus es kortars darabok eskuvoi szertartasokhoz es fogadasokhoz. Budapest es videk egyarant.','elo-zene-dj','Budapest','https://melodia.hu',null,'approved',56,now() - interval '28 days'),
+('10000001-0000-0000-0000-000000000013','00000001-0000-0000-0000-000000000013','Toth Sandor Vofely','toth.sandor.vofely@gmail.com','+36306667788','Humoros es meghato vofèlykedés. 20 eves tapasztalat, egyedi köszöntök irasa. Egesz napos jelenlеt.','vofely','Budapest',null,null,'approved',62,now() - interval '50 days'),
+('10000001-0000-0000-0000-000000000014','00000001-0000-0000-0000-000000000014','Balogh Tibor Vofely','balogh.tibor.vofely@gmail.com','+36205554433','Nepi hagyomanyokat otvozon a modern vofelykedéssel. Versek, mondokak, jatekok a vendegek szórakoztatásához.','vofely','Hajdú-Bihar',null,null,'approved',39,now() - interval '16 days'),
+('10000001-0000-0000-0000-000000000015','00000001-0000-0000-0000-000000000015','Simon Peter Ceremoniasmester','simon.peter.mc@gmail.com','+36701110022','Ketnyelvű (magyar-angol) ceremoniamester. Vegyes hazassagokhoz idealis. Profi, elegans, megbizható.','vofely','Pest','https://simonpetermc.hu',null,'approved',47,now() - interval '32 days'),
+('10000001-0000-0000-0000-000000000016','00000001-0000-0000-0000-000000000016','Edessegek Haza Papp Katalin','papp.katalin.torta@gmail.com','+36209998800','Kezzel keszitett eskuvoi tortak, macaronok, desszertek. 5+ reteg, sajat kesziteru fondant diszites. Kostolot vallalok.','torta-sutemeny','Budapest',null,null,'approved',88,now() - interval '55 days'),
+('10000001-0000-0000-0000-000000000017','00000001-0000-0000-0000-000000000017','Mezeskalacs es Torta Manufaktura','mezeskalacs.manufaktura@gmail.com','+36303332211','Egyedi eskuvoi tortak es mezeskalacs favoritok. Allergiас változatok is. Szallitas Budapest es Pest megye.','torta-sutemeny','Pest','https://mezesmanufaktura.hu',null,'approved',71,now() - interval '38 days'),
+('10000001-0000-0000-0000-000000000018','00000001-0000-0000-0000-000000000018','Bartal Zsofia Cukraszda','bartal.zsofi.cukor@gmail.com','+36701234321','Naked cake, drip cake, tower cake – minden eskuvoi stilushoz. Gyor es kornyeke, videkre szallitassal.','torta-sutemeny','Győr-Moson-Sopron',null,null,'approved',29,now() - interval '12 days'),
+('10000001-0000-0000-0000-000000000019','00000001-0000-0000-0000-000000000019','Debreceni Cukraszmester','debr.cukor@gmail.com','+36204321098','Hagyomanyos es modern eskuvoi tortak Debrecenben. 30 eves tapasztalat, megbizhato minoseg.','torta-sutemeny','Hajdú-Bihar',null,null,'approved',52,now() - interval '42 days'),
+('10000001-0000-0000-0000-000000000020','00000001-0000-0000-0000-000000000020','Alom Menyasszonyi Szalon','alom.menyasszonyi@gmail.com','+36301234888','Exkluziv es megfizetheto menyasszonyi ruhak. Sajat tervezesu es import modellek. Varrodai modositas helyben.','menyasszonyi-ruha','Budapest','https://alommenyasszonyi.hu',null,'approved',134,now() - interval '70 days'),
+('10000001-0000-0000-0000-000000000021','00000001-0000-0000-0000-000000000021','Feher Rozsa Eskuvoi Szalon','feher.rozsa.szalon@gmail.com','+36205671234','Tobb szaz ruhamodell raktarrol. Berles es vasarlas egyarant. Kiegeszitok, fátyol, tiara – minden egy helyen.','menyasszonyi-ruha','Hajdú-Bihar',null,null,'approved',98,now() - interval '48 days'),
+('10000001-0000-0000-0000-000000000022','00000001-0000-0000-0000-000000000022','Gentlemans Club Oltonyos','gentlemans.oltonya@gmail.com','+36706781234','Meretre szabott oltonyok es szmokingok eskuvokre. Magyar szabo mesterek munkaja. Berles lehetseges.','oltonya-szmoking','Budapest','https://gentlemans.hu',null,'approved',76,now() - interval '44 days'),
+('10000001-0000-0000-0000-000000000023','00000001-0000-0000-0000-000000000023','Elegancia Oltonyaz','elegancia.oltonya@gmail.com','+36209870987','Premium oltonyok es kiegeszitok berlese es vasarlasa. Gyors kiszolgalas, baratsagos arak.','oltonya-szmoking','Pest',null,null,'approved',43,now() - interval '21 days'),
+('10000001-0000-0000-0000-000000000024','00000001-0000-0000-0000-000000000024','Viragos Alom Dekorator','viragos.alom.dekor@gmail.com','+36301239876','Teljes eskuvoi dekoracio: asztaldiszek, szek huzatok, kapudekor, fenydekor. Helyszini felmeres ingyenes.','dekor-kellek','Budapest','https://viragosalom.hu',null,'approved',107,now() - interval '60 days'),
+('10000001-0000-0000-0000-000000000025','00000001-0000-0000-0000-000000000025','Dekor Events by Katalin','dekor.events.katalin@gmail.com','+36204560123','Egyedi tematikus dekoraciok. Vintage, boho, klasszikus es modern stilusok. Teljes kivitelezes vallalhato.','dekor-kellek','Fejér',null,null,'approved',58,now() - interval '27 days'),
+('10000001-0000-0000-0000-000000000026','00000001-0000-0000-0000-000000000026','Pecsi Eskuvo Dekor','pecsi.eskuvo.dekor@gmail.com','+36707654321','Pecs es Baranya megye teruleten dekoracio szolgaltatas. Sajat eszkozpark, nagy valasztek.','dekor-kellek','Baranya',null,null,'approved',31,now() - interval '14 days'),
+('10000001-0000-0000-0000-000000000027','00000001-0000-0000-0000-000000000027','Barna Eva Make-Up Artist','barna.eva.mua@gmail.com','+36201234560','Tartos eskuvoi smink legkefevel es hagyomanyos technikaval. Probasmink kotelezo. Budapest es agglomeracio.','smink','Budapest','https://barnaevamua.hu',null,'approved',143,now() - interval '65 days'),
+('10000001-0000-0000-0000-000000000028','00000001-0000-0000-0000-000000000028','Glam Studio Horvath Bettina','glam.bettina.mua@gmail.com','+36305678901','Airbrush es HD smink. Menyasszony es nasznagy csomag. Kiszallas az egesz orszagban vallalhato.','smink','Pest','https://glamstudio.hu',null,'approved',119,now() - interval '52 days'),
+('10000001-0000-0000-0000-000000000029','00000001-0000-0000-0000-000000000029','Szep Nap Smink Studio','szepnap.smink@gmail.com','+36703210987','Termeszetes es glamour smink egyarant. Proba idopont kotelezo. Debrecen es Hajdu-Bihar megye.','smink','Hajdú-Bihar',null,null,'approved',67,now() - interval '33 days'),
+('10000001-0000-0000-0000-000000000030','00000001-0000-0000-0000-000000000030','Tunder Make-Up by Viki','tunder.mua.viki@gmail.com','+36201110099','Egyeni stilusodhoz igazitott eskuvoi smink. Tartos, fotogen eredmeny. Gyor es kornyeke.','smink','Győr-Moson-Sopron',null,null,'approved',45,now() - interval '19 days'),
+('10000001-0000-0000-0000-000000000031','00000001-0000-0000-0000-000000000031','Hajvarazs Szalon Nemeth Aniko','hajvarazs.aniko@gmail.com','+36209871234','Eskuvoi frizurak kontyoktol a hulllamos hajkaig. Hajhosszabbitas, hajdisz felhelyezes. Kiszallas vallalhato.','fodrasz-borbely','Budapest',null,null,'approved',91,now() - interval '46 days'),
+('10000001-0000-0000-0000-000000000032','00000001-0000-0000-0000-000000000032','Bodza Hair Studio','bodza.hair@gmail.com','+36305550099','Modern es klasszikus eskuvoi frizurak. Csapat: 3 fodrasz. Csoportos kikeszites lehetseges.','fodrasz-borbely','Pest','https://bodzahair.hu',null,'approved',73,now() - interval '37 days'),
+('10000001-0000-0000-0000-000000000033','00000001-0000-0000-0000-000000000033','Pecsi Eskuvoi Hajstudio','pecsi.haj@gmail.com','+36703456789','Eskuvoi frizurak Pecsen. Proba kotelezo. Fonyott es kontyos frizurak specialistaja.','fodrasz-borbely','Baranya',null,null,'approved',38,now() - interval '17 days'),
+('10000001-0000-0000-0000-000000000034','00000001-0000-0000-0000-000000000034','NailArt by Csilla','nailart.csilla@gmail.com','+36201230099','Eskuvoi gellakk, mukorom, nail art diszitessel. Menyasszony es koszorulanyok csomag kedvezmenynyel.','kormos','Budapest',null,null,'approved',82,now() - interval '41 days'),
+('10000001-0000-0000-0000-000000000035','00000001-0000-0000-0000-000000000035','Kristaly Koromstudio','kristaly.korom@gmail.com','+36305556600','Premium korom kezelesek. Francia, ombre, egyedi mintak. Gyors es tartos eredmeny.','kormos','Pest',null,null,'approved',55,now() - interval '23 days'),
+('10000001-0000-0000-0000-000000000036','00000001-0000-0000-0000-000000000036','Ragyogo Bor Kozmetika','ragyogo.bor@gmail.com','+36207778800','Eskuvo elotti borkezelesek sorozata. Arctisztitas, melyhаmlasztas, arcmasszazs. Ajanlo 3 honappal elotte kezdeni.','kozmetika','Budapest',null,null,'approved',64,now() - interval '36 days'),
+('10000001-0000-0000-0000-000000000037','00000001-0000-0000-0000-000000000037','Pelle Kozmetikai Szalon','pelle.kozmetika@gmail.com','+36301230044','Komplex eskuvoi szepsegkezelesek. IPL szortelenittes, arcfiatalitas, testkezelesek.','kozmetika','Győr-Moson-Sopron',null,null,'approved',47,now() - interval '24 days'),
+('10000001-0000-0000-0000-000000000038','00000001-0000-0000-0000-000000000038','Goldsmith Egyedi Ekszerek','goldsmith.ekszer@gmail.com','+36206780000','Kezzel keszitett jegygyruk es eljegyzesi gyuruk. Sajat tervezes lehetseges. Arany, feherarany, platina.','ekszer','Budapest','https://goldsmith.hu',null,'approved',156,now() - interval '80 days'),
+('10000001-0000-0000-0000-000000000039','00000001-0000-0000-0000-000000000039','Orom Ekszereszet','orom.ekszer@gmail.com','+36305671111','Parban tervezzuk meg a jegygyurutоket. Egyedi gravirozas, koberakаs lehetseges.','ekszer','Hajdú-Bihar',null,null,'approved',89,now() - interval '49 days'),
+('10000001-0000-0000-0000-000000000040','00000001-0000-0000-0000-000000000040','Papirvarazs Eskuvoi Nyomda','papirvarazs@gmail.com','+36201115566','Egyedi meghivok, ultetesi tervek, menukartyak, köszönetajandek feliratok. Online tervezes lehetseges.','meghivo','Budapest','https://papirvarazs.hu',null,'approved',72,now() - interval '43 days'),
+('10000001-0000-0000-0000-000000000041','00000001-0000-0000-0000-000000000041','Nyomatek Design Studio','nyomatek.design@gmail.com','+36703339988','Premium eskuvoi nyomdai termekek. Lazervagаs, dombornyomas, aranyozas. 2-3 hetes atfutas.','meghivo','Pest',null,null,'approved',48,now() - interval '26 days'),
+('10000001-0000-0000-0000-000000000042','00000001-0000-0000-0000-000000000042','Eskuvoi Autok VIP Transfer','eskuvoi.auto.vip@gmail.com','+36306667711','Rolls-Royce, Bentley, Lincoln limuzin, vintage autok. Sofor, diszites, szalag. Teljes nap berlheto.','auto-hinto','Budapest','https://eskuvoiauto.hu',null,'approved',103,now() - interval '58 days'),
+('10000001-0000-0000-0000-000000000043','00000001-0000-0000-0000-000000000043','Hintos Alom Lovarda','hintos.alom.lovarda@gmail.com','+36204567890','Lovas hintok eskuvokre. Feher, fekete, antik hintok. Paros es negy feher lo lehetseges.','auto-hinto','Pest',null,null,'approved',61,now() - interval '30 days'),
+('10000001-0000-0000-0000-000000000044','00000001-0000-0000-0000-000000000044','Ritmika Tanciskola','ritmika.tanciskola@gmail.com','+36201234599','Eskuvoi nyitoтanc oktatas. 1-12 alkalom a par iggenye szerint. Barmilyen zener, barmilyen stilusban.','tanckoktatas','Budapest','https://ritmika.hu',null,'approved',84,now() - interval '47 days'),
+('10000001-0000-0000-0000-000000000045','00000001-0000-0000-0000-000000000045','TancArt Studio Fekete Petra','tancart.petra@gmail.com','+36304561234','Keringo, tango, modern – mindent megtanitunk. Rugalmas idopontok, kedves oktato. Online es szemelyes.','tanckoktatas','Pest',null,null,'approved',59,now() - interval '29 days'),
+('10000001-0000-0000-0000-000000000046','00000001-0000-0000-0000-000000000046','Royal Catering Kft','royal.catering@gmail.com','+36303334444','Eskuvoi bufe es menus vacsora. 50-500 fo reszere. Sajat felszereles, pincer szemelyzet, dekoralt talas.','catering','Budapest','https://royalcatering.hu',null,'approved',128,now() - interval '75 days'),
+('10000001-0000-0000-0000-000000000047','00000001-0000-0000-0000-000000000047','Izek Kertje Catering','izek.kertje@gmail.com','+36205553322','Magyar izek, minosegi alapanyagok. Kostolot szervezo. Etelallergiаk kezelese. Pecs es Baranya.','catering','Baranya',null,null,'approved',67,now() - interval '34 days'),
+('10000001-0000-0000-0000-000000000048','00000001-0000-0000-0000-000000000048','Kastelykeert Rendezvenyközpont','kastelykeert.rendezveny@gmail.com','+36306665544','18. szazadi kastely eskuvok fogadasara. 50-300 fos terem, parkos kert, romantikus legkor. Mindent egy helyen.','helyszin','Pest','https://kastelykeert.hu',null,'approved',198,now() - interval '90 days'),
+('10000001-0000-0000-0000-000000000049','00000001-0000-0000-0000-000000000049','Rozsakert Eskuvoi Birtok','rozsakert.birtok@gmail.com','+36207891234','Exclusiv eskuvoi birtok a Balaton-parton. Sajat konyha, szallas, 200 fos befogadokepesseg.','helyszin','Somogy','https://rozsakert.hu',null,'approved',176,now() - interval '85 days'),
+('10000001-0000-0000-0000-000000000050','00000001-0000-0000-0000-000000000050','Viragalom Florist Studio','viragalom.florist@gmail.com','+36209990011','Eskuvoi viragdekoracio teljeskoru: menyasszonyi csokor, asztaldiszek, szertartasi ivek, autodisz.','virag','Budapest','https://viragalom.hu',null,'approved',122,now() - interval '66 days')
+ON CONFLICT (id) DO NOTHING;
 
--- === FOTÓSOK, VIDEÓSOK ===
-(gen_random_uuid(), gen_random_uuid(), 'Nagy Albert Gábor', 'nagy.albert@gmail.com', '+36707888787',
- 'Vállalok fotózást esküvőkre! 30 éves szaktudással rendelkezem, rugalmasan dolgozom. Riport és beállított képek egyaránt.',
- 'fotosok-videosok', 'Budapest', 'https://www.nagyalbertfoto.hu', null, 'approved', 36, now() - interval '30 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Kovács Péter Fotográfia', 'kovacs.peter.foto@gmail.com', '+36301234567',
- 'Esküvői fotós és videós vagyok, modern stílusban dolgozom. Drón felvételekkel is tudok szolgálni. Egész napos jelenlét vállalható.',
- 'fotosok-videosok', 'Pest', 'https://kovacsfilm.hu', null, 'approved', 89, now() - interval '45 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Szabó Réka Wedding Photography', 'reka.szabo.foto@gmail.com', '+36209876543',
- 'Intim, életközeli képek a ti nagy napotokról. Riportstílusú fotózás, természetes pillanatok megörökítése a szívügyem.',
- 'fotosok-videosok', 'Győr-Moson-Sopron', null, null, 'approved', 54, now() - interval '20 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Horváth Filmstúdió', 'horvath.film@outlook.com', '+36706543210',
- '4K videó és fotó csomag esküvőkre. Drone felvételek, highlight film, teljes nap rögzítése. Díjnyertes munkák.',
- 'fotosok-videosok', 'Baranya', 'https://horvathfilm.hu', null, 'approved', 112, now() - interval '60 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Kiss Balázs Esküvői Fotós', 'kissbalazsfoto@gmail.com', '+36301112233',
- 'Természetes fény, valódi érzelmek. Budapest és vidék, utazási díj nélkül 150 km-ig.',
- 'fotosok-videosok', 'Fejér', null, null, 'approved', 41, now() - interval '15 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Fekete Ádám Videography', 'adam.fekete.video@gmail.com', '+36209998877',
- 'Cinematic esküvői videók. Storytelling megközelítés, profi hangfelvétel. Előzetes megtekinthető a weboldalon.',
- 'fotosok-videosok', 'Borsod-Abaúj-Zemplén', 'https://feketeadam.hu', null, 'approved', 67, now() - interval '25 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Molnár Zsuzsanna Fotóstúdió', 'molnar.zsu.foto@gmail.com', '+36701234000',
- 'Esküvői fotózás Debrecenben és környékén. Párfotózás lehetséges a nagy nap előtt is.',
- 'fotosok-videosok', 'Hajdú-Bihar', null, null, 'approved', 28, now() - interval '10 days'),
-
--- === ÉLŐZENE, DJ ===
-(gen_random_uuid(), gen_random_uuid(), 'DJ Tamás – Esküvői Zenész', 'djtamas@gmail.com', '+36305556677',
- 'Esküvői DJ és MC szolgáltatás. 15 éves tapasztalat, profi hangrendszer, fénytechnika. Az esti buli garantált!',
- 'elo-zene-dj', 'Budapest', 'https://djtamas.hu', null, 'approved', 95, now() - interval '40 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Harmónia Zenekar', 'harmonia.zenekar@gmail.com', '+36204445566',
- '5 tagú élőzene zenekar. Magyar nóta, pop, jazz és rock repertoár. Vonós kvartett lehetőség a szertartáshoz.',
- 'elo-zene-dj', 'Pest', 'https://harmoniazenekar.hu', null, 'approved', 78, now() - interval '35 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Varga Norbert Szaxofonista', 'varga.norbi.szax@gmail.com', '+36703334455',
- 'Szólóban vagy kisegyüttessel vállalok esküvői zenei szolgáltatást. Jazz, soul, pop – bármilyen hangulathoz.',
- 'elo-zene-dj', 'Győr-Moson-Sopron', null, null, 'approved', 33, now() - interval '18 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'DJ Krisztián Sound', 'djkrisztian@gmail.com', '+36301231234',
- 'Profi DJ és fénytechnika. Minden zenei stílus, interaktív műsorvezetés. Referenciák megtekinthetők.',
- 'elo-zene-dj', 'Somogy', null, null, 'approved', 44, now() - interval '22 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Melodia Vonósnégyes', 'melodia.vonos@gmail.com', '+36207778899',
- 'Klasszikus és kortárs darabok esküvői szertartásokhoz és fogadásokhoz. Budapest és vidék egyaránt.',
- 'elo-zene-dj', 'Budapest', 'https://melodia.hu', null, 'approved', 56, now() - interval '28 days'),
-
--- === VŐFÉLY ===
-(gen_random_uuid(), gen_random_uuid(), 'Tóth Sándor Vőfély', 'toth.sandor.vofely@gmail.com', '+36306667788',
- 'Humoros és megható vőfélykedés. 20 éves tapasztalat, egyedi köszöntők írása. Egész napos jelenlét.',
- 'vofely', 'Budapest', null, null, 'approved', 62, now() - interval '50 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Balogh Tibor – Hagyományőrző Vőfély', 'balogh.tibor.vofely@gmail.com', '+36205554433',
- 'Népi hagyományokat ötvözök a modern vőfélykedéssel. Versek, mondókák, játékok a vendégek szórakoztatásához.',
- 'vofely', 'Hajdú-Bihar', null, null, 'approved', 39, now() - interval '16 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Simon Péter Ceremóniamester', 'simon.peter.mc@gmail.com', '+36701110022',
- 'Kétnyelvű (magyar-angol) ceremóniamester. Vegyes házasságokhoz ideális. Profi, elegáns, megbízható.',
- 'vofely', 'Pest', 'https://simonpetermc.hu', null, 'approved', 47, now() - interval '32 days'),
-
--- === TORTA, SÜTEMÉNY ===
-(gen_random_uuid(), gen_random_uuid(), 'Édességek Háza – Papp Katalin', 'papp.katalin.torta@gmail.com', '+36209998800',
- 'Kézzel készített esküvői torták, macaronok, desszertek. 5+ réteg, saját készítésű fondant díszítés. Kóstolót vállalok.',
- 'torta-sutemeny', 'Budapest', null, null, 'approved', 88, now() - interval '55 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Mézeskalács & Torta Manufaktúra', 'mezeskalacs.manufaktura@gmail.com', '+36303332211',
- 'Egyedi esküvői torták és mézeskalács favoritok. Allergiás változatok is. Szállítás Budapest és Pest megye.',
- 'torta-sutemeny', 'Pest', 'https://mezesmanufaktura.hu', null, 'approved', 71, now() - interval '38 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Bartal Zsófia Cukrászda', 'bartal.zsofi.cukor@gmail.com', '+36701234321',
- 'Naked cake, drip cake, tower cake – minden esküvői stílushoz. Győr és környéke, vidékre szállítással.',
- 'torta-sutemeny', 'Győr-Moson-Sopron', null, null, 'approved', 29, now() - interval '12 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Debreceni Cukrászmester', 'debr.cukor@gmail.com', '+36204321098',
- 'Hagyományos és modern esküvői torták Debrecenben. 30 éves tapasztalat, megbízható minőség.',
- 'torta-sutemeny', 'Hajdú-Bihar', null, null, 'approved', 52, now() - interval '42 days'),
-
--- === MENYASSZONYI RUHA ===
-(gen_random_uuid(), gen_random_uuid(), 'Álom Menyasszonyi Szalon', 'alom.menyasszonyi@gmail.com', '+36301234888',
- 'Exkluzív és megfizethető menyasszonyi ruhák. Saját tervezésű és import modellek. Varrodai módosítás helyben.',
- 'menyasszonyi-ruha', 'Budapest', 'https://alommenyasszonyi.hu', null, 'approved', 134, now() - interval '70 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Fehér Rózsa Esküvői Szalon', 'feher.rozsa.szalon@gmail.com', '+36205671234',
- 'Több száz ruhamodell raktárról. Bérlés és vásárlás egyaránt. Kiegészítők, fátyol, tiara – minden egy helyen.',
- 'menyasszonyi-ruha', 'Debrecen', null, null, 'approved', 98, now() - interval '48 days'),
-
--- === ÖLTÖNY, SZMOKING ===
-(gen_random_uuid(), gen_random_uuid(), 'Gentlemans Club Öltönyös', 'gentlemans.oltonya@gmail.com', '+36706781234',
- 'Méretre szabott öltönyök és szmokingok esküvőkre. Magyar szabó mesterek munkája. Bérlés lehetséges.',
- 'oltonya-szmoking', 'Budapest', 'https://gentlemans.hu', null, 'approved', 76, now() - interval '44 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Elegancia Öltönyház', 'elegancia.oltonya@gmail.com', '+36209870987',
- 'Prémium öltönyök és kiegészítők bérlése és vásárlása. Gyors kiszolgálás, barátságos árak.',
- 'oltonya-szmoking', 'Pest', null, null, 'approved', 43, now() - interval '21 days'),
-
--- === DEKOR, KELLÉK ===
-(gen_random_uuid(), gen_random_uuid(), 'Virágos Álom Dekorátor', 'viragos.alom.dekor@gmail.com', '+36301239876',
- 'Teljes esküvői dekoráció: asztaldíszek, szék huzatok, kapudekor, fénydekor. Helyszíni felmérés ingyenes.',
- 'dekor-kellek', 'Budapest', 'https://viragosalom.hu', null, 'approved', 107, now() - interval '60 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Dekor & Events by Katalin', 'dekor.events.katalin@gmail.com', '+36204560123',
- 'Egyedi tematikus dekorációk. Vintage, boho, klasszikus és modern stílusok. Teljes kivitelezés vállalható.',
- 'dekor-kellek', 'Fejér', null, null, 'approved', 58, now() - interval '27 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Pécsi Esküvő Dekor', 'pecsi.eskuvo.dekor@gmail.com', '+36707654321',
- 'Pécs és Baranya megye területén dekoráció szolgáltatás. Saját eszközpark, nagy választék.',
- 'dekor-kellek', 'Baranya', null, null, 'approved', 31, now() - interval '14 days'),
-
--- === SMINK ===
-(gen_random_uuid(), gen_random_uuid(), 'Barna Éva Make-Up Artist', 'barna.eva.mua@gmail.com', '+36201234560',
- 'Tartós esküvői smink légkefével és hagyományos technikával. Próbasmink kötelező. Budapest és agglomeráció.',
- 'smink', 'Budapest', 'https://barnaevamua.hu', null, 'approved', 143, now() - interval '65 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Glam Studio – Horváth Bettina', 'glam.bettina.mua@gmail.com', '+36305678901',
- 'Airbrush és HD smink. Menyasszony + násznagy csomag. Kiszállás az egész országban vállalható.',
- 'smink', 'Pest', 'https://glamstudio.hu', null, 'approved', 119, now() - interval '52 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Szép Nap Smink Stúdió', 'szepnap.smink@gmail.com', '+36703210987',
- 'Természetes és glamour smink egyaránt. Próba időpont kötelező. Debrecen és Hajdú-Bihar megye.',
- 'smink', 'Hajdú-Bihar', null, null, 'approved', 67, now() - interval '33 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Tündér Make-Up by Viki', 'tunder.mua.viki@gmail.com', '+36201110099',
- 'Egyéni stílusodhoz igazított esküvői smink. Tartós, fotogén eredmény. Győr és környéke.',
- 'smink', 'Győr-Moson-Sopron', null, null, 'approved', 45, now() - interval '19 days'),
-
--- === FODRÁSZ, BORBÉLY ===
-(gen_random_uuid(), gen_random_uuid(), 'Hajvarázs Szalon – Németh Anikó', 'hajvarazs.aniko@gmail.com', '+36209871234',
- 'Esküvői frizurák kontyoktól a hullámos hajakig. Hajhosszabbítás, hajdísz felhelyezés. Kiszállás vállalható.',
- 'fodrasz-borbely', 'Budapest', null, null, 'approved', 91, now() - interval '46 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Bodza Hair Studio', 'bodza.hair@gmail.com', '+36305550099',
- 'Modern és klasszikus esküvői frizurák. Csapat: 3 fodrász. Csoportos kikészítés lehetséges.',
- 'fodrasz-borbely', 'Pest', 'https://bodzahair.hu', null, 'approved', 73, now() - interval '37 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Pécsi Esküvői Hajstúdió', 'pecsi.haj@gmail.com', '+36703456789',
- 'Esküvői frizurák Pécsett. Próba kötelező. Fonyott és kontyos frizurák specialistája.',
- 'fodrasz-borbely', 'Baranya', null, null, 'approved', 38, now() - interval '17 days'),
-
--- === KÖRMÖS ===
-(gen_random_uuid(), gen_random_uuid(), 'NailArt by Csilla', 'nailart.csilla@gmail.com', '+36201230099',
- 'Esküvői géllakk, műköröm, nail art díszítéssel. Menyasszony + koszorúslányok csomag kedvezménnyel.',
- 'kormos', 'Budapest', null, null, 'approved', 82, now() - interval '41 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Kristály Körömstúdió', 'kristaly.korom@gmail.com', '+36305556600',
- 'Prémium köröm kezelések. Francia, ombre, egyedi minták. Gyors és tartós eredmény.',
- 'kormos', 'Pest', null, null, 'approved', 55, now() - interval '23 days'),
-
--- === KOZMETIKA ===
-(gen_random_uuid(), gen_random_uuid(), 'Ragyogó Bőr Kozmetika', 'ragyogo.bor@gmail.com', '+36207778800',
- 'Esküvő előtti bőrkezelések sorozata. Arctisztítás, mélyhámlasztás, arcmasszázs. Ajánlott 3 hónappal előtte kezdeni.',
- 'kozmetika', 'Budapest', null, null, 'approved', 64, now() - interval '36 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Pelle Kozmetikai Szalon', 'pelle.kozmetika@gmail.com', '+36301230044',
- 'Komplex esküvői szépségkezelések. IPL szőrtelenítés, arcfiatalítás, testkezelések.',
- 'kozmetika', 'Győr-Moson-Sopron', null, null, 'approved', 47, now() - interval '24 days'),
-
--- === ÉKSZER ===
-(gen_random_uuid(), gen_random_uuid(), 'Goldsmith – Egyedi Ékszerek', 'goldsmith.ekszer@gmail.com', '+36206780000',
- 'Kézzel készített jegygyűrűk és eljegyzési gyűrűk. Saját tervezés lehetséges. Arany, fehérarany, platina.',
- 'ekszer', 'Budapest', 'https://goldsmith.hu', null, 'approved', 156, now() - interval '80 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Öröm Ékszerészet', 'orom.ekszer@gmail.com', '+36305671111',
- 'Párban tervezzük meg a jegygyűrűtöket. Egyedi gravírozás, kőberakás lehetséges.',
- 'ekszer', 'Debrecen', null, null, 'approved', 89, now() - interval '49 days'),
-
--- === MEGHÍVÓ ===
-(gen_random_uuid(), gen_random_uuid(), 'Papírvarázs Esküvői Nyomda', 'papirvarazs@gmail.com', '+36201115566',
- 'Egyedi meghívók, ültetési tervek, menükártyák, köszönetajándék feliratok. Online tervezés lehetséges.',
- 'meghivo', 'Budapest', 'https://papirvarazs.hu', null, 'approved', 72, now() - interval '43 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Nyomaték Design Stúdió', 'nyomatek.design@gmail.com', '+36703339988',
- 'Prémium esküvői nyomdai termékek. Lézervágás, dombornyomás, aranyozás. 2-3 hetes átfutás.',
- 'meghivo', 'Pest', null, null, 'approved', 48, now() - interval '26 days'),
-
--- === AUTÓ, HINTÓ ===
-(gen_random_uuid(), gen_random_uuid(), 'Esküvői Autók – VIP Transfer', 'eskuvoi.auto.vip@gmail.com', '+36306667711',
- 'Rolls-Royce, Bentley, Lincoln limuzin, vintage autók. Sofőr, díszítés, szalag. Teljes nap bérelhető.',
- 'auto-hinto', 'Budapest', 'https://eskuvoiauto.hu', null, 'approved', 103, now() - interval '58 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Hintós Álom Lovarda', 'hintos.alom.lovarda@gmail.com', '+36204567890',
- 'Lovas hintók esküvőkre. Fehér, fekete, antik hintók. Páros és négy fehér ló lehetséges.',
- 'auto-hinto', 'Pest', null, null, 'approved', 61, now() - interval '30 days'),
-
--- === TÁNCOKTATÁS ===
-(gen_random_uuid(), gen_random_uuid(), 'Ritmika Tánciskola', 'ritmika.tanciskola@gmail.com', '+36201234599',
- 'Esküvői nyitótánc oktatás. 1-12 alkalom a pár igénye szerint. Bármilyen zenére, bármilyen stílusban.',
- 'tanckoktatas', 'Budapest', 'https://ritmika.hu', null, 'approved', 84, now() - interval '47 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'TáncArt Stúdió – Fekete Petra', 'tancart.petra@gmail.com', '+36304561234',
- 'Keringő, tangó, modern – mindent megtanítunk. Rugalmas időpontok, kedves oktató. Online és személyes.',
- 'tanckoktatas', 'Pest', null, null, 'approved', 59, now() - interval '29 days'),
-
--- === CATERING ===
-(gen_random_uuid(), gen_random_uuid(), 'Royal Catering Kft.', 'royal.catering@gmail.com', '+36303334444',
- 'Esküvői büfé és menüs vacsora. 50-500 fő részére. Saját felszerelés, pincér személyzet, dekorált tálalás.',
- 'catering', 'Budapest', 'https://royalcatering.hu', null, 'approved', 128, now() - interval '75 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Ízek Kertje Catering', 'izek.kertje@gmail.com', '+36205553322',
- 'Magyar ízek, minőségi alapanyagok. Kóstolót szervező. Ételallergiák kezelése. Pécs és Baranya.',
- 'catering', 'Baranya', null, null, 'approved', 67, now() - interval '34 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Arany Tál Rendezvénycatering', 'arany.tal.catering@gmail.com', '+36701234567',
- 'Teljes körű catering szolgáltatás Debrecenben. Pincérek, felszerelés, ételek – minden csomag.',
- 'catering', 'Hajdú-Bihar', null, null, 'approved', 43, now() - interval '20 days'),
-
--- === HELYSZÍN ===
-(gen_random_uuid(), gen_random_uuid(), 'Kastélykert Rendezvényközpont', 'kastelykeert.rendezveny@gmail.com', '+36306665544',
- '18. századi kastély esküvők fogadására. 50-300 fős terem, parkos kert, romantikus légkör. Mindent egy helyen.',
- 'helyszin', 'Pest', 'https://kastelykeert.hu', null, 'approved', 198, now() - interval '90 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Rózsakert Esküvői Birtok', 'rozsakert.birtok@gmail.com', '+36207891234',
- 'Exclusiv esküvői birtok a Balaton-parton. Saját konyha, szállás, 200 fős befogadóképesség.',
- 'helyszin', 'Somogy', 'https://rozsakert.hu', null, 'approved', 176, now() - interval '85 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Napsugár Villa Rendezvényközpont', 'napsugar.villa@gmail.com', '+36305557766',
- 'Modern villa esküvőkre Győr mellett. Fedett és szabadtéri lehetőség, 150 fő. Saját parkoló.',
- 'helyszin', 'Győr-Moson-Sopron', null, null, 'approved', 87, now() - interval '55 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Miskolci Fogadó Esküvői Terem', 'miskolci.fogado@gmail.com', '+36703210000',
- 'Hagyományos és modern dekorációval is rendezhető. 80-250 fő. Saját italcsomag és catering ajánlat.',
- 'helyszin', 'Borsod-Abaúj-Zemplén', null, null, 'approved', 54, now() - interval '31 days'),
-
--- === VIRÁG ===
-(gen_random_uuid(), gen_random_uuid(), 'Virágálom Florist Studio', 'viragalom.florist@gmail.com', '+36209990011',
- 'Esküvői virágdekoráció teljeskörűen: menyasszonyi csokor, asztaldíszek, szertartási ívek, autódísz.',
- 'virag', 'Budapest', 'https://viragalom.hu', null, 'approved', 122, now() - interval '66 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Tavaszi Rét Virágszalon', 'tavaszi.ret.virag@gmail.com', '+36301234222',
- 'Szezonális virágokból készített természetes csokor. Fenntartható, eco szemlélet. Pest megye és Budapest.',
- 'virag', 'Pest', null, null, 'approved', 79, now() - interval '39 days'),
-
-(gen_random_uuid(), gen_random_uuid(), 'Pécsi Virágkötészet', 'pecsi.viragkoteszet@gmail.com', '+36704445566',
- 'Prémium esküvői virág szolgáltatás Pécsett. Boho, vintage, klasszikus stílusok. Ingyenes konzultáció.',
- 'virag', 'Baranya', null, null, 'approved', 41, now() - interval '18 days'),
-
--- === PEDIKŰR, MANIKŰR ===
-(gen_random_uuid(), gen_random_uuid(), 'Szépség Sziget – Körömszalon', 'szepseg.sziget.korom@gmail.com', '+36201237788',
- 'Esküvői mani-pedi csomag. Géllakk, spa kezelés, lábmasszázs. Csoportos foglalás kedvezménnyel.',
- 'pedikur-manikur', 'Budapest', null, null, 'approved', 66, now() - interval '35 days'),
-
--- === KÖSZÖNTŐ, AJÁNDÉK ===
-(gen_random_uuid(), gen_random_uuid(), 'AjándékVarázs Esküvői Bolt', 'ajandekvarazs@gmail.com', '+36305554433',
- 'Egyedi köszönetajándékok: gravírozott tárgyak, fotókönyvek, személyre szabott dobozok. Online rendelés.',
- 'koszonto-ajandek', 'Budapest', 'https://ajandekvarazs.hu', null, 'approved', 58, now() - interval '28 days')
-
-ON CONFLICT DO NOTHING;
-
--- ============================================================
--- Teszt értékelések
--- ============================================================
--- Néhány értékelés hozzáadása a meglévő providers-hez
--- (A visitor user_id-k szintén dummy UUID-k a seed céljaira)
-
+-- 3. Ertekelesek
 INSERT INTO public.reviews (id, provider_id, visitor_id, rating, comment, created_at)
-SELECT
-  gen_random_uuid(),
-  p.id,
-  gen_random_uuid(),
-  CASE (random() * 4)::int
-    WHEN 0 THEN 5
-    WHEN 1 THEN 5
-    WHEN 2 THEN 4
-    WHEN 3 THEN 4
-    ELSE 5
-  END,
-  CASE (random() * 4)::int
-    WHEN 0 THEN 'Nagyon elégedett vagyok, mindent a tervek szerint szervezett!'
-    WHEN 1 THEN 'Profi munka, kedves kiszolgálás. Mindenképpen ajánlom!'
-    WHEN 2 THEN 'Pontosan azt kaptuk, amit ígért. Köszönjük a szép napot!'
-    WHEN 3 THEN 'Rugalmas, megbízható. Az egész nap tökéletes volt!'
-    ELSE 'Fantasztikus élmény, mindenkinek ajánljuk!'
-  END,
-  now() - (random() * 30 || ' days')::interval
-FROM public.providers p
-ON CONFLICT DO NOTHING;
-
--- Második értékelési kör (hogy legyen átlag alapja)
-INSERT INTO public.reviews (id, provider_id, visitor_id, rating, comment, created_at)
-SELECT
-  gen_random_uuid(),
-  p.id,
-  gen_random_uuid(),
-  CASE (random() * 3)::int
-    WHEN 0 THEN 5
-    WHEN 1 THEN 4
-    ELSE 5
-  END,
-  null,
-  now() - (random() * 60 || ' days')::interval
-FROM public.providers p
-WHERE random() > 0.4
-ON CONFLICT DO NOTHING;
+VALUES
+('20000001-0000-0000-0000-000000000001','10000001-0000-0000-0000-000000000001','00000001-0000-0000-0000-000000000002',5,'Nagyon elgedett vagyok, mindent a tervek szerint szervezett!',now() - interval '5 days'),
+('20000001-0000-0000-0000-000000000002','10000001-0000-0000-0000-000000000002','00000001-0000-0000-0000-000000000001',5,'Profi munka, kedves kiszolgalas. Mindenkeptpen ajanlom!',now() - interval '8 days'),
+('20000001-0000-0000-0000-000000000003','10000001-0000-0000-0000-000000000003','00000001-0000-0000-0000-000000000001',4,'Pontosan azt kaptuk amit igert. Koszonjuk a szep napot!',now() - interval '12 days'),
+('20000001-0000-0000-0000-000000000004','10000001-0000-0000-0000-000000000004','00000001-0000-0000-0000-000000000001',5,'Fantasztikus elmeny, mindenkinek ajanljuk!',now() - interval '3 days'),
+('20000001-0000-0000-0000-000000000005','10000001-0000-0000-0000-000000000005','00000001-0000-0000-0000-000000000002',5,'Rugalmas, megbizhato. Az egesz nap tokéletes volt!',now() - interval '7 days'),
+('20000001-0000-0000-0000-000000000006','10000001-0000-0000-0000-000000000008','00000001-0000-0000-0000-000000000003',5,'Az esti buli tökéletes volt, mindenki táncolt!',now() - interval '6 days'),
+('20000001-0000-0000-0000-000000000007','10000001-0000-0000-0000-000000000009','00000001-0000-0000-0000-000000000004',4,'Gyonyoru zeneszolgaltatas, profi zenekar!',now() - interval '9 days'),
+('20000001-0000-0000-0000-000000000008','10000001-0000-0000-0000-000000000016','00000001-0000-0000-0000-000000000005',5,'A torta gyonyoru es finom volt, mindenki megdicserte!',now() - interval '4 days'),
+('20000001-0000-0000-0000-000000000009','10000001-0000-0000-0000-000000000020','00000001-0000-0000-0000-000000000006',5,'Gyonyoru ruhat kaptam, pontosan olyan volt amilyet szerettem volna.',now() - interval '11 days'),
+('20000001-0000-0000-0000-000000000010','10000001-0000-0000-0000-000000000027','00000001-0000-0000-0000-000000000007',5,'Tobb ora utan is tokéletes volt a smink. Nagyon profi!',now() - interval '2 days'),
+('20000001-0000-0000-0000-000000000011','10000001-0000-0000-0000-000000000038','00000001-0000-0000-0000-000000000008',5,'Gyonyoru jegygyurut kaptunk, pontosan amit szerettunk volna.',now() - interval '15 days'),
+('20000001-0000-0000-0000-000000000012','10000001-0000-0000-0000-000000000048','00000001-0000-0000-0000-000000000009',5,'Mesebelit helyszin, minden vendeg elragadtatassal beszel rola.',now() - interval '20 days')
+ON CONFLICT (id) DO NOTHING;
