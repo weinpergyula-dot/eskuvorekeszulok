@@ -107,7 +107,7 @@ export function UsersSection() {
     setDeleting(null);
   };
 
-  if (loading) return <p className="text-gray-400 text-sm">Betöltés...</p>;
+  if (loading) return <p className="text-gray-700 text-sm">Betöltés...</p>;
 
   return (
     <>
@@ -116,7 +116,7 @@ export function UsersSection() {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
         <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
           <h3 className="font-bold text-gray-800 mb-2">Felhasználó törlése</h3>
-          <p className="text-sm text-gray-600 mb-1">
+          <p className="text-sm text-gray-700 mb-1">
             Biztosan véglegesen törlöd ezt a felhasználót?
           </p>
           <p className="text-sm font-medium text-gray-800 mb-4">
@@ -158,7 +158,7 @@ export function UsersSection() {
               className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
                 roleFilter === r
                   ? "bg-[#2a9d8f] text-white border-[#2a9d8f]"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-[#2a9d8f]"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-[#2a9d8f]"
               }`}
             >
               {r === "all" ? "Összes" : ROLE_LABELS[r]}
@@ -167,7 +167,7 @@ export function UsersSection() {
         </div>
       </div>
 
-      <p className="text-xs text-gray-400">{filtered.length} felhasználó</p>
+      <p className="text-xs text-gray-700">{filtered.length} felhasználó</p>
 
       {error && (
         <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
@@ -176,7 +176,7 @@ export function UsersSection() {
       )}
 
       {paginated.length === 0 && (
-        <p className="text-gray-400 text-sm">Nincs találat.</p>
+        <p className="text-gray-700 text-sm">Nincs találat.</p>
       )}
 
       <div className="space-y-3">
@@ -192,8 +192,8 @@ export function UsersSection() {
                   {ROLE_LABELS[u.role]}
                 </Badge>
               </div>
-              <p className="text-xs text-gray-500">{u.email}</p>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-gray-700">{u.email}</p>
+              <p className="text-xs text-gray-700 mt-0.5">
                 Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}
               </p>
             </div>
@@ -247,7 +247,7 @@ export function UsersSection() {
           >
             ← Előző
           </Button>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-700">
             {page} / {totalPages}
           </span>
           <Button

@@ -59,7 +59,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-8">
+      <nav className="text-sm text-gray-700 mb-8">
         <a href="/services" className="hover:text-[#2a9d8f] cursor-pointer">
           Szolgáltatások
         </a>{" "}
@@ -86,7 +86,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-4xl font-bold text-gray-400">
+              <span className="text-4xl font-bold text-gray-700">
                 {provider.full_name.charAt(0)}
               </span>
             )}
@@ -102,7 +102,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
               <Badge variant="secondary" className="text-sm">
                 {categoryLabel}
               </Badge>
-              <span className="flex items-center gap-1 text-sm text-gray-500">
+              <span className="flex items-center gap-1 text-sm text-gray-700">
                 <MapPin className="h-4 w-4" />
                 {provider.county}
               </span>
@@ -127,11 +127,11 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 {rating > 0 ? rating.toFixed(1) : "–"}
               </span>
               {reviewCount > 0 && (
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-gray-700">
                   ({reviewCount} értékelés)
                 </span>
               )}
-              <span className="ml-4 flex items-center gap-1 text-sm text-gray-400">
+              <span className="ml-4 flex items-center gap-1 text-sm text-gray-700">
                 <Eye className="h-4 w-4" />
                 {viewCount} megtekintés
               </span>
@@ -148,7 +148,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 <h2 className="text-lg font-semibold text-gray-800 mb-3">
                   Rólunk
                 </h2>
-                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                   {provider.description}
                 </p>
               </section>
@@ -240,7 +240,7 @@ function ContactItem({
     <div className="flex gap-3 items-start">
       <span className="mt-0.5 shrink-0">{icon}</span>
       <div>
-        <p className="text-xs text-gray-400 mb-0.5">{label}</p>
+        <p className="text-xs text-gray-700 mb-0.5">{label}</p>
         <a
           href={href}
           target={external ? "_blank" : undefined}

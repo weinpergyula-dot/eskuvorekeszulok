@@ -39,7 +39,7 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Profilom</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-gray-700 text-sm mt-1">
             Kezeld a szolgáltatói profilodat
           </p>
         </div>
@@ -98,7 +98,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Preview card */}
           <div>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
               Előnézet
             </h2>
             <ProviderCard provider={provider} showStatus />
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
 
           {/* Stats */}
           <div>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
               Statisztikák
             </h2>
             <div className="grid grid-cols-2 gap-4">
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
           </div>
         </div>
       ) : (
-        <p className="text-gray-500">Profil nem található.</p>
+        <p className="text-gray-700">Profil nem található.</p>
       )}
     </div>
   );
@@ -151,7 +151,7 @@ function StatCard({
     <div className="bg-white border border-gray-200 rounded-lg p-4">
       <div className="text-2xl mb-1">{icon}</div>
       <div className="text-xl font-bold text-gray-800">{value}</div>
-      <div className="text-xs text-gray-500 mt-0.5">{label}</div>
+      <div className="text-xs text-gray-700 mt-0.5">{label}</div>
     </div>
   );
 }

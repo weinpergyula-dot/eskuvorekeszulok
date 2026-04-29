@@ -42,7 +42,7 @@ export default function HomePage() {
               <span className="text-gray-700">KÉSZÜLSZ?</span>
             </h1>
             <div className="w-16 h-0.5 bg-[#2a9d8f] mb-6" />
-            <p className="text-lg text-gray-500 mb-8">
+            <p className="text-lg text-gray-700 mb-8">
               Találj meg mindent egy helyen a nagy napodra!
             </p>
             <div className="flex flex-wrap gap-3">
@@ -66,7 +66,7 @@ export default function HomePage() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Szolgáltatások
           </h2>
-          <p className="text-gray-500">
+          <p className="text-gray-700">
             Egy esküvő életünk egyik legfontosabb eseménye, ezért különösen
             lényeges, hogy a lehető legjobb szolgáltatókat válasszuk. A
             tapasztalt szakemberek – legyen szó fotósról, zenészről vagy
@@ -95,7 +95,7 @@ function CategoryCard({ category }: { category: ServiceCategory }) {
         {CATEGORY_LABELS[category]}
       </h3>
       <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#2a9d8f] transition-colors mb-2" />
-      <p className="text-base text-gray-500 mb-4 line-clamp-2">
+      <p className="text-base text-gray-700 mb-4 line-clamp-2">
         {CATEGORY_DESCRIPTIONS[category]}
       </p>
       <Link href={`/services/${category}`} className="mt-auto">

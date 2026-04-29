@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Új jelszó</h1>
-          <p className="text-gray-500">Add meg az új jelszavadat</p>
+          <p className="text-gray-700">Add meg az új jelszavadat</p>
         </div>
 
         <form

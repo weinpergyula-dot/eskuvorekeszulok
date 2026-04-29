@@ -31,7 +31,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
           !selected
             ? "bg-[#2a9d8f] text-white font-medium"
-            : "text-gray-600 hover:bg-gray-100"
+            : "text-gray-700 hover:bg-gray-100"
         )}
       >
         Összes megye
@@ -44,7 +44,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
             "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
             selected === county
               ? "bg-[#2a9d8f] text-white font-medium"
-              : "text-gray-600 hover:bg-gray-100"
+              : "text-gray-700 hover:bg-gray-100"
           )}
         >
           {county}
@@ -67,7 +67,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           </span>
           <ChevronDown
             className={cn(
-              "h-4 w-4 text-gray-400 transition-transform",
+              "h-4 w-4 text-gray-700 transition-transform",
               open && "rotate-180"
             )}
           />

@@ -67,7 +67,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             <Link
               href="/"
-              className="text-base text-gray-600 hover:text-[#2a9d8f] transition-colors"
+              className="text-base text-gray-700 hover:text-[#2a9d8f] transition-colors"
             >
               Kezdőlap
             </Link>
@@ -77,7 +77,7 @@ export function Navbar() {
               <button
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
-                className="flex items-center gap-1 text-base text-gray-600 hover:text-[#2a9d8f] transition-colors"
+                className="flex items-center gap-1 text-base text-gray-700 hover:text-[#2a9d8f] transition-colors"
               >
                 Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
               </button>
@@ -110,7 +110,7 @@ export function Navbar() {
 
             <Link
               href="/contact"
-              className="text-base text-gray-600 hover:text-[#2a9d8f] transition-colors"
+              className="text-base text-gray-700 hover:text-[#2a9d8f] transition-colors"
             >
               Kapcsolat
             </Link>
@@ -148,7 +148,7 @@ export function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-xl text-gray-600 hover:text-[#2a9d8f]"
+            className="md:hidden p-2 rounded-xl text-gray-700 hover:text-[#2a9d8f]"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

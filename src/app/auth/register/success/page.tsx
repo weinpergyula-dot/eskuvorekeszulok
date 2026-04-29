@@ -9,11 +9,11 @@ export default function RegisterSuccessPage() {
         <h1 className="text-2xl font-bold text-gray-800 mb-3">
           Sikeres regisztráció!
         </h1>
-        <p className="text-gray-500 mb-2">
+        <p className="text-gray-700 mb-2">
           Köszönjük a regisztrációt! Ellenőrizd az email postaládádat és
           erősítsd meg a fiókod.
         </p>
-        <p className="text-gray-500 mb-8 text-sm">
+        <p className="text-gray-700 mb-8 text-sm">
           Szolgáltatói profilod az adminisztrátori jóváhagyás után jelenik meg a
           nyilvános oldalon.
         </p>

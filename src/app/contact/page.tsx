@@ -3,7 +3,7 @@ export default function ContactPage() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <h1 className="text-3xl font-bold text-gray-800 mb-4">Kapcsolat</h1>
       <div className="w-12 h-0.5 bg-[#2a9d8f] mb-8" />
-      <p className="text-gray-600 mb-6">
+      <p className="text-gray-700 mb-6">
         Ha kérdésed van az oldallal kapcsolatban, vagy szeretnél szolgáltatóként
         regisztrálni, keresd fel az alábbi elérhetőségeken:
       </p>
@@ -16,7 +16,7 @@ export default function ContactPage() {
         </p>
         <p className="text-sm text-gray-700">
           <span className="font-medium">Weboldal:</span>{" "}
-          <span className="text-gray-600">www.eskuvorekeszulok.hu</span>
+          <span className="text-gray-700">www.eskuvorekeszulok.hu</span>
         </p>
       </div>
     </div>

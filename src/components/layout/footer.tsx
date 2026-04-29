@@ -12,7 +12,7 @@ export function Footer() {
               </span>
               <span className="font-semibold text-gray-800">Esküvőre Készülök</span>
             </div>
-            <p className="text-base text-gray-500">
+            <p className="text-base text-gray-700">
               Találj meg mindent egy helyen a nagy napodra!
             </p>
           </div>
@@ -29,7 +29,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-base text-gray-500 hover:text-[#2a9d8f] transition-colors"
+                    className="text-base text-gray-700 hover:text-[#2a9d8f] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -49,7 +49,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-base text-gray-500 hover:text-[#2a9d8f] transition-colors"
+                    className="text-base text-gray-700 hover:text-[#2a9d8f] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -60,7 +60,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-200 pt-6 text-center">
-          <p className="text-base text-gray-400">
+          <p className="text-base text-gray-700">
             © {new Date().getFullYear()} Esküvőre Készülök. Minden jog fenntartva.
           </p>
         </div>

@@ -37,7 +37,7 @@ export default function ServicesPage() {
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
           Összes kategória
         </h1>
-        <p className="text-gray-500">
+        <p className="text-gray-700">
           Válassz kategóriát és böngészd az elérhető szolgáltatókat!
         </p>
       </div>
@@ -54,7 +54,7 @@ export default function ServicesPage() {
               {CATEGORY_LABELS[category]}
             </h3>
             <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#2a9d8f] transition-colors mb-2" />
-            <p className="text-xs text-gray-500 line-clamp-2">
+            <p className="text-xs text-gray-700 line-clamp-2">
               {CATEGORY_DESCRIPTIONS[category]}
             </p>
           </Link>

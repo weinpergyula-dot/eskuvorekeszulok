@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Elfelejtett jelszó</h1>
-          <p className="text-gray-500">Küldjük el a visszaállítási linket</p>
+          <p className="text-gray-700">Küldjük el a visszaállítási linket</p>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {!sent && (
-          <p className="text-center text-sm text-gray-500 mt-4">
+          <p className="text-center text-sm text-gray-700 mt-4">
             <Link href="/auth/login" className="text-[#2a9d8f] hover:underline">
               Vissza a belépéshez
             </Link>
