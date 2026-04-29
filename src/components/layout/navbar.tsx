@@ -125,11 +125,9 @@ export function Navbar() {
                     <Button variant="ghost">Admin</Button>
                   </Link>
                 )}
-                {profile?.role === "provider" && (
-                  <Link href="/dashboard">
-                    <Button variant="ghost">Profilom</Button>
-                  </Link>
-                )}
+                <Link href="/profil">
+                  <Button variant="ghost">Profilom</Button>
+                </Link>
                 <Button variant="outline" onClick={handleSignOut}>
                   Kilépés
                 </Button>
@@ -171,11 +169,9 @@ export function Navbar() {
           <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
             {user ? (
               <>
-                {profile?.role === "provider" && (
-                  <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full">Profilom</Button>
-                  </Link>
-                )}
+                <Link href="/profil" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Profilom</Button>
+                </Link>
                 {profile?.role === "admin" && (
                   <Link href="/admin" onClick={() => setMobileOpen(false)}>
                     <Button variant="outline" size="sm" className="w-full">Admin</Button>
