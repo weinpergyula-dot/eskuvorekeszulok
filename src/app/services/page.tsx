@@ -6,6 +6,7 @@ import {
   CATEGORY_DESCRIPTIONS,
   type ServiceCategory,
 } from "@/lib/types";
+import { PageHeader } from "@/components/layout/page-header";
 
 const ALL_CATEGORIES: ServiceCategory[] = [
   "fotosok-videosok",
@@ -32,11 +33,10 @@ const ALL_CATEGORIES: ServiceCategory[] = [
 
 export default function ServicesPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div>
+      <PageHeader title="Szolgáltatások" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-          Összes kategória
-        </h1>
         <p className="text-gray-900">
           Válassz kategóriát és böngészd az elérhető szolgáltatókat!
         </p>
@@ -59,6 +59,7 @@ export default function ServicesPage() {
             </p>
           </Link>
         ))}
+      </div>
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
+import { PageHeader } from "@/components/layout/page-header";
 
 type Step = "role" | "basic" | "provider-details";
 
@@ -153,12 +154,11 @@ export default function RegisterPage() {
   // Step 1 – Role selection
   if (step === "role") {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
+      <div>
+        <PageHeader title="Regisztráció" />
+        <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Regisztráció</h1>
-            <p className="text-gray-900">Melyik típusú fiókot szeretnéd létrehozni?</p>
-          </div>
+          <p className="text-gray-900 text-center mb-8">Melyik típusú fiókot szeretnéd létrehozni?</p>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
@@ -190,6 +190,7 @@ export default function RegisterPage() {
             </Link>
           </p>
         </div>
+        </div>
       </div>
     );
   }
@@ -197,7 +198,9 @@ export default function RegisterPage() {
   // Step 2 – Basic info
   if (step === "basic") {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
+      <div>
+        <PageHeader title="Regisztráció" />
+        <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="mb-6">
             <button
@@ -206,9 +209,6 @@ export default function RegisterPage() {
             >
               ← Vissza
             </button>
-            <h1 className="text-2xl font-bold text-gray-900 mb-1">
-              {role === "provider" ? "Szolgáltató regisztráció" : "Látogató regisztráció"}
-            </h1>
             <p className="text-gray-900 text-lg">Alapadatok megadása</p>
           </div>
 
@@ -277,13 +277,16 @@ export default function RegisterPage() {
             </Link>
           </p>
         </div>
+        </div>
       </div>
     );
   }
 
   // Step 3 – Provider details
   return (
-    <div className="min-h-[80vh] flex items-start justify-center py-12 px-4">
+    <div>
+      <PageHeader title="Regisztráció" />
+      <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-lg">
         <div className="mb-6">
           <button
@@ -292,7 +295,6 @@ export default function RegisterPage() {
           >
             ← Vissza
           </button>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Szolgáltatói adatok</h1>
           <p className="text-gray-900 text-lg">
             Regisztráció után az admin jóváhagyja a profilod.
           </p>
@@ -445,6 +447,7 @@ export default function RegisterPage() {
             profilod megjelenik az oldalon.
           </p>
         </form>
+      </div>
       </div>
     </div>
   );

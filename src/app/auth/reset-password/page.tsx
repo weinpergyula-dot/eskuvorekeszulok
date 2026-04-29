@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -42,51 +43,51 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Új jelszó</h1>
-          <p className="text-gray-900">Add meg az új jelszavadat</p>
-        </div>
+    <div>
+      <PageHeader title="Új jelszó" />
+      <div className="flex items-center justify-center py-12 px-4">
+        <div className="w-full max-w-md">
+          <p className="text-gray-900 text-center mb-8">Add meg az új jelszavadat</p>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
-        >
-          {error && (
-            <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
-              {error}
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
+          >
+            {error && (
+              <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password">Új jelszó</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
             </div>
-          )}
 
-          <div className="space-y-1.5">
-            <Label htmlFor="password">Új jelszó</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="confirm">Jelszó megerősítése</Label>
+              <Input
+                id="confirm"
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="confirm">Jelszó megerősítése</Label>
-            <Input
-              id="confirm"
-              type="password"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Mentés..." : "Jelszó mentése"}
-          </Button>
-        </form>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Mentés..." : "Jelszó mentése"}
+            </Button>
+          </form>
+        </div>
       </div>
     </div>
   );

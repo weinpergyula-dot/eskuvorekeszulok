@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function AdminPage() {
   let supabase: Awaited<ReturnType<typeof createClient>>;
@@ -54,8 +55,9 @@ export default async function AdminPage() {
     .select("*", { count: "exact", head: true });
 
   return (
+    <div>
+      <PageHeader title="Admin" />
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
@@ -134,6 +136,7 @@ export default async function AdminPage() {
           </div>
         )}
       </section>
+    </div>
     </div>
   );
 }

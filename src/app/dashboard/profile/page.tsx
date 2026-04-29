@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider } from "@/lib/types";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -135,22 +136,15 @@ export default function EditProfilePage() {
   }
 
   return (
+    <div>
+      <PageHeader
+        title="Profil szerkesztése"
+        breadcrumb={[{ label: "Dashboard", href: "/dashboard" }]}
+      />
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-6">
-        <Link
-          href="/dashboard"
-          className="text-lg text-gray-900 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
-        >
-          ← Vissza a dashboardra
-        </Link>
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          Profil szerkesztése
-        </h1>
-        <p className="text-lg text-gray-900">
-          A módosítások az adminisztrátori jóváhagyás után jelennek meg
-          nyilvánosan.
-        </p>
-      </div>
+      <p className="text-lg text-gray-900 mb-6">
+        A módosítások az adminisztrátori jóváhagyás után jelennek meg nyilvánosan.
+      </p>
 
       {success && (
         <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200 mb-6">
@@ -294,6 +288,7 @@ export default function EditProfilePage() {
           </Link>
         </div>
       </form>
+    </div>
     </div>
   );
 }

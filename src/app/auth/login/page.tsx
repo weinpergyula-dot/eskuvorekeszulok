@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PageHeader } from "@/components/layout/page-header";
 
 function LoginForm() {
   const router = useRouter();
@@ -53,83 +54,82 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Belépés</h1>
-          <p className="text-gray-900">Lépj be a fiókodba</p>
+    <div className="w-full max-w-md">
+      <p className="text-gray-900 text-center mb-8">Lépj be a fiókodba</p>
+
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
+      >
+        {registered && (
+          <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
+            Sikeres regisztráció! Ellenőrizd az email fiókodat, majd lépj be.
+          </div>
+        )}
+        {reset && (
+          <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
+            Jelszavad sikeresen megváltozott. Lépj be az új jelszavaddal.
+          </div>
+        )}
+        {error && (
+          <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-1.5">
+          <Label htmlFor="email">Email cím</Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="pelda@email.hu"
+            required
+          />
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
-        >
-          {registered && (
-            <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-              Sikeres regisztráció! Ellenőrizd az email fiókodat, majd lépj be.
-            </div>
-          )}
-          {reset && (
-            <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-              Jelszavad sikeresen megváltozott. Lépj be az új jelszavaddal.
-            </div>
-          )}
+        <div className="space-y-1.5">
+          <Label htmlFor="password">Jelszó</Label>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
+        </div>
 
-          {error && (
-            <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
-              {error}
-            </div>
-          )}
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Belépés..." : "Belépés"}
+        </Button>
+      </form>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="email">Email cím</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="pelda@email.hu"
-              required
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="password">Jelszó</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Belépés..." : "Belépés"}
-          </Button>
-        </form>
-
-        <p className="text-center text-lg text-gray-900 mt-4">
-          Még nincs fiókod?{" "}
-          <Link href="/auth/register" className="text-[#2a9d8f] hover:underline">
-            Regisztrálj
-          </Link>
-        </p>
-        <p className="text-center text-lg text-gray-900 mt-2">
-          <Link href="/auth/forgot-password" className="text-[#2a9d8f] hover:underline">
-            Elfelejtett jelszó?
-          </Link>
-        </p>
-      </div>
+      <p className="text-center text-lg text-gray-900 mt-4">
+        Még nincs fiókod?{" "}
+        <Link href="/auth/register" className="text-[#2a9d8f] hover:underline">
+          Regisztrálj
+        </Link>
+      </p>
+      <p className="text-center text-lg text-gray-900 mt-2">
+        <Link href="/auth/forgot-password" className="text-[#2a9d8f] hover:underline">
+          Elfelejtett jelszó?
+        </Link>
+      </p>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense>
-      <LoginForm />
-    </Suspense>
+    <div>
+      <PageHeader title="Belépés" />
+      <div className="flex items-center justify-center py-12 px-4">
+        <Suspense>
+          <LoginForm />
+        </Suspense>
+      </div>
+    </div>
   );
 }
