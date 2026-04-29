@@ -122,23 +122,23 @@ export function Navbar() {
               <>
                 {profile?.role === "admin" && (
                   <Link href="/admin">
-                    <Button variant="ghost">Admin</Button>
+                    <Button variant="ghost" className="text-base">Admin</Button>
                   </Link>
                 )}
                 <Link href="/profil">
-                  <Button variant="ghost">Profilom</Button>
+                  <Button variant="ghost" className="text-base">Profilom</Button>
                 </Link>
-                <Button variant="outline" onClick={handleSignOut}>
+                <Button variant="outline" className="text-base" onClick={handleSignOut}>
                   Kilépés
                 </Button>
               </>
             ) : (
               <>
                 <Link href="/auth/register">
-                  <Button variant="outline">Regisztráció</Button>
+                  <Button variant="outline" className="text-base">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button className="bg-[#C04C9B] hover:bg-[#a33d83]">Belépés</Button>
+                  <Button className="text-base bg-[#C04C9B] hover:bg-[#a33d83]">Belépés</Button>
                 </Link>
               </>
             )}
