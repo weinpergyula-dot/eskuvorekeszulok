@@ -23,6 +23,7 @@ export function ApproveButton({
   const supabase = createClient();
 
   const handle = async () => {
+    if (!supabase) return;
     setLoading(true);
 
     if (action === "approve" && type === "edit" && changes) {

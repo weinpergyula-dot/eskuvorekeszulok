@@ -41,6 +41,7 @@ export default function EditProfilePage() {
 
   useEffect(() => {
     const load = async () => {
+      if (!supabase) { router.push("/"); return; }
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push("/auth/login"); return; }
 
@@ -74,6 +75,7 @@ export default function EditProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
     setSaving(true);
     setError(null);
 

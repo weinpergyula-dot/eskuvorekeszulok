@@ -28,6 +28,7 @@ export function Navbar() {
   const supabase = createClient();
 
   useEffect(() => {
+    if (!supabase) return;
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
     const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null);
@@ -36,7 +37,7 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!user) { setProfile(null); return; }
+    if (!supabase || !user) { setProfile(null); return; }
     supabase
       .from("profiles")
       .select("*")
@@ -46,6 +47,7 @@ export function Navbar() {
   }, [user]);
 
   const handleSignOut = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     window.location.href = "/";
   };

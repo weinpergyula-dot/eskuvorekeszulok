@@ -22,6 +22,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
     setLoading(true);
     setError(null);
 
@@ -37,7 +38,7 @@ export default function LoginPage() {
     }
 
     // Redirect based on role
-    const { data: profile } = await supabase
+    const { data: profile } = await supabase!
       .from("profiles")
       .select("role")
       .single();

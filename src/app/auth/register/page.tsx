@@ -75,6 +75,7 @@ export default function RegisterPage() {
   };
 
   const registerUser = async () => {
+    if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
     setLoading(true);
     setError(null);
 
