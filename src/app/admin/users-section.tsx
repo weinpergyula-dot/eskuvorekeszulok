@@ -141,7 +141,6 @@ export function UsersSection() {
         </div>
       </div>
     )}
-    <div
     <div className="space-y-4">
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
