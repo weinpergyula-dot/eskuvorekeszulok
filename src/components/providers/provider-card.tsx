@@ -44,7 +44,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-900 text-center text-base mb-1 group-hover:text-[#2a9d8f] transition-colors">
+        <h3 className="font-bold text-gray-900 text-center text-lg mb-1 group-hover:text-[#2a9d8f] transition-colors">
           {provider.full_name}
         </h3>
 

@@ -57,7 +57,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
     CATEGORY_LABELS[provider.category as ServiceCategory] ?? provider.category;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Breadcrumb */}
       <nav className="text-lg text-gray-900 mb-8">
         <a href="/services" className="hover:text-[#2a9d8f] cursor-pointer">
