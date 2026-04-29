@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 interface UserProfile {
@@ -26,12 +27,17 @@ const ROLE_BADGE: Record<string, "default" | "secondary" | "approved"> = {
   admin: "approved",
 };
 
+const PAGE_SIZE = 10;
+
 export function UsersSection() {
   const router = useRouter();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     fetch("/api/admin/users")
@@ -42,6 +48,24 @@ export function UsersSection() {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return users.filter((u) => {
+      const matchesSearch =
+        !q ||
+        u.full_name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q);
+      const matchesRole = roleFilter === "all" || u.role === roleFilter;
+      return matchesSearch && matchesRole;
+    });
+  }, [users, search, roleFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const handleSearch = (v: string) => { setSearch(v); setPage(1); };
+  const handleRole = (v: string) => { setRoleFilter(v); setPage(1); };
 
   const setRole = async (userId: string, role: string) => {
     setUpdating(userId);
@@ -66,59 +90,117 @@ export function UsersSection() {
   if (loading) return <p className="text-gray-400 text-sm">Betöltés...</p>;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Input
+          placeholder="Keresés név vagy email alapján..."
+          value={search}
+          onChange={(e) => handleSearch(e.target.value)}
+          className="sm:max-w-xs"
+        />
+        <div className="flex gap-2">
+          {["all", "visitor", "provider", "admin"].map((r) => (
+            <button
+              key={r}
+              onClick={() => handleRole(r)}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+                roleFilter === r
+                  ? "bg-[#2a9d8f] text-white border-[#2a9d8f]"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-[#2a9d8f]"
+              }`}
+            >
+              {r === "all" ? "Összes" : ROLE_LABELS[r]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-xs text-gray-400">{filtered.length} felhasználó</p>
+
       {error && (
         <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-sm border border-red-200">
           {error}
         </div>
       )}
-      {users.length === 0 && (
-        <p className="text-gray-400 text-sm">Nincs felhasználó.</p>
-      )}
-      {users.map((u) => (
-        <div
-          key={u.id}
-          className="bg-white border border-gray-200 rounded-lg px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-        >
-          <div>
-            <div className="flex items-center gap-2 flex-wrap mb-0.5">
-              <span className="font-medium text-gray-800 text-sm">{u.full_name || "–"}</span>
-              <Badge variant={ROLE_BADGE[u.role]} className="text-xs">
-                {ROLE_LABELS[u.role]}
-              </Badge>
-            </div>
-            <p className="text-xs text-gray-500">{u.email}</p>
-            <p className="text-xs text-gray-400 mt-0.5">
-              Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}
-            </p>
-          </div>
 
-          <div className="flex gap-2 flex-wrap shrink-0">
-            {u.role !== "admin" && (
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={updating === u.user_id}
-                onClick={() => setRole(u.user_id, "admin")}
-                className="text-xs"
-              >
-                Admin legyen
-              </Button>
-            )}
-            {u.role === "admin" && (
-              <Button
-                size="sm"
-                variant="destructive"
-                disabled={updating === u.user_id}
-                onClick={() => setRole(u.user_id, "visitor")}
-                className="text-xs"
-              >
-                Admin jog elvétele
-              </Button>
-            )}
+      {paginated.length === 0 && (
+        <p className="text-gray-400 text-sm">Nincs találat.</p>
+      )}
+
+      <div className="space-y-3">
+        {paginated.map((u) => (
+          <div
+            key={u.id}
+            className="bg-white border border-gray-200 rounded-lg px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+          >
+            <div>
+              <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                <span className="font-medium text-gray-800 text-sm">{u.full_name || "–"}</span>
+                <Badge variant={ROLE_BADGE[u.role]} className="text-xs">
+                  {ROLE_LABELS[u.role]}
+                </Badge>
+              </div>
+              <p className="text-xs text-gray-500">{u.email}</p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}
+              </p>
+            </div>
+
+            <div className="flex gap-2 flex-wrap shrink-0">
+              {u.role !== "admin" && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={updating === u.user_id}
+                  onClick={() => setRole(u.user_id, "admin")}
+                  className="text-xs cursor-pointer"
+                >
+                  Admin legyen
+                </Button>
+              )}
+              {u.role === "admin" && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  disabled={updating === u.user_id}
+                  onClick={() => setRole(u.user_id, "visitor")}
+                  className="text-xs cursor-pointer"
+                >
+                  Admin jog elvétele
+                </Button>
+              )}
+            </div>
           </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-2">
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={page === 1}
+            onClick={() => setPage((p) => p - 1)}
+            className="cursor-pointer"
+          >
+            ← Előző
+          </Button>
+          <span className="text-sm text-gray-500">
+            {page} / {totalPages}
+          </span>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => p + 1)}
+            className="cursor-pointer"
+          >
+            Következő →
+          </Button>
         </div>
-      ))}
+      )}
     </div>
   );
 }
