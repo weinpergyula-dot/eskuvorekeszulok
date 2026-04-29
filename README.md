@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Esküvőre Készülök
 
-## Getting Started
+Esküvői szolgáltatókat hirdető platform – Next.js 16 + Supabase + Tailwind CSS v4.
 
-First, run the development server:
+## Telepítés
+
+```bash
+npm install
+```
+
+## Konfiguráció
+
+1. Másold le az `.env.local.example` fájlt:
+
+```bash
+cp .env.local.example .env.local
+```
+
+2. Töltsd ki a Supabase adatokat a `.env.local` fájlban:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJh...
+```
+
+## Supabase beállítása
+
+1. Hozz létre egy projektet a [Supabase](https://supabase.com) oldalon
+2. A **SQL Editor**-ban futtasd le a `supabase/schema.sql` tartalmát
+3. A **Authentication > URL Configuration** menüben add hozzá:
+   - Site URL: `http://localhost:3000` (dev) / `https://yourdomain.vercel.app` (prod)
+   - Redirect URL: `http://localhost:3000/auth/callback`
+
+## Admin beállítása
+
+Egy felhasználó admin jogot csak adatbázisból kap:
+
+```sql
+UPDATE public.profiles
+SET role = 'admin'
+WHERE email = 'admin@pelda.hu';
+```
+
+## Fejlesztői szerver indítása
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Nyisd meg: [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy – Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Hozd létre a projektet a [Vercel](https://vercel.com) oldalon (GitHub repóból)
+2. Add hozzá a környezeti változókat a Vercel dashboardon:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+3. A Supabase-ben add hozzá a Vercel domaint az engedélyezett URL-ekhez
 
-## Learn More
+## Technológiai stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** Next.js 16 (App Router, TypeScript)
+- **Styling:** Tailwind CSS v4
+- **UI:** Radix UI + shadcn-stílusú komponensek
+- **Ikonok:** lucide-react
+- **Backend/DB:** Supabase (Postgres, Auth, Storage)
+- **Font:** Playfair Display (headings) + Inter (body)
+- **Deploy:** Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Projektstruktúra
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/
+    page.tsx              # Főoldal
+    services/
+      page.tsx            # Összes kategória
+      [category]/page.tsx # Kategória-specifikus oldal + megye szűrő
+    auth/
+      login/page.tsx
+      register/page.tsx
+      callback/route.ts
+    dashboard/
+      page.tsx            # Szolgáltató dashboard
+      profile/page.tsx    # Profil szerkesztése
+    admin/
+      page.tsx            # Admin jóváhagyó felület
+    contact/page.tsx
+  components/
+    ui/                   # Alap UI komponensek
+    layout/               # Navbar, Footer
+    providers/            # ProviderCard, CountyFilter
+  lib/
+    supabase/             # Client + Server Supabase kliens
+    types.ts              # TypeScript típusok + konstansok
+    utils.ts
+  middleware.ts           # Auth route protection
+supabase/
+  schema.sql              # Teljes adatbázis séma
+```
