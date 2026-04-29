@@ -28,7 +28,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
       <button
         onClick={() => navigate()}
         className={cn(
-          "w-full text-left px-3 py-2 rounded-sm text-sm transition-colors cursor-pointer",
+          "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
           !selected
             ? "bg-[#2a9d8f] text-white font-medium"
             : "text-gray-600 hover:bg-gray-100"
@@ -41,7 +41,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           key={county}
           onClick={() => navigate(county)}
           className={cn(
-            "w-full text-left px-3 py-2 rounded-sm text-sm transition-colors cursor-pointer",
+            "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
             selected === county
               ? "bg-[#2a9d8f] text-white font-medium"
               : "text-gray-600 hover:bg-gray-100"

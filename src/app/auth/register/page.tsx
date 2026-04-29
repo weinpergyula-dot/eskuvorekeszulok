@@ -220,7 +220,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleBasicSubmit} className="space-y-4 bg-white border border-gray-200 rounded-lg p-6">
             {error && (
-              <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-sm border border-red-200">
+              <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
                 {error}
               </div>
             )}
@@ -306,7 +306,7 @@ export default function RegisterPage() {
 
         <form onSubmit={handleProviderSubmit} className="space-y-4 bg-white border border-gray-200 rounded-lg p-6">
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-sm border border-red-200">
+            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
               {error}
             </div>
           )}

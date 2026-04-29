@@ -58,7 +58,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="inline-flex items-center justify-center w-9 h-9 rounded-sm bg-[#C04C9B] text-white font-bold text-sm">
+            <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-[#C04C9B] text-white font-bold text-sm">
               EK
             </span>
             <span className="hidden sm:block font-semibold text-gray-800 text-sm leading-tight">
@@ -88,7 +88,7 @@ export function Navbar() {
                 <div
                   onMouseEnter={() => setServicesOpen(true)}
                   onMouseLeave={() => setServicesOpen(false)}
-                  className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-sm shadow-lg py-1 z-50"
+                  className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50"
                 >
                   {mainCategories.map((cat) => (
                     <Link
@@ -151,7 +151,7 @@ export function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-sm text-gray-600 hover:text-[#2a9d8f]"
+            className="md:hidden p-2 rounded-xl text-gray-600 hover:text-[#2a9d8f]"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

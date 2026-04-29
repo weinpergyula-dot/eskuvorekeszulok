@@ -66,7 +66,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         {/* Sidebar filter */}
         <aside className="lg:w-64 shrink-0">
           {/* Desktop card wrapper */}
-          <div className="hidden lg:block bg-white border border-gray-200 rounded-sm p-5 sticky top-24">
+          <div className="hidden lg:block bg-white border border-gray-200 rounded-xl p-5 sticky top-24">
             <h2 className="font-semibold text-gray-800 mb-4">Szűrés megye szerint</h2>
             <CountyFilter counties={COUNTIES as unknown as string[]} selected={county} category={category} />
           </div>

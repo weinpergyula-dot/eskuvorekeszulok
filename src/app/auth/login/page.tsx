@@ -65,18 +65,18 @@ function LoginForm() {
           className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
         >
           {registered && (
-            <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-sm border border-green-200">
+            <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-xl border border-green-200">
               Sikeres regisztráció! Ellenőrizd az email fiókodat, majd lépj be.
             </div>
           )}
           {reset && (
-            <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-sm border border-green-200">
+            <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-xl border border-green-200">
               Jelszavad sikeresen megváltozott. Lépj be az új jelszavaddal.
             </div>
           )}
 
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-sm border border-red-200">
+            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
               {error}
             </div>
           )}

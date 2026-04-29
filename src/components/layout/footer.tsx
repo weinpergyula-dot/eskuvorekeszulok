@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-sm bg-[#C04C9B] text-white font-bold text-xs">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#C04C9B] text-white font-bold text-xs">
                 EK
               </span>
               <span className="font-semibold text-gray-800">Esküvőre Készülök</span>

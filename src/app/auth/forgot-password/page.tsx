@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           {sent ? (
             <div className="text-center space-y-4">
-              <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-sm border border-green-200">
+              <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-xl border border-green-200">
                 Elküldtük a jelszó-visszaállítási linket a <strong>{email}</strong> email címre. Ellenőrizd a beérkező leveleidet.
               </div>
               <Link href="/auth/login" className="block text-sm text-[#2a9d8f] hover:underline">
@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-sm border border-red-200">
+                <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
                   {error}
                 </div>
               )}

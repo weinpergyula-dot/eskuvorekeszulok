@@ -153,7 +153,7 @@ export default function EditProfilePage() {
       </div>
 
       {success && (
-        <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-sm border border-green-200 mb-6">
+        <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-xl border border-green-200 mb-6">
           ✓ Módosítások elküldve! Átirányítás...
         </div>
       )}
@@ -163,7 +163,7 @@ export default function EditProfilePage() {
         className="bg-white border border-gray-200 rounded-lg p-6 space-y-5"
       >
         {error && (
-          <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-sm border border-red-200">
+          <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
             {error}
           </div>
         )}
