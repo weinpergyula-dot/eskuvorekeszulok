@@ -1,11 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function RegisterSuccessPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ provider?: string }>;
-}) {
+export default function RegisterSuccessPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md text-center">
