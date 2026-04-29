@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, SlidersHorizontal, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CountyFilterProps {
@@ -14,29 +14,32 @@ interface CountyFilterProps {
 export function CountyFilter({ counties, selected, category }: CountyFilterProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [mobileQuery, setMobileQuery] = useState("");
 
   const navigate = (county?: string) => {
     const path = `/services/${category}`;
     router.push(county ? `${path}?county=${encodeURIComponent(county)}` : path);
     setOpen(false);
+    setMobileQuery("");
   };
 
   const selectedLabel = selected ?? "Összes megye";
 
-  const list = (
+  const mq = mobileQuery.trim().toLowerCase();
+  const visibleCounties = mq ? counties.filter((c) => c.toLowerCase().includes(mq)) : counties;
+
+  const list = (visibleList: string[]) => (
     <div className="space-y-1 pt-1">
       <button
         onClick={() => navigate()}
         className={cn(
           "w-full text-left px-3 py-2 rounded-xl text-base transition-colors cursor-pointer",
-          !selected
-            ? "bg-[#2a9d8f] text-white font-medium"
-            : "text-gray-900 hover:bg-gray-100"
+          !selected ? "bg-[#2a9d8f] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
         )}
       >
         Összes megye
       </button>
-      {counties.map((county) => (
+      {visibleList.map((county) => (
         <button
           key={county}
           onClick={() => navigate(county)}
@@ -50,12 +53,15 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           {county}
         </button>
       ))}
+      {visibleList.length === 0 && (
+        <p className="px-3 py-2 text-base text-gray-400">Nincs találat</p>
+      )}
     </div>
   );
 
   return (
     <>
-      {/* Mobile: collapsible toggle */}
+      {/* Mobile: collapsible */}
       <div className="lg:hidden">
         <button
           onClick={() => setOpen((v) => !v)}
@@ -74,13 +80,23 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
         </button>
         {open && (
           <div className="mt-1 bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
-            {list}
+            <div className="relative mb-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              <input
+                type="text"
+                value={mobileQuery}
+                onChange={(e) => setMobileQuery(e.target.value)}
+                placeholder="Megye keresése..."
+                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a9d8f] focus:border-transparent"
+              />
+            </div>
+            {list(visibleCounties)}
           </div>
         )}
       </div>
 
-      {/* Desktop: always visible */}
-      <div className="hidden lg:block">{list}</div>
+      {/* Desktop: always visible, counties already filtered by parent */}
+      <div className="hidden lg:block">{list(counties)}</div>
     </>
   );
 }
