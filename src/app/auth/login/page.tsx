@@ -19,6 +19,7 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
   const registered = searchParams.get("registered");
+  const reset = searchParams.get("reset");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +69,11 @@ function LoginForm() {
               Sikeres regisztráció! Ellenőrizd az email fiókodat, majd lépj be.
             </div>
           )}
+          {reset && (
+            <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-sm border border-green-200">
+              Jelszavad sikeresen megváltozott. Lépj be az új jelszavaddal.
+            </div>
+          )}
 
           {error && (
             <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-sm border border-red-200">
@@ -88,7 +94,12 @@ function LoginForm() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password">Jelszó</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Jelszó</Label>
+              <Link href="/auth/forgot-password" className="text-xs text-[#2a9d8f] hover:underline">
+                Elfelejtett jelszó?
+              </Link>
+            </div>
             <Input
               id="password"
               type="password"
