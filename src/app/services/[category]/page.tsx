@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { createClient } from "@/lib/supabase/server";
-import { CATEGORY_LABELS, COUNTIES, type ServiceCategory } from "@/lib/types";
+import { CATEGORY_LABELS, CATEGORY_SEO_DESCRIPTIONS, COUNTIES, type ServiceCategory } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { CountyFilter } from "@/components/providers/county-filter";
 import { notFound } from "next/navigation";
@@ -65,6 +65,12 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       </div>
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      {CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory] && (
+        <p className="text-base text-gray-900 mb-8 max-w-3xl leading-relaxed">
+          {CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
+        </p>
+      )}
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar filter */}
