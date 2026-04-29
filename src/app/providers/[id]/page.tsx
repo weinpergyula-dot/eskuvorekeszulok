@@ -86,7 +86,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-6xl font-bold text-gray-900">
+              <span className="text-4xl font-bold text-gray-900">
                 {provider.full_name.charAt(0)}
               </span>
             )}
@@ -94,7 +94,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
           {/* Name & meta */}
           <div className="flex-1 text-center sm:text-left">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
               {provider.full_name}
             </h1>
 
@@ -145,7 +145,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           <div className="md:col-span-3 space-y-6">
             {provider.description && (
               <section>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">
                   Rólunk
                 </h2>
                 <p className="text-gray-900 leading-relaxed whitespace-pre-line">
@@ -156,7 +156,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
             {provider.gallery_urls && provider.gallery_urls.length > 0 && (
               <section>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">
                   Galéria
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -177,7 +177,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           {/* Right: contact card */}
           <div className="md:col-span-2">
             <div className="bg-gray-50 rounded-xl border border-gray-200 p-5 space-y-4 sticky top-24">
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-base font-semibold text-gray-900">
                 Elérhetőség
               </h2>
 

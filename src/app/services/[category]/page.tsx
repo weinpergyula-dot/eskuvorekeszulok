@@ -60,7 +60,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
             </a>{" "}
             / <span className="text-[#1e7268] font-medium">{label}</span>
           </nav>
-          <h1 className="text-5xl md:text-6xl font-bold text-[#1e7268]">{label}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1e7268]">{label}</h1>
         </div>
       </div>
 
@@ -95,8 +95,8 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <p className="text-6xl mb-4">🔍</p>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+              <p className="text-4xl mb-4">🔍</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Nincs találat
               </h3>
               <p className="text-gray-900 text-lg">

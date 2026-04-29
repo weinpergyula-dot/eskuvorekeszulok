@@ -12,13 +12,13 @@ export function Footer() {
               </span>
               <span className="font-semibold text-gray-900">Esküvőre Készülök</span>
             </div>
-            <p className="text-xl text-gray-900">
+            <p className="text-base text-gray-900">
               Találj meg mindent egy helyen a nagy napodra!
             </p>
           </div>
 
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Szolgáltatások</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-3">Szolgáltatások</h3>
             <ul className="space-y-2">
               {[
                 { href: "/services/fotosok-videosok", label: "Fotósok, Videósok" },
@@ -29,7 +29,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-xl text-gray-900 hover:text-[#2a9d8f] transition-colors"
+                    className="text-base text-gray-900 hover:text-[#2a9d8f] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -39,7 +39,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Hasznos linkek</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-3">Hasznos linkek</h3>
             <ul className="space-y-2">
               {[
                 { href: "/auth/register", label: "Regisztráció" },
@@ -49,7 +49,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-xl text-gray-900 hover:text-[#2a9d8f] transition-colors"
+                    className="text-base text-gray-900 hover:text-[#2a9d8f] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -60,7 +60,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-200 pt-6 text-center">
-          <p className="text-xl text-gray-900">
+          <p className="text-base text-gray-900">
             © {new Date().getFullYear()} Esküvőre Készülök. Minden jog fenntartva.
           </p>
         </div>

@@ -67,7 +67,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             <Link
               href="/"
-              className="text-xl text-gray-900 hover:text-[#2a9d8f] transition-colors"
+              className="text-base text-gray-900 hover:text-[#2a9d8f] transition-colors"
             >
               Kezdőlap
             </Link>
@@ -79,7 +79,7 @@ export function Navbar() {
               onMouseLeave={() => setServicesOpen(false)}
             >
               <button
-                className="flex items-center gap-1 text-xl text-gray-900 hover:text-[#2a9d8f] transition-colors"
+                className="flex items-center gap-1 text-base text-gray-900 hover:text-[#2a9d8f] transition-colors"
               >
                 Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
               </button>
@@ -110,7 +110,7 @@ export function Navbar() {
 
             <Link
               href="/contact"
-              className="text-xl text-gray-900 hover:text-[#2a9d8f] transition-colors"
+              className="text-base text-gray-900 hover:text-[#2a9d8f] transition-colors"
             >
               Kapcsolat
             </Link>
@@ -157,13 +157,13 @@ export function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-2">
-          <Link href="/" className="block py-2 text-xl text-gray-900" onClick={() => setMobileOpen(false)}>
+          <Link href="/" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
             Kezdőlap
           </Link>
-          <Link href="/services" className="block py-2 text-xl text-gray-900" onClick={() => setMobileOpen(false)}>
+          <Link href="/services" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
             Szolgáltatások
           </Link>
-          <Link href="/contact" className="block py-2 text-xl text-gray-900" onClick={() => setMobileOpen(false)}>
+          <Link href="/contact" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
             Kapcsolat
           </Link>
           <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">

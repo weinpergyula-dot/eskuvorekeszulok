@@ -38,7 +38,7 @@ export default async function DashboardPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Profilom</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Profilom</h1>
           <p className="text-gray-900 text-lg mt-1">
             Kezeld a szolgáltatói profilodat
           </p>
@@ -51,7 +51,7 @@ export default async function DashboardPage() {
       {/* Status banner */}
       {provider?.approval_status === "pending" && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 flex items-start gap-3">
-          <span className="text-3xl">⏳</span>
+          <span className="text-xl">⏳</span>
           <div>
             <p className="font-semibold text-yellow-800 text-lg">
               Profil jóváhagyásra vár
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
 
       {provider?.approval_status === "rejected" && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-start gap-3">
-          <span className="text-3xl">❌</span>
+          <span className="text-xl">❌</span>
           <div>
             <p className="font-semibold text-red-800 text-lg">
               Profil elutasítva
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
 
       {provider?.pending_changes && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-start gap-3">
-          <span className="text-3xl">🔄</span>
+          <span className="text-xl">🔄</span>
           <div>
             <p className="font-semibold text-blue-800 text-lg">
               Módosítás jóváhagyásra vár
@@ -149,8 +149,8 @@ function StatCard({
 }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4">
-      <div className="text-4xl mb-1">{icon}</div>
-      <div className="text-3xl font-bold text-gray-900">{value}</div>
+      <div className="text-2xl mb-1">{icon}</div>
+      <div className="text-xl font-bold text-gray-900">{value}</div>
       <div className="text-base text-gray-900 mt-0.5">{label}</div>
     </div>
   );

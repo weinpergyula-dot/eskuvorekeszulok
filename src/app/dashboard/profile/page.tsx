@@ -143,7 +143,7 @@ export default function EditProfilePage() {
         >
           ← Vissza a dashboardra
         </Link>
-        <h1 className="text-4xl font-bold text-gray-900 mb-1">
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">
           Profil szerkesztése
         </h1>
         <p className="text-lg text-gray-900">
@@ -184,7 +184,7 @@ export default function EditProfilePage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-5xl">📷</span>
+                <span className="text-3xl">📷</span>
               )}
             </div>
             <Button

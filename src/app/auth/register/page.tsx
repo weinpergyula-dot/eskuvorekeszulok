@@ -156,7 +156,7 @@ export default function RegisterPage() {
       <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-gray-900 mb-2">Regisztráció</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Regisztráció</h1>
             <p className="text-gray-900">Melyik típusú fiókot szeretnéd létrehozni?</p>
           </div>
 
@@ -165,7 +165,7 @@ export default function RegisterPage() {
               onClick={() => { setRole("visitor"); setStep("basic"); }}
               className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#2a9d8f] hover:shadow-md transition-all group"
             >
-              <span className="text-6xl mb-3">👰</span>
+              <span className="text-4xl mb-3">👰</span>
               <span className="font-semibold text-gray-900 group-hover:text-[#2a9d8f]">Látogató</span>
               <span className="text-base text-gray-900 mt-1 text-center">
                 Böngészem a szolgáltatókat
@@ -175,7 +175,7 @@ export default function RegisterPage() {
               onClick={() => { setRole("provider"); setStep("basic"); }}
               className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#2a9d8f] hover:shadow-md transition-all group"
             >
-              <span className="text-6xl mb-3">💼</span>
+              <span className="text-4xl mb-3">💼</span>
               <span className="font-semibold text-gray-900 group-hover:text-[#2a9d8f]">Szolgáltató</span>
               <span className="text-base text-gray-900 mt-1 text-center">
                 Hirdetem a szolgáltatásom
@@ -206,7 +206,7 @@ export default function RegisterPage() {
             >
               ← Vissza
             </button>
-            <h1 className="text-4xl font-bold text-gray-900 mb-1">
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">
               {role === "provider" ? "Szolgáltató regisztráció" : "Látogató regisztráció"}
             </h1>
             <p className="text-gray-900 text-lg">Alapadatok megadása</p>
@@ -292,7 +292,7 @@ export default function RegisterPage() {
           >
             ← Vissza
           </button>
-          <h1 className="text-4xl font-bold text-gray-900 mb-1">Szolgáltatói adatok</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Szolgáltatói adatok</h1>
           <p className="text-gray-900 text-lg">
             Regisztráció után az admin jóváhagyja a profilod.
           </p>
@@ -323,7 +323,7 @@ export default function RegisterPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={avatarPreview} alt="preview" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-4xl">📷</span>
+                  <span className="text-2xl">📷</span>
                 )}
               </div>
               <Button

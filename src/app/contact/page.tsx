@@ -1,7 +1,7 @@
 export default function ContactPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <h1 className="text-5xl font-bold text-gray-900 mb-4">Kapcsolat</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-4">Kapcsolat</h1>
       <div className="w-12 h-0.5 bg-[#2a9d8f] mb-8" />
       <p className="text-gray-900 mb-6">
         Ha kérdésed van az oldallal kapcsolatban, vagy szeretnél szolgáltatóként

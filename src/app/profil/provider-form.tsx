@@ -154,7 +154,7 @@ export function ProviderForm({ userId, role, provider }: Props) {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={avatarPreview} alt="avatar" className="w-full h-full object-cover" />
             ) : (
-              <span className="text-5xl">📷</span>
+              <span className="text-3xl">📷</span>
             )}
           </div>
           <Button type="button" variant="outline" size="sm" onClick={() => avatarInputRef.current?.click()}>
