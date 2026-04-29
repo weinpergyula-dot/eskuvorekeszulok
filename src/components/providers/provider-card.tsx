@@ -23,7 +23,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
   return (
     <a
       href={`/providers/${provider.id}`}
-      className="bg-[#f4f6f8] rounded-xl border border-gray-200 shadow-sm hover:border-[#2a9d8f] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
+      className="bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#2a9d8f] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
     >
       {/* Header with avatar */}
       <div className="flex flex-col items-center pt-6 px-5 pb-4">
