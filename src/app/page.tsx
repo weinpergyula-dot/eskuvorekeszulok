@@ -7,8 +7,12 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/hero.png" alt="Esküvői háttérkép" className="w-full h-auto block" />
+        <picture>
+          <source media="(max-width: 639px)" srcSet="/hero-mobile.png" />
+          <source media="(max-width: 1023px)" srcSet="/hero-tablet.png" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/hero.png" alt="Esküvői háttérkép" className="w-full h-auto block" />
+        </picture>
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-xl">
