@@ -29,6 +29,10 @@ create policy "Users can update own profile"
   on public.profiles for update
   using (auth.uid() = user_id);
 
+create policy "Admins can update all profiles"
+  on public.profiles for update
+  using (is_admin());
+
 create policy "Admins can view all profiles"
   on public.profiles for select
   using (
