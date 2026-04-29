@@ -90,7 +90,7 @@ export function Navbar() {
                     <Link
                       key={cat}
                       href={`/services/${cat}`}
-                      className="block px-4 py-2 text-lg text-gray-900 hover:bg-[#2a9d8f]/10 hover:text-[#2a9d8f]"
+                      className="block px-4 py-2 text-base text-gray-900 hover:bg-[#2a9d8f]/10 hover:text-[#2a9d8f]"
                     >
                       {CATEGORY_LABELS[cat]}
                     </Link>
@@ -98,7 +98,7 @@ export function Navbar() {
                   <div className="border-t border-gray-100 mt-1 pt-1">
                     <Link
                       href="/services"
-                      className="block px-4 py-2 text-lg text-[#2a9d8f] font-medium hover:bg-[#2a9d8f]/10"
+                      className="block px-4 py-2 text-base text-[#2a9d8f] font-medium hover:bg-[#2a9d8f]/10"
                     >
                       Összes kategória →
                     </Link>
