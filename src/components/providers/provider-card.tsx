@@ -21,7 +21,10 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
   const viewCount = provider.view_count ?? 0;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden">
+    <a
+      href={`/providers/${provider.id}`}
+      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden cursor-pointer group"
+    >
       {/* Header with avatar */}
       <div className="flex flex-col items-center pt-6 px-5 pb-4">
         {/* Avatar */}
@@ -41,7 +44,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-800 text-center text-base mb-1">
+        <h3 className="font-bold text-gray-800 text-center text-base mb-1 group-hover:text-[#2a9d8f] transition-colors">
           {provider.full_name}
         </h3>
 
@@ -120,8 +123,8 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
       {/* Footer */}
       <div className="border-t border-gray-100 px-5 py-3 flex items-center justify-between">
         <button
-          onClick={() => setLiked(!liked)}
-          className="text-gray-400 hover:text-red-500 transition-colors"
+          onClick={(e) => { e.preventDefault(); setLiked(!liked); }}
+          className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
           aria-label="Kedvenc"
         >
           <Heart
@@ -133,7 +136,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
           <span>{viewCount}</span>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
 
