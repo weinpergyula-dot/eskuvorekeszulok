@@ -68,7 +68,7 @@ export function CategorySearch() {
               className="flex flex-col items-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#2a9d8f] hover:shadow-md transition-all group"
             >
               <span className="text-3xl mb-3">{CATEGORY_ICONS[category]}</span>
-              <h3 className="font-semibold text-gray-900 text-lg mb-1 leading-tight group-hover:text-[#2a9d8f] transition-colors">
+              <h3 className="font-semibold text-gray-900 mb-1 leading-tight group-hover:text-[#2a9d8f] transition-colors" style={{ fontSize: "22px" }}>
                 {CATEGORY_LABELS[category]}
               </h3>
               <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#2a9d8f] transition-colors mb-2" />
