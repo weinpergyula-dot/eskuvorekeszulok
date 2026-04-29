@@ -38,10 +38,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="max-w-xl">
             <h1 className="text-4xl md:text-5xl text-gray-800 mb-4 leading-tight" style={{ fontWeight: 950 }}>
-              <span className="text-[#5a8480]">ESKÜVŐRE</span>{" "}
+              <span className="text-[#2a9d8f]">ESKÜVŐRE</span>{" "}
               <span className="text-gray-700">KÉSZÜLSZ?</span>
             </h1>
-            <div className="w-16 h-0.5 bg-[#5a8480] mb-6" />
+            <div className="w-16 h-0.5 bg-[#2a9d8f] mb-6" />
             <p className="text-lg text-gray-500 mb-8">
               Találj meg mindent egy helyen a nagy napodra!
             </p>
@@ -57,7 +57,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="hidden md:block absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-[#5a8480]/10 to-transparent" />
+        <div className="hidden md:block absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-[#2a9d8f]/10 to-transparent" />
       </section>
 
       {/* Services section */}
@@ -89,12 +89,12 @@ export default function HomePage() {
 
 function CategoryCard({ category }: { category: ServiceCategory }) {
   return (
-    <div className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-xl p-5 hover:border-[#5a8480] hover:shadow-md transition-all group">
+    <div className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-xl p-5 hover:border-[#2a9d8f] hover:shadow-md transition-all group">
       <span className="text-3xl mb-3">{CATEGORY_ICONS[category]}</span>
       <h3 className="font-semibold text-gray-800 text-lg mb-1 leading-tight">
         {CATEGORY_LABELS[category]}
       </h3>
-      <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#5a8480] transition-colors mb-2" />
+      <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#2a9d8f] transition-colors mb-2" />
       <p className="text-base text-gray-500 mb-4 line-clamp-2">
         {CATEGORY_DESCRIPTIONS[category]}
       </p>

@@ -60,13 +60,13 @@ export default async function ProviderProfilePage({ params }: PageProps) {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-8">
-        <a href="/services" className="hover:text-[#5a8480] cursor-pointer">
+        <a href="/services" className="hover:text-[#2a9d8f] cursor-pointer">
           Szolgáltatások
         </a>{" "}
         /{" "}
         <a
           href={`/services/${provider.category}`}
-          className="hover:text-[#5a8480] cursor-pointer"
+          className="hover:text-[#2a9d8f] cursor-pointer"
         >
           {categoryLabel}
         </a>{" "}
@@ -75,7 +75,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Hero section */}
-        <div className="bg-gradient-to-br from-[#5a8480]/10 to-[#C04C9B]/10 px-8 py-10 flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+        <div className="bg-gradient-to-br from-[#2a9d8f]/10 to-[#C04C9B]/10 px-8 py-10 flex flex-col sm:flex-row gap-6 items-center sm:items-start">
           {/* Avatar */}
           <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center shrink-0">
             {provider.avatar_url ? (
@@ -183,20 +183,20 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
               <div className="space-y-3">
                 <ContactItem
-                  icon={<Phone className="h-4 w-4 text-[#5a8480]" />}
+                  icon={<Phone className="h-4 w-4 text-[#2a9d8f]" />}
                   label="Telefon"
                   value={provider.phone}
                   href={`tel:${provider.phone}`}
                 />
                 <ContactItem
-                  icon={<Mail className="h-4 w-4 text-[#5a8480]" />}
+                  icon={<Mail className="h-4 w-4 text-[#2a9d8f]" />}
                   label="E-mail"
                   value={provider.email}
                   href={`mailto:${provider.email}`}
                 />
                 {provider.website && (
                   <ContactItem
-                    icon={<Globe className="h-4 w-4 text-[#5a8480]" />}
+                    icon={<Globe className="h-4 w-4 text-[#2a9d8f]" />}
                     label="Weboldal"
                     value={provider.website}
                     href={
@@ -245,7 +245,7 @@ function ContactItem({
           href={href}
           target={external ? "_blank" : undefined}
           rel={external ? "noopener noreferrer" : undefined}
-          className="text-sm text-gray-700 hover:text-[#5a8480] break-all cursor-pointer"
+          className="text-sm text-gray-700 hover:text-[#2a9d8f] break-all cursor-pointer"
         >
           {value}
         </a>

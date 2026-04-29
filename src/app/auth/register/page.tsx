@@ -163,20 +163,20 @@ export default function RegisterPage() {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
               onClick={() => { setRole("visitor"); setStep("basic"); }}
-              className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#5a8480] hover:shadow-md transition-all group"
+              className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#2a9d8f] hover:shadow-md transition-all group"
             >
               <span className="text-4xl mb-3">👰</span>
-              <span className="font-semibold text-gray-800 group-hover:text-[#5a8480]">Látogató</span>
+              <span className="font-semibold text-gray-800 group-hover:text-[#2a9d8f]">Látogató</span>
               <span className="text-xs text-gray-500 mt-1 text-center">
                 Böngészem a szolgáltatókat
               </span>
             </button>
             <button
               onClick={() => { setRole("provider"); setStep("basic"); }}
-              className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#5a8480] hover:shadow-md transition-all group"
+              className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#2a9d8f] hover:shadow-md transition-all group"
             >
               <span className="text-4xl mb-3">💼</span>
-              <span className="font-semibold text-gray-800 group-hover:text-[#5a8480]">Szolgáltató</span>
+              <span className="font-semibold text-gray-800 group-hover:text-[#2a9d8f]">Szolgáltató</span>
               <span className="text-xs text-gray-500 mt-1 text-center">
                 Hirdetem a szolgáltatásom
               </span>
@@ -185,7 +185,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-gray-500">
             Már van fiókod?{" "}
-            <Link href="/auth/login" className="text-[#5a8480] hover:underline">
+            <Link href="/auth/login" className="text-[#2a9d8f] hover:underline">
               Lépj be
             </Link>
           </p>
@@ -202,7 +202,7 @@ export default function RegisterPage() {
           <div className="mb-6">
             <button
               onClick={() => setStep("role")}
-              className="text-sm text-gray-500 hover:text-[#5a8480] mb-4 flex items-center gap-1"
+              className="text-sm text-gray-500 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
             >
               ← Vissza
             </button>
@@ -214,8 +214,8 @@ export default function RegisterPage() {
 
           {/* Progress */}
           <div className="flex gap-2 mb-6">
-            <div className="h-1 flex-1 bg-[#5a8480] rounded-full" />
-            <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#5a8480]"}`} />
+            <div className="h-1 flex-1 bg-[#2a9d8f] rounded-full" />
+            <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#2a9d8f]"}`} />
           </div>
 
           <form onSubmit={handleBasicSubmit} className="space-y-4 bg-white border border-gray-200 rounded-lg p-6">
@@ -272,7 +272,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-gray-500 mt-4">
             Már van fiókod?{" "}
-            <Link href="/auth/login" className="text-[#5a8480] hover:underline">
+            <Link href="/auth/login" className="text-[#2a9d8f] hover:underline">
               Lépj be
             </Link>
           </p>
@@ -288,7 +288,7 @@ export default function RegisterPage() {
         <div className="mb-6">
           <button
             onClick={() => setStep("basic")}
-            className="text-sm text-gray-500 hover:text-[#5a8480] mb-4 flex items-center gap-1"
+            className="text-sm text-gray-500 hover:text-[#2a9d8f] mb-4 flex items-center gap-1"
           >
             ← Vissza
           </button>
@@ -300,8 +300,8 @@ export default function RegisterPage() {
 
         {/* Progress */}
         <div className="flex gap-2 mb-6">
-          <div className="h-1 flex-1 bg-[#5a8480] rounded-full" />
-          <div className="h-1 flex-1 bg-[#5a8480] rounded-full" />
+          <div className="h-1 flex-1 bg-[#2a9d8f] rounded-full" />
+          <div className="h-1 flex-1 bg-[#2a9d8f] rounded-full" />
         </div>
 
         <form onSubmit={handleProviderSubmit} className="space-y-4 bg-white border border-gray-200 rounded-lg p-6">
@@ -316,7 +316,7 @@ export default function RegisterPage() {
             <Label>Profilkép</Label>
             <div className="flex items-center gap-4">
               <div
-                className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#5a8480] overflow-hidden bg-gray-50"
+                className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#2a9d8f] overflow-hidden bg-gray-50"
                 onClick={() => avatarInputRef.current?.click()}
               >
                 {avatarPreview ? (

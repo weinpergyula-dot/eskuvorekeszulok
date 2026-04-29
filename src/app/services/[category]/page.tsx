@@ -54,7 +54,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       {/* Header */}
       <div className="mb-8">
         <nav className="text-sm text-gray-500 mb-2">
-          <a href="/services" className="hover:text-[#5a8480]">
+          <a href="/services" className="hover:text-[#2a9d8f]">
             Szolgáltatások
           </a>{" "}
           / <span className="text-gray-800">{label}</span>

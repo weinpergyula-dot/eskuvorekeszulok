@@ -44,7 +44,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-800 text-center text-base mb-1 group-hover:text-[#5a8480] transition-colors">
+        <h3 className="font-bold text-gray-800 text-center text-base mb-1 group-hover:text-[#2a9d8f] transition-colors">
           {provider.full_name}
         </h3>
 
@@ -157,7 +157,7 @@ function ContactRow({
           href={value.startsWith("http") ? value : `https://${value}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-[#5a8480] hover:underline break-all"
+          className="text-xs text-[#2a9d8f] hover:underline break-all"
         >
           {value}
         </a>
