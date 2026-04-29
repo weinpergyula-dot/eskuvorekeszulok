@@ -58,7 +58,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="inline-flex items-center justify-center w-9 h-9 rounded-sm bg-[#2a9d8f] text-white font-bold text-sm">
+            <span className="inline-flex items-center justify-center w-9 h-9 rounded-sm bg-[#C04C9B] text-white font-bold text-sm">
               EK
             </span>
             <span className="hidden sm:block font-semibold text-gray-800 text-sm leading-tight">
@@ -143,7 +143,7 @@ export function Navbar() {
                   <Button variant="outline" size="sm">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button size="sm">Belépés</Button>
+                  <Button size="sm" className="bg-[#C04C9B] hover:bg-[#a33d83]">Belépés</Button>
                 </Link>
               </>
             )}
