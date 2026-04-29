@@ -94,12 +94,7 @@ function LoginForm() {
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Jelszó</Label>
-              <Link href="/auth/forgot-password" className="text-xs text-[#2a9d8f] hover:underline">
-                Elfelejtett jelszó?
-              </Link>
-            </div>
+            <Label htmlFor="password">Jelszó</Label>
             <Input
               id="password"
               type="password"
@@ -119,6 +114,11 @@ function LoginForm() {
           Még nincs fiókod?{" "}
           <Link href="/auth/register" className="text-[#2a9d8f] hover:underline">
             Regisztrálj
+          </Link>
+        </p>
+        <p className="text-center text-sm text-gray-500 mt-2">
+          <Link href="/auth/forgot-password" className="text-[#2a9d8f] hover:underline">
+            Elfelejtett jelszó?
           </Link>
         </p>
       </div>
