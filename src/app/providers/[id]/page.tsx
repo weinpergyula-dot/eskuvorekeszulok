@@ -140,9 +140,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
         </div>
 
         {/* Body */}
-        <div className="px-8 py-8 grid md:grid-cols-3 gap-8">
+        <div className="px-8 py-8 grid md:grid-cols-5 gap-8">
           {/* Left: description + gallery */}
-          <div className="md:col-span-2 space-y-6">
+          <div className="md:col-span-3 space-y-6">
             {provider.description && (
               <section>
                 <h2 className="text-lg font-semibold text-gray-800 mb-3">
