@@ -11,21 +11,22 @@ export default function HomePage() {
         <img
           src="/hero.png"
           alt="Esküvői háttérkép"
-          className="w-full h-[480px] sm:h-[400px] lg:h-auto object-cover object-right lg:object-center block"
+          className="w-full h-[480px] sm:h-[400px] lg:h-auto object-cover lg:object-center block"
+          style={{ objectPosition: "75% center" }}
         />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="w-[52%] sm:w-[45%] lg:max-w-xl lg:w-auto">
-              <h1 className="text-gray-900 mb-4 leading-tight" style={{ fontWeight: 950 }}>
+            <div className="w-[42%] sm:w-[40%] lg:max-w-xl lg:w-auto">
+              <h1 className="mb-4 leading-tight" style={{ fontWeight: 950 }}>
                 <span
                   className="text-[#2a9d8f] block"
-                  style={{ fontSize: "clamp(32px, 9vw, 65px)" }}
+                  style={{ fontSize: "clamp(28px, 8vw, 65px)" }}
                 >
                   ESKÜVŐRE
                 </span>
                 <span
-                  className="text-gray-900 block"
-                  style={{ fontSize: "clamp(32px, 9vw, 65px)" }}
+                  className="text-gray-700 block"
+                  style={{ fontSize: "clamp(28px, 8vw, 65px)" }}
                 >
                   KÉSZÜLSZ?
                 </span>
