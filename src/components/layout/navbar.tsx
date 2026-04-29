@@ -73,20 +73,19 @@ export function Navbar() {
             </Link>
 
             {/* Szolgáltatások dropdown */}
-            <div className="relative">
+            <div
+              className="relative"
+              onMouseEnter={() => setServicesOpen(true)}
+              onMouseLeave={() => setServicesOpen(false)}
+            >
               <button
-                onMouseEnter={() => setServicesOpen(true)}
-                onMouseLeave={() => setServicesOpen(false)}
                 className="flex items-center gap-1 text-xl text-gray-900 hover:text-[#2a9d8f] transition-colors"
               >
                 Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
               </button>
               {servicesOpen && (
-                <div
-                  onMouseEnter={() => setServicesOpen(true)}
-                  onMouseLeave={() => setServicesOpen(false)}
-                  className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50"
-                >
+                <div className="absolute top-full left-0 pt-2 w-56 z-50">
+                <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
                   {mainCategories.map((cat) => (
                     <Link
                       key={cat}
@@ -104,6 +103,7 @@ export function Navbar() {
                       Összes kategória →
                     </Link>
                   </div>
+                </div>
                 </div>
               )}
             </div>
