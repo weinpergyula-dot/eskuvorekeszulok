@@ -32,20 +32,21 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     const supabase = await createClient();
 
     let query = supabase
-      .from("providers_with_stats")
+      .from("providers")
       .select("*")
       .eq("category", category)
       .eq("approval_status", "approved")
-      .order("average_rating", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (county) {
       query = query.eq("county", county);
     }
 
-    const { data } = await query;
+    const { data, error } = await query;
+    if (error) console.error("providers query error:", error);
     providers = (data as Provider[]) ?? [];
-  } catch {
-    // Supabase not configured yet
+  } catch (e) {
+    console.error("Supabase error:", e);
   }
 
   return (
