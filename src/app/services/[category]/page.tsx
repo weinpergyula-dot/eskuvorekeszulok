@@ -61,16 +61,18 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
             / <span className="text-[#1e7268] font-medium">{label}</span>
           </nav>
           <h1 className="text-3xl md:text-4xl font-bold text-[#1e7268]">{label}</h1>
+          {CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory] && (
+            <>
+              <hr className="border-[#2a9d8f]/20 mt-5 mb-4" />
+              <p className="text-base text-gray-900 leading-relaxed">
+                {CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
+              </p>
+            </>
+          )}
         </div>
       </div>
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
-      {CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory] && (
-        <p className="text-base text-gray-900 mb-8 max-w-3xl leading-relaxed">
-          {CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
-        </p>
-      )}
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar filter */}
