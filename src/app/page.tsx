@@ -6,8 +6,11 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative bg-gradient-to-r from-white via-gray-50 to-[#e8f7f5] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+      <section
+        className="relative overflow-hidden bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/hero.png')" }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36">
           <div className="max-w-xl">
             <h1 className="text-gray-900 mb-4 leading-tight" style={{ fontWeight: 950, fontSize: "65px" }}>
               <span className="text-[#2a9d8f]">ESKÜVŐRE</span>{" "}
@@ -29,7 +32,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="hidden md:block absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-[#2a9d8f]/10 to-transparent" />
       </section>
 
       {/* Services section */}
