@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
+import { UsersSection } from "./users-section";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 
 export default async function AdminPage() {
@@ -98,6 +99,14 @@ export default async function AdminPage() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* Users */}
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Felhasználók kezelése
+        </h2>
+        <UsersSection />
       </section>
 
       {/* Pending edits */}
