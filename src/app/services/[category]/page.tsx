@@ -50,17 +50,21 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <div className="mb-8">
-        <nav className="text-sm text-gray-700 mb-2">
-          <a href="/services" className="hover:text-[#2a9d8f]">
-            Szolgáltatások
-          </a>{" "}
-          / <span className="text-gray-800">{label}</span>
-        </nav>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">{label}</h1>
+    <div>
+      {/* Full-width header */}
+      <div className="w-full bg-gradient-to-br from-[#2a9d8f]/20 to-[#2a9d8f]/5 border-b border-[#2a9d8f]/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <nav className="text-sm text-[#2a9d8f]/80 mb-2">
+            <a href="/services" className="hover:text-[#2a9d8f]">
+              Szolgáltatások
+            </a>{" "}
+            / <span className="text-[#1e7268] font-medium">{label}</span>
+          </nav>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1e7268]">{label}</h1>
+        </div>
       </div>
+
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar filter */}
@@ -104,6 +108,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }
