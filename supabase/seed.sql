@@ -104,7 +104,7 @@ INSERT INTO public.providers (
  'menyasszonyi-ruha', 'Debrecen', null, null, 'approved', 98, now() - interval '48 days'),
 
 -- === ÖLTÖNY, SZMOKING ===
-(gen_random_uuid(), gen_random_uuid(), 'Gentleman\'s Club Öltönyös', 'gentlemans.oltonya@gmail.com', '+36706781234',
+(gen_random_uuid(), gen_random_uuid(), 'Gentlemans Club Öltönyös', 'gentlemans.oltonya@gmail.com', '+36706781234',
  'Méretre szabott öltönyök és szmokingok esküvőkre. Magyar szabó mesterek munkája. Bérlés lehetséges.',
  'oltonya-szmoking', 'Budapest', 'https://gentlemans.hu', null, 'approved', 76, now() - interval '44 days'),
 
