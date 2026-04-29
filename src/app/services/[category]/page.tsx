@@ -87,7 +87,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
               <p className="text-lg text-gray-900 mb-4">
                 {providers.length} szolgáltató található{county ? ` – ${county}` : ""}
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {providers.map((provider) => (
                   <ProviderCard key={provider.id} provider={provider} />
                 ))}
