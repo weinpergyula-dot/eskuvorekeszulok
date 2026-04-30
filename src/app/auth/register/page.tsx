@@ -220,7 +220,7 @@ export default function RegisterPage() {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
               onClick={() => { setRole("visitor"); setStep("basic"); }}
-              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
+              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#C65EA5] hover:shadow-md transition-all group"
             >
               <UserRound className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
               <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Látogató</span>
@@ -230,7 +230,7 @@ export default function RegisterPage() {
             </button>
             <button
               onClick={() => { setRole("provider"); setStep("basic"); }}
-              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
+              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#C65EA5] hover:shadow-md transition-all group"
             >
               <Briefcase className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
               <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Szolgáltató</span>
