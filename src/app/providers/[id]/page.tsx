@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
+import { PageHeader } from "@/components/layout/page-header";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -59,7 +60,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   const firstCategoryLabel = firstCategory ? CATEGORY_LABELS[firstCategory] ?? firstCategory : "Szolgáltatások";
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div>
+      <PageHeader title="Szolgáltatói profil" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ViewTracker providerId={provider.id} />
       {/* Breadcrumb */}
       <nav className="text-lg text-gray-900 mb-8">
@@ -229,6 +232,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
