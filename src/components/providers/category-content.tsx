@@ -22,18 +22,14 @@ export function CategoryContent({
   label,
 }: CategoryContentProps) {
   const [countyQuery, setCountyQuery] = useState("");
-  const [nameQuery, setNameQuery] = useState("");
 
   const cq = countyQuery.trim().toLowerCase();
-  const nq = nameQuery.trim().toLowerCase();
 
   const filteredCounties = cq
     ? counties.filter((c) => c.toLowerCase().includes(cq))
     : counties;
 
-  const filteredProviders = nq
-    ? providers.filter((p) => p.full_name.toLowerCase().includes(nq))
-    : providers;
+  const filteredProviders = providers;
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -62,18 +58,6 @@ export function CategoryContent({
 
       {/* Provider grid */}
       <div className="flex-1 min-w-0">
-        {/* Name search */}
-        <div className="relative mb-5">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-          <input
-            type="text"
-            value={nameQuery}
-            onChange={(e) => setNameQuery(e.target.value)}
-            placeholder="Keresés szolgáltató neve szerint..."
-            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
-          />
-        </div>
-
         {filteredProviders.length > 0 ? (
           <>
             <p className="text-lg text-gray-900 mb-4">
