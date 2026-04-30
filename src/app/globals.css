@@ -191,3 +191,12 @@ textarea:-webkit-autofill:focus {
   box-shadow: 0 0 0px 1000px white inset;
   -webkit-text-fill-color: #171717;
 }
+
+input:-webkit-autofill ~ label {
+  top: -0.625rem !important;
+  transform: none !important;
+  font-size: 0.875rem !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+  color: #84AAA6 !important;
+}
