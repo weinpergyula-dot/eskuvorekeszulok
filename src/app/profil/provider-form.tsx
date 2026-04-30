@@ -172,22 +172,19 @@ export function ProviderForm({ userId, role, provider, isProviderActive, onActiv
         avatarUrl = urlData.publicUrl;
       }
 
-      const payload = {
-        full_name: fullName,
-        phone,
-        counties,
-        categories,
-        description,
-        website: website || null,
-        avatar_url: avatarUrl || null,
-      };
-
       if (role === "visitor" || !provider) {
+        // New provider: everything goes through approval
         const email = user.email ?? "";
         const { error: insertError } = await supabase.from("providers").insert({
           user_id: userId,
           email,
-          ...payload,
+          full_name: fullName,
+          phone,
+          counties,
+          categories,
+          description,
+          website: website || null,
+          avatar_url: avatarUrl || null,
           approval_status: "pending",
         });
         if (insertError) throw insertError;
@@ -200,9 +197,24 @@ export function ProviderForm({ userId, role, provider, isProviderActive, onActiv
           if (roleError) throw roleError;
         }
       } else {
+        // Existing provider: categories & counties apply immediately,
+        // text/image fields go to pending_changes for admin review
+        const { error: catError } = await supabase
+          .from("providers")
+          .update({ categories, counties })
+          .eq("user_id", userId);
+        if (catError) throw catError;
+
+        const pendingPayload = {
+          full_name: fullName,
+          phone,
+          description,
+          website: website || null,
+          avatar_url: avatarUrl || null,
+        };
         const { error: updateError } = await supabase
           .from("providers")
-          .update({ pending_changes: payload })
+          .update({ pending_changes: pendingPayload })
           .eq("user_id", userId);
         if (updateError) throw updateError;
       }
