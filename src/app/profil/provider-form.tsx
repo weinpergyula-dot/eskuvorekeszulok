@@ -28,11 +28,12 @@ export function ProviderForm({ userId, role, provider }: Props) {
   const supabase = createClient();
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
-  // Switcher state: ON if provider record exists and active !== false
+  // Switcher state: ON only if active is explicitly true (null/undefined = OFF until migration runs)
   const [isProviderMode, setIsProviderMode] = useState(
-    provider !== null ? provider.active !== false : false
+    provider !== null ? provider.active === true : false
   );
   const [toggling, setToggling] = useState(false);
+  const [toggleError, setToggleError] = useState<string | null>(null);
 
   const [fullName, setFullName] = useState(provider?.full_name ?? "");
   const [phone, setPhone] = useState(provider?.phone ?? "");
@@ -63,17 +64,22 @@ export function ProviderForm({ userId, role, provider }: Props) {
     // If provider record exists: update active flag in DB
     if (provider) {
       setToggling(true);
+      setToggleError(null);
       try {
         const { error: updateError } = await supabase
           .from("providers")
           .update({ active: newVal })
           .eq("user_id", userId);
         if (updateError) throw updateError;
-      } catch {
-        return;
+        setIsProviderMode(newVal);
+      } catch (err: unknown) {
+        setToggleError(
+          err instanceof Error ? err.message : "Nem sikerült menteni. Ellenőrizd az adatbázis beállításokat."
+        );
       } finally {
         setToggling(false);
       }
+      return;
     }
 
     setIsProviderMode(newVal);
@@ -187,6 +193,11 @@ export function ProviderForm({ userId, role, provider }: Props) {
             {isProviderMode ? "Szolgáltató" : "Látogató"}
           </span>
         </div>
+        {toggleError && (
+          <p className="text-base text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            {toggleError}
+          </p>
+        )}
       </div>
 
       {/* Provider form – only shown when switcher is ON */}
