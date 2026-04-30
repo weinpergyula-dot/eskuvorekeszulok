@@ -71,7 +71,11 @@ export function ProviderForm({ userId, role, provider, isProviderActive, onActiv
         onActiveChange(newVal);
       } catch (err: unknown) {
         setToggleError(
-          err instanceof Error ? err.message : "Nem sikerült menteni."
+          err instanceof Error
+            ? err.message
+            : typeof err === "object" && err !== null && "message" in err
+            ? String((err as { message: unknown }).message)
+            : "Nem sikerült menteni."
         );
       } finally {
         setToggling(false);
@@ -155,7 +159,12 @@ export function ProviderForm({ userId, role, provider, isProviderActive, onActiv
       setSuccess(true);
       setTimeout(() => { router.refresh(); }, 1500);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "message" in err
+          ? String((err as { message: unknown }).message)
+          : String(err);
       setError(msg || "Hiba a mentés során.");
     } finally {
       setSaving(false);
