@@ -33,10 +33,10 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
         <label
           htmlFor={id}
           className={cn(
-            "absolute left-4 pointer-events-none transition-all duration-150 bg-white",
+            "absolute left-4 pointer-events-none transition-all duration-150 bg-white -translate-y-1/2",
             floated
-              ? "-top-2.5 text-sm px-1 text-[#84AAA6]"
-              : "top-1/2 -translate-y-1/2 text-base text-gray-400"
+              ? "top-0 text-sm px-1 text-[#84AAA6]"
+              : "top-1/2 text-base text-gray-400"
           )}
         >
           {label}

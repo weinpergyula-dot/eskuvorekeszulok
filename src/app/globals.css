@@ -193,8 +193,8 @@ textarea:-webkit-autofill:focus {
 }
 
 input:-webkit-autofill ~ label {
-  top: -0.625rem !important;
-  transform: none !important;
+  top: 0 !important;
+  transform: translateY(-50%) !important;
   font-size: 0.875rem !important;
   padding-left: 0.25rem !important;
   padding-right: 0.25rem !important;
