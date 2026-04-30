@@ -38,7 +38,7 @@ export default async function ProfilPage() {
       <PageHeader title="Profilom" />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
         {/* Block 1: Account */}
-        <section className="bg-white border border-gray-200 rounded-xl p-6">
+        <section className="bg-white rounded-xl p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-5">Fiók adatok</h2>
           <AccountForm
             userId={user.id}
@@ -48,7 +48,7 @@ export default async function ProfilPage() {
         </section>
 
         {/* Block 2: Provider profile */}
-        <section className="bg-white border border-gray-200 rounded-xl p-6">
+        <section className="bg-white rounded-xl p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">
             Szolgáltatói profil
           </h2>
