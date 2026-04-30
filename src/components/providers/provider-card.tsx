@@ -50,12 +50,12 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
         {/* Categories */}
         <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
           {(provider.categories ?? []).slice(0, 2).map((cat) => (
-            <Badge key={cat} variant="secondary" className="text-base">
+            <Badge key={cat} variant="outline" className="text-base">
               {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
             </Badge>
           ))}
           {(provider.categories ?? []).length > 2 && (
-            <Badge variant="secondary" className="text-base">
+            <Badge variant="outline" className="text-base">
               +{(provider.categories ?? []).length - 2}
             </Badge>
           )}
