@@ -35,6 +35,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
   // Status dot for the provider menu item
   const providerDot = () => {
     if (!provider) return null;
+    if (provider.active === false) return "bg-gray-400";
     if (provider.approval_status === "approved") return "bg-green-500";
     if (provider.approval_status === "rejected") return "bg-red-500";
     return "bg-yellow-400";
@@ -89,7 +90,12 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
               {/* Status indicator */}
               {provider ? (
                 <div className="space-y-2">
-                  {provider.approval_status === "approved" ? (
+                  {provider.active === false ? (
+                    <div className="flex items-center gap-2 text-base font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+                      <span className="w-2 h-2 rounded-full bg-gray-400 shrink-0" />
+                      Kikapcsolva – profilod nem látható a listában
+                    </div>
+                  ) : provider.approval_status === "approved" ? (
                     <div className="flex items-center gap-2 text-base font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
                       <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
                       Aktív – profilod látható a listában
