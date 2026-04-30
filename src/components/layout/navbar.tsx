@@ -56,11 +56,12 @@ export function Navbar() {
 
   useEffect(() => {
     if (!supabase || profile?.role !== "admin") { setPendingCount(0); return; }
-    supabase
-      .from("providers")
-      .select("*", { count: "exact", head: true })
-      .eq("approval_status", "pending")
-      .then(({ count }) => setPendingCount(count ?? 0));
+    Promise.all([
+      supabase.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
+      supabase.from("providers").select("*", { count: "exact", head: true }).not("pending_changes", "is", null),
+    ]).then(([{ count: newRegs }, { count: edits }]) => {
+      setPendingCount((newRegs ?? 0) + (edits ?? 0));
+    });
   }, [profile]);
 
   const handleSignOut = async () => {
