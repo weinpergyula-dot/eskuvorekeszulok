@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { PageHeader } from "@/components/layout/page-header";
+import { Eye, Star, BarChart2, ClipboardList, type LucideIcon } from "lucide-react";
 
 export default async function DashboardPage() {
   let supabase: Awaited<ReturnType<typeof createClient>>;
@@ -93,12 +94,12 @@ export default async function DashboardPage() {
             <div>
               <h2 className="text-lg font-semibold text-gray-900 uppercase tracking-wide mb-3">Statisztikák</h2>
               <div className="grid grid-cols-2 gap-4">
-                <StatCard label="Megtekintések" value={provider.view_count ?? 0} icon="👁️" />
-                <StatCard label="Értékelések" value={provider.review_count ?? 0} icon="⭐" />
+                <StatCard label="Megtekintések" value={provider.view_count ?? 0} icon={Eye} />
+                <StatCard label="Értékelések" value={provider.review_count ?? 0} icon={Star} />
                 <StatCard
                   label="Átlagos értékelés"
                   value={provider.average_rating ? `${Number(provider.average_rating).toFixed(1)}/5` : "–"}
-                  icon="📊"
+                  icon={BarChart2}
                 />
                 <StatCard
                   label="Státusz"
@@ -107,7 +108,7 @@ export default async function DashboardPage() {
                     : provider.approval_status === "pending" ? "Függőben"
                     : "Elutasítva"
                   }
-                  icon="📋"
+                  icon={ClipboardList}
                 />
               </div>
             </div>
@@ -120,10 +121,10 @@ export default async function DashboardPage() {
   );
 }
 
-function StatCard({ label, value, icon }: { label: string; value: string | number; icon: string }) {
+function StatCard({ label, value, icon: Icon }: { label: string; value: string | number; icon: LucideIcon }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4">
-      <div className="text-2xl mb-1">{icon}</div>
+      <Icon className="h-6 w-6 mb-1 text-[#84AAA6]" strokeWidth={1.5} />
       <div className="text-xl font-bold text-gray-900">{value}</div>
       <div className="text-base text-gray-900 mt-0.5">{label}</div>
     </div>
