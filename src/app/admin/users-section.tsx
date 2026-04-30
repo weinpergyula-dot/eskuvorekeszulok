@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +14,9 @@ interface UserProfile {
   full_name: string;
   role: "visitor" | "provider" | "admin";
   created_at: string;
+  // joined from providers table
+  providerApprovalStatus?: string | null;
+  providerHasPendingChanges?: boolean;
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -29,8 +33,19 @@ const ROLE_BADGE: Record<string, "default" | "secondary" | "approved"> = {
 
 const PAGE_SIZE = 10;
 
+type ApprovalFilter = "all" | "approved" | "pending" | "visitor" | "admin";
+
+const FILTER_LABELS: Record<ApprovalFilter, string> = {
+  all:      "Összes",
+  approved: "Jóváhagyott",
+  pending:  "Jóváhagyásra váró",
+  visitor:  "Látogató",
+  admin:    "Admin",
+};
+
 export function UsersSection() {
   const router = useRouter();
+  const supabase = createClient();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -38,17 +53,28 @@ export function UsersSection() {
   const [confirmDelete, setConfirmDelete] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [approvalFilter, setApprovalFilter] = useState<ApprovalFilter>("all");
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    fetch("/api/admin/users")
-      .then((r) => r.json())
-      .then((data) => {
-        setUsers(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    Promise.all([
+      fetch("/api/admin/users").then((r) => r.json()),
+      supabase.from("providers").select("user_id, approval_status, pending_changes"),
+    ]).then(([profileData, { data: providerData }]) => {
+      const profiles: UserProfile[] = Array.isArray(profileData) ? profileData : [];
+      const providerMap = new Map(
+        (providerData ?? []).map((p) => [p.user_id, p])
+      );
+      setUsers(profiles.map((u) => {
+        const prov = providerMap.get(u.user_id);
+        return {
+          ...u,
+          providerApprovalStatus: prov?.approval_status ?? null,
+          providerHasPendingChanges: !!prov?.pending_changes,
+        };
+      }));
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
@@ -58,16 +84,31 @@ export function UsersSection() {
         !q ||
         u.full_name.toLowerCase().includes(q) ||
         u.email.toLowerCase().includes(q);
-      const matchesRole = roleFilter === "all" || u.role === roleFilter;
-      return matchesSearch && matchesRole;
+
+      let matchesFilter = true;
+      if (approvalFilter === "approved") {
+        matchesFilter = u.role === "provider"
+          && u.providerApprovalStatus === "approved"
+          && !u.providerHasPendingChanges;
+      } else if (approvalFilter === "pending") {
+        matchesFilter = u.role === "provider"
+          && (u.providerApprovalStatus === "pending" || !!u.providerHasPendingChanges);
+      } else if (approvalFilter === "visitor") {
+        matchesFilter = u.role === "visitor";
+      } else if (approvalFilter === "admin") {
+        matchesFilter = u.role === "admin";
+      }
+      // "all" → matchesFilter stays true
+
+      return matchesSearch && matchesFilter;
     });
-  }, [users, search, roleFilter]);
+  }, [users, search, approvalFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handleSearch = (v: string) => { setSearch(v); setPage(1); };
-  const handleRole = (v: string) => { setRoleFilter(v); setPage(1); };
+  const handleFilter = (v: ApprovalFilter) => { setApprovalFilter(v); setPage(1); };
 
   const setRole = async (userId: string, role: string) => {
     setUpdating(userId);
@@ -154,18 +195,18 @@ export function UsersSection() {
           onChange={(e) => handleSearch(e.target.value)}
           className="sm:max-w-xs"
         />
-        <div className="flex gap-2">
-          {["all", "visitor", "provider", "admin"].map((r) => (
+        <div className="flex flex-wrap gap-2">
+          {(["all", "approved", "pending", "visitor", "admin"] as ApprovalFilter[]).map((f) => (
             <button
-              key={r}
-              onClick={() => handleRole(r)}
+              key={f}
+              onClick={() => handleFilter(f)}
               className={`px-3 py-1.5 rounded-md text-base font-medium border transition-colors cursor-pointer ${
-                roleFilter === r
+                approvalFilter === f
                   ? "bg-[#84AAA6] text-white border-[#84AAA6]"
                   : "bg-white text-gray-900 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
-              {r === "all" ? "Összes" : ROLE_LABELS[r]}
+              {FILTER_LABELS[f]}
             </button>
           ))}
         </div>

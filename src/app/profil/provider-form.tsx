@@ -67,38 +67,95 @@ function PillSelect<T extends string>({
   );
 }
 
-// ── View-mode field row ──────────────────────────────────────────────────────
-function ViewField({
-  label,
-  live,
-  pending,
-  isFirstSubmission,
+// ── Single data card (live or pending) ──────────────────────────────────────
+function DataCard({
+  title,
+  variant,
+  avatarUrl,
+  fullName,
+  phone,
+  description,
+  website,
+  counties,
+  categories,
 }: {
-  label: string;
-  live: string | null | undefined;
-  pending?: string | null;
-  isFirstSubmission: boolean;
+  title: string;
+  variant: "live" | "pending" | "submitted";
+  avatarUrl?: string | null;
+  fullName?: string | null;
+  phone?: string | null;
+  description?: string | null;
+  website?: string | null;
+  counties?: string[];
+  categories?: ServiceCategory[];
 }) {
-  const hasPending =
-    pending !== undefined &&
-    pending !== null &&
-    String(pending) !== String(live ?? "");
+  const borderCls =
+    variant === "live"
+      ? "border-gray-200 bg-white"
+      : variant === "pending"
+      ? "border-amber-200 bg-amber-50/40"
+      : "border-amber-200 bg-amber-50/40";
+
+  const titleCls =
+    variant === "live" ? "text-gray-700" : "text-amber-700";
+
+  const Row = ({ label, value }: { label: string; value?: string | null }) => (
+    <div className="space-y-0.5">
+      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{label}</p>
+      <p className="text-sm text-gray-900 leading-snug">
+        {value || <span className="text-gray-400 italic">–</span>}
+      </p>
+    </div>
+  );
 
   return (
-    <div className="space-y-0.5">
-      <p className="text-sm font-medium text-gray-500">{label}</p>
-      <p className="text-base text-gray-900">
-        {live || <span className="text-gray-400 italic">–</span>}
-      </p>
-      {hasPending && (
-        <div className="flex items-start gap-1.5 border-l-2 border-amber-400 pl-2 mt-1.5">
-          <Clock className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-          <span className="text-sm text-amber-700">
-            {isFirstSubmission ? "Beküldve" : "Jóváhagyásra vár"}:{" "}
-            <span className="font-medium">{pending || "–"}</span>
-          </span>
+    <div className={`rounded-xl border p-4 space-y-3 ${borderCls}`}>
+      <div className="flex items-center gap-2 pb-1 border-b border-inherit">
+        {variant !== "live" && <Clock className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
+        <p className={`text-xs font-semibold uppercase tracking-wide ${titleCls}`}>{title}</p>
+      </div>
+
+      {/* Avatar */}
+      <div className="flex items-center gap-3">
+        <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0">
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-2xl">📷</span>
+          )}
+        </div>
+        <Row label="Teljes név" value={fullName} />
+      </div>
+
+      <Row label="Telefonszám" value={phone} />
+
+      {counties !== undefined && (
+        <div className="space-y-1">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Megye</p>
+          <div className="flex flex-wrap gap-1">
+            {(counties ?? []).length > 0 ? (counties ?? []).map((c) => (
+              <span key={c} className="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700 border border-gray-200">{c}</span>
+            )) : <span className="text-gray-400 italic text-sm">–</span>}
+          </div>
         </div>
       )}
+
+      {categories !== undefined && (
+        <div className="space-y-1">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Kategória</p>
+          <div className="flex flex-wrap gap-1">
+            {(categories ?? []).length > 0 ? (categories ?? []).map((c) => (
+              <span key={c} className="px-2 py-0.5 rounded-full text-xs bg-[#84AAA6]/10 text-[#84AAA6] border border-[#84AAA6]/20">
+                {CATEGORY_LABELS[c as ServiceCategory] ?? c}
+              </span>
+            )) : <span className="text-gray-400 italic text-sm">–</span>}
+          </div>
+        </div>
+      )}
+
+      <Row label="Leírás" value={description} />
+      {website && <Row label="Weboldal" value={website} />}
     </div>
   );
 }
@@ -111,99 +168,52 @@ function ProfileView({
   provider: Provider;
   onEdit: () => void;
 }) {
-  const pc = provider.pending_changes;
+  const pc = provider.pending_changes as Record<string, unknown> | null | undefined;
   const isFirstSubmission = provider.approval_status !== "approved";
-
-  const pendingField = (key: string) =>
-    pc && key in pc ? String((pc as Record<string, unknown>)[key] ?? "") : undefined;
-
-  const pendingAvatarUrl = pc && "avatar_url" in pc
-    ? (pc as Record<string, unknown>).avatar_url as string | undefined
-    : undefined;
-  const avatarHasPending =
-    pendingAvatarUrl !== undefined &&
-    pendingAvatarUrl !== (provider.avatar_url ?? "");
+  const hasPendingUpdate = !isFirstSubmission && !!pc;
 
   return (
-    <div className="space-y-5">
-      {/* Avatar */}
-      <div className="flex items-center gap-4">
-        <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center shrink-0">
-          {provider.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={provider.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-3xl">📷</span>
+    <div className="space-y-4">
+      {isFirstSubmission ? (
+        /* First submission – single card with all submitted data */
+        <DataCard
+          title="Beküldött adatok – jóváhagyásra vár"
+          variant="submitted"
+          avatarUrl={provider.avatar_url}
+          fullName={provider.full_name}
+          phone={provider.phone}
+          description={provider.description}
+          website={provider.website}
+          counties={provider.counties}
+          categories={provider.categories}
+        />
+      ) : (
+        /* Approved profile – live card + optional pending card side by side */
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <DataCard
+            title="Élő verzió"
+            variant="live"
+            avatarUrl={provider.avatar_url}
+            fullName={provider.full_name}
+            phone={provider.phone}
+            description={provider.description}
+            website={provider.website}
+            counties={provider.counties}
+            categories={provider.categories}
+          />
+          {hasPendingUpdate && (
+            <DataCard
+              title="Módosítás – jóváhagyásra vár"
+              variant="pending"
+              avatarUrl={pc?.avatar_url as string | null}
+              fullName={pc?.full_name as string | null}
+              phone={pc?.phone as string | null}
+              description={pc?.description as string | null}
+              website={pc?.website as string | null}
+            />
           )}
         </div>
-        <div className="space-y-1 min-w-0">
-          <p className="text-sm font-medium text-gray-500">Profilkép</p>
-          {avatarHasPending && (
-            <div className="flex items-center gap-1.5 border-l-2 border-amber-400 pl-2">
-              <Clock className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-              <span className="text-sm text-amber-700">
-                {isFirstSubmission ? "Beküldve" : "Jóváhagyásra vár"}: Új profilkép
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <ViewField
-        label="Teljes név"
-        live={provider.full_name}
-        pending={pendingField("full_name")}
-        isFirstSubmission={isFirstSubmission}
-      />
-      <ViewField
-        label="Telefonszám"
-        live={provider.phone}
-        pending={pendingField("phone")}
-        isFirstSubmission={isFirstSubmission}
-      />
-
-      {/* Counties – applied instantly, no pending */}
-      <div className="space-y-1">
-        <p className="text-sm font-medium text-gray-500">Megye</p>
-        <div className="flex flex-wrap gap-1.5">
-          {(provider.counties ?? []).map((c) => (
-            <span
-              key={c}
-              className="px-2.5 py-1 rounded-full text-sm bg-gray-100 text-gray-700 border border-gray-200"
-            >
-              {c}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Categories – applied instantly, no pending */}
-      <div className="space-y-1">
-        <p className="text-sm font-medium text-gray-500">Kategória</p>
-        <div className="flex flex-wrap gap-1.5">
-          {(provider.categories ?? []).map((c) => (
-            <span
-              key={c}
-              className="px-2.5 py-1 rounded-full text-sm bg-[#84AAA6]/10 text-[#84AAA6] border border-[#84AAA6]/20"
-            >
-              {CATEGORY_LABELS[c as ServiceCategory] ?? c}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <ViewField
-        label="Leírás"
-        live={provider.description}
-        pending={pendingField("description")}
-        isFirstSubmission={isFirstSubmission}
-      />
-      <ViewField
-        label="Weboldal"
-        live={provider.website ?? null}
-        pending={pendingField("website")}
-        isFirstSubmission={isFirstSubmission}
-      />
+      )}
 
       <Button variant="outline" onClick={onEdit} className="flex items-center gap-2">
         <Pencil className="h-4 w-4" />

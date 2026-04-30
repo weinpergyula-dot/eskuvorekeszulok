@@ -24,6 +24,7 @@ export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
+  const [providerDot, setProviderDot] = useState<"amber" | "red" | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -45,13 +46,30 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!supabase || !user) { setProfile(null); return; }
+    if (!supabase || !user) { setProfile(null); setProviderDot(null); return; }
     supabase
       .from("profiles")
       .select("*")
       .eq("user_id", user.id)
       .single()
-      .then(({ data }) => setProfile(data));
+      .then(({ data }) => {
+        setProfile(data);
+        if (data?.role === "provider") {
+          supabase
+            .from("providers")
+            .select("approval_status, pending_changes")
+            .eq("user_id", user.id)
+            .single()
+            .then(({ data: p }) => {
+              if (!p) { setProviderDot(null); return; }
+              if (p.approval_status === "rejected") { setProviderDot("red"); return; }
+              if (p.approval_status === "pending" || p.pending_changes) { setProviderDot("amber"); return; }
+              setProviderDot(null);
+            });
+        } else {
+          setProviderDot(null);
+        }
+      });
   }, [user]);
 
   useEffect(() => {
@@ -151,8 +169,11 @@ export function Navbar() {
                     <Button variant="ghost" className="text-base">Dashboard</Button>
                   </Link>
                 )}
-                <Link href="/profil">
+                <Link href="/profil" className="relative">
                   <Button variant="ghost" className="text-base">Profilom</Button>
+                  {providerDot && (
+                    <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-red-500" : "bg-amber-400"}`} />
+                  )}
                 </Link>
                 <Button variant="outline" className="text-base" onClick={handleSignOut}>
                   Kijelentkezés
@@ -195,8 +216,11 @@ export function Navbar() {
           <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
             {user ? (
               <>
-                <Link href="/profil" onClick={() => setMobileOpen(false)}>
+                <Link href="/profil" onClick={() => setMobileOpen(false)} className="relative block">
                   <Button variant="outline" size="sm" className="w-full">Profilom</Button>
+                  {providerDot && (
+                    <span className={`absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-red-500" : "bg-amber-400"}`} />
+                  )}
                 </Link>
                 {profile?.role === "provider" && (
                   <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
