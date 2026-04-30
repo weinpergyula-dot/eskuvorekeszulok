@@ -47,14 +47,25 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
           {provider.full_name}
         </h3>
 
-        {/* Category + county */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
-          <Badge variant="secondary" className="text-base">
-            {CATEGORY_LABELS[provider.category as keyof typeof CATEGORY_LABELS] ?? provider.category}
-          </Badge>
-          <span className="flex items-center gap-1 text-base text-gray-900">
-            <MapPin className="h-3.5 w-3.5 text-[#2a9d8f]" />
-            {provider.county}
+        {/* Categories */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
+          {(provider.categories ?? []).slice(0, 2).map((cat) => (
+            <Badge key={cat} variant="secondary" className="text-base">
+              {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+            </Badge>
+          ))}
+          {(provider.categories ?? []).length > 2 && (
+            <Badge variant="secondary" className="text-base">
+              +{(provider.categories ?? []).length - 2}
+            </Badge>
+          )}
+        </div>
+        {/* Counties */}
+        <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
+          <MapPin className="h-3.5 w-3.5 text-[#2a9d8f] shrink-0" />
+          <span className="text-base text-gray-900">
+            {(provider.counties ?? []).slice(0, 2).join(", ")}
+            {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
           </span>
         </div>
 

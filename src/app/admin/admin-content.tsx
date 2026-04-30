@@ -127,8 +127,11 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
 function ProviderRow({ provider, type }: { provider: Provider; type: "registration" | "edit" }) {
   const changes = type === "edit" ? (provider.pending_changes as Record<string, unknown>) : null;
   const displayData = changes ?? provider;
-  const categoryLabel =
-    CATEGORY_LABELS[displayData.category as ServiceCategory] ?? String(displayData.category ?? "");
+  const cats = (displayData.categories as ServiceCategory[] | undefined) ?? [];
+  const cnts = (displayData.counties as string[] | undefined) ?? [];
+  const categoryLabels = cats
+    .map((c) => CATEGORY_LABELS[c] ?? String(c))
+    .join(", ");
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-5">
@@ -153,9 +156,12 @@ function ProviderRow({ provider, type }: { provider: Provider; type: "registrati
             </div>
             <p className="text-base text-gray-900 mb-0.5">{String(displayData.email ?? "")}</p>
             <p className="text-base text-gray-900 mb-0.5">{String(displayData.phone ?? "")}</p>
-            <p className="text-base text-gray-900 mb-0.5">
-              {categoryLabel} – {String(displayData.county ?? "")}
-            </p>
+            {categoryLabels && (
+              <p className="text-base text-gray-900 mb-0.5">{categoryLabels}</p>
+            )}
+            {cnts.length > 0 && (
+              <p className="text-base text-gray-900 mb-0.5">{cnts.join(", ")}</p>
+            )}
             {displayData.description ? (
               <p className="text-base text-gray-900 mt-2 line-clamp-2 max-w-md">
                 {String(displayData.description)}

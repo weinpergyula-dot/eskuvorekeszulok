@@ -18,12 +18,13 @@ export async function generateMetadata({ params }: PageProps) {
     const supabase = await createClient();
     const { data } = await supabase
       .from("providers")
-      .select("full_name, category")
+      .select("full_name, categories")
       .eq("id", id)
       .eq("approval_status", "approved")
       .single();
     if (!data) return { title: "Szolgáltató" };
-    const label = CATEGORY_LABELS[data.category as ServiceCategory];
+    const firstCat = (data.categories as ServiceCategory[])?.[0];
+    const label = firstCat ? CATEGORY_LABELS[firstCat] : "Szolgáltató";
     return { title: `${data.full_name} – ${label} | Esküvőre Készülök` };
   } catch {
     return { title: "Szolgáltató" };
@@ -53,8 +54,8 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
-  const categoryLabel =
-    CATEGORY_LABELS[provider.category as ServiceCategory] ?? provider.category;
+  const firstCategory = (provider.categories ?? [])[0] as ServiceCategory | undefined;
+  const firstCategoryLabel = firstCategory ? CATEGORY_LABELS[firstCategory] ?? firstCategory : "Szolgáltatások";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -63,13 +64,17 @@ export default async function ProviderProfilePage({ params }: PageProps) {
         <a href="/services" className="hover:text-[#2a9d8f] cursor-pointer">
           Szolgáltatások
         </a>{" "}
-        /{" "}
-        <a
-          href={`/services/${provider.category}`}
-          className="hover:text-[#2a9d8f] cursor-pointer"
-        >
-          {categoryLabel}
-        </a>{" "}
+        {firstCategory && (
+          <>
+            /{" "}
+            <a
+              href={`/services/${firstCategory}`}
+              className="hover:text-[#2a9d8f] cursor-pointer"
+            >
+              {firstCategoryLabel}
+            </a>{" "}
+          </>
+        )}
         / <span className="text-gray-900">{provider.full_name}</span>
       </nav>
 
@@ -99,13 +104,17 @@ export default async function ProviderProfilePage({ params }: PageProps) {
             </h1>
 
             <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-3">
-              <Badge variant="secondary" className="text-lg">
-                {categoryLabel}
-              </Badge>
-              <span className="flex items-center gap-1 text-lg text-gray-900">
-                <MapPin className="h-4 w-4" />
-                {provider.county}
-              </span>
+              {(provider.categories ?? []).map((cat) => (
+                <Badge key={cat} variant="secondary" className="text-lg">
+                  {CATEGORY_LABELS[cat as ServiceCategory] ?? cat}
+                </Badge>
+              ))}
+              {(provider.counties ?? []).length > 0 && (
+                <span className="flex items-center gap-1 text-lg text-gray-900">
+                  <MapPin className="h-4 w-4" />
+                  {(provider.counties ?? []).join(", ")}
+                </span>
+              )}
             </div>
 
             {/* Rating row */}

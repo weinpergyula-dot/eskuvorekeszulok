@@ -33,13 +33,13 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     let query = supabase
       .from("providers")
       .select("*")
-      .eq("category", category)
+      .contains("categories", [category])
       .eq("approval_status", "approved")
       .neq("active", false)
       .order("created_at", { ascending: false });
 
     if (county) {
-      query = query.eq("county", county);
+      query = query.contains("counties", [county]);
     }
 
     const { data, error } = await query;

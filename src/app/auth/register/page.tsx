@@ -8,17 +8,62 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 
 type Step = "role" | "basic" | "provider-details";
+
+function MultiCheckbox<T extends string>({
+  label,
+  note,
+  options,
+  selected,
+  onChange,
+}: {
+  label: string;
+  note?: string;
+  options: { value: T; label: string }[];
+  selected: T[];
+  onChange: (next: T[]) => void;
+}) {
+  const toggle = (value: T) => {
+    if (selected.includes(value)) {
+      onChange(selected.filter((v) => v !== value));
+    } else {
+      onChange([...selected, value]);
+    }
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <Label>
+        {label}{" "}
+        {note && <span className="text-gray-400 font-normal text-sm">{note}</span>}
+      </Label>
+      <div className="border border-gray-200 rounded-lg overflow-hidden">
+        <div className="max-h-52 overflow-y-auto p-2 space-y-0.5">
+          {options.map((opt) => (
+            <label
+              key={opt.value}
+              className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                checked={selected.includes(opt.value)}
+                onChange={() => toggle(opt.value)}
+                className="accent-[#2a9d8f] h-4 w-4 shrink-0"
+              />
+              <span className="text-base text-gray-900">{opt.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+      {selected.length > 0 && (
+        <p className="text-sm text-[#2a9d8f]">{selected.length} kiválasztva</p>
+      )}
+    </div>
+  );
+}
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -37,8 +82,8 @@ export default function RegisterPage() {
 
   // Provider-only fields
   const [phone, setPhone] = useState("");
-  const [county, setCounty] = useState("");
-  const [category, setCategory] = useState<ServiceCategory | "">("");
+  const [counties, setCounties] = useState<string[]>([]);
+  const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [description, setDescription] = useState("");
   const [website, setWebsite] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -118,8 +163,8 @@ export default function RegisterPage() {
           full_name: fullName,
           email,
           phone,
-          county,
-          category,
+          counties,
+          categories,
           description,
           website: website || null,
           avatar_url: avatarUrl || null,
@@ -144,12 +189,19 @@ export default function RegisterPage() {
 
   const handleProviderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!category || !county) {
-      setError("Kérlek tölts ki minden kötelező mezőt.");
+    if (categories.length === 0 || counties.length === 0) {
+      setError("Kérlek válassz legalább egy kategóriát és egy megyét.");
       return;
     }
     await registerUser();
   };
+
+  const categoryOptions = Object.entries(CATEGORY_LABELS).map(([value, label]) => ({
+    value: value as ServiceCategory,
+    label,
+  }));
+
+  const countyOptions = COUNTIES.map((c) => ({ value: c, label: c }));
 
   // Step 1 – Role selection
   if (step === "role") {
@@ -359,43 +411,21 @@ export default function RegisterPage() {
             />
           </div>
 
-          {/* County */}
-          <div className="space-y-1.5">
-            <Label>Megye *</Label>
-            <Select value={county} onValueChange={setCounty} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Válassz megyét" />
-              </SelectTrigger>
-              <SelectContent>
-                {COUNTIES.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <MultiCheckbox
+            label="Megye *"
+            note="(több is választható)"
+            options={countyOptions}
+            selected={counties}
+            onChange={setCounties}
+          />
 
-          {/* Category */}
-          <div className="space-y-1.5">
-            <Label>Kategória *</Label>
-            <Select
-              value={category}
-              onValueChange={(v) => setCategory(v as ServiceCategory)}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Válassz kategóriát" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <MultiCheckbox
+            label="Kategória *"
+            note="(több is választható)"
+            options={categoryOptions}
+            selected={categories}
+            onChange={setCategories}
+          />
 
           {/* Description */}
           <div className="space-y-1.5">
