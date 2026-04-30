@@ -134,6 +134,7 @@
   /* ── Teal ──────────────────────────────────────────── */
   --color-teal:        #84AAA6;  /* primary */
   --color-teal-hover:  #6B8E8A;  /* button hover / darker */
+  --color-teal-deep:   #2D5854;  /* text on teal backgrounds (contrast-safe) */
   --color-teal-bg:     #F0F6F5;  /* panel background / light hover */
 
   /* ── Pink ──────────────────────────────────────────── */
