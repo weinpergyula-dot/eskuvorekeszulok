@@ -16,26 +16,26 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="w-[42%] sm:w-[40%] lg:max-w-xl lg:w-auto lg:ml-[8%]">
-              <h1 className="mb-4 leading-tight" style={{ fontWeight: 950 }}>
+            <div className="w-[42%] sm:w-[40%] lg:w-auto lg:ml-[8%] lg:flex lg:flex-col lg:items-center">
+              <h1 className="mb-4 leading-tight lg:whitespace-nowrap" style={{ fontWeight: 950 }}>
                 <span
-                  className="text-[#84AAA6] block"
+                  className="text-[#84AAA6] block lg:inline"
                   style={{ fontSize: "clamp(28px, 8vw, 65px)" }}
                 >
-                  ESKÜVŐRE
+                  ESKÜVŐRE{" "}
                 </span>
                 <span
-                  className="text-gray-700 block"
+                  className="text-gray-700 block lg:inline"
                   style={{ fontSize: "clamp(28px, 8vw, 65px)" }}
                 >
                   KÉSZÜLSZ?
                 </span>
               </h1>
-              <div className="w-[calc(100%+2rem)] -ml-4 h-0.5 bg-[#84AAA6] mb-4" />
+              <div className="w-[calc(100%+2rem)] -ml-4 lg:w-[calc(100%+3rem)] lg:ml-0 h-0.5 bg-[#84AAA6] mb-4" />
               <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
                 Találj meg mindent egy helyen a nagy napodra!
               </p>
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 lg:justify-center">
                 <Link href="/services">
                   <Button size="lg" className="w-full sm:w-auto text-[13px] sm:text-base">Megnézem a szolgáltatókat</Button>
                 </Link>
