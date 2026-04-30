@@ -120,19 +120,19 @@ export function ProviderForm({ userId, role, provider }: Props) {
         avatar_url: avatarUrl || null,
       };
 
-      if (role === "visitor" || (role === "admin" && !provider)) {
-        // Create new provider record
+      if (role === "visitor" || !provider) {
+        // Create new provider record (pending approval)
         const email = user.email ?? "";
         const { error: insertError } = await supabase.from("providers").insert({
           user_id: userId,
           email,
           ...payload,
-          approval_status: role === "admin" ? "approved" : "pending",
+          approval_status: "pending",
           active: true,
         });
         if (insertError) throw insertError;
 
-        // Upgrade role to provider only for visitors
+        // Upgrade role to provider for visitors
         if (role === "visitor") {
           const { error: roleError } = await supabase
             .from("profiles")
@@ -140,21 +140,12 @@ export function ProviderForm({ userId, role, provider }: Props) {
             .eq("user_id", userId);
           if (roleError) throw roleError;
         }
-      } else if (role === "admin") {
-        // Admin: update directly, no approval needed
-        const { error: updateError } = await supabase
-          .from("providers")
-          .update({ ...payload, approval_status: "approved" })
-          .eq("user_id", userId);
-        if (updateError) throw updateError;
       } else {
-        // Provider: store as pending_changes for admin review
+        // Existing provider: store changes as pending — keep approval_status unchanged
+        // so the current approved profile stays visible in listings
         const { error: updateError } = await supabase
           .from("providers")
-          .update({
-            pending_changes: payload,
-            approval_status: "pending",
-          })
+          .update({ pending_changes: payload })
           .eq("user_id", userId);
         if (updateError) throw updateError;
       }
@@ -208,7 +199,7 @@ export function ProviderForm({ userId, role, provider }: Props) {
           )}
           {success && (
             <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-              ✓ {role === "visitor" ? "Profil létrehozva! Jóváhagyásra vár." : role === "admin" ? "Profil mentve!" : "Módosítások elküldve!"}
+              ✓ {!provider ? "Profil létrehozva! Jóváhagyásra vár." : "Módosítások elküldve, jóváhagyásra vár."}
             </div>
           )}
 

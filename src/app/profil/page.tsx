@@ -49,23 +49,39 @@ export default async function ProfilPage() {
 
         {/* Block 2: Provider profile */}
         <section className="bg-white rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Szolgáltatói profil
           </h2>
-          {profile.role === "visitor" && (
-            <p className="text-lg text-gray-900 mb-5">
-              Töltsd ki az adatlapot és aktiváld a szolgáltatói profilodat. Az
-              adminisztrátor jóváhagyása után megjelensz a listában.
-            </p>
-          )}
-          {profile.role === "provider" && provider?.approval_status === "pending" && (
-            <p className="text-lg text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 mb-5">
-              A profilod jóváhagyásra vár. Addig nem látható nyilvánosan.
-            </p>
-          )}
-          {profile.role === "provider" && provider?.pending_changes && (
-            <p className="text-lg text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-5">
-              A legutóbbi módosításaid az adminisztrátor jóváhagyásáig nem jelennek meg nyilvánosan.
+
+          {/* Status indicator */}
+          {provider ? (
+            <div className="mb-5 space-y-2">
+              {provider.approval_status === "approved" ? (
+                <div className="flex items-center gap-2 text-base font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
+                  <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
+                  Aktív – profilod látható a listában
+                </div>
+              ) : provider.approval_status === "rejected" ? (
+                <div className="flex items-center gap-2 text-base font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                  <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+                  Elutasítva – profilod nem látható
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-base font-medium text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3">
+                  <span className="w-2 h-2 rounded-full bg-yellow-400 shrink-0" />
+                  Jóváhagyásra vár – profilod egyelőre nem látható
+                </div>
+              )}
+              {provider.pending_changes && (
+                <div className="flex items-center gap-2 text-base text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
+                  <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
+                  Módosítás jóváhagyásra vár – addig az előző adatok látszódnak
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-base text-gray-900 mb-5">
+              Töltsd ki az adatlapot és aktiváld a szolgáltatói profilodat. Az adminisztrátor jóváhagyása után megjelensz a listában.
             </p>
           )}
           <ProviderForm
