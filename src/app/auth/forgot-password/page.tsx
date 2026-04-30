@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
         <div className="w-full max-w-md">
           <p className="text-gray-900 text-center mb-8">Küldjük el a visszaállítási linket</p>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div>
             {sent ? (
               <div className="text-center space-y-4">
                 <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">

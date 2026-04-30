@@ -51,7 +51,7 @@ export default function ResetPasswordPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
+            className="space-y-4"
           >
             {error && (
               <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">

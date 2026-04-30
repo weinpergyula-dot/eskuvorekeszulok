@@ -218,7 +218,7 @@ export default function RegisterPage() {
             <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#2a9d8f]"}`} />
           </div>
 
-          <form onSubmit={handleBasicSubmit} className="space-y-4 bg-white border border-gray-200 rounded-lg p-6">
+          <form onSubmit={handleBasicSubmit} className="space-y-4">
             {error && (
               <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
                 {error}
@@ -306,7 +306,7 @@ export default function RegisterPage() {
           <div className="h-1 flex-1 bg-[#2a9d8f] rounded-full" />
         </div>
 
-        <form onSubmit={handleProviderSubmit} className="space-y-4 bg-white border border-gray-200 rounded-lg p-6">
+        <form onSubmit={handleProviderSubmit} className="space-y-4">
           {error && (
             <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
               {error}

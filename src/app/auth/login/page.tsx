@@ -59,7 +59,7 @@ function LoginForm() {
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white border border-gray-200 rounded-lg p-6"
+        className="space-y-4"
       >
         {registered && (
           <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
