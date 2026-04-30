@@ -125,7 +125,6 @@ export default function RegisterPage() {
           avatar_url: avatarUrl || null,
           gallery_urls: galleryUrls,
           approval_status: "pending",
-          active: true,
         });
 
         if (providerError) throw providerError;

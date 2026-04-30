@@ -128,7 +128,6 @@ export function ProviderForm({ userId, role, provider }: Props) {
           email,
           ...payload,
           approval_status: "pending",
-          active: true,
         });
         if (insertError) throw insertError;
 
@@ -153,7 +152,8 @@ export function ProviderForm({ userId, role, provider }: Props) {
       setSuccess(true);
       setTimeout(() => { router.refresh(); }, 1500);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Hiba a mentés során.");
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(msg || "Hiba a mentés során.");
     } finally {
       setSaving(false);
     }
