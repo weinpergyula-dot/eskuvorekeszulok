@@ -23,7 +23,7 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           onFocus={(e) => { setFocused(true); onFocus?.(e); }}
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
           className={cn(
-            "w-full border rounded-xl px-4 pt-5 pb-2 text-base outline-none transition-colors bg-white",
+            "w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white",
             focused ? "border-[#84AAA6]" : "border-gray-300",
             className
           )}
@@ -36,7 +36,7 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white",
             floated
               ? "-top-2.5 text-xs px-1 text-[#84AAA6]"
-              : "top-3.5 text-base text-gray-400"
+              : "top-1/2 -translate-y-1/2 text-base text-gray-400"
           )}
         >
           {label}
