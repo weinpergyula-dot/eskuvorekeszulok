@@ -61,27 +61,15 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
   return (
     <div>
-      <PageHeader title="Szolgáltatói profil" />
+      <PageHeader
+        title="Szolgáltatói profil"
+        breadcrumb={[
+          { label: "Szolgáltatások", href: "/services" },
+          ...(firstCategory ? [{ label: firstCategoryLabel, href: `/services/${firstCategory}` }] : []),
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ViewTracker providerId={provider.id} />
-      {/* Breadcrumb */}
-      <nav className="text-lg text-gray-900 mb-8">
-        <a href="/services" className="hover:text-[#84AAA6] cursor-pointer">
-          Szolgáltatások
-        </a>{" "}
-        {firstCategory && (
-          <>
-            /{" "}
-            <a
-              href={`/services/${firstCategory}`}
-              className="hover:text-[#84AAA6] cursor-pointer"
-            >
-              {firstCategoryLabel}
-            </a>{" "}
-          </>
-        )}
-        / <span className="text-gray-900">{provider.full_name}</span>
-      </nav>
 
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Hero section */}
