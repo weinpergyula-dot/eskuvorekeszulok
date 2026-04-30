@@ -223,11 +223,13 @@ export function Navbar() {
                   </Link>
                 )}
                 {profile?.role === "admin" && (
-                  <Link href="/admin" onClick={() => setMobileOpen(false)} className="relative">
-                    <Button variant="outline" size="sm" className="w-full">Admin</Button>
-                    {pendingCount > 0 && (
-                      <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
-                    )}
+                  <Link href="/admin" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-1.5">
+                      Admin
+                      {pendingCount > 0 && (
+                        <span className="w-2 h-2 bg-red-500 rounded-full shrink-0" />
+                      )}
+                    </Button>
                   </Link>
                 )}
                 <Button size="sm" className="w-full" onClick={handleSignOut}>

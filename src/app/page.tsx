@@ -16,7 +16,7 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="w-[42%] sm:w-[40%] lg:w-fit lg:ml-[8%] flex flex-col items-center text-center">
+            <div className="w-[42%] sm:w-[40%] lg:w-fit ml-[15px] sm:ml-0 lg:ml-[8%] flex flex-col items-center text-center">
               <h1 className="mb-4 leading-tight lg:whitespace-nowrap" style={{ fontWeight: 950 }}>
                 <span
                   className="text-[#84AAA6] block lg:inline"

@@ -194,7 +194,21 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
 
         {/* Sidebar */}
         <aside className="sm:w-52 shrink-0">
-          <nav className="flex sm:flex-col gap-1 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0">
+          {/* Mobile dropdown */}
+          <div className="sm:hidden mb-2">
+            <select
+              value={active}
+              onChange={(e) => setActive(e.target.value as Section)}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent text-center"
+            >
+              {MENU_ITEMS.map((item) => (
+                <option key={item.id} value={item.id}>{item.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Desktop nav */}
+          <nav className="hidden sm:flex flex-col gap-1">
             {MENU_ITEMS.map((item) => (
               <button
                 key={item.id}
