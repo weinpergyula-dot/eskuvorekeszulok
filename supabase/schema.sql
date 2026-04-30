@@ -76,6 +76,10 @@ create policy "Provider can view own profile"
   on public.providers for select
   using (auth.uid() = user_id);
 
+create policy "Authenticated users can insert own provider"
+  on public.providers for insert
+  with check (auth.uid() = user_id);
+
 create policy "Provider can update own profile"
   on public.providers for update
   using (auth.uid() = user_id);
