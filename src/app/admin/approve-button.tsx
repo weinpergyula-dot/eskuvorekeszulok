@@ -24,9 +24,23 @@ export function ApproveButton({ providerId, type, action, changes }: ApproveButt
     setLoading(true);
 
     if (type === "edit" && changes) {
+      // Only spread known valid columns; also handle old single-value format
+      const VALID_KEYS = ["full_name", "phone", "counties", "categories", "description", "website", "avatar_url", "gallery_urls"];
+      const safeChanges: Record<string, unknown> = {};
+      for (const key of VALID_KEYS) {
+        if (key in changes) safeChanges[key] = changes[key];
+      }
+      // Migrate old format (category/county → categories/counties)
+      if (!safeChanges.categories && changes.category) {
+        safeChanges.categories = [changes.category];
+      }
+      if (!safeChanges.counties && changes.county) {
+        safeChanges.counties = [changes.county];
+      }
+
       await supabase
         .from("providers")
-        .update({ ...changes, pending_changes: null, approval_status: "approved", rejection_reason: null })
+        .update({ ...safeChanges, pending_changes: null, approval_status: "approved", rejection_reason: null })
         .eq("id", providerId);
     } else {
       await supabase
