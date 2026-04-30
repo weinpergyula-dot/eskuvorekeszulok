@@ -102,7 +102,7 @@ function ProfileView({
   const pc = provider.pending_changes;
   const hasPending = !!pc;
 
-  const pendingField = (key: keyof typeof pc) =>
+  const pendingField = (key: string) =>
     pc && key in pc ? String((pc as Record<string, unknown>)[key] ?? "") : undefined;
 
   return (
