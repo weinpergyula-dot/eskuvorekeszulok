@@ -214,26 +214,26 @@ export default function RegisterPage() {
         <PageHeader title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
-          <p className="text-gray-900 text-center mb-8">Melyik típusú fiókot szeretnéd létrehozni?</p>
+          <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
               onClick={() => { setRole("visitor"); setStep("basic"); }}
-              className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#84AAA6] hover:shadow-md transition-all group"
+              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
             >
-              <span className="text-4xl mb-3">👰</span>
-              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]">Látogató</span>
-              <span className="text-base text-gray-900 mt-1 text-center">
+              <span className="text-5xl mb-4">👰</span>
+              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Látogató</span>
+              <span className="text-base text-gray-900 mt-2 text-center">
                 Böngészem a szolgáltatókat
               </span>
             </button>
             <button
               onClick={() => { setRole("provider"); setStep("basic"); }}
-              className="flex flex-col items-center p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-[#84AAA6] hover:shadow-md transition-all group"
+              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
             >
-              <span className="text-4xl mb-3">💼</span>
-              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]">Szolgáltató</span>
-              <span className="text-base text-gray-900 mt-1 text-center">
+              <span className="text-5xl mb-4">💼</span>
+              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Szolgáltató</span>
+              <span className="text-base text-gray-900 mt-2 text-center">
                 Hirdetem a szolgáltatásom
               </span>
             </button>

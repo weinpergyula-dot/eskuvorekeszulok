@@ -178,10 +178,10 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/auth/register">
-                  <Button variant="outline" className="text-base">Regisztráció</Button>
+                  <Button className="text-base bg-[#C65EA5] hover:bg-[#A84D8B]">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button className="text-base bg-[#C65EA5] hover:bg-[#A84D8B]">Bejelentkezés</Button>
+                  <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
                 </Link>
               </>
             )}
