@@ -48,6 +48,7 @@ export interface Provider {
   gallery_urls?: string[];
   approval_status: ApprovalStatus;
   active?: boolean;
+  rejection_reason?: string | null;
   pending_changes?: Partial<ProviderUpdatePayload> | null;
   created_at: string;
   updated_at: string;

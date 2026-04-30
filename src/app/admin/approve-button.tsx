@@ -12,45 +12,26 @@ interface ApproveButtonProps {
   changes: Record<string, unknown> | null;
 }
 
-export function ApproveButton({
-  providerId,
-  type,
-  action,
-  changes,
-}: ApproveButtonProps) {
+export function ApproveButton({ providerId, type, action, changes }: ApproveButtonProps) {
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [reason, setReason] = useState("");
   const router = useRouter();
   const supabase = createClient();
 
-  const handle = async () => {
+  const handleApprove = async () => {
     if (!supabase) return;
     setLoading(true);
 
-    if (action === "approve" && type === "edit" && changes) {
-      // Apply pending changes to live data
+    if (type === "edit" && changes) {
       await supabase
         .from("providers")
-        .update({
-          ...changes,
-          pending_changes: null,
-          approval_status: "approved",
-        })
-        .eq("id", providerId);
-    } else if (action === "approve" && type === "registration") {
-      await supabase
-        .from("providers")
-        .update({ approval_status: "approved" })
-        .eq("id", providerId);
-    } else if (action === "reject" && type === "edit") {
-      await supabase
-        .from("providers")
-        .update({ pending_changes: null, approval_status: "approved" })
+        .update({ ...changes, pending_changes: null, approval_status: "approved", rejection_reason: null })
         .eq("id", providerId);
     } else {
-      // reject registration
       await supabase
         .from("providers")
-        .update({ approval_status: "rejected" })
+        .update({ approval_status: "approved", rejection_reason: null })
         .eq("id", providerId);
     }
 
@@ -58,18 +39,79 @@ export function ApproveButton({
     router.refresh();
   };
 
+  const handleReject = async () => {
+    if (!supabase) return;
+    setLoading(true);
+
+    if (type === "edit") {
+      await supabase
+        .from("providers")
+        .update({ pending_changes: null, approval_status: "approved", rejection_reason: reason || null })
+        .eq("id", providerId);
+    } else {
+      await supabase
+        .from("providers")
+        .update({ approval_status: "rejected", rejection_reason: reason || null })
+        .eq("id", providerId);
+    }
+
+    setLoading(false);
+    setShowModal(false);
+    setReason("");
+    router.refresh();
+  };
+
+  if (action === "approve") {
+    return (
+      <Button size="sm" variant="default" onClick={handleApprove} disabled={loading}>
+        {loading ? "..." : "✓ Jóváhagy"}
+      </Button>
+    );
+  }
+
   return (
-    <Button
-      size="sm"
-      variant={action === "approve" ? "default" : "destructive"}
-      onClick={handle}
-      disabled={loading}
-    >
-      {loading
-        ? "..."
-        : action === "approve"
-        ? "✓ Jóváhagy"
-        : "✗ Elutasít"}
-    </Button>
+    <>
+      <Button size="sm" variant="destructive" onClick={() => setShowModal(true)}>
+        ✗ Elutasít
+      </Button>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4 space-y-4">
+            <h3 className="font-bold text-gray-900">Elutasítás indoklása</h3>
+            <p className="text-base text-gray-900">
+              {type === "edit"
+                ? "A módosítási kérelmet elutasítod. A szolgáltató látja az indoklást."
+                : "A regisztrációt elutasítod. A szolgáltató látja az indoklást."}
+            </p>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Indoklás (opcionális)..."
+              rows={3}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2a9d8f] resize-none"
+            />
+            <div className="flex gap-3 justify-end">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => { setShowModal(false); setReason(""); }}
+                disabled={loading}
+              >
+                Mégse
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={handleReject}
+                disabled={loading}
+              >
+                {loading ? "..." : "Elutasítás megerősítése"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

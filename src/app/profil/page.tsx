@@ -62,9 +62,16 @@ export default async function ProfilPage() {
                   Aktív – profilod látható a listában
                 </div>
               ) : provider.approval_status === "rejected" ? (
-                <div className="flex items-center gap-2 text-base font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-                  <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-                  Elutasítva – profilod nem látható
+                <div className="text-base font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+                    Elutasítva – profilod nem látható
+                  </div>
+                  {provider.rejection_reason && (
+                    <p className="text-base font-normal text-red-700 pl-4">
+                      Indoklás: {provider.rejection_reason}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-base font-medium text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3">
@@ -76,6 +83,17 @@ export default async function ProfilPage() {
                 <div className="flex items-center gap-2 text-base text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
                   <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
                   Módosítás jóváhagyásra vár – addig az előző adatok látszódnak
+                </div>
+              )}
+              {!provider.pending_changes && provider.approval_status === "approved" && provider.rejection_reason && (
+                <div className="text-base text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+                    Legutóbbi módosításod elutasítva
+                  </div>
+                  <p className="text-base font-normal text-red-700 pl-4">
+                    Indoklás: {provider.rejection_reason}
+                  </p>
                 </div>
               )}
             </div>
