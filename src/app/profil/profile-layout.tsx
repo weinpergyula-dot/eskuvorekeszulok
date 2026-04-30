@@ -46,9 +46,7 @@ function countDiffs(provider: Provider): number {
   return n;
 }
 
-type SidebarIndicator =
-  | { kind: "dot";   color: string; tooltip: string }
-  | { kind: "badge"; count: number; tooltip: string };
+type SidebarIndicator = { color: string; tooltip: string };
 
 function deriveSidebarIndicator(
   provider: Provider | null,
@@ -66,13 +64,13 @@ function deriveSidebarIndicator(
                             && !!provider.rejection_reason;
 
   if (provider.approval_status === "rejected" || wasUpdateRejected)
-    return { kind: "dot", color: "bg-red-500",   tooltip: "Elutasítva" };
+    return { color: "bg-red-500",   tooltip: "Elutasítva" };
   if (hasPendingUpdate)
-    return { kind: "badge", count: diffCount,     tooltip: `${diffCount} mező jóváhagyásra vár` };
+    return { color: "bg-amber-400", tooltip: `${diffCount} mező jóváhagyásra vár` };
   if (isFirstSubmission && provider.approval_status === "pending")
-    return { kind: "dot", color: "bg-amber-400",  tooltip: "Jóváhagyásra vár" };
+    return { color: "bg-amber-400", tooltip: "Jóváhagyásra vár" };
   if (!isProviderActive)
-    return { kind: "dot", color: "bg-gray-400",   tooltip: "Kikapcsolva" };
+    return { color: "bg-gray-400",  tooltip: "Kikapcsolva" };
   return null;
 }
 
@@ -216,13 +214,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
                     className="ml-auto shrink-0"
                     title={sidebarIndicator.tooltip}
                   >
-                    {sidebarIndicator.kind === "badge" ? (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-400 text-white text-xs font-bold leading-none">
-                        {sidebarIndicator.count}
-                      </span>
-                    ) : (
-                      <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
-                    )}
+                    <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
                   </span>
                 )}
               </button>

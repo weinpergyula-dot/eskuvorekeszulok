@@ -89,7 +89,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className={`sticky top-0 z-50 border-b transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-md border-gray-200/60 shadow-sm" : "bg-white border-gray-200 shadow-sm"}`}>
+    <nav className={`sticky top-0 z-50 border-b border-white transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-md" : "bg-white"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
