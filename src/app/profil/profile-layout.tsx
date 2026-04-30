@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { User, Lock, Briefcase, LayoutDashboard } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle } from "lucide-react";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import type { Provider, UserRole } from "@/lib/types";
@@ -30,21 +30,165 @@ const SECTION_TITLES: Record<Section, string> = {
   provider: "Profil adatok",
 };
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Count fields that genuinely differ between live data and pending_changes. */
+function countDiffs(provider: Provider): number {
+  const pc = provider.pending_changes;
+  if (!pc) return 0;
+  const norm = (v: unknown) => String(v ?? "");
+  let n = 0;
+  if ("full_name"   in pc && norm(pc.full_name)   !== norm(provider.full_name))   n++;
+  if ("phone"       in pc && norm(pc.phone)        !== norm(provider.phone))       n++;
+  if ("description" in pc && norm(pc.description)  !== norm(provider.description)) n++;
+  if ("website"     in pc && norm(pc.website)      !== norm(provider.website))     n++;
+  if ("avatar_url"  in pc && norm(pc.avatar_url)   !== norm(provider.avatar_url))  n++;
+  return n;
+}
+
+type SidebarIndicator =
+  | { kind: "dot";   color: string; tooltip: string }
+  | { kind: "badge"; count: number; tooltip: string };
+
+function deriveSidebarIndicator(
+  provider: Provider | null,
+  isProviderActive: boolean
+): SidebarIndicator | null {
+  if (!provider) return null;
+
+  const isFirstSubmission = provider.approval_status !== "approved";
+  const diffCount         = countDiffs(provider);
+  const hasPendingUpdate  = provider.approval_status === "approved"
+                            && !!provider.pending_changes
+                            && diffCount > 0;
+  const wasUpdateRejected = provider.approval_status === "approved"
+                            && !provider.pending_changes
+                            && !!provider.rejection_reason;
+
+  if (provider.approval_status === "rejected" || wasUpdateRejected)
+    return { kind: "dot", color: "bg-red-500",   tooltip: "Elutasítva" };
+  if (hasPendingUpdate)
+    return { kind: "badge", count: diffCount,     tooltip: `${diffCount} mező jóváhagyásra vár` };
+  if (isFirstSubmission && provider.approval_status === "pending")
+    return { kind: "dot", color: "bg-amber-400",  tooltip: "Jóváhagyásra vár" };
+  if (!isProviderActive)
+    return { kind: "dot", color: "bg-gray-400",   tooltip: "Kikapcsolva" };
+  return null;
+}
+
+// ── StatusCard ────────────────────────────────────────────────────────────────
+
+function StatusCard({
+  provider,
+  isProviderActive,
+}: {
+  provider: Provider;
+  isProviderActive: boolean;
+}) {
+  const isFirstSubmission = provider.approval_status !== "approved";
+  const diffCount         = countDiffs(provider);
+  const hasPendingUpdate  = provider.approval_status === "approved"
+                            && !!provider.pending_changes
+                            && diffCount > 0;
+  const wasUpdateRejected = provider.approval_status === "approved"
+                            && !provider.pending_changes
+                            && !!provider.rejection_reason;
+
+  // ── Row 1: LiveStatusRow ─────────────────────────────────────────────────
+  let liveRow: React.ReactNode;
+
+  if (!isProviderActive) {
+    liveRow = (
+      <div className="flex items-center gap-2.5 text-sm text-gray-600">
+        <span className="w-2 h-2 rounded-full bg-gray-400 shrink-0" />
+        Nem látszik a listában – kapcsold be a Szolgáltató módot
+      </div>
+    );
+  } else if (isFirstSubmission && provider.approval_status === "rejected") {
+    liveRow = (
+      <div className="space-y-1">
+        <div className="flex items-center gap-2.5 text-sm font-medium text-red-700">
+          <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+          Elutasítva – profilod nem látható
+        </div>
+        {provider.rejection_reason && (
+          <p className="text-sm text-red-600 pl-4">Indoklás: {provider.rejection_reason}</p>
+        )}
+      </div>
+    );
+  } else if (isFirstSubmission) {
+    liveRow = (
+      <div className="flex items-center gap-2.5 text-sm text-amber-700">
+        <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+        Még nem látszik – első jóváhagyásra vár
+      </div>
+    );
+  } else {
+    liveRow = (
+      <div className="flex items-center gap-2.5 text-sm text-green-700">
+        <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
+        Látszik a listában
+      </div>
+    );
+  }
+
+  // ── Row 2: PendingRow (only when relevant) ───────────────────────────────
+  let pendingRow: React.ReactNode = null;
+
+  if (isFirstSubmission && provider.approval_status === "pending") {
+    pendingRow = (
+      <div className="flex items-start gap-2.5 bg-amber-50 border-t border-amber-200 px-4 py-3">
+        <Clock className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+        <div className="space-y-0.5">
+          <p className="text-sm font-medium text-amber-800">Profil benyújtva, jóváhagyásra vár</p>
+          <p className="text-sm text-amber-700">A profil a jóváhagyás után jelenik meg.</p>
+        </div>
+      </div>
+    );
+  } else if (hasPendingUpdate) {
+    pendingRow = (
+      <div className="flex items-start gap-2.5 bg-amber-50 border-t border-amber-200 px-4 py-3">
+        <Clock className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+        <div className="space-y-0.5">
+          <p className="text-sm font-medium text-amber-800">
+            {diffCount} mező módosítása jóváhagyásra vár
+          </p>
+          <p className="text-sm text-amber-700">Az élő adatok addig változatlanok maradnak.</p>
+        </div>
+      </div>
+    );
+  } else if (wasUpdateRejected) {
+    pendingRow = (
+      <div className="flex items-start gap-2.5 bg-red-50 border-t border-red-200 px-4 py-3">
+        <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+        <div className="space-y-0.5">
+          <p className="text-sm font-medium text-red-800">Legutóbbi módosításod elutasítva</p>
+          {provider.rejection_reason && (
+            <p className="text-sm text-red-700">Indoklás: {provider.rejection_reason}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="border border-gray-200 rounded-xl overflow-hidden">
+      <div className="px-4 py-3 bg-white">{liveRow}</div>
+      {pendingRow}
+    </div>
+  );
+}
+
+// ── ProfileLayout ─────────────────────────────────────────────────────────────
+
 export function ProfileLayout({ userId, initialName, email, role, provider }: Props) {
   const [active, setActive] = useState<Section>("account");
 
-  // Lifted from ProviderForm so status badge + sidebar dot update immediately on toggle
   const [isProviderActive, setIsProviderActive] = useState(
     provider !== null ? provider.active === true : false
   );
 
-  const dot = (() => {
-    if (!provider) return null;
-    if (!isProviderActive) return "bg-gray-400";
-    if (provider.approval_status === "approved") return "bg-green-500";
-    if (provider.approval_status === "rejected") return "bg-red-500";
-    return "bg-yellow-400";
-  })();
+  const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -66,11 +210,24 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
               >
                 {item.icon}
                 <span>{item.label}</span>
-                {item.id === "provider" && dot && (
-                  <span className={`ml-auto w-2 h-2 rounded-full shrink-0 ${dot}`} />
+
+                {item.id === "provider" && sidebarIndicator && (
+                  <span
+                    className="ml-auto shrink-0"
+                    title={sidebarIndicator.tooltip}
+                  >
+                    {sidebarIndicator.kind === "badge" ? (
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-400 text-white text-xs font-bold leading-none">
+                        {sidebarIndicator.count}
+                      </span>
+                    ) : (
+                      <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
+                    )}
+                  </span>
                 )}
               </button>
             ))}
+
             {role === "provider" && (
               <Link
                 href="/dashboard"
@@ -97,56 +254,16 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
 
           {active === "provider" && (
             <div className="space-y-5">
-              {/* Status indicator */}
+              {/* StatusCard – only when provider exists */}
               {provider ? (
-                <div className="space-y-2">
-                  {!isProviderActive ? (
-                    <div className="flex items-center gap-2 text-base font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
-                      <span className="w-2 h-2 rounded-full bg-gray-400 shrink-0" />
-                      Kikapcsolva – profilod nem látható a listában
-                    </div>
-                  ) : provider.approval_status === "approved" ? (
-                    <div className="flex items-center gap-2 text-base font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
-                      <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
-                      Aktív – profilod látható a listában
-                    </div>
-                  ) : provider.approval_status === "rejected" ? (
-                    <div className="text-base font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-                        Elutasítva – profilod nem látható
-                      </div>
-                      {provider.rejection_reason && (
-                        <p className="text-base font-normal pl-4">Indoklás: {provider.rejection_reason}</p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 text-base font-medium text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3">
-                      <span className="w-2 h-2 rounded-full bg-yellow-400 shrink-0" />
-                      Jóváhagyásra vár – profilod egyelőre nem látható
-                    </div>
-                  )}
-                  {provider.pending_changes && (
-                    <div className="flex items-center gap-2 text-base text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
-                      <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
-                      Módosítás jóváhagyásra vár – addig az előző adatok látszódnak
-                    </div>
-                  )}
-                  {!provider.pending_changes && provider.approval_status === "approved" && provider.rejection_reason && (
-                    <div className="text-base text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-                        Legutóbbi módosításod elutasítva
-                      </div>
-                      <p className="text-base font-normal pl-4">Indoklás: {provider.rejection_reason}</p>
-                    </div>
-                  )}
-                </div>
+                <StatusCard provider={provider} isProviderActive={isProviderActive} />
               ) : (
-                <p className="text-base text-gray-900">
-                  Töltsd ki az adatlapot és aktiváld a szolgáltatói profilodat. Az adminisztrátor jóváhagyása után megjelensz a listában.
+                <p className="text-base text-gray-700">
+                  Töltsd ki az adatlapot és aktiváld a szolgáltatói profilodat.
+                  Az adminisztrátor jóváhagyása után megjelensz a listában.
                 </p>
               )}
+
               <ProviderForm
                 userId={userId}
                 role={role}
