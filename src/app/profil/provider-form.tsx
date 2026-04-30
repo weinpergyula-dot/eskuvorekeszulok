@@ -124,8 +124,8 @@ function ProfileView({
             <span className="text-3xl">📷</span>
           )}
         </div>
-        {pc && (pc as Record<string, unknown>).avatar_url &&
-          (pc as Record<string, unknown>).avatar_url !== provider.avatar_url && (
+        {!!(pc && (pc as Record<string, unknown>).avatar_url &&
+          (pc as Record<string, unknown>).avatar_url !== provider.avatar_url) && (
           <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2">
             ⏳ Új profilkép jóváhagyásra vár
           </div>
