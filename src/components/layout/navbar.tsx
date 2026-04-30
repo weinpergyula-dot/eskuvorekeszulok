@@ -159,11 +159,6 @@ export function Navbar() {
                     )}
                   </Link>
                 )}
-                {profile?.role === "provider" && (
-                  <Link href="/profil">
-                    <Button variant="ghost" className="text-base">Dashboard</Button>
-                  </Link>
-                )}
                 <Link href="/profil" className="relative">
                   <Button variant="ghost" className="text-base">Profilom</Button>
                   {providerDot && (
@@ -217,11 +212,6 @@ export function Navbar() {
                     <span className={`absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-red-500" : "bg-amber-400"}`} />
                   )}
                 </Link>
-                {profile?.role === "provider" && (
-                  <Link href="/profil" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full">Dashboard</Button>
-                  </Link>
-                )}
                 {profile?.role === "admin" && (
                   <Link href="/admin" onClick={() => setMobileOpen(false)}>
                     <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-1.5">
