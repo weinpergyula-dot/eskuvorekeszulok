@@ -12,7 +12,8 @@ interface FloatingInputProps extends InputHTMLAttributes<HTMLInputElement> {
 const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
   ({ label, id, value, className, onFocus, onBlur, ...props }, ref) => {
     const [focused, setFocused] = useState(false);
-    const floated = focused || String(value).length > 0;
+    const [autofilled, setAutofilled] = useState(false);
+    const floated = focused || String(value).length > 0 || autofilled;
 
     return (
       <div className="relative">
@@ -22,6 +23,10 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           value={value}
           onFocus={(e) => { setFocused(true); onFocus?.(e); }}
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
+          onAnimationStart={(e) => {
+            if (e.animationName === "autofill-start") setAutofilled(true);
+            if (e.animationName === "autofill-cancel") setAutofilled(false);
+          }}
           className={cn(
             "w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white",
             focused ? "border-[#84AAA6]" : "border-gray-300",
