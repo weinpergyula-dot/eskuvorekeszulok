@@ -23,6 +23,7 @@ const mainCategories = [
 export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [pendingCount, setPendingCount] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -52,6 +53,15 @@ export function Navbar() {
       .single()
       .then(({ data }) => setProfile(data));
   }, [user]);
+
+  useEffect(() => {
+    if (!supabase || profile?.role !== "admin") { setPendingCount(0); return; }
+    supabase
+      .from("providers")
+      .select("*", { count: "exact", head: true })
+      .eq("approval_status", "pending")
+      .then(({ count }) => setPendingCount(count ?? 0));
+  }, [profile]);
 
   const handleSignOut = async () => {
     if (!supabase) return;
@@ -128,8 +138,11 @@ export function Navbar() {
             {user ? (
               <>
                 {profile?.role === "admin" && (
-                  <Link href="/admin">
+                  <Link href="/admin" className="relative">
                     <Button variant="ghost" className="text-base">Admin</Button>
+                    {pendingCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                    )}
                   </Link>
                 )}
                 <Link href="/profil">
@@ -180,8 +193,11 @@ export function Navbar() {
                   <Button variant="outline" size="sm" className="w-full">Profilom</Button>
                 </Link>
                 {profile?.role === "admin" && (
-                  <Link href="/admin" onClick={() => setMobileOpen(false)}>
+                  <Link href="/admin" onClick={() => setMobileOpen(false)} className="relative">
                     <Button variant="outline" size="sm" className="w-full">Admin</Button>
+                    {pendingCount > 0 && (
+                      <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                    )}
                   </Link>
                 )}
                 <Button size="sm" className="w-full" onClick={handleSignOut}>
