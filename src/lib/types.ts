@@ -47,6 +47,7 @@ export interface Provider {
   avatar_url?: string;
   gallery_urls?: string[];
   approval_status: ApprovalStatus;
+  active?: boolean;
   pending_changes?: Partial<ProviderUpdatePayload> | null;
   created_at: string;
   updated_at: string;
