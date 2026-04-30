@@ -2,13 +2,40 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import {
+  Search, Camera, Music, Mic, Cake, Crown, Shirt, Flower2,
+  Palette, Scissors, Hand, Gift, Footprints, Sparkles, Gem,
+  Mail, Car, PersonStanding, UtensilsCrossed, Building2, Flower,
+  type LucideIcon,
+} from "lucide-react";
 import {
   CATEGORY_LABELS,
   CATEGORY_DESCRIPTIONS,
-  CATEGORY_ICONS,
   type ServiceCategory,
 } from "@/lib/types";
+
+const CATEGORY_LUCIDE_ICONS: Record<ServiceCategory, LucideIcon> = {
+  "fotosok-videosok": Camera,
+  "elo-zene-dj": Music,
+  vofely: Mic,
+  "torta-sutemeny": Cake,
+  "menyasszonyi-ruha": Crown,
+  "oltonya-szmoking": Shirt,
+  "dekor-kellek": Flower2,
+  smink: Palette,
+  "fodrasz-borbely": Scissors,
+  kormos: Hand,
+  "koszonto-ajandek": Gift,
+  "pedikur-manikur": Footprints,
+  kozmetika: Sparkles,
+  ekszer: Gem,
+  meghivo: Mail,
+  "auto-hinto": Car,
+  tanckoktatas: PersonStanding,
+  catering: UtensilsCrossed,
+  helyszin: Building2,
+  virag: Flower,
+};
 
 const ALL_CATEGORIES: ServiceCategory[] = [
   "fotosok-videosok",
@@ -67,7 +94,7 @@ export function CategorySearch() {
               href={`/services/${category}`}
               className="flex flex-col items-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#84AAA6] hover:shadow-md transition-all group"
             >
-              <span className="text-3xl mb-3">{CATEGORY_ICONS[category]}</span>
+              {(() => { const Icon = CATEGORY_LUCIDE_ICONS[category]; return <Icon className="h-9 w-9 mb-3 text-[#84AAA6]" strokeWidth={1.5} />; })()}
               <h3 className="font-semibold text-gray-900 mb-1 leading-tight group-hover:text-[#84AAA6] transition-colors" style={{ fontSize: "22px" }}>
                 {CATEGORY_LABELS[category]}
               </h3>
