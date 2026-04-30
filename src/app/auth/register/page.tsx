@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
+import { UserRound, Briefcase } from "lucide-react";
 
 type Step = "role" | "basic" | "provider-details";
 
@@ -221,7 +222,7 @@ export default function RegisterPage() {
               onClick={() => { setRole("visitor"); setStep("basic"); }}
               className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
             >
-              <span className="text-5xl mb-4">👰</span>
+              <UserRound className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
               <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Látogató</span>
               <span className="text-base text-gray-900 mt-2 text-center">
                 Böngészem a szolgáltatókat
@@ -231,7 +232,7 @@ export default function RegisterPage() {
               onClick={() => { setRole("provider"); setStep("basic"); }}
               className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
             >
-              <span className="text-5xl mb-4">💼</span>
+              <Briefcase className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
               <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Szolgáltató</span>
               <span className="text-base text-gray-900 mt-2 text-center">
                 Hirdetem a szolgáltatásom
