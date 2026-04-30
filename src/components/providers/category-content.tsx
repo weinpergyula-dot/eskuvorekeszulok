@@ -75,9 +75,7 @@ export function CategoryContent({
             <p className="text-4xl mb-4">🔍</p>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
             <p className="text-gray-900 text-lg">
-              {nq
-                ? `Nem található „${nameQuery}" nevű szolgáltató.`
-                : selected
+              {selected
                 ? `${selected} megyében egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`
                 : `Egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`}
             </p>
