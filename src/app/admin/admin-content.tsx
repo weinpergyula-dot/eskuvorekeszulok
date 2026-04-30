@@ -6,7 +6,7 @@ import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 
-type Filter = "pending" | "edits" | "users";
+type Filter = "pending" | "users";
 
 interface Provider {
   id: string;
@@ -27,25 +27,28 @@ interface Props {
 }
 
 export function AdminContent({ totalUsers, totalApproved, pendingProviders, pendingChanges }: Props) {
-  const pendingCount = pendingProviders.length;
-  const editsCount = pendingChanges.length;
+  // Merge first-submissions + edits into one unified list
+  type PendingItem = Provider & { kind: "registration" | "edit" };
+  const allPending: PendingItem[] = [
+    ...pendingProviders.map((p) => ({ ...p, kind: "registration" as const })),
+    ...pendingChanges.map((p) => ({ ...p, kind: "edit" as const })),
+  ];
+  const totalPending = allPending.length;
 
-  const defaultFilter: Filter =
-    pendingCount > 0 ? "pending" : editsCount > 0 ? "edits" : "users";
+  const defaultFilter: Filter = totalPending > 0 ? "pending" : "users";
 
   const [filter, setFilter] = useState<Filter>(defaultFilter);
 
   const stats: { label: string; value: number; icon: string; target: Filter; highlight: boolean }[] = [
-    { label: "Összes felhasználó",         value: totalUsers,    icon: "👥", target: "users",   highlight: false },
-    { label: "Jóváhagyott szolgáltató",    value: totalApproved, icon: "✅", target: "users",   highlight: false },
-    { label: "Jóváhagyásra vár",           value: pendingCount,  icon: "⏳", target: "pending", highlight: pendingCount > 0 },
-    { label: "Módosítás jóváhagyásra vár", value: editsCount,    icon: "🔄", target: "edits",   highlight: editsCount > 0 },
+    { label: "Összes felhasználó",      value: totalUsers,    icon: "👥", target: "users",   highlight: false },
+    { label: "Jóváhagyott szolgáltató", value: totalApproved, icon: "✅", target: "users",   highlight: false },
+    { label: "Jóváhagyásra vár",        value: totalPending,  icon: "⏳", target: "pending", highlight: totalPending > 0 },
   ];
 
   return (
     <>
       {/* Stat cards – clickable */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
         {stats.map((s) => (
           <button
             key={s.label}
@@ -65,46 +68,23 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
         ))}
       </div>
 
-      {/* Pending registrations */}
+      {/* Pending (registrations + edits combined) */}
       {filter === "pending" && (
         <section>
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            Új regisztrációk jóváhagyása
-            {pendingCount > 0 && (
-              <span className="inline-flex items-center justify-center w-5 h-5 text-base bg-yellow-400 text-white rounded-full">
-                {pendingCount}
+            Jóváhagyásra váró tételek
+            {totalPending > 0 && (
+              <span className="inline-flex items-center justify-center w-5 h-5 text-sm bg-amber-400 text-white rounded-full font-bold">
+                {totalPending}
               </span>
             )}
           </h2>
-          {pendingCount === 0 ? (
-            <p className="text-gray-900 text-lg">Nincs jóváhagyásra váró regisztráció.</p>
+          {totalPending === 0 ? (
+            <p className="text-gray-500 text-base">Nincs jóváhagyásra váró tétel.</p>
           ) : (
             <div className="space-y-4">
-              {pendingProviders.map((provider) => (
-                <ProviderRow key={provider.id} provider={provider} type="registration" />
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Pending edits */}
-      {filter === "edits" && (
-        <section>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            Profil módosítások jóváhagyása
-            {editsCount > 0 && (
-              <span className="inline-flex items-center justify-center w-5 h-5 text-base bg-blue-400 text-white rounded-full">
-                {editsCount}
-              </span>
-            )}
-          </h2>
-          {editsCount === 0 ? (
-            <p className="text-gray-900 text-lg">Nincs jóváhagyásra váró módosítás.</p>
-          ) : (
-            <div className="space-y-4">
-              {pendingChanges.map((provider) => (
-                <ProviderRow key={provider.id} provider={provider} type="edit" />
+              {allPending.map((item) => (
+                <ProviderRow key={item.id} provider={item} type={item.kind} />
               ))}
             </div>
           )}
