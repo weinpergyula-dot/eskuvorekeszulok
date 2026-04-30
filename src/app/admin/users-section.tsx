@@ -107,7 +107,11 @@ export function UsersSection() {
     setDeleting(null);
   };
 
-  if (loading) return <p className="text-gray-900 text-lg">Betöltés...</p>;
+  if (loading) return (
+    <div className="flex items-center justify-center py-12">
+      <div className="w-8 h-8 border-4 border-gray-200 border-t-[#2a9d8f] rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <>

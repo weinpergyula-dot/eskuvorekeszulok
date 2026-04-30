@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, Eye, Phone, Mail, Globe, MessageSquare, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Heart, Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -25,10 +24,10 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
       href={`/providers/${provider.id}`}
       className="bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#2a9d8f] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
     >
-      {/* Header with avatar */}
-      <div className="flex flex-col items-center pt-6 px-5 pb-4">
+      {/* Header – matches provider profile hero */}
+      <div className="bg-gradient-to-br from-[#2a9d8f]/10 to-[#C04C9B]/10 flex flex-col items-center pt-6 px-5 pb-4">
         {/* Avatar */}
-        <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 mb-3 bg-gray-100 flex items-center justify-center shrink-0">
+        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0">
           {provider.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -44,12 +43,23 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-900 text-center mb-1 group-hover:text-[#2a9d8f] transition-colors" style={{ fontSize: "22px" }}>
+        <h3 className="font-bold text-gray-900 text-center mb-2 group-hover:text-[#2a9d8f] transition-colors" style={{ fontSize: "22px" }}>
           {provider.full_name}
         </h3>
 
+        {/* Category + county */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
+          <Badge variant="secondary" className="text-base">
+            {CATEGORY_LABELS[provider.category as keyof typeof CATEGORY_LABELS] ?? provider.category}
+          </Badge>
+          <span className="flex items-center gap-1 text-base text-gray-900">
+            <MapPin className="h-3.5 w-3.5 text-[#2a9d8f]" />
+            {provider.county}
+          </span>
+        </div>
+
         {/* Rating */}
-        <div className="flex items-center gap-1.5 mb-1">
+        <div className="flex items-center gap-1.5">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star
               key={star}
@@ -61,18 +71,13 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
               )}
             />
           ))}
-          <span className="text-lg font-semibold text-gray-900 ml-1">
+          <span className="text-base font-semibold text-gray-900 ml-1">
             {rating > 0 ? rating.toFixed(1) : "–"}
           </span>
           {reviewCount > 0 && (
-            <span className="text-lg text-gray-900">({reviewCount})</span>
+            <span className="text-base text-gray-900">({reviewCount})</span>
           )}
         </div>
-
-        {/* Category badge */}
-        <Badge variant="secondary" className="text-base mt-1">
-          {CATEGORY_LABELS[provider.category as keyof typeof CATEGORY_LABELS] ?? provider.category}
-        </Badge>
 
         {/* Admin status badge */}
         {showStatus && (
@@ -100,24 +105,23 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
 
       {/* Contact info */}
       <div className="px-5 py-4 space-y-2 flex-1">
-        <ContactRow icon={<Phone className="h-4 w-4 text-gray-900" />} value={provider.phone} />
-        <ContactRow icon={<Mail className="h-4 w-4 text-gray-900" />} value={provider.email} />
+        <ContactRow icon={<Phone className="h-4 w-4 text-[#2a9d8f]" />} value={provider.phone} />
+        <ContactRow icon={<Mail className="h-4 w-4 text-[#2a9d8f]" />} value={provider.email} />
         {provider.website && (
           <ContactRow
-            icon={<Globe className="h-4 w-4 text-gray-900" />}
+            icon={<Globe className="h-4 w-4 text-[#2a9d8f]" />}
             value={provider.website}
             isLink
           />
         )}
         {provider.description && (
           <div className="flex gap-2.5">
-            <MessageSquare className="h-4 w-4 text-gray-900 shrink-0 mt-0.5" />
+            <MessageSquare className="h-4 w-4 text-[#2a9d8f] shrink-0 mt-0.5" />
             <p className="text-base text-gray-900 line-clamp-3 leading-relaxed">
               {provider.description}
             </p>
           </div>
         )}
-        <p className="text-base text-gray-900">{provider.county}</p>
       </div>
 
       {/* Footer */}

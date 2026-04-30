@@ -146,7 +146,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
             {provider.description && (
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                  Rólunk
+                  Bemutatkozás
                 </h2>
                 <p className="text-gray-900 leading-relaxed whitespace-pre-line">
                   {provider.description}
@@ -225,7 +225,6 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
 function ContactItem({
   icon,
-  label,
   value,
   href,
   external = false,
@@ -237,19 +236,16 @@ function ContactItem({
   external?: boolean;
 }) {
   return (
-    <div className="flex gap-3 items-start">
-      <span className="mt-0.5 shrink-0">{icon}</span>
-      <div>
-        <p className="text-base text-gray-900 mb-0.5">{label}</p>
-        <a
-          href={href}
-          target={external ? "_blank" : undefined}
-          rel={external ? "noopener noreferrer" : undefined}
-          className="text-lg text-gray-900 hover:text-[#2a9d8f] break-all cursor-pointer"
-        >
-          {value}
-        </a>
-      </div>
+    <div className="flex gap-3 items-center">
+      <span className="shrink-0">{icon}</span>
+      <a
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
+        className="text-base text-gray-900 hover:text-[#2a9d8f] break-all cursor-pointer"
+      >
+        {value}
+      </a>
     </div>
   );
 }
