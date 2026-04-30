@@ -16,7 +16,7 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="w-[42%] sm:w-[40%] lg:max-w-xl lg:w-auto">
+            <div className="w-[42%] sm:w-[40%] lg:max-w-xl lg:w-auto lg:ml-[8%]">
               <h1 className="mb-4 leading-tight" style={{ fontWeight: 950 }}>
                 <span
                   className="text-[#84AAA6] block"
@@ -31,7 +31,7 @@ export default function HomePage() {
                   KÉSZÜLSZ?
                 </span>
               </h1>
-              <div className="w-12 h-0.5 bg-[#84AAA6] mb-4" />
+              <div className="w-[calc(100%+2rem)] -ml-4 h-0.5 bg-[#84AAA6] mb-4" />
               <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
                 Találj meg mindent egy helyen a nagy napodra!
               </p>
