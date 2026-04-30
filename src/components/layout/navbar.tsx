@@ -99,7 +99,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             <Link
               href="/"
-              className="text-base text-gray-900 hover:text-[#84AAA6] transition-colors"
+              className="text-base text-gray-900 hover:underline"
             >
               Kezdőlap
             </Link>
@@ -111,7 +111,7 @@ export function Navbar() {
               onMouseLeave={() => setServicesOpen(false)}
             >
               <button
-                className="flex items-center gap-1 text-base text-gray-900 hover:text-[#84AAA6] transition-colors"
+                className="flex items-center gap-1 text-base text-gray-900 hover:underline"
               >
                 Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
               </button>
@@ -142,7 +142,7 @@ export function Navbar() {
 
             <Link
               href="/contact"
-              className="text-base text-gray-900 hover:text-[#84AAA6] transition-colors"
+              className="text-base text-gray-900 hover:underline"
             >
               Kapcsolat
             </Link>

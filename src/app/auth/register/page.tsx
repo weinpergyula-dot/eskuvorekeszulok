@@ -318,7 +318,7 @@ export default function RegisterPage() {
               required
             />
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-[#C65EA5] hover:bg-[#A84D8B]" disabled={loading}>
               {loading
                 ? "Regisztráció..."
                 : role === "provider"
@@ -462,7 +462,7 @@ export default function RegisterPage() {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full bg-[#C65EA5] hover:bg-[#A84D8B]" disabled={loading}>
             {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
           </Button>
 

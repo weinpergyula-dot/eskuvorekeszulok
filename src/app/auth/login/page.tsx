@@ -54,7 +54,7 @@ function LoginForm() {
 
   return (
     <div className="w-full max-w-md">
-      <p className="text-gray-900 text-center mb-8">Jelentkezz be a fiókodba</p>
+      <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Jelentkezz be a fiókodba!</p>
 
       <form
         onSubmit={handleSubmit}

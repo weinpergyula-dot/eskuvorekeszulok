@@ -29,7 +29,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-base text-gray-900 hover:text-[#84AAA6] transition-colors"
+                    className="text-base text-gray-900 hover:underline"
                   >
                     {item.label}
                   </Link>
@@ -49,7 +49,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-base text-gray-900 hover:text-[#84AAA6] transition-colors"
+                    className="text-base text-gray-900 hover:underline"
                   >
                     {item.label}
                   </Link>
