@@ -10,14 +10,38 @@ import { CATEGORY_LABELS } from "@/lib/types";
 interface ProviderCardProps {
   provider: Provider;
   showStatus?: boolean;
+  initialLiked?: boolean;
+  onUnlike?: (id: string) => void;
 }
 
-export function ProviderCard({ provider, showStatus = false }: ProviderCardProps) {
-  const [liked, setLiked] = useState(false);
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike }: ProviderCardProps) {
+  const [liked, setLiked] = useState(initialLiked);
+  const [showLoginMsg, setShowLoginMsg] = useState(false);
 
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
+
+  const handleHeartClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const res = await fetch("/api/favorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ provider_id: provider.id }),
+    });
+    if (res.status === 401) {
+      setShowLoginMsg(true);
+      setTimeout(() => setShowLoginMsg(false), 3000);
+      return;
+    }
+    const data = await res.json();
+    if (data.action === "added") {
+      setLiked(true);
+    } else {
+      setLiked(false);
+      onUnlike?.(provider.id);
+    }
+  };
 
   return (
     <a
@@ -137,15 +161,22 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
 
       {/* Footer */}
       <div className="border-t border-gray-100 px-5 py-3 flex items-center justify-between">
-        <button
-          onClick={(e) => { e.preventDefault(); setLiked(!liked); }}
-          className="text-gray-900 hover:text-red-500 transition-colors cursor-pointer"
-          aria-label="Kedvenc"
-        >
-          <Heart
-            className={cn("h-4 w-4", liked && "fill-red-500 text-red-500")}
-          />
-        </button>
+        <div className="relative">
+          <button
+            onClick={handleHeartClick}
+            className="text-gray-900 hover:text-red-500 transition-colors cursor-pointer"
+            aria-label="Kedvenc"
+          >
+            <Heart
+              className={cn("h-4 w-4", liked && "fill-red-500 text-red-500")}
+            />
+          </button>
+          {showLoginMsg && (
+            <div className="absolute bottom-full left-0 mb-2 w-max max-w-[220px] text-xs bg-gray-900 text-white px-2.5 py-1.5 rounded-lg whitespace-normal leading-tight z-10">
+              A funkció használatához jelentkezz be!
+            </div>
+          )}
+        </div>
         <div className="flex items-center gap-1 text-gray-900 text-base">
           <Eye className="h-3.5 w-3.5" />
           <span>{viewCount}</span>

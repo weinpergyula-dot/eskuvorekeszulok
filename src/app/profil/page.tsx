@@ -26,6 +26,21 @@ export default async function ProfilPage() {
     .eq("user_id", user.id)
     .single();
 
+  const { data: favRows } = await supabase
+    .from("favorites")
+    .select("provider_id")
+    .eq("user_id", user.id);
+
+  const favoriteProviderIds = (favRows ?? []).map((r: { provider_id: string }) => r.provider_id);
+  let favoriteProviders: Provider[] = [];
+  if (favoriteProviderIds.length > 0) {
+    const { data: favProviders } = await supabase
+      .from("providers_with_stats")
+      .select("*")
+      .in("id", favoriteProviderIds);
+    favoriteProviders = (favProviders as Provider[]) ?? [];
+  }
+
   return (
     <div>
       <PageHeader title="Profilom" />
@@ -35,6 +50,7 @@ export default async function ProfilPage() {
         email={user.email ?? ""}
         role={profile.role}
         provider={(provider as Provider) ?? null}
+        initialFavoriteProviders={favoriteProviders}
       />
     </div>
   );

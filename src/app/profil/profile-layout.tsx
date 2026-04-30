@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, type LucideIcon } from "lucide-react";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider" | "dashboard";
+type Section = "account" | "password" | "provider" | "dashboard" | "favorites";
 
 interface Props {
   userId: string;
@@ -17,6 +17,7 @@ interface Props {
   email: string;
   role: UserRole;
   provider: Provider | null;
+  initialFavoriteProviders: Provider[];
 }
 
 const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
@@ -24,6 +25,7 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
   { id: "password",  label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
   { id: "provider",  label: "Profil adatok",    icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
+  { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
@@ -31,6 +33,7 @@ const SECTION_TITLES: Record<Section, string> = {
   password:  "Jelszó módosítás",
   provider:  "Profil adatok",
   dashboard: "Dashboard",
+  favorites: "Kedvencek",
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -182,8 +185,9 @@ function StatusCard({
 
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
-export function ProfileLayout({ userId, initialName, email, role, provider }: Props) {
+export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
   const [active, setActive] = useState<Section>("account");
+  const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(
     provider !== null ? provider.active === true : false
@@ -269,6 +273,28 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
                 isProviderActive={isProviderActive}
                 onActiveChange={setIsProviderActive}
               />
+            </div>
+          )}
+
+          {active === "favorites" && (
+            <div>
+              {favoriteProviders.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <Heart className="h-10 w-10 text-gray-300 mb-4" />
+                  <p className="text-gray-500 text-base">Még nem mentettél el egyetlen szolgáltatót sem.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {favoriteProviders.map((p) => (
+                    <ProviderCard
+                      key={p.id}
+                      provider={p}
+                      initialLiked
+                      onUnlike={(id) => setFavoriteProviders((prev) => prev.filter((fp) => fp.id !== id))}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
