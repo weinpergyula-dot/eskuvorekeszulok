@@ -37,10 +37,10 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                 <Link href="/services">
-                  <Button size="lg" className="w-full sm:w-auto">Megnézem a szolgáltatókat</Button>
+                  <Button size="lg" className="w-full sm:w-auto text-[13px] sm:text-base">Megnézem a szolgáltatókat</Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto text-[13px] sm:text-base bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5] hover:text-white">
                     Hirdetem a szolgáltatásom
                   </Button>
                 </Link>
