@@ -12,7 +12,7 @@ import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 
-function MultiCheckbox<T extends string>({
+function PillSelect<T extends string>({
   label,
   note,
   options,
@@ -271,17 +271,15 @@ export default function EditProfilePage() {
           />
         </div>
 
-        <MultiCheckbox
+        <PillSelect
           label="Megye *"
-          note="(több is választható)"
           options={countyOptions}
           selected={counties}
           onChange={setCounties}
         />
 
-        <MultiCheckbox
+        <PillSelect
           label="Kategória *"
-          note="(több is választható)"
           options={categoryOptions}
           selected={categories}
           onChange={setCategories}

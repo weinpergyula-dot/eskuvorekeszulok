@@ -18,15 +18,13 @@ interface Props {
   onActiveChange: (val: boolean) => void;
 }
 
-function MultiCheckbox<T extends string>({
+function PillSelect<T extends string>({
   label,
-  note,
   options,
   selected,
   onChange,
 }: {
   label: string;
-  note?: string;
   options: { value: T; label: string }[];
   selected: T[];
   onChange: (next: T[]) => void;
@@ -40,32 +38,32 @@ function MultiCheckbox<T extends string>({
   };
 
   return (
-    <div className="space-y-1.5">
-      <Label>
-        {label}{" "}
-        {note && <span className="text-gray-400 font-normal text-sm">{note}</span>}
-      </Label>
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="max-h-52 overflow-y-auto p-2 space-y-0.5">
-          {options.map((opt) => (
-            <label
-              key={opt.value}
-              className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                checked={selected.includes(opt.value)}
-                onChange={() => toggle(opt.value)}
-                className="accent-[#2a9d8f] h-4 w-4 shrink-0"
-              />
-              <span className="text-base text-gray-900">{opt.label}</span>
-            </label>
-          ))}
-        </div>
+    <div className="space-y-2">
+      <div className="flex items-baseline justify-between">
+        <Label>{label}</Label>
+        {selected.length > 0 && (
+          <span className="text-sm text-[#2a9d8f]">{selected.length} kiválasztva</span>
+        )}
       </div>
-      {selected.length > 0 && (
-        <p className="text-sm text-[#2a9d8f]">{selected.length} kiválasztva</p>
-      )}
+      <div className="flex flex-wrap gap-2">
+        {options.map((opt) => {
+          const isSelected = selected.includes(opt.value);
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => toggle(opt.value)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
+                isSelected
+                  ? "bg-[#2a9d8f] text-white border-[#2a9d8f]"
+                  : "bg-white text-gray-700 border-gray-300 hover:border-[#2a9d8f] hover:text-[#2a9d8f]"
+              }`}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -78,14 +76,26 @@ export function ProviderForm({ userId, role, provider, isProviderActive, onActiv
   const [toggling, setToggling] = useState(false);
   const [toggleError, setToggleError] = useState<string | null>(null);
 
-  const [fullName, setFullName] = useState(provider?.full_name ?? "");
-  const [phone, setPhone] = useState(provider?.phone ?? "");
-  const [counties, setCounties] = useState<string[]>(provider?.counties ?? []);
-  const [categories, setCategories] = useState<ServiceCategory[]>(
-    (provider?.categories as ServiceCategory[]) ?? []
+  // Pending changes take priority (most recently submitted values)
+  const pc = provider?.pending_changes;
+  const [fullName, setFullName] = useState(
+    (pc?.full_name as string) ?? provider?.full_name ?? ""
   );
-  const [description, setDescription] = useState(provider?.description ?? "");
-  const [website, setWebsite] = useState(provider?.website ?? "");
+  const [phone, setPhone] = useState(
+    (pc?.phone as string) ?? provider?.phone ?? ""
+  );
+  const [counties, setCounties] = useState<string[]>(
+    (pc?.counties as string[]) ?? provider?.counties ?? []
+  );
+  const [categories, setCategories] = useState<ServiceCategory[]>(
+    ((pc?.categories ?? provider?.categories) as ServiceCategory[]) ?? []
+  );
+  const [description, setDescription] = useState(
+    (pc?.description as string) ?? provider?.description ?? ""
+  );
+  const [website, setWebsite] = useState(
+    (pc?.website as string) ?? provider?.website ?? ""
+  );
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     provider?.avatar_url ?? null
@@ -317,17 +327,15 @@ export function ProviderForm({ userId, role, provider, isProviderActive, onActiv
             />
           </div>
 
-          <MultiCheckbox
+          <PillSelect
             label="Megye *"
-            note="(több is választható)"
             options={countyOptions}
             selected={counties}
             onChange={setCounties}
           />
 
-          <MultiCheckbox
+          <PillSelect
             label="Kategória *"
-            note="(több is választható)"
             options={categoryOptions}
             selected={categories}
             onChange={setCategories}
