@@ -21,17 +21,15 @@ interface Props {
   userId: string;
   role: UserRole;
   provider: Provider | null;
+  isProviderActive: boolean;
+  onActiveChange: (val: boolean) => void;
 }
 
-export function ProviderForm({ userId, role, provider }: Props) {
+export function ProviderForm({ userId, role, provider, isProviderActive, onActiveChange }: Props) {
   const router = useRouter();
   const supabase = createClient();
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
-  // Switcher state: ON only if active is explicitly true (null/undefined = OFF until migration runs)
-  const [isProviderMode, setIsProviderMode] = useState(
-    provider !== null ? provider.active === true : false
-  );
   const [toggling, setToggling] = useState(false);
   const [toggleError, setToggleError] = useState<string | null>(null);
 
@@ -53,15 +51,14 @@ export function ProviderForm({ userId, role, provider }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const handleToggle = async () => {
-    const newVal = !isProviderMode;
+    const newVal = !isProviderActive;
 
-    // If turning ON with no provider record: just show the form
+    // No provider record yet: just show the form
     if (newVal && !provider) {
-      setIsProviderMode(true);
+      onActiveChange(true);
       return;
     }
 
-    // If provider record exists: update active flag in DB
     if (provider) {
       setToggling(true);
       setToggleError(null);
@@ -71,10 +68,10 @@ export function ProviderForm({ userId, role, provider }: Props) {
           .update({ active: newVal })
           .eq("user_id", userId);
         if (updateError) throw updateError;
-        setIsProviderMode(newVal);
+        onActiveChange(newVal);
       } catch (err: unknown) {
         setToggleError(
-          err instanceof Error ? err.message : "Nem sikerült menteni. Ellenőrizd az adatbázis beállításokat."
+          err instanceof Error ? err.message : "Nem sikerült menteni."
         );
       } finally {
         setToggling(false);
@@ -82,7 +79,7 @@ export function ProviderForm({ userId, role, provider }: Props) {
       return;
     }
 
-    setIsProviderMode(newVal);
+    onActiveChange(newVal);
   };
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,19 +175,19 @@ export function ProviderForm({ userId, role, provider }: Props) {
             onClick={handleToggle}
             disabled={toggling}
             className={`relative inline-flex h-7 w-13 min-w-[3.25rem] items-center rounded-full transition-colors focus:outline-none ${
-              isProviderMode ? "bg-[#2a9d8f]" : "bg-gray-300"
+              isProviderActive ? "bg-[#2a9d8f]" : "bg-gray-300"
             } ${toggling ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-            aria-checked={isProviderMode}
+            aria-checked={isProviderActive}
             role="switch"
           >
             <span
               className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
-                isProviderMode ? "translate-x-7" : "translate-x-1"
+                isProviderActive ? "translate-x-7" : "translate-x-1"
               }`}
             />
           </button>
           <span className="text-base font-medium text-gray-900">
-            {isProviderMode ? "Szolgáltató" : "Látogató"}
+            {isProviderActive ? "Szolgáltató" : "Látogató"}
           </span>
         </div>
         {toggleError && (
@@ -201,7 +198,7 @@ export function ProviderForm({ userId, role, provider }: Props) {
       </div>
 
       {/* Provider form – only shown when switcher is ON */}
-      {isProviderMode && (
+      {isProviderActive && (
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
             <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">

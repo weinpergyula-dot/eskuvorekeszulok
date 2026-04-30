@@ -18,9 +18,9 @@ interface Props {
 }
 
 const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
-  { id: "account",  label: "Fiók adatok",       icon: <User className="h-4 w-4" /> },
-  { id: "password", label: "Jelszó módosítás",  icon: <Lock className="h-4 w-4" /> },
-  { id: "provider", label: "Profil adatok",     icon: <Briefcase className="h-4 w-4" /> },
+  { id: "account",  label: "Fiók adatok",      icon: <User className="h-4 w-4" /> },
+  { id: "password", label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
+  { id: "provider", label: "Profil adatok",    icon: <Briefcase className="h-4 w-4" /> },
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
@@ -32,15 +32,18 @@ const SECTION_TITLES: Record<Section, string> = {
 export function ProfileLayout({ userId, initialName, email, role, provider }: Props) {
   const [active, setActive] = useState<Section>("account");
 
-  // Status dot for the provider menu item
-  const providerDot = () => {
+  // Lifted from ProviderForm so status badge + sidebar dot update immediately on toggle
+  const [isProviderActive, setIsProviderActive] = useState(
+    provider !== null ? provider.active === true : false
+  );
+
+  const dot = (() => {
     if (!provider) return null;
-    if (provider.active === false) return "bg-gray-400";
+    if (!isProviderActive) return "bg-gray-400";
     if (provider.approval_status === "approved") return "bg-green-500";
     if (provider.approval_status === "rejected") return "bg-red-500";
     return "bg-yellow-400";
-  };
-  const dot = providerDot();
+  })();
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -48,7 +51,6 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
 
         {/* Sidebar */}
         <aside className="sm:w-52 shrink-0">
-          {/* Mobile: horizontal scroll tabs */}
           <nav className="flex sm:flex-col gap-1 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0">
             {MENU_ITEMS.map((item) => (
               <button
@@ -81,16 +83,14 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
             <AccountInfoForm userId={userId} initialName={initialName} email={email} />
           )}
 
-          {active === "password" && (
-            <PasswordForm />
-          )}
+          {active === "password" && <PasswordForm />}
 
           {active === "provider" && (
             <div className="space-y-5">
               {/* Status indicator */}
               {provider ? (
                 <div className="space-y-2">
-                  {provider.active === false ? (
+                  {!isProviderActive ? (
                     <div className="flex items-center gap-2 text-base font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
                       <span className="w-2 h-2 rounded-full bg-gray-400 shrink-0" />
                       Kikapcsolva – profilod nem látható a listában
@@ -137,7 +137,13 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
                   Töltsd ki az adatlapot és aktiváld a szolgáltatói profilodat. Az adminisztrátor jóváhagyása után megjelensz a listában.
                 </p>
               )}
-              <ProviderForm userId={userId} role={role} provider={provider} />
+              <ProviderForm
+                userId={userId}
+                role={role}
+                provider={provider}
+                isProviderActive={isProviderActive}
+                onActiveChange={setIsProviderActive}
+              />
             </div>
           )}
         </div>
