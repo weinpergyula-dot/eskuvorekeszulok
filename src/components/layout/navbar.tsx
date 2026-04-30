@@ -155,7 +155,7 @@ export function Navbar() {
                   <Button variant="ghost" className="text-base">Profilom</Button>
                 </Link>
                 <Button variant="outline" className="text-base" onClick={handleSignOut}>
-                  Kilépés
+                  Kijelentkezés
                 </Button>
               </>
             ) : (
@@ -164,7 +164,7 @@ export function Navbar() {
                   <Button variant="outline" className="text-base">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button className="text-base bg-[#C65EA5] hover:bg-[#A84D8B]">Belépés</Button>
+                  <Button className="text-base bg-[#C65EA5] hover:bg-[#A84D8B]">Bejelentkezés</Button>
                 </Link>
               </>
             )}
@@ -212,7 +212,7 @@ export function Navbar() {
                   </Link>
                 )}
                 <Button size="sm" className="w-full" onClick={handleSignOut}>
-                  Kilépés
+                  Kijelentkezés
                 </Button>
               </>
             ) : (
@@ -221,7 +221,7 @@ export function Navbar() {
                   <Button variant="outline" size="sm" className="w-full">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
-                  <Button size="sm" className="w-full">Belépés</Button>
+                  <Button size="sm" className="w-full">Bejelentkezés</Button>
                 </Link>
               </>
             )}

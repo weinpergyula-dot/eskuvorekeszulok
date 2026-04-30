@@ -77,6 +77,7 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Provider-only fields
   const [phone, setPhone] = useState("");
@@ -111,6 +112,11 @@ export default function RegisterPage() {
 
   const handleBasicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("A két jelszó nem egyezik meg.");
+      return;
+    }
+    setError(null);
     if (role === "visitor") {
       await registerUser();
     } else {
@@ -236,7 +242,7 @@ export default function RegisterPage() {
           <p className="text-center text-lg text-gray-900">
             Már van fiókod?{" "}
             <Link href="/auth/login" className="text-[#84AAA6] hover:underline">
-              Lépj be
+              Jelentkezz be
             </Link>
           </p>
         </div>
@@ -311,6 +317,19 @@ export default function RegisterPage() {
               />
             </div>
 
+            <div className="space-y-1.5">
+              <Label htmlFor="confirmPassword">Jelszó megerősítése *</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Írd be újra a jelszót"
+                minLength={6}
+                required
+              />
+            </div>
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading
                 ? "Regisztráció..."
@@ -323,7 +342,7 @@ export default function RegisterPage() {
           <p className="text-center text-lg text-gray-900 mt-4">
             Már van fiókod?{" "}
             <Link href="/auth/login" className="text-[#84AAA6] hover:underline">
-              Lépj be
+              Jelentkezz be
             </Link>
           </p>
         </div>

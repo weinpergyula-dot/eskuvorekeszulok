@@ -55,7 +55,7 @@ function LoginForm() {
 
   return (
     <div className="w-full max-w-md">
-      <p className="text-gray-900 text-center mb-8">Lépj be a fiókodba</p>
+      <p className="text-gray-900 text-center mb-8">Jelentkezz be a fiókodba</p>
 
       <form
         onSubmit={handleSubmit}
@@ -63,12 +63,12 @@ function LoginForm() {
       >
         {registered && (
           <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-            Sikeres regisztráció! Ellenőrizd az email fiókodat, majd lépj be.
+            Sikeres regisztráció! Ellenőrizd az email fiókodat, majd jelentkezz be.
           </div>
         )}
         {reset && (
           <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-            Jelszavad sikeresen megváltozott. Lépj be az új jelszavaddal.
+            Jelszavad sikeresen megváltozott. Jelentkezz be az új jelszavaddal.
           </div>
         )}
         {error && (
@@ -102,7 +102,7 @@ function LoginForm() {
         </div>
 
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Belépés..." : "Belépés"}
+          {loading ? "Bejelentkezés..." : "Bejelentkezés"}
         </Button>
       </form>
 
@@ -124,7 +124,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div>
-      <PageHeader title="Belépés" />
+      <PageHeader title="Bejelentkezés" />
       <div className="flex items-center justify-center py-12 px-4">
         <Suspense>
           <LoginForm />
