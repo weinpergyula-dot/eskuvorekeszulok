@@ -131,11 +131,29 @@
 }
 
 @theme {
-  --color-primary: #84AAA6;
-  --color-primary-dark: #6B8E8A;
-  --color-primary-light: #3dbdb0;
-  --color-secondary: #6b7280;
-  --color-accent: #f4a261;
+  /* ── Teal ──────────────────────────────────────────── */
+  --color-teal:        #84AAA6;  /* primary */
+  --color-teal-hover:  #6B8E8A;  /* button hover / darker */
+  --color-teal-bg:     #F0F6F5;  /* panel background / light hover */
+
+  /* ── Pink ──────────────────────────────────────────── */
+  --color-pink:        #C65EA5;  /* accent / CTA */
+  --color-pink-hover:  #A84D8B;  /* button hover / darker */
+  --color-pink-bg:     #FAF0F7;  /* panel background / light hover */
+
+  /* ── Gray ──────────────────────────────────────────── */
+  --color-gray-mid:    #BFBFBF;  /* borders, disabled states */
+  --color-gray-bg:     #F9F9F9;  /* panel background / light hover */
+
+  /* ── Dark ──────────────────────────────────────────── */
+  --color-dark:        #404040;  /* headings, body text */
+  --color-dark-bg:     #F9F9F9;  /* light hover for dark elements */
+
+  /* ── Aliases (backward compat) ─────────────────────── */
+  --color-primary:       #84AAA6;
+  --color-primary-dark:  #6B8E8A;
+
+  /* ── Other ─────────────────────────────────────────── */
   --color-star: #f59e0b;
 
   --font-heading: "BloomSpeakTitle", Georgia, serif;
