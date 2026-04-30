@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 
@@ -281,54 +280,42 @@ export default function RegisterPage() {
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <Label htmlFor="fullName">Teljes név *</Label>
-              <Input
-                id="fullName"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Pl. Kiss Anna"
-                required
-              />
-            </div>
+            <FloatingInput
+              id="fullName"
+              label="Teljes név *"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
 
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email cím *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="pelda@email.hu"
-                required
-              />
-            </div>
+            <FloatingInput
+              id="email"
+              label="Email cím *"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-            <div className="space-y-1.5">
-              <Label htmlFor="password">Jelszó *</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimum 6 karakter"
-                minLength={6}
-                required
-              />
-            </div>
+            <FloatingInput
+              id="password"
+              label="Jelszó *"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={6}
+              required
+            />
 
-            <div className="space-y-1.5">
-              <Label htmlFor="confirmPassword">Jelszó megerősítése *</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Írd be újra a jelszót"
-                minLength={6}
-                required
-              />
-            </div>
+            <FloatingInput
+              id="confirmPassword"
+              label="Jelszó megerősítése *"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              minLength={6}
+              required
+            />
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading
@@ -416,17 +403,14 @@ export default function RegisterPage() {
           </div>
 
           {/* Phone */}
-          <div className="space-y-1.5">
-            <Label htmlFor="phone">Telefonszám *</Label>
-            <Input
-              id="phone"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+36 30 123 4567"
-              required
-            />
-          </div>
+          <FloatingInput
+            id="phone"
+            label="Telefonszám *"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
 
           <PillSelect
             label="Megye *"
@@ -443,29 +427,23 @@ export default function RegisterPage() {
           />
 
           {/* Description */}
-          <div className="space-y-1.5">
-            <Label htmlFor="description">Leírás *</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Rövid bemutatkozás a szolgáltatásodról..."
-              rows={4}
-              required
-            />
-          </div>
+          <FloatingTextarea
+            id="description"
+            label="Leírás *"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+            required
+          />
 
           {/* Website */}
-          <div className="space-y-1.5">
-            <Label htmlFor="website">Weboldal (opcionális)</Label>
-            <Input
-              id="website"
-              type="url"
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-              placeholder="https://www.pelda.hu"
-            />
-          </div>
+          <FloatingInput
+            id="website"
+            label="Weboldal (opcionális)"
+            type="url"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
 
           {/* Gallery */}
           <div className="space-y-1.5">

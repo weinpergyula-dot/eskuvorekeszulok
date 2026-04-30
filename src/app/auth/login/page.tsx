@@ -5,8 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
 
 function LoginForm() {
@@ -77,29 +76,23 @@ function LoginForm() {
           </div>
         )}
 
-        <div className="space-y-1.5">
-          <Label htmlFor="email">Email cím</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="pelda@email.hu"
-            required
-          />
-        </div>
+        <FloatingInput
+          id="email"
+          label="Email cím"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-        <div className="space-y-1.5">
-          <Label htmlFor="password">Jelszó</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            required
-          />
-        </div>
+        <FloatingInput
+          id="password"
+          label="Jelszó"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Bejelentkezés..." : "Bejelentkezés"}

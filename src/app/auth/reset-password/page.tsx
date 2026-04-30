@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
 
 export default function ResetPasswordPage() {
@@ -59,29 +58,23 @@ export default function ResetPasswordPage() {
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <Label htmlFor="password">Új jelszó</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
+            <FloatingInput
+              id="password"
+              label="Új jelszó"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-            <div className="space-y-1.5">
-              <Label htmlFor="confirm">Jelszó megerősítése</Label>
-              <Input
-                id="confirm"
-                type="password"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
+            <FloatingInput
+              id="confirm"
+              label="Jelszó megerősítése"
+              type="password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              required
+            />
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Mentés..." : "Jelszó mentése"}
