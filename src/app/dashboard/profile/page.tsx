@@ -164,7 +164,7 @@ export default function EditProfilePage() {
       if (updateError) throw updateError;
 
       setSuccess(true);
-      setTimeout(() => router.push("/dashboard"), 2000);
+      setTimeout(() => router.push("/profil"), 2000);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Hiba a mentés során.");
     } finally {
@@ -190,7 +190,7 @@ export default function EditProfilePage() {
     <div>
       <PageHeader
         title="Profil szerkesztése"
-        breadcrumb={[{ label: "Dashboard", href: "/dashboard" }]}
+        breadcrumb={[{ label: "Profilom", href: "/profil" }]}
       />
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <p className="text-lg text-gray-900 mb-6">
@@ -311,7 +311,7 @@ export default function EditProfilePage() {
           <Button type="submit" disabled={saving} className="flex-1">
             {saving ? "Mentés..." : "Módosítások mentése"}
           </Button>
-          <Link href="/dashboard">
+          <Link href="/profil">
             <Button type="button" variant="outline">
               Mégse
             </Button>

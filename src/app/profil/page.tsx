@@ -21,7 +21,7 @@ export default async function ProfilPage() {
   if (!profile) redirect("/auth/login");
 
   const { data: provider } = await supabase
-    .from("providers")
+    .from("providers_with_stats")
     .select("*")
     .eq("user_id", user.id)
     .single();

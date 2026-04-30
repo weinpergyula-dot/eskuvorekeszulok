@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, type LucideIcon } from "lucide-react";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
+import { ProviderCard } from "@/components/providers/provider-card";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider";
+type Section = "account" | "password" | "provider" | "dashboard";
 
 interface Props {
   userId: string;
@@ -19,15 +20,17 @@ interface Props {
 }
 
 const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
-  { id: "account",  label: "Fiók adatok",      icon: <User className="h-4 w-4" /> },
-  { id: "password", label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
-  { id: "provider", label: "Profil adatok",    icon: <Briefcase className="h-4 w-4" /> },
+  { id: "account",   label: "Fiók adatok",      icon: <User className="h-4 w-4" /> },
+  { id: "password",  label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
+  { id: "provider",  label: "Profil adatok",    icon: <Briefcase className="h-4 w-4" /> },
+  { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
-  account:  "Fiók adatok",
-  password: "Jelszó módosítás",
-  provider: "Profil adatok",
+  account:   "Fiók adatok",
+  password:  "Jelszó módosítás",
+  provider:  "Profil adatok",
+  dashboard: "Dashboard",
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -201,7 +204,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
               onChange={(e) => setActive(e.target.value as Section)}
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent text-center"
             >
-              {MENU_ITEMS.map((item) => (
+              {MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider").map((item) => (
                 <option key={item.id} value={item.id}>{item.label}</option>
               ))}
             </select>
@@ -209,7 +212,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
-            {MENU_ITEMS.map((item) => (
+            {MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider").map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActive(item.id)}
@@ -233,16 +236,6 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
                 )}
               </button>
             ))}
-
-            {role === "provider" && (
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap text-gray-900 hover:bg-gray-100"
-              >
-                <LayoutDashboard className="h-4 w-4" />
-                <span>Dashboard</span>
-              </Link>
-            )}
           </nav>
         </aside>
 
@@ -260,7 +253,6 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
 
           {active === "provider" && (
             <div className="space-y-5">
-              {/* StatusCard – only when provider exists */}
               {provider ? (
                 <StatusCard provider={provider} isProviderActive={isProviderActive} />
               ) : (
@@ -279,8 +271,74 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
               />
             </div>
           )}
+
+          {active === "dashboard" && provider && (
+            <div className="space-y-6">
+              {provider.approval_status === "pending" && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start gap-3">
+                  <Clock className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-yellow-800 text-lg">Profil jóváhagyásra vár</p>
+                    <p className="text-yellow-700 text-base mt-0.5">Az adminisztrátor hamarosan elbírálja a profilodat.</p>
+                  </div>
+                </div>
+              )}
+              {provider.approval_status === "rejected" && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-red-800 text-lg">Profil elutasítva</p>
+                    <p className="text-red-700 text-base mt-0.5">Az adminisztrátor elutasította a profilodat. Módosítsd és küldd be újra.</p>
+                  </div>
+                </div>
+              )}
+              {provider.pending_changes && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+                  <Clock className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-blue-800 text-lg">Módosítás jóváhagyásra vár</p>
+                    <p className="text-blue-700 text-base mt-0.5">A legutóbbi módosításaid az adminisztrátor jóváhagyásáig nem jelennek meg.</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900 uppercase tracking-wide mb-3">Előnézet</h3>
+                  <ProviderCard provider={provider} showStatus />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900 uppercase tracking-wide mb-3">Statisztikák</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <DashStatCard label="Megtekintések" value={provider.view_count ?? 0} icon={Eye} />
+                    <DashStatCard label="Értékelések" value={provider.review_count ?? 0} icon={Star} />
+                    <DashStatCard
+                      label="Átlagos értékelés"
+                      value={provider.average_rating ? `${Number(provider.average_rating).toFixed(1)}/5` : "–"}
+                      icon={BarChart2}
+                    />
+                    <DashStatCard
+                      label="Státusz"
+                      value={provider.approval_status === "approved" ? "Aktív" : provider.approval_status === "pending" ? "Függőben" : "Elutasítva"}
+                      icon={ClipboardList}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function DashStatCard({ label, value, icon: Icon }: { label: string; value: string | number; icon: LucideIcon }) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-4">
+      <Icon className="h-6 w-6 mb-1 text-[#84AAA6]" strokeWidth={1.5} />
+      <div className="text-xl font-bold text-gray-900">{value}</div>
+      <div className="text-base text-gray-900 mt-0.5">{label}</div>
     </div>
   );
 }

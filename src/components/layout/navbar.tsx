@@ -160,7 +160,7 @@ export function Navbar() {
                   </Link>
                 )}
                 {profile?.role === "provider" && (
-                  <Link href="/dashboard">
+                  <Link href="/profil">
                     <Button variant="ghost" className="text-base">Dashboard</Button>
                   </Link>
                 )}
@@ -218,7 +218,7 @@ export function Navbar() {
                   )}
                 </Link>
                 {profile?.role === "provider" && (
-                  <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                  <Link href="/profil" onClick={() => setMobileOpen(false)}>
                     <Button variant="outline" size="sm" className="w-full">Dashboard</Button>
                   </Link>
                 )}
