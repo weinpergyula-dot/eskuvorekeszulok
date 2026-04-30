@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { User, Lock, Briefcase } from "lucide-react";
+import Link from "next/link";
+import { User, Lock, Briefcase, LayoutDashboard } from "lucide-react";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import type { Provider, UserRole } from "@/lib/types";
@@ -70,6 +71,15 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
                 )}
               </button>
             ))}
+            {role === "provider" && (
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap text-gray-900 hover:bg-gray-100"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                <span>Dashboard</span>
+              </Link>
+            )}
           </nav>
         </aside>
 

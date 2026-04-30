@@ -145,6 +145,11 @@ export function Navbar() {
                     )}
                   </Link>
                 )}
+                {profile?.role === "provider" && (
+                  <Link href="/dashboard">
+                    <Button variant="ghost" className="text-base">Dashboard</Button>
+                  </Link>
+                )}
                 <Link href="/profil">
                   <Button variant="ghost" className="text-base">Profilom</Button>
                 </Link>
@@ -192,6 +197,11 @@ export function Navbar() {
                 <Link href="/profil" onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full">Profilom</Button>
                 </Link>
+                {profile?.role === "provider" && (
+                  <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full">Dashboard</Button>
+                  </Link>
+                )}
                 {profile?.role === "admin" && (
                   <Link href="/admin" onClick={() => setMobileOpen(false)} className="relative">
                     <Button variant="outline" size="sm" className="w-full">Admin</Button>
