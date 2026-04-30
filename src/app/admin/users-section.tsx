@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -14,9 +13,14 @@ interface UserProfile {
   full_name: string;
   role: "visitor" | "provider" | "admin";
   created_at: string;
-  // joined from providers table
   providerApprovalStatus?: string | null;
   providerHasPendingChanges?: boolean;
+}
+
+interface ProviderStatus {
+  user_id: string;
+  approval_status: string;
+  pending_changes: unknown;
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -43,9 +47,8 @@ const FILTER_LABELS: Record<ApprovalFilter, string> = {
   admin:    "Admin",
 };
 
-export function UsersSection() {
+export function UsersSection({ providerStatuses }: { providerStatuses: ProviderStatus[] }) {
   const router = useRouter();
-  const supabase = createClient();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -57,25 +60,23 @@ export function UsersSection() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/admin/users").then((r) => r.json()),
-      supabase.from("providers").select("user_id, approval_status, pending_changes"),
-    ]).then(([profileData, { data: providerData }]) => {
-      const profiles: UserProfile[] = Array.isArray(profileData) ? profileData : [];
-      const providerMap = new Map(
-        (providerData ?? []).map((p) => [p.user_id, p])
-      );
-      setUsers(profiles.map((u) => {
-        const prov = providerMap.get(u.user_id);
-        return {
-          ...u,
-          providerApprovalStatus: prov?.approval_status ?? null,
-          providerHasPendingChanges: !!prov?.pending_changes,
-        };
-      }));
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, []);
+    const providerMap = new Map(providerStatuses.map((p) => [p.user_id, p]));
+    fetch("/api/admin/users")
+      .then((r) => r.json())
+      .then((profileData) => {
+        const profiles: UserProfile[] = Array.isArray(profileData) ? profileData : [];
+        setUsers(profiles.map((u) => {
+          const prov = providerMap.get(u.user_id);
+          return {
+            ...u,
+            providerApprovalStatus: prov?.approval_status ?? null,
+            providerHasPendingChanges: !!prov?.pending_changes,
+          };
+        }));
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [providerStatuses]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();

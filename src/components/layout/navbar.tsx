@@ -52,23 +52,19 @@ export function Navbar() {
       .select("*")
       .eq("user_id", user.id)
       .single()
-      .then(({ data }) => {
-        setProfile(data);
-        if (data?.role === "provider") {
-          supabase
-            .from("providers")
-            .select("approval_status, pending_changes")
-            .eq("user_id", user.id)
-            .single()
-            .then(({ data: p }) => {
-              if (!p) { setProviderDot(null); return; }
-              if (p.approval_status === "rejected") { setProviderDot("red"); return; }
-              if (p.approval_status === "pending" || p.pending_changes) { setProviderDot("amber"); return; }
-              setProviderDot(null);
-            });
-        } else {
-          setProviderDot(null);
-        }
+      .then(({ data }) => setProfile(data));
+
+    // Fetch provider status for any logged-in user (admin may also have a provider profile)
+    supabase
+      .from("providers")
+      .select("approval_status, pending_changes, active")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data: p }) => {
+        if (!p) { setProviderDot(null); return; }
+        if (p.approval_status === "rejected") { setProviderDot("red"); return; }
+        const hasPending = p.approval_status === "pending" || !!p.pending_changes;
+        setProviderDot(hasPending ? "amber" : null);
       });
   }, [user]);
 

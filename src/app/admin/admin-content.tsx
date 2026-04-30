@@ -19,14 +19,21 @@ interface Provider {
   [key: string]: unknown;
 }
 
+interface ProviderStatus {
+  user_id: string;
+  approval_status: string;
+  pending_changes: unknown;
+}
+
 interface Props {
   totalUsers: number;
   totalApproved: number;
   pendingProviders: Provider[];
   pendingChanges: Provider[];
+  providerStatuses: ProviderStatus[];
 }
 
-export function AdminContent({ totalUsers, totalApproved, pendingProviders, pendingChanges }: Props) {
+export function AdminContent({ totalUsers, totalApproved, pendingProviders, pendingChanges, providerStatuses }: Props) {
   // Merge first-submissions + edits into one unified list
   type PendingItem = Provider & { kind: "registration" | "edit" };
   const allPending: PendingItem[] = [
@@ -95,7 +102,7 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
       {filter === "users" && (
         <section>
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Felhasználók kezelése</h2>
-          <UsersSection />
+          <UsersSection providerStatuses={providerStatuses} />
         </section>
       )}
     </>
