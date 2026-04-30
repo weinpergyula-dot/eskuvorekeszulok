@@ -7,6 +7,7 @@ import { Phone, Mail, Globe, MapPin, Star, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
+import { ViewTracker } from "@/components/providers/view-tracker";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -59,6 +60,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <ViewTracker providerId={provider.id} />
       {/* Breadcrumb */}
       <nav className="text-lg text-gray-900 mb-8">
         <a href="/services" className="hover:text-[#84AAA6] cursor-pointer">
