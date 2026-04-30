@@ -6,70 +6,70 @@
   src: url("/fonts/BloomSpeakTitle-Light.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-SemiLight.woff2") format("woff2");
   font-weight: 350;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-ExtraBold.woff2") format("woff2");
   font-weight: 800;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-Heavy.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-UltraHeavy.otf") format("opentype");
   font-weight: 950;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-Italic.woff2") format("woff2");
   font-weight: 400;
   font-style: italic;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakTitle";
   src: url("/fonts/BloomSpeakTitle-BoldItalic.woff2") format("woff2");
   font-weight: 700;
   font-style: italic;
-  font-display: swap;
+  font-display: block;
 }
 
 /* ── BloomSpeakBody ──────────────────────────────────── */
@@ -78,56 +78,56 @@
   src: url("/fonts/BloomSpeakBody-Light.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakBody";
   src: url("/fonts/BloomSpeakBody-SemiLight.woff2") format("woff2");
   font-weight: 350;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakBody";
   src: url("/fonts/BloomSpeakBody-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakBody";
   src: url("/fonts/BloomSpeakBody-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakBody";
   src: url("/fonts/BloomSpeakBody-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakBody";
   src: url("/fonts/BloomSpeakBody-ExtraBold.woff2") format("woff2");
   font-weight: 800;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakBody";
   src: url("/fonts/BloomSpeakBody-Italic.woff2") format("woff2");
   font-weight: 400;
   font-style: italic;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "BloomSpeakBody";
   src: url("/fonts/BloomSpeakBody-BoldItalic.woff2") format("woff2");
   font-weight: 700;
   font-style: italic;
-  font-display: swap;
+  font-display: block;
 }
 
 @theme {
