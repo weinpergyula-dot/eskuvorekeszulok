@@ -271,7 +271,7 @@ export default function RegisterPage() {
           {/* Progress */}
           <div className="flex gap-2 mb-6">
             <div className="h-1 flex-1 bg-[#C65EA5] rounded-full" />
-            <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#84AAA6]"}`} />
+            <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#C65EA5]"}`} />
           </div>
 
           <form onSubmit={handleBasicSubmit} className="space-y-4">
