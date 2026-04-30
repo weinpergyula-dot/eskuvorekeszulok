@@ -223,7 +223,7 @@ export default function RegisterPage() {
               className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#C65EA5] hover:shadow-md transition-all group"
             >
               <UserRound className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
-              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Látogató</span>
+              <span className="font-semibold text-gray-900 group-hover:text-[#C65EA5]" style={{ fontSize: "22px" }}>Látogató</span>
               <span className="text-base text-gray-900 mt-2 text-center">
                 Böngészem a szolgáltatókat
               </span>
@@ -233,7 +233,7 @@ export default function RegisterPage() {
               className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#C65EA5] hover:shadow-md transition-all group"
             >
               <Briefcase className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
-              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Szolgáltató</span>
+              <span className="font-semibold text-gray-900 group-hover:text-[#C65EA5]" style={{ fontSize: "22px" }}>Szolgáltató</span>
               <span className="text-base text-gray-900 mt-2 text-center">
                 Hirdetem a szolgáltatásom
               </span>
