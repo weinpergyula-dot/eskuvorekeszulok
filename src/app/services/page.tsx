@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import {
   CATEGORY_LABELS,
   CATEGORY_ICONS,
@@ -34,13 +33,11 @@ const ALL_CATEGORIES: ServiceCategory[] = [
 export default function ServicesPage() {
   return (
     <div>
-      <PageHeader title="Szolgáltatások" />
+      <PageHeader
+        title="Szolgáltatások"
+        description="Válassz kategóriát és böngészd az elérhető esküvői szolgáltatókat! Minden kategóriában gondosan válogatott szakembereket találsz – fotósoktól és zenészektől kezdve a virágkötőkig és helyszínekig –, hogy a nagy napod minden részlete tökéletes legyen."
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-10">
-        <p className="text-gray-900 max-w-2xl">
-          Válassz kategóriát és böngészd az elérhető esküvői szolgáltatókat! Minden kategóriában gondosan válogatott szakembereket találsz – fotósoktól és zenészektől kezdve a virágkötőkig és helyszínekig –, hogy a nagy napod minden részlete tökéletes legyen.
-        </p>
-      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {ALL_CATEGORIES.map((category) => (

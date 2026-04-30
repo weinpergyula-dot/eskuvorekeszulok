@@ -1,9 +1,10 @@
 interface PageHeaderProps {
   title: string;
+  description?: string;
   breadcrumb?: { label: string; href: string }[];
 }
 
-export function PageHeader({ title, breadcrumb }: PageHeaderProps) {
+export function PageHeader({ title, description, breadcrumb }: PageHeaderProps) {
   return (
     <div className="w-full bg-gradient-to-br from-[#2a9d8f]/20 to-[#2a9d8f]/5 border-b border-[#2a9d8f]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -22,6 +23,12 @@ export function PageHeader({ title, breadcrumb }: PageHeaderProps) {
           </nav>
         )}
         <h1 className="text-3xl md:text-4xl font-bold text-[#1e7268]">{title}</h1>
+        {description && (
+          <>
+            <hr className="border-[#2a9d8f]/20 mt-5 mb-4" />
+            <p className="text-base text-gray-900 leading-relaxed">{description}</p>
+          </>
+        )}
       </div>
     </div>
   );
