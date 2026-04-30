@@ -120,23 +120,35 @@ export function ProviderForm({ userId, role, provider }: Props) {
         avatar_url: avatarUrl || null,
       };
 
-      if (role === "visitor") {
+      if (role === "visitor" || (role === "admin" && !provider)) {
+        // Create new provider record
         const email = user.email ?? "";
         const { error: insertError } = await supabase.from("providers").insert({
           user_id: userId,
           email,
           ...payload,
-          approval_status: "pending",
+          approval_status: role === "admin" ? "approved" : "pending",
           active: true,
         });
         if (insertError) throw insertError;
 
-        const { error: roleError } = await supabase
-          .from("profiles")
-          .update({ role: "provider" })
+        // Upgrade role to provider only for visitors
+        if (role === "visitor") {
+          const { error: roleError } = await supabase
+            .from("profiles")
+            .update({ role: "provider" })
+            .eq("user_id", userId);
+          if (roleError) throw roleError;
+        }
+      } else if (role === "admin") {
+        // Admin: update directly, no approval needed
+        const { error: updateError } = await supabase
+          .from("providers")
+          .update({ ...payload, approval_status: "approved" })
           .eq("user_id", userId);
-        if (roleError) throw roleError;
+        if (updateError) throw updateError;
       } else {
+        // Provider: store as pending_changes for admin review
         const { error: updateError } = await supabase
           .from("providers")
           .update({
@@ -196,7 +208,7 @@ export function ProviderForm({ userId, role, provider }: Props) {
           )}
           {success && (
             <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-              ✓ {role === "visitor" ? "Profil létrehozva! Jóváhagyásra vár." : "Módosítások elküldve!"}
+              ✓ {role === "visitor" ? "Profil létrehozva! Jóváhagyásra vár." : role === "admin" ? "Profil mentve!" : "Módosítások elküldve!"}
             </div>
           )}
 
