@@ -108,12 +108,12 @@ function LoginForm() {
 
       <p className="text-center text-lg text-gray-900 mt-4">
         Még nincs fiókod?{" "}
-        <Link href="/auth/register" className="text-[#2a9d8f] hover:underline">
+        <Link href="/auth/register" className="text-[#84AAA6] hover:underline">
           Regisztrálj
         </Link>
       </p>
       <p className="text-center text-lg text-gray-900 mt-2">
-        <Link href="/auth/forgot-password" className="text-[#2a9d8f] hover:underline">
+        <Link href="/auth/forgot-password" className="text-[#84AAA6] hover:underline">
           Elfelejtett jelszó?
         </Link>
       </p>

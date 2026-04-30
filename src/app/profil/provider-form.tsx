@@ -41,7 +41,7 @@ function PillSelect<T extends string>({
       <div className="flex items-baseline justify-between">
         <Label>{label}</Label>
         {selected.length > 0 && (
-          <span className="text-sm text-[#2a9d8f]">{selected.length} kiválasztva</span>
+          <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
         )}
       </div>
       <div className="flex flex-wrap gap-2">
@@ -54,8 +54,8 @@ function PillSelect<T extends string>({
               onClick={() => toggle(opt.value)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
                 isSelected
-                  ? "bg-[#2a9d8f] text-white border-[#2a9d8f]"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-[#2a9d8f] hover:text-[#2a9d8f]"
+                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
               }`}
             >
               {opt.label}
@@ -158,7 +158,7 @@ function ProfileView({
         <p className="text-sm font-medium text-gray-500">Kategória</p>
         <div className="flex flex-wrap gap-1.5">
           {(provider.categories ?? []).map((c) => (
-            <span key={c} className="px-2.5 py-1 rounded-full text-sm bg-[#2a9d8f]/10 text-[#2a9d8f] border border-[#2a9d8f]/20">
+            <span key={c} className="px-2.5 py-1 rounded-full text-sm bg-[#84AAA6]/10 text-[#84AAA6] border border-[#84AAA6]/20">
               {CATEGORY_LABELS[c as ServiceCategory] ?? c}
             </span>
           ))}
@@ -314,7 +314,7 @@ export function ProviderForm({ userId, role, provider, isProviderActive, onActiv
           <button
             type="button" onClick={handleToggle} disabled={toggling}
             className={`relative inline-flex h-7 w-13 min-w-[3.25rem] items-center rounded-full transition-colors focus:outline-none ${
-              isProviderActive ? "bg-[#2a9d8f]" : "bg-gray-300"
+              isProviderActive ? "bg-[#84AAA6]" : "bg-gray-300"
             } ${toggling ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
             aria-checked={isProviderActive} role="switch"
           >
@@ -356,7 +356,7 @@ export function ProviderForm({ userId, role, provider, isProviderActive, onActiv
                 <Label>Profilkép</Label>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#2a9d8f] overflow-hidden bg-gray-50"
+                    className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
                     onClick={() => avatarInputRef.current?.click()}
                   >
                     {avatarPreview ? (

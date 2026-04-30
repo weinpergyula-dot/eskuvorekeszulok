@@ -61,7 +61,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Breadcrumb */}
       <nav className="text-lg text-gray-900 mb-8">
-        <a href="/services" className="hover:text-[#2a9d8f] cursor-pointer">
+        <a href="/services" className="hover:text-[#84AAA6] cursor-pointer">
           Szolgáltatások
         </a>{" "}
         {firstCategory && (
@@ -69,7 +69,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
             /{" "}
             <a
               href={`/services/${firstCategory}`}
-              className="hover:text-[#2a9d8f] cursor-pointer"
+              className="hover:text-[#84AAA6] cursor-pointer"
             >
               {firstCategoryLabel}
             </a>{" "}
@@ -80,7 +80,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Hero section */}
-        <div className="bg-gradient-to-br from-[#2a9d8f]/10 to-[#C04C9B]/10 px-8 py-10 flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+        <div className="bg-gradient-to-br from-[#84AAA6]/10 to-[#C65EA5]/10 px-8 py-10 flex flex-col sm:flex-row gap-6 items-center sm:items-start">
           {/* Avatar */}
           <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center shrink-0">
             {provider.avatar_url ? (
@@ -192,20 +192,20 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
               <div className="space-y-3">
                 <ContactItem
-                  icon={<Phone className="h-4 w-4 text-[#2a9d8f]" />}
+                  icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
                   label="Telefon"
                   value={provider.phone}
                   href={`tel:${provider.phone}`}
                 />
                 <ContactItem
-                  icon={<Mail className="h-4 w-4 text-[#2a9d8f]" />}
+                  icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
                   label="E-mail"
                   value={provider.email}
                   href={`mailto:${provider.email}`}
                 />
                 {provider.website && (
                   <ContactItem
-                    icon={<Globe className="h-4 w-4 text-[#2a9d8f]" />}
+                    icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
                     label="Weboldal"
                     value={provider.website}
                     href={
@@ -220,7 +220,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
               <a
                 href={`mailto:${provider.email}`}
-                className="block w-full text-center bg-[#C04C9B] hover:bg-[#a33d83] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+                className="block w-full text-center bg-[#C65EA5] hover:bg-[#A84D8B] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
                 Kapcsolatfelvétel
               </a>
@@ -251,7 +251,7 @@ function ContactItem({
         href={href}
         target={external ? "_blank" : undefined}
         rel={external ? "noopener noreferrer" : undefined}
-        className="text-base text-gray-900 hover:text-[#2a9d8f] break-all cursor-pointer"
+        className="text-base text-gray-900 hover:text-[#84AAA6] break-all cursor-pointer"
       >
         {value}
       </a>

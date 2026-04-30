@@ -50,7 +50,7 @@ function PillSelect<T extends string>({
                 type="checkbox"
                 checked={selected.includes(opt.value)}
                 onChange={() => toggle(opt.value)}
-                className="accent-[#2a9d8f] h-4 w-4 shrink-0"
+                className="accent-[#84AAA6] h-4 w-4 shrink-0"
               />
               <span className="text-base text-gray-900">{opt.label}</span>
             </label>
@@ -58,7 +58,7 @@ function PillSelect<T extends string>({
         </div>
       </div>
       {selected.length > 0 && (
-        <p className="text-sm text-[#2a9d8f]">{selected.length} kiválasztva</p>
+        <p className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</p>
       )}
     </div>
   );
@@ -218,7 +218,7 @@ export default function EditProfilePage() {
           <Label>Profilkép</Label>
           <div className="flex items-center gap-4">
             <div
-              className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#2a9d8f] overflow-hidden bg-gray-50"
+              className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
               onClick={() => avatarInputRef.current?.click()}
             >
               {avatarPreview ? (

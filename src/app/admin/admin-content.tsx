@@ -52,10 +52,10 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
             onClick={() => setFilter(s.target)}
             className={`text-left rounded-lg p-4 border transition-all cursor-pointer ${
               filter === s.target
-                ? "border-[#2a9d8f] bg-[#2a9d8f]/5 ring-1 ring-[#2a9d8f]"
+                ? "border-[#84AAA6] bg-[#84AAA6]/5 ring-1 ring-[#84AAA6]"
                 : s.highlight
-                ? "border-yellow-300 bg-yellow-50 hover:border-[#2a9d8f]"
-                : "border-gray-200 bg-white hover:border-[#2a9d8f]"
+                ? "border-yellow-300 bg-yellow-50 hover:border-[#84AAA6]"
+                : "border-gray-200 bg-white hover:border-[#84AAA6]"
             }`}
           >
             <div className="text-2xl mb-1">{s.icon}</div>

@@ -53,7 +53,7 @@ export function CategorySearch() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Keresés a kategóriák között..."
-          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a9d8f] focus:border-transparent"
+          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
         />
       </div>
 
@@ -65,13 +65,13 @@ export function CategorySearch() {
             <Link
               key={category}
               href={`/services/${category}`}
-              className="flex flex-col items-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#2a9d8f] hover:shadow-md transition-all group"
+              className="flex flex-col items-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#84AAA6] hover:shadow-md transition-all group"
             >
               <span className="text-3xl mb-3">{CATEGORY_ICONS[category]}</span>
-              <h3 className="font-semibold text-gray-900 mb-1 leading-tight group-hover:text-[#2a9d8f] transition-colors" style={{ fontSize: "22px" }}>
+              <h3 className="font-semibold text-gray-900 mb-1 leading-tight group-hover:text-[#84AAA6] transition-colors" style={{ fontSize: "22px" }}>
                 {CATEGORY_LABELS[category]}
               </h3>
-              <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#2a9d8f] transition-colors mb-2" />
+              <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#84AAA6] transition-colors mb-2" />
               <p className="text-base text-gray-900 line-clamp-2">
                 {CATEGORY_DESCRIPTIONS[category]}
               </p>

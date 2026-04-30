@@ -109,7 +109,7 @@ export function UsersSection() {
 
   if (loading) return (
     <div className="flex items-center justify-center py-12">
-      <div className="w-8 h-8 border-4 border-gray-200 border-t-[#2a9d8f] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
     </div>
   );
 
@@ -161,8 +161,8 @@ export function UsersSection() {
               onClick={() => handleRole(r)}
               className={`px-3 py-1.5 rounded-md text-base font-medium border transition-colors cursor-pointer ${
                 roleFilter === r
-                  ? "bg-[#2a9d8f] text-white border-[#2a9d8f]"
-                  : "bg-white text-gray-900 border-gray-200 hover:border-[#2a9d8f]"
+                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  : "bg-white text-gray-900 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
               {r === "all" ? "Összes" : ROLE_LABELS[r]}

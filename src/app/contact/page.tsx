@@ -12,7 +12,7 @@ export default function ContactPage() {
         <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-3">
           <p className="text-lg text-gray-900">
             <span className="font-medium">Email:</span>{" "}
-            <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#2a9d8f] hover:underline">
+            <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] hover:underline">
               info@eskuvorekeszulok.hu
             </a>
           </p>

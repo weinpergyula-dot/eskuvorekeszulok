@@ -34,7 +34,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
         onClick={() => navigate()}
         className={cn(
           "w-full text-left px-3 py-2 rounded-xl text-base transition-colors cursor-pointer",
-          !selected ? "bg-[#2a9d8f] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
+          !selected ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
         )}
       >
         Összes megye
@@ -46,7 +46,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           className={cn(
             "w-full text-left px-3 py-2 rounded-xl text-base transition-colors cursor-pointer",
             selected === county
-              ? "bg-[#2a9d8f] text-white font-medium"
+              ? "bg-[#84AAA6] text-white font-medium"
               : "text-gray-900 hover:bg-gray-100"
           )}
         >
@@ -68,8 +68,8 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
           className="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-base font-medium text-gray-900 cursor-pointer"
         >
           <span className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-[#2a9d8f]" />
-            Szűrés: <span className="text-[#2a9d8f]">{selectedLabel}</span>
+            <SlidersHorizontal className="h-4 w-4 text-[#84AAA6]" />
+            Szűrés: <span className="text-[#84AAA6]">{selectedLabel}</span>
           </span>
           <ChevronDown
             className={cn(
@@ -87,7 +87,7 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
                 value={mobileQuery}
                 onChange={(e) => setMobileQuery(e.target.value)}
                 placeholder="Megye keresése..."
-                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a9d8f] focus:border-transparent"
+                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
               />
             </div>
             {list(visibleCounties)}

@@ -19,7 +19,7 @@ export default function HomePage() {
             <div className="w-[42%] sm:w-[40%] lg:max-w-xl lg:w-auto">
               <h1 className="mb-4 leading-tight" style={{ fontWeight: 950 }}>
                 <span
-                  className="text-[#2a9d8f] block"
+                  className="text-[#84AAA6] block"
                   style={{ fontSize: "clamp(28px, 8vw, 65px)" }}
                 >
                   ESKÜVŐRE
@@ -31,7 +31,7 @@ export default function HomePage() {
                   KÉSZÜLSZ?
                 </span>
               </h1>
-              <div className="w-12 h-0.5 bg-[#2a9d8f] mb-4" />
+              <div className="w-12 h-0.5 bg-[#84AAA6] mb-4" />
               <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
                 Találj meg mindent egy helyen a nagy napodra!
               </p>

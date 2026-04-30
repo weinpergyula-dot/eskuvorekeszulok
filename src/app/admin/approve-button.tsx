@@ -103,7 +103,7 @@ export function ApproveButton({ providerId, type, action, changes }: ApproveButt
               onChange={(e) => setReason(e.target.value)}
               placeholder="Indoklás (opcionális)..."
               rows={3}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2a9d8f] resize-none"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#84AAA6] resize-none"
             />
             <div className="flex gap-3 justify-end">
               <Button

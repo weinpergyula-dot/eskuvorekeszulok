@@ -76,7 +76,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-[#C04C9B] text-white font-bold text-lg">
+            <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-[#C65EA5] text-white font-bold text-lg">
               EK
             </span>
           </Link>
@@ -85,7 +85,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             <Link
               href="/"
-              className="text-base text-gray-900 hover:text-[#2a9d8f] transition-colors"
+              className="text-base text-gray-900 hover:text-[#84AAA6] transition-colors"
             >
               Kezdőlap
             </Link>
@@ -97,7 +97,7 @@ export function Navbar() {
               onMouseLeave={() => setServicesOpen(false)}
             >
               <button
-                className="flex items-center gap-1 text-base text-gray-900 hover:text-[#2a9d8f] transition-colors"
+                className="flex items-center gap-1 text-base text-gray-900 hover:text-[#84AAA6] transition-colors"
               >
                 Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
               </button>
@@ -108,7 +108,7 @@ export function Navbar() {
                     <Link
                       key={cat}
                       href={`/services/${cat}`}
-                      className="block px-4 py-2 text-base text-gray-900 hover:bg-[#2a9d8f]/10 hover:text-[#2a9d8f]"
+                      className="block px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
                     >
                       {CATEGORY_LABELS[cat]}
                     </Link>
@@ -116,7 +116,7 @@ export function Navbar() {
                   <div className="border-t border-gray-100 mt-1 pt-1">
                     <Link
                       href="/services"
-                      className="block px-4 py-2 text-base text-[#2a9d8f] font-medium hover:bg-[#2a9d8f]/10"
+                      className="block px-4 py-2 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10"
                     >
                       Összes kategória →
                     </Link>
@@ -128,7 +128,7 @@ export function Navbar() {
 
             <Link
               href="/contact"
-              className="text-base text-gray-900 hover:text-[#2a9d8f] transition-colors"
+              className="text-base text-gray-900 hover:text-[#84AAA6] transition-colors"
             >
               Kapcsolat
             </Link>
@@ -164,7 +164,7 @@ export function Navbar() {
                   <Button variant="outline" className="text-base">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button className="text-base bg-[#C04C9B] hover:bg-[#a33d83]">Belépés</Button>
+                  <Button className="text-base bg-[#C65EA5] hover:bg-[#A84D8B]">Belépés</Button>
                 </Link>
               </>
             )}
@@ -172,7 +172,7 @@ export function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-xl text-gray-900 hover:text-[#2a9d8f]"
+            className="md:hidden p-2 rounded-xl text-gray-900 hover:text-[#84AAA6]"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

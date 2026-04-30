@@ -22,10 +22,10 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
   return (
     <a
       href={`/providers/${provider.id}`}
-      className="bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#2a9d8f] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
+      className="bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
     >
       {/* Header – matches provider profile hero */}
-      <div className="bg-gradient-to-br from-[#2a9d8f]/10 to-[#C04C9B]/10 flex flex-col items-center pt-6 px-5 pb-4">
+      <div className="bg-gradient-to-br from-[#84AAA6]/10 to-[#C65EA5]/10 flex flex-col items-center pt-6 px-5 pb-4">
         {/* Avatar */}
         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0">
           {provider.avatar_url ? (
@@ -43,7 +43,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-900 text-center mb-2 group-hover:text-[#2a9d8f] transition-colors" style={{ fontSize: "22px" }}>
+        <h3 className="font-bold text-gray-900 text-center mb-2 group-hover:text-[#84AAA6] transition-colors" style={{ fontSize: "22px" }}>
           {provider.full_name}
         </h3>
 
@@ -62,7 +62,7 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
         </div>
         {/* Counties */}
         <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
-          <MapPin className="h-3.5 w-3.5 text-[#2a9d8f] shrink-0" />
+          <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
           <span className="text-base text-gray-900">
             {(provider.counties ?? []).slice(0, 2).join(", ")}
             {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
@@ -116,18 +116,18 @@ export function ProviderCard({ provider, showStatus = false }: ProviderCardProps
 
       {/* Contact info */}
       <div className="px-5 py-4 space-y-2 flex-1">
-        <ContactRow icon={<Phone className="h-4 w-4 text-[#2a9d8f]" />} value={provider.phone} />
-        <ContactRow icon={<Mail className="h-4 w-4 text-[#2a9d8f]" />} value={provider.email} />
+        <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
+        <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
         {provider.website && (
           <ContactRow
-            icon={<Globe className="h-4 w-4 text-[#2a9d8f]" />}
+            icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
             value={provider.website}
             isLink
           />
         )}
         {provider.description && (
           <div className="flex gap-2.5">
-            <MessageSquare className="h-4 w-4 text-[#2a9d8f] shrink-0 mt-0.5" />
+            <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
             <p className="text-base text-gray-900 line-clamp-3 leading-relaxed">
               {provider.description}
             </p>
@@ -172,7 +172,7 @@ function ContactRow({
           href={value.startsWith("http") ? value : `https://${value}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-base text-[#2a9d8f] hover:underline break-all"
+          className="text-base text-[#84AAA6] hover:underline break-all"
         >
           {value}
         </a>

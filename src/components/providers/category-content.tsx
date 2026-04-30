@@ -49,7 +49,7 @@ export function CategoryContent({
               value={countyQuery}
               onChange={(e) => setCountyQuery(e.target.value)}
               placeholder="Megye keresése..."
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a9d8f] focus:border-transparent"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
             />
           </div>
           <CountyFilter counties={filteredCounties} selected={selected} category={category} />
@@ -70,7 +70,7 @@ export function CategoryContent({
             value={nameQuery}
             onChange={(e) => setNameQuery(e.target.value)}
             placeholder="Keresés szolgáltató neve szerint..."
-            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#2a9d8f] focus:border-transparent"
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
           />
         </div>
 

@@ -44,13 +44,13 @@ export default function ServicesPage() {
           <Link
             key={category}
             href={`/services/${category}`}
-            className="flex flex-col items-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#2a9d8f] hover:shadow-md transition-all group"
+            className="flex flex-col items-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#84AAA6] hover:shadow-md transition-all group"
           >
             <span className="text-3xl mb-3">{CATEGORY_ICONS[category]}</span>
             <h3 className="font-semibold text-gray-900 mb-1 leading-tight" style={{ fontSize: "22px" }}>
               {CATEGORY_LABELS[category]}
             </h3>
-            <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#2a9d8f] transition-colors mb-2" />
+            <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#84AAA6] transition-colors mb-2" />
             <p className="text-base text-gray-900 line-clamp-2">
               {CATEGORY_DESCRIPTIONS[category]}
             </p>

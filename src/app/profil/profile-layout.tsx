@@ -60,7 +60,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider }: Pr
                 className={cn(
                   "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer",
                   active === item.id
-                    ? "bg-[#2a9d8f] text-white"
+                    ? "bg-[#84AAA6] text-white"
                     : "text-gray-900 hover:bg-gray-100"
                 )}
               >
