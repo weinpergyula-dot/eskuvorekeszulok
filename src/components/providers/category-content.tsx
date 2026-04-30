@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, SearchX } from "lucide-react";
 import { CountyFilter } from "./county-filter";
 import { ProviderCard } from "./provider-card";
 import type { Provider } from "@/lib/types";
@@ -32,7 +32,7 @@ export function CategoryContent({
   const filteredProviders = providers;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 items-start">
+    <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
       {/* Sidebar */}
       <aside className="lg:w-64 shrink-0 w-full">
         {/* Desktop sticky card */}
@@ -72,7 +72,7 @@ export function CategoryContent({
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="text-4xl mb-4">🔍</p>
+            <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
             <p className="text-gray-900 text-lg">
               {selected

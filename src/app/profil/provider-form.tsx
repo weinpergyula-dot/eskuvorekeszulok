@@ -4,9 +4,8 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Clock, Pencil } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
@@ -464,26 +463,22 @@ export function ProviderForm({
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="pf-name">Teljes név *</Label>
-                <Input
-                  id="pf-name"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                />
-              </div>
+              <FloatingInput
+                id="pf-name"
+                label="Teljes név *"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
 
-              <div className="space-y-1.5">
-                <Label htmlFor="pf-phone">Telefonszám *</Label>
-                <Input
-                  id="pf-phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                />
-              </div>
+              <FloatingInput
+                id="pf-phone"
+                label="Telefonszám *"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
 
               <PillSelect
                 label="Megye *"
@@ -498,27 +493,22 @@ export function ProviderForm({
                 onChange={setCategories}
               />
 
-              <div className="space-y-1.5">
-                <Label htmlFor="pf-description">Leírás *</Label>
-                <Textarea
-                  id="pf-description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={5}
-                  required
-                />
-              </div>
+              <FloatingTextarea
+                id="pf-description"
+                label="Leírás *"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={5}
+                required
+              />
 
-              <div className="space-y-1.5">
-                <Label htmlFor="pf-website">Weboldal (opcionális)</Label>
-                <Input
-                  id="pf-website"
-                  type="url"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  placeholder="https://www.pelda.hu"
-                />
-              </div>
+              <FloatingInput
+                id="pf-website"
+                label="Weboldal (opcionális)"
+                type="url"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
 
               <div className="flex gap-3 pt-2 flex-wrap">
                 <Button type="submit" disabled={saving}>

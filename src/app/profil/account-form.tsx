@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FloatingInput } from "@/components/ui/floating-input";
 
 interface AccountInfoProps {
   userId: string;
@@ -68,19 +67,14 @@ export function AccountInfoForm({ userId, initialName, email }: AccountInfoProps
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-      <div className="space-y-1.5">
-        <Label htmlFor="email">E-mail cím</Label>
-        <Input id="email" value={email} disabled className="bg-gray-50 text-gray-900" />
-      </div>
-      <div className="space-y-1.5">
-        <Label htmlFor="name">Teljes név</Label>
-        <Input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
+      <FloatingInput id="email" label="E-mail cím" value={email} disabled className="bg-gray-50 text-gray-500 cursor-not-allowed" />
+      <FloatingInput
+        id="name"
+        label="Teljes név"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
       {error && (
         <p className="text-base text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
       )}
@@ -113,11 +107,12 @@ export function AccountInfoForm({ userId, initialName, email }: AccountInfoProps
             <p className="text-base text-gray-900">
               A megerősítéshez írd be az email címedet:
             </p>
-            <Input
+            <FloatingInput
+              id="delete-confirm-email"
+              label={email}
               type="email"
               value={deleteConfirmEmail}
               onChange={(e) => setDeleteConfirmEmail(e.target.value)}
-              placeholder={email}
             />
             {deleteError && (
               <p className="text-base text-red-600">{deleteError}</p>
@@ -179,28 +174,24 @@ export function PasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-      <div className="space-y-1.5">
-        <Label htmlFor="newPassword">Új jelszó</Label>
-        <Input
-          id="newPassword"
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          required
-          minLength={6}
-        />
-      </div>
-      <div className="space-y-1.5">
-        <Label htmlFor="confirmPassword">Jelszó megerősítése</Label>
-        <Input
-          id="confirmPassword"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          minLength={6}
-        />
-      </div>
+      <FloatingInput
+        id="newPassword"
+        label="Új jelszó"
+        type="password"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+        required
+        minLength={6}
+      />
+      <FloatingInput
+        id="confirmPassword"
+        label="Jelszó megerősítése"
+        type="password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        required
+        minLength={6}
+      />
       {error && (
         <p className="text-base text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
       )}
