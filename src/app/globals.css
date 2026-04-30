@@ -192,6 +192,11 @@ textarea:-webkit-autofill:focus {
   -webkit-text-fill-color: #171717;
 }
 
+input[type="password"] {
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+}
+
 @keyframes autofill-start { from {} to {} }
 @keyframes autofill-cancel { from {} to {} }
 

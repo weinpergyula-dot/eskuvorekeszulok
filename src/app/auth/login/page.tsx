@@ -117,7 +117,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div>
-      <PageHeader title="Bejelentkezés" />
+      <PageHeader title="Bejelentkezés" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a bejelentkezés." />
       <div className="flex items-center justify-center py-12 px-4">
         <Suspense>
           <LoginForm />
