@@ -121,7 +121,7 @@ export function Navbar() {
           {/* Logo + Desktop nav */}
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center shrink-0">
-              <Image src="/logo2.png" alt="Esküvőre Készülök" width={44} height={40} className="h-10 w-auto" />
+              <Image src="/logo2.png" alt="Esküvőre Készülök" width={320} height={80} quality={100} className="h-10 w-auto" />
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
