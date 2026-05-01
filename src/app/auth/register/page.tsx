@@ -488,7 +488,7 @@ export default function RegisterPage() {
 
               {/* Gallery */}
               <div className="space-y-2">
-                <p className="text-base text-gray-800">Képek a portfóliódból (opcionális, max. 5) – tölts fel képeket a munkáidról, ezek megjelennek a profilodban.</p>
+                <p className="text-base text-gray-800">Tölts fel képeket a munkáidról. (opcionális, max 5 db)</p>
                 <Input
                   id="gallery"
                   type="file"
