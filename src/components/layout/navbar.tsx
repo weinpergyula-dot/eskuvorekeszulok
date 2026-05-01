@@ -21,10 +21,20 @@ const mainCategories = [
   "helyszin",
 ] as const;
 
+function NavBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none border-2 border-white">
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
 export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
   const [providerDot, setProviderDot] = useState<"amber" | "red" | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -47,7 +57,7 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!supabase || !user) { setProfile(null); setProviderDot(null); return; }
+    if (!supabase || !user) { setProfile(null); setProviderDot(null); setUnreadMessages(0); return; }
     supabase
       .from("profiles")
       .select("*")
@@ -55,7 +65,6 @@ export function Navbar() {
       .single()
       .then(({ data }) => setProfile(data));
 
-    // Fetch provider status for any logged-in user (admin may also have a provider profile)
     supabase
       .from("providers")
       .select("approval_status, pending_changes, active")
@@ -67,6 +76,13 @@ export function Navbar() {
         const hasPending = p.approval_status === "pending" || !!p.pending_changes;
         setProviderDot(hasPending ? "amber" : null);
       });
+
+    fetch("/api/messages")
+      .then((r) => r.json())
+      .then((data: { read: boolean; is_own: boolean }[]) =>
+        setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length)
+      )
+      .catch(() => {});
   }, [user]);
 
   useEffect(() => {
@@ -96,10 +112,7 @@ export function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-6">
-            <Link
-              href="/"
-              className="text-base text-gray-900 hover:underline"
-            >
+            <Link href="/" className="text-base text-gray-900 hover:underline">
               Kezdőlap
             </Link>
 
@@ -109,40 +122,35 @@ export function Navbar() {
               onMouseEnter={() => setServicesOpen(true)}
               onMouseLeave={() => setServicesOpen(false)}
             >
-              <button
-                className="flex items-center gap-1 text-base text-gray-900 hover:underline"
-              >
+              <button className="flex items-center gap-1 text-base text-gray-900 hover:underline">
                 Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
               </button>
               {servicesOpen && (
                 <div className="absolute top-full left-0 pt-2 w-56 z-50">
-                <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
-                  {mainCategories.map((cat) => (
-                    <Link
-                      key={cat}
-                      href={`/services/${cat}`}
-                      className="block px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
-                    >
-                      {CATEGORY_LABELS[cat]}
-                    </Link>
-                  ))}
-                  <div className="border-t border-gray-100 mt-1 pt-1">
-                    <Link
-                      href="/services"
-                      className="block px-4 py-2 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10"
-                    >
-                      Összes kategória →
-                    </Link>
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
+                    {mainCategories.map((cat) => (
+                      <Link
+                        key={cat}
+                        href={`/services/${cat}`}
+                        className="block px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
+                      >
+                        {CATEGORY_LABELS[cat]}
+                      </Link>
+                    ))}
+                    <div className="border-t border-gray-100 mt-1 pt-1">
+                      <Link
+                        href="/services"
+                        className="block px-4 py-2 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10"
+                      >
+                        Összes kategória →
+                      </Link>
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
             </div>
 
-            <Link
-              href="/contact"
-              className="text-base text-gray-900 hover:underline"
-            >
+            <Link href="/contact" className="text-base text-gray-900 hover:underline">
               Kapcsolat
             </Link>
           </div>
@@ -154,11 +162,13 @@ export function Navbar() {
                 {profile?.role === "admin" && (
                   <Link href="/admin" className="relative">
                     <Button variant="ghost" className="text-base">Admin</Button>
-                    {pendingCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#F06C6C] rounded-full border-2 border-white" />
-                    )}
+                    <NavBadge count={pendingCount} />
                   </Link>
                 )}
+                <Link href="/profil#messages" className="relative">
+                  <Button variant="ghost" className="text-base">Üzenetek</Button>
+                  <NavBadge count={unreadMessages} />
+                </Link>
                 <Link href="/profil" className="relative">
                   <Button variant="ghost" className="text-base">Profilom</Button>
                   {providerDot && (
@@ -206,22 +216,34 @@ export function Navbar() {
           <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
             {user ? (
               <>
+                {profile?.role === "admin" && (
+                  <Link href="/admin" onClick={() => setMobileOpen(false)} className="relative block">
+                    <Button variant="outline" size="sm" className="w-full">
+                      Admin
+                      {pendingCount > 0 && (
+                        <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold leading-none">
+                          {pendingCount > 99 ? "99+" : pendingCount}
+                        </span>
+                      )}
+                    </Button>
+                  </Link>
+                )}
+                <Link href="/profil#messages" onClick={() => setMobileOpen(false)} className="relative block">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Üzenetek
+                    {unreadMessages > 0 && (
+                      <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold leading-none">
+                        {unreadMessages > 99 ? "99+" : unreadMessages}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
                 <Link href="/profil" onClick={() => setMobileOpen(false)} className="relative block">
                   <Button variant="outline" size="sm" className="w-full">Profilom</Button>
                   {providerDot && (
                     <span className={`absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
                   )}
                 </Link>
-                {profile?.role === "admin" && (
-                  <Link href="/admin" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-1.5">
-                      Admin
-                      {pendingCount > 0 && (
-                        <span className="w-2 h-2 bg-[#F06C6C] rounded-full shrink-0" />
-                      )}
-                    </Button>
-                  </Link>
-                )}
                 <Button size="sm" className="w-full" onClick={handleSignOut}>
                   Kijelentkezés
                 </Button>
