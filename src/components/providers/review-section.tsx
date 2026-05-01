@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Star, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FloatingTextarea } from "@/components/ui/floating-input";
 import Link from "next/link";
@@ -93,7 +94,7 @@ function ReviewForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
       setSuccess(true);
-      setTimeout(() => { setSuccess(false); onSaved(); }, 1500);
+      setTimeout(() => { setSuccess(false); onSaved(); }, 1200);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Hiba történt.");
     } finally {
@@ -141,6 +142,7 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const router = useRouter();
 
   const loadReviews = async () => {
     const res = await fetch(`/api/providers/${providerId}/reviews`);
@@ -177,7 +179,7 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
           <p className="text-sm font-medium text-gray-700 mb-3">
             {myReview ? "Saját értékelésed" : "Adj értékelést"}
           </p>
-          <ReviewForm providerId={providerId} existingReview={myReview} onSaved={loadReviews} />
+          <ReviewForm providerId={providerId} existingReview={myReview} onSaved={() => { loadReviews(); router.refresh(); }} />
         </div>
       ) : !loggedIn ? (
         <p className="text-base text-gray-700 mb-6">

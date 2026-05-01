@@ -60,10 +60,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const { data: agg } = await adminClient.from("reviews").select("rating").eq("provider_id", id);
   const count = agg?.length ?? 0;
   const avg = count > 0 ? (agg!.reduce((s, r) => s + r.rating, 0) / count) : 0;
-  await adminClient
+  const { error: updateError } = await adminClient
     .from("providers")
     .update({ review_count: count, average_rating: Math.round(avg * 10) / 10 })
     .eq("id", id);
 
-  return NextResponse.json({ ok: true });
+  if (updateError) console.error("Aggregate update failed:", updateError.message);
+
+  return NextResponse.json({ ok: true, review_count: count, average_rating: Math.round(avg * 10) / 10 });
 }
