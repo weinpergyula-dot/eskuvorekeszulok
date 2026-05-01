@@ -31,7 +31,7 @@ export default function HomePage() {
                   KÉSZÜLSZ?
                 </span>
               </h1>
-              <div className="w-full lg:w-[calc(100%+3rem)] h-0.5 bg-[#84AAA6] mb-4" />
+              <div className="w-full lg:w-[calc(100%+3rem)] h-[2px] bg-[#84AAA6] mb-4" />
               <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
                 Találj meg mindent egy helyen a nagy napodra!
               </p>
