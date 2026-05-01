@@ -17,12 +17,14 @@ type Step = "role" | "basic" | "provider-details";
 function PillSelect<T extends string>({
   label,
   hint,
+  required,
   options,
   selected,
   onChange,
 }: {
-  label: string;
+  label?: string;
   hint?: string;
+  required?: boolean;
   options: { value: T; label: string }[];
   selected: T[];
   onChange: (next: T[]) => void;
@@ -37,17 +39,27 @@ function PillSelect<T extends string>({
 
   return (
     <div className="space-y-2">
-      <div className="flex items-baseline justify-between">
-        <Label>
-          {label.includes("*")
-            ? <>{label.replace(" *", "")}<span className="text-[1.2em] font-bold leading-none align-middle"> *</span></>
-            : label}
-        </Label>
-        {selected.length > 0 && (
-          <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
-        )}
-      </div>
-      {hint && <p className="text-base text-gray-800 -mt-1">{hint}</p>}
+      {label && (
+        <div className="flex items-baseline justify-between">
+          <Label>
+            {label.includes("*")
+              ? <>{label.replace(" *", "")}<span className="text-[1.2em] font-bold leading-none align-middle"> *</span></>
+              : label}
+          </Label>
+          {selected.length > 0 && (
+            <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
+          )}
+        </div>
+      )}
+      {!label && selected.length > 0 && (
+        <p className="text-sm text-[#84AAA6] text-right">{selected.length} kiválasztva</p>
+      )}
+      {hint && <p className="text-base text-gray-800">{hint}</p>}
+      {required && (
+        <p className="text-sm text-gray-500">
+          <span className="text-base font-bold align-middle">*</span> kötelező
+        </p>
+      )}
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const isSelected = selected.includes(opt.value);
@@ -455,6 +467,26 @@ export default function RegisterPage() {
                 />
               </div>
 
+            </div>
+
+            {/* ── RIGHT COLUMN ── */}
+            <div className="space-y-6">
+              <PillSelect
+                hint="Jelöld be, hogy milyen megyékben vállalsz munkát. Többet is választhatsz."
+                required
+                options={countyOptions}
+                selected={counties}
+                onChange={setCounties}
+              />
+
+              <PillSelect
+                hint="Milyen szolgáltatást nyújtasz? Többet is választhatsz."
+                required
+                options={categoryOptions}
+                selected={categories}
+                onChange={setCategories}
+              />
+
               {/* Gallery */}
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Képek a portfóliódból (opcionális, max. 5) – tölts fel képeket a munkáidról, ezek megjelennek a profilodban.</p>
@@ -470,25 +502,6 @@ export default function RegisterPage() {
                   <p className="text-base text-gray-900">{galleryFiles.length} kép kiválasztva</p>
                 )}
               </div>
-            </div>
-
-            {/* ── RIGHT COLUMN ── */}
-            <div className="space-y-6">
-              <PillSelect
-                label="Megye *"
-                hint="Jelöld be, hogy milyen megyékben vállalsz munkát. Többet is választhatsz."
-                options={countyOptions}
-                selected={counties}
-                onChange={setCounties}
-              />
-
-              <PillSelect
-                label="Kategória *"
-                hint="Milyen szolgáltatást nyújtasz? Többet is választhatsz."
-                options={categoryOptions}
-                selected={categories}
-                onChange={setCategories}
-              />
             </div>
           </div>
 
