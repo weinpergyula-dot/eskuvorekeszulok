@@ -49,13 +49,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   return (
     <div className="px-8 pb-8 pt-2">
       {/* Tab bar */}
-      <div className="flex border-b border-gray-200 mb-8 -mx-8 px-8 overflow-x-auto scrollbar-none">
+      <div className="flex border-b border-gray-200 mb-8 -mx-8 px-0 sm:px-8 overflow-x-auto scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
             className={cn(
-              "px-2 sm:px-4 py-3 text-sm sm:text-base font-medium border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap shrink-0",
+              "flex-1 sm:flex-none px-2 sm:px-4 py-3 text-sm sm:text-base font-medium border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap",
               active === tab.id
                 ? "border-[#84AAA6] text-[#84AAA6]"
                 : "border-transparent text-gray-500 hover:text-gray-700"
