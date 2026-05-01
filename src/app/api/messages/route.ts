@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -16,12 +17,13 @@ export async function GET() {
 
   const senderIds = [...new Set((messages ?? []).map((m) => m.sender_id))];
 
+  const adminClient = createAdminClient();
   const [{ data: profiles }, { data: senderProviders }] = await Promise.all([
     senderIds.length > 0
-      ? supabase.from("profiles").select("user_id, full_name, role").in("user_id", senderIds)
+      ? adminClient.from("profiles").select("user_id, full_name, role").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
     senderIds.length > 0
-      ? supabase.from("providers").select("user_id, id").in("user_id", senderIds)
+      ? adminClient.from("providers").select("user_id, id").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
   ]);
 
