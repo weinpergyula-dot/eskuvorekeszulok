@@ -54,7 +54,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     <div>
       <PageHeader
         title={label}
-        breadcrumb={[{ label: "Szolgáltatások", href: "/services" }]}
+        breadcrumb={[{ label: "Szolgáltatók", href: "/services" }]}
         description={CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
       />
 

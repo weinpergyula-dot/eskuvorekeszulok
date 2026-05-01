@@ -143,14 +143,14 @@ export function Navbar() {
                 Kezdőlap
               </Link>
 
-              {/* Szolgáltatások dropdown */}
+              {/* Szolgáltatók dropdown */}
               <div
                 className="relative"
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
                 <button className="flex items-center gap-1 text-base text-gray-900 hover:underline">
-                  Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
+                  Szolgáltatók <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 {servicesOpen && (
                   <div className="absolute top-full left-0 pt-2 w-56 z-50">
@@ -236,7 +236,7 @@ export function Navbar() {
             Kezdőlap
           </Link>
           <Link href="/services" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
-            Szolgáltatások
+            Szolgáltatók
           </Link>
           <Link href="/contact" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
             Kapcsolat

@@ -54,7 +54,7 @@ export default function HomePage() {
       <div className="w-full border-t border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-5">
-            Szolgáltatások
+            Szolgáltatók
           </h2>
           <hr className="border-white/30 mb-4" />
           <p className="text-base text-white leading-relaxed">

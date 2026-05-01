@@ -16,7 +16,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-base font-semibold text-gray-900 mb-3">Szolgáltatások</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-3">Szolgáltatók</h3>
             <ul className="space-y-2">
               {[
                 { href: "/services/fotosok-videosok", label: "Fotósok, Videósok" },
