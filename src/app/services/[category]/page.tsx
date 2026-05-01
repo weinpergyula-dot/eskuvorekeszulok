@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, CATEGORY_SEO_DESCRIPTIONS, COUNTIES, type ServiceCategory } from "@/lib/types";
 import { CategoryContent } from "@/components/providers/category-content";
+import { PageHeader } from "@/components/layout/page-header";
 import { notFound } from "next/navigation";
 import type { Provider } from "@/lib/types";
 
@@ -51,26 +52,11 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
 
   return (
     <div>
-      {/* Full-width header */}
-      <div className="w-full bg-gradient-to-br from-[#84AAA6]/20 to-[#84AAA6]/5 border-b border-[#84AAA6]/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <nav className="text-lg text-[#2D5854]/70 mb-2">
-            <a href="/services" className="hover:text-[#2D5854]">
-              Szolgáltatások
-            </a>{" "}
-            / <span className="text-[#2D5854] font-medium">{label}</span>
-          </nav>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#2D5854]">{label}</h1>
-          {CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory] && (
-            <>
-              <hr className="border-[#84AAA6]/20 mt-5 mb-4" />
-              <p className="text-base text-gray-900 leading-relaxed">
-                {CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
-              </p>
-            </>
-          )}
-        </div>
-      </div>
+      <PageHeader
+        title={label}
+        breadcrumb={[{ label: "Szolgáltatások", href: "/services" }]}
+        description={CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
+      />
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <CategoryContent
