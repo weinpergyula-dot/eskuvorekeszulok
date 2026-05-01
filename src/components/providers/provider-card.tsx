@@ -12,9 +12,10 @@ interface ProviderCardProps {
   showStatus?: boolean;
   initialLiked?: boolean;
   onUnlike?: (id: string) => void;
+  hideCategories?: boolean;
 }
 
-export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike }: ProviderCardProps) {
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false }: ProviderCardProps) {
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
@@ -48,18 +49,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </h3>
 
         {/* Categories */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
-          {(provider.categories ?? []).slice(0, 2).map((cat) => (
-            <Badge key={cat} variant="outline" className="text-sm sm:text-base">
-              {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-            </Badge>
-          ))}
-          {(provider.categories ?? []).length > 2 && (
-            <Badge variant="outline" className="text-sm sm:text-base">
-              +{(provider.categories ?? []).length - 2}
-            </Badge>
-          )}
-        </div>
+        {!hideCategories && (
+          <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
+            {(provider.categories ?? []).slice(0, 2).map((cat) => (
+              <Badge key={cat} variant="outline" className="text-sm sm:text-base">
+                {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+              </Badge>
+            ))}
+            {(provider.categories ?? []).length > 2 && (
+              <Badge variant="outline" className="text-sm sm:text-base">
+                +{(provider.categories ?? []).length - 2}
+              </Badge>
+            )}
+          </div>
+        )}
         {/* Counties */}
         <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
           <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />

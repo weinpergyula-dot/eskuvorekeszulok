@@ -66,7 +66,7 @@ export function CategoryContent({
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {filteredProviders.map((provider) => (
-                <ProviderCard key={provider.id} provider={provider} />
+                <ProviderCard key={provider.id} provider={provider} hideCategories />
               ))}
             </div>
           </>

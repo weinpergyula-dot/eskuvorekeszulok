@@ -40,7 +40,7 @@ export function FavoriteButton({
       <button
         onClick={handleClick}
         aria-label="Kedvenc"
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:border-[#F06C6C] transition-colors cursor-pointer"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#FAF0F7] transition-colors cursor-pointer"
       >
         <Heart
           className={cn(
