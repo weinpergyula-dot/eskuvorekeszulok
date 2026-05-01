@@ -49,7 +49,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       className="bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
     >
       {/* Header – matches provider profile hero */}
-      <div className="bg-gradient-to-br from-[#84AAA6]/10 to-[#C65EA5]/10 flex flex-col items-center pt-6 px-5 pb-4">
+      <div className="flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
         {/* Avatar */}
         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0">
           {provider.avatar_url ? (
