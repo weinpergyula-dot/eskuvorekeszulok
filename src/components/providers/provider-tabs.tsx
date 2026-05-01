@@ -55,7 +55,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
             key={tab.id}
             onClick={() => setActive(tab.id)}
             className={cn(
-              "px-4 py-3 text-base font-medium border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap shrink-0",
+              "px-2 sm:px-4 py-3 text-sm sm:text-base font-medium border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap shrink-0",
               active === tab.id
                 ? "border-[#84AAA6] text-[#84AAA6]"
                 : "border-transparent text-gray-500 hover:text-gray-700"
