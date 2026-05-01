@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Heart, Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
+import { FavoriteButton } from "@/components/providers/favorite-button";
 
 interface ProviderCardProps {
   provider: Provider;
@@ -15,33 +15,9 @@ interface ProviderCardProps {
 }
 
 export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike }: ProviderCardProps) {
-  const [liked, setLiked] = useState(initialLiked);
-  const [showLoginMsg, setShowLoginMsg] = useState(false);
-
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
-
-  const handleHeartClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    const res = await fetch("/api/favorites", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ provider_id: provider.id }),
-    });
-    if (res.status === 401) {
-      setShowLoginMsg(true);
-      setTimeout(() => setShowLoginMsg(false), 3000);
-      return;
-    }
-    const data = await res.json();
-    if (data.action === "added") {
-      setLiked(true);
-    } else {
-      setLiked(false);
-      onUnlike?.(provider.id);
-    }
-  };
 
   return (
     <a
@@ -161,22 +137,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Footer */}
       <div className="border-t border-gray-100 px-5 py-3 flex items-center justify-between">
-        <div className="relative">
-          <button
-            onClick={handleHeartClick}
-            className="text-gray-900 hover:text-[#F06C6C] transition-colors cursor-pointer"
-            aria-label="Kedvenc"
-          >
-            <Heart
-              className={cn("h-4 w-4", liked && "fill-[#F06C6C] text-[#F06C6C]")}
-            />
-          </button>
-          {showLoginMsg && (
-            <div className="absolute bottom-full left-0 mb-2 w-max max-w-[220px] text-xs bg-gray-900 text-white px-2.5 py-1.5 rounded-lg whitespace-normal leading-tight z-10">
-              A funkció használatához jelentkezz be!
-            </div>
-          )}
-        </div>
+        <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} />
         <div className="flex items-center gap-1 text-gray-900 text-base">
           <Eye className="h-3.5 w-3.5" />
           <span>{viewCount}</span>

@@ -7,14 +7,18 @@ import { cn } from "@/lib/utils";
 export function FavoriteButton({
   providerId,
   initialLiked,
+  onUnlike,
 }: {
   providerId: string;
   initialLiked: boolean;
+  onUnlike?: (id: string) => void;
 }) {
   const [liked, setLiked] = useState(initialLiked);
   const [showMsg, setShowMsg] = useState(false);
 
-  const handleClick = async () => {
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const res = await fetch("/api/favorites", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,7 +30,9 @@ export function FavoriteButton({
       return;
     }
     const data = await res.json();
-    setLiked(data.action === "added");
+    const added = data.action === "added";
+    setLiked(added);
+    if (!added) onUnlike?.(providerId);
   };
 
   return (
