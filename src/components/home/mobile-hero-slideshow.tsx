@@ -21,7 +21,7 @@ export function MobileHeroSlideshow() {
   }, []);
 
   return (
-    <div className="relative w-full h-[100svh] overflow-hidden">
+    <div className="relative w-full overflow-hidden" style={{ aspectRatio: "3/4" }}>
       {IMAGES.map((src, i) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img
