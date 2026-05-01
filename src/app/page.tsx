@@ -40,7 +40,7 @@ export default function HomePage() {
                   <Button size="lg" className="w-full sm:w-auto text-[13px] sm:text-base px-5">Megnézem a szolgáltatókat</Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button size="lg" className="w-full sm:w-auto text-[13px] sm:text-base bg-transparent text-[#C65EA5] border-2 border-[#C65EA5] hover:bg-[#C65EA5] hover:text-white px-5">
+                  <Button size="lg" className="w-full sm:w-auto text-[13px] sm:text-base bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5] hover:text-white px-5">
                     Regisztrálok szolgáltatónak
                   </Button>
                 </Link>
