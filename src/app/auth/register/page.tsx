@@ -54,10 +54,9 @@ function PillSelect<T extends string>({
       {!label && selected.length > 0 && (
         <p className="text-sm text-[#84AAA6] text-right">{selected.length} kiválasztva</p>
       )}
-      {hint && <p className="text-base text-gray-800">{hint}</p>}
-      {required && (
-        <p className="text-sm text-gray-500">
-          <span className="text-base font-bold align-middle">*</span> kötelező
+      {hint && (
+        <p className="text-base text-gray-800">
+          {hint}{required && <span className="text-[1.2em] font-bold align-middle ml-0.5">*</span>}
         </p>
       )}
       <div className="flex flex-wrap gap-2">
