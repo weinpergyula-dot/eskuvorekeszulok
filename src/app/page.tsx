@@ -1,12 +1,18 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { CategorySearch } from "@/components/home/category-search";
+import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden">
+      {/* Mobile hero slideshow */}
+      <div className="sm:hidden">
+        <MobileHeroSlideshow />
+      </div>
+
+      {/* Hero – desktop only */}
+      <section className="relative overflow-hidden hidden sm:block">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/hero.png"
