@@ -10,6 +10,7 @@ import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
 import { PageHeader } from "@/components/layout/page-header";
 import { MessageForm } from "@/components/providers/message-form";
+import { ReviewSection } from "@/components/providers/review-section";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -177,6 +178,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
             )}
 
             <MessageForm recipientId={provider.user_id} providerId={provider.id} />
+            <ReviewSection providerId={provider.id} providerUserId={provider.user_id} />
           </div>
 
           {/* Right: contact card */}
