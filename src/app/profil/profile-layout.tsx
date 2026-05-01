@@ -257,9 +257,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
             {MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider").map((item) => (
-              <button
+              <a
                 key={item.id}
-                onClick={() => switchTo(item.id)}
+                href={`#${item.id}`}
+                onClick={(e) => { e.preventDefault(); switchTo(item.id); }}
                 className={cn(
                   "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer",
                   active === item.id
@@ -280,7 +281,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
-              </button>
+              </a>
             ))}
           </nav>
         </aside>
