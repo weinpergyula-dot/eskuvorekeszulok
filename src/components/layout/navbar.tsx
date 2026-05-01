@@ -95,6 +95,19 @@ export function Navbar() {
     });
   }, [profile]);
 
+  useEffect(() => {
+    const refresh = () => {
+      fetch("/api/messages")
+        .then((r) => r.json())
+        .then((data: { read: boolean; is_own: boolean }[]) =>
+          setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length)
+        )
+        .catch(() => {});
+    };
+    window.addEventListener("messages-read", refresh);
+    return () => window.removeEventListener("messages-read", refresh);
+  }, []);
+
   const handleSignOut = async () => {
     if (!supabase) return;
     await supabase.auth.signOut();

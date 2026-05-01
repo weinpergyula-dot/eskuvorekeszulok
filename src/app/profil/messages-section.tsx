@@ -194,6 +194,7 @@ function ThreadCard({
       );
       setLocalHasUnread(false);
       onUnreadMarked();
+      window.dispatchEvent(new CustomEvent("messages-read"));
     }
   };
 
