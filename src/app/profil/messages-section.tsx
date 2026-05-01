@@ -65,7 +65,7 @@ function formatDate(iso: string) {
 }
 
 function SenderLabel({ msg }: { msg: Message }) {
-  if (msg.is_own) return <span className="font-medium text-gray-700">Ön</span>;
+  if (msg.is_own) return <span className="font-medium text-gray-700">Te</span>;
   if (msg.sender_role === "admin") return <span className="font-medium text-gray-700">Admin</span>;
   if (msg.sender_provider_id) {
     return (
