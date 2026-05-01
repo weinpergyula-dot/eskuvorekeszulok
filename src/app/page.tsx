@@ -50,24 +50,28 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Services header */}
+      <div className="w-full border-t border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-5">
+            Szolgáltatások
+          </h2>
+          <hr className="border-white/30 mb-4" />
+          <p className="text-base text-white leading-relaxed">
+            Egy esküvő életünk egyik legfontosabb eseménye, ezért különösen
+            lényeges, hogy a lehető legjobb szolgáltatókat válasszuk. A
+            tapasztalt szakemberek – legyen szó fotósról, zenészről vagy
+            vőfélyről – biztosítják, hogy minden gördülékenyen menjen, és a pár
+            valóban átélhesse a pillanat varázsát. A minőségi szolgáltatások
+            nemcsak a stresszt csökkentik, hanem hozzájárulnak ahhoz is, hogy az
+            esküvő emléke hosszú távon is tökéletes maradjon.
+          </p>
+        </div>
+      </div>
+
       {/* Services section */}
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
-          <div className="mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Szolgáltatások
-            </h2>
-            <p className="text-gray-900">
-              Egy esküvő életünk egyik legfontosabb eseménye, ezért különösen
-              lényeges, hogy a lehető legjobb szolgáltatókat válasszuk. A
-              tapasztalt szakemberek – legyen szó fotósról, zenészről vagy
-              vőfélyről – biztosítják, hogy minden gördülékenyen menjen, és a pár
-              valóban átélhesse a pillanat varázsát. A minőségi szolgáltatások
-              nemcsak a stresszt csökkentik, hanem hozzájárulnak ahhoz is, hogy az
-              esküvő emléke hosszú távon is tökéletes maradjon.
-            </p>
-          </div>
-
           <CategorySearch />
         </div>
       </section>
