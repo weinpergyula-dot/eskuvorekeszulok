@@ -42,7 +42,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "about",   label: "Bemutatkozás" },
-    { id: "message", label: "Üzenetet küldök" },
+    { id: "message", label: "Üzenetküldés" },
     { id: "reviews", label: reviewCount > 0 ? `Értékelések (${reviewCount})` : "Értékelések" },
   ];
 
