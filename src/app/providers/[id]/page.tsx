@@ -111,12 +111,12 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
             <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-3">
               {(provider.categories ?? []).map((cat) => (
-                <Badge key={cat} variant="outline" className="text-lg">
+                <Badge key={cat} variant="outline" className="text-base">
                   {CATEGORY_LABELS[cat as ServiceCategory] ?? cat}
                 </Badge>
               ))}
               {(provider.counties ?? []).length > 0 && (
-                <span className="flex items-center gap-1 text-lg text-gray-900">
+                <span className="flex items-center gap-1 text-base text-gray-900">
                   <MapPin className="h-4 w-4" />
                   {(provider.counties ?? []).join(", ")}
                 </span>
