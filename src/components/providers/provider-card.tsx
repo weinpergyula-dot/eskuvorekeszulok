@@ -102,7 +102,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                 "h-4 w-4",
                 star <= Math.round(rating)
                   ? "fill-amber-400 text-amber-400"
-                  : "fill-white text-white"
+                  : "fill-gray-200 text-gray-200"
               )}
             />
           ))}
