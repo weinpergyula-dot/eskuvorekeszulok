@@ -82,7 +82,7 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             Jóváhagyásra váró tételek
             {totalPending > 0 && (
-              <span className="inline-flex items-center justify-center w-5 h-5 text-sm bg-amber-400 text-white rounded-full font-bold">
+              <span className="inline-flex items-center justify-center w-5 h-5 text-sm bg-[#F06C6C] text-white rounded-full font-bold">
                 {totalPending}
               </span>
             )}
