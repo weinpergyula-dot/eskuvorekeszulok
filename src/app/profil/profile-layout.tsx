@@ -223,10 +223,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div className="flex flex-col sm:flex-row gap-6">
+      <div className="flex flex-col sm:flex-row gap-6 sm:gap-0">
 
         {/* Sidebar */}
-        <aside className="sm:w-52 shrink-0">
+        <aside className="sm:w-56 shrink-0 sm:border-r sm:border-gray-200 sm:pr-6">
           {/* Mobile dropdown */}
           <div className="sm:hidden mb-2">
             <select
@@ -270,7 +270,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
         </aside>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 sm:pl-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">
             {SECTION_TITLES[active]}
           </h2>
