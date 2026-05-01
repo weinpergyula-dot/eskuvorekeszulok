@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, ChevronDown, type LucideIcon } from "lucide-react";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
@@ -186,6 +186,91 @@ function StatusCard({
   );
 }
 
+// ── MobileMenuDropdown ────────────────────────────────────────────────────────
+
+function MobileMenuDropdown({
+  items,
+  active,
+  onSelect,
+  unreadCount,
+  sidebarIndicator,
+}: {
+  items: { id: Section; label: string; icon: React.ReactNode }[];
+  active: Section;
+  onSelect: (s: Section) => void;
+  unreadCount: number;
+  sidebarIndicator: SidebarIndicator | null;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const activeItem = items.find((i) => i.id === active) ?? items[0];
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="sm:hidden relative mb-4 z-20">
+      {/* Trigger */}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-white border border-gray-200 rounded-xl text-base font-semibold text-gray-900 shadow-sm cursor-pointer"
+      >
+        <span className="flex items-center gap-2.5">
+          {activeItem.icon}
+          <span>{activeItem.label}</span>
+        </span>
+        <span className="flex items-center gap-2">
+          {active === "messages" && unreadCount > 0 && (
+            <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+          {active === "provider" && sidebarIndicator && (
+            <span className={`w-2.5 h-2.5 rounded-full ${sidebarIndicator.color}`} />
+          )}
+          <ChevronDown className={cn("h-4 w-4 text-gray-400 transition-transform", open && "rotate-180")} />
+        </span>
+      </button>
+
+      {/* Dropdown list */}
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+          {items.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => { onSelect(item.id); setOpen(false); }}
+              className={cn(
+                "w-full flex items-center justify-between gap-3 px-4 py-3 text-base font-medium transition-colors cursor-pointer",
+                item.id === active
+                  ? "bg-[#84AAA6]/10 text-[#84AAA6] font-semibold"
+                  : "text-gray-900 hover:bg-gray-50"
+              )}
+            >
+              <span className="flex items-center gap-2.5">
+                {item.icon}
+                <span>{item.label}</span>
+              </span>
+              {item.id === "messages" && unreadCount > 0 && (
+                <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+              {item.id === "provider" && sidebarIndicator && (
+                <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${sidebarIndicator.color}`} />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
 const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "messages"];
@@ -241,18 +326,14 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Sidebar */}
         <aside className="sm:w-56 shrink-0 sm:border-r sm:border-gray-200 sm:pr-6">
-          {/* Mobile dropdown */}
-          <div className="sm:hidden mb-2">
-            <select
-              value={active}
-              onChange={(e) => switchTo(e.target.value as Section)}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent text-center"
-            >
-              {MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider").map((item) => (
-                <option key={item.id} value={item.id}>{item.label}</option>
-              ))}
-            </select>
-          </div>
+          {/* Mobile custom dropdown */}
+          <MobileMenuDropdown
+            items={MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider")}
+            active={active}
+            onSelect={switchTo}
+            unreadCount={unreadCount}
+            sidebarIndicator={sidebarIndicator}
+          />
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
