@@ -266,11 +266,13 @@ export function Navbar() {
                     )}
                   </Button>
                 </Link>
-                <Link href="/profil" onClick={() => setMobileOpen(false)} className="relative block">
-                  <Button variant="outline" size="sm" className="w-full">Profilom</Button>
-                  {providerDot && (
-                    <span className={`absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
-                  )}
+                <Link href="/profil" onClick={() => setMobileOpen(false)} className="block">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Profilom
+                    {providerDot && (
+                      <span className={`ml-1.5 inline-block w-2.5 h-2.5 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
+                    )}
+                  </Button>
                 </Link>
                 <Button size="sm" className="w-full" onClick={handleSignOut}>
                   Kijelentkezés
