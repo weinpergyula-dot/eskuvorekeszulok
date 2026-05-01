@@ -131,6 +131,10 @@ export default function RegisterPage() {
 
   const handleBasicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Kérlek adj meg érvényes e-mail címet (pl. nev@example.hu).");
+      return;
+    }
     if (password !== confirmPassword) {
       setError("A két jelszó nem egyezik meg.");
       return;
