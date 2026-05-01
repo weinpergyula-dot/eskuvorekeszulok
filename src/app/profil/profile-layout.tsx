@@ -207,7 +207,9 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   useEffect(() => {
     fetch("/api/messages")
       .then((r) => r.json())
-      .then((data: { read: boolean }[]) => setUnreadCount(data.filter((m) => !m.read).length))
+      .then((data: { read: boolean; is_own: boolean }[]) =>
+        setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
+      )
       .catch(() => {});
   }, []);
 
