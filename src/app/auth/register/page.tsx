@@ -16,11 +16,13 @@ type Step = "role" | "basic" | "provider-details";
 
 function PillSelect<T extends string>({
   label,
+  hint,
   options,
   selected,
   onChange,
 }: {
   label: string;
+  hint?: string;
   options: { value: T; label: string }[];
   selected: T[];
   onChange: (next: T[]) => void;
@@ -41,6 +43,7 @@ function PillSelect<T extends string>({
           <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
         )}
       </div>
+      {hint && <p className="text-sm text-gray-500 -mt-1">{hint}</p>}
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const isSelected = selected.includes(opt.value);
@@ -345,7 +348,7 @@ export default function RegisterPage() {
     <div>
       <PageHeader title="Regisztráció" />
       <div className="flex items-start justify-center py-12 px-4">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-5xl">
         <div className="mb-6">
           <button
             onClick={() => setStep("basic")}
@@ -359,118 +362,141 @@ export default function RegisterPage() {
         </div>
 
         {/* Progress */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-8">
           <div className="h-1 flex-1 bg-[#C65EA5] rounded-full" />
           <div className="h-1 flex-1 bg-[#C65EA5] rounded-full" />
         </div>
 
-        <form onSubmit={handleProviderSubmit} className="space-y-4">
+        <form onSubmit={handleProviderSubmit}>
           {error && (
-            <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+            <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30 mb-6">
               {error}
             </div>
           )}
 
-          {/* Avatar */}
-          <div className="space-y-1.5">
-            <Label>Profilkép</Label>
-            <div className="flex items-center gap-4">
-              <div
-                className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
-                onClick={() => avatarInputRef.current?.click()}
-              >
-                {avatarPreview ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={avatarPreview} alt="preview" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-2xl">📷</span>
+          <div className="grid md:grid-cols-2 gap-x-10 gap-y-6">
+            {/* ── LEFT COLUMN ── */}
+            <div className="space-y-6">
+              {/* Avatar */}
+              <div className="space-y-2">
+                <Label>Profilkép</Label>
+                <p className="text-sm text-gray-500">Tölts fel egy profilképet, hogy a látogatók felismerhessenek.</p>
+                <div className="flex items-center gap-4">
+                  <div
+                    className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
+                    onClick={() => avatarInputRef.current?.click()}
+                  >
+                    {avatarPreview ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={avatarPreview} alt="preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-2xl">📷</span>
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => avatarInputRef.current?.click()}
+                  >
+                    Kép feltöltése
+                  </Button>
+                </div>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <Label>Bemutatkozás *</Label>
+                <p className="text-sm text-gray-500">Írd le röviden, hogy miért válasszanak téged! Mutatkozz be, emeld ki az erősségeidet.</p>
+                <FloatingTextarea
+                  id="description"
+                  label="Bemutatkozás *"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={5}
+                  required
+                />
+              </div>
+
+              {/* Phone */}
+              <div className="space-y-2">
+                <p className="text-sm text-gray-500">Ezen a telefonszámon érhetnek el a látogatók.</p>
+                <FloatingInput
+                  id="phone"
+                  label="Telefonszám *"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Website */}
+              <div className="space-y-2">
+                <p className="text-sm text-gray-500">Ha van saját weboldalad a szolgáltatásodról, add meg itt.</p>
+                <FloatingInput
+                  id="website"
+                  label="Weboldal (opcionális)"
+                  type="url"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
+
+              {/* Gallery */}
+              <div className="space-y-2">
+                <Label htmlFor="gallery">Képek a portfóliódból (opcionális, max. 5)</Label>
+                <p className="text-sm text-gray-500">Tölts fel képeket a munkáidról – ezek megjelennek a profilodban.</p>
+                <Input
+                  id="gallery"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleGalleryChange}
+                  className="cursor-pointer"
+                />
+                {galleryFiles.length > 0 && (
+                  <p className="text-base text-gray-900">{galleryFiles.length} kép kiválasztva</p>
                 )}
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => avatarInputRef.current?.click()}
-              >
-                Kép feltöltése
-              </Button>
             </div>
-            <input
-              ref={avatarInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleAvatarChange}
-            />
+
+            {/* ── RIGHT COLUMN ── */}
+            <div className="space-y-6">
+              <PillSelect
+                label="Megye *"
+                hint="Jelöld be, hogy milyen megyékben vállalsz munkát. Többet is választhatsz."
+                options={countyOptions}
+                selected={counties}
+                onChange={setCounties}
+              />
+
+              <PillSelect
+                label="Kategória *"
+                hint="Milyen szolgáltatást nyújtasz? Többet is választhatsz."
+                options={categoryOptions}
+                selected={categories}
+                onChange={setCategories}
+              />
+            </div>
           </div>
 
-          {/* Phone */}
-          <FloatingInput
-            id="phone"
-            label="Telefonszám *"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-
-          <PillSelect
-            label="Megye *"
-            options={countyOptions}
-            selected={counties}
-            onChange={setCounties}
-          />
-
-          <PillSelect
-            label="Kategória *"
-            options={categoryOptions}
-            selected={categories}
-            onChange={setCategories}
-          />
-
-          {/* Description */}
-          <FloatingTextarea
-            id="description"
-            label="Leírás *"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={4}
-            required
-          />
-
-          {/* Website */}
-          <FloatingInput
-            id="website"
-            label="Weboldal (opcionális)"
-            type="url"
-            value={website}
-            onChange={(e) => setWebsite(e.target.value)}
-          />
-
-          {/* Gallery */}
-          <div className="space-y-1.5">
-            <Label htmlFor="gallery">Egyéb képek (opcionális, max. 5)</Label>
-            <Input
-              id="gallery"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleGalleryChange}
-              className="cursor-pointer"
-            />
-            {galleryFiles.length > 0 && (
-              <p className="text-base text-gray-900">{galleryFiles.length} kép kiválasztva</p>
-            )}
+          <div className="mt-8 space-y-4">
+            <Button type="submit" className="w-full bg-[#C65EA5] hover:bg-[#A84D8B]" disabled={loading}>
+              {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
+            </Button>
+            <p className="text-base text-gray-900 text-center">
+              A regisztrációt az adminisztrátornak kell jóváhagynia, mielőtt a
+              profilod megjelenik az oldalon.
+            </p>
           </div>
-
-          <Button type="submit" className="w-full bg-[#C65EA5] hover:bg-[#A84D8B]" disabled={loading}>
-            {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
-          </Button>
-
-          <p className="text-base text-gray-900 text-center">
-            A regisztrációt az adminisztrátornak kell jóváhagynia, mielőtt a
-            profilod megjelenik az oldalon.
-          </p>
         </form>
       </div>
       </div>
