@@ -145,6 +145,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
       setError(data.error ?? "Hiba történt.");
     } else {
       setUsers((prev) => prev.filter((x) => x.user_id !== u.user_id));
+      router.refresh();
     }
     setDeleting(null);
   };
