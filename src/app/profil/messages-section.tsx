@@ -20,6 +20,7 @@ interface Message {
 }
 
 interface Thread {
+  key: string;
   subject: string;
   messages: Message[];
   lastAt: string;
@@ -37,9 +38,10 @@ function normalizeSubject(s: string) {
 function buildThreads(messages: Message[]): Thread[] {
   const map = new Map<string, Thread>();
   for (const msg of messages) {
-    const key = normalizeSubject(msg.subject);
+    const otherId = msg.is_own ? msg.recipient_id : msg.sender_id;
+    const key = `${normalizeSubject(msg.subject)}|${otherId}`;
     if (!map.has(key)) {
-      map.set(key, { subject: key, messages: [], lastAt: msg.created_at, hasUnread: false });
+      map.set(key, { key, subject: normalizeSubject(msg.subject), messages: [], lastAt: msg.created_at, hasUnread: false });
     }
     const t = map.get(key)!;
     t.messages.push(msg);
@@ -371,7 +373,7 @@ export function MessagesSection({ onUnreadChange }: Props) {
     <div className="space-y-2">
       {threads.map((thread) => (
         <ThreadCard
-          key={thread.subject}
+          key={thread.key}
           thread={thread}
           onDeleted={handleDeleted}
           onUnreadMarked={handleUnreadMarked}
