@@ -10,6 +10,7 @@ import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
 import { PageHeader } from "@/components/layout/page-header";
 import { ProviderTabs } from "@/components/providers/provider-tabs";
+import { FavoriteButton } from "@/components/providers/favorite-button";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -38,16 +39,24 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   const { id } = await params;
 
   let provider: Provider | null = null;
+  let initialLiked = false;
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("providers")
-      .select("*")
-      .eq("id", id)
-      .eq("approval_status", "approved")
-      .single();
+    const [{ data, error }, { data: { user } }] = await Promise.all([
+      supabase.from("providers").select("*").eq("id", id).eq("approval_status", "approved").single(),
+      supabase.auth.getUser(),
+    ]);
     if (error || !data) notFound();
     provider = data as Provider;
+    if (user) {
+      const { data: fav } = await supabase
+        .from("favorites")
+        .select("provider_id")
+        .eq("user_id", user.id)
+        .eq("provider_id", id)
+        .maybeSingle();
+      initialLiked = !!fav;
+    }
   } catch {
     notFound();
   }
@@ -138,6 +147,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 <Eye className="h-4 w-4" />
                 {viewCount}<span className="hidden sm:inline"> megtekintés</span>
               </span>
+              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} />
             </div>
           </div>
         </div>
