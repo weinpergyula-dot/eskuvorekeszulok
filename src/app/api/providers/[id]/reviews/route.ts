@@ -16,7 +16,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const reviewerIds = [...new Set((reviews ?? []).map((r) => r.reviewer_id))];
+  const reviewerIds = [...new Set((reviews ?? []).map((r) => r.visitor_id))];
   const adminClient = createAdminClient();
   const { data: profiles } = reviewerIds.length > 0
     ? await adminClient.from("profiles").select("user_id, full_name").in("user_id", reviewerIds)
@@ -26,7 +26,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
   const enriched = (reviews ?? []).map((r) => ({
     ...r,
-    reviewer_name: profileMap[r.reviewer_id] || "Névtelen felhasználó",
+    reviewer_name: profileMap[r.visitor_id] || "Névtelen felhasználó",
   }));
 
   return NextResponse.json(enriched);
@@ -50,8 +50,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 
   const { error } = await supabase.from("reviews").upsert(
-    { provider_id: id, reviewer_id: user.id, rating, comment: comment?.trim() || null },
-    { onConflict: "provider_id,reviewer_id" }
+    { provider_id: id, visitor_id: user.id, rating, comment: comment?.trim() || null },
+    { onConflict: "provider_id,visitor_id" }
   );
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 interface Review {
   id: string;
-  reviewer_id: string;
+  visitor_id: string;
   reviewer_name: string;
   rating: number;
   comment: string | null;
@@ -157,8 +157,8 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
     loadReviews();
   }, []);
 
-  const myReview = reviews.find((r) => r.reviewer_id === userId) ?? null;
-  const otherReviews = reviews.filter((r) => r.reviewer_id !== userId);
+  const myReview = reviews.find((r) => r.visitor_id === userId) ?? null;
+  const otherReviews = reviews.filter((r) => r.visitor_id !== userId);
   const isProvider = userId === providerUserId;
 
   return (
@@ -201,12 +201,12 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
           {[...(myReview ? [myReview] : []), ...otherReviews].map((review) => (
             <div
               key={review.id}
-              className={`border rounded-xl p-4 ${review.reviewer_id === userId ? "border-[#84AAA6]/40 bg-[#84AAA6]/5" : "border-gray-200 bg-white"}`}
+              className={`border rounded-xl p-4 ${review.visitor_id === userId ? "border-[#84AAA6]/40 bg-[#84AAA6]/5" : "border-gray-200 bg-white"}`}
             >
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div>
                   <span className="text-base font-medium text-gray-900">
-                    {review.reviewer_id === userId ? "Saját értékelésed" : review.reviewer_name}
+                    {review.visitor_id === userId ? "Saját értékelésed" : review.reviewer_name}
                   </span>
                   <span className="text-sm text-gray-400 ml-2">{formatDate(review.created_at)}</span>
                 </div>
