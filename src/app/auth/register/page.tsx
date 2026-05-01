@@ -38,12 +38,16 @@ function PillSelect<T extends string>({
   return (
     <div className="space-y-2">
       <div className="flex items-baseline justify-between">
-        <Label>{label}</Label>
+        <Label>
+          {label.includes("*")
+            ? <>{label.replace(" *", "")}<span className="text-[1.2em] font-bold leading-none align-middle"> *</span></>
+            : label}
+        </Label>
         {selected.length > 0 && (
           <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
         )}
       </div>
-      {hint && <p className="text-sm text-gray-500 -mt-1">{hint}</p>}
+      {hint && <p className="text-base text-gray-800 -mt-1">{hint}</p>}
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const isSelected = selected.includes(opt.value);
@@ -329,6 +333,9 @@ export default function RegisterPage() {
                 ? "Tovább →"
                 : "Regisztráció"}
             </Button>
+            <p className="text-sm text-gray-500 text-center">
+              <span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.
+            </p>
           </form>
 
           <p className="text-center text-lg text-gray-900 mt-4">
@@ -379,8 +386,7 @@ export default function RegisterPage() {
             <div className="space-y-6">
               {/* Avatar */}
               <div className="space-y-2">
-                <Label>Profilkép</Label>
-                <p className="text-sm text-gray-500">Tölts fel egy profilképet, hogy a látogatók felismerhessenek.</p>
+                <p className="text-base text-gray-800">Tölts fel egy profilképet, hogy a látogatók felismerhessenek.</p>
                 <div className="flex items-center gap-4">
                   <div
                     className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
@@ -413,8 +419,7 @@ export default function RegisterPage() {
 
               {/* Description */}
               <div className="space-y-2">
-                <Label>Bemutatkozás *</Label>
-                <p className="text-sm text-gray-500">Írd le röviden, hogy miért válasszanak téged! Mutatkozz be, emeld ki az erősségeidet.</p>
+                <p className="text-base text-gray-800">Írd le röviden, hogy miért válasszanak téged! Mutatkozz be, emeld ki az erősségeidet.</p>
                 <FloatingTextarea
                   id="description"
                   label="Bemutatkozás *"
@@ -427,7 +432,7 @@ export default function RegisterPage() {
 
               {/* Phone */}
               <div className="space-y-2">
-                <p className="text-sm text-gray-500">Ezen a telefonszámon érhetnek el a látogatók.</p>
+                <p className="text-base text-gray-800">Ezen a telefonszámon érhetnek el a látogatók.</p>
                 <FloatingInput
                   id="phone"
                   label="Telefonszám *"
@@ -440,7 +445,7 @@ export default function RegisterPage() {
 
               {/* Website */}
               <div className="space-y-2">
-                <p className="text-sm text-gray-500">Ha van saját weboldalad a szolgáltatásodról, add meg itt.</p>
+                <p className="text-base text-gray-800">Ha van saját weboldalad a szolgáltatásodról, add meg itt.</p>
                 <FloatingInput
                   id="website"
                   label="Weboldal (opcionális)"
@@ -452,8 +457,7 @@ export default function RegisterPage() {
 
               {/* Gallery */}
               <div className="space-y-2">
-                <Label htmlFor="gallery">Képek a portfóliódból (opcionális, max. 5)</Label>
-                <p className="text-sm text-gray-500">Tölts fel képeket a munkáidról – ezek megjelennek a profilodban.</p>
+                <p className="text-base text-gray-800">Képek a portfóliódból (opcionális, max. 5) – tölts fel képeket a munkáidról, ezek megjelennek a profilodban.</p>
                 <Input
                   id="gallery"
                   type="file"
@@ -492,6 +496,9 @@ export default function RegisterPage() {
             <Button type="submit" className="w-full bg-[#C65EA5] hover:bg-[#A84D8B]" disabled={loading}>
               {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
             </Button>
+            <p className="text-sm text-gray-500 text-center">
+              <span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.
+            </p>
             <p className="text-base text-gray-900 text-center">
               A regisztrációt az adminisztrátornak kell jóváhagynia, mielőtt a
               profilod megjelenik az oldalon.

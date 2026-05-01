@@ -3,6 +3,12 @@
 import { useState, forwardRef, InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
+function renderLabel(text: string) {
+  if (!text.includes("*")) return text;
+  const parts = text.split("*");
+  return <>{parts[0]}<span className="text-[1.2em] font-bold leading-none align-middle">*</span>{parts.slice(1).join("*")}</>;
+}
+
 interface FloatingInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   id: string;
@@ -44,7 +50,7 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
               : "top-1/2 text-base text-gray-400"
           )}
         >
-          {label}
+          {renderLabel(label)}
         </label>
       </div>
     );
@@ -88,7 +94,7 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
               : "top-4 text-base text-gray-400"
           )}
         >
-          {label}
+          {renderLabel(label)}
         </label>
       </div>
     );
