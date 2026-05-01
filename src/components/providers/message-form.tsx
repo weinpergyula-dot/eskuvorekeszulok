@@ -79,7 +79,7 @@ export function MessageForm({ recipientId, providerId }: Props) {
               rows={4}
             />
             {error && (
-              <p className="text-base text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+              <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">{error}</p>
             )}
             <Button type="submit" disabled={sending}>
               {sending ? "Küldés..." : "Üzenet küldése"}

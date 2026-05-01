@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { Users, CheckCircle, Clock as ClockIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
@@ -46,10 +47,10 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
 
   const [filter, setFilter] = useState<Filter>(defaultFilter);
 
-  const stats: { label: string; value: number; icon: string; target: Filter; highlight: boolean }[] = [
-    { label: "Összes felhasználó",      value: totalUsers,    icon: "👥", target: "users",   highlight: false },
-    { label: "Jóváhagyott szolgáltató", value: totalApproved, icon: "✅", target: "users",   highlight: false },
-    { label: "Jóváhagyásra vár",        value: totalPending,  icon: "⏳", target: "pending", highlight: totalPending > 0 },
+  const stats: { label: string; value: number; icon: React.ReactNode; target: Filter; highlight: boolean }[] = [
+    { label: "Összes felhasználó",      value: totalUsers,    icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,        target: "users",   highlight: false },
+    { label: "Jóváhagyott szolgáltató", value: totalApproved, icon: <CheckCircle className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "users",   highlight: false },
+    { label: "Jóváhagyásra vár",        value: totalPending,  icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "pending", highlight: totalPending > 0 },
   ];
 
   return (
@@ -68,7 +69,7 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
                 : "border-gray-200 bg-white hover:border-[#84AAA6]"
             }`}
           >
-            <div className="text-2xl mb-1">{s.icon}</div>
+            <div className="mb-2">{s.icon}</div>
             <div className="text-2xl font-bold text-gray-900">{s.value}</div>
             <div className="text-base text-gray-900 mt-0.5">{s.label}</div>
           </button>
@@ -147,7 +148,7 @@ function EditDiff({ current, proposed }: { current: Provider; proposed: Record<s
         <div key={f} className="grid grid-cols-[auto_1fr] gap-x-3 items-start text-sm">
           <span className="text-gray-500 font-medium whitespace-nowrap pt-0.5">{FIELD_LABELS[f]}:</span>
           <div className="flex flex-wrap items-center gap-2 min-w-0">
-            <span className="line-through text-red-400 break-all"><DiffValue value={current[f]} /></span>
+            <span className="line-through text-[#F06C6C] break-all"><DiffValue value={current[f]} /></span>
             <span className="text-gray-400">→</span>
             <span className="text-green-700 font-medium break-all"><DiffValue value={proposed[f]} /></span>
           </div>

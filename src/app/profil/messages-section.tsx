@@ -9,6 +9,7 @@ interface Message {
   id: string;
   sender_id: string;
   sender_name: string;
+  sender_role: string;
   sender_provider_id: string | null;
   subject: string;
   body: string;
@@ -85,7 +86,7 @@ function ReplyForm({ message, onSent }: { message: Message; onSent: () => void }
         rows={3}
       />
       {error && (
-        <p className="text-base text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+        <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">{error}</p>
       )}
       <Button type="submit" size="sm" disabled={sending}>
         {sending ? "Küldés..." : "Válasz küldése"}
@@ -162,7 +163,9 @@ export function MessagesSection({ onUnreadChange }: Props) {
               </p>
               <p className="text-sm text-gray-500">
                 Feladó:{" "}
-                {msg.sender_provider_id ? (
+                {msg.sender_role === "admin" ? (
+                  <span className="font-medium text-gray-700">Admin</span>
+                ) : msg.sender_provider_id ? (
                   <a
                     href={`/providers/${msg.sender_provider_id}`}
                     className="text-[#84AAA6] hover:underline"
@@ -171,7 +174,7 @@ export function MessagesSection({ onUnreadChange }: Props) {
                     {msg.sender_name}
                   </a>
                 ) : (
-                  <span>{msg.sender_name}</span>
+                  <span>{msg.sender_name} <span className="text-gray-400">(Látogató)</span></span>
                 )}
                 {" · "}
                 {formatDate(msg.created_at)}

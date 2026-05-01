@@ -18,19 +18,20 @@ export async function GET() {
 
   const [{ data: profiles }, { data: senderProviders }] = await Promise.all([
     senderIds.length > 0
-      ? supabase.from("profiles").select("user_id, full_name").in("user_id", senderIds)
+      ? supabase.from("profiles").select("user_id, full_name, role").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
     senderIds.length > 0
       ? supabase.from("providers").select("user_id, id").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
   ]);
 
-  const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, p.full_name]));
+  const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, { name: p.full_name, role: p.role }]));
   const providerMap = Object.fromEntries((senderProviders ?? []).map((p) => [p.user_id, p.id]));
 
   const enriched = (messages ?? []).map((m) => ({
     ...m,
-    sender_name: profileMap[m.sender_id] || "Névtelen felhasználó",
+    sender_name: profileMap[m.sender_id]?.name || "Névtelen felhasználó",
+    sender_role: profileMap[m.sender_id]?.role ?? "visitor",
     sender_provider_id: providerMap[m.sender_id] ?? null,
   }));
 

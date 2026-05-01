@@ -164,11 +164,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className="relative">
           <button
             onClick={handleHeartClick}
-            className="text-gray-900 hover:text-red-500 transition-colors cursor-pointer"
+            className="text-gray-900 hover:text-[#F06C6C] transition-colors cursor-pointer"
             aria-label="Kedvenc"
           >
             <Heart
-              className={cn("h-4 w-4", liked && "fill-red-500 text-red-500")}
+              className={cn("h-4 w-4", liked && "fill-[#F06C6C] text-[#F06C6C]")}
             />
           </button>
           {showLoginMsg && (

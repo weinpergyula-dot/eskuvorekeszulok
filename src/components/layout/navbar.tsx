@@ -155,14 +155,14 @@ export function Navbar() {
                   <Link href="/admin" className="relative">
                     <Button variant="ghost" className="text-base">Admin</Button>
                     {pendingCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                      <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#F06C6C] rounded-full border-2 border-white" />
                     )}
                   </Link>
                 )}
                 <Link href="/profil" className="relative">
                   <Button variant="ghost" className="text-base">Profilom</Button>
                   {providerDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-red-500" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
                   )}
                 </Link>
                 <Button variant="outline" className="text-base" onClick={handleSignOut}>
@@ -209,7 +209,7 @@ export function Navbar() {
                 <Link href="/profil" onClick={() => setMobileOpen(false)} className="relative block">
                   <Button variant="outline" size="sm" className="w-full">Profilom</Button>
                   {providerDot && (
-                    <span className={`absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-red-500" : "bg-amber-400"}`} />
+                    <span className={`absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
                   )}
                 </Link>
                 {profile?.role === "admin" && (
@@ -217,7 +217,7 @@ export function Navbar() {
                     <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-1.5">
                       Admin
                       {pendingCount > 0 && (
-                        <span className="w-2 h-2 bg-red-500 rounded-full shrink-0" />
+                        <span className="w-2 h-2 bg-[#F06C6C] rounded-full shrink-0" />
                       )}
                     </Button>
                   </Link>

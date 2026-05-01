@@ -73,7 +73,7 @@ function deriveSidebarIndicator(
                             && !!provider.rejection_reason;
 
   if (provider.approval_status === "rejected" || wasUpdateRejected)
-    return { color: "bg-red-500",   tooltip: "Elutasítva" };
+    return { color: "bg-[#F06C6C]", tooltip: "Elutasítva" };
   if (hasPendingUpdate)
     return { color: "bg-amber-400", tooltip: `${diffCount} mező jóváhagyásra vár` };
   if (isFirstSubmission && provider.approval_status === "pending")
@@ -114,12 +114,12 @@ function StatusCard({
   } else if (isFirstSubmission && provider.approval_status === "rejected") {
     liveRow = (
       <div className="space-y-1">
-        <div className="flex items-center gap-2.5 text-sm font-medium text-red-700">
-          <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+        <div className="flex items-center gap-2.5 text-sm font-medium text-[#F06C6C]">
+          <span className="w-2 h-2 rounded-full bg-[#F06C6C] shrink-0" />
           Elutasítva – profilod nem látható
         </div>
         {provider.rejection_reason && (
-          <p className="text-sm text-red-600 pl-4">Indoklás: {provider.rejection_reason}</p>
+          <p className="text-sm text-[#F06C6C] pl-4">Indoklás: {provider.rejection_reason}</p>
         )}
       </div>
     );
@@ -166,12 +166,12 @@ function StatusCard({
     );
   } else if (wasUpdateRejected) {
     pendingRow = (
-      <div className="flex items-start gap-2.5 bg-red-50 border-t border-red-200 px-4 py-3">
-        <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+      <div className="flex items-start gap-2.5 bg-[#F06C6C]/10 border-t border-[#F06C6C]/30 px-4 py-3">
+        <AlertCircle className="h-4 w-4 text-[#F06C6C] shrink-0 mt-0.5" />
         <div className="space-y-0.5">
-          <p className="text-sm font-medium text-red-800">Legutóbbi módosításod elutasítva</p>
+          <p className="text-sm font-medium text-[#F06C6C]">Legutóbbi módosításod elutasítva</p>
           {provider.rejection_reason && (
-            <p className="text-sm text-red-700">Indoklás: {provider.rejection_reason}</p>
+            <p className="text-sm text-[#F06C6C]">Indoklás: {provider.rejection_reason}</p>
           )}
         </div>
       </div>
@@ -274,7 +274,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                   </span>
                 )}
                 {item.id === "messages" && unreadCount > 0 && (
-                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white text-xs font-bold leading-none">
+                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
@@ -350,11 +350,11 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 </div>
               )}
               {provider.approval_status === "rejected" && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+                <div className="bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg p-4 flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-[#F06C6C] shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-red-800 text-lg">Profil elutasítva</p>
-                    <p className="text-red-700 text-base mt-0.5">Az adminisztrátor elutasította a profilodat. Módosítsd és küldd be újra.</p>
+                    <p className="font-semibold text-[#F06C6C] text-lg">Profil elutasítva</p>
+                    <p className="text-[#F06C6C] text-base mt-0.5">Az adminisztrátor elutasította a profilodat. Módosítsd és küldd be újra.</p>
                   </div>
                 </div>
               )}

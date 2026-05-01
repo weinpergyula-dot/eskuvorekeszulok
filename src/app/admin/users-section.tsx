@@ -168,7 +168,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           <p className="text-lg font-medium text-gray-900 mb-4">
             {confirmDelete.full_name || confirmDelete.email}
           </p>
-          <p className="text-base text-red-600 mb-5">
+          <p className="text-base text-[#F06C6C] mb-5">
             Ez a művelet nem visszavonható. A felhasználó összes adata törlődik.
           </p>
           <div className="flex gap-3 justify-end">
@@ -216,7 +216,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
       <p className="text-base text-gray-900">{filtered.length} felhasználó</p>
 
       {error && (
-        <div className="bg-red-50 text-red-700 text-lg px-4 py-3 rounded-xl border border-red-200">
+        <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
           {error}
         </div>
       )}

@@ -396,7 +396,7 @@ export function ProviderForm({
           </span>
         </div>
         {toggleError && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <p className="text-sm text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
             {toggleError}
           </p>
         )}
@@ -414,7 +414,7 @@ export function ProviderForm({
           {(!provider || editing) && (
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
+                <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
                   {error}
                 </div>
               )}

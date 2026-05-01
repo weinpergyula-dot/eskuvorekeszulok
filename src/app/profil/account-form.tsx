@@ -76,7 +76,7 @@ export function AccountInfoForm({ userId, initialName, email }: AccountInfoProps
         required
       />
       {error && (
-        <p className="text-base text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+        <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">{error}</p>
       )}
       {success && (
         <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">✓ Név mentve.</p>
@@ -115,7 +115,7 @@ export function AccountInfoForm({ userId, initialName, email }: AccountInfoProps
               onChange={(e) => setDeleteConfirmEmail(e.target.value)}
             />
             {deleteError && (
-              <p className="text-base text-red-600">{deleteError}</p>
+              <p className="text-base text-[#F06C6C]">{deleteError}</p>
             )}
             <div className="flex gap-3 justify-end">
               <Button
@@ -193,7 +193,7 @@ export function PasswordForm() {
         minLength={6}
       />
       {error && (
-        <p className="text-base text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+        <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">{error}</p>
       )}
       {success && (
         <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">✓ Jelszó sikeresen megváltoztatva.</p>
