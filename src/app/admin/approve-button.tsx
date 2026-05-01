@@ -50,6 +50,7 @@ export function ApproveButton({ providerId, type, action, changes }: ApproveButt
     }
 
     setLoading(false);
+    window.dispatchEvent(new CustomEvent("admin-pending-changed"));
     router.refresh();
   };
 
@@ -72,6 +73,7 @@ export function ApproveButton({ providerId, type, action, changes }: ApproveButt
     setLoading(false);
     setShowModal(false);
     setReason("");
+    window.dispatchEvent(new CustomEvent("admin-pending-changed"));
     router.refresh();
   };
 

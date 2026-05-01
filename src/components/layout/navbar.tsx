@@ -108,6 +108,20 @@ export function Navbar() {
     return () => window.removeEventListener("messages-read", refresh);
   }, []);
 
+  useEffect(() => {
+    if (!supabase || profile?.role !== "admin") return;
+    const refresh = () => {
+      Promise.all([
+        supabase.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
+        supabase.from("providers").select("*", { count: "exact", head: true }).not("pending_changes", "is", null),
+      ]).then(([{ count: newRegs }, { count: edits }]) => {
+        setPendingCount((newRegs ?? 0) + (edits ?? 0));
+      });
+    };
+    window.addEventListener("admin-pending-changed", refresh);
+    return () => window.removeEventListener("admin-pending-changed", refresh);
+  }, [profile]);
+
   const handleSignOut = async () => {
     if (!supabase) return;
     await supabase.auth.signOut();
