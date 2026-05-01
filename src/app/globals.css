@@ -197,6 +197,14 @@ input[type="password"] {
   letter-spacing: 0.1em;
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes autofill-start { from {} to {} }
 @keyframes autofill-cancel { from {} to {} }
 

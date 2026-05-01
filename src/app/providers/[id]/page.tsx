@@ -131,12 +131,12 @@ export default async function ProviderProfilePage({ params }: PageProps) {
               </span>
               {reviewCount > 0 && (
                 <span className="text-lg text-gray-900">
-                  ({reviewCount} értékelés)
+                  ({reviewCount}<span className="hidden sm:inline"> értékelés</span>)
                 </span>
               )}
               <span className="ml-4 flex items-center gap-1 text-lg text-gray-900">
                 <Eye className="h-4 w-4" />
-                {viewCount} megtekintés
+                {viewCount}<span className="hidden sm:inline"> megtekintés</span>
               </span>
             </div>
           </div>
