@@ -24,7 +24,7 @@ const mainCategories = [
 function NavBadge({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
-    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none border-2 border-white">
+    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[12px] font-bold flex items-center justify-center leading-none">
       {count > 99 ? "99+" : count}
     </span>
   );
