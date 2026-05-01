@@ -46,7 +46,7 @@ function LoginForm() {
     if (profile?.role === "admin") {
       router.push("/admin");
     } else if (profile?.role === "provider") {
-      router.push("/profil");
+      router.push("/profil#dashboard");
     } else {
       router.push("/");
     }

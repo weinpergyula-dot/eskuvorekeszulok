@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, type LucideIcon } from "lucide-react";
 import { AccountInfoForm, PasswordForm } from "./account-form";
@@ -185,8 +185,20 @@ function StatusCard({
 
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
+const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites"];
+
+function hashToSection(hash: string): Section | null {
+  const s = hash.replace("#", "") as Section;
+  return VALID_SECTIONS.includes(s) ? s : null;
+}
+
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
-  const [active, setActive] = useState<Section>("account");
+  const [active, setActive] = useState<Section>(() => {
+    if (typeof window !== "undefined") {
+      return hashToSection(window.location.hash) ?? "account";
+    }
+    return "account";
+  });
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(
@@ -194,6 +206,20 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   );
 
   const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive);
+
+  const switchTo = (section: Section) => {
+    setActive(section);
+    window.location.hash = section;
+  };
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const s = hashToSection(window.location.hash);
+      if (s) setActive(s);
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -205,7 +231,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           <div className="sm:hidden mb-2">
             <select
               value={active}
-              onChange={(e) => setActive(e.target.value as Section)}
+              onChange={(e) => switchTo(e.target.value as Section)}
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent text-center"
             >
               {MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider").map((item) => (
@@ -219,7 +245,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             {MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider").map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActive(item.id)}
+                onClick={() => switchTo(item.id)}
                 className={cn(
                   "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer",
                   active === item.id
