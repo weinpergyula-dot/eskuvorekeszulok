@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { TopLoader } from "@/components/layout/top-loader";
 
 export const metadata: Metadata = {
   title: "Esküvőre Készülök – Esküvői Szolgáltatók",
@@ -25,6 +26,7 @@ export default function RootLayout({
         <link rel="preload" href="/fonts/BloomSpeakTitle-ExtraBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col antialiased">
+        <TopLoader />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

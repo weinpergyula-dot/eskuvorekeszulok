@@ -118,54 +118,55 @@ export function Navbar() {
     <nav className={`sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-md" : "bg-white"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0">
-            <Image src="/logo.png" alt="Esküvőre Készülök" width={44} height={40} className="h-10 w-auto" />
-          </Link>
-
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-base text-gray-900 hover:underline">
-              Kezdőlap
+          {/* Logo + Desktop nav */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center shrink-0">
+              <Image src="/logo.png" alt="Esküvőre Készülök" width={44} height={40} className="h-10 w-auto" />
             </Link>
 
-            {/* Szolgáltatások dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setServicesOpen(true)}
-              onMouseLeave={() => setServicesOpen(false)}
-            >
-              <button className="flex items-center gap-1 text-base text-gray-900 hover:underline">
-                Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
-              </button>
-              {servicesOpen && (
-                <div className="absolute top-full left-0 pt-2 w-56 z-50">
-                  <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
-                    {mainCategories.map((cat) => (
-                      <Link
-                        key={cat}
-                        href={`/services/${cat}`}
-                        className="block px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
-                      >
-                        {CATEGORY_LABELS[cat]}
-                      </Link>
-                    ))}
-                    <div className="border-t border-gray-100 mt-1 pt-1">
-                      <Link
-                        href="/services"
-                        className="block px-4 py-2 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10"
-                      >
-                        Összes kategória →
-                      </Link>
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="/" className="text-base text-gray-900 hover:underline">
+                Kezdőlap
+              </Link>
+
+              {/* Szolgáltatások dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setServicesOpen(true)}
+                onMouseLeave={() => setServicesOpen(false)}
+              >
+                <button className="flex items-center gap-1 text-base text-gray-900 hover:underline">
+                  Szolgáltatások <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+                {servicesOpen && (
+                  <div className="absolute top-full left-0 pt-2 w-56 z-50">
+                    <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
+                      {mainCategories.map((cat) => (
+                        <Link
+                          key={cat}
+                          href={`/services/${cat}`}
+                          className="block px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
+                        >
+                          {CATEGORY_LABELS[cat]}
+                        </Link>
+                      ))}
+                      <div className="border-t border-gray-100 mt-1 pt-1">
+                        <Link
+                          href="/services"
+                          className="block px-4 py-2 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10"
+                        >
+                          Összes kategória →
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            <Link href="/contact" className="text-base text-gray-900 hover:underline">
-              Kapcsolat
-            </Link>
+              <Link href="/contact" className="text-base text-gray-900 hover:underline">
+                Kapcsolat
+              </Link>
+            </div>
           </div>
 
           {/* Auth buttons */}
