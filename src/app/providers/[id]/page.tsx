@@ -3,14 +3,13 @@ export const dynamic = "force-dynamic";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { Phone, Mail, Globe, MapPin, Star, Eye } from "lucide-react";
+import { MapPin, Star, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
 import { PageHeader } from "@/components/layout/page-header";
-import { MessageForm } from "@/components/providers/message-form";
-import { ReviewSection } from "@/components/providers/review-section";
+import { ProviderTabs } from "@/components/providers/provider-tabs";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -143,117 +142,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Body */}
-        <div className="px-8 py-8 grid md:grid-cols-5 gap-8">
-          {/* Left: description + gallery */}
-          <div className="md:col-span-3 space-y-6">
-            {provider.description && (
-              <section>
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                  Bemutatkozás
-                </h2>
-                <p className="text-gray-900 leading-relaxed whitespace-pre-line">
-                  {provider.description}
-                </p>
-              </section>
-            )}
-
-            {provider.gallery_urls && provider.gallery_urls.length > 0 && (
-              <section>
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                  Galéria
-                </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {provider.gallery_urls.map((url, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`Galéria ${i + 1}`}
-                      className="w-full h-40 object-cover rounded-lg border border-gray-200"
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            <MessageForm recipientId={provider.user_id} providerId={provider.id} />
-            <ReviewSection providerId={provider.id} providerUserId={provider.user_id} />
-          </div>
-
-          {/* Right: contact card */}
-          <div className="md:col-span-2">
-            <div className="bg-gray-50 rounded-xl border border-gray-200 p-5 space-y-4 sticky top-24">
-              <h2 className="text-base font-semibold text-gray-900">
-                Elérhetőség
-              </h2>
-
-              <div className="space-y-3">
-                <ContactItem
-                  icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
-                  label="Telefon"
-                  value={provider.phone}
-                  href={`tel:${provider.phone}`}
-                />
-                <ContactItem
-                  icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
-                  label="E-mail"
-                  value={provider.email}
-                  href={`mailto:${provider.email}`}
-                />
-                {provider.website && (
-                  <ContactItem
-                    icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
-                    label="Weboldal"
-                    value={provider.website}
-                    href={
-                      provider.website.startsWith("http")
-                        ? provider.website
-                        : `https://${provider.website}`
-                    }
-                    external
-                  />
-                )}
-              </div>
-
-              <a
-                href={`mailto:${provider.email}`}
-                className="block w-full text-center bg-[#C65EA5] hover:bg-[#A84D8B] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
-              >
-                Kapcsolatfelvétel
-              </a>
-            </div>
-          </div>
-        </div>
+        <ProviderTabs provider={provider} />
       </div>
       </div>
-    </div>
-  );
-}
-
-function ContactItem({
-  icon,
-  value,
-  href,
-  external = false,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  href: string;
-  external?: boolean;
-}) {
-  return (
-    <div className="flex gap-3 items-center">
-      <span className="shrink-0">{icon}</span>
-      <a
-        href={href}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noopener noreferrer" : undefined}
-        className="text-base text-gray-900 hover:text-[#84AAA6] break-all cursor-pointer"
-      >
-        {value}
-      </a>
     </div>
   );
 }
