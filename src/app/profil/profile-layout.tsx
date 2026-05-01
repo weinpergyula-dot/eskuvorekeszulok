@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, type LucideIcon } from "lucide-react";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
+import { MessagesSection } from "./messages-section";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider" | "dashboard" | "favorites";
+type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "messages";
 
 interface Props {
   userId: string;
@@ -26,6 +27,7 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
   { id: "provider",  label: "Profil adatok",    icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
+  { id: "messages",  label: "Üzenetek",         icon: <MessageSquare className="h-4 w-4" /> },
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
@@ -34,6 +36,7 @@ const SECTION_TITLES: Record<Section, string> = {
   provider:  "Profil adatok",
   dashboard: "Dashboard",
   favorites: "Kedvencek",
+  messages:  "Üzenetek",
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -185,7 +188,7 @@ function StatusCard({
 
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
-const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites"];
+const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "messages"];
 
 function hashToSection(hash: string): Section | null {
   const s = hash.replace("#", "") as Section;
@@ -194,11 +197,20 @@ function hashToSection(hash: string): Section | null {
 
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
   const [active, setActive] = useState<Section>("account");
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const s = hashToSection(window.location.hash);
     if (s) setActive(s);
   }, []);
+
+  useEffect(() => {
+    fetch("/api/messages")
+      .then((r) => r.json())
+      .then((data: { read: boolean }[]) => setUnreadCount(data.filter((m) => !m.read).length))
+      .catch(() => {});
+  }, []);
+
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(
@@ -257,11 +269,13 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 <span>{item.label}</span>
 
                 {item.id === "provider" && sidebarIndicator && (
-                  <span
-                    className="ml-auto shrink-0"
-                    title={sidebarIndicator.tooltip}
-                  >
+                  <span className="ml-auto shrink-0" title={sidebarIndicator.tooltip}>
                     <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
+                  </span>
+                )}
+                {item.id === "messages" && unreadCount > 0 && (
+                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white text-xs font-bold leading-none">
+                    {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
               </button>
@@ -378,6 +392,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 </div>
               </div>
             </div>
+          )}
+
+          {active === "messages" && (
+            <MessagesSection onUnreadChange={setUnreadCount} />
           )}
         </div>
       </div>
