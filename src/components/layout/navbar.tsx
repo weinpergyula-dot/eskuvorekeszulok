@@ -224,7 +224,7 @@ export function Navbar() {
             className="md:hidden p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {mobileOpen ? <X className="h-5 w-5" strokeWidth={2.5} /> : <Menu className="h-5 w-5" strokeWidth={2.5} />}
+            {mobileOpen ? <X className="h-7 w-7" strokeWidth={2.5} /> : <Menu className="h-7 w-7" strokeWidth={2.5} />}
           </button>
         </div>
       </div>
