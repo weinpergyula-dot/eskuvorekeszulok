@@ -193,12 +193,12 @@ function hashToSection(hash: string): Section | null {
 }
 
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
-  const [active, setActive] = useState<Section>(() => {
-    if (typeof window !== "undefined") {
-      return hashToSection(window.location.hash) ?? "account";
-    }
-    return "account";
-  });
+  const [active, setActive] = useState<Section>("account");
+
+  useEffect(() => {
+    const s = hashToSection(window.location.hash);
+    if (s) setActive(s);
+  }, []);
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(
