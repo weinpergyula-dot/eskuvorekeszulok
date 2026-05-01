@@ -79,6 +79,7 @@ export interface Review {
 }
 
 export const COUNTIES = [
+  "Országosan",
   "Bács-Kiskun",
   "Baranya",
   "Békés",
