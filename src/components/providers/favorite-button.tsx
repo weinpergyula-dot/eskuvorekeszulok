@@ -72,7 +72,7 @@ export function FavoriteButton({
       {tooltipRect && typeof document !== "undefined" && createPortal(
         <div
           style={{ position: "fixed", top: tooltipRect.bottom + 8, left: tooltipRect.left, zIndex: 9999 }}
-          className="w-max max-w-[220px] text-xs bg-gray-900 text-white px-2.5 py-1.5 rounded-lg pointer-events-none"
+          className="w-max max-w-[220px] text-xs bg-[#F06C6C] text-white px-2.5 py-1.5 rounded-lg pointer-events-none"
         >
           A funkció használatához jelentkezz be!
         </div>,
