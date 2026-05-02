@@ -196,7 +196,7 @@ export function Navbar() {
                     <NavBadge count={pendingCount} />
                   </Link>
                 )}
-                <a href="/profil#messages" className="relative" onClick={(e) => { e.preventDefault(); if (pathname === "/profil") { window.location.hash = "messages"; } else { router.push("/profil#messages"); } }}>
+                <a href="/profil#messages" className="relative" onClick={(e) => { e.preventDefault(); if (pathname === "/profil") { history.replaceState(null, "", "/profil#messages"); window.dispatchEvent(new CustomEvent("profile-section", { detail: "messages" })); } else { router.push("/profil#messages"); } }}>
                   <Button variant="ghost" className="text-base">Üzenetek</Button>
                   <NavBadge count={unreadMessages} />
                 </a>
