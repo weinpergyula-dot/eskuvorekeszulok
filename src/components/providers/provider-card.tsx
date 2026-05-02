@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -14,9 +14,10 @@ interface ProviderCardProps {
   onUnlike?: (id: string) => void;
   hideCategories?: boolean;
   disableLink?: boolean;
+  isOwner?: boolean;
 }
 
-export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false }: ProviderCardProps) {
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false }: ProviderCardProps) {
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
@@ -34,10 +35,16 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     >
       {/* Header – matches provider profile hero */}
       <div className="relative flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
-        {/* Mobile: favorite top-left */}
+        {/* Mobile: edit (owner) or favorite (others) top-left */}
         {!disableLink && (
           <div className="absolute top-2 left-2 sm:hidden" onClick={(e) => e.preventDefault()}>
-            <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile />
+            {isOwner ? (
+              <a href="/profil#provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
+                <Pencil className="h-4 w-4" />
+              </a>
+            ) : (
+              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile />
+            )}
           </div>
         )}
         {/* Mobile: visitor count top-right */}
@@ -161,7 +168,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Footer – desktop */}
       {!disableLink && (
         <div className="border-t border-gray-100 px-5 py-3 hidden sm:flex items-center justify-between">
-          <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} />
+          {isOwner ? (
+            <a href="/profil#provider" className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white hover:bg-[#84AAA6]/10 transition-colors px-3 py-1.5" onClick={(e) => e.stopPropagation()}>
+              <Pencil className="h-4 w-4 text-gray-400" />
+              <span className="text-sm text-gray-700">Profil szerkesztés</span>
+            </a>
+          ) : (
+            <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} />
+          )}
           <div className="flex items-center gap-1 text-gray-900 text-base">
             <Eye className="h-3.5 w-3.5" />
             <span>{viewCount}</span>

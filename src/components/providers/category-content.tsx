@@ -5,6 +5,7 @@ import { Search, SearchX, ChevronDown } from "lucide-react";
 import { CountyFilter } from "./county-filter";
 import { ProviderCard } from "./provider-card";
 import type { Provider } from "@/lib/types";
+import { createClient } from "@/lib/supabase/client";
 
 type SortOption = "default" | "rating" | "views";
 
@@ -26,7 +27,13 @@ export function CategoryContent({
   const [countyQuery, setCountyQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [sortOpen, setSortOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
+  }, []);
 
   const shuffled = useMemo(() => [...providers].sort(() => Math.random() - 0.5), [providers]);
 
@@ -119,7 +126,7 @@ export function CategoryContent({
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {filteredProviders.map((provider) => (
-                <ProviderCard key={provider.id} provider={provider} hideCategories />
+                <ProviderCard key={provider.id} provider={provider} hideCategories isOwner={!!currentUserId && currentUserId === provider.user_id} />
               ))}
             </div>
           </>
