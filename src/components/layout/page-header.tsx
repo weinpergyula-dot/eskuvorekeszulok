@@ -1,3 +1,5 @@
+import { Sparkles } from "lucide-react";
+
 interface PageHeaderProps {
   title: string;
   description?: string;
@@ -22,7 +24,10 @@ export function PageHeader({ title, description, breadcrumb }: PageHeaderProps) 
             <span className="text-white">{title}</span>
           </nav>
         )}
-        <h1 className="text-3xl md:text-4xl font-bold text-white">{title}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
+          <Sparkles className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />
+          {title}
+        </h1>
         {description && (
           <>
             <hr className="border-white/30 mt-5 mb-4" />
