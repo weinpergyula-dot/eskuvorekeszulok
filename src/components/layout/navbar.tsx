@@ -229,15 +229,30 @@ export function Navbar() {
           {/* Mobile: user icon + hamburger */}
           <div className="md:hidden flex items-center gap-1">
             {(() => {
-              const totalCount = unreadMessages + pendingCount;
-              const href = user ? "/profil" : "/auth/login";
+              const hasMessages = unreadMessages > 0;
+              const hasAdmin = pendingCount > 0;
+              const badgeCount = hasMessages ? unreadMessages : hasAdmin ? pendingCount : 0;
+              const showDot = !hasMessages && !hasAdmin && !!providerDot;
+              const href = user
+                ? hasMessages ? "/profil#messages" : hasAdmin ? "/admin" : "/profil"
+                : "/auth/login";
               const onClick = user
                 ? (e: React.MouseEvent) => {
                     e.preventDefault();
-                    if (pathname === "/profil") {
-                      window.dispatchEvent(new CustomEvent("profile-section", { detail: "account" }));
+                    if (hasMessages) {
+                      if (pathname === "/profil") {
+                        window.dispatchEvent(new CustomEvent("profile-section", { detail: "messages" }));
+                      } else {
+                        router.push("/profil#messages");
+                      }
+                    } else if (hasAdmin) {
+                      router.push("/admin");
                     } else {
-                      router.push("/profil");
+                      if (pathname === "/profil") {
+                        window.dispatchEvent(new CustomEvent("profile-section", { detail: "account" }));
+                      } else {
+                        router.push("/profil");
+                      }
                     }
                   }
                 : undefined;
@@ -248,12 +263,12 @@ export function Navbar() {
                   ) : (
                     <UserIcon className="h-7 w-7" strokeWidth={2} />
                   )}
-                  {user && totalCount > 0 && (
+                  {user && badgeCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
-                      {totalCount > 99 ? "99+" : totalCount}
+                      {badgeCount > 99 ? "99+" : badgeCount}
                     </span>
                   )}
-                  {user && totalCount === 0 && providerDot && (
+                  {user && showDot && (
                     <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
                   )}
                 </a>
