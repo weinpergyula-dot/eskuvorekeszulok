@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { MapPin, Star, Eye, User } from "lucide-react";
+import { MapPin, Star, Eye, User, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -41,6 +41,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
   let provider: Provider | null = null;
   let initialLiked = false;
+  let isOwner = false;
   try {
     const supabase = await createClient();
     const [{ data, error }, { data: { user } }] = await Promise.all([
@@ -49,7 +50,8 @@ export default async function ProviderProfilePage({ params }: PageProps) {
     ]);
     if (error || !data) notFound();
     provider = data as Provider;
-    if (user) {
+    isOwner = !!user && user.id === provider.user_id;
+    if (user && !isOwner) {
       const { data: fav } = await supabase
         .from("favorites")
         .select("provider_id")
@@ -86,14 +88,27 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Hero section */}
         <div className="relative px-5 py-5 sm:px-8 sm:py-10 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center sm:items-start" style={{ backgroundColor: "#F0F6F5" }}>
-          {/* Favorite – mobile only, top-left */}
+          {/* Top-left: edit (owner) or favorite (others) – mobile only */}
           <div className="absolute top-3 left-3 sm:hidden">
-            <FavoriteButton providerId={provider.id} initialLiked={initialLiked} hideTextOnMobile />
+            {isOwner ? (
+              <a href="/profil#provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
+                <Pencil className="h-4 w-4" />
+              </a>
+            ) : (
+              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} hideTextOnMobile />
+            )}
           </div>
-          {/* Favorite + Share – desktop only, top-right */}
+          {/* Top-right: share + edit (owner) or share + favorite (others) – desktop */}
           <div className="absolute top-3 right-3 hidden sm:flex items-center gap-2">
             <ShareButton title={provider.full_name} />
-            <FavoriteButton providerId={provider.id} initialLiked={initialLiked} />
+            {isOwner ? (
+              <a href="/profil#provider" className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A] text-base font-medium">
+                <Pencil className="h-4 w-4" />
+                Profil szerkesztés
+              </a>
+            ) : (
+              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} />
+            )}
           </div>
           {/* Share – mobile only icon, top-right */}
           <div className="absolute top-3 right-3 sm:hidden">

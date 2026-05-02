@@ -207,8 +207,6 @@ export function ProviderForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
-    if (categories.length === 0) { setError("Kérjük, válassz legalább egy kategóriát."); return; }
-    if (counties.length === 0)   { setError("Kérjük, válassz legalább egy megyét."); return; }
 
     setSaving(true); setError(null);
 
@@ -376,29 +374,26 @@ export function ProviderForm({
 
               <FloatingInput
                 id="pf-name"
-                label="Teljes név *"
+                label="Teljes név"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                required
               />
 
               <FloatingInput
                 id="pf-phone"
-                label="Telefonszám *"
-                type="tel"
+                label="Telefonszám"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                required
               />
 
               <PillSelect
-                label="Megye *"
+                label="Megye"
                 options={countyOptions}
                 selected={counties}
                 onChange={setCounties}
               />
               <PillSelect
-                label="Kategória *"
+                label="Kategória"
                 options={categoryOptions}
                 selected={categories}
                 onChange={setCategories}
@@ -406,17 +401,15 @@ export function ProviderForm({
 
               <FloatingTextarea
                 id="pf-description"
-                label="Bemutatkozás *"
+                label="Bemutatkozás"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={5}
-                required
               />
 
               <FloatingInput
                 id="pf-website"
                 label="Weboldal (opcionális)"
-                type="url"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
               />

@@ -45,24 +45,19 @@ function PhoneInput({
     onChange(full);
   };
 
-  const onlyDigits = (s: string) => s.replace(/\D/g, "");
-
   const handleP1 = (v: string) => {
-    const d = onlyDigits(v).slice(0, 2);
-    setP1(d);
-    update(countryCode, d, p2, p3);
-    if (d.length === 2) p2Ref.current?.focus();
+    setP1(v);
+    update(countryCode, v, p2, p3);
+    if (v.length === 2) p2Ref.current?.focus();
   };
   const handleP2 = (v: string) => {
-    const d = onlyDigits(v).slice(0, 3);
-    setP2(d);
-    update(countryCode, p1, d, p3);
-    if (d.length === 3) p3Ref.current?.focus();
+    setP2(v);
+    update(countryCode, p1, v, p3);
+    if (v.length === 3) p3Ref.current?.focus();
   };
   const handleP3 = (v: string) => {
-    const d = onlyDigits(v).slice(0, 4);
-    setP3(d);
-    update(countryCode, p1, p2, d);
+    setP3(v);
+    update(countryCode, p1, p2, v);
   };
   const handleCountry = (code: string) => {
     setCountryCode(code);
@@ -88,7 +83,7 @@ function PhoneInput({
         <input
           ref={p1Ref}
           type="text"
-          inputMode="numeric"
+          inputMode="text"
           placeholder="20"
           value={p1}
           onChange={(e) => handleP1(e.target.value)}
@@ -99,7 +94,7 @@ function PhoneInput({
         <input
           ref={p2Ref}
           type="text"
-          inputMode="numeric"
+          inputMode="text"
           placeholder="123"
           value={p2}
           onChange={(e) => handleP2(e.target.value)}
@@ -110,7 +105,7 @@ function PhoneInput({
         <input
           ref={p3Ref}
           type="text"
-          inputMode="numeric"
+          inputMode="text"
           placeholder="4567"
           value={p3}
           onChange={(e) => handleP3(e.target.value)}
@@ -332,14 +327,6 @@ function RegisterContent() {
 
   const handleProviderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone.trim()) {
-      setError("Kérlek add meg a telefonszámodat.");
-      return;
-    }
-    if (categories.length === 0 || counties.length === 0) {
-      setError("Kérlek válassz legalább egy kategóriát és egy megyét.");
-      return;
-    }
     await registerUser();
   };
 
