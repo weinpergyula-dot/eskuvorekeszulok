@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User, UserCheck } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, UserCheck } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -246,7 +246,7 @@ export function Navbar() {
                   {user ? (
                     <UserCheck className="h-7 w-7" strokeWidth={2} />
                   ) : (
-                    <User className="h-7 w-7" strokeWidth={2} />
+                    <UserIcon className="h-7 w-7" strokeWidth={2} />
                   )}
                   {user && totalCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
