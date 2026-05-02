@@ -41,6 +41,7 @@ export function Footer() {
             <ul className="space-y-2">
               {[
                 { href: "/services", label: "Kategóriák" },
+                { href: "/informaciok", label: "Információk" },
                 { href: "/auth/register", label: "Regisztráció" },
                 { href: "/auth/login", label: "Bejelentkezés" },
                 { href: "/contact", label: "Kapcsolat" },
