@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageSquare } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -40,8 +40,20 @@ export function Navbar() {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [providerDot, setProviderDot] = useState<"amber" | "red" | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node)) {
+        setUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -233,58 +245,91 @@ export function Navbar() {
 
           {/* Mobile: user icon + hamburger */}
           <div className="md:hidden flex items-center gap-1">
-            {(() => {
+            {/* User icon – not logged in: link to login */}
+            {!user && (
+              <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+                <UserIcon className="h-7 w-7" strokeWidth={2} />
+              </a>
+            )}
+
+            {/* User icon – logged in: dropdown */}
+            {user && (() => {
               const hasMessages = unreadMessages > 0;
               const hasAdmin = pendingCount > 0;
               const badgeCount = hasMessages ? unreadMessages : hasAdmin ? pendingCount : 0;
               const showDot = !hasMessages && !hasAdmin && !!providerDot;
-              const href = user
-                ? hasMessages ? "/profil#messages" : hasAdmin ? "/admin" : showDot ? "/profil#provider" : "/profil"
-                : "/auth/login";
-              const onClick = user
-                ? (e: React.MouseEvent) => {
-                    e.preventDefault();
-                    if (hasMessages) {
-                      if (pathname === "/profil") {
-                        window.dispatchEvent(new CustomEvent("profile-section", { detail: "messages" }));
-                      } else {
-                        router.push("/profil#messages");
-                      }
-                    } else if (hasAdmin) {
-                      router.push("/admin");
-                    } else if (showDot) {
-                      if (pathname === "/profil") {
-                        window.dispatchEvent(new CustomEvent("profile-section", { detail: "provider" }));
-                      } else {
-                        router.push("/profil#provider");
-                      }
-                    } else {
-                      if (pathname === "/profil") {
-                        window.dispatchEvent(new CustomEvent("profile-section", { detail: "account" }));
-                      } else {
-                        router.push("/profil");
-                      }
-                    }
-                  }
-                : undefined;
+
+              const navTo = (section: string) => {
+                setUserDropdownOpen(false);
+                if (pathname === "/profil") {
+                  window.dispatchEvent(new CustomEvent("profile-section", { detail: section }));
+                } else {
+                  router.push(`/profil#${section}`);
+                }
+              };
+
+              const profileItems: { id: string; label: string; Icon: React.ElementType }[] = [
+                { id: "account",   label: "Fiók adatok",      Icon: UserIcon },
+                { id: "password",  label: "Jelszó módosítás", Icon: Lock },
+                ...(profile?.role === "provider" ? [
+                  { id: "provider",  label: "Profil adatok", Icon: Briefcase },
+                  { id: "dashboard", label: "Dashboard",     Icon: LayoutDashboard },
+                ] : []),
+                { id: "favorites", label: "Kedvencek",        Icon: Heart },
+                { id: "messages",  label: "Üzenetek",         Icon: MessageSquare },
+              ];
+
               return (
-                <a href={href} onClick={onClick} className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-                  {user ? (
+                <div ref={userDropdownRef} className="relative">
+                  <button
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
+                  >
                     <UserCheck className="h-7 w-7" strokeWidth={2} />
-                  ) : (
-                    <UserIcon className="h-7 w-7" strokeWidth={2} />
+                    {badgeCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
+                        {badgeCount > 99 ? "99+" : badgeCount}
+                      </span>
+                    )}
+                    {showDot && (
+                      <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
+                    )}
+                  </button>
+
+                  {userDropdownOpen && (
+                    <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+                      {profileItems.map(({ id, label, Icon }) => (
+                        <button
+                          key={id}
+                          onClick={() => navTo(id)}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
+                        >
+                          <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+                          <span className="flex-1">{label}</span>
+                          {id === "messages" && unreadMessages > 0 && (
+                            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
+                              {unreadMessages > 99 ? "99+" : unreadMessages}
+                            </span>
+                          )}
+                          {id === "provider" && providerDot && (
+                            <span className={`w-2.5 h-2.5 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
+                          )}
+                        </button>
+                      ))}
+                      <div className="border-t border-gray-100 mt-1 pt-1">
+                        <button
+                          onClick={() => { setUserDropdownOpen(false); handleSignOut(); }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#F06C6C] hover:bg-[#F06C6C]/10 text-left"
+                        >
+                          Kijelentkezés
+                        </button>
+                      </div>
+                    </div>
                   )}
-                  {user && badgeCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
-                      {badgeCount > 99 ? "99+" : badgeCount}
-                    </span>
-                  )}
-                  {user && showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
-                  )}
-                </a>
+                </div>
               );
             })()}
+
             <button
               className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -325,27 +370,6 @@ export function Navbar() {
                     </Button>
                   </Link>
                 )}
-                <a href="/profil#messages" onClick={(e) => { e.preventDefault(); setMobileOpen(false); if (pathname === "/profil") { window.location.hash = "messages"; } else { router.push("/profil#messages"); } }} className="relative block">
-                  <Button variant="outline" size="sm" className="w-full">
-                    Üzenetek
-                    {unreadMessages > 0 && (
-                      <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold leading-none">
-                        {unreadMessages > 99 ? "99+" : unreadMessages}
-                      </span>
-                    )}
-                  </Button>
-                </a>
-                <a href="/profil" className="block" onClick={(e) => { e.preventDefault(); setMobileOpen(false); if (pathname === "/profil") { window.dispatchEvent(new CustomEvent("profile-section", { detail: "account" })); } else { router.push("/profil"); } }}>
-                  <Button variant="outline" size="sm" className="w-full">
-                    Profilom
-                    {providerDot && (
-                      <span className={`ml-1.5 inline-block w-2.5 h-2.5 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
-                    )}
-                  </Button>
-                </a>
-                <Button size="sm" className="w-full" onClick={handleSignOut}>
-                  Kijelentkezés
-                </Button>
               </>
             ) : (
               <>
