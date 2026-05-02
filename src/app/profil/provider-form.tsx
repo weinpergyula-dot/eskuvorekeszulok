@@ -193,8 +193,12 @@ export function ProviderForm({
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
-    setGalleryFiles((prev) => [...prev, ...files]);
-    setGalleryPreviews((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
+    setGalleryFiles((prev) => {
+      const combined = [...prev, ...files];
+      const allowed = combined.slice(0, Math.max(0, 10 - galleryUrls.length));
+      setGalleryPreviews((prevP) => [...prevP, ...allowed.slice(prev.length).map((f) => URL.createObjectURL(f))]);
+      return allowed;
+    });
     e.target.value = "";
   };
 
@@ -417,7 +421,10 @@ export function ProviderForm({
 
               {/* Gallery */}
               <div className="space-y-2">
-                <Label>Galéria</Label>
+                <div className="flex items-baseline justify-between">
+                  <Label>Galéria</Label>
+                  <span className="text-sm text-gray-400">{galleryUrls.length + galleryFiles.length} / 10</span>
+                </div>
                 {(galleryUrls.length > 0 || galleryPreviews.length > 0) && (
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                     {galleryUrls.map((url, i) => (

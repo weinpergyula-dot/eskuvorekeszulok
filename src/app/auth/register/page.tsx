@@ -227,7 +227,7 @@ function RegisterContent() {
   };
 
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
+    const files = Array.from(e.target.files ?? []).slice(0, 10);
     setGalleryFiles(files);
   };
 
@@ -589,7 +589,7 @@ function RegisterContent() {
 
               {/* Gallery */}
               <div className="space-y-2">
-                <p className="text-base text-gray-800">Tölts fel képeket a munkáidról. (opcionális, max 5 db)</p>
+                <p className="text-base text-gray-800">Tölts fel képeket a munkáidról. (opcionális, max 10 db)</p>
                 <Input
                   id="gallery"
                   type="file"

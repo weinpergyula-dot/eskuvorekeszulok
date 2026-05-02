@@ -235,7 +235,9 @@ function EditDiff({ current, proposed }: { current: Provider; proposed: Record<s
     return String(oldVal) !== String(newVal);
   });
 
-  if (changed.length === 0) {
+  const newGallery = Array.isArray(proposed.gallery_urls) ? (proposed.gallery_urls as string[]) : null;
+
+  if (changed.length === 0 && !newGallery) {
     return <p className="text-sm text-gray-400 mt-2">Nincs szöveges változtatás.</p>;
   }
 
@@ -251,6 +253,17 @@ function EditDiff({ current, proposed }: { current: Provider; proposed: Record<s
           </div>
         </div>
       ))}
+      {newGallery && (
+        <div className="pt-1">
+          <span className="text-gray-500 font-medium text-sm">Galéria ({newGallery.length} kép):</span>
+          <div className="flex flex-wrap gap-1.5 mt-1.5">
+            {newGallery.map((url, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={i} src={url} alt="" className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
