@@ -85,7 +85,7 @@ export default function HomePage() {
               <p className="text-base text-white leading-relaxed mb-5">
                 Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Az adminisztrátori jóváhagyás után profilod azonnal megjelenik az érdeklődőknek.
               </p>
-              <Link href="/auth/register?type=provider">
+              <Link href="/auth/register">
                 <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
                   Regisztrálok szolgáltatónak
                 </Button>

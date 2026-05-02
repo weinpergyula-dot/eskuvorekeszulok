@@ -344,7 +344,7 @@ function RegisterContent() {
   if (step === "role") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." bgColor="#D07AB5" />
+        <PageHeader icon={UserRound} title="Regisztráció" description="Látogatóként értékelj és ments kedvenceket – szolgáltatóként mutatkozz be ezer leendő párnak." bgColor="#D07AB5" />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
@@ -388,7 +388,7 @@ function RegisterContent() {
   if (step === "basic") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." bgColor="#D07AB5" />
+        <PageHeader icon={UserRound} title="Regisztráció" description="Látogatóként értékelj és ments kedvenceket – szolgáltatóként mutatkozz be ezer leendő párnak." bgColor="#D07AB5" />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="mb-6">
