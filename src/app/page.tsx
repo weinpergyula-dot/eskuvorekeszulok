@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Briefcase } from "lucide-react";
+import { Users, Store } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 
@@ -57,29 +57,38 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Services header */}
+      {/* Services header – two-column */}
       <div className="w-full border-t border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 flex items-center gap-3">
-            <Briefcase className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />
-            Szolgáltatók
-          </h2>
-          <hr className="border-white/30 mb-4" />
-          <p className="text-base text-white leading-relaxed">
-            Egy esküvő életünk egyik legfontosabb eseménye, ezért különösen
-            lényeges, hogy a lehető legjobb szolgáltatókat válasszuk. A
-            tapasztalt szakemberek – legyen szó fotósról, zenészről vagy
-            vőfélyről – biztosítják, hogy minden gördülékenyen menjen, és a pár
-            valóban átélhesse a pillanat varázsát. A minőségi szolgáltatások
-            nemcsak a stresszt csökkentik, hanem hozzájárulnak ahhoz is, hogy az
-            esküvő emléke hosszú távon is tökéletes maradjon.
-          </p>
-          <div className="sm:hidden mt-5 flex justify-center">
-            <Link href="/auth/register">
-              <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
-                Regisztrálok szolgáltatónak
-              </Button>
-            </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
+            {/* Left – visitors */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
+                <Users className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
+                Látogatóknak
+              </h2>
+              <hr className="border-white/30 mb-3" />
+              <p className="text-base text-white leading-relaxed">
+                Böngészd át az esküvői szakemberek és helyszínek széles kínálatát! Fotósoktól, zenészektől kezdve a tortakészítőkig és virágkötőkig megtalálsz mindenkit, aki a nagy napod tökéletessé varázsolhat. Olvass értékeléseket, és jelöld kedvenceidet, hogy könnyebben dönthess.
+              </p>
+            </div>
+
+            {/* Right – providers */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
+                <Store className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
+                Szolgáltatóknak
+              </h2>
+              <hr className="border-white/30 mb-3" />
+              <p className="text-base text-white leading-relaxed mb-5">
+                Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Az adminisztrátori jóváhagyás után profilod azonnal megjelenik az érdeklődőknek.
+              </p>
+              <Link href="/auth/register">
+                <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
+                  Regisztrálok szolgáltatónak
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -87,6 +96,7 @@ export default function HomePage() {
       {/* Services section */}
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Elérhető kategóriák</h2>
           <CategorySearch />
         </div>
       </section>
