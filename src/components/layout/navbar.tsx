@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
@@ -33,6 +33,7 @@ function NavBadge({ count }: { count: number }) {
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
@@ -195,10 +196,10 @@ export function Navbar() {
                     <NavBadge count={pendingCount} />
                   </Link>
                 )}
-                <Link href="/profil#messages" className="relative" onClick={(e) => { if (pathname === "/profil") { e.preventDefault(); window.location.hash = "messages"; } }}>
+                <a href="/profil#messages" className="relative" onClick={(e) => { e.preventDefault(); if (pathname === "/profil") { window.location.hash = "messages"; } else { router.push("/profil#messages"); } }}>
                   <Button variant="ghost" className="text-base">Üzenetek</Button>
                   <NavBadge count={unreadMessages} />
-                </Link>
+                </a>
                 <Link href="/profil" className="relative">
                   <Button variant="ghost" className="text-base">Profilom</Button>
                   {providerDot && (
@@ -258,7 +259,7 @@ export function Navbar() {
                     </Button>
                   </Link>
                 )}
-                <Link href="/profil#messages" onClick={(e) => { setMobileOpen(false); if (pathname === "/profil") { e.preventDefault(); window.location.hash = "messages"; } }} className="relative block">
+                <a href="/profil#messages" onClick={(e) => { e.preventDefault(); setMobileOpen(false); if (pathname === "/profil") { window.location.hash = "messages"; } else { router.push("/profil#messages"); } }} className="relative block">
                   <Button variant="outline" size="sm" className="w-full">
                     Üzenetek
                     {unreadMessages > 0 && (
@@ -267,7 +268,7 @@ export function Navbar() {
                       </span>
                     )}
                   </Button>
-                </Link>
+                </a>
                 <Link href="/profil" onClick={() => setMobileOpen(false)} className="block">
                   <Button variant="outline" size="sm" className="w-full">
                     Profilom
