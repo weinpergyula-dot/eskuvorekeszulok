@@ -249,11 +249,13 @@ export function Navbar() {
           {/* Desktop auth */}
           <div className="hidden md:flex items-center gap-3">
             {user ? (
-              <div ref={desktopDropdownRef} className="relative">
-                <button
-                  onClick={() => setDesktopDropdownOpen(!desktopDropdownOpen)}
-                  className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
-                >
+              <div
+                ref={desktopDropdownRef}
+                className="relative"
+                onMouseEnter={() => setDesktopDropdownOpen(true)}
+                onMouseLeave={() => setDesktopDropdownOpen(false)}
+              >
+                <button className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
                   <UserCheck className="h-6 w-6" strokeWidth={2} />
                   {badgeCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
