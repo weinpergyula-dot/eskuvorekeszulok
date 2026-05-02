@@ -415,6 +415,7 @@ function RegisterContent() {
             )}
 
             <FloatingInput
+              accentColor="#C65EA5"
               id="fullName"
               label="Teljes név *"
               value={fullName}
@@ -422,6 +423,7 @@ function RegisterContent() {
             />
 
             <FloatingInput
+              accentColor="#C65EA5"
               id="email"
               label="Email cím *"
               type="email"
@@ -430,6 +432,7 @@ function RegisterContent() {
             />
 
             <FloatingInput
+              accentColor="#C65EA5"
               id="password"
               label="Jelszó *"
               type="password"
@@ -438,6 +441,7 @@ function RegisterContent() {
             />
 
             <FloatingInput
+              accentColor="#C65EA5"
               id="confirmPassword"
               label="Jelszó megerősítése *"
               type="password"
@@ -537,6 +541,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Megjelenik a profilkártyádon – max. 200 karakter.</p>
                 <FloatingTextarea
+                  accentColor="#C65EA5"
                   id="description"
                   label="Rövid bemutatkozás"
                   value={description}
@@ -550,6 +555,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Bővebb leírás, csak a profiloldalon látható.</p>
                 <FloatingTextarea
+                  accentColor="#C65EA5"
                   id="detailed-description"
                   label="Részletes bemutatkozás"
                   value={detailedDescription}
@@ -568,6 +574,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Ha van saját weboldalad a szolgáltatásodról, add meg itt.</p>
                 <FloatingInput
+                  accentColor="#C65EA5"
                   id="website"
                   label="Weboldal (opcionális)"
                   type="url"

@@ -13,10 +13,11 @@ interface FloatingInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   id: string;
   value: string;
+  accentColor?: string;
 }
 
 const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
-  ({ label, id, value, className, onFocus, onBlur, ...props }, ref) => {
+  ({ label, id, value, className, onFocus, onBlur, accentColor = "#84AAA6", ...props }, ref) => {
     const [focused, setFocused] = useState(false);
     const [autofilled, setAutofilled] = useState(false);
     const floated = focused || String(value).length > 0 || autofilled;
@@ -35,9 +36,9 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           }}
           className={cn(
             "w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white",
-            focused ? "border-[#84AAA6]" : "border-gray-300",
             className
           )}
+          style={{ borderColor: focused ? accentColor : undefined }}
           placeholder=""
           {...props}
         />
@@ -45,10 +46,9 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           htmlFor={id}
           className={cn(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white -translate-y-1/2",
-            floated
-              ? "top-0 text-sm px-1 text-[#84AAA6]"
-              : "top-1/2 text-base text-gray-400"
+            floated ? "top-0 text-sm px-1" : "top-1/2 text-base text-gray-400"
           )}
+          style={{ color: floated ? accentColor : undefined }}
         >
           {renderLabel(label)}
         </label>
@@ -62,10 +62,11 @@ interface FloatingTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaEleme
   label: string;
   id: string;
   value: string;
+  accentColor?: string;
 }
 
 const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
-  ({ label, id, value, className, onFocus, onBlur, ...props }, ref) => {
+  ({ label, id, value, className, onFocus, onBlur, accentColor = "#84AAA6", ...props }, ref) => {
     const [focused, setFocused] = useState(false);
     const floated = focused || String(value).length > 0;
 
@@ -79,9 +80,9 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
           className={cn(
             "w-full border rounded-xl px-4 pt-6 pb-2 text-base outline-none transition-colors bg-white resize-none",
-            focused ? "border-[#84AAA6]" : "border-gray-300",
             className
           )}
+          style={{ borderColor: focused ? accentColor : undefined }}
           placeholder=""
           {...props}
         />
@@ -89,10 +90,9 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
           htmlFor={id}
           className={cn(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white",
-            floated
-              ? "-top-2.5 text-xs px-1 text-[#84AAA6]"
-              : "top-4 text-base text-gray-400"
+            floated ? "-top-2.5 text-xs px-1" : "top-4 text-base text-gray-400"
           )}
+          style={{ color: floated ? accentColor : undefined }}
         >
           {renderLabel(label)}
         </label>
