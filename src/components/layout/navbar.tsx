@@ -200,12 +200,12 @@ export function Navbar() {
                   <Button variant="ghost" className="text-base">Üzenetek</Button>
                   <NavBadge count={unreadMessages} />
                 </a>
-                <Link href="/profil" className="relative">
+                <a href="/profil" className="relative" onClick={(e) => { e.preventDefault(); if (pathname === "/profil") { window.dispatchEvent(new CustomEvent("profile-section", { detail: "account" })); } else { router.push("/profil"); } }}>
                   <Button variant="ghost" className="text-base">Profilom</Button>
                   {providerDot && (
                     <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
                   )}
-                </Link>
+                </a>
                 <Button variant="outline" className="text-base" onClick={handleSignOut}>
                   Kijelentkezés
                 </Button>
@@ -269,14 +269,14 @@ export function Navbar() {
                     )}
                   </Button>
                 </a>
-                <Link href="/profil" onClick={() => setMobileOpen(false)} className="block">
+                <a href="/profil" className="block" onClick={(e) => { e.preventDefault(); setMobileOpen(false); if (pathname === "/profil") { window.dispatchEvent(new CustomEvent("profile-section", { detail: "account" })); } else { router.push("/profil"); } }}>
                   <Button variant="outline" size="sm" className="w-full">
                     Profilom
                     {providerDot && (
                       <span className={`ml-1.5 inline-block w-2.5 h-2.5 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
                     )}
                   </Button>
-                </Link>
+                </a>
                 <Button size="sm" className="w-full" onClick={handleSignOut}>
                   Kijelentkezés
                 </Button>
