@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
-import { Clock, Pencil } from "lucide-react";
+import { Clock, Pencil, X, ImagePlus } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
 
@@ -257,6 +257,7 @@ export function ProviderForm({
   const router = useRouter();
   const supabase = createClient();
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const [editing, setEditing] = useState(!provider);
 
@@ -273,6 +274,9 @@ export function ProviderForm({
   const [website,     setWebsite]     = useState((pc?.website      as string) ?? provider?.website      ?? "");
   const [avatarFile,  setAvatarFile]  = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(provider?.avatar_url ?? null);
+  const [galleryUrls,   setGalleryUrls]   = useState<string[]>(provider?.gallery_urls ?? []);
+  const [galleryFiles,  setGalleryFiles]  = useState<File[]>([]);
+  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
   const [saving, setSaving] = useState(false);
   const [error,  setError]  = useState<string | null>(null);
@@ -307,6 +311,20 @@ export function ProviderForm({
     setAvatarPreview(URL.createObjectURL(file));
   };
 
+  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    setGalleryFiles((prev) => [...prev, ...files]);
+    setGalleryPreviews((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
+    e.target.value = "";
+  };
+
+  const removeGalleryUrl = (url: string) => setGalleryUrls((prev) => prev.filter((u) => u !== url));
+  const removeGalleryFile = (idx: number) => {
+    setGalleryFiles((prev) => prev.filter((_, i) => i !== idx));
+    setGalleryPreviews((prev) => prev.filter((_, i) => i !== idx));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
@@ -328,12 +346,25 @@ export function ProviderForm({
         avatarUrl = urlData.publicUrl;
       }
 
+      // Upload new gallery images directly (no approval flow)
+      const newGalleryUrls: string[] = [];
+      for (const file of galleryFiles) {
+        const path = `${userId}/gallery/${Date.now()}-${file.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("avatars").upload(path, file, { upsert: false });
+        if (uploadError) throw uploadError;
+        const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+        newGalleryUrls.push(urlData.publicUrl);
+      }
+      const allGalleryUrls = [...galleryUrls, ...newGalleryUrls];
+
       if (role === "visitor" || !provider) {
         // New provider: everything goes through approval
         const { error: insertError } = await supabase.from("providers").insert({
           user_id: userId, email: user.email ?? "",
           full_name: fullName, phone, counties, categories, description,
           website: website || null, avatar_url: avatarUrl || null,
+          gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
           approval_status: "pending",
         });
         if (insertError) throw insertError;
@@ -343,9 +374,9 @@ export function ProviderForm({
           if (roleError) throw roleError;
         }
       } else {
-        // Existing provider: categories & counties instant; text/image → pending_changes
+        // Existing provider: categories, counties & gallery instant; text/image → pending_changes
         const { error: catError } = await supabase
-          .from("providers").update({ categories, counties }).eq("user_id", userId);
+          .from("providers").update({ categories, counties, gallery_urls: allGalleryUrls }).eq("user_id", userId);
         if (catError) throw catError;
 
         const { error: updateError } = await supabase.from("providers").update({
@@ -495,7 +526,7 @@ export function ProviderForm({
 
               <FloatingTextarea
                 id="pf-description"
-                label="Leírás *"
+                label="Bemutatkozás *"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={5}
@@ -509,6 +540,46 @@ export function ProviderForm({
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
               />
+
+              {/* Gallery */}
+              <div className="space-y-2">
+                <Label>Galéria</Label>
+                {(galleryUrls.length > 0 || galleryPreviews.length > 0) && (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    {galleryUrls.map((url, i) => (
+                      <div key={`existing-${i}`} className="relative group">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg border border-gray-200" />
+                        <button
+                          type="button"
+                          onClick={() => removeGalleryUrl(url)}
+                          className="absolute top-1 right-1 w-5 h-5 bg-[#F06C6C] text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {galleryPreviews.map((url, i) => (
+                      <div key={`new-${i}`} className="relative group">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg border-2 border-dashed border-[#84AAA6]" />
+                        <button
+                          type="button"
+                          onClick={() => removeGalleryFile(i)}
+                          className="absolute top-1 right-1 w-5 h-5 bg-[#F06C6C] text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <Button type="button" variant="outline" size="sm" onClick={() => galleryInputRef.current?.click()} className="flex items-center gap-2">
+                  <ImagePlus className="h-4 w-4" />
+                  Képek hozzáadása
+                </Button>
+                <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryChange} />
+              </div>
 
               <div className="flex gap-3 pt-2 flex-wrap">
                 <Button type="submit" disabled={saving}>

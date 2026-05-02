@@ -22,7 +22,7 @@ interface Props {
 }
 
 const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
-  { id: "account",   label: "Fiók adatok",      icon: <User className="h-4 w-4" /> },
+  { id: "account",   label: "Szolgáltatói profil", icon: <User className="h-4 w-4" /> },
   { id: "password",  label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
   { id: "provider",  label: "Profil adatok",    icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
@@ -31,7 +31,7 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
-  account:   "Fiók adatok",
+  account:   "Szolgáltatói profil",
   password:  "Jelszó módosítás",
   provider:  "Profil adatok",
   dashboard: "Dashboard",

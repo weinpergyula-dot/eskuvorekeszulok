@@ -278,7 +278,7 @@ export function Navbar() {
                 ...(profile?.role === "admin" ? [
                   { id: "admin", label: "Admin", Icon: ShieldCheck },
                 ] : []),
-                { id: "account",   label: "Fiók adatok",      Icon: UserIcon },
+                { id: "account",   label: "Szolgáltatói profil", Icon: UserIcon },
                 { id: "password",  label: "Jelszó módosítás", Icon: Lock },
                 ...(profile?.role === "provider" ? [
                   { id: "provider",  label: "Profil adatok", Icon: Briefcase },
