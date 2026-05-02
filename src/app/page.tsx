@@ -74,6 +74,13 @@ export default function HomePage() {
             nemcsak a stresszt csökkentik, hanem hozzájárulnak ahhoz is, hogy az
             esküvő emléke hosszú távon is tökéletes maradjon.
           </p>
+          <div className="sm:hidden mt-5 flex justify-center">
+            <Link href="/auth/register">
+              <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
+                Regisztrálok szolgáltatónak
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
