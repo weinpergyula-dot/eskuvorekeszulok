@@ -267,6 +267,7 @@ export function ProviderForm({
       }
 
       setEditing(false);
+      window.dispatchEvent(new CustomEvent("profile-section", { detail: "provider" }));
       router.refresh();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message
