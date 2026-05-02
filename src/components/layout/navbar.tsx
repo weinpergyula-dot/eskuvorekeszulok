@@ -291,7 +291,7 @@ export function Navbar() {
               return (
                 <div ref={userDropdownRef} className="relative">
                   <button
-                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    onClick={() => { setUserDropdownOpen(!userDropdownOpen); setMobileOpen(false); }}
                     className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
                   >
                     <UserCheck className="h-7 w-7" strokeWidth={2} />
@@ -346,7 +346,7 @@ export function Navbar() {
 
             <button
               className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
-              onClick={() => setMobileOpen(!mobileOpen)}
+              onClick={() => { setMobileOpen(!mobileOpen); setUserDropdownOpen(false); }}
             >
               {mobileOpen ? <X className="h-7 w-7" strokeWidth={2.5} /> : <Menu className="h-7 w-7" strokeWidth={2.5} />}
             </button>
