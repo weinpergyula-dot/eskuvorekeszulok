@@ -46,9 +46,9 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           htmlFor={id}
           className={cn(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white -translate-y-1/2",
-            floated ? "top-0 text-sm px-1" : "top-1/2 text-base text-gray-400"
+            floated ? `top-0 text-sm px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 text-base text-gray-400"
           )}
-          style={{ color: floated ? accentColor : undefined }}
+          style={{ color: focused ? accentColor : undefined }}
         >
           {renderLabel(label)}
         </label>
@@ -90,9 +90,9 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
           htmlFor={id}
           className={cn(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white",
-            floated ? "-top-2.5 text-xs px-1" : "top-4 text-base text-gray-400"
+            floated ? `-top-2.5 text-xs px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-4 text-base text-gray-400"
           )}
-          style={{ color: floated ? accentColor : undefined }}
+          style={{ color: focused ? accentColor : undefined }}
         >
           {renderLabel(label)}
         </label>
