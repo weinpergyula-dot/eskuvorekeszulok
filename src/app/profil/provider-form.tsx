@@ -425,7 +425,7 @@ export function ProviderForm({
                   <Clock className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
                   <p className="text-sm text-amber-800">
                     A <strong>kategória</strong> és <strong>megye</strong> módosítások azonnal érvénybe lépnek.
-                    A többi mező (név, telefonszám, leírás, weboldal, kép) adminisztrátori jóváhagyás után jelenik meg.
+                    A többi mező (név, telefonszám, bemutatkozás, weboldal, kép) adminisztrátori jóváhagyás után jelenik meg.
                   </p>
                 </div>
               )}
