@@ -121,7 +121,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
               {provider.full_name}
             </h1>
 
-            <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-3">
+            <div className="hidden sm:flex flex-wrap gap-2 justify-start mb-3">
               {(provider.categories ?? []).map((cat) => (
                 <Badge key={cat} variant="outline" className="text-base">
                   {CATEGORY_LABELS[cat as ServiceCategory] ?? cat}
