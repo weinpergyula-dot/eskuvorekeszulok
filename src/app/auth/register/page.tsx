@@ -343,7 +343,7 @@ function RegisterContent() {
   if (step === "role") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." />
+        <PageHeader icon={UserRound} title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." bgColor="#D07AB5" />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
@@ -387,7 +387,7 @@ function RegisterContent() {
   if (step === "basic") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." />
+        <PageHeader icon={UserRound} title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." bgColor="#D07AB5" />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="mb-6">
@@ -477,7 +477,7 @@ function RegisterContent() {
   // Step 3 – Provider details
   return (
     <div>
-      <PageHeader icon={UserRound} title="Regisztráció" />
+      <PageHeader icon={UserRound} title="Regisztráció" bgColor="#D07AB5" />
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
         <div className="mb-6">

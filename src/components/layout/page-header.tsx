@@ -5,11 +5,12 @@ interface PageHeaderProps {
   description?: string;
   breadcrumb?: { label: string; href: string }[];
   icon?: LucideIcon;
+  bgColor?: string;
 }
 
-export function PageHeader({ title, description, breadcrumb, icon: Icon }: PageHeaderProps) {
+export function PageHeader({ title, description, breadcrumb, icon: Icon, bgColor = "#84AAA6" }: PageHeaderProps) {
   return (
-    <div className="w-full border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
+    <div className="w-full border-b border-white/20" style={{ backgroundColor: bgColor }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {breadcrumb && breadcrumb.length > 0 && (
           <nav className="text-lg text-white/70 mb-2">
