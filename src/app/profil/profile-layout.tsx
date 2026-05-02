@@ -316,8 +316,16 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       const s = hashToSection(window.location.hash);
       if (s) setActive(s);
     };
+    const onProfileSection = (e: Event) => {
+      const section = (e as CustomEvent).detail as Section;
+      if (VALID_SECTIONS.includes(section)) setActive(section);
+    };
     window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    window.addEventListener("profile-section", onProfileSection);
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+      window.removeEventListener("profile-section", onProfileSection);
+    };
   }, []);
 
   return (

@@ -193,7 +193,7 @@ export function Navbar() {
                     <NavBadge count={pendingCount} />
                   </Link>
                 )}
-                <Link href="/profil#messages" className="relative">
+                <Link href="/profil#messages" className="relative" onClick={() => window.dispatchEvent(new CustomEvent("profile-section", { detail: "messages" }))}>
                   <Button variant="ghost" className="text-base">Üzenetek</Button>
                   <NavBadge count={unreadMessages} />
                 </Link>
@@ -256,7 +256,7 @@ export function Navbar() {
                     </Button>
                   </Link>
                 )}
-                <Link href="/profil#messages" onClick={() => setMobileOpen(false)} className="relative block">
+                <Link href="/profil#messages" onClick={() => { setMobileOpen(false); window.dispatchEvent(new CustomEvent("profile-section", { detail: "messages" })); }} className="relative block">
                   <Button variant="outline" size="sm" className="w-full">
                     Üzenetek
                     {unreadMessages > 0 && (
