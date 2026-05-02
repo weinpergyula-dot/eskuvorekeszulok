@@ -74,7 +74,7 @@ export default function HomePage() {
             </div>
 
             {/* Right – providers */}
-            <div>
+            <div className="rounded-2xl p-6" style={{ backgroundColor: "#C65EA5" }}>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
                 <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 Szolgáltatóknak
