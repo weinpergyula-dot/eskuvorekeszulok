@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Heart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +18,8 @@ export function FavoriteButton({
 }) {
   const [liked, setLiked] = useState(initialLiked);
   const [loading, setLoading] = useState(false);
-  const [showMsg, setShowMsg] = useState(false);
+  const [tooltipRect, setTooltipRect] = useState<DOMRect | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -31,8 +33,8 @@ export function FavoriteButton({
         body: JSON.stringify({ provider_id: providerId }),
       });
       if (res.status === 401) {
-        setShowMsg(true);
-        setTimeout(() => setShowMsg(false), 3000);
+        if (buttonRef.current) setTooltipRect(buttonRef.current.getBoundingClientRect());
+        setTimeout(() => setTooltipRect(null), 3000);
         return;
       }
       const data = await res.json();
@@ -45,8 +47,9 @@ export function FavoriteButton({
   };
 
   return (
-    <div className="relative inline-flex">
+    <>
       <button
+        ref={buttonRef}
         onClick={handleClick}
         aria-label="Kedvenc"
         disabled={loading}
@@ -66,11 +69,15 @@ export function FavoriteButton({
           {liked ? "Kedvenc" : "Kedvencnek jelölöm"}
         </span>
       </button>
-      {showMsg && (
-        <div className="absolute bottom-full left-0 mb-2 w-max max-w-[220px] text-xs bg-gray-900 text-white px-2.5 py-1.5 rounded-lg z-10">
+      {tooltipRect && typeof document !== "undefined" && createPortal(
+        <div
+          style={{ position: "fixed", top: tooltipRect.bottom + 8, left: tooltipRect.left, zIndex: 9999 }}
+          className="w-max max-w-[220px] text-xs bg-gray-900 text-white px-2.5 py-1.5 rounded-lg pointer-events-none"
+        >
           A funkció használatához jelentkezz be!
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 }
