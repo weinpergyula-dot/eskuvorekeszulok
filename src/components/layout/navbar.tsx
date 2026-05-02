@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
@@ -31,6 +32,7 @@ function NavBadge({ count }: { count: number }) {
 }
 
 export function Navbar() {
+  const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
@@ -193,7 +195,7 @@ export function Navbar() {
                     <NavBadge count={pendingCount} />
                   </Link>
                 )}
-                <Link href="/profil#messages" className="relative" onClick={() => window.dispatchEvent(new CustomEvent("profile-section", { detail: "messages" }))}>
+                <Link href="/profil#messages" className="relative" onClick={(e) => { if (pathname === "/profil") { e.preventDefault(); window.location.hash = "messages"; } }}>
                   <Button variant="ghost" className="text-base">Üzenetek</Button>
                   <NavBadge count={unreadMessages} />
                 </Link>
@@ -256,7 +258,7 @@ export function Navbar() {
                     </Button>
                   </Link>
                 )}
-                <Link href="/profil#messages" onClick={() => { setMobileOpen(false); window.dispatchEvent(new CustomEvent("profile-section", { detail: "messages" })); }} className="relative block">
+                <Link href="/profil#messages" onClick={(e) => { setMobileOpen(false); if (pathname === "/profil") { e.preventDefault(); window.location.hash = "messages"; } }} className="relative block">
                   <Button variant="outline" size="sm" className="w-full">
                     Üzenetek
                     {unreadMessages > 0 && (
