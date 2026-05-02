@@ -52,6 +52,11 @@ export default async function AdminPage() {
     .from("providers")
     .select("user_id, approval_status, pending_changes");
 
+  const { data: contactMessages } = await supabase
+    .from("contact_messages")
+    .select("*")
+    .order("created_at", { ascending: false });
+
   return (
     <div>
       <PageHeader title="Admin" icon={ShieldCheck} />
@@ -62,6 +67,7 @@ export default async function AdminPage() {
           pendingProviders={(pendingProviders ?? []) as Parameters<typeof AdminContent>[0]["pendingProviders"]}
           pendingChanges={(pendingChanges ?? []) as Parameters<typeof AdminContent>[0]["pendingChanges"]}
           providerStatuses={(allProviderStatuses ?? []) as Parameters<typeof AdminContent>[0]["providerStatuses"]}
+          contactMessages={(contactMessages ?? []) as Parameters<typeof AdminContent>[0]["contactMessages"]}
         />
       </div>
     </div>

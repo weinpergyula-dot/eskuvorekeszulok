@@ -88,14 +88,21 @@ export function Navbar() {
       .catch(() => {});
   }, [user]);
 
+  const refreshAdminCount = (sb: typeof supabase) => {
+    if (!sb) return;
+    Promise.all([
+      sb.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
+      sb.from("providers").select("*", { count: "exact", head: true }).not("pending_changes", "is", null),
+      sb.from("contact_messages").select("*", { count: "exact", head: true }).eq("read", false),
+    ]).then(([{ count: newRegs }, { count: edits }, { count: contactUnread }]) => {
+      setPendingCount((newRegs ?? 0) + (edits ?? 0) + (contactUnread ?? 0));
+    });
+  };
+
   useEffect(() => {
     if (!supabase || profile?.role !== "admin") { setPendingCount(0); return; }
-    Promise.all([
-      supabase.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
-      supabase.from("providers").select("*", { count: "exact", head: true }).not("pending_changes", "is", null),
-    ]).then(([{ count: newRegs }, { count: edits }]) => {
-      setPendingCount((newRegs ?? 0) + (edits ?? 0));
-    });
+    refreshAdminCount(supabase);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   useEffect(() => {
@@ -113,16 +120,14 @@ export function Navbar() {
 
   useEffect(() => {
     if (!supabase || profile?.role !== "admin") return;
-    const refresh = () => {
-      Promise.all([
-        supabase.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
-        supabase.from("providers").select("*", { count: "exact", head: true }).not("pending_changes", "is", null),
-      ]).then(([{ count: newRegs }, { count: edits }]) => {
-        setPendingCount((newRegs ?? 0) + (edits ?? 0));
-      });
-    };
+    const refresh = () => refreshAdminCount(supabase);
     window.addEventListener("admin-pending-changed", refresh);
-    return () => window.removeEventListener("admin-pending-changed", refresh);
+    window.addEventListener("contact-message-read", refresh);
+    return () => {
+      window.removeEventListener("admin-pending-changed", refresh);
+      window.removeEventListener("contact-message-read", refresh);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   const handleSignOut = async () => {

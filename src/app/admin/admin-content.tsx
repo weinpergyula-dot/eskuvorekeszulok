@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Users, CheckCircle, Clock as ClockIcon } from "lucide-react";
+import { Users, CheckCircle, Clock as ClockIcon, Mail } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
+import { createClient } from "@/lib/supabase/client";
 
-type Filter = "pending" | "users";
+type Filter = "pending" | "users" | "contact";
 
 interface Provider {
   id: string;
@@ -26,15 +27,26 @@ interface ProviderStatus {
   pending_changes: unknown;
 }
 
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string;
+  created_at: string;
+  read: boolean;
+}
+
 interface Props {
   totalUsers: number;
   totalApproved: number;
   pendingProviders: Provider[];
   pendingChanges: Provider[];
   providerStatuses: ProviderStatus[];
+  contactMessages: ContactMessage[];
 }
 
-export function AdminContent({ totalUsers, totalApproved, pendingProviders, pendingChanges, providerStatuses }: Props) {
+export function AdminContent({ totalUsers, totalApproved, pendingProviders, pendingChanges, providerStatuses, contactMessages: initialContactMessages }: Props) {
   // Merge first-submissions + edits into one unified list
   type PendingItem = Provider & { kind: "registration" | "edit" };
   const allPending: PendingItem[] = [
@@ -43,14 +55,34 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
   ];
   const totalPending = allPending.length;
 
-  const defaultFilter: Filter = totalPending > 0 ? "pending" : "users";
+  const [contactMessages, setContactMessages] = useState<ContactMessage[]>(initialContactMessages);
+  const unreadContact = contactMessages.filter((m) => !m.read).length;
+
+  const defaultFilter: Filter = totalPending > 0 ? "pending" : unreadContact > 0 ? "contact" : "users";
 
   const [filter, setFilter] = useState<Filter>(defaultFilter);
+
+  const markRead = async (id: string) => {
+    const supabase = createClient();
+    await supabase.from("contact_messages").update({ read: true }).eq("id", id);
+    setContactMessages((prev) => prev.map((m) => m.id === id ? { ...m, read: true } : m));
+    window.dispatchEvent(new CustomEvent("contact-message-read"));
+  };
+
+  const markAllRead = async () => {
+    const supabase = createClient();
+    const unreadIds = contactMessages.filter((m) => !m.read).map((m) => m.id);
+    if (unreadIds.length === 0) return;
+    await supabase.from("contact_messages").update({ read: true }).in("id", unreadIds);
+    setContactMessages((prev) => prev.map((m) => ({ ...m, read: true })));
+    window.dispatchEvent(new CustomEvent("contact-message-read"));
+  };
 
   const stats: { label: string; value: number; icon: React.ReactNode; target: Filter; highlight: boolean }[] = [
     { label: "Összes felhasználó",      value: totalUsers,    icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,        target: "users",   highlight: false },
     { label: "Jóváhagyott szolgáltató", value: totalApproved, icon: <CheckCircle className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "users",   highlight: false },
     { label: "Jóváhagyásra vár",        value: totalPending,  icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "pending", highlight: totalPending > 0 },
+    { label: "Kapcsolati üzenetek",     value: unreadContact, icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,        target: "contact", highlight: unreadContact > 0 },
   ];
 
   return (
@@ -104,6 +136,71 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
         <section>
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Felhasználók kezelése</h2>
           <UsersSection providerStatuses={providerStatuses} />
+        </section>
+      )}
+
+      {/* Contact messages */}
+      {filter === "contact" && (
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              Beérkező kapcsolati üzenetek
+              {unreadContact > 0 && (
+                <span className="inline-flex items-center justify-center w-5 h-5 text-sm bg-[#F06C6C] text-white rounded-full font-bold">
+                  {unreadContact}
+                </span>
+              )}
+            </h2>
+            {unreadContact > 0 && (
+              <button
+                onClick={markAllRead}
+                className="text-sm text-[#84AAA6] hover:underline"
+              >
+                Összes olvasottnak jelöl
+              </button>
+            )}
+          </div>
+          {contactMessages.length === 0 ? (
+            <p className="text-gray-500 text-base">Nincs beérkező üzenet.</p>
+          ) : (
+            <div className="space-y-3">
+              {contactMessages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`bg-white border rounded-lg p-5 transition-colors ${!msg.read ? "border-[#84AAA6] bg-[#84AAA6]/5" : "border-gray-200"}`}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="font-semibold text-gray-900">{msg.name}</span>
+                        {!msg.read && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F06C6C] text-white">Új</span>
+                        )}
+                        <span className="text-sm text-gray-400">
+                          {new Date(msg.created_at).toLocaleString("hu-HU", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                      <p className="text-base text-gray-600 mb-0.5">
+                        <a href={`mailto:${msg.email}`} className="text-[#84AAA6] hover:underline">{msg.email}</a>
+                      </p>
+                      {msg.phone && (
+                        <p className="text-base text-gray-600 mb-0.5">{msg.phone}</p>
+                      )}
+                      <p className="text-base text-gray-900 mt-3 whitespace-pre-wrap">{msg.message}</p>
+                    </div>
+                    {!msg.read && (
+                      <button
+                        onClick={() => markRead(msg.id)}
+                        className="text-sm text-[#84AAA6] hover:underline shrink-0"
+                      >
+                        Olvasottnak jelöl
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       )}
     </>
