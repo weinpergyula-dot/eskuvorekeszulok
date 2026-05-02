@@ -356,7 +356,7 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden absolute left-4 right-4 top-[calc(100%+4px)] bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+        <div className="md:hidden absolute right-4 top-[calc(100%+4px)] w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
           <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>
             Kezdőlap
           </Link>
