@@ -42,14 +42,9 @@ export default function HomePage() {
               <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
                 Találj meg mindent egy helyen a nagy napodra!
               </p>
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center">
-                <Link href="/services">
-                  <Button size="lg" className="w-full sm:w-auto text-[13px] sm:text-base px-5">Megnézem a szolgáltatókat</Button>
-                </Link>
-                <Link href="/auth/register">
-                  <Button size="lg" className="w-full sm:w-auto text-[13px] sm:text-base bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5] hover:text-white px-5">
-                    Regisztrálok szolgáltatónak
-                  </Button>
+              <div className="flex justify-center">
+                <Link href="/informaciok">
+                  <Button size="lg" className="text-[13px] sm:text-base px-5">Tudj meg többet az oldalról!</Button>
                 </Link>
               </div>
             </div>
@@ -101,7 +96,7 @@ export default function HomePage() {
       {/* Services section */}
       <section id="kategoriak" className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Elérhető kategóriák</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Kategóriák</h2>
           <CategorySearch />
         </div>
       </section>
