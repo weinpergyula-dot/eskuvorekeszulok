@@ -55,7 +55,7 @@ export default function HomePage() {
       {/* Services header – two-column */}
       <div className="w-full relative border-t border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
         {/* Pink bleed: center → right edge, desktop only */}
-        <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2" style={{ backgroundColor: "#404040" }} />
+        <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2" style={{ backgroundColor: "#D587BD" }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
             {/* Left – visitors */}
@@ -76,17 +76,17 @@ export default function HomePage() {
             </div>
 
             {/* Right – providers */}
-            <div className="rounded-2xl p-6 sm:rounded-none sm:p-0" style={{ backgroundColor: "#404040" }}>
-              <h2 className="text-2xl md:text-3xl font-bold text-black mb-3 flex items-center gap-2.5">
-                <Briefcase className="h-6 w-6 text-black/70 shrink-0" strokeWidth={1.5} />
+            <div className="rounded-2xl p-6 sm:rounded-none sm:p-0" style={{ backgroundColor: "#D587BD" }}>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
+                <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 Szolgáltatóknak
               </h2>
-              <hr className="border-black/30 mb-3" />
-              <p className="text-base text-black leading-relaxed mb-5">
+              <hr className="border-white/30 mb-3" />
+              <p className="text-base text-white leading-relaxed mb-5">
                 Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Az adminisztrátori jóváhagyás után profilod azonnal megjelenik az érdeklődőknek.
               </p>
               <Link href="/auth/register?type=provider">
-                <Button size="lg" className="bg-transparent text-black border border-black hover:bg-black/10 hover:text-black px-6">
+                <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
                   Regisztrálok szolgáltatónak
                 </Button>
               </Link>
