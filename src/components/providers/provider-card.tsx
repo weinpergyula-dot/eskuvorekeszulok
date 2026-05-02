@@ -13,16 +13,20 @@ interface ProviderCardProps {
   initialLiked?: boolean;
   onUnlike?: (id: string) => void;
   hideCategories?: boolean;
+  disableLink?: boolean;
 }
 
-export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false }: ProviderCardProps) {
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false }: ProviderCardProps) {
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
 
+  const Wrapper = disableLink ? "div" : "a";
+  const wrapperProps = disableLink ? {} : { href: `/providers/${provider.id}` };
+
   return (
-    <a
-      href={`/providers/${provider.id}`}
+    <Wrapper
+      {...wrapperProps}
       className="bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
     >
       {/* Header – matches provider profile hero */}
@@ -179,7 +183,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           Részletek
         </span>
       </div>
-    </a>
+    </Wrapper>
   );
 }
 

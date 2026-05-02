@@ -86,6 +86,7 @@ function ProfileView({
     description: (pc?.description as string) ?? provider.description,
     website: (pc?.website as string) ?? provider.website,
     avatar_url: (pc?.avatar_url as string) ?? provider.avatar_url,
+    gallery_urls: (pc?.gallery_urls as string[]) ?? provider.gallery_urls,
   };
 
   return (
@@ -107,7 +108,7 @@ function ProfileView({
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" /> Módosítás – jóváhagyásra vár
             </p>
-            <ProviderCard provider={pendingProvider} />
+            <ProviderCard provider={pendingProvider} disableLink />
           </div>
         </div>
       ) : (
@@ -252,15 +253,16 @@ export function ProviderForm({
           if (roleError) throw roleError;
         }
       } else {
-        // Existing provider: categories, counties & gallery instant; text/image → pending_changes
+        // Existing provider: categories & counties instant; everything else → pending_changes
         const { error: catError } = await supabase
-          .from("providers").update({ categories, counties, gallery_urls: allGalleryUrls }).eq("user_id", userId);
+          .from("providers").update({ categories, counties }).eq("user_id", userId);
         if (catError) throw catError;
 
         const { error: updateError } = await supabase.from("providers").update({
           pending_changes: {
             full_name: fullName, phone, description,
             website: website || null, avatar_url: avatarUrl || null,
+            gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
           },
         }).eq("user_id", userId);
         if (updateError) throw updateError;
