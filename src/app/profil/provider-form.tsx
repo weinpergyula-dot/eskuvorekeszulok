@@ -91,7 +91,7 @@ function ProfileView({
   return (
     <div className="space-y-4">
       {isFirstSubmission ? (
-        <div className="space-y-2">
+        <div className="space-y-2 max-w-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
           </p>
@@ -111,7 +111,9 @@ function ProfileView({
           </div>
         </div>
       ) : (
-        <ProviderCard provider={provider} />
+        <div className="max-w-sm">
+          <ProviderCard provider={provider} />
+        </div>
       )}
 
       <Button variant="outline" onClick={onEdit} className="flex items-center gap-2">

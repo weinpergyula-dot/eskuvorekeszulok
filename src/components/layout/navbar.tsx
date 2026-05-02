@@ -46,6 +46,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
+  const desktopCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -252,8 +253,13 @@ export function Navbar() {
               <div
                 ref={desktopDropdownRef}
                 className="relative"
-                onMouseEnter={() => setDesktopDropdownOpen(true)}
-                onMouseLeave={() => setDesktopDropdownOpen(false)}
+                onMouseEnter={() => {
+                  if (desktopCloseTimer.current) clearTimeout(desktopCloseTimer.current);
+                  setDesktopDropdownOpen(true);
+                }}
+                onMouseLeave={() => {
+                  desktopCloseTimer.current = setTimeout(() => setDesktopDropdownOpen(false), 1000);
+                }}
               >
                 <button className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
                   <UserCheck className="h-6 w-6" strokeWidth={2} />
