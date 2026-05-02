@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageSquare } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageSquare, ShieldCheck } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -149,7 +149,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className={`sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-md" : "bg-white"}`}>
+    <nav className={`sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 relative ${scrolled ? "bg-white/80 backdrop-blur-md" : "bg-white"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo + Desktop nav */}
@@ -261,6 +261,7 @@ export function Navbar() {
 
               const navTo = (section: string) => {
                 setUserDropdownOpen(false);
+                if (section === "admin") { router.push("/admin"); return; }
                 if (pathname === "/profil") {
                   window.dispatchEvent(new CustomEvent("profile-section", { detail: section }));
                 } else {
@@ -269,6 +270,9 @@ export function Navbar() {
               };
 
               const profileItems: { id: string; label: string; Icon: React.ElementType }[] = [
+                ...(profile?.role === "admin" ? [
+                  { id: "admin", label: "Admin", Icon: ShieldCheck },
+                ] : []),
                 { id: "account",   label: "Fiók adatok",      Icon: UserIcon },
                 { id: "password",  label: "Jelszó módosítás", Icon: Lock },
                 ...(profile?.role === "provider" ? [
@@ -306,6 +310,11 @@ export function Navbar() {
                         >
                           <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
                           <span className="flex-1">{label}</span>
+                          {id === "admin" && pendingCount > 0 && (
+                            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
+                              {pendingCount > 99 ? "99+" : pendingCount}
+                            </span>
+                          )}
                           {id === "messages" && unreadMessages > 0 && (
                             <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
                               {unreadMessages > 99 ? "99+" : unreadMessages}
@@ -342,46 +351,29 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-2">
-          <Link href="/" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
+        <div className="md:hidden absolute left-4 right-4 top-[calc(100%+4px)] bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+          <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>
             Kezdőlap
           </Link>
-          <Link href="/informaciok" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
+          <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>
             Információk
           </Link>
-          <Link href="/services" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
+          <Link href="/services" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>
             Kategóriák
           </Link>
-          <Link href="/contact" className="block py-2 text-base text-gray-900" onClick={() => setMobileOpen(false)}>
+          <Link href="/contact" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>
             Kapcsolat
           </Link>
-          <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
-            {user ? (
-              <>
-                {profile?.role === "admin" && (
-                  <Link href="/admin" onClick={() => setMobileOpen(false)} className="relative block">
-                    <Button variant="outline" size="sm" className="w-full">
-                      Admin
-                      {pendingCount > 0 && (
-                        <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold leading-none">
-                          {pendingCount > 99 ? "99+" : pendingCount}
-                        </span>
-                      )}
-                    </Button>
-                  </Link>
-                )}
-              </>
-            ) : (
-              <>
-                <Link href="/auth/register" onClick={() => setMobileOpen(false)}>
-                  <Button size="sm" className="w-full bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#FAF0F7] hover:text-[#C65EA5]">Regisztráció</Button>
-                </Link>
-                <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
-                  <Button size="sm" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
-                </Link>
-              </>
-            )}
-          </div>
+          {!user && (
+            <div className="border-t border-gray-100 mt-1 pt-1">
+              <Link href="/auth/register" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>
+                Regisztráció
+              </Link>
+              <Link href="/auth/login" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>
+                Bejelentkezés
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </nav>
