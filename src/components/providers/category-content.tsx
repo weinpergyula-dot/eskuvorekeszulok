@@ -2,12 +2,13 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, SearchX, ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { CountyFilter } from "./county-filter";
 import { ProviderCard } from "./provider-card";
 import type { Provider } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 
-type SortOption = "default" | "rating" | "views";
+type SortOption = "default" | "rating" | "reviews" | "views";
 
 interface CategoryContentProps {
   providers: Provider[];
@@ -24,11 +25,21 @@ export function CategoryContent({
   category,
   label,
 }: CategoryContentProps) {
+  const router = useRouter();
   const [countyQuery, setCountyQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [sortOpen, setSortOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const sortRef = useRef<HTMLDivElement>(null);
+
+  // Restore saved county filter when returning without URL param
+  useEffect(() => {
+    if (!selected) {
+      const saved = sessionStorage.getItem(`county_${category}`);
+      if (saved) router.replace(`/services/${category}?county=${encodeURIComponent(saved)}`);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const supabase = createClient();
@@ -56,6 +67,8 @@ export function CategoryContent({
     : [...providers].sort((a, b) =>
         sortBy === "rating"
           ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
+          : sortBy === "reviews"
+          ? (b.review_count ?? 0) - (a.review_count ?? 0)
           : (b.view_count ?? 0) - (a.view_count ?? 0)
       );
 
@@ -98,7 +111,7 @@ export function CategoryContent({
                   onClick={() => setSortOpen((o) => !o)}
                   className="flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                 >
-                  {sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : "Látogatottság alapján"}
+                  {sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : sortBy === "reviews" ? "Értékelések száma alapján" : "Látogatottság alapján"}
                   <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
                 </button>
                 {sortOpen && (
@@ -106,6 +119,7 @@ export function CategoryContent({
                     {([
                       { value: "default", label: "Alapértelmezett" },
                       { value: "rating",  label: "Értékelés alapján" },
+                      { value: "reviews", label: "Értékelések száma alapján" },
                       { value: "views",   label: "Látogatottság alapján" },
                     ] as { value: SortOption; label: string }[]).map((opt) => (
                       <button

@@ -17,6 +17,9 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
   const [mobileQuery, setMobileQuery] = useState("");
 
   const navigate = (county?: string) => {
+    const key = `county_${category}`;
+    if (county) sessionStorage.setItem(key, county);
+    else sessionStorage.removeItem(key);
     const path = `/services/${category}`;
     router.push(county ? `${path}?county=${encodeURIComponent(county)}` : path);
     setOpen(false);
