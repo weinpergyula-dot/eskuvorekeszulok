@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 interface ApproveButtonProps {
   providerId: string;
@@ -79,16 +80,18 @@ export function ApproveButton({ providerId, type, action, changes }: ApproveButt
 
   if (action === "approve") {
     return (
-      <Button size="sm" variant="default" onClick={handleApprove} disabled={loading}>
-        {loading ? "..." : "✓ Jóváhagy"}
+      <Button size="sm" variant="default" onClick={handleApprove} disabled={loading} className="flex items-center gap-1.5">
+        {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "✓"}
+        Jóváhagy
       </Button>
     );
   }
 
   return (
     <>
-      <Button size="sm" variant="destructive" onClick={() => setShowModal(true)}>
-        ✗ Elutasít
+      <Button size="sm" variant="destructive" onClick={() => setShowModal(true)} disabled={loading} className="flex items-center gap-1.5">
+        {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "✗"}
+        Elutasít
       </Button>
 
       {showModal && (

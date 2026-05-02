@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, ChevronDown, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, ChevronDown, LogOut, type LucideIcon } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
@@ -311,6 +312,12 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     window.location.hash = section;
   };
 
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    if (supabase) await supabase.auth.signOut();
+    window.location.href = "/";
+  };
+
   useEffect(() => {
     const onHashChange = () => {
       const s = hashToSection(window.location.hash);
@@ -372,6 +379,15 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 )}
               </a>
             ))}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <button
+                onClick={handleSignOut}
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium text-[#F06C6C] hover:bg-[#F06C6C]/10 transition-colors w-full text-left cursor-pointer"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Kijelentkezés</span>
+              </button>
+            </div>
           </nav>
         </aside>
 
