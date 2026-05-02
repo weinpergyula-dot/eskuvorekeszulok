@@ -236,7 +236,10 @@ function EditDiff({ current, proposed }: { current: Provider; proposed: Record<s
     return String(oldVal) !== String(newVal);
   });
 
-  const newGallery = Array.isArray(proposed.gallery_urls) ? (proposed.gallery_urls as string[]) : null;
+  const proposedGallery = Array.isArray(proposed.gallery_urls) ? (proposed.gallery_urls as string[]) : null;
+  const currentGallery = Array.isArray(current.gallery_urls) ? (current.gallery_urls as string[]) : [];
+  const galleryChanged = proposedGallery !== null && JSON.stringify(proposedGallery) !== JSON.stringify(currentGallery);
+  const newGallery = galleryChanged ? proposedGallery : null;
 
   if (changed.length === 0 && !newGallery) {
     return <p className="text-sm text-gray-400 mt-2">Nincs szöveges változtatás.</p>;
