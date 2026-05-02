@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Phone, Mail, Globe } from "lucide-react";
+import { Phone, Mail, Globe, MessageSquare } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { MessageForm } from "@/components/providers/message-form";
@@ -91,7 +91,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
           {/* Kapcsolat kártya */}
           <div className="md:col-span-2">
             <div className="bg-gray-50 rounded-xl border border-gray-200 p-5 space-y-4 sticky top-24">
-              <h2 className="text-base font-semibold text-gray-900">Elérhetőség</h2>
+              <h2 className="text-base font-semibold text-gray-900">Elérhetőségek</h2>
               <div className="space-y-3">
                 {provider.phone && (
                   <ContactItem
@@ -116,9 +116,16 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                   />
                 )}
               </div>
+              <button
+                onClick={() => setActive("message")}
+                className="w-full flex items-center justify-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+              >
+                <MessageSquare className="h-4 w-4" strokeWidth={1.5} />
+                Belső üzenet küldése
+              </button>
               <a
                 href={`mailto:${provider.email}`}
-                className="hidden sm:block w-full text-center bg-[#C65EA5] hover:bg-[#A84D8B] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+                className="hidden sm:block w-full text-center bg-[#C65EA5] hover:bg-[#A84D8B] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer"
               >
                 Kapcsolatfelvétel
               </a>
