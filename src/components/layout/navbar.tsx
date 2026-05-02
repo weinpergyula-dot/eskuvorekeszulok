@@ -278,10 +278,10 @@ export function Navbar() {
                 ...(profile?.role === "admin" ? [
                   { id: "admin", label: "Admin", Icon: ShieldCheck },
                 ] : []),
-                { id: "account",   label: "Szolgáltatói profil", Icon: UserIcon },
+                { id: "account",   label: "Fiók adatok",          Icon: UserIcon },
                 { id: "password",  label: "Jelszó módosítás", Icon: Lock },
                 ...(profile?.role === "provider" ? [
-                  { id: "provider",  label: "Profil adatok", Icon: Briefcase },
+                  { id: "provider",  label: "Szolgáltatói adatok", Icon: Briefcase },
                   { id: "dashboard", label: "Dashboard",     Icon: LayoutDashboard },
                 ] : []),
                 { id: "favorites", label: "Kedvencek",        Icon: Heart },
