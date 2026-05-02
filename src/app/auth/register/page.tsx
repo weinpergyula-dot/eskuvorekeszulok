@@ -346,7 +346,7 @@ export default function RegisterPage() {
   if (step === "role") {
     return (
       <div>
-        <PageHeader title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." />
+        <PageHeader icon={UserRound} title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
@@ -390,7 +390,7 @@ export default function RegisterPage() {
   if (step === "basic") {
     return (
       <div>
-        <PageHeader title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." />
+        <PageHeader icon={UserRound} title="Regisztráció" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a regisztráció." />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="mb-6">
@@ -480,7 +480,7 @@ export default function RegisterPage() {
   // Step 3 – Provider details
   return (
     <div>
-      <PageHeader title="Regisztráció" />
+      <PageHeader icon={UserRound} title="Regisztráció" />
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
         <div className="mb-6">

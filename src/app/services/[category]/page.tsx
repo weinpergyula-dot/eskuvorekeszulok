@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, CATEGORY_SEO_DESCRIPTIONS, COUNTIES, type ServiceCategory } from "@/lib/types";
 import { CategoryContent } from "@/components/providers/category-content";
 import { PageHeader } from "@/components/layout/page-header";
+import { Tag } from "lucide-react";
 import { notFound } from "next/navigation";
 import type { Provider } from "@/lib/types";
 
@@ -53,6 +54,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   return (
     <div>
       <PageHeader
+        icon={Tag}
         title={label}
         breadcrumb={[{ label: "Szolgáltatók", href: "/services" }]}
         description={CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}

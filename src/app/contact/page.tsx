@@ -1,9 +1,10 @@
 import { PageHeader } from "@/components/layout/page-header";
+import { Mail } from "lucide-react";
 
 export default function ContactPage() {
   return (
     <div>
-      <PageHeader title="Kapcsolat" />
+      <PageHeader title="Kapcsolat" icon={Mail} />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <p className="text-gray-900 mb-6">
           Ha kérdésed van az oldallal kapcsolatban, vagy szeretnél szolgáltatóként

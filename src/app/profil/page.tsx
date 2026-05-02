@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
+import { User } from "lucide-react";
 import { ProfileLayout } from "./profile-layout";
 import type { Provider } from "@/lib/types";
 
@@ -43,7 +44,7 @@ export default async function ProfilPage() {
 
   return (
     <div>
-      <PageHeader title="Profilom" />
+      <PageHeader title="Profilom" icon={User} />
       <ProfileLayout
         userId={user.id}
         initialName={profile.full_name ?? ""}

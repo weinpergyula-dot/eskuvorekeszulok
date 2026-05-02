@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
+import { Lock } from "lucide-react";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div>
-      <PageHeader title="Új jelszó" />
+      <PageHeader title="Új jelszó" icon={Lock} />
       <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <p className="text-gray-900 text-center mb-8">Add meg az új jelszavadat</p>

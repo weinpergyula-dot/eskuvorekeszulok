@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { AdminContent } from "./admin-content";
 import { PageHeader } from "@/components/layout/page-header";
+import { ShieldCheck } from "lucide-react";
 
 export default async function AdminPage() {
   let supabase: Awaited<ReturnType<typeof createClient>>;
@@ -53,7 +54,7 @@ export default async function AdminPage() {
 
   return (
     <div>
-      <PageHeader title="Admin" />
+      <PageHeader title="Admin" icon={ShieldCheck} />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <AdminContent
           totalUsers={totalUsers ?? 0}

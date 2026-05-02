@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, UserRound } from "lucide-react";
 
 export default function RegisterSuccessPage() {
   return (
     <div>
-      <PageHeader title="Regisztráció" />
+      <PageHeader title="Regisztráció" icon={UserRound} />
       <div className="min-h-[60vh] flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md text-center border border-gray-200 rounded-[15px] shadow-sm p-10">
           <CheckCircle className="h-14 w-14 text-[#84AAA6] mx-auto mb-6" strokeWidth={1.5} />

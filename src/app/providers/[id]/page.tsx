@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { MapPin, Star, Eye } from "lucide-react";
+import { MapPin, Star, Eye, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -72,6 +72,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   return (
     <div>
       <PageHeader
+        icon={User}
         title="Szolgáltatói profil"
         breadcrumb={[
           { label: "Szolgáltatók", href: "/services" },

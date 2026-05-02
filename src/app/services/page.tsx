@@ -1,10 +1,12 @@
 import { PageHeader } from "@/components/layout/page-header";
+import { Briefcase } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
 
 export default function ServicesPage() {
   return (
     <div>
       <PageHeader
+        icon={Briefcase}
         title="Szolgáltatók"
         description="Válassz kategóriát és böngészd az elérhető esküvői szolgáltatókat! Minden kategóriában gondosan válogatott szakembereket találsz – fotósoktól és zenészektől kezdve a virágkötőkig és helyszínekig –, hogy a nagy napod minden részlete tökéletes legyen."
       />

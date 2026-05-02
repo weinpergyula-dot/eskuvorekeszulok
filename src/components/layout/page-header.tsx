@@ -1,12 +1,13 @@
-import { Sparkles } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface PageHeaderProps {
   title: string;
   description?: string;
   breadcrumb?: { label: string; href: string }[];
+  icon?: LucideIcon;
 }
 
-export function PageHeader({ title, description, breadcrumb }: PageHeaderProps) {
+export function PageHeader({ title, description, breadcrumb, icon: Icon }: PageHeaderProps) {
   return (
     <div className="w-full border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -25,7 +26,7 @@ export function PageHeader({ title, description, breadcrumb }: PageHeaderProps) 
           </nav>
         )}
         <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
-          <Sparkles className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />
+          {Icon && <Icon className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />}
           {title}
         </h1>
         {description && (

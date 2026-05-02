@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
+import { Lock } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div>
-      <PageHeader title="Elfelejtett jelszó" />
+      <PageHeader title="Elfelejtett jelszó" icon={Lock} />
       <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <p className="text-gray-900 text-center mb-8">Küldjük el a visszaállítási linket</p>

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
+import { LogIn } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
@@ -119,7 +120,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div>
-      <PageHeader title="Bejelentkezés" description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a bejelentkezés." />
+      <PageHeader title="Bejelentkezés" icon={LogIn} description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a bejelentkezés." />
       <div className="flex items-center justify-center py-12 px-4">
         <Suspense>
           <LoginForm />
