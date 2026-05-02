@@ -27,14 +27,19 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   return (
     <Wrapper
       {...wrapperProps}
-      className="bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
+      className={cn(
+        "bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden",
+        disableLink ? "cursor-default" : "hover:border-[#84AAA6] hover:shadow-md transition-all cursor-pointer group"
+      )}
     >
       {/* Header – matches provider profile hero */}
       <div className="relative flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
         {/* Mobile: favorite top-left */}
-        <div className="absolute top-2 left-2 sm:hidden" onClick={(e) => e.preventDefault()}>
-          <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile />
-        </div>
+        {!disableLink && (
+          <div className="absolute top-2 left-2 sm:hidden" onClick={(e) => e.preventDefault()}>
+            <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile />
+          </div>
+        )}
         {/* Mobile: visitor count top-right */}
         <div className="absolute top-2 right-2 sm:hidden">
           <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
@@ -140,7 +145,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <ContactRow
             icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
             value={provider.website}
-            isLink
+            isLink={!disableLink}
           />
         )}
         {provider.description && (
@@ -154,13 +159,15 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       </div>
 
       {/* Footer – desktop */}
-      <div className="border-t border-gray-100 px-5 py-3 hidden sm:flex items-center justify-between">
-        <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} />
-        <div className="flex items-center gap-1 text-gray-900 text-base">
-          <Eye className="h-3.5 w-3.5" />
-          <span>{viewCount}</span>
+      {!disableLink && (
+        <div className="border-t border-gray-100 px-5 py-3 hidden sm:flex items-center justify-between">
+          <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} />
+          <div className="flex items-center gap-1 text-gray-900 text-base">
+            <Eye className="h-3.5 w-3.5" />
+            <span>{viewCount}</span>
+          </div>
         </div>
-      </div>
+      )}
       {/* Footer – mobile */}
       <div className="border-t border-gray-100 px-4 py-3 flex sm:hidden items-center justify-between">
         <div className="flex items-center gap-1">
