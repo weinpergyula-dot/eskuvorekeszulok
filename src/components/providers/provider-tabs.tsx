@@ -123,12 +123,6 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                 <MessageSquare className="h-4 w-4" strokeWidth={1.5} />
                 Belső üzenet küldése
               </button>
-              <a
-                href={`mailto:${provider.email}`}
-                className="hidden sm:block w-full text-center bg-[#C65EA5] hover:bg-[#A84D8B] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer"
-              >
-                Kapcsolatfelvétel
-              </a>
             </div>
           </div>
         </div>
