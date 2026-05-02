@@ -44,7 +44,7 @@ export default function HomePage() {
               </p>
               <div className="flex justify-center">
                 <Link href="/informaciok">
-                  <Button size="lg" className="text-[13px] sm:text-base px-5">Tudj meg többet az oldalról!</Button>
+                  <Button size="lg" className="text-[13px] sm:text-base px-5 bg-[#C65EA5] hover:bg-[#A84D8B]">Tudj meg többet az oldalról!</Button>
                 </Link>
               </div>
             </div>
