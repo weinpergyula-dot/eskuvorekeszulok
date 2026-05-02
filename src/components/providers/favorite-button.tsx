@@ -8,10 +8,12 @@ export function FavoriteButton({
   providerId,
   initialLiked,
   onUnlike,
+  hideTextOnMobile = false,
 }: {
   providerId: string;
   initialLiked: boolean;
   onUnlike?: (id: string) => void;
+  hideTextOnMobile?: boolean;
 }) {
   const [liked, setLiked] = useState(initialLiked);
   const [showMsg, setShowMsg] = useState(false);
@@ -48,7 +50,7 @@ export function FavoriteButton({
             liked ? "fill-[#F06C6C] text-[#F06C6C]" : "text-gray-400"
           )}
         />
-        <span className="text-sm text-gray-700">
+        <span className={cn("text-sm text-gray-700", hideTextOnMobile && !liked ? "hidden sm:inline" : "")}>
           {liked ? "Kedvenc" : "Kedvencnek jelölöm"}
         </span>
       </button>

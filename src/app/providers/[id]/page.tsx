@@ -85,8 +85,16 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Hero section */}
         <div className="relative px-8 py-10 flex flex-col sm:flex-row gap-6 items-center sm:items-start" style={{ backgroundColor: "#F0F6F5" }}>
-          <div className="absolute top-3 right-3">
-            <FavoriteButton providerId={provider.id} initialLiked={initialLiked} />
+          {/* Favorite – mobile: top-left, desktop: top-right */}
+          <div className="absolute top-3 left-3 sm:left-auto sm:right-3">
+            <FavoriteButton providerId={provider.id} initialLiked={initialLiked} hideTextOnMobile />
+          </div>
+          {/* Visitor count – mobile only pill, top-right */}
+          <div className="absolute top-3 right-3 sm:hidden">
+            <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
+              <Eye className="h-3.5 w-3.5" />
+              {viewCount}
+            </span>
           </div>
           {/* Avatar */}
           <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center shrink-0">
@@ -147,9 +155,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                   ({reviewCount}<span className="hidden sm:inline"> értékelés</span>)
                 </span>
               )}
-              <span className="ml-4 flex items-center gap-1 text-lg text-gray-900">
+              <span className="ml-4 hidden sm:flex items-center gap-1 text-lg text-gray-900">
                 <Eye className="h-4 w-4" />
-                {viewCount}<span className="hidden sm:inline"> megtekintés</span>
+                {viewCount} megtekintés
               </span>
             </div>
           </div>
