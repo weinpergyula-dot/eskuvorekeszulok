@@ -540,7 +540,7 @@ function RegisterContent() {
 
               {/* Short description */}
               <div className="space-y-2">
-                <p className="text-base text-gray-800">Ez a szöveg a profil kártyán jelenik meg. Maximum 200 karakter.</p>
+                <p className="text-base text-gray-800">Megjelenik a profilkártyádon – max. 200 karakter.</p>
                 <FloatingTextarea
                   id="description"
                   label="Rövid bemutatkozás"
@@ -553,7 +553,7 @@ function RegisterContent() {
 
               {/* Detailed description */}
               <div className="space-y-2">
-                <p className="text-base text-gray-800">Részletes bemutatkozás – a profiloldalon jelenik meg.</p>
+                <p className="text-base text-gray-800">Bővebb leírás, csak a profiloldalon látható.</p>
                 <FloatingTextarea
                   id="detailed-description"
                   label="Részletes bemutatkozás"
