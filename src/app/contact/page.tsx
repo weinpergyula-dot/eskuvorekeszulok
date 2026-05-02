@@ -17,6 +17,10 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!name.trim()) { setError("Add meg a nevedet!"); return; }
+    if (!email.trim()) { setError("Add meg az e-mail címedet!"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Adj meg érvényes e-mail címet!"); return; }
+    if (!message.trim()) { setError("Írj egy rövid üzenetet!"); return; }
     setLoading(true);
     setError(null);
     try {
@@ -66,7 +70,7 @@ export default function ContactPage() {
             <p className="text-base text-gray-600">Hamarosan felvesszük veled a kapcsolatot.</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {error && (
               <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-base px-4 py-3 rounded-xl border border-[#F06C6C]/30">
                 {error}
@@ -77,7 +81,6 @@ export default function ContactPage() {
               label="Név *"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              required
             />
             <FloatingInput
               id="contact-email"
@@ -85,7 +88,6 @@ export default function ContactPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
             <FloatingInput
               id="contact-phone"
@@ -100,7 +102,6 @@ export default function ContactPage() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
-              required
             />
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Küldés..." : "Üzenet küldése"}

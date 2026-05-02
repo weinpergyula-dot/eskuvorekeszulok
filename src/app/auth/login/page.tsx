@@ -24,6 +24,8 @@ function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim()) { setError("Add meg az e-mail címedet!"); return; }
+    if (!password) { setError("Add meg a jelszavadat!"); return; }
     if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
     setLoading(true);
     setError(null);
@@ -62,6 +64,7 @@ function LoginForm() {
       <form
         onSubmit={handleSubmit}
         className="space-y-4"
+        noValidate
       >
         {registered && (
           <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
@@ -85,7 +88,6 @@ function LoginForm() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
         />
 
         <FloatingInput
@@ -94,7 +96,6 @@ function LoginForm() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
         />
 
         <Button type="submit" className="w-full" disabled={loading}>

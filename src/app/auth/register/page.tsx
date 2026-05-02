@@ -243,14 +243,11 @@ function RegisterContent() {
 
   const handleBasicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Kérlek adj meg érvényes e-mail címet (pl. nev@example.hu).");
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError("A két jelszó nem egyezik meg.");
-      return;
-    }
+    if (!fullName.trim()) { setError("Add meg a teljes nevedet!"); return; }
+    if (!email.trim()) { setError("Add meg az e-mail címedet!"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Adj meg érvényes e-mail címet (pl. nev@example.hu)."); return; }
+    if (!password) { setError("Add meg a jelszavadat!"); return; }
+    if (password !== confirmPassword) { setError("A két jelszó nem egyezik meg."); return; }
     setError(null);
     if (role === "visitor") {
       await registerUser();
@@ -329,6 +326,10 @@ function RegisterContent() {
 
   const handleProviderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!phone.trim()) { setError("Add meg a telefonszámodat!"); return; }
+    if (counties.length === 0) { setError("Válassz legalább egy megyét!"); return; }
+    if (categories.length === 0) { setError("Válassz legalább egy kategóriát!"); return; }
+    setError(null);
     await registerUser();
   };
 
@@ -406,7 +407,7 @@ function RegisterContent() {
             <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#C65EA5]"}`} />
           </div>
 
-          <form onSubmit={handleBasicSubmit} className="space-y-4">
+          <form onSubmit={handleBasicSubmit} className="space-y-4" noValidate>
             {error && (
               <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
                 {error}
@@ -418,7 +419,6 @@ function RegisterContent() {
               label="Teljes név *"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              required
             />
 
             <FloatingInput
@@ -427,7 +427,6 @@ function RegisterContent() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
 
             <FloatingInput
@@ -436,8 +435,6 @@ function RegisterContent() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              minLength={6}
-              required
             />
 
             <FloatingInput
@@ -446,8 +443,6 @@ function RegisterContent() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              minLength={6}
-              required
             />
 
             <Button type="submit" className="w-full bg-[#C65EA5] hover:bg-[#A84D8B]" disabled={loading}>
@@ -495,7 +490,7 @@ function RegisterContent() {
           <div className="h-1 flex-1 bg-[#C65EA5] rounded-full" />
         </div>
 
-        <form onSubmit={handleProviderSubmit}>
+        <form onSubmit={handleProviderSubmit} noValidate>
           {error && (
             <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30 mb-6">
               {error}
