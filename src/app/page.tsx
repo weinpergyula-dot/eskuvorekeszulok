@@ -53,8 +53,10 @@ export default function HomePage() {
       </section>
 
       {/* Services header – two-column */}
-      <div className="w-full border-t border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="w-full relative border-t border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
+        {/* Pink bleed: center → right edge, desktop only */}
+        <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2" style={{ backgroundColor: "#C65EA5" }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
             {/* Left – visitors */}
             <div>
@@ -74,7 +76,7 @@ export default function HomePage() {
             </div>
 
             {/* Right – providers */}
-            <div className="rounded-2xl p-6" style={{ backgroundColor: "#C65EA5" }}>
+            <div className="rounded-2xl p-6 sm:rounded-none sm:p-0" style={{ backgroundColor: "#C65EA5" }}>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
                 <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 Szolgáltatóknak
