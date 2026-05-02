@@ -161,7 +161,7 @@ function DataCard({
         </div>
       )}
 
-      <Row fieldKey="description" label="Leírás" value={description} />
+      <Row fieldKey="description" label="Bemutatkozás" value={description} />
       <Row fieldKey="website" label="Weboldal" value={website ?? null} />
     </div>
   );
