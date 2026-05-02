@@ -9,6 +9,7 @@ import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input"
 import { Clock, Pencil, X, ImagePlus } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
+import { ProviderCard } from "@/components/providers/provider-card";
 
 interface Props {
   userId: string;
@@ -66,107 +67,6 @@ function PillSelect<T extends string>({
   );
 }
 
-// ── Single data card (live or pending) ──────────────────────────────────────
-function DataCard({
-  title,
-  variant,
-  avatarUrl,
-  fullName,
-  phone,
-  description,
-  website,
-  counties,
-  categories,
-  pendingKeys = new Set<string>(),
-}: {
-  title: string;
-  variant: "live" | "pending" | "submitted";
-  avatarUrl?: string | null;
-  fullName?: string | null;
-  phone?: string | null;
-  description?: string | null;
-  website?: string | null;
-  counties?: string[];
-  categories?: ServiceCategory[];
-  pendingKeys?: Set<string>;
-}) {
-  const isLive = variant === "live";
-  const borderCls = isLive ? "border-gray-200 bg-white" : "border-amber-200 bg-amber-50/40";
-  const titleCls  = isLive ? "text-gray-700" : "text-amber-700";
-
-  const Row = ({ fieldKey, label, value }: { fieldKey: string; label: string; value?: string | null }) => {
-    const isPending = pendingKeys.has(fieldKey);
-    return (
-      <div className="space-y-0.5">
-        <div className="flex items-center gap-1.5">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{label}</p>
-          {isPending && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" title="Jóváhagyásra vár" />}
-        </div>
-        <p className="text-sm text-gray-900 leading-snug">
-          {value || <span className="text-gray-400 italic">–</span>}
-        </p>
-      </div>
-    );
-  };
-
-  const avatarPending = pendingKeys.has("avatar_url");
-
-  return (
-    <div className={`rounded-xl border p-4 space-y-3 ${borderCls}`}>
-      <div className="flex items-center gap-2 pb-1 border-b border-inherit">
-        {!isLive && <Clock className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
-        <p className={`text-xs font-semibold uppercase tracking-wide ${titleCls}`}>{title}</p>
-      </div>
-
-      {/* Avatar + name */}
-      <div className="flex items-center gap-3">
-        <div className={`w-14 h-14 rounded-full overflow-hidden border-2 bg-gray-100 flex items-center justify-center shrink-0 ${avatarPending ? "border-amber-400" : "border-white"} shadow-sm`}>
-          {avatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-2xl">📷</span>
-          )}
-        </div>
-        <Row fieldKey="full_name" label="Teljes név" value={fullName} />
-      </div>
-
-      <Row fieldKey="phone" label="Telefonszám" value={phone} />
-
-      {counties !== undefined && (
-        <div className="space-y-1">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Megye</p>
-          <div className="flex flex-wrap gap-1">
-            {(counties ?? []).length > 0
-              ? (counties ?? []).map((c) => (
-                  <span key={c} className="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700 border border-gray-200">{c}</span>
-                ))
-              : <span className="text-gray-400 italic text-sm">–</span>}
-          </div>
-        </div>
-      )}
-
-      {categories !== undefined && (
-        <div className="space-y-1">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Kategória</p>
-          <div className="flex flex-wrap gap-1">
-            {(categories ?? []).length > 0
-              ? (categories ?? []).map((c) => (
-                  <span key={c} className="px-2 py-0.5 rounded-full text-xs bg-[#84AAA6]/10 text-[#84AAA6] border border-[#84AAA6]/20">
-                    {CATEGORY_LABELS[c as ServiceCategory] ?? c}
-                  </span>
-                ))
-              : <span className="text-gray-400 italic text-sm">–</span>}
-          </div>
-        </div>
-      )}
-
-      <Row fieldKey="description" label="Bemutatkozás" value={description} />
-      <Row fieldKey="website" label="Weboldal" value={website ?? null} />
-    </div>
-  );
-}
-
 // ── Profile view mode ────────────────────────────────────────────────────────
 function ProfileView({
   provider,
@@ -179,63 +79,39 @@ function ProfileView({
   const isFirstSubmission = provider.approval_status !== "approved";
   const hasPendingUpdate = !isFirstSubmission && !!pc;
 
-  // Compute which keys actually differ (for pending card markers)
-  const pendingKeys = new Set<string>();
-  if (pc) {
-    const norm = (v: unknown) => String(v ?? "");
-    const FIELDS = ["full_name", "phone", "description", "website", "avatar_url"] as const;
-    for (const key of FIELDS) {
-      if (key in pc && norm(pc[key]) !== norm((provider as unknown as Record<string, unknown>)[key])) {
-        pendingKeys.add(key);
-      }
-    }
-  }
+  const pendingProvider: Provider = {
+    ...provider,
+    full_name: (pc?.full_name as string) ?? provider.full_name,
+    phone: (pc?.phone as string) ?? provider.phone,
+    description: (pc?.description as string) ?? provider.description,
+    website: (pc?.website as string) ?? provider.website,
+    avatar_url: (pc?.avatar_url as string) ?? provider.avatar_url,
+  };
 
   return (
     <div className="space-y-4">
       {isFirstSubmission ? (
-        /* First submission – single amber card */
-        <DataCard
-          title="Beküldött adatok – jóváhagyásra vár"
-          variant="submitted"
-          avatarUrl={provider.avatar_url}
-          fullName={provider.full_name}
-          phone={provider.phone}
-          description={provider.description}
-          website={provider.website}
-          counties={provider.counties}
-          categories={provider.categories}
-        />
-      ) : (
-        /* Approved profile – live card + optional pending card */
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <DataCard
-            title="Élő verzió"
-            variant="live"
-            avatarUrl={provider.avatar_url}
-            fullName={provider.full_name}
-            phone={provider.phone}
-            description={provider.description}
-            website={provider.website}
-            counties={provider.counties}
-            categories={provider.categories}
-          />
-          {hasPendingUpdate && (
-            <DataCard
-              title="Módosítás – jóváhagyásra vár"
-              variant="pending"
-              /* Merge: pending_changes overrides live for changed fields */
-              avatarUrl={(pc?.avatar_url as string | null) ?? provider.avatar_url}
-              fullName={(pc?.full_name as string | null) ?? provider.full_name}
-              phone={(pc?.phone as string | null) ?? provider.phone}
-              description={(pc?.description as string | null) ?? provider.description}
-              website={(pc?.website as string | null) ?? provider.website}
-              counties={provider.counties}
-              categories={provider.categories}
-              pendingKeys={pendingKeys}
-            />
-          )}
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
+            <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
+          </p>
+          <ProviderCard provider={provider} showStatus />
         </div>
+      ) : hasPendingUpdate ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Élő előnézet</p>
+            <ProviderCard provider={provider} />
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5" /> Módosítás – jóváhagyásra vár
+            </p>
+            <ProviderCard provider={pendingProvider} showStatus />
+          </div>
+        </div>
+      ) : (
+        <ProviderCard provider={provider} />
       )}
 
       <Button variant="outline" onClick={onEdit} className="flex items-center gap-2">

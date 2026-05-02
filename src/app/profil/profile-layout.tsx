@@ -460,27 +460,21 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-base font-semibold text-gray-900 uppercase tracking-wide mb-3">Előnézet</h3>
-                  <ProviderCard provider={provider} showStatus />
-                </div>
-                <div>
-                  <h3 className="text-base font-semibold text-gray-900 uppercase tracking-wide mb-3">Statisztikák</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <DashStatCard label="Megtekintések" value={provider.view_count ?? 0} icon={Eye} />
-                    <DashStatCard label="Értékelések" value={provider.review_count ?? 0} icon={Star} />
-                    <DashStatCard
-                      label="Átlagos értékelés"
-                      value={provider.average_rating ? `${Number(provider.average_rating).toFixed(1)}/5` : "–"}
-                      icon={BarChart2}
-                    />
-                    <DashStatCard
-                      label="Státusz"
-                      value={provider.approval_status === "approved" ? "Aktív" : provider.approval_status === "pending" ? "Függőben" : "Elutasítva"}
-                      icon={ClipboardList}
-                    />
-                  </div>
+              <div>
+                <h3 className="text-base font-semibold text-gray-900 uppercase tracking-wide mb-3">Statisztikák</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <DashStatCard label="Megtekintések" value={provider.view_count ?? 0} icon={Eye} />
+                  <DashStatCard label="Értékelések" value={provider.review_count ?? 0} icon={Star} />
+                  <DashStatCard
+                    label="Átlagos értékelés"
+                    value={provider.average_rating ? `${Number(provider.average_rating).toFixed(1)}/5` : "–"}
+                    icon={BarChart2}
+                  />
+                  <DashStatCard
+                    label="Státusz"
+                    value={provider.approval_status === "approved" ? "Aktív" : provider.approval_status === "pending" ? "Függőben" : "Elutasítva"}
+                    icon={ClipboardList}
+                  />
                 </div>
               </div>
             </div>
