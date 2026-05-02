@@ -95,12 +95,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
             <ShareButton title={provider.full_name} />
             <FavoriteButton providerId={provider.id} initialLiked={initialLiked} />
           </div>
-          {/* Visitor count – mobile only pill, top-right */}
+          {/* Share – mobile only icon, top-right */}
           <div className="absolute top-3 right-3 sm:hidden">
-            <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
-              <Eye className="h-3.5 w-3.5" />
-              {viewCount}
-            </span>
+            <ShareButton title={provider.full_name} iconOnly />
           </div>
           {/* Avatar */}
           <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center shrink-0">
