@@ -121,19 +121,23 @@ export default async function ProviderProfilePage({ params }: PageProps) {
               {provider.full_name}
             </h1>
 
-            <div className="hidden sm:flex flex-wrap gap-2 justify-start mb-3">
+            {/* Categories – desktop only */}
+            <div className="hidden sm:flex flex-wrap gap-2 justify-start mb-1">
               {(provider.categories ?? []).map((cat) => (
                 <Badge key={cat} variant="outline" className="text-base">
                   {CATEGORY_LABELS[cat as ServiceCategory] ?? cat}
                 </Badge>
               ))}
-              {(provider.counties ?? []).length > 0 && (
-                <span className="flex items-center gap-1 text-base text-gray-900">
-                  <MapPin className="h-4 w-4" />
+            </div>
+            {/* County – always visible */}
+            {(provider.counties ?? []).length > 0 && (
+              <div className="flex items-center gap-1 mb-3 justify-center sm:justify-start">
+                <MapPin className="h-4 w-4 text-gray-500" />
+                <span className="text-base text-gray-900">
                   {(provider.counties ?? []).join(", ")}
                 </span>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Rating row */}
             <div className="flex items-center gap-2 justify-center sm:justify-start">

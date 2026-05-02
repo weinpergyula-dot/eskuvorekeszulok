@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Phone, Mail, Globe } from "lucide-react";
+import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { MessageForm } from "@/components/providers/message-form";
 import { ReviewSection } from "@/components/providers/review-section";
@@ -82,17 +83,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
             {provider.gallery_urls && provider.gallery_urls.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">Galéria</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {provider.gallery_urls.map((url, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`Galéria ${i + 1}`}
-                      className="w-full h-40 object-cover rounded-lg border border-gray-200"
-                    />
-                  ))}
-                </div>
+                <GalleryLightbox urls={provider.gallery_urls} alt="Galéria" />
               </section>
             )}
           </div>
@@ -127,7 +118,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               </div>
               <a
                 href={`mailto:${provider.email}`}
-                className="block w-full text-center bg-[#C65EA5] hover:bg-[#A84D8B] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+                className="hidden sm:block w-full text-center bg-[#C65EA5] hover:bg-[#A84D8B] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
                 Kapcsolatfelvétel
               </a>
