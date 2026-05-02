@@ -88,7 +88,7 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
   return (
     <>
       {/* Stat cards – clickable */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         {stats.map((s) => (
           <button
             key={s.label}
