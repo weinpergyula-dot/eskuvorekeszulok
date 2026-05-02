@@ -32,13 +32,13 @@ export default function HomePage() {
                   ESKÜVŐRE{" "}
                 </span>
                 <span
-                  className="text-gray-700 block lg:inline"
-                  style={{ fontSize: "clamp(28px, 8vw, 65px)" }}
+                  className="block lg:inline"
+                  style={{ fontSize: "clamp(28px, 8vw, 65px)", color: "#7F7F7F" }}
                 >
                   KÉSZÜLSZ?
                 </span>
               </h1>
-              <div className="w-full lg:w-[calc(100%+3rem)] h-px bg-[#84AAA6] mb-4" />
+              <div className="w-full lg:w-[calc(100%+3rem)] h-px mb-4" style={{ backgroundColor: "#7F7F7F" }} />
               <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
                 Találj meg mindent egy helyen a nagy napodra!
               </p>
@@ -85,7 +85,7 @@ export default function HomePage() {
               <p className="text-base text-white leading-relaxed mb-5">
                 Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Az adminisztrátori jóváhagyás után profilod azonnal megjelenik az érdeklődőknek.
               </p>
-              <Link href="/auth/register">
+              <Link href="/auth/register?type=provider">
                 <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
                   Regisztrálok szolgáltatónak
                 </Button>
