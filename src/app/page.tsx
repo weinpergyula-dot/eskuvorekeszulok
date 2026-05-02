@@ -76,7 +76,7 @@ export default function HomePage() {
             </div>
 
             {/* Right – providers */}
-            <div className="-mx-4 px-8 py-8 -mb-10 sm:mx-0 sm:px-0 sm:py-0 sm:mb-0" style={{ backgroundColor: "#D07AB5" }}>
+            <div className="-mx-4 px-8 py-8 -mb-10 border-t border-white sm:mx-0 sm:px-0 sm:py-0 sm:mb-0 sm:border-t-0 sm:border-l" style={{ backgroundColor: "#D07AB5" }}>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
                 <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 Szolgáltatóknak
