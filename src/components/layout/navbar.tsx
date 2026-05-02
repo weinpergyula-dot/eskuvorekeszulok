@@ -230,7 +230,7 @@ export function Navbar() {
           <div className="md:hidden flex items-center gap-1">
             {(() => {
               const totalCount = unreadMessages + pendingCount;
-              const href = user ? "/profil" : "/auth/register";
+              const href = user ? "/profil" : "/auth/login";
               const onClick = user
                 ? (e: React.MouseEvent) => {
                     e.preventDefault();
