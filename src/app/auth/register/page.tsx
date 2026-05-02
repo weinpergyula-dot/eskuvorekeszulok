@@ -344,7 +344,7 @@ function RegisterContent() {
   if (step === "role") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="Látogatóként értékelj és ments kedvenceket – szolgáltatóként mutatkozz be ezer leendő párnak." bgColor="#D07AB5" />
+        <PageHeader icon={UserRound} title="Regisztráció" description="Látogatóként értékelj és ments kedvenceket – szolgáltatóként mutatkozz be ezer leendő párnak." bgColor="#84AAA6" />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
@@ -352,20 +352,20 @@ function RegisterContent() {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
               onClick={() => { setRole("visitor"); setStep("basic"); router.replace("/auth/register?type=visitor"); }}
-              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#C65EA5] hover:shadow-md transition-all group"
+              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
             >
-              <UserRound className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
-              <span className="font-semibold text-gray-900 group-hover:text-[#C65EA5]" style={{ fontSize: "22px" }}>Látogató</span>
+              <UserRound className="h-12 w-12 mb-4 text-[#84AAA6]" strokeWidth={1.5} />
+              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Látogató</span>
               <span className="text-base text-gray-900 mt-2 text-center">
                 Böngészem a szolgáltatókat
               </span>
             </button>
             <button
               onClick={() => { setRole("provider"); setStep("basic"); router.replace("/auth/register?type=provider"); }}
-              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#C65EA5] hover:shadow-md transition-all group"
+              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
             >
-              <Briefcase className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
-              <span className="font-semibold text-gray-900 group-hover:text-[#C65EA5]" style={{ fontSize: "22px" }}>Szolgáltató</span>
+              <Briefcase className="h-12 w-12 mb-4 text-[#84AAA6]" strokeWidth={1.5} />
+              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Szolgáltató</span>
               <span className="text-base text-gray-900 mt-2 text-center">
                 Hirdetem a szolgáltatásom
               </span>
@@ -388,7 +388,7 @@ function RegisterContent() {
   if (step === "basic") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="Látogatóként értékelj és ments kedvenceket – szolgáltatóként mutatkozz be ezer leendő párnak." bgColor="#D07AB5" />
+        <PageHeader icon={UserRound} title="Regisztráció" description="Látogatóként értékelj és ments kedvenceket – szolgáltatóként mutatkozz be ezer leendő párnak." bgColor="#84AAA6" />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="mb-6">
@@ -403,8 +403,8 @@ function RegisterContent() {
 
           {/* Progress */}
           <div className="flex gap-2 mb-6">
-            <div className="h-1 flex-1 bg-[#C65EA5] rounded-full" />
-            <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#C65EA5]"}`} />
+            <div className="h-1 flex-1 bg-[#84AAA6] rounded-full" />
+            <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#84AAA6]"}`} />
           </div>
 
           <form onSubmit={handleBasicSubmit} className="space-y-4" noValidate>
@@ -415,7 +415,7 @@ function RegisterContent() {
             )}
 
             <FloatingInput
-              accentColor="#C65EA5"
+              accentColor="#84AAA6"
               id="fullName"
               label="Teljes név *"
               value={fullName}
@@ -423,7 +423,7 @@ function RegisterContent() {
             />
 
             <FloatingInput
-              accentColor="#C65EA5"
+              accentColor="#84AAA6"
               id="email"
               label="Email cím *"
               type="email"
@@ -432,7 +432,7 @@ function RegisterContent() {
             />
 
             <FloatingInput
-              accentColor="#C65EA5"
+              accentColor="#84AAA6"
               id="password"
               label="Jelszó *"
               type="password"
@@ -441,7 +441,7 @@ function RegisterContent() {
             />
 
             <FloatingInput
-              accentColor="#C65EA5"
+              accentColor="#84AAA6"
               id="confirmPassword"
               label="Jelszó megerősítése *"
               type="password"
@@ -449,7 +449,7 @@ function RegisterContent() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
-            <Button type="submit" className="w-full bg-[#C65EA5] hover:bg-[#A84D8B]" disabled={loading}>
+            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading}>
               {loading
                 ? "Regisztráció..."
                 : role === "provider"
@@ -476,7 +476,7 @@ function RegisterContent() {
   // Step 3 – Provider details
   return (
     <div>
-      <PageHeader icon={UserRound} title="Regisztráció" bgColor="#D07AB5" />
+      <PageHeader icon={UserRound} title="Regisztráció" bgColor="#84AAA6" />
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
         <div className="mb-6">
@@ -490,8 +490,8 @@ function RegisterContent() {
 
         {/* Progress */}
         <div className="flex gap-2 mb-8">
-          <div className="h-1 flex-1 bg-[#C65EA5] rounded-full" />
-          <div className="h-1 flex-1 bg-[#C65EA5] rounded-full" />
+          <div className="h-1 flex-1 bg-[#84AAA6] rounded-full" />
+          <div className="h-1 flex-1 bg-[#84AAA6] rounded-full" />
         </div>
 
         <form onSubmit={handleProviderSubmit} noValidate>
@@ -541,7 +541,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Megjelenik a profilkártyádon – max. 200 karakter.</p>
                 <FloatingTextarea
-                  accentColor="#C65EA5"
+                  accentColor="#84AAA6"
                   id="description"
                   label="Rövid bemutatkozás"
                   value={description}
@@ -555,7 +555,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Bővebb leírás, csak a profiloldalon látható.</p>
                 <FloatingTextarea
-                  accentColor="#C65EA5"
+                  accentColor="#84AAA6"
                   id="detailed-description"
                   label="Részletes bemutatkozás"
                   value={detailedDescription}
@@ -574,7 +574,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Ha van saját weboldalad a szolgáltatásodról, add meg itt.</p>
                 <FloatingInput
-                  accentColor="#C65EA5"
+                  accentColor="#84AAA6"
                   id="website"
                   label="Weboldal (opcionális)"
                   type="url"
@@ -622,7 +622,7 @@ function RegisterContent() {
           </div>
 
           <div className="mt-8 space-y-4">
-            <Button type="submit" className="w-full bg-[#C65EA5] hover:bg-[#A84D8B]" disabled={loading}>
+            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading}>
               {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
             </Button>
             <p className="text-sm text-gray-500 text-center">
