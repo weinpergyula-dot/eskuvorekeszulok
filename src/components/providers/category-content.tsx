@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Search, SearchX } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Search, SearchX, ChevronDown } from "lucide-react";
 import { CountyFilter } from "./county-filter";
 import { ProviderCard } from "./provider-card";
 import type { Provider } from "@/lib/types";
@@ -25,6 +25,16 @@ export function CategoryContent({
 }: CategoryContentProps) {
   const [countyQuery, setCountyQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("rating");
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const cq = countyQuery.trim().toLowerCase();
 
@@ -72,14 +82,35 @@ export function CategoryContent({
                 {filteredProviders.length} szolgáltató található
                 {selected ? ` – ${selected}` : ""}
               </p>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="text-base border border-gray-200 rounded-lg px-3 py-1.5 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] cursor-pointer"
-              >
-                <option value="rating">Rendezés: Értékelés alapján</option>
-                <option value="views">Rendezés: Látogatottság alapján</option>
-              </select>
+              <div ref={sortRef} className="relative">
+                <button
+                  onClick={() => setSortOpen((o) => !o)}
+                  className="flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+                >
+                  {sortBy === "rating" ? "Értékelés alapján" : "Látogatottság alapján"}
+                  <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
+                </button>
+                {sortOpen && (
+                  <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-20">
+                    {([
+                      { value: "rating", label: "Értékelés alapján" },
+                      { value: "views",  label: "Látogatottság alapján" },
+                    ] as { value: SortOption; label: string }[]).map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => { setSortBy(opt.value); setSortOpen(false); }}
+                        className={`w-full text-left px-4 py-2.5 text-base transition-colors ${
+                          sortBy === opt.value
+                            ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium"
+                            : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {filteredProviders.map((provider) => (

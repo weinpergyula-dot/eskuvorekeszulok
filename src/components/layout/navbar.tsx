@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageSquare, ShieldCheck } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageSquare, ShieldCheck, LogOut } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -200,6 +200,7 @@ export function Navbar() {
           onClick={() => { closeAll(); handleSignOut(); }}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#F06C6C] hover:bg-[#F06C6C]/10 text-left"
         >
+          <LogOut className="h-4 w-4 shrink-0" strokeWidth={1.5} />
           Kijelentkezés
         </button>
       </div>
