@@ -15,7 +15,7 @@ export function Footer() {
             </p>
           </div>
 
-          <div>
+          <div className="hidden md:block">
             <h3 className="text-base font-semibold text-gray-900 mb-3">Szolgáltatók</h3>
             <ul className="space-y-2">
               {[
@@ -40,6 +40,7 @@ export function Footer() {
             <h3 className="text-base font-semibold text-gray-900 mb-3">Hasznos linkek</h3>
             <ul className="space-y-2">
               {[
+                { href: "/services", label: "Kategóriák" },
                 { href: "/auth/register", label: "Regisztráció" },
                 { href: "/auth/login", label: "Bejelentkezés" },
                 { href: "/contact", label: "Kapcsolat" },

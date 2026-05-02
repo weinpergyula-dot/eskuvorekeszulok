@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Users, Store } from "lucide-react";
+import { Users, Briefcase } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 
@@ -68,22 +68,27 @@ export default function HomePage() {
                 Látogatóknak
               </h2>
               <hr className="border-white/30 mb-3" />
-              <p className="text-base text-white leading-relaxed">
+              <p className="text-base text-white leading-relaxed mb-5">
                 Böngészd át az esküvői szakemberek és helyszínek széles kínálatát! Fotósoktól, zenészektől kezdve a tortakészítőkig és virágkötőkig megtalálsz mindenkit, aki a nagy napod tökéletessé varázsolhat. Olvass értékeléseket, és jelöld kedvenceidet, hogy könnyebben dönthess.
               </p>
+              <Link href="#kategoriak">
+                <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
+                  Megnézem a kínálatot
+                </Button>
+              </Link>
             </div>
 
             {/* Right – providers */}
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
-                <Store className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
+                <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 Szolgáltatóknak
               </h2>
               <hr className="border-white/30 mb-3" />
               <p className="text-base text-white leading-relaxed mb-5">
                 Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Az adminisztrátori jóváhagyás után profilod azonnal megjelenik az érdeklődőknek.
               </p>
-              <Link href="/auth/register">
+              <Link href="/auth/register?type=provider">
                 <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
                   Regisztrálok szolgáltatónak
                 </Button>
@@ -94,7 +99,7 @@ export default function HomePage() {
       </div>
 
       {/* Services section */}
-      <section className="bg-white">
+      <section id="kategoriak" className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Elérhető kategóriák</h2>
           <CategorySearch />

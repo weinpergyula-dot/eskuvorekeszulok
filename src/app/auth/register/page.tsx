@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -190,13 +190,21 @@ function PillSelect<T extends string>({
   );
 }
 
-export default function RegisterPage() {
+function RegisterContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<Step>("role");
   const [role, setRole] = useState<"visitor" | "provider">("visitor");
+
+  useEffect(() => {
+    const type = searchParams.get("type");
+    if (type === "provider") { setRole("provider"); setStep("basic"); }
+    else if (type === "visitor") { setRole("visitor"); setStep("basic"); }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -353,7 +361,7 @@ export default function RegisterPage() {
 
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
-              onClick={() => { setRole("visitor"); setStep("basic"); }}
+              onClick={() => { setRole("visitor"); setStep("basic"); router.replace("/auth/register?type=visitor"); }}
               className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#C65EA5] hover:shadow-md transition-all group"
             >
               <UserRound className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
@@ -363,7 +371,7 @@ export default function RegisterPage() {
               </span>
             </button>
             <button
-              onClick={() => { setRole("provider"); setStep("basic"); }}
+              onClick={() => { setRole("provider"); setStep("basic"); router.replace("/auth/register?type=provider"); }}
               className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#C65EA5] hover:shadow-md transition-all group"
             >
               <Briefcase className="h-12 w-12 mb-4 text-[#C65EA5]" strokeWidth={1.5} />
@@ -395,7 +403,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           <div className="mb-6">
             <button
-              onClick={() => setStep("role")}
+              onClick={() => { setStep("role"); router.replace("/auth/register"); }}
               className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
             >
               ← Vissza
@@ -622,5 +630,13 @@ export default function RegisterPage() {
       </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterContent />
+    </Suspense>
   );
 }
