@@ -280,7 +280,7 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/auth/register">
-                  <Button className="text-base bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#FAF0F7] hover:text-[#C65EA5]">Regisztráció</Button>
+                  <Button className="text-base bg-transparent text-[#84AAA6] border border-[#84AAA6] hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
                   <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
@@ -338,7 +338,7 @@ export function Navbar() {
           <Link href="/contact" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
-              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-[#C65EA5] border border-[#C65EA5] rounded-lg py-2 hover:bg-[#FAF0F7] transition-colors">
+              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-[#84AAA6] border border-[#84AAA6] rounded-lg py-2 hover:bg-[#84AAA6]/10 transition-colors">
                 Regisztráció
               </Link>
               <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white bg-[#84AAA6] rounded-lg py-2 hover:bg-[#6B8E8A] transition-colors">

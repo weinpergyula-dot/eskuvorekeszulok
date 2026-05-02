@@ -36,6 +36,7 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           }}
           className={cn(
             "w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white",
+            !focused && "border-gray-300",
             className
           )}
           style={{ borderColor: focused ? accentColor : undefined }}
@@ -80,6 +81,7 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
           className={cn(
             "w-full border rounded-xl px-4 pt-6 pb-2 text-base outline-none transition-colors bg-white resize-none",
+            !focused && "border-gray-300",
             className
           )}
           style={{ borderColor: focused ? accentColor : undefined }}
