@@ -85,7 +85,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Hero section */}
-        <div className="relative px-8 py-10 flex flex-col sm:flex-row gap-6 items-center sm:items-start" style={{ backgroundColor: "#F0F6F5" }}>
+        <div className="relative px-5 py-5 sm:px-8 sm:py-10 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center sm:items-start" style={{ backgroundColor: "#F0F6F5" }}>
           {/* Favorite – mobile only, top-left */}
           <div className="absolute top-3 left-3 sm:hidden">
             <FavoriteButton providerId={provider.id} initialLiked={initialLiked} hideTextOnMobile />
