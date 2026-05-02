@@ -26,7 +26,18 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       className="bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all flex flex-col overflow-hidden cursor-pointer group"
     >
       {/* Header – matches provider profile hero */}
-      <div className="flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
+      <div className="relative flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
+        {/* Mobile: favorite top-left */}
+        <div className="absolute top-2 left-2 sm:hidden" onClick={(e) => e.preventDefault()}>
+          <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile />
+        </div>
+        {/* Mobile: visitor count top-right */}
+        <div className="absolute top-2 right-2 sm:hidden">
+          <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
+            <Eye className="h-3.5 w-3.5" />
+            {viewCount}
+          </span>
+        </div>
         {/* Avatar */}
         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0">
           {provider.avatar_url ? (
@@ -72,8 +83,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </span>
         </div>
 
-        {/* Rating */}
-        <div className="flex items-center gap-1.5">
+        {/* Rating – desktop only (mobile shows in footer) */}
+        <div className="hidden sm:flex items-center gap-1.5">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star
               key={star}
@@ -138,13 +149,35 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         )}
       </div>
 
-      {/* Footer */}
-      <div className="border-t border-gray-100 px-5 py-3 flex items-center justify-between">
+      {/* Footer – desktop */}
+      <div className="border-t border-gray-100 px-5 py-3 hidden sm:flex items-center justify-between">
         <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} />
         <div className="flex items-center gap-1 text-gray-900 text-base">
           <Eye className="h-3.5 w-3.5" />
           <span>{viewCount}</span>
         </div>
+      </div>
+      {/* Footer – mobile */}
+      <div className="border-t border-gray-100 px-4 py-3 flex sm:hidden items-center justify-between">
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={cn(
+                "h-4 w-4",
+                star <= Math.round(rating)
+                  ? "fill-amber-400 text-amber-400"
+                  : "fill-gray-200 text-gray-200"
+              )}
+            />
+          ))}
+          <span className="text-sm font-semibold text-gray-900 ml-1">
+            {rating > 0 ? rating.toFixed(1) : "–"}
+          </span>
+        </div>
+        <span className="text-sm font-medium text-[#84AAA6] border border-[#84AAA6] px-3 py-1 rounded-full">
+          Részletek
+        </span>
       </div>
     </a>
   );
