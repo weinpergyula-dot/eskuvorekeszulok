@@ -95,7 +95,7 @@ function ProfileView({
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
           </p>
-          <ProviderCard provider={provider} showStatus />
+          <ProviderCard provider={provider} />
         </div>
       ) : hasPendingUpdate ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -107,7 +107,7 @@ function ProfileView({
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" /> Módosítás – jóváhagyásra vár
             </p>
-            <ProviderCard provider={pendingProvider} showStatus />
+            <ProviderCard provider={pendingProvider} />
           </div>
         </div>
       ) : (
