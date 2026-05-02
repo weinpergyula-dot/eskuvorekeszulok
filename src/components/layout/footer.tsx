@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Image src="/logo2.png" alt="Esküvőre Készülök" width={290} height={72} quality={100} className="h-9 w-auto" />
+              <Image src="/logo.png" alt="Esküvőre Készülök" width={290} height={72} quality={100} className="h-9 w-auto" />
             </div>
             <p className="text-base text-gray-900">
               Találj meg mindent egy helyen a nagy napodra!
