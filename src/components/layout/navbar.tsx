@@ -234,7 +234,7 @@ export function Navbar() {
               const badgeCount = hasMessages ? unreadMessages : hasAdmin ? pendingCount : 0;
               const showDot = !hasMessages && !hasAdmin && !!providerDot;
               const href = user
-                ? hasMessages ? "/profil#messages" : hasAdmin ? "/admin" : "/profil"
+                ? hasMessages ? "/profil#messages" : hasAdmin ? "/admin" : showDot ? "/profil#provider" : "/profil"
                 : "/auth/login";
               const onClick = user
                 ? (e: React.MouseEvent) => {
@@ -247,6 +247,12 @@ export function Navbar() {
                       }
                     } else if (hasAdmin) {
                       router.push("/admin");
+                    } else if (showDot) {
+                      if (pathname === "/profil") {
+                        window.dispatchEvent(new CustomEvent("profile-section", { detail: "provider" }));
+                      } else {
+                        router.push("/profil#provider");
+                      }
                     } else {
                       if (pathname === "/profil") {
                         window.dispatchEvent(new CustomEvent("profile-section", { detail: "account" }));
