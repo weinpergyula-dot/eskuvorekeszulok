@@ -87,6 +87,7 @@ function ProfileView({
     website: (pc?.website as string) ?? provider.website,
     avatar_url: (pc?.avatar_url as string) ?? provider.avatar_url,
     gallery_urls: (pc?.gallery_urls as string[]) ?? provider.gallery_urls,
+    detailed_description: (pc?.detailed_description as string) ?? provider.detailed_description,
   };
 
   return (
@@ -150,6 +151,7 @@ export function ProviderForm({
   const [counties,    setCounties]    = useState<string[]>(provider?.counties ?? []);
   const [categories,  setCategories]  = useState<ServiceCategory[]>((provider?.categories as ServiceCategory[]) ?? []);
   const [description, setDescription] = useState((pc?.description  as string) ?? provider?.description  ?? "");
+  const [detailedDescription, setDetailedDescription] = useState((pc?.detailed_description as string) ?? provider?.detailed_description ?? "");
   const [website,     setWebsite]     = useState((pc?.website      as string) ?? provider?.website      ?? "");
   const [avatarFile,  setAvatarFile]  = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(provider?.avatar_url ?? null);
@@ -244,6 +246,7 @@ export function ProviderForm({
         const { error: insertError } = await supabase.from("providers").insert({
           user_id: userId, email: user.email ?? "",
           full_name: fullName, phone, counties, categories, description,
+          detailed_description: detailedDescription || null,
           website: website || null, avatar_url: avatarUrl || null,
           gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
           approval_status: "pending",
@@ -263,6 +266,7 @@ export function ProviderForm({
         const { error: updateError } = await supabase.from("providers").update({
           pending_changes: {
             full_name: fullName, phone, description,
+            detailed_description: detailedDescription || null,
             website: website || null, avatar_url: avatarUrl || null,
             gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
           },
@@ -404,12 +408,23 @@ export function ProviderForm({
                 onChange={setCategories}
               />
 
+              <div className="space-y-1">
+                <FloatingTextarea
+                  id="pf-description"
+                  label="Rövid bemutatkozás (max 200 karakter)"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value.slice(0, 200))}
+                  rows={3}
+                />
+                <p className="text-xs text-gray-400 text-right">{description.length} / 200</p>
+              </div>
+
               <FloatingTextarea
-                id="pf-description"
-                label="Bemutatkozás"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={5}
+                id="pf-detailed-description"
+                label="Részletes bemutatkozás"
+                value={detailedDescription}
+                onChange={(e) => setDetailedDescription(e.target.value)}
+                rows={6}
               />
 
               <FloatingInput

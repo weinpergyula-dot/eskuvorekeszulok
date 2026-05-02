@@ -214,6 +214,7 @@ function RegisterContent() {
   const [counties, setCounties] = useState<string[]>([]);
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [description, setDescription] = useState("");
+  const [detailedDescription, setDetailedDescription] = useState("");
   const [website, setWebsite] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -304,6 +305,7 @@ function RegisterContent() {
           counties,
           categories,
           description,
+          detailed_description: detailedDescription || null,
           website: website || null,
           avatar_url: avatarUrl || null,
           gallery_urls: galleryUrls,
@@ -536,16 +538,28 @@ function RegisterContent() {
                 />
               </div>
 
-              {/* Description */}
+              {/* Short description */}
               <div className="space-y-2">
-                <p className="text-base text-gray-800">Írd le röviden, hogy miért válasszanak téged! Mutatkozz be, emeld ki az erősségeidet.</p>
+                <p className="text-base text-gray-800">Ez a szöveg a profil kártyán jelenik meg. Maximum 200 karakter.</p>
                 <FloatingTextarea
                   id="description"
-                  label="Bemutatkozás *"
+                  label="Rövid bemutatkozás"
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={5}
-                  required
+                  onChange={(e) => setDescription(e.target.value.slice(0, 200))}
+                  rows={3}
+                />
+                <p className="text-xs text-gray-400 text-right">{description.length} / 200</p>
+              </div>
+
+              {/* Detailed description */}
+              <div className="space-y-2">
+                <p className="text-base text-gray-800">Részletes bemutatkozás – a profiloldalon jelenik meg.</p>
+                <FloatingTextarea
+                  id="detailed-description"
+                  label="Részletes bemutatkozás"
+                  value={detailedDescription}
+                  onChange={(e) => setDetailedDescription(e.target.value)}
+                  rows={6}
                 />
               </div>
 

@@ -209,11 +209,12 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
 
 // ── Field labels for diff display ──────────────────────────────────────────
 const FIELD_LABELS: Record<string, string> = {
-  full_name:   "Teljes név",
-  phone:       "Telefonszám",
-  description: "Leírás",
-  website:     "Weboldal",
-  avatar_url:  "Profilkép",
+  full_name:            "Teljes név",
+  phone:                "Telefonszám",
+  description:          "Rövid bemutatkozás",
+  detailed_description: "Részletes bemutatkozás",
+  website:              "Weboldal",
+  avatar_url:           "Profilkép",
 };
 
 function DiffValue({ value }: { value: unknown }) {

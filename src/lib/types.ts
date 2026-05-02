@@ -41,6 +41,7 @@ export interface Provider {
   email: string;
   phone: string;
   description: string;
+  detailed_description?: string | null;
   categories: ServiceCategory[];
   counties: string[];
   website?: string;
@@ -61,6 +62,7 @@ export interface ProviderUpdatePayload {
   full_name: string;
   phone: string;
   description: string;
+  detailed_description?: string | null;
   categories: ServiceCategory[];
   counties: string[];
   website?: string;

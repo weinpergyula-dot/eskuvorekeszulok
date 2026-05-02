@@ -6,6 +6,8 @@ import { CountyFilter } from "./county-filter";
 import { ProviderCard } from "./provider-card";
 import type { Provider } from "@/lib/types";
 
+type SortOption = "rating" | "views";
+
 interface CategoryContentProps {
   providers: Provider[];
   counties: string[];
@@ -22,6 +24,7 @@ export function CategoryContent({
   label,
 }: CategoryContentProps) {
   const [countyQuery, setCountyQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("rating");
 
   const cq = countyQuery.trim().toLowerCase();
 
@@ -29,7 +32,11 @@ export function CategoryContent({
     ? counties.filter((c) => c.toLowerCase().includes(cq))
     : counties;
 
-  const filteredProviders = providers;
+  const filteredProviders = [...providers].sort((a, b) =>
+    sortBy === "rating"
+      ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
+      : (b.view_count ?? 0) - (a.view_count ?? 0)
+  );
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
@@ -60,10 +67,20 @@ export function CategoryContent({
       <div className="flex-1 min-w-0">
         {filteredProviders.length > 0 ? (
           <>
-            <p className="text-lg text-gray-900 mb-4">
-              {filteredProviders.length} szolgáltató található
-              {selected ? ` – ${selected}` : ""}
-            </p>
+            <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
+              <p className="text-lg text-gray-900">
+                {filteredProviders.length} szolgáltató található
+                {selected ? ` – ${selected}` : ""}
+              </p>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="text-base border border-gray-200 rounded-lg px-3 py-1.5 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] cursor-pointer"
+              >
+                <option value="rating">Rendezés: Értékelés alapján</option>
+                <option value="views">Rendezés: Látogatottság alapján</option>
+              </select>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {filteredProviders.map((provider) => (
                 <ProviderCard key={provider.id} provider={provider} hideCategories />

@@ -26,7 +26,7 @@ export function ApproveButton({ providerId, type, action, changes }: ApproveButt
 
     if (type === "edit" && changes) {
       // Only spread known valid columns; also handle old single-value format
-      const VALID_KEYS = ["full_name", "phone", "counties", "categories", "description", "website", "avatar_url", "gallery_urls"];
+      const VALID_KEYS = ["full_name", "phone", "counties", "categories", "description", "detailed_description", "website", "avatar_url", "gallery_urls"];
       const safeChanges: Record<string, unknown> = {};
       for (const key of VALID_KEYS) {
         if (key in changes) safeChanges[key] = changes[key];

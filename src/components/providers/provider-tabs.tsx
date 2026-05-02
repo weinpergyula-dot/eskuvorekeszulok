@@ -71,10 +71,12 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
       {active === "about" && (
         <div className="grid md:grid-cols-5 gap-8">
           <div className="md:col-span-3 space-y-6">
-            {provider.description ? (
+            {(provider.detailed_description || provider.description) ? (
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">Bemutatkozás</h2>
-                <p className="text-gray-900 leading-relaxed whitespace-pre-line">{provider.description}</p>
+                <p className="text-gray-900 leading-relaxed whitespace-pre-line">
+                  {provider.detailed_description || provider.description}
+                </p>
               </section>
             ) : (
               <p className="text-gray-400 text-base italic">Nincs bemutatkozó szöveg.</p>
