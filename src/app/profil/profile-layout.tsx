@@ -24,7 +24,7 @@ interface Props {
 const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
   { id: "account",   label: "Fiók adatok",          icon: <User className="h-4 w-4" /> },
   { id: "password",  label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
-  { id: "provider",  label: "Szolgáltatói adatok", icon: <Briefcase className="h-4 w-4" /> },
+  { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
   { id: "messages",  label: "Üzenetek",         icon: <MessageSquare className="h-4 w-4" /> },
@@ -33,7 +33,7 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
 const SECTION_TITLES: Record<Section, string> = {
   account:   "Fiók adatok",
   password:  "Jelszó módosítás",
-  provider:  "Szolgáltatói adatok",
+  provider:  "Szolgáltatói profil",
   dashboard: "Dashboard",
   favorites: "Kedvencek",
   messages:  "Üzenetek",

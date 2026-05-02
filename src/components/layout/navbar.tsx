@@ -161,7 +161,7 @@ export function Navbar() {
     { id: "account",   label: "Fiók adatok",          Icon: UserIcon },
     { id: "password",  label: "Jelszó módosítás",      Icon: Lock },
     ...(profile?.role === "provider" ? [
-      { id: "provider",  label: "Szolgáltatói adatok", Icon: Briefcase },
+      { id: "provider",  label: "Szolgáltatói profil", Icon: Briefcase },
       { id: "dashboard", label: "Dashboard",           Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek",             Icon: Heart },
