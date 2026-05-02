@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, SearchX, ChevronDown } from "lucide-react";
 import { CountyFilter } from "./county-filter";
 import { ProviderCard } from "./provider-card";
 import type { Provider } from "@/lib/types";
 
-type SortOption = "rating" | "views";
+type SortOption = "default" | "rating" | "views";
 
 interface CategoryContentProps {
   providers: Provider[];
@@ -24,9 +24,11 @@ export function CategoryContent({
   label,
 }: CategoryContentProps) {
   const [countyQuery, setCountyQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("rating");
+  const [sortBy, setSortBy] = useState<SortOption>("default");
   const [sortOpen, setSortOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
+
+  const shuffled = useMemo(() => [...providers].sort(() => Math.random() - 0.5), [providers]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -42,11 +44,13 @@ export function CategoryContent({
     ? counties.filter((c) => c.toLowerCase().includes(cq))
     : counties;
 
-  const filteredProviders = [...providers].sort((a, b) =>
-    sortBy === "rating"
-      ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
-      : (b.view_count ?? 0) - (a.view_count ?? 0)
-  );
+  const filteredProviders = sortBy === "default"
+    ? shuffled
+    : [...providers].sort((a, b) =>
+        sortBy === "rating"
+          ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
+          : (b.view_count ?? 0) - (a.view_count ?? 0)
+      );
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
@@ -87,14 +91,15 @@ export function CategoryContent({
                   onClick={() => setSortOpen((o) => !o)}
                   className="flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                 >
-                  {sortBy === "rating" ? "Értékelés alapján" : "Látogatottság alapján"}
+                  {sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : "Látogatottság alapján"}
                   <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
                 </button>
                 {sortOpen && (
                   <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-20">
                     {([
-                      { value: "rating", label: "Értékelés alapján" },
-                      { value: "views",  label: "Látogatottság alapján" },
+                      { value: "default", label: "Alapértelmezett" },
+                      { value: "rating",  label: "Értékelés alapján" },
+                      { value: "views",   label: "Látogatottság alapján" },
                     ] as { value: SortOption; label: string }[]).map((opt) => (
                       <button
                         key={opt.value}
