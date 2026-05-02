@@ -261,10 +261,15 @@ export function Navbar() {
 
               const navTo = (section: string) => {
                 setUserDropdownOpen(false);
-                if (section === "admin") { router.push("/admin"); return; }
+                if (section === "admin") {
+                  window.dispatchEvent(new CustomEvent("nav-start"));
+                  router.push("/admin");
+                  return;
+                }
                 if (pathname === "/profil") {
                   window.dispatchEvent(new CustomEvent("profile-section", { detail: section }));
                 } else {
+                  window.dispatchEvent(new CustomEvent("nav-start"));
                   router.push(`/profil#${section}`);
                 }
               };

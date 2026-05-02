@@ -32,6 +32,13 @@ export function TopLoader() {
     }, 350);
   };
 
+  // Listen for programmatic navigation (router.push from button dropdowns)
+  useEffect(() => {
+    const onNavStart = () => start();
+    window.addEventListener("nav-start", onNavStart);
+    return () => window.removeEventListener("nav-start", onNavStart);
+  }, []);
+
   // Intercept link clicks to start the bar
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
