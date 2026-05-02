@@ -44,12 +44,17 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   let isOwner = false;
   try {
     const supabase = await createClient();
-    const [{ data, error }, { data: { user } }] = await Promise.all([
+    const [{ data, error }, { data: { user } }, { data: reviewRows }] = await Promise.all([
       supabase.from("providers").select("*").eq("id", id).eq("approval_status", "approved").single(),
       supabase.auth.getUser(),
+      supabase.from("reviews").select("rating").eq("provider_id", id),
     ]);
     if (error || !data) notFound();
-    provider = data as Provider;
+    const reviewCount = reviewRows?.length ?? 0;
+    const avgRating = reviewCount > 0
+      ? Math.round((reviewRows!.reduce((s, r) => s + r.rating, 0) / reviewCount) * 10) / 10
+      : 0;
+    provider = { ...data as Provider, review_count: reviewCount, average_rating: avgRating };
     isOwner = !!user && user.id === provider.user_id;
     if (user && !isOwner) {
       const { data: fav } = await supabase

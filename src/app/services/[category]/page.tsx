@@ -46,7 +46,27 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
 
     const { data, error } = await query;
     if (error) console.error("providers query error:", error);
-    providers = (data as Provider[]) ?? [];
+    const raw = (data as Provider[]) ?? [];
+
+    // Compute live review aggregates
+    const ids = raw.map((p) => p.id);
+    const { data: reviewRows } = ids.length > 0
+      ? await supabase.from("reviews").select("provider_id, rating").in("provider_id", ids)
+      : { data: [] };
+
+    const statsMap: Record<string, { count: number; sum: number }> = {};
+    for (const r of reviewRows ?? []) {
+      if (!statsMap[r.provider_id]) statsMap[r.provider_id] = { count: 0, sum: 0 };
+      statsMap[r.provider_id].count++;
+      statsMap[r.provider_id].sum += r.rating;
+    }
+
+    providers = raw.map((p) => {
+      const s = statsMap[p.id];
+      return s
+        ? { ...p, review_count: s.count, average_rating: Math.round((s.sum / s.count) * 10) / 10 }
+        : { ...p, review_count: 0, average_rating: 0 };
+    });
   } catch (e) {
     console.error("Supabase error:", e);
   }
