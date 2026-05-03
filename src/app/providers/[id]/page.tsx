@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
 import { MapPin, Star, Eye, User, Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
@@ -141,14 +140,6 @@ export default async function ProviderProfilePage({ params }: PageProps) {
               {provider.full_name}
             </h1>
 
-            {/* Categories – desktop only */}
-            <div className="hidden sm:flex flex-wrap gap-2 justify-start mb-1">
-              {(provider.categories ?? []).map((cat) => (
-                <Badge key={cat} variant="outline" className="text-base">
-                  {CATEGORY_LABELS[cat as ServiceCategory] ?? cat}
-                </Badge>
-              ))}
-            </div>
             {/* County – always visible */}
             {(provider.counties ?? []).length > 0 && (
               <div className="flex items-center gap-1 mb-3 justify-center sm:justify-start">
