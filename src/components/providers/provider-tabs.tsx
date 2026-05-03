@@ -8,7 +8,7 @@ import { MessageForm } from "@/components/providers/message-form";
 import { ReviewSection } from "@/components/providers/review-section";
 import type { Provider } from "@/lib/types";
 
-type Tab = "about" | "message" | "reviews";
+type Tab = "about" | "gallery" | "message" | "reviews";
 
 function ContactItem({
   icon,
@@ -40,9 +40,11 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   const [active, setActive] = useState<Tab>("about");
 
   const reviewCount = provider.review_count ?? 0;
+  const hasGallery = (provider.gallery_urls ?? []).length > 0;
 
-  const tabs: { id: Tab; label: string }[] = [
+  const tabs: { id: Tab; label: string; desktopOnly?: boolean }[] = [
     { id: "about",   label: "Bemutatkozás" },
+    ...(hasGallery ? [{ id: "gallery" as Tab, label: "Galéria", desktopOnly: true }] : []),
     { id: "message", label: "Üzenetküldés" },
     { id: "reviews", label: reviewCount > 0 ? `Értékelések (${reviewCount})` : "Értékelések" },
   ];
@@ -57,6 +59,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
             onClick={() => setActive(tab.id)}
             className={cn(
               "flex-1 sm:flex-none px-2 sm:px-4 py-3 text-sm sm:text-base font-extrabold border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap [font-family:'BloomSpeakBody']",
+              tab.desktopOnly ? "hidden sm:block" : "",
               active === tab.id
                 ? "border-[#84AAA6] text-[#84AAA6]"
                 : "border-transparent text-gray-500 hover:text-gray-700"
@@ -82,8 +85,9 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               <p className="text-gray-400 text-base italic">Nincs bemutatkozó szöveg.</p>
             )}
 
+            {/* Gallery: mobile only — desktop has its own tab */}
             {provider.gallery_urls && provider.gallery_urls.length > 0 && (
-              <section>
+              <section className="sm:hidden">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">Galéria</h2>
                 <GalleryLightbox urls={provider.gallery_urls} alt="Galéria" />
               </section>
@@ -128,6 +132,11 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Galéria tab – desktop only */}
+      {active === "gallery" && (
+        <GalleryLightbox urls={provider.gallery_urls ?? []} alt="Galéria" />
       )}
 
       {/* Üzenet tab */}
