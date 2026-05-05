@@ -42,7 +42,7 @@ type ApprovalFilter = "all" | "approved" | "pending" | "visitor" | "admin";
 const FILTER_LABELS: Record<ApprovalFilter, string> = {
   all:      "Összes",
   approved: "Jóváhagyott",
-  pending:  "Jóváhagyásra váró",
+  pending:  "Jóváhagyásra vár",
   visitor:  "Látogató",
   admin:    "Admin",
 };
@@ -92,8 +92,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           && u.providerApprovalStatus === "approved"
           && !u.providerHasPendingChanges;
       } else if (approvalFilter === "pending") {
-        matchesFilter = u.role === "provider"
-          && (u.providerApprovalStatus === "pending" || !!u.providerHasPendingChanges);
+        matchesFilter = u.providerApprovalStatus === "pending" || !!u.providerHasPendingChanges;
       } else if (approvalFilter === "visitor") {
         matchesFilter = u.role === "visitor";
       } else if (approvalFilter === "admin") {
