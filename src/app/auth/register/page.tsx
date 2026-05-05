@@ -226,6 +226,20 @@ function RegisterContent() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
 
+  const basicValid =
+    fullName.trim().length > 0 &&
+    email.trim().length > 0 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+    !emailError &&
+    password.length > 0 &&
+    confirmPassword.length > 0 &&
+    password === confirmPassword;
+
+  const providerValid =
+    phone.trim().length > 0 &&
+    counties.length > 0 &&
+    categories.length > 0;
+
   useEffect(() => {
     const type = searchParams.get("type");
     const init = async () => {
@@ -542,7 +556,7 @@ function RegisterContent() {
               </div>
             )}
 
-            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading || !!emailError}>
+            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading || !basicValid}>
               {loading
                 ? "Regisztráció..."
                 : role === "provider"
@@ -723,7 +737,7 @@ function RegisterContent() {
                 {error}
               </div>
             )}
-            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading}>
+            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading || !providerValid}>
               {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
             </Button>
             <p className="text-sm text-gray-500 text-center">
