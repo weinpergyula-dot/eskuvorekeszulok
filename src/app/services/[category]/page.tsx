@@ -37,7 +37,6 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       .select("*")
       .contains("categories", [category])
       .eq("approval_status", "approved")
-      .neq("active", false)
       .order("created_at", { ascending: false });
 
     if (county) {
