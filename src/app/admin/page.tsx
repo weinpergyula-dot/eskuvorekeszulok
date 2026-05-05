@@ -47,6 +47,11 @@ export default async function AdminPage() {
     .from("profiles")
     .select("*", { count: "exact", head: true });
 
+  const { count: totalVisitors } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
+    .eq("role", "visitor");
+
   // Fetch all provider statuses server-side (bypasses RLS – admin only route)
   const { data: allProviderStatuses } = await supabase
     .from("providers")
@@ -64,6 +69,7 @@ export default async function AdminPage() {
         <AdminContent
           totalUsers={totalUsers ?? 0}
           totalApproved={totalApproved ?? 0}
+          totalVisitors={totalVisitors ?? 0}
           pendingProviders={(pendingProviders ?? []) as Parameters<typeof AdminContent>[0]["pendingProviders"]}
           pendingChanges={(pendingChanges ?? []) as Parameters<typeof AdminContent>[0]["pendingChanges"]}
           providerStatuses={(allProviderStatuses ?? []) as Parameters<typeof AdminContent>[0]["providerStatuses"]}

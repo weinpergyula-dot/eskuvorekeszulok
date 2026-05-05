@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Users, CheckCircle, Clock as ClockIcon, Mail } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Users, Clock as ClockIcon, Mail, BarChart2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
@@ -40,13 +40,14 @@ export interface ContactMessage {
 interface Props {
   totalUsers: number;
   totalApproved: number;
+  totalVisitors: number;
   pendingProviders: Provider[];
   pendingChanges: Provider[];
   providerStatuses: ProviderStatus[];
   contactMessages: ContactMessage[];
 }
 
-export function AdminContent({ totalUsers, totalApproved, pendingProviders, pendingChanges, providerStatuses, contactMessages: initialContactMessages }: Props) {
+export function AdminContent({ totalUsers, totalApproved, totalVisitors, pendingProviders, pendingChanges, providerStatuses, contactMessages: initialContactMessages }: Props) {
   // Merge first-submissions + edits into one unified list
   type PendingItem = Provider & { kind: "registration" | "edit" };
   const allPending: PendingItem[] = [
@@ -57,6 +58,24 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
 
   const [contactMessages, setContactMessages] = useState<ContactMessage[]>(initialContactMessages);
   const unreadContact = contactMessages.filter((m) => !m.read).length;
+
+  const [liveStats, setLiveStats] = useState({ totalUsers, totalApproved, totalVisitors });
+
+  const refreshLiveStats = async () => {
+    const supabase = createClient();
+    const [{ count: u }, { count: a }, { count: v }] = await Promise.all([
+      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "approved"),
+      supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "visitor"),
+    ]);
+    setLiveStats({ totalUsers: u ?? liveStats.totalUsers, totalApproved: a ?? liveStats.totalApproved, totalVisitors: v ?? liveStats.totalVisitors });
+  };
+
+  useEffect(() => {
+    const interval = setInterval(refreshLiveStats, 30000);
+    return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const defaultFilter: Filter = totalPending > 0 ? "pending" : unreadContact > 0 ? "contact" : "users";
 
@@ -79,15 +98,14 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
   };
 
   const stats: { label: string; value: number; icon: React.ReactNode; target: Filter; highlight: boolean }[] = [
-    { label: "Összes felhasználó",      value: totalUsers,    icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,        target: "users",   highlight: false },
-    { label: "Jóváhagyott szolgáltató", value: totalApproved, icon: <CheckCircle className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "users",   highlight: false },
-    { label: "Jóváhagyásra vár",        value: totalPending,  icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "pending", highlight: totalPending > 0 },
-    { label: "Kapcsolati üzenetek",     value: unreadContact, icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,        target: "contact", highlight: unreadContact > 0 },
+    { label: "Összes felhasználó", value: liveStats.totalUsers, icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "users",   highlight: false },
+    { label: "Jóváhagyásra vár",   value: totalPending,         icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "pending", highlight: totalPending > 0 },
+    { label: "Kapcsolati üzenetek",value: unreadContact,         icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "contact", highlight: unreadContact > 0 },
   ];
 
   return (
     <>
-      {/* Stat cards – clickable */}
+      {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         {stats.map((s) => (
           <button
@@ -106,6 +124,25 @@ export function AdminContent({ totalUsers, totalApproved, pendingProviders, pend
             <div className="text-base text-gray-900 mt-0.5">{s.label}</div>
           </button>
         ))}
+
+        {/* Summary tile */}
+        <div className="rounded-lg p-4 border border-gray-200 bg-white">
+          <div className="mb-2"><BarChart2 className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} /></div>
+          <dl className="space-y-1">
+            {[
+              { label: "Összes felhasználó",        value: liveStats.totalUsers },
+              { label: "Jóváhagyott szolgáltató",   value: liveStats.totalApproved },
+              { label: "Jóváhagyásra vár",           value: totalPending },
+              { label: "Látogató",                   value: liveStats.totalVisitors },
+              { label: "Kapcsolati üzenetek",        value: unreadContact },
+            ].map(({ label, value }) => (
+              <div key={label} className="flex items-center justify-between gap-2">
+                <span className="text-sm text-gray-500 leading-tight">{label}</span>
+                <span className="text-sm font-bold text-gray-900 shrink-0">{value}</span>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
 
       {/* Pending (registrations + edits combined) */}
