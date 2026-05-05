@@ -139,7 +139,7 @@ export function Navbar() {
   };
 
   // ── Shared dropdown data ─────────────────────────────────────────────────────
-  const badgeCount = unreadMessages > 0 ? unreadMessages : pendingCount > 0 ? pendingCount : 0;
+  const badgeCount = unreadMessages + pendingCount;
   const showDot = badgeCount === 0 && !!providerDot;
 
   const navTo = (section: string, closeAll: () => void) => {
