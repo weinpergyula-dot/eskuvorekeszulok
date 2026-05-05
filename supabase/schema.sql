@@ -31,7 +31,12 @@ create policy "Users can update own profile"
 
 create policy "Admins can update all profiles"
   on public.profiles for update
-  using (is_admin());
+  using (
+    exists (
+      select 1 from public.profiles p
+      where p.user_id = auth.uid() and p.role = 'admin'
+    )
+  );
 
 create policy "Admins can view all profiles"
   on public.profiles for select
