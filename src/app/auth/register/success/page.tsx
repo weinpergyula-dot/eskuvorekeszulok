@@ -13,9 +13,11 @@ export default function RegisterSuccessPage() {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Sikeres regisztráció!
           </h1>
-          <p className="text-gray-900 mb-8 text-lg">
-            Szolgáltatói profilod az adminisztrátori jóváhagyás után jelenik meg a
-            nyilvános oldalon.
+          <p className="text-gray-900 mb-2 text-lg">
+            A rendszer automatikusan bejelentkeztetett.
+          </p>
+          <p className="text-gray-500 mb-8 text-base">
+            Szolgáltatói profilod az adminisztrátori jóváhagyás után jelenik meg a nyilvános oldalon.
           </p>
           <Link href="/">
             <Button>Vissza a főoldalra</Button>

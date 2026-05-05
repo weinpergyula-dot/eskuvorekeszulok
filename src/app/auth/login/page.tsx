@@ -68,7 +68,7 @@ function LoginForm() {
       >
         {registered && (
           <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-            Sikeres regisztráció! Ellenőrizd az email fiókodat, majd jelentkezz be.
+            Sikeres regisztráció! A rendszer automatikusan bejelentkeztetett.
           </div>
         )}
         {reset && (
