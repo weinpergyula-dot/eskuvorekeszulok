@@ -127,7 +127,6 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
 
         {/* Summary tile */}
         <div className="rounded-lg p-4 border border-gray-200 bg-white">
-          <div className="mb-2"><BarChart2 className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} /></div>
           <dl className="space-y-1">
             {[
               { label: "Összes felhasználó",        value: liveStats.totalUsers },

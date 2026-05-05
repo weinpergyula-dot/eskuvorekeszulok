@@ -218,12 +218,12 @@ export function Navbar() {
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-base text-gray-900 hover:underline">Kezdőlap</Link>
-              <Link href="/informaciok" className="text-base text-gray-900 hover:underline">Információk</Link>
+              <Link href="/" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kezdőlap</Link>
+              <Link href="/informaciok" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Információk</Link>
 
               {/* Kategóriák dropdown */}
               <div className="relative" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
-                <button className="flex items-center gap-1 text-base text-gray-900 hover:underline">
+                <button className="flex items-center gap-1 text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">
                   Kategóriák <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 {servicesOpen && (
@@ -244,7 +244,7 @@ export function Navbar() {
                 )}
               </div>
 
-              <Link href="/contact" className="text-base text-gray-900 hover:underline">Kapcsolat</Link>
+              <Link href="/contact" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kapcsolat</Link>
             </div>
           </div>
 
