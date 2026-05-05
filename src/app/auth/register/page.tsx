@@ -185,6 +185,14 @@ function PillSelect<T extends string>({
   );
 }
 
+function translateError(msg: string): string {
+  if (msg.includes("User already registered") || msg.includes("already registered")) return "Ez az e-mail cím már regisztrálva van.";
+  if (msg.includes("Password should be at least")) return "A jelszónak legalább 6 karakter hosszúnak kell lennie.";
+  if (msg.includes("Unable to validate email address") || msg.includes("Invalid email")) return "Érvénytelen e-mail cím.";
+  if (msg.includes("rate limit") || msg.includes("too many")) return "Túl sok próbálkozás. Kérjük, várj egy kicsit.";
+  return msg;
+}
+
 function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -193,15 +201,12 @@ function RegisterContent() {
 
   const [step, setStep] = useState<Step>("role");
   const [role, setRole] = useState<"visitor" | "provider">("visitor");
+  const [isUpgrade, setIsUpgrade] = useState(false);
 
-  useEffect(() => {
-    const type = searchParams.get("type");
-    if (type === "provider") { setRole("provider"); setStep("basic"); }
-    else if (type === "visitor") { setRole("visitor"); setStep("basic"); }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [emailChecking, setEmailChecking] = useState(false);
 
   // Basic fields
   const [fullName, setFullName] = useState("");
@@ -219,6 +224,45 @@ function RegisterContent() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    const type = searchParams.get("type");
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (type === "provider") {
+        setRole("provider");
+        if (user) {
+          // Logged-in visitor upgrading to provider — skip to details step
+          setFullName(user.user_metadata?.full_name ?? "");
+          setEmail(user.email ?? "");
+          setIsUpgrade(true);
+          setStep("provider-details");
+        } else {
+          setStep("basic");
+        }
+      } else if (type === "visitor") {
+        setRole("visitor");
+        setStep("basic");
+      }
+    };
+    init();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const checkEmail = async (val: string) => {
+    const trimmed = val.trim().toLowerCase();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return;
+    setEmailChecking(true);
+    try {
+      const res = await fetch(`/api/check-email?email=${encodeURIComponent(trimmed)}`);
+      const json = await res.json();
+      setEmailError(json.exists ? "Ez az e-mail cím már regisztrálva van." : null);
+    } catch {
+      // ignore network errors silently
+    } finally {
+      setEmailChecking(false);
+    }
+  };
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -246,6 +290,7 @@ function RegisterContent() {
     if (!fullName.trim()) { setError("Add meg a teljes nevedet!"); return; }
     if (!email.trim()) { setError("Add meg az e-mail címedet!"); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Adj meg érvényes e-mail címet (pl. nev@example.hu)."); return; }
+    if (emailError) { setError(emailError); return; }
     if (!password) { setError("Add meg a jelszavadat!"); return; }
     if (password !== confirmPassword) { setError("A két jelszó nem egyezik meg."); return; }
     setError(null);
@@ -262,6 +307,40 @@ function RegisterContent() {
     setError(null);
 
     try {
+      // Upgrade flow: user already logged in as visitor, just create provider record
+      if (isUpgrade) {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (!currentUser) throw new Error("Nincs bejelentkezve. Kérjük, jelentkezz be újra.");
+
+        let avatarUrl = "";
+        const galleryUrls: string[] = [];
+        if (avatarFile) avatarUrl = await uploadFile(avatarFile, "avatars", `${currentUser.id}/avatar`);
+        for (let i = 0; i < galleryFiles.length; i++) {
+          galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${currentUser.id}/gallery-${i}`));
+        }
+
+        const { error: providerError } = await supabase.from("providers").insert({
+          user_id: currentUser.id,
+          full_name: fullName,
+          email: currentUser.email,
+          phone,
+          counties,
+          categories,
+          description,
+          detailed_description: detailedDescription || null,
+          website: website || null,
+          avatar_url: avatarUrl || null,
+          gallery_urls: galleryUrls,
+          approval_status: "pending",
+        });
+        if (providerError) throw providerError;
+
+        await supabase.auth.updateUser({ data: { role: "provider" } });
+        router.push("/auth/register/success?provider=true");
+        return;
+      }
+
+      // Normal registration flow
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -275,23 +354,14 @@ function RegisterContent() {
 
       if (role === "provider") {
         let avatarUrl = "";
-        let galleryUrls: string[] = [];
+        const galleryUrls: string[] = [];
 
         if (avatarFile) {
-          avatarUrl = await uploadFile(
-            avatarFile,
-            "avatars",
-            `${authData.user.id}/avatar`
-          );
+          avatarUrl = await uploadFile(avatarFile, "avatars", `${authData.user.id}/avatar`);
         }
 
         for (let i = 0; i < galleryFiles.length; i++) {
-          const url = await uploadFile(
-            galleryFiles[i],
-            "gallery",
-            `${authData.user.id}/gallery-${i}`
-          );
-          galleryUrls.push(url);
+          galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${authData.user.id}/gallery-${i}`));
         }
 
         const { error: providerError } = await supabase.from("providers").insert({
@@ -318,7 +388,8 @@ function RegisterContent() {
           : "/auth/login?registered=true"
       );
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Hiba történt a regisztráció során.");
+      const msg = err instanceof Error ? err.message : "Hiba történt a regisztráció során.";
+      setError(translateError(msg));
     } finally {
       setLoading(false);
     }
@@ -408,12 +479,6 @@ function RegisterContent() {
           </div>
 
           <form onSubmit={handleBasicSubmit} className="space-y-4" noValidate>
-            {error && (
-              <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
-                {error}
-              </div>
-            )}
-
             <FloatingInput
               accentColor="#84AAA6"
               id="fullName"
@@ -422,14 +487,23 @@ function RegisterContent() {
               onChange={(e) => setFullName(e.target.value)}
             />
 
-            <FloatingInput
-              accentColor="#84AAA6"
-              id="email"
-              label="Email cím *"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <div>
+              <FloatingInput
+                accentColor="#84AAA6"
+                id="email"
+                label="Email cím *"
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
+                onBlur={() => checkEmail(email)}
+              />
+              {emailChecking && (
+                <p className="text-sm text-gray-400 mt-1 px-1">Ellenőrzés...</p>
+              )}
+              {emailError && (
+                <p className="text-sm text-[#F06C6C] mt-1 px-1">{emailError}</p>
+              )}
+            </div>
 
             <FloatingInput
               accentColor="#84AAA6"
@@ -449,7 +523,13 @@ function RegisterContent() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
-            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading}>
+            {error && (
+              <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+                {error}
+              </div>
+            )}
+
+            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading || !!emailError}>
               {loading
                 ? "Regisztráció..."
                 : role === "provider"
@@ -480,12 +560,21 @@ function RegisterContent() {
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
         <div className="mb-6">
-          <button
-            onClick={() => setStep("basic")}
-            className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
-          >
-            ← Vissza
-          </button>
+          {!isUpgrade && (
+            <button
+              onClick={() => setStep("basic")}
+              className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
+            >
+              ← Vissza
+            </button>
+          )}
+          {isUpgrade && (
+            <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-4">
+              <p className="text-base text-gray-900">
+                Bejelentkezve mint <strong>{email}</strong>. Add meg a szolgáltatói adataidat, és jóváhagyás után megjelensz a kínálatban.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Progress */}
@@ -495,12 +584,6 @@ function RegisterContent() {
         </div>
 
         <form onSubmit={handleProviderSubmit} noValidate>
-          {error && (
-            <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30 mb-6">
-              {error}
-            </div>
-          )}
-
           <div className="grid md:grid-cols-2 gap-x-10 gap-y-6">
             {/* ── LEFT COLUMN ── */}
             <div className="space-y-6">
@@ -622,6 +705,11 @@ function RegisterContent() {
           </div>
 
           <div className="mt-8 space-y-4">
+            {error && (
+              <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+                {error}
+              </div>
+            )}
             <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading}>
               {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
             </Button>

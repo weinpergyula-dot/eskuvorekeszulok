@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -144,27 +144,48 @@ export function AccountInfoForm({ userId, initialName, email }: AccountInfoProps
 
 export function PasswordForm() {
   const supabase = createClient();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));
+  }, [supabase]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!supabase) return;
     setError(null);
     setSuccess(false);
 
+    if (!currentPassword) { setError("Add meg a jelenlegi jelszavadat."); return; }
+    if (!newPassword) { setError("Add meg az új jelszavadat."); return; }
     if (newPassword !== confirmPassword) { setError("A két jelszó nem egyezik."); return; }
     if (newPassword.length < 6) { setError("A jelszónak legalább 6 karakter hosszúnak kell lennie."); return; }
+    if (!userEmail) { setError("Hiba történt. Kérjük, jelentkezz be újra."); return; }
 
     setSaving(true);
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: userEmail,
+      password: currentPassword,
+    });
+
+    if (signInError) {
+      setError("A jelenlegi jelszó helytelen.");
+      setSaving(false);
+      return;
+    }
+
     const { error: err } = await supabase.auth.updateUser({ password: newPassword });
     if (err) {
       setError(err.message);
     } else {
       setSuccess(true);
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
       setTimeout(() => setSuccess(false), 3000);
@@ -174,6 +195,14 @@ export function PasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+      <FloatingInput
+        id="currentPassword"
+        label="Jelenlegi jelszó"
+        type="password"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+        required
+      />
       <FloatingInput
         id="newPassword"
         label="Új jelszó"
