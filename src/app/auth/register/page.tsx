@@ -207,6 +207,7 @@ function RegisterContent() {
   const [error, setError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [emailChecking, setEmailChecking] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
 
   // Basic fields
   const [fullName, setFullName] = useState("");
@@ -514,14 +515,26 @@ function RegisterContent() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <FloatingInput
-              accentColor="#84AAA6"
-              id="confirmPassword"
-              label="Jelszó megerősítése *"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+            <div>
+              <FloatingInput
+                accentColor="#84AAA6"
+                id="confirmPassword"
+                label="Jelszó megerősítése *"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => { setConfirmPassword(e.target.value); setConfirmPasswordError(null); }}
+                onBlur={() => {
+                  if (confirmPassword && password !== confirmPassword) {
+                    setConfirmPasswordError("A két jelszó nem egyezik.");
+                  } else {
+                    setConfirmPasswordError(null);
+                  }
+                }}
+              />
+              {confirmPasswordError && (
+                <p className="text-sm text-[#F06C6C] mt-1 px-1">{confirmPasswordError}</p>
+              )}
+            </div>
 
             {error && (
               <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">

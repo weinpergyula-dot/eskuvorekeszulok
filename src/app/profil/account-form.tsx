@@ -145,6 +145,7 @@ export function AccountInfoForm({ userId, initialName, email }: AccountInfoProps
 export function PasswordForm() {
   const supabase = createClient();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -212,15 +213,27 @@ export function PasswordForm() {
         required
         minLength={6}
       />
-      <FloatingInput
-        id="confirmPassword"
-        label="Jelszó megerősítése"
-        type="password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        required
-        minLength={6}
-      />
+      <div>
+        <FloatingInput
+          id="confirmPassword"
+          label="Jelszó megerősítése"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => { setConfirmPassword(e.target.value); setConfirmPasswordError(null); }}
+          onBlur={() => {
+            if (confirmPassword && newPassword !== confirmPassword) {
+              setConfirmPasswordError("A két jelszó nem egyezik.");
+            } else {
+              setConfirmPasswordError(null);
+            }
+          }}
+          required
+          minLength={6}
+        />
+        {confirmPasswordError && (
+          <p className="text-sm text-[#F06C6C] mt-1 px-1">{confirmPasswordError}</p>
+        )}
+      </div>
       {error && (
         <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">{error}</p>
       )}
