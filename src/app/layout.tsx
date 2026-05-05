@@ -27,10 +27,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col antialiased">
         <TopLoader />
-        <div className="w-full bg-white text-center py-1.5">
-          <span className="text-[#F06C6C] font-bold text-base tracking-wide">PREVIEW ENVIRONMENT</span>
-        </div>
-        <Navbar />
+<Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
