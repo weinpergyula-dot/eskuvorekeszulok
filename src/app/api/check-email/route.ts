@@ -9,23 +9,15 @@ export async function GET(request: NextRequest) {
 
   try {
     const adminClient = createAdminClient();
-    let page = 1;
-    const perPage = 1000;
+    const { data, error } = await adminClient
+      .from("profiles")
+      .select("user_id")
+      .eq("email", email)
+      .maybeSingle();
 
-    while (true) {
-      const { data, error } = await adminClient.auth.admin.listUsers({ page, perPage });
-      if (error || !data) break;
-
-      if (data.users.some((u) => u.email?.toLowerCase() === email)) {
-        return NextResponse.json({ exists: true });
-      }
-
-      if (data.users.length < perPage) break;
-      page++;
-    }
-
-    return NextResponse.json({ exists: false });
-  } catch {
-    return NextResponse.json({ exists: false });
+    if (error) throw error;
+    return NextResponse.json({ exists: !!data });
+  } catch (e) {
+    return NextResponse.json({ exists: false, error: String(e) }, { status: 500 });
   }
 }
