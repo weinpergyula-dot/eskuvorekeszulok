@@ -474,7 +474,16 @@ function RegisterContent() {
   if (step === "basic") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="Látogatóként értékelj és ments kedvenceket – szolgáltatóként mutatkozz be ezer leendő párnak." bgColor="#84AAA6" />
+        <PageHeader
+          icon={UserRound}
+          title={role === "visitor" ? "Regisztráció – Látogató" : "Regisztráció – Szolgáltató"}
+          description={
+            role === "visitor"
+              ? "Értékeld a szolgáltatókat, ments kedvenceket, és kövesd nyomon az esküvőd tervezését – ingyenesen, egy helyen."
+              : "Mutatkozz be ezer leendő párnak – hozz létre ingyenes szolgáltatói profilt, és kezeld elérhetőségeidet egy helyen."
+          }
+          bgColor="#84AAA6"
+        />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="mb-6">
