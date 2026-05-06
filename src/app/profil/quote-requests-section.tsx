@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
@@ -61,6 +61,57 @@ function formatDate(iso: string) {
     year: "numeric", month: "long", day: "numeric",
     hour: "2-digit", minute: "2-digit",
   });
+}
+
+// ── CategorySelect ────────────────────────────────────────────────────────────
+
+function CategorySelect({ value, onChange }: { value: string; onChange: (val: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const selectedLabel = value ? CATEGORY_LABELS[value as keyof typeof CATEGORY_LABELS] : null;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className={`w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white flex items-center justify-between gap-2 ${open ? "border-[#84AAA6]" : "border-gray-300"}`}
+      >
+        <span className={selectedLabel ? "text-gray-900" : "text-gray-400"}>
+          {selectedLabel ?? "Válassz kategóriát..."}
+        </span>
+        <ChevronDown className={`h-4 w-4 text-gray-400 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50 max-h-[440px] overflow-y-auto">
+          {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => { onChange(key); setOpen(false); }}
+              className={`w-full text-left px-4 py-2.5 text-base transition-colors cursor-pointer ${
+                value === key
+                  ? "bg-[#84AAA6]/10 text-[#84AAA6] font-medium"
+                  : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ── SendForm ──────────────────────────────────────────────────────────────────
@@ -127,19 +178,7 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
         required
       />
 
-      <div>
-        <select
-          value={category}
-          onChange={e => setCategory(e.target.value)}
-          required
-          className="w-full h-14 border border-gray-300 rounded-xl px-4 text-base outline-none transition-colors bg-white appearance-none focus:border-[#84AAA6]"
-        >
-          <option value="">Válassz kategóriát...</option>
-          {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-            <option key={key} value={key}>{label}</option>
-          ))}
-        </select>
-      </div>
+      <CategorySelect value={category} onChange={setCategory} />
 
       <div>
         <p className="text-sm text-gray-600 mb-2">Megye(k) <span className="text-[#F06C6C]">*</span></p>
