@@ -174,7 +174,7 @@ export function Navbar() {
       window.dispatchEvent(new CustomEvent("profile-section", { detail: section }));
     } else {
       window.dispatchEvent(new CustomEvent("nav-start"));
-      router.push(`/profil#${section}`);
+      router.push(`/profil?tab=${section}`);
     }
   };
 
