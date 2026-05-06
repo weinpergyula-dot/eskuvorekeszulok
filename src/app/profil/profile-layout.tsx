@@ -327,7 +327,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(
-    provider !== null ? provider.active === true : false
+    provider !== null ? provider.active !== false : false
   );
 
   const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive);
