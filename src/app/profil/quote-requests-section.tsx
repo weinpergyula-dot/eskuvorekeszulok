@@ -84,26 +84,34 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className={`w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white flex items-center justify-between gap-2 ${open ? "border-[#84AAA6]" : "border-gray-300"}`}
+        className="w-full h-14 border rounded-xl px-4 text-base outline-none bg-white flex items-center justify-between gap-2 transition-colors"
+        style={{ borderColor: open ? "#84AAA6" : "#D1D5DB" }}
       >
-        <span className={selectedLabel ? "text-gray-900" : "text-gray-400"}>
+        <span style={{ color: selectedLabel ? "#111827" : "#9CA3AF" }}>
           {selectedLabel ?? "Válassz kategóriát..."}
         </span>
-        <ChevronDown className={`h-4 w-4 text-gray-400 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className="h-4 w-4 shrink-0 transition-transform"
+          style={{ color: "#9CA3AF", transform: open ? "rotate(180deg)" : "none" }}
+        />
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50 max-h-[440px] overflow-y-auto">
+        <div
+          className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50 overflow-y-auto"
+          style={{ maxHeight: 448 }}
+        >
           {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
             <button
               key={key}
               type="button"
               onClick={() => { onChange(key); setOpen(false); }}
-              className={`w-full text-left px-4 py-2.5 text-base transition-colors cursor-pointer ${
-                value === key
-                  ? "bg-[#84AAA6]/10 text-[#84AAA6] font-medium"
-                  : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
-              }`}
+              className="w-full text-left px-4 py-2.5 text-base transition-colors cursor-pointer hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
+              style={{
+                color: value === key ? "#84AAA6" : "#111827",
+                background: value === key ? "rgba(132,170,166,0.1)" : undefined,
+                fontWeight: value === key ? 500 : undefined,
+              }}
             >
               {label}
             </button>
