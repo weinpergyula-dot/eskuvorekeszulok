@@ -210,6 +210,7 @@ function RegisterContent() {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
 
   // Basic fields
+  const [consentsAccepted, setConsentsAccepted] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -233,7 +234,8 @@ function RegisterContent() {
     !emailError &&
     password.length > 0 &&
     confirmPassword.length > 0 &&
-    password === confirmPassword;
+    password === confirmPassword &&
+    consentsAccepted;
 
   const providerValid =
     phone.trim().length > 0 &&
@@ -397,6 +399,12 @@ function RegisterContent() {
         if (providerError) throw providerError;
       }
 
+      const now = new Date().toISOString();
+      await supabase.from("profiles").update({
+        accepted_tos_at: now,
+        accepted_privacy_at: now,
+      }).eq("user_id", authData.user.id);
+
       router.push(
         role === "provider"
           ? "/auth/register/success?provider=true"
@@ -558,6 +566,27 @@ function RegisterContent() {
                 <p className="text-sm text-[#F06C6C] mt-1 px-1">{confirmPasswordError}</p>
               )}
             </div>
+
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consentsAccepted}
+                onChange={(e) => setConsentsAccepted(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-gray-300 accent-[#84AAA6] cursor-pointer shrink-0"
+              />
+              <span className="text-base text-gray-700">
+                Elolvastam és elfogadom az{" "}
+                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline">
+                  Általános Szerződési Feltételeket
+                </a>{" "}
+                és az{" "}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline">
+                  Adatvédelmi tájékoztatóban
+                </a>{" "}
+                foglaltakat.{" "}
+                <span className="text-[1.1em] font-bold align-middle">*</span>
+              </span>
+            </label>
 
             {error && (
               <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">

@@ -59,10 +59,15 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 pt-6 text-center">
+        <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-base text-gray-900">
             © {new Date().getFullYear()} Esküvőre Készülök. Minden jog fenntartva.
           </p>
+          <div className="flex flex-wrap gap-4 text-base text-gray-500">
+            <Link href="/privacy" className="hover:text-[#84AAA6] transition-colors">Adatvédelmi tájékoztató</Link>
+            <Link href="/terms" className="hover:text-[#84AAA6] transition-colors">ÁSZF</Link>
+            <Link href="/cookies" className="hover:text-[#84AAA6] transition-colors">Cookie szabályzat</Link>
+          </div>
         </div>
       </div>
     </footer>
