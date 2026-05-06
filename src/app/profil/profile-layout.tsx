@@ -2,16 +2,17 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, ChevronDown, LogOut, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { MessagesSection } from "./messages-section";
+import { QuoteRequestsSection } from "./quote-requests-section";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "messages";
+type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages";
 
 interface Props {
   userId: string;
@@ -28,6 +29,7 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
   { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
+  { id: "quotes",    label: "Ajánlatkérések",   icon: <FileText className="h-4 w-4" /> },
   { id: "messages",  label: "Üzenetek",         icon: <MessageSquare className="h-4 w-4" /> },
 ];
 
@@ -37,6 +39,7 @@ const SECTION_TITLES: Record<Section, string> = {
   provider:  "Szolgáltatói profil",
   dashboard: "Dashboard",
   favorites: "Kedvencek",
+  quotes:    "Ajánlatkérések",
   messages:  "Üzenetek",
 };
 
@@ -194,12 +197,14 @@ function MobileMenuDropdown({
   active,
   onSelect,
   unreadCount,
+  unreadQuotesCount,
   sidebarIndicator,
 }: {
   items: { id: Section; label: string; icon: React.ReactNode }[];
   active: Section;
   onSelect: (s: Section) => void;
   unreadCount: number;
+  unreadQuotesCount: number;
   sidebarIndicator: SidebarIndicator | null;
 }) {
   const [open, setOpen] = useState(false);
@@ -229,6 +234,11 @@ function MobileMenuDropdown({
           {active === "messages" && unreadCount > 0 && (
             <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
               {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+          {active === "quotes" && unreadQuotesCount > 0 && (
+            <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+              {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
             </span>
           )}
           {active === "provider" && sidebarIndicator && (
@@ -261,6 +271,11 @@ function MobileMenuDropdown({
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
+              {item.id === "quotes" && unreadQuotesCount > 0 && (
+                <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                  {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
+                </span>
+              )}
               {item.id === "provider" && sidebarIndicator && (
                 <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${sidebarIndicator.color}`} />
               )}
@@ -274,7 +289,7 @@ function MobileMenuDropdown({
 
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
-const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "messages"];
+const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "quotes", "messages"];
 
 function hashToSection(hash: string): Section | null {
   const s = hash.replace("#", "") as Section;
@@ -284,6 +299,7 @@ function hashToSection(hash: string): Section | null {
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
   const [active, setActive] = useState<Section>("account");
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadQuotes, setUnreadQuotes] = useState(0);
 
   useEffect(() => {
     const s = hashToSection(window.location.hash);
@@ -296,6 +312,15 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       .then((data: { read: boolean; is_own: boolean }[]) =>
         setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
       )
+      .catch(() => {});
+    fetch("/api/quote-requests")
+      .then((r) => r.json())
+      .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
+        const unread = data.reduce((s, r) => {
+          return s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0);
+        }, 0);
+        setUnreadQuotes(unread);
+      })
       .catch(() => {});
   }, []);
 
@@ -327,11 +352,24 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       const section = (e as CustomEvent).detail as Section;
       if (VALID_SECTIONS.includes(section)) setActive(section);
     };
+    const onQuotesRead = () => {
+      fetch("/api/quote-requests")
+        .then((r) => r.json())
+        .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
+          const unread = data.reduce((s, r) => {
+            return s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0);
+          }, 0);
+          setUnreadQuotes(unread);
+        })
+        .catch(() => {});
+    };
     window.addEventListener("hashchange", onHashChange);
     window.addEventListener("profile-section", onProfileSection);
+    window.addEventListener("quotes-read", onQuotesRead);
     return () => {
       window.removeEventListener("hashchange", onHashChange);
       window.removeEventListener("profile-section", onProfileSection);
+      window.removeEventListener("quotes-read", onQuotesRead);
     };
   }, []);
 
@@ -347,6 +385,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             active={active}
             onSelect={switchTo}
             unreadCount={unreadCount}
+            unreadQuotesCount={unreadQuotes}
             sidebarIndicator={sidebarIndicator}
           />
 
@@ -370,6 +409,11 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 {item.id === "provider" && sidebarIndicator && (
                   <span className="ml-auto shrink-0" title={sidebarIndicator.tooltip}>
                     <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
+                  </span>
+                )}
+                {item.id === "quotes" && unreadQuotes > 0 && (
+                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
+                    {unreadQuotes > 9 ? "9+" : unreadQuotes}
                   </span>
                 )}
                 {item.id === "messages" && unreadCount > 0 && (
@@ -494,6 +538,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 </div>
               </div>
             </div>
+          )}
+
+          {active === "quotes" && (
+            <QuoteRequestsSection role={role} userId={userId} onUnreadChange={setUnreadQuotes} />
           )}
 
           {active === "messages" && (

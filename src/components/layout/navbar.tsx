@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageSquare, ShieldCheck, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageSquare, FileText, ShieldCheck, LogOut } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -38,6 +38,7 @@ export function Navbar() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadQuotes, setUnreadQuotes] = useState(0);
   const [providerDot, setProviderDot] = useState<"amber" | "red" | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -90,6 +91,12 @@ export function Navbar() {
       .then((data: { read: boolean; is_own: boolean }[]) =>
         setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length))
       .catch(() => {});
+    fetch("/api/quote-requests").then((r) => r.json())
+      .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
+        const unread = data.reduce((s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0), 0);
+        setUnreadQuotes(unread);
+      })
+      .catch(() => {});
   }, [user]);
 
   const refreshAdminCount = (sb: typeof supabase) => {
@@ -116,8 +123,20 @@ export function Navbar() {
           setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length))
         .catch(() => {});
     };
+    const refreshQuotes = () => {
+      fetch("/api/quote-requests").then((r) => r.json())
+        .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
+          const unread = data.reduce((s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0), 0);
+          setUnreadQuotes(unread);
+        })
+        .catch(() => {});
+    };
     window.addEventListener("messages-read", refresh);
-    return () => window.removeEventListener("messages-read", refresh);
+    window.addEventListener("quotes-read", refreshQuotes);
+    return () => {
+      window.removeEventListener("messages-read", refresh);
+      window.removeEventListener("quotes-read", refreshQuotes);
+    };
   }, []);
 
   useEffect(() => {
@@ -139,7 +158,7 @@ export function Navbar() {
   };
 
   // ── Shared dropdown data ─────────────────────────────────────────────────────
-  const badgeCount = unreadMessages + pendingCount;
+  const badgeCount = unreadMessages + pendingCount + unreadQuotes;
   const showDot = badgeCount === 0 && !!providerDot;
 
   const navTo = (section: string, closeAll: () => void) => {
@@ -166,6 +185,7 @@ export function Navbar() {
       { id: "dashboard", label: "Dashboard",           Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek",             Icon: Heart },
+    { id: "quotes",    label: "Ajánlatkérések",        Icon: FileText },
     { id: "messages",  label: "Üzenetek",              Icon: MessageSquare },
   ];
 
@@ -183,6 +203,11 @@ export function Navbar() {
           {id === "admin" && pendingCount > 0 && (
             <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
               {pendingCount > 99 ? "99+" : pendingCount}
+            </span>
+          )}
+          {id === "quotes" && unreadQuotes > 0 && (
+            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
+              {unreadQuotes > 99 ? "99+" : unreadQuotes}
             </span>
           )}
           {id === "messages" && unreadMessages > 0 && (

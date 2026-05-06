@@ -44,7 +44,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     }
 
     const { data, error } = await query;
-    if (error) return <pre className="p-8 text-red-600">{JSON.stringify(error, null, 2)}</pre>;
+    if (error) console.error("providers query error:", error);
     const raw = (data as Provider[]) ?? [];
 
     // Compute live review aggregates
