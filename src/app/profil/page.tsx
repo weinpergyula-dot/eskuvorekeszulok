@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
@@ -45,14 +46,16 @@ export default async function ProfilPage() {
   return (
     <div>
       <PageHeader title="Profilom" icon={User} />
-      <ProfileLayout
-        userId={user.id}
-        initialName={profile.full_name ?? ""}
-        email={user.email ?? ""}
-        role={profile.role}
-        provider={(provider as Provider) ?? null}
-        initialFavoriteProviders={favoriteProviders}
-      />
+      <Suspense>
+        <ProfileLayout
+          userId={user.id}
+          initialName={profile.full_name ?? ""}
+          email={user.email ?? ""}
+          role={profile.role}
+          provider={(provider as Provider) ?? null}
+          initialFavoriteProviders={favoriteProviders}
+        />
+      </Suspense>
     </div>
   );
 }

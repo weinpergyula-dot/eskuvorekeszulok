@@ -40,6 +40,7 @@ export function Navbar() {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
   const [providerDot, setProviderDot] = useState<"amber" | "red" | null>(null);
+  const [hasProvider, setHasProvider] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
@@ -78,12 +79,13 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!supabase || !user) { setProfile(null); setProviderDot(null); setUnreadMessages(0); return; }
+    if (!supabase || !user) { setProfile(null); setProviderDot(null); setHasProvider(false); setUnreadMessages(0); return; }
     supabase.from("profiles").select("*").eq("user_id", user.id).single()
       .then(({ data }) => setProfile(data));
-    supabase.from("providers").select("approval_status, pending_changes, active").eq("user_id", user.id).maybeSingle()
+    supabase.from("providers").select("approval_status, pending_changes").eq("user_id", user.id).maybeSingle()
       .then(({ data: p }) => {
-        if (!p) { setProviderDot(null); return; }
+        if (!p) { setProviderDot(null); setHasProvider(false); return; }
+        setHasProvider(true);
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         setProviderDot(p.approval_status === "pending" || !!p.pending_changes ? "amber" : null);
       });
@@ -172,7 +174,7 @@ export function Navbar() {
       window.dispatchEvent(new CustomEvent("profile-section", { detail: section }));
     } else {
       window.dispatchEvent(new CustomEvent("nav-start"));
-      router.push(`/profil#${section}`);
+      router.push(`/profil?tab=${section}`);
     }
   };
 
@@ -180,7 +182,7 @@ export function Navbar() {
     ...(profile?.role === "admin" ? [{ id: "admin", label: "Admin", Icon: ShieldCheck }] : []),
     { id: "account",   label: "Fiók adatok",          Icon: UserIcon },
     { id: "password",  label: "Jelszó módosítás",      Icon: Lock },
-    ...(profile?.role === "provider" ? [
+    ...(hasProvider ? [
       { id: "provider",  label: "Szolgáltatói profil", Icon: Briefcase },
       { id: "dashboard", label: "Dashboard",           Icon: LayoutDashboard },
     ] : []),

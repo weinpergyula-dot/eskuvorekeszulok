@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
@@ -17,82 +16,68 @@ export function ApproveButton({ providerId, type, action, changes }: ApproveButt
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [reason, setReason] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const supabase = createClient();
+
+  const callApi = async (body: Record<string, unknown>) => {
+    const res = await fetch(`/api/admin/providers/${providerId}/approve`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
+  };
 
   const handleApprove = async () => {
-    if (!supabase) return;
     setLoading(true);
-
-    if (type === "edit" && changes) {
-      // Only spread known valid columns; also handle old single-value format
-      const VALID_KEYS = ["full_name", "phone", "counties", "categories", "description", "detailed_description", "website", "avatar_url", "gallery_urls"];
-      const safeChanges: Record<string, unknown> = {};
-      for (const key of VALID_KEYS) {
-        if (key in changes) safeChanges[key] = changes[key];
-      }
-      // Migrate old format (category/county → categories/counties)
-      if (!safeChanges.categories && changes.category) {
-        safeChanges.categories = [changes.category];
-      }
-      if (!safeChanges.counties && changes.county) {
-        safeChanges.counties = [changes.county];
-      }
-
-      await supabase
-        .from("providers")
-        .update({ ...safeChanges, pending_changes: null, approval_status: "approved", rejection_reason: null })
-        .eq("id", providerId);
-    } else {
-      await supabase
-        .from("providers")
-        .update({ approval_status: "approved", rejection_reason: null })
-        .eq("id", providerId);
+    setError(null);
+    try {
+      await callApi({ action: "approve", type, changes });
+      window.dispatchEvent(new CustomEvent("admin-pending-changed"));
+      router.refresh();
+      // keep loading=true — the component disappears after refresh
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Hiba történt.");
+      setLoading(false);
     }
-
-    setLoading(false);
-    window.dispatchEvent(new CustomEvent("admin-pending-changed"));
-    router.refresh();
   };
 
   const handleReject = async () => {
-    if (!supabase) return;
     setLoading(true);
-
-    if (type === "edit") {
-      await supabase
-        .from("providers")
-        .update({ pending_changes: null, approval_status: "approved", rejection_reason: reason || null })
-        .eq("id", providerId);
-    } else {
-      await supabase
-        .from("providers")
-        .update({ approval_status: "rejected", rejection_reason: reason || null })
-        .eq("id", providerId);
+    setError(null);
+    try {
+      await callApi({ action: "reject", type, reason });
+      window.dispatchEvent(new CustomEvent("admin-pending-changed"));
+      router.refresh();
+      // keep loading=true — the component disappears after refresh
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Hiba történt.");
+      setLoading(false);
     }
-
-    setLoading(false);
-    setShowModal(false);
-    setReason("");
-    window.dispatchEvent(new CustomEvent("admin-pending-changed"));
-    router.refresh();
   };
 
   if (action === "approve") {
     return (
-      <Button size="sm" variant="default" onClick={handleApprove} disabled={loading} className="flex items-center gap-1.5">
-        {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "✓"}
-        Jóváhagy
-      </Button>
+      <div className="flex flex-col gap-1">
+        <Button size="sm" variant="default" onClick={handleApprove} disabled={loading} className="flex items-center gap-1.5">
+          {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "✓"}
+          Jóváhagy
+        </Button>
+        {error && <p className="text-xs text-[#F06C6C]">{error}</p>}
+      </div>
     );
   }
 
   return (
     <>
-      <Button size="sm" variant="destructive" onClick={() => setShowModal(true)} disabled={loading} className="flex items-center gap-1.5">
-        {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "✗"}
-        Elutasít
-      </Button>
+      <div className="flex flex-col gap-1">
+        <Button size="sm" variant="destructive" onClick={() => setShowModal(true)} disabled={loading} className="flex items-center gap-1.5">
+          {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "✗"}
+          Elutasít
+        </Button>
+        {error && <p className="text-xs text-[#F06C6C]">{error}</p>}
+      </div>
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -125,7 +110,7 @@ export function ApproveButton({ providerId, type, action, changes }: ApproveButt
                 onClick={handleReject}
                 disabled={loading}
               >
-                {loading ? "..." : "Elutasítás megerősítése"}
+                {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Elutasítás megerősítése"}
               </Button>
             </div>
           </div>

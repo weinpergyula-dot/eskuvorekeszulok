@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
@@ -297,14 +298,20 @@ function hashToSection(hash: string): Section | null {
 }
 
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
+  const searchParams = useSearchParams();
   const [active, setActive] = useState<Section>("account");
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
 
   useEffect(() => {
+    const tab = searchParams.get("tab") as Section | null;
+    if (tab && VALID_SECTIONS.includes(tab)) {
+      setActive(tab);
+      return;
+    }
     const s = hashToSection(window.location.hash);
     if (s) setActive(s);
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     fetch("/api/messages")
@@ -327,7 +334,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(
-    provider !== null ? provider.active === true : false
+    provider !== null ? provider.active !== false : false
   );
 
   const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive);
