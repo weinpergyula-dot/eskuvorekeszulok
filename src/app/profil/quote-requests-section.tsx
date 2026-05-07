@@ -227,7 +227,7 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
       <CategorySelect value={category} onChange={setCategory} />
 
       <div>
-        <p className="text-sm text-gray-600 mb-2">Megye(k) <span className="text-[#F06C6C]">*</span></p>
+        <p className="text-sm text-gray-600 mb-2">Megye(k) <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
           {geographicCounties.map(county => (
             <label key={county} className="flex items-center gap-1.5 cursor-pointer select-none">
