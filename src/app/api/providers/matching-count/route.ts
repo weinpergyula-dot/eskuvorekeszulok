@@ -12,18 +12,36 @@ export async function GET(request: NextRequest) {
   const searchCounties = [...counties, "Országosan"];
 
   const admin = createAdminClient();
-  const { data } = await admin
+
+  // Try with average_rating first; fall back without it if schema cache is stale
+  let data: { id: string; user_id: string; full_name: string; average_rating?: number | null }[] | null = null;
+
+  const res1 = await admin
     .from("providers")
     .select("id, user_id, full_name, average_rating")
     .eq("approval_status", "approved")
     .contains("categories", [category])
     .overlaps("counties", searchCounties);
 
-  // Deduplicate by user_id (same user may have multiple provider records)
-  const seenUserIds = new Set<string>();
+  if (!res1.error) {
+    data = res1.data;
+  } else {
+    // Fallback: select without average_rating
+    const res2 = await admin
+      .from("providers")
+      .select("id, user_id, full_name")
+      .eq("approval_status", "approved")
+      .contains("categories", [category])
+      .overlaps("counties", searchCounties);
+    data = res2.data;
+  }
+
+  // Deduplicate by user_id; fall back to id if user_id is falsy
+  const seenKeys = new Set<string>();
   const unique = (data ?? []).filter((p) => {
-    if (!p.user_id || seenUserIds.has(p.user_id)) return false;
-    seenUserIds.add(p.user_id);
+    const key = p.user_id || p.id;
+    if (seenKeys.has(key)) return false;
+    seenKeys.add(key);
     return true;
   });
 
