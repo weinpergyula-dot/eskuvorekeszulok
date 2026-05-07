@@ -67,8 +67,9 @@ function LoginForm() {
         noValidate
       >
         {registered && (
-          <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-            Sikeres regisztráció! A rendszer automatikusan bejelentkeztetett.
+          <div className="bg-green-50 text-green-700 px-4 py-3 rounded-xl border border-green-200 space-y-1">
+            <p className="text-lg font-semibold">Köszönjük a regisztrációt!</p>
+            <p className="text-base leading-relaxed">Elküldtük a megerősítő levelet a megadott e-mail-címre. Kérjük, nyisd meg, és kattints a levélben található linkre a fiókod aktiválásához – ezután tudsz bejelentkezni.</p>
           </div>
         )}
         {reset && (

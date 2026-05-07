@@ -11,13 +11,13 @@ export default function RegisterSuccessPage() {
         <div className="w-full max-w-md text-center border border-gray-200 rounded-[15px] shadow-sm p-10">
           <CheckCircle className="h-14 w-14 text-[#84AAA6] mx-auto mb-6" strokeWidth={1.5} />
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Sikeres regisztráció!
+            Köszönjük a regisztrációt!
           </h1>
-          <p className="text-gray-900 mb-2 text-lg">
-            A rendszer automatikusan bejelentkeztetett.
+          <p className="text-gray-900 mb-4 text-lg leading-relaxed">
+            Elküldtük a megerősítő levelet a regisztráció során megadott e-mail-címre. Kérjük, nyisd meg, és kattints a levélben található linkre a fiókod aktiválásához.
           </p>
-          <p className="text-gray-500 mb-8 text-base">
-            Szolgáltatói profilod az adminisztrátori jóváhagyás után jelenik meg a nyilvános oldalon.
+          <p className="text-gray-500 mb-8 text-base leading-relaxed">
+            Az e-mail-cím igazolása után szolgáltatói profilod adminisztrátori jóváhagyásra kerül, és jóváhagyást követően jelenik meg a nyilvános oldalon.
           </p>
           <Link href="/">
             <Button>Vissza a főoldalra</Button>
