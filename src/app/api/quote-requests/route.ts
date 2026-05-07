@@ -8,33 +8,11 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminClient();
-  const { data: profile } = await admin.from("profiles").select("role").eq("user_id", user.id).single();
-  const role = profile?.role;
 
-  if (role === "visitor" || role === "admin") {
-    const { data: requests } = await admin
-      .from("quote_requests")
-      .select("id, subject, category, counties, message, created_at")
-      .eq("visitor_id", user.id)
-      .order("created_at", { ascending: false });
+  // Provider nézet ha van provider rekordja (role-tól függetlenül: visitor→provider átmenet, admin saját profil)
+  const { data: providerData } = await admin.from("providers").select("id").eq("user_id", user.id).maybeSingle();
 
-    if (!requests) return NextResponse.json([]);
-
-    const enriched = await Promise.all(requests.map(async (req) => {
-      const [{ count: recipientCount }, { data: unreadMsgs }] = await Promise.all([
-        admin.from("quote_request_recipients").select("*", { count: "exact", head: true }).eq("quote_request_id", req.id),
-        admin.from("quote_messages").select("id").eq("quote_request_id", req.id).neq("sender_id", user.id).eq("read", false),
-      ]);
-      return { ...req, recipient_count: recipientCount ?? 0, unread_reply_count: unreadMsgs?.length ?? 0 };
-    }));
-
-    return NextResponse.json(enriched);
-  }
-
-  if (role === "provider") {
-    const { data: providerData } = await admin.from("providers").select("id").eq("user_id", user.id).single();
-    if (!providerData) return NextResponse.json([]);
-
+  if (providerData) {
     const { data: recipients } = await admin
       .from("quote_request_recipients")
       .select("id, read, created_at, quote_request_id")
@@ -67,7 +45,24 @@ export async function GET() {
     return NextResponse.json(enriched);
   }
 
-  return NextResponse.json([]);
+  // Látogató / admin nézet (nincs provider rekordjuk)
+  const { data: requests } = await admin
+    .from("quote_requests")
+    .select("id, subject, category, counties, message, created_at")
+    .eq("visitor_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (!requests) return NextResponse.json([]);
+
+  const enriched = await Promise.all(requests.map(async (req) => {
+    const [{ count: recipientCount }, { data: unreadMsgs }] = await Promise.all([
+      admin.from("quote_request_recipients").select("*", { count: "exact", head: true }).eq("quote_request_id", req.id),
+      admin.from("quote_messages").select("id").eq("quote_request_id", req.id).neq("sender_id", user.id).eq("read", false),
+    ]);
+    return { ...req, recipient_count: recipientCount ?? 0, unread_reply_count: unreadMsgs?.length ?? 0 };
+  }));
+
+  return NextResponse.json(enriched);
 }
 
 export async function POST(request: NextRequest) {

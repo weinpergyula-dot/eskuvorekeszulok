@@ -548,7 +548,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           )}
 
           {active === "quotes" && (
-            <QuoteRequestsSection role={role} userId={userId} onUnreadChange={setUnreadQuotes} />
+            <QuoteRequestsSection isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
           )}
 
           {active === "messages" && (

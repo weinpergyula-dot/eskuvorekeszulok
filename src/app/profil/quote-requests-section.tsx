@@ -5,7 +5,6 @@ import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight } from "lucide-
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
-import type { UserRole } from "@/lib/types";
 
 interface QuoteMessage {
   id: string;
@@ -51,7 +50,7 @@ interface ProviderRequest {
 }
 
 interface Props {
-  role: UserRole;
+  isProvider: boolean;
   userId: string;
   onUnreadChange: (count: number) => void;
 }
@@ -600,7 +599,7 @@ function ProviderRequestRow({
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
-export function QuoteRequestsSection({ role, userId, onUnreadChange }: Props) {
+export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Props) {
   const [visitorRequests, setVisitorRequests] = useState<VisitorRequest[]>([]);
   const [providerRequests, setProviderRequests] = useState<ProviderRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -610,7 +609,7 @@ export function QuoteRequestsSection({ role, userId, onUnreadChange }: Props) {
     fetch("/api/quote-requests")
       .then(r => r.json())
       .then(data => {
-        if (role === "provider") {
+        if (isProvider) {
           const reqs = data as ProviderRequest[];
           setProviderRequests(reqs);
           const unread = reqs.filter(r => !r.read).length + reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
@@ -624,13 +623,13 @@ export function QuoteRequestsSection({ role, userId, onUnreadChange }: Props) {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [role, onUnreadChange]);
+  }, [isProvider, onUnreadChange]);
 
   useEffect(() => { loadRequests(); }, [loadRequests]);
 
   if (loading) return <p className="text-base text-gray-500">Betöltés...</p>;
 
-  if (role === "provider") {
+  if (isProvider) {
     return (
       <div className="space-y-2">
         {providerRequests.length === 0 ? (

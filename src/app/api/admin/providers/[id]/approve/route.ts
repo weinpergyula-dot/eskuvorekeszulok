@@ -40,6 +40,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         .update({ approval_status: "approved", rejection_reason: null })
         .eq("id", id);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+      // Új regisztráció jóváhagyásakor frissítjük a profiles.role-t "provider"-re
+      // (csak ha eddig "visitor" volt — admin role-t nem írjuk felül)
+      const { data: provRec } = await admin.from("providers").select("user_id").eq("id", id).single();
+      if (provRec) {
+        await admin
+          .from("profiles")
+          .update({ role: "provider" })
+          .eq("user_id", provRec.user_id)
+          .eq("role", "visitor");
+      }
     }
   } else if (action === "reject") {
     if (type === "edit") {
