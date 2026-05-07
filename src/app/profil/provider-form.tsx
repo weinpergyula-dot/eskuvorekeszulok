@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
-import { Clock, Pencil, X, ImagePlus } from "lucide-react";
+import { Clock, Pencil, X, ImagePlus, XCircle } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
@@ -76,8 +76,10 @@ function ProfileView({
   onEdit: () => void;
 }) {
   const pc = provider.pending_changes as Record<string, unknown> | null | undefined;
-  const isFirstSubmission = provider.approval_status !== "approved";
-  const hasPendingUpdate = !isFirstSubmission && !!pc;
+  const isRejected = provider.approval_status === "rejected";
+  const isPending = provider.approval_status === "pending";
+  const isFirstSubmission = isPending || isRejected;
+  const hasPendingUpdate = provider.approval_status === "approved" && !!pc;
 
   const pendingProvider: Provider = {
     ...provider,
@@ -94,9 +96,15 @@ function ProfileView({
     <div className="space-y-4">
       {isFirstSubmission ? (
         <div className="space-y-2 max-w-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
-          </p>
+          {isRejected ? (
+            <p className="text-xs font-semibold uppercase tracking-wide text-red-600 flex items-center gap-1.5">
+              <XCircle className="h-3.5 w-3.5" /> Elutasítva – profilod nem jelenik meg
+            </p>
+          ) : (
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
+            </p>
+          )}
           <ProviderCard provider={provider} />
         </div>
       ) : hasPendingUpdate ? (
