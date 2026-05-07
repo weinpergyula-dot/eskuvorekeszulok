@@ -179,10 +179,10 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!subject.trim() || !category || !selectedCounties.length || !message.trim()) {
-      setError("Kérlek töltsd ki az összes mezőt.");
-      return;
-    }
+    if (!subject.trim()) { setError("Add meg a tárgyat!"); return; }
+    if (!category) { setError("Válassz kategóriát!"); return; }
+    if (!selectedCounties.length) { setError("Válassz legalább egy megyét!"); return; }
+    if (!message.trim()) { setError("Írj üzenetet a szolgáltatóknak!"); return; }
     if (checkedIds.size === 0) {
       setError("Legalább egy szolgáltatót jelölj be.");
       return;
@@ -222,7 +222,6 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
         label="Tárgy *"
         value={subject}
         onChange={e => setSubject(e.target.value)}
-        required
       />
 
       <CategorySelect value={category} onChange={setCategory} />
@@ -249,7 +248,6 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
         label="Üzenet *"
         value={message}
         onChange={e => setMessage(e.target.value)}
-        required
         rows={4}
       />
 
@@ -294,9 +292,9 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
       )}
 
       {error && (
-        <p className="text-sm text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
+        <div className="bg-[#F06C6C]/10 text-[#F06C6C] px-4 py-3 rounded-xl border border-[#F06C6C]/30">
           {error}
-        </p>
+        </div>
       )}
 
       <div className="flex gap-3">
