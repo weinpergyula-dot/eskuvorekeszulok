@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight, Trash2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -121,6 +121,31 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
   );
 }
 
+// ── StarRating ────────────────────────────────────────────────────────────────
+
+interface MatchingProvider { id: string; full_name: string; average_rating: number | null; }
+
+function StarRating({ rating }: { rating: number | null }) {
+  if (!rating) return <span className="text-xs text-gray-400">Nincs értékelés</span>;
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5;
+  return (
+    <span className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map(i => (
+        <Star
+          key={i}
+          className="h-3.5 w-3.5"
+          style={{
+            fill: i <= full ? "#F59E0B" : i === full + 1 && half ? "url(#half)" : "none",
+            color: i <= full || (i === full + 1 && half) ? "#F59E0B" : "#D1D5DB",
+          }}
+        />
+      ))}
+      <span className="text-xs text-gray-500 ml-1">{rating.toFixed(1)}</span>
+    </span>
+  );
+}
+
 // ── SendForm ──────────────────────────────────────────────────────────────────
 
 function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => void }) {
@@ -128,16 +153,21 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
   const [category, setCategory] = useState("");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
   const [message, setMessage] = useState("");
-  const [matchingCount, setMatchingCount] = useState<number | null>(null);
+  const [matchingProviders, setMatchingProviders] = useState<MatchingProvider[] | null>(null);
+  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!category || selectedCounties.length === 0) { setMatchingCount(null); return; }
+    if (!category || selectedCounties.length === 0) { setMatchingProviders(null); setCheckedIds(new Set()); return; }
     const params = new URLSearchParams({ category, counties: selectedCounties.join(",") });
     fetch(`/api/providers/matching-count?${params}`)
       .then(r => r.json())
-      .then(d => setMatchingCount(d.count ?? 0))
+      .then(d => {
+        const providers: MatchingProvider[] = d.providers ?? [];
+        setMatchingProviders(providers);
+        setCheckedIds(new Set(providers.map(p => p.id)));
+      })
       .catch(() => {});
   }, [category, selectedCounties]);
 
@@ -153,13 +183,23 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
       setError("Kérlek töltsd ki az összes mezőt.");
       return;
     }
+    if (checkedIds.size === 0) {
+      setError("Legalább egy szolgáltatót jelölj be.");
+      return;
+    }
     setSending(true);
     setError(null);
     try {
       const res = await fetch("/api/quote-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, category, counties: selectedCounties, message }),
+        body: JSON.stringify({
+          subject,
+          category,
+          counties: selectedCounties,
+          message,
+          selectedProviderIds: [...checkedIds],
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
@@ -213,10 +253,44 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
         rows={4}
       />
 
-      {matchingCount !== null && (
-        <p className="text-sm text-[#84AAA6]">
-          Kb. <strong>{matchingCount}</strong> szolgáltató kapja meg az ajánlatkérést.
-        </p>
+      {matchingProviders !== null && (
+        <div className="space-y-2">
+          {matchingProviders.length === 0 ? (
+            <p className="text-sm text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
+          ) : (
+            <div>
+              <p className="text-sm text-gray-600 mb-2">
+                Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:
+              </p>
+              <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
+                {matchingProviders.map(p => (
+                  <label
+                    key={p.id}
+                    className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checkedIds.has(p.id)}
+                      onChange={() => {
+                        setCheckedIds(prev => {
+                          const next = new Set(prev);
+                          if (next.has(p.id)) next.delete(p.id); else next.add(p.id);
+                          return next;
+                        });
+                      }}
+                      className="rounded accent-[#84AAA6] shrink-0"
+                    />
+                    <span className="flex-1 text-sm font-medium text-gray-900 truncate">{p.full_name}</span>
+                    <StarRating rating={p.average_rating} />
+                  </label>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-1.5">
+                {checkedIds.size} / {matchingProviders.length} szolgáltató kijelölve
+              </p>
+            </div>
+          )}
+        </div>
       )}
 
       {error && (

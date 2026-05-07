@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { subject, category, counties, message } = await request.json();
+  const { subject, category, counties, message, selectedProviderIds } = await request.json();
   if (!subject?.trim() || !category || !counties?.length || !message?.trim())
     return NextResponse.json({ error: "Hiányzó mezők." }, { status: 400 });
 
@@ -85,24 +85,30 @@ export async function POST(request: NextRequest) {
   if (qrError || !qr) return NextResponse.json({ error: "Hiba az ajánlatkérés létrehozásakor." }, { status: 500 });
 
   const searchCounties = [...counties, "Országosan"];
-  const { data: providers } = await admin
+  const { data: allProviders } = await admin
     .from("providers")
     .select("id, user_id")
     .eq("approval_status", "approved")
     .contains("categories", [category])
     .overlaps("counties", searchCounties);
 
+  // Deduplicate by user_id
+  const seenUserIds = new Set<string>();
+  const uniqueProviders = (allProviders ?? []).filter((p) => {
+    if (!p.user_id || seenUserIds.has(p.user_id)) return false;
+    seenUserIds.add(p.user_id);
+    return true;
+  });
+
+  // If caller specified which providers to include, filter to those IDs
+  const targetProviders = Array.isArray(selectedProviderIds) && selectedProviderIds.length > 0
+    ? uniqueProviders.filter((p) => selectedProviderIds.includes(p.id))
+    : uniqueProviders;
+
   let insertedCount = 0;
-  if (providers && providers.length > 0) {
-    // Deduplicate: same user may have multiple provider records — send only once per user
-    const seenUserIds = new Set<string>();
-    const uniqueProviders = providers.filter((p) => {
-      if (!p.user_id || seenUserIds.has(p.user_id)) return false;
-      seenUserIds.add(p.user_id);
-      return true;
-    });
+  if (targetProviders.length > 0) {
     const results = await Promise.allSettled(
-      uniqueProviders.map((p) =>
+      targetProviders.map((p) =>
         admin.from("quote_request_recipients").insert({
           quote_request_id: qr.id,
           provider_id: p.id,
