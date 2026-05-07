@@ -39,7 +39,7 @@ export function Navbar() {
   const [pendingCount, setPendingCount] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
-  const [providerDot, setProviderDot] = useState<"amber" | "red" | null>(null);
+  const [providerDot, setProviderDot] = useState<"amber" | "red" | "green" | null>(null);
   const [hasProvider, setHasProvider] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -87,7 +87,13 @@ export function Navbar() {
         if (!p) { setProviderDot(null); setHasProvider(false); return; }
         setHasProvider(true);
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
-        setProviderDot(p.approval_status === "pending" || !!p.pending_changes ? "amber" : null);
+        if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
+        if (p.approval_status === "approved") {
+          const ack = localStorage.getItem(`provider_approval_ack_${user.id}`);
+          setProviderDot(ack !== "approved" ? "green" : null);
+          return;
+        }
+        setProviderDot(null);
       });
     fetch("/api/messages").then((r) => r.json())
       .then((data: { read: boolean; is_own: boolean }[]) =>
@@ -128,11 +134,14 @@ export function Navbar() {
     const onQuotesCount = (e: Event) => {
       setUnreadQuotes((e as CustomEvent<number>).detail);
     };
+    const onApprovalSeen = () => setProviderDot(null);
     window.addEventListener("messages-read", refresh);
     window.addEventListener("quotes-unread-count", onQuotesCount);
+    window.addEventListener("provider-approval-seen", onApprovalSeen);
     return () => {
       window.removeEventListener("messages-read", refresh);
       window.removeEventListener("quotes-unread-count", onQuotesCount);
+      window.removeEventListener("provider-approval-seen", onApprovalSeen);
     };
   }, []);
 
@@ -213,7 +222,11 @@ export function Navbar() {
             </span>
           )}
           {id === "provider" && providerDot && (
-            <span className={`w-2.5 h-2.5 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
+            <span className={`w-2.5 h-2.5 rounded-full ${
+              providerDot === "red" ? "bg-[#F06C6C]" :
+              providerDot === "green" ? "bg-green-500" :
+              "bg-amber-400"
+            }`} />
           )}
         </button>
       ))}
@@ -292,7 +305,7 @@ export function Navbar() {
                     </span>
                   )}
                   {showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
                   )}
                 </button>
                 {desktopDropdownOpen && (
@@ -332,7 +345,7 @@ export function Navbar() {
                     </span>
                   )}
                   {showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
                   )}
                 </button>
                 {userDropdownOpen && (

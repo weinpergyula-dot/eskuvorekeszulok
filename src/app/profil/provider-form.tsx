@@ -276,6 +276,8 @@ export function ProviderForm({
           pending_changes: null,
         }).eq("user_id", userId);
         if (updateError) throw updateError;
+        // Reset approval ack so next approval triggers the green dot again
+        localStorage.removeItem(`provider_approval_ack_${userId}`);
       } else {
         // Approved provider: categories & counties instant; everything else → pending_changes
         const { error: catError } = await supabase

@@ -64,7 +64,8 @@ type SidebarIndicator = { color: string; tooltip: string };
 
 function deriveSidebarIndicator(
   provider: Provider | null,
-  isProviderActive: boolean
+  isProviderActive: boolean,
+  showApprovalDot: boolean
 ): SidebarIndicator | null {
   if (!provider) return null;
 
@@ -83,6 +84,8 @@ function deriveSidebarIndicator(
     return { color: "bg-amber-400", tooltip: `${diffCount} mező jóváhagyásra vár` };
   if (isFirstSubmission && provider.approval_status === "pending")
     return { color: "bg-amber-400", tooltip: "Jóváhagyásra vár" };
+  if (showApprovalDot)
+    return { color: "bg-green-500", tooltip: "Profil jóváhagyva!" };
   if (!isProviderActive)
     return { color: "bg-gray-400",  tooltip: "Kikapcsolva" };
   return null;
@@ -302,6 +305,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [active, setActive] = useState<Section>("account");
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
+  const [showApprovalDot, setShowApprovalDot] = useState(false);
 
   useEffect(() => {
     const tab = searchParams.get("tab") as Section | null;
@@ -328,11 +332,23 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     provider !== null ? provider.active !== false : false
   );
 
-  const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive);
+  useEffect(() => {
+    if (provider?.approval_status === "approved") {
+      const ack = localStorage.getItem(`provider_approval_ack_${userId}`);
+      setShowApprovalDot(ack !== "approved");
+    }
+  }, [provider, userId]);
+
+  const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive, showApprovalDot);
 
   const switchTo = (section: Section) => {
     setActive(section);
     window.location.hash = section;
+    if (section === "provider" && showApprovalDot) {
+      setShowApprovalDot(false);
+      localStorage.setItem(`provider_approval_ack_${userId}`, "approved");
+      window.dispatchEvent(new CustomEvent("provider-approval-seen"));
+    }
   };
 
   const handleSignOut = async () => {
