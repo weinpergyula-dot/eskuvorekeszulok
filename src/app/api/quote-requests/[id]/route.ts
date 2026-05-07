@@ -77,3 +77,33 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
   return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 }
+
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const admin = createAdminClient();
+
+  // Ha van provider rekordja → csak a saját recipient sorát töröljük
+  const { data: providerData } = await admin.from("providers").select("id").eq("user_id", user.id).maybeSingle();
+  if (providerData) {
+    const { error } = await admin
+      .from("quote_request_recipients")
+      .delete()
+      .eq("quote_request_id", id)
+      .eq("provider_user_id", user.id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  }
+
+  // Látogató → töröljük az egész ajánlatkérést (cascade: recipients + messages)
+  const { error } = await admin
+    .from("quote_requests")
+    .delete()
+    .eq("id", id)
+    .eq("visitor_id", user.id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}

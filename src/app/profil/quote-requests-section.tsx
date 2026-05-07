@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -363,15 +363,19 @@ function VisitorRequestRow({
   request,
   userId,
   onUnreadMarked,
+  onDelete,
 }: {
   request: VisitorRequest;
   userId: string;
   onUnreadMarked: (delta: number) => void;
+  onDelete: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [providers, setProviders] = useState<QuoteProvider[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [localUnread, setLocalUnread] = useState(request.unread_reply_count);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleExpand = async () => {
     if (expanded) { setExpanded(false); return; }
@@ -391,6 +395,17 @@ function VisitorRequestRow({
   const handleUnreadMarked = (count: number) => {
     setLocalUnread(prev => Math.max(0, prev - count));
     onUnreadMarked(count);
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await fetch(`/api/quote-requests/${request.id}`, { method: "DELETE" });
+      onDelete();
+    } finally {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
   };
 
   return (
@@ -442,6 +457,35 @@ function VisitorRequestRow({
               <p className="text-sm text-gray-400">Még nem érkezett válasz.</p>
             )}
           </div>
+
+          <div className="pt-1 border-t border-gray-100">
+            {!confirmDelete ? (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#F06C6C] transition-colors cursor-pointer"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Törlés
+              </button>
+            ) : (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="text-sm font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {deleting ? "Törlés..." : "Igen, törlöm"}
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                >
+                  Mégse
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -454,10 +498,12 @@ function ProviderRequestRow({
   request,
   userId,
   onRead,
+  onDelete,
 }: {
   request: ProviderRequest;
   userId: string;
   onRead: () => void;
+  onDelete: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [localRead, setLocalRead] = useState(request.read);
@@ -467,6 +513,8 @@ function ProviderRequestRow({
   const [replyBody, setReplyBody] = useState("");
   const [replying, setReplying] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleExpand = async () => {
     if (expanded) { setExpanded(false); return; }
@@ -493,6 +541,17 @@ function ProviderRequestRow({
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await fetch(`/api/quote-requests/${request.quote_request_id}`, { method: "DELETE" });
+      onDelete();
+    } finally {
+      setDeleting(false);
+      setConfirmDelete(false);
     }
   };
 
@@ -591,6 +650,35 @@ function ProviderRequestRow({
               {replying ? "Küldés..." : "Válasz küldése"}
             </Button>
           </form>
+
+          <div className="pt-1 border-t border-gray-100">
+            {!confirmDelete ? (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#F06C6C] transition-colors cursor-pointer"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Törlés
+              </button>
+            ) : (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="text-sm font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {deleting ? "Törlés..." : "Igen, törlöm"}
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                >
+                  Mégse
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -653,6 +741,14 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
                   return updated;
                 });
               }}
+              onDelete={() => {
+                setProviderRequests(prev => {
+                  const updated = prev.filter(r => r.recipient_id !== req.recipient_id);
+                  const unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+                  onUnreadChange(unread);
+                  return updated;
+                });
+              }}
             />
           ))
         )}
@@ -693,6 +789,13 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
                   const updated = prev.map(r =>
                     r.id === req.id ? { ...r, unread_reply_count: Math.max(0, r.unread_reply_count - delta) } : r
                   );
+                  onUnreadChange(updated.reduce((s, r) => s + r.unread_reply_count, 0));
+                  return updated;
+                });
+              }}
+              onDelete={() => {
+                setVisitorRequests(prev => {
+                  const updated = prev.filter(r => r.id !== req.id);
                   onUnreadChange(updated.reduce((s, r) => s + r.unread_reply_count, 0));
                   return updated;
                 });
