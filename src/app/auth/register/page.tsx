@@ -438,31 +438,39 @@ function RegisterContent() {
   if (step === "role") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="Látogatóként értékelj és ments kedvenceket – szolgáltatóként mutatkozz be ezer leendő párnak." bgColor="#84AAA6" />
+        <PageHeader icon={UserRound} title="Regisztráció" description="Csatlakozz az Esküvőre Készülök közösséghez – látogatóként vagy szolgáltatóként, ingyenesen." bgColor="#84AAA6" />
         <div className="flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-2xl">
           <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <button
               onClick={() => { setRole("visitor"); setStep("basic"); router.replace("/auth/register?type=visitor"); }}
-              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
+              className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
             >
-              <UserRound className="h-12 w-12 mb-4 text-[#84AAA6]" strokeWidth={1.5} />
-              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Látogató</span>
-              <span className="text-base text-gray-900 mt-2 text-center">
-                Böngészem a szolgáltatókat
-              </span>
+              <UserRound className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
+              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Látogató</span>
+              <span className="text-sm text-gray-400 mb-4">Ingyenes fiók</span>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Böngészés 20 kategóriában</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékelések olvasása és írása</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Kedvencek mentése</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos ajánlatkérés küldése több szolgáltatónak egyszerre</li>
+              </ul>
             </button>
             <button
               onClick={() => { setRole("provider"); setStep("basic"); router.replace("/auth/register?type=provider"); }}
-              className="flex flex-col items-center p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group"
+              className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
             >
-              <Briefcase className="h-12 w-12 mb-4 text-[#84AAA6]" strokeWidth={1.5} />
-              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6]" style={{ fontSize: "22px" }}>Szolgáltató</span>
-              <span className="text-base text-gray-900 mt-2 text-center">
-                Hirdetem a szolgáltatásom
-              </span>
+              <Briefcase className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
+              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Szolgáltató</span>
+              <span className="text-sm text-gray-400 mb-4">Ingyenes profil</span>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ingyenes szolgáltatói profil létrehozása</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Képgaléria feltöltése</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkérések fogadása érdeklődő páraktól</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő az érdeklődőkkel</li>
+              </ul>
             </button>
           </div>
 
@@ -487,8 +495,8 @@ function RegisterContent() {
           title={role === "visitor" ? "Regisztráció – Látogató" : "Regisztráció – Szolgáltató"}
           description={
             role === "visitor"
-              ? "Értékeld a szolgáltatókat, ments kedvenceket, és kövesd nyomon az esküvőd tervezését – ingyenesen, egy helyen."
-              : "Mutatkozz be ezer leendő párnak – hozz létre ingyenes szolgáltatói profilt, és kezeld elérhetőségeidet egy helyen."
+              ? "Értékeld a szolgáltatókat, ments kedvenceket, és küldj ajánlatkérést egyszerre több szakembernek – ingyenesen, egy helyen."
+              : "Mutatkozz be ezer leendő párnak – hozz létre ingyenes profilt, fogadj ajánlatkéréseket, és kezeld üzeneteidet egy helyen."
           }
           bgColor="#84AAA6"
         />

@@ -1,5 +1,5 @@
 import { PageHeader } from "@/components/layout/page-header";
-import { Info, Heart, Search, Star, Briefcase, UserRound, ImagePlus, Bell, ShieldCheck } from "lucide-react";
+import { Info, Heart, Search, Star, Briefcase, UserRound, ImagePlus, Bell, ShieldCheck, Send, Inbox } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -79,6 +79,11 @@ export default function InformaciokPage() {
               title="Ingyenes regisztráció"
               description="Látogatói fiók létrehozása ingyenes, és megnyitja az értékelési és kedvenc-jelölési funkciókat."
             />
+            <FeatureCard
+              icon={Send}
+              title="Csoportos ajánlatkérés"
+              description="Egy üzenettel egyszerre több egyező szolgáltatónak küldhetsz ajánlatkérést – magad döntöd el, kiknek küldöd el, ők pedig közvetlenül az oldalon válaszolnak."
+            />
           </div>
         </Section>
 
@@ -104,6 +109,11 @@ export default function InformaciokPage() {
               icon={Bell}
               title="Belső üzenetküldő"
               description="Az érdeklődő látogatók közvetlenül üzenhetnek neked az oldalon keresztül, amelyre te is válaszolhatsz."
+            />
+            <FeatureCard
+              icon={Inbox}
+              title="Ajánlatkérések fogadása"
+              description="Ha egy látogató a kategóriádban és területeden keres, az ajánlatkérése közvetlenül a bejövőidbe érkezik – amelyre az oldalon tudsz válaszolni."
             />
             <FeatureCard
               icon={ShieldCheck}

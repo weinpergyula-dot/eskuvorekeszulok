@@ -66,7 +66,7 @@ export default function HomePage() {
               </h2>
               <hr className="border-white/30 mb-3" />
               <p className="text-base text-white leading-relaxed mb-5">
-                Böngészd át az esküvői szakemberek és helyszínek széles kínálatát! Fotósoktól, zenészektől kezdve a tortakészítőkig és virágkötőkig megtalálsz mindenkit, aki a nagy napod tökéletessé varázsolhat. Olvass értékeléseket, és jelöld kedvenceidet, hogy könnyebben dönthess.
+                Böngészd át az esküvői szakemberek és helyszínek széles kínálatát! Fotósoktól, zenészektől kezdve a tortakészítőkig és virágkötőkig megtalálsz mindenkit, aki a nagy napod tökéletessé varázsolhat. Olvass értékeléseket, jelöld kedvenceidet, és küldj ajánlatkérést egyszerre több szolgáltatónak – egy helyen, egyetlen üzenettel.
               </p>
               <Link href="#kategoriak">
                 <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
@@ -83,7 +83,7 @@ export default function HomePage() {
               </h2>
               <hr className="border-white/30 mb-3" />
               <p className="text-base text-white leading-relaxed mb-5">
-                Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Az adminisztrátori jóváhagyás után profilod azonnal megjelenik az érdeklődőknek.
+                Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Fogadj ajánlatkéréseket közvetlenül az érdeklődő páraktól, és válaszolj nekik az oldalon keresztül.
               </p>
               <Link href="/auth/register?type=provider">
                 <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
