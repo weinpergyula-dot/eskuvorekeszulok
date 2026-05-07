@@ -498,15 +498,18 @@ function ProviderRequestRow({
   request,
   userId,
   onRead,
+  onReplyRead,
   onDelete,
 }: {
   request: ProviderRequest;
   userId: string;
   onRead: () => void;
+  onReplyRead: () => void;
   onDelete: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [localRead, setLocalRead] = useState(request.read);
+  const [localUnreadReplies, setLocalUnreadReplies] = useState(request.unread_reply_count);
   const [messages, setMessages] = useState<QuoteMessage[]>([]);
   const [loadedMessages, setLoadedMessages] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -520,15 +523,14 @@ function ProviderRequestRow({
     if (expanded) { setExpanded(false); return; }
     setExpanded(true);
 
+    const patches: Promise<Response>[] = [];
+
     if (!localRead) {
-      await fetch(`/api/quote-requests/${request.quote_request_id}/read`, {
+      patches.push(fetch(`/api/quote-requests/${request.quote_request_id}/read`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "request" }),
-      });
-      setLocalRead(true);
-      onRead();
-      window.dispatchEvent(new CustomEvent("quotes-read"));
+      }));
     }
 
     if (!loadedMessages) {
@@ -540,6 +542,27 @@ function ProviderRequestRow({
         setLoadedMessages(true);
       } finally {
         setLoading(false);
+      }
+    }
+
+    // Mark visitor replies as read when provider sees them
+    if (localUnreadReplies > 0) {
+      patches.push(fetch(`/api/quote-requests/${request.quote_request_id}/read`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "messages", provider_id: request.provider_id }),
+      }));
+    }
+
+    if (patches.length > 0) {
+      await Promise.all(patches);
+      if (!localRead) {
+        setLocalRead(true);
+        onRead();
+      }
+      if (localUnreadReplies > 0) {
+        setLocalUnreadReplies(0);
+        onReplyRead();
       }
     }
   };
@@ -739,6 +762,15 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
                 let unread = 0;
                 setProviderRequests(prev => {
                   const updated = prev.map(r => r.recipient_id === req.recipient_id ? { ...r, read: true } : r);
+                  unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+                  return updated;
+                });
+                broadcastUnread(unread, onUnreadChange);
+              }}
+              onReplyRead={() => {
+                let unread = 0;
+                setProviderRequests(prev => {
+                  const updated = prev.map(r => r.recipient_id === req.recipient_id ? { ...r, unread_reply_count: 0 } : r);
                   unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
                   return updated;
                 });
