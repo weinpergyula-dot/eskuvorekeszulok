@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Users, Briefcase } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
+import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 
 export default function HomePage() {
   return (
@@ -68,17 +69,13 @@ export default function HomePage() {
               <p className="text-base text-white leading-relaxed mb-5">
                 Böngészd át az esküvői szakemberek és helyszínek széles kínálatát! Fotósoktól, zenészektől kezdve a tortakészítőkig és virágkötőkig megtalálsz mindenkit, aki a nagy napod tökéletessé varázsolhat. Olvass értékeléseket, jelöld kedvenceidet, és küldj ajánlatkérést egyszerre több szolgáltatónak – egy helyen, egyetlen üzenettel.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                 <Link href="#kategoriak">
                   <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
                     Megnézem a kínálatot
                   </Button>
                 </Link>
-                <Link href="/auth/register?type=visitor">
-                  <Button size="lg" className="bg-white text-[#84AAA6] hover:bg-white/90 px-6">
-                    Regisztrálok látogatónak
-                  </Button>
-                </Link>
+                <VisitorRegisterButton />
               </div>
             </div>
 
