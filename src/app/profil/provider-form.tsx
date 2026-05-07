@@ -265,8 +265,19 @@ export function ProviderForm({
             .from("profiles").update({ role: "provider" }).eq("user_id", userId);
           if (roleError) throw roleError;
         }
+      } else if (provider.approval_status !== "approved") {
+        // Rejected or pending provider: update actual fields and resubmit for approval
+        const { error: updateError } = await supabase.from("providers").update({
+          full_name: fullName, phone, counties, categories, description,
+          detailed_description: detailedDescription || null,
+          website: website || null, avatar_url: avatarUrl || null,
+          gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
+          approval_status: "pending",
+          pending_changes: null,
+        }).eq("user_id", userId);
+        if (updateError) throw updateError;
       } else {
-        // Existing provider: categories & counties instant; everything else → pending_changes
+        // Approved provider: categories & counties instant; everything else → pending_changes
         const { error: catError } = await supabase
           .from("providers").update({ categories, counties }).eq("user_id", userId);
         if (catError) throw catError;
