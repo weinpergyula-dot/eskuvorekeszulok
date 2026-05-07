@@ -92,11 +92,19 @@ export async function POST(request: NextRequest) {
     .contains("categories", [category])
     .overlaps("counties", searchCounties);
 
+  let insertedCount = 0;
   if (providers && providers.length > 0) {
-    await admin.from("quote_request_recipients").insert(
-      providers.map((p) => ({ quote_request_id: qr.id, provider_id: p.id, provider_user_id: p.user_id }))
+    const results = await Promise.allSettled(
+      providers.map((p) =>
+        admin.from("quote_request_recipients").insert({
+          quote_request_id: qr.id,
+          provider_id: p.id,
+          provider_user_id: p.user_id,
+        })
+      )
     );
+    insertedCount = results.filter((r) => r.status === "fulfilled").length;
   }
 
-  return NextResponse.json({ id: qr.id, recipient_count: providers?.length ?? 0 });
+  return NextResponse.json({ id: qr.id, recipient_count: insertedCount });
 }
