@@ -687,37 +687,35 @@ function ProviderRequestRow({
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
+function broadcastUnread(count: number, onChange: (n: number) => void) {
+  onChange(count);
+  window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
+}
+
 export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Props) {
   const [visitorRequests, setVisitorRequests] = useState<VisitorRequest[]>([]);
   const [providerRequests, setProviderRequests] = useState<ProviderRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
-  // Reactively propagate unread count to parent and navbar whenever lists change
-  useEffect(() => {
-    if (loading) return;
-    const unread = isProvider
-      ? providerRequests.filter(r => !r.read).length + providerRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0)
-      : visitorRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-    onUnreadChange(unread);
-    // Broadcast the exact count so the navbar doesn't need to re-fetch
-    window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerRequests, visitorRequests, loading]);
-
   const loadRequests = useCallback(() => {
     fetch("/api/quote-requests")
       .then(r => r.json())
       .then(data => {
         if (isProvider) {
-          setProviderRequests(data as ProviderRequest[]);
+          const reqs = data as ProviderRequest[];
+          setProviderRequests(reqs);
+          const unread = reqs.filter(r => !r.read).length + reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+          broadcastUnread(unread, onUnreadChange);
         } else {
-          setVisitorRequests(data as VisitorRequest[]);
+          const reqs = data as VisitorRequest[];
+          setVisitorRequests(reqs);
+          broadcastUnread(reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
         }
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [isProvider]);
+  }, [isProvider, onUnreadChange]);
 
   useEffect(() => { loadRequests(); }, [loadRequests]);
 
@@ -738,14 +736,22 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
               request={req}
               userId={userId}
               onRead={() => {
-                setProviderRequests(prev =>
-                  prev.map(r => r.recipient_id === req.recipient_id ? { ...r, read: true } : r)
-                );
+                let unread = 0;
+                setProviderRequests(prev => {
+                  const updated = prev.map(r => r.recipient_id === req.recipient_id ? { ...r, read: true } : r);
+                  unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+                  return updated;
+                });
+                broadcastUnread(unread, onUnreadChange);
               }}
               onDelete={() => {
-                setProviderRequests(prev =>
-                  prev.filter(r => r.recipient_id !== req.recipient_id)
-                );
+                let unread = 0;
+                setProviderRequests(prev => {
+                  const updated = prev.filter(r => r.recipient_id !== req.recipient_id);
+                  unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+                  return updated;
+                });
+                broadcastUnread(unread, onUnreadChange);
               }}
             />
           ))
@@ -783,14 +789,24 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
               request={req}
               userId={userId}
               onUnreadMarked={delta => {
-                setVisitorRequests(prev =>
-                  prev.map(r =>
+                let unread = 0;
+                setVisitorRequests(prev => {
+                  const updated = prev.map(r =>
                     r.id === req.id ? { ...r, unread_reply_count: Math.max(0, r.unread_reply_count - delta) } : r
-                  )
-                );
+                  );
+                  unread = updated.reduce((s, r) => s + r.unread_reply_count, 0);
+                  return updated;
+                });
+                broadcastUnread(unread, onUnreadChange);
               }}
               onDelete={() => {
-                setVisitorRequests(prev => prev.filter(r => r.id !== req.id));
+                let unread = 0;
+                setVisitorRequests(prev => {
+                  const updated = prev.filter(r => r.id !== req.id);
+                  unread = updated.reduce((s, r) => s + r.unread_reply_count, 0);
+                  return updated;
+                });
+                broadcastUnread(unread, onUnreadChange);
               }}
             />
           ))}
