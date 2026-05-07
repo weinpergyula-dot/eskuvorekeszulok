@@ -693,25 +693,33 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
+  // Reactively propagate unread count to parent whenever lists change
+  useEffect(() => {
+    if (loading) return;
+    if (isProvider) {
+      const unread = providerRequests.filter(r => !r.read).length +
+        providerRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+      onUnreadChange(unread);
+    } else {
+      const unread = visitorRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+      onUnreadChange(unread);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [providerRequests, visitorRequests]);
+
   const loadRequests = useCallback(() => {
     fetch("/api/quote-requests")
       .then(r => r.json())
       .then(data => {
         if (isProvider) {
-          const reqs = data as ProviderRequest[];
-          setProviderRequests(reqs);
-          const unread = reqs.filter(r => !r.read).length + reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-          onUnreadChange(unread);
+          setProviderRequests(data as ProviderRequest[]);
         } else {
-          const reqs = data as VisitorRequest[];
-          setVisitorRequests(reqs);
-          const unread = reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-          onUnreadChange(unread);
+          setVisitorRequests(data as VisitorRequest[]);
         }
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [isProvider, onUnreadChange]);
+  }, [isProvider]);
 
   useEffect(() => { loadRequests(); }, [loadRequests]);
 
@@ -732,22 +740,14 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
               request={req}
               userId={userId}
               onRead={() => {
-                setProviderRequests(prev => {
-                  const updated = prev.map(r =>
-                    r.recipient_id === req.recipient_id ? { ...r, read: true } : r
-                  );
-                  const unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-                  onUnreadChange(unread);
-                  return updated;
-                });
+                setProviderRequests(prev =>
+                  prev.map(r => r.recipient_id === req.recipient_id ? { ...r, read: true } : r)
+                );
               }}
               onDelete={() => {
-                setProviderRequests(prev => {
-                  const updated = prev.filter(r => r.recipient_id !== req.recipient_id);
-                  const unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-                  onUnreadChange(unread);
-                  return updated;
-                });
+                setProviderRequests(prev =>
+                  prev.filter(r => r.recipient_id !== req.recipient_id)
+                );
               }}
             />
           ))
@@ -785,20 +785,14 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
               request={req}
               userId={userId}
               onUnreadMarked={delta => {
-                setVisitorRequests(prev => {
-                  const updated = prev.map(r =>
+                setVisitorRequests(prev =>
+                  prev.map(r =>
                     r.id === req.id ? { ...r, unread_reply_count: Math.max(0, r.unread_reply_count - delta) } : r
-                  );
-                  onUnreadChange(updated.reduce((s, r) => s + r.unread_reply_count, 0));
-                  return updated;
-                });
+                  )
+                );
               }}
               onDelete={() => {
-                setVisitorRequests(prev => {
-                  const updated = prev.filter(r => r.id !== req.id);
-                  onUnreadChange(updated.reduce((s, r) => s + r.unread_reply_count, 0));
-                  return updated;
-                });
+                setVisitorRequests(prev => prev.filter(r => r.id !== req.id));
               }}
             />
           ))}

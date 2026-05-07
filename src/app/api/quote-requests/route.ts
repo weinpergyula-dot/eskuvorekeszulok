@@ -94,8 +94,15 @@ export async function POST(request: NextRequest) {
 
   let insertedCount = 0;
   if (providers && providers.length > 0) {
+    // Deduplicate: same user may have multiple provider records — send only once per user
+    const seenUserIds = new Set<string>();
+    const uniqueProviders = providers.filter((p) => {
+      if (!p.user_id || seenUserIds.has(p.user_id)) return false;
+      seenUserIds.add(p.user_id);
+      return true;
+    });
     const results = await Promise.allSettled(
-      providers.map((p) =>
+      uniqueProviders.map((p) =>
         admin.from("quote_request_recipients").insert({
           quote_request_id: qr.id,
           provider_id: p.id,
