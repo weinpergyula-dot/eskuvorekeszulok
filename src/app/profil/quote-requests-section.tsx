@@ -542,18 +542,18 @@ function VisitorRequestRow({
                 Törlés
               </button>
             ) : (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-sm text-gray-600">Biztosan törlöd? <span className="text-gray-400">Az ajánlatkérés minden szolgáltató postaládájából is törlődik.</span></span>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="text-sm font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 transition-colors cursor-pointer disabled:opacity-50"
+                  className="text-sm font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
                 >
                   {deleting ? "Törlés..." : "Igen, törlöm"}
                 </button>
                 <button
                   onClick={() => setConfirmDelete(false)}
-                  className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                  className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer shrink-0"
                 >
                   Mégse
                 </button>
@@ -759,7 +759,7 @@ function ProviderRequestRow({
               </button>
             ) : (
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
+                <span className="text-sm text-gray-600">Biztosan törlöd? <span className="text-gray-400">Az ajánlatkérés csak a te bejövőidből tűnik el — a látogató és a többi szolgáltató számára megmarad.</span></span>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
