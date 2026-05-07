@@ -693,19 +693,17 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
-  // Reactively propagate unread count to parent whenever lists change
+  // Reactively propagate unread count to parent and navbar whenever lists change
   useEffect(() => {
     if (loading) return;
-    if (isProvider) {
-      const unread = providerRequests.filter(r => !r.read).length +
-        providerRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-      onUnreadChange(unread);
-    } else {
-      const unread = visitorRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-      onUnreadChange(unread);
-    }
+    const unread = isProvider
+      ? providerRequests.filter(r => !r.read).length + providerRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0)
+      : visitorRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+    onUnreadChange(unread);
+    // Broadcast the exact count so the navbar doesn't need to re-fetch
+    window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerRequests, visitorRequests]);
+  }, [providerRequests, visitorRequests, loading]);
 
   const loadRequests = useCallback(() => {
     fetch("/api/quote-requests")

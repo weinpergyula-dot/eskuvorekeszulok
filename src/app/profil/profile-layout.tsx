@@ -320,15 +320,6 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
         setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
       )
       .catch(() => {});
-    fetch("/api/quote-requests")
-      .then((r) => r.json())
-      .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
-        const unread = data.reduce((s, r) => {
-          return s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0);
-        }, 0);
-        setUnreadQuotes(unread);
-      })
-      .catch(() => {});
   }, []);
 
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
@@ -359,24 +350,16 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       const section = (e as CustomEvent).detail as Section;
       if (VALID_SECTIONS.includes(section)) setActive(section);
     };
-    const onQuotesRead = () => {
-      fetch("/api/quote-requests")
-        .then((r) => r.json())
-        .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
-          const unread = data.reduce((s, r) => {
-            return s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0);
-          }, 0);
-          setUnreadQuotes(unread);
-        })
-        .catch(() => {});
+    const onQuotesCount = (e: Event) => {
+      setUnreadQuotes((e as CustomEvent<number>).detail);
     };
     window.addEventListener("hashchange", onHashChange);
     window.addEventListener("profile-section", onProfileSection);
-    window.addEventListener("quotes-read", onQuotesRead);
+    window.addEventListener("quotes-unread-count", onQuotesCount);
     return () => {
       window.removeEventListener("hashchange", onHashChange);
       window.removeEventListener("profile-section", onProfileSection);
-      window.removeEventListener("quotes-read", onQuotesRead);
+      window.removeEventListener("quotes-unread-count", onQuotesCount);
     };
   }, []);
 

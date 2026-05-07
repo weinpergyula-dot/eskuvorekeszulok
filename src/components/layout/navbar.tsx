@@ -125,19 +125,14 @@ export function Navbar() {
           setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length))
         .catch(() => {});
     };
-    const refreshQuotes = () => {
-      fetch("/api/quote-requests").then((r) => r.json())
-        .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
-          const unread = data.reduce((s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0), 0);
-          setUnreadQuotes(unread);
-        })
-        .catch(() => {});
+    const onQuotesCount = (e: Event) => {
+      setUnreadQuotes((e as CustomEvent<number>).detail);
     };
     window.addEventListener("messages-read", refresh);
-    window.addEventListener("quotes-read", refreshQuotes);
+    window.addEventListener("quotes-unread-count", onQuotesCount);
     return () => {
       window.removeEventListener("messages-read", refresh);
-      window.removeEventListener("quotes-read", refreshQuotes);
+      window.removeEventListener("quotes-unread-count", onQuotesCount);
     };
   }, []);
 
