@@ -87,7 +87,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
         style={{ borderColor: open ? "#84AAA6" : "#D1D5DB" }}
       >
         <span style={{ color: selectedLabel ? "#111827" : "#9CA3AF" }}>
-          {selectedLabel ?? "Válassz kategóriát..."}
+          {selectedLabel ?? "Válassz kategóriát..."} <span className="text-[#F06C6C]">*</span>
         </span>
         <ChevronDown
           className="h-4 w-4 shrink-0 transition-transform"
@@ -304,6 +304,9 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
         </Button>
         <Button type="button" variant="outline" onClick={onCancel}>Mégse</Button>
       </div>
+      <p className="text-sm text-gray-500">
+        <span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.
+      </p>
     </form>
   );
 }
