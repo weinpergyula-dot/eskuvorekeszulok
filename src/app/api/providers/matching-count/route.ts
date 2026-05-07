@@ -13,43 +13,49 @@ export async function GET(request: NextRequest) {
 
   const admin = createAdminClient();
 
-  // Try with average_rating first; fall back without it if schema cache is stale
-  let data: { id: string; user_id: string; full_name: string; average_rating?: number | null }[] | null = null;
-
-  const res1 = await admin
+  // Fetch matching providers
+  const { data: rawProviders } = await admin
     .from("providers")
-    .select("id, user_id, full_name, average_rating")
+    .select("id, user_id, full_name")
     .eq("approval_status", "approved")
     .contains("categories", [category])
     .overlaps("counties", searchCounties);
 
-  if (!res1.error) {
-    data = res1.data;
-  } else {
-    // Fallback: select without average_rating
-    const res2 = await admin
-      .from("providers")
-      .select("id, user_id, full_name")
-      .eq("approval_status", "approved")
-      .contains("categories", [category])
-      .overlaps("counties", searchCounties);
-    data = res2.data;
+  if (!rawProviders || rawProviders.length === 0) {
+    return NextResponse.json({ providers: [] });
   }
 
-  // Deduplicate by user_id; fall back to id if user_id is falsy
+  // Deduplicate by user_id (same user may have multiple provider records)
   const seenKeys = new Set<string>();
-  const unique = (data ?? []).filter((p) => {
+  const unique = rawProviders.filter((p) => {
     const key = p.user_id || p.id;
     if (seenKeys.has(key)) return false;
     seenKeys.add(key);
     return true;
   });
 
+  // Fetch reviews for these providers and compute live average (same as listing page)
+  const providerIds = unique.map((p) => p.id);
+  const { data: reviews } = await admin
+    .from("reviews")
+    .select("provider_id, rating")
+    .in("provider_id", providerIds);
+
+  const ratingMap = new Map<string, { sum: number; count: number }>();
+  (reviews ?? []).forEach((r) => {
+    const curr = ratingMap.get(r.provider_id) ?? { sum: 0, count: 0 };
+    ratingMap.set(r.provider_id, { sum: curr.sum + r.rating, count: curr.count + 1 });
+  });
+
   return NextResponse.json({
-    providers: unique.map((p) => ({
-      id: p.id,
-      full_name: p.full_name ?? "Ismeretlen szolgáltató",
-      average_rating: p.average_rating ? Number(p.average_rating) : null,
-    })),
+    providers: unique.map((p) => {
+      const agg = ratingMap.get(p.id);
+      const avg = agg && agg.count > 0 ? Math.round((agg.sum / agg.count) * 10) / 10 : null;
+      return {
+        id: p.id,
+        full_name: p.full_name ?? "Ismeretlen szolgáltató",
+        average_rating: avg,
+      };
+    }),
   });
 }
