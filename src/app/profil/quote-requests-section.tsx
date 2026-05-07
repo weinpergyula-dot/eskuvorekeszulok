@@ -87,7 +87,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
         style={{ borderColor: open ? "#84AAA6" : "#D1D5DB" }}
       >
         <span style={{ color: selectedLabel ? "#111827" : "#9CA3AF" }}>
-          {selectedLabel ?? "Válassz kategóriát..."} <span className="text-[#F06C6C]">*</span>
+          {selectedLabel ?? "Válassz kategóriát..."} <span className="text-[1.2em] font-bold leading-none align-middle">*</span>
         </span>
         <ChevronDown
           className="h-4 w-4 shrink-0 transition-transform"
