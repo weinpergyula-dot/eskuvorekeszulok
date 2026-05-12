@@ -24,7 +24,7 @@ export function VisitorRegisterButton() {
       <Button
         size="lg"
         onClick={handleClick}
-        className="bg-white text-[#84AAA6] hover:bg-white/90 px-6"
+        className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6"
       >
         Regisztrálok látogatónak
       </Button>

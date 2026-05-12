@@ -71,7 +71,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                 <Link href="#kategoriak">
-                  <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
+                  <Button size="lg" className="bg-white text-[#84AAA6] hover:bg-white/90 px-6">
                     Megnézem a kínálatot
                   </Button>
                 </Link>
