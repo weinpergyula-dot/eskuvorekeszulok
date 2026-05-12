@@ -26,6 +26,10 @@ export async function GET(request: NextRequest) {
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Email confirmation (no custom next param) → verified success page
+      if (next === "/") {
+        return NextResponse.redirect(`${origin}/auth/verified`);
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
