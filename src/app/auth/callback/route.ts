@@ -1,5 +1,4 @@
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -9,41 +8,45 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type");
   const next = searchParams.get("next") ?? "/";
 
-  const cookieStore = await cookies();
+  const isEmailConfirmation =
+    (type === "signup" || type === "email" || type === "recovery") && !next.startsWith("/auth/reset");
+
+  const successUrl =
+    type === "recovery" || next.startsWith("/auth/reset")
+      ? `${origin}${next}`
+      : `${origin}/auth/verified`;
+
+  // Build response so we can set cookies on it
+  const response = NextResponse.redirect(successUrl);
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return cookieStore.getAll(); },
+        getAll() {
+          return request.cookies.getAll();
+        },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
+          });
         },
       },
     }
   );
 
-  // PKCE flow (code)
+  // PKCE code exchange
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      if (next === "/") return NextResponse.redirect(`${origin}/auth/verified`);
-      return NextResponse.redirect(`${origin}${next}`);
-    }
+    if (!error) return response;
   }
 
-  // Token hash flow (email confirmation link)
+  // Token hash (PKCE email confirmation)
   if (tokenHash && type) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as any });
-    if (!error) {
-      if (next === "/" || type === "signup" || type === "email") {
-        return NextResponse.redirect(`${origin}/auth/verified`);
-      }
-      return NextResponse.redirect(`${origin}${next}`);
-    }
+    if (!error) return isEmailConfirmation ? response : NextResponse.redirect(`${origin}${next}`);
   }
 
   return NextResponse.redirect(`${origin}/auth/login?error=auth`);
