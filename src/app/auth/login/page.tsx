@@ -43,7 +43,12 @@ function LoginForm() {
     });
 
     if (signInError) {
-      setError("Hibás email cím vagy jelszó.");
+      const msg = signInError.message.toLowerCase();
+      if (msg.includes("email not confirmed") || msg.includes("not confirmed")) {
+        setError("Az e-mail-címed még nincs megerősítve. Kérjük, keresd meg a megerősítő levelet a postaládádban – és a SPAM mappát is ellenőrizd!");
+      } else {
+        setError("Hibás e-mail-cím vagy jelszó.");
+      }
       setLoading(false);
       return;
     }

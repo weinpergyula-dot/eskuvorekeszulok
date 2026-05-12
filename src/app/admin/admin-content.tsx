@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, Clock as ClockIcon, Mail, BarChart2, Trash2 } from "lucide-react";
+import { Users, Clock as ClockIcon, Mail, BarChart2, Trash2, UserX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 
-type Filter = "pending" | "users" | "contact";
+type Filter = "pending" | "users" | "contact" | "prereg";
 
 interface Provider {
   id: string;
@@ -37,6 +37,14 @@ export interface ContactMessage {
   read: boolean;
 }
 
+export interface PreRegistration {
+  id: string;
+  email: string;
+  full_name: string;
+  role: string;
+  created_at: string;
+}
+
 interface Props {
   totalUsers: number;
   totalApproved: number;
@@ -45,9 +53,10 @@ interface Props {
   pendingChanges: Provider[];
   providerStatuses: ProviderStatus[];
   contactMessages: ContactMessage[];
+  preRegistrations: PreRegistration[];
 }
 
-export function AdminContent({ totalUsers, totalApproved, totalVisitors, pendingProviders, pendingChanges, providerStatuses, contactMessages: initialContactMessages }: Props) {
+export function AdminContent({ totalUsers, totalApproved, totalVisitors, pendingProviders, pendingChanges, providerStatuses, contactMessages: initialContactMessages, preRegistrations: initialPreRegistrations }: Props) {
   // Merge first-submissions + edits into one unified list
   type PendingItem = Provider & { kind: "registration" | "edit" };
   const allPending: PendingItem[] = [
@@ -58,6 +67,8 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
 
   const [contactMessages, setContactMessages] = useState<ContactMessage[]>(initialContactMessages);
   const unreadContact = contactMessages.filter((m) => !m.read).length;
+
+  const [preRegistrations, setPreRegistrations] = useState<PreRegistration[]>(initialPreRegistrations);
 
   const [liveStats, setLiveStats] = useState({ totalUsers, totalApproved, totalVisitors });
 
@@ -77,7 +88,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const defaultFilter: Filter = totalPending > 0 ? "pending" : unreadContact > 0 ? "contact" : "users";
+  const defaultFilter: Filter = totalPending > 0 ? "pending" : preRegistrations.length > 0 ? "prereg" : unreadContact > 0 ? "contact" : "users";
 
   const [filter, setFilter] = useState<Filter>(defaultFilter);
 
@@ -105,15 +116,16 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   };
 
   const stats: { label: string; value: number; icon: React.ReactNode; target: Filter; highlight: boolean }[] = [
-    { label: "Összes felhasználó", value: liveStats.totalUsers, icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "users",   highlight: false },
-    { label: "Jóváhagyásra vár",   value: totalPending,         icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "pending", highlight: totalPending > 0 },
-    { label: "Kapcsolati üzenetek",value: contactMessages.length, icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "contact", highlight: unreadContact > 0 },
+    { label: "Összes felhasználó",   value: liveStats.totalUsers,    icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "users",   highlight: false },
+    { label: "Jóváhagyásra vár",     value: totalPending,             icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "pending", highlight: totalPending > 0 },
+    { label: "Előregisztráció",      value: preRegistrations.length,  icon: <UserX className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,    target: "prereg",  highlight: preRegistrations.length > 0 },
+    { label: "Kapcsolati üzenetek",  value: contactMessages.length,   icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "contact", highlight: unreadContact > 0 },
   ];
 
   return (
     <>
       {/* Stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
         {stats.map((s) => (
           <button
             key={s.label}
@@ -139,6 +151,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
               { label: "Összes felhasználó",        value: liveStats.totalUsers },
               { label: "Jóváhagyott szolgáltató",   value: liveStats.totalApproved },
               { label: "Jóváhagyásra vár",           value: totalPending },
+              { label: "Előregisztráció",            value: preRegistrations.length },
               { label: "Látogató",                   value: liveStats.totalVisitors },
               { label: "Kapcsolati üzenetek",        value: contactMessages.length },
             ].map(({ label, value }) => (
@@ -179,6 +192,66 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
         <section>
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Felhasználók kezelése</h2>
           <UsersSection providerStatuses={providerStatuses} />
+        </section>
+      )}
+
+      {/* Pre-registrations */}
+      {filter === "prereg" && (
+        <section>
+          <h2 className="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2">
+            Előregisztrációk
+            {preRegistrations.length > 0 && (
+              <span className="inline-flex items-center justify-center w-5 h-5 text-sm bg-amber-400 text-white rounded-full font-bold">
+                {preRegistrations.length}
+              </span>
+            )}
+          </h2>
+          <p className="text-sm text-gray-400 mb-4">Regisztráltak, de még nem erősítették meg az e-mail-címüket. 24 óra után automatikusan törlődnek.</p>
+          {preRegistrations.length === 0 ? (
+            <p className="text-gray-500 text-base">Nincs függő előregisztráció.</p>
+          ) : (
+            <div className="space-y-3">
+              {preRegistrations.map((pr) => {
+                const createdAt = new Date(pr.created_at);
+                const elapsedMs = Date.now() - createdAt.getTime();
+                const elapsedH = Math.floor(elapsedMs / (1000 * 60 * 60));
+                const elapsedM = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
+                const remainingH = 24 - elapsedH;
+                return (
+                  <div key={pr.id} className="bg-white border border-amber-200 rounded-lg p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <span className="font-semibold text-gray-900">{pr.full_name || "–"}</span>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${pr.role === "provider" ? "bg-[#D07AB5]/15 text-[#D07AB5]" : "bg-[#84AAA6]/15 text-[#84AAA6]"}`}>
+                            {pr.role === "provider" ? "Szolgáltató" : "Látogató"}
+                          </span>
+                        </div>
+                        <p className="text-base text-gray-600">{pr.email}</p>
+                        <p className="text-sm text-gray-400 mt-1">
+                          Regisztrált: {createdAt.toLocaleString("hu-HU", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          {" · "}
+                          <span className={remainingH <= 2 ? "text-red-500 font-medium" : "text-gray-400"}>
+                            {elapsedH > 0 ? `${elapsedH} órája` : `${elapsedM} perce`} regisztrált · még {remainingH} óra van hátra
+                          </span>
+                        </p>
+                      </div>
+                      <button
+                        onClick={async () => {
+                          const res = await fetch(`/api/admin/users/${pr.id}`, { method: "DELETE" });
+                          if (res.ok) setPreRegistrations((prev) => prev.filter((p) => p.id !== pr.id));
+                        }}
+                        className="text-sm text-[#F06C6C] hover:text-[#d94f4f] flex items-center gap-1 shrink-0"
+                      >
+                        <Trash2 className="h-4 w-4" strokeWidth={1.5} />
+                        Törlés
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </section>
       )}
 

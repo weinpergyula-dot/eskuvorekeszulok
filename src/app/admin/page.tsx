@@ -59,10 +59,31 @@ export default async function AdminPage() {
     .select("user_id, approval_status, pending_changes");
 
   const adminSupabase = createAdminClient();
+
   const { data: contactMessages } = await adminSupabase
     .from("contact_messages")
     .select("*")
     .order("created_at", { ascending: false });
+
+  // Pre-registrations: signed up but email not confirmed
+  const { data: { users: allAuthUsers } } = await adminSupabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  const unconfirmed = allAuthUsers.filter((u) => !u.email_confirmed_at);
+  // Auto-delete expired (>24h) pre-registrations
+  const expired = unconfirmed.filter((u) => now - new Date(u.created_at).getTime() > TWENTY_FOUR_HOURS);
+  await Promise.all(expired.map((u) => adminSupabase.auth.admin.deleteUser(u.id)));
+  // Remaining active pre-registrations
+  const preRegistrations = unconfirmed
+    .filter((u) => now - new Date(u.created_at).getTime() <= TWENTY_FOUR_HOURS)
+    .map((u) => ({
+      id: u.id,
+      email: u.email ?? "",
+      full_name: (u.user_metadata?.full_name as string) ?? "",
+      role: (u.user_metadata?.role as string) ?? "visitor",
+      created_at: u.created_at,
+    }))
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   return (
     <div>
@@ -76,6 +97,7 @@ export default async function AdminPage() {
           pendingChanges={(pendingChanges ?? []) as Parameters<typeof AdminContent>[0]["pendingChanges"]}
           providerStatuses={(allProviderStatuses ?? []) as Parameters<typeof AdminContent>[0]["providerStatuses"]}
           contactMessages={(contactMessages ?? []) as Parameters<typeof AdminContent>[0]["contactMessages"]}
+          preRegistrations={preRegistrations}
         />
       </div>
     </div>

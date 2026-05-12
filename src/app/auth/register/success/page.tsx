@@ -23,6 +23,9 @@ function RegisterSuccessContent() {
           <p className="text-gray-900 mb-4 text-lg leading-relaxed">
             Elküldtük a megerősítő levelet a regisztráció során megadott e-mail-címre. Kérjük, nyisd meg, és kattints a levélben található linkre a fiókod aktiválásához.
           </p>
+          <p className="text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm mb-4 text-left">
+            📬 Ha nem találod a levelet a beérkező üzenetek között, <strong>ellenőrizd a SPAM / Levélszemét mappát</strong> is.
+          </p>
           {isVisitor ? (
             <p className="text-gray-500 mb-8 text-base leading-relaxed">
               Az e-mail-cím igazolása után bejelentkezhetsz, és elkezdheted böngészni a szolgáltatókat, kedvenceket menteni, és ajánlatkéréseket küldeni egyszerre több szakembernek.
