@@ -93,26 +93,25 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   const [filter, setFilter] = useState<Filter>(defaultFilter);
 
   const markRead = async (id: string) => {
-    const supabase = createClient();
-    await supabase.from("contact_messages").update({ read: true }).eq("id", id);
+    await fetch(`/api/admin/contact-messages/${id}`, { method: "PATCH" });
     setContactMessages((prev) => prev.map((m) => m.id === id ? { ...m, read: true } : m));
     window.dispatchEvent(new CustomEvent("contact-message-read"));
   };
 
   const markAllRead = async () => {
-    const supabase = createClient();
     const unreadIds = contactMessages.filter((m) => !m.read).map((m) => m.id);
     if (unreadIds.length === 0) return;
-    await supabase.from("contact_messages").update({ read: true }).in("id", unreadIds);
+    await Promise.all(unreadIds.map((id) => fetch(`/api/admin/contact-messages/${id}`, { method: "PATCH" })));
     setContactMessages((prev) => prev.map((m) => ({ ...m, read: true })));
     window.dispatchEvent(new CustomEvent("contact-message-read"));
   };
 
   const deleteMessage = async (id: string) => {
-    const supabase = createClient();
-    await supabase.from("contact_messages").delete().eq("id", id);
-    setContactMessages((prev) => prev.filter((m) => m.id !== id));
-    window.dispatchEvent(new CustomEvent("contact-message-read"));
+    const res = await fetch(`/api/admin/contact-messages/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setContactMessages((prev) => prev.filter((m) => m.id !== id));
+      window.dispatchEvent(new CustomEvent("contact-message-read"));
+    }
   };
 
   const stats: { label: string; value: number; icon: React.ReactNode; target: Filter; highlight: boolean }[] = [
