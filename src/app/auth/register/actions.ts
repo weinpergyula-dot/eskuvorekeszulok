@@ -18,7 +18,11 @@ export async function signUpAction(
     return { userId: null, error: "Supabase nincs konfigurálva." };
   }
 
-  const res = await fetch(`${supabaseUrl}/auth/v1/signup`, {
+  // redirect_to must be a query parameter – passing it in the body is ignored by GoTrue
+  const signupUrl = new URL(`${supabaseUrl}/auth/v1/signup`);
+  signupUrl.searchParams.set("redirect_to", emailRedirectTo);
+
+  const res = await fetch(signupUrl.toString(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -29,9 +33,8 @@ export async function signUpAction(
       email,
       password,
       data: userData,
-      // No code_challenge → Supabase sends token_hash email (works from any browser)
+      // No code_challenge → Supabase sends OTP/implicit-flow email (works from any browser)
       gotrue_meta_security: {},
-      redirect_to: emailRedirectTo,
     }),
   });
 

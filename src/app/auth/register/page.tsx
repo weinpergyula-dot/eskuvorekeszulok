@@ -264,7 +264,7 @@ function RegisterContent() {
       const { userId: newUserId, error: signUpError } = await signUpAction(
         email,
         password,
-        `${window.location.origin}/auth/callback`,
+        `${window.location.origin}/auth/confirm`,
         { full_name: fullName, role }
       );
 
