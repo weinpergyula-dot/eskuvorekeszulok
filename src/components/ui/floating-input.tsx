@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, forwardRef, InputHTMLAttributes, TextareaHTMLAttributes } from "react";
+import { useState, useRef, forwardRef, InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,10 +22,21 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
     const [focused, setFocused] = useState(false);
     const [autofilled, setAutofilled] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [showLastChar, setShowLastChar] = useState(false);
+    const lastCharTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const floated = focused || String(value).length > 0 || autofilled;
 
     const isPassword = type === "password";
-    const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+    const inputType = isPassword ? (showPassword || showLastChar ? "text" : "password") : type;
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      props.onChange?.(e);
+      if (isPassword && !showPassword) {
+        if (lastCharTimer.current) clearTimeout(lastCharTimer.current);
+        setShowLastChar(true);
+        lastCharTimer.current = setTimeout(() => setShowLastChar(false), 800);
+      }
+    };
 
     return (
       <div className="relative">
@@ -40,18 +51,14 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
             if (e.animationName === "autofill-start") setAutofilled(true);
             if (e.animationName === "autofill-cancel") setAutofilled(false);
           }}
+          onChange={handleChange}
           className={cn(
-            "w-full h-14 border rounded-xl px-4 outline-none transition-colors bg-white",
+            "w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white",
             isPassword && "pr-11",
             !focused && "border-gray-300",
             className
           )}
-          style={{
-            borderColor: focused ? accentColor : undefined,
-            fontSize: isPassword && !showPassword ? "1.75rem" : "1rem",
-            letterSpacing: isPassword && !showPassword ? "0.15em" : undefined,
-            lineHeight: "1",
-          }}
+          style={{ borderColor: focused ? accentColor : undefined }}
           placeholder=""
           {...props}
         />
