@@ -26,7 +26,7 @@ export default async function AdminPage() {
 
   if (profile?.role !== "admin") redirect("/");
 
-  const { data: pendingProviders } = await supabase
+  const { data: rawPendingProviders } = await supabase
     .from("providers")
     .select("*")
     .eq("approval_status", "pending")
@@ -94,6 +94,12 @@ export default async function AdminPage() {
     }))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  // Only show pending providers whose email is already confirmed
+  const unconfirmedUserIds = new Set(unconfirmedUsers.map((u: { id: string }) => u.id));
+  const pendingProviders = (rawPendingProviders ?? []).filter(
+    (p: { user_id: string }) => !unconfirmedUserIds.has(p.user_id)
+  );
 
   return (
     <div>
