@@ -265,6 +265,7 @@ function RegisterContent() {
         password,
         options: {
           data: { full_name: fullName, role },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
