@@ -38,8 +38,12 @@ export async function GET(request: NextRequest) {
 
   // PKCE code exchange
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return response;
+    try {
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (!error) return response;
+    } catch {
+      // PKCE verifier missing (different browser/device) – fall through to error
+    }
   }
 
   // Token hash (PKCE email confirmation)
