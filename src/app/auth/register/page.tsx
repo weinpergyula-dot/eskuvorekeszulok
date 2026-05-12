@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { signUpAction } from "./actions";
+import { signUpAction, createProviderProfileAction, acceptTosAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Input } from "@/components/ui/input";
@@ -286,8 +286,7 @@ function RegisterContent() {
           galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${authData.user.id}/gallery-${i}`));
         }
 
-        const { error: providerError } = await supabase.from("providers").insert({
-          user_id: authData.user.id,
+        const { error: providerError } = await createProviderProfileAction(authData.user.id, {
           full_name: fullName,
           email,
           phone,
@@ -298,17 +297,12 @@ function RegisterContent() {
           website: website || null,
           avatar_url: avatarUrl || null,
           gallery_urls: galleryUrls,
-          approval_status: "pending",
         });
 
-        if (providerError) throw providerError;
+        if (providerError) throw new Error(providerError);
+      } else {
+        await acceptTosAction(authData.user.id);
       }
-
-      const now = new Date().toISOString();
-      await supabase.from("profiles").update({
-        accepted_tos_at: now,
-        accepted_privacy_at: now,
-      }).eq("user_id", authData.user.id);
 
       router.push(
         role === "provider"

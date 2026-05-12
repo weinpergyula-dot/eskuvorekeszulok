@@ -1,5 +1,7 @@
 "use server";
 
+import { createAdminClient } from "@/lib/supabase/admin";
+
 /**
  * Signs up a new user via the Supabase REST API directly, without including a
  * PKCE code_challenge. This makes Supabase send a token_hash-based confirmation
@@ -49,4 +51,56 @@ export async function signUpAction(
   if (!userId) return { userId: null, error: "Ismeretlen hiba történt." };
 
   return { userId, error: null };
+}
+
+interface ProviderData {
+  full_name: string;
+  email: string;
+  phone: string;
+  counties: string[];
+  categories: string[];
+  description: string;
+  detailed_description: string | null;
+  website: string | null;
+  avatar_url: string | null;
+  gallery_urls: string[];
+}
+
+/**
+ * Inserts the provider record and marks profiles TOS acceptance using the
+ * admin client so it works even before the user confirms their email.
+ */
+export async function createProviderProfileAction(
+  userId: string,
+  providerData: ProviderData
+): Promise<{ error: string | null }> {
+  const admin = createAdminClient();
+
+  const { error: providerError } = await admin.from("providers").insert({
+    user_id: userId,
+    ...providerData,
+    approval_status: "pending",
+  });
+
+  if (providerError) return { error: providerError.message };
+
+  const now = new Date().toISOString();
+  await admin.from("profiles").update({
+    accepted_tos_at: now,
+    accepted_privacy_at: now,
+  }).eq("user_id", userId);
+
+  return { error: null };
+}
+
+/**
+ * Updates profiles TOS acceptance for visitor registrations using admin client.
+ */
+export async function acceptTosAction(userId: string): Promise<void> {
+  const admin = createAdminClient();
+  const now = new Date().toISOString();
+  await admin.from("profiles").update({
+    accepted_tos_at: now,
+    accepted_privacy_at: now,
+  }).eq("user_id", userId);
 }
