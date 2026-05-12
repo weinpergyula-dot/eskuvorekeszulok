@@ -18,6 +18,13 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+
+  const validateEmailFormat = (val: string) => {
+    if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim()))
+      setEmailError("Adj meg érvényes e-mail-címet (pl. nev@example.hu).");
+    else setEmailError(null);
+  };
 
   const registered = searchParams.get("registered");
   const reset = searchParams.get("reset");
@@ -83,13 +90,19 @@ function LoginForm() {
           </div>
         )}
 
-        <FloatingInput
-          id="email"
-          label="Email cím"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div>
+          <FloatingInput
+            id="email"
+            label="Email cím"
+            type="email"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
+            onBlur={() => validateEmailFormat(email)}
+          />
+          {emailError && (
+            <p className="text-sm text-[#F06C6C] mt-1 px-1">{emailError}</p>
+          )}
+        </div>
 
         <FloatingInput
           id="password"

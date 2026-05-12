@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Clock, Pencil, X, ImagePlus, XCircle } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
@@ -409,12 +410,10 @@ export function ProviderForm({
                 onChange={(e) => setFullName(e.target.value)}
               />
 
-              <FloatingInput
-                id="pf-phone"
-                label="Telefonszám"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
+              <div className="space-y-1">
+                <p className="text-base text-gray-800">Telefonszám<span className="text-[1.2em] font-bold align-middle ml-0.5">*</span></p>
+                <PhoneInput value={phone} onChange={setPhone} />
+              </div>
 
               <PillSelect
                 label="Megye"
