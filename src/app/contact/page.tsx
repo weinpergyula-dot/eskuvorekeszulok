@@ -123,7 +123,7 @@ export default function ContactPage() {
             />
             <FloatingTextarea
               id="contact-message"
-              label="Rövid leírás *"
+              label="Üzenet *"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
