@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { signUpAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Input } from "@/components/ui/input";
@@ -259,18 +260,19 @@ function RegisterContent() {
         return;
       }
 
-      // Normal registration flow
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // Normal registration flow – use server action so Supabase sends token_hash email (no PKCE)
+      const { userId: newUserId, error: signUpError } = await signUpAction(
         email,
         password,
-        options: {
-          data: { full_name: fullName, role },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
+        `${window.location.origin}/auth/callback`,
+        { full_name: fullName, role }
+      );
 
-      if (authError) throw authError;
-      if (!authData.user) throw new Error("Ismeretlen hiba történt.");
+      if (signUpError) throw new Error(signUpError);
+      if (!newUserId) throw new Error("Ismeretlen hiba történt.");
+
+      // Wrap in a plain object so the rest of the code can use authData.user.id
+      const authData = { user: { id: newUserId } };
 
       if (role === "provider") {
         let avatarUrl = "";
