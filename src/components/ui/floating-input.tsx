@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, forwardRef, InputHTMLAttributes, TextareaHTMLAttributes } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function renderLabel(text: string) {
@@ -17,10 +18,14 @@ interface FloatingInputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
-  ({ label, id, value, className, onFocus, onBlur, accentColor = "#84AAA6", ...props }, ref) => {
+  ({ label, id, value, className, onFocus, onBlur, type, accentColor = "#84AAA6", ...props }, ref) => {
     const [focused, setFocused] = useState(false);
     const [autofilled, setAutofilled] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const floated = focused || String(value).length > 0 || autofilled;
+
+    const isPassword = type === "password";
+    const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
     return (
       <div className="relative">
@@ -28,6 +33,7 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           ref={ref}
           id={id}
           value={value}
+          type={inputType}
           onFocus={(e) => { setFocused(true); onFocus?.(e); }}
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
           onAnimationStart={(e) => {
@@ -36,6 +42,8 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           }}
           className={cn(
             "w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white",
+            isPassword && "pr-11",
+            isPassword && !showPassword && "text-xl tracking-[0.2em]",
             !focused && "border-gray-300",
             className
           )}
@@ -53,6 +61,20 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
         >
           {renderLabel(label)}
         </label>
+        {isPassword && (
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label={showPassword ? "Jelszó elrejtése" : "Jelszó megjelenítése"}
+          >
+            {showPassword
+              ? <EyeOff className="h-5 w-5" strokeWidth={1.75} />
+              : <Eye className="h-5 w-5" strokeWidth={1.75} />
+            }
+          </button>
+        )}
       </div>
     );
   }
