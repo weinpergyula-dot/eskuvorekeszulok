@@ -66,10 +66,12 @@ export default async function AdminPage() {
     .order("created_at", { ascending: false });
 
   // Pre-registrations: signed up but email not confirmed
-  const { data: { users: allAuthUsers } } = await adminSupabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const { data: authUsersData } = await adminSupabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const allAuthUsers = authUsersData?.users ?? [];
   const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
   const now = Date.now();
-  const unconfirmed = allAuthUsers.filter((u) => !u.email_confirmed_at);
+  // confirmed_at is the canonical field; email_confirmed_at is also checked as fallback
+  const unconfirmed = allAuthUsers.filter((u) => !u.confirmed_at && !u.email_confirmed_at);
   // Auto-delete expired (>24h) pre-registrations
   const expired = unconfirmed.filter((u) => now - new Date(u.created_at).getTime() > TWENTY_FOUR_HOURS);
   await Promise.all(expired.map((u) => adminSupabase.auth.admin.deleteUser(u.id)));
