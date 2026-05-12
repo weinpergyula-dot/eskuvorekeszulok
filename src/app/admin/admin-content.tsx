@@ -390,10 +390,19 @@ const FIELD_LABELS: Record<string, string> = {
   detailed_description: "Részletes bemutatkozás",
   website:              "Weboldal",
   avatar_url:           "Profilkép",
+  counties:             "Megyék",
+  categories:           "Kategóriák",
 };
 
-function DiffValue({ value }: { value: unknown }) {
+function DiffValue({ value, field }: { value: unknown; field?: string }) {
   if (value === null || value === undefined || value === "") return <span className="text-gray-400 italic">–</span>;
+  if (Array.isArray(value)) {
+    const items = value as string[];
+    const labels = field === "categories"
+      ? items.map((c) => CATEGORY_LABELS[c as ServiceCategory] ?? c)
+      : items;
+    return <span className="text-sm">{labels.join(", ") || "–"}</span>;
+  }
   const str = String(value);
   if (str.startsWith("http") && (str.includes("/avatar") || str.includes("supabase"))) {
     // eslint-disable-next-line @next/next/no-img-element
@@ -408,7 +417,8 @@ function EditDiff({ current, proposed }: { current: Provider; proposed: Record<s
   const changed = fields.filter((f) => {
     const oldVal = current[f] ?? null;
     const newVal = proposed[f] ?? null;
-    return String(oldVal) !== String(newVal);
+    const serialize = (v: unknown) => Array.isArray(v) ? JSON.stringify([...v].sort()) : String(v ?? "");
+    return serialize(oldVal) !== serialize(newVal);
   });
 
   const proposedGallery = Array.isArray(proposed.gallery_urls) ? (proposed.gallery_urls as string[]) : null;
@@ -426,9 +436,9 @@ function EditDiff({ current, proposed }: { current: Provider; proposed: Record<s
         <div key={f} className="grid grid-cols-[auto_1fr] gap-x-3 items-start text-sm">
           <span className="text-gray-500 font-medium whitespace-nowrap pt-0.5">{FIELD_LABELS[f]}:</span>
           <div className="flex flex-wrap items-center gap-2 min-w-0">
-            <span className="line-through text-[#F06C6C] break-all"><DiffValue value={current[f]} /></span>
+            <span className="line-through text-[#F06C6C] break-all"><DiffValue value={current[f]} field={f} /></span>
             <span className="text-gray-400">→</span>
-            <span className="text-green-700 font-medium break-all"><DiffValue value={proposed[f]} /></span>
+            <span className="text-green-700 font-medium break-all"><DiffValue value={proposed[f]} field={f} /></span>
           </div>
         </div>
       ))}
