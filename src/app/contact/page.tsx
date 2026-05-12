@@ -62,10 +62,14 @@ export default function ContactPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, phone, message }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Ismeretlen hiba");
+      }
       setSent(true);
-    } catch {
-      setError("Hiba történt az üzenet küldése során. Kérlek próbáld újra.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Ismeretlen hiba";
+      setError(`Hiba: ${msg}`);
     } finally {
       setLoading(false);
     }

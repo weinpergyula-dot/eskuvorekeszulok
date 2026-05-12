@@ -16,7 +16,9 @@ export async function POST(req: Request) {
     });
     if (error) throw error;
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: "Hiba történt az üzenet küldése során." }, { status: 500 });
+  } catch (err) {
+    console.error("[contact API error]", err);
+    const msg = err instanceof Error ? err.message : JSON.stringify(err);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
