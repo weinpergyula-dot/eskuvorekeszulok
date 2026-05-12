@@ -65,39 +65,25 @@ export default async function AdminPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  // Pre-registrations: signed up but email not confirmed (via REST API)
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let allAuthUsers: any[] = [];
-  try {
-    const authRes = await fetch(`${supabaseUrl}/auth/v1/admin/users?page=1&per_page=1000`, {
-      headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey },
-    });
-    if (authRes.ok) {
-      const authData = await authRes.json();
-      allAuthUsers = authData.users ?? [];
-    }
-  } catch { /* ignore */ }
-
+  // Pre-registrations: signed up but email not confirmed (via RPC)
   const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
   const now = Date.now();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const unconfirmed = allAuthUsers.filter((u: any) => !u.confirmed_at && !u.email_confirmed_at);
+  let unconfirmedUsers: any[] = [];
+  try {
+    const { data: rpcData } = await adminSupabase.rpc("get_unconfirmed_users");
+    unconfirmedUsers = rpcData ?? [];
+  } catch { /* ignore if function not yet created */ }
+
   // Auto-delete expired (>24h) pre-registrations
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const expired = unconfirmed.filter((u: any) => now - new Date(u.created_at).getTime() > TWENTY_FOUR_HOURS);
+  const expired = unconfirmedUsers.filter((u: { created_at: string }) => now - new Date(u.created_at).getTime() > TWENTY_FOUR_HOURS);
   await Promise.all(expired.map((u: { id: string }) =>
-    fetch(`${supabaseUrl}/auth/v1/admin/users/${u.id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey },
-    })
+    adminSupabase.rpc("delete_unconfirmed_user", { target_id: u.id })
   ));
+
   // Remaining active pre-registrations
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const preRegistrations = unconfirmed
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .filter((u: any) => now - new Date(u.created_at).getTime() <= TWENTY_FOUR_HOURS)
+  const preRegistrations = unconfirmedUsers
+    .filter((u: { created_at: string }) => now - new Date(u.created_at).getTime() <= TWENTY_FOUR_HOURS)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .map((u: any) => ({
       id: u.id,
