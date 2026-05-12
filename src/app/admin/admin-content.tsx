@@ -73,6 +73,23 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
 
   const [preRegistrations, setPreRegistrations] = useState<PreRegistration[]>(initialPreRegistrations);
 
+  // Sync preRegistrations when server props update (router.refresh)
+  useEffect(() => {
+    setPreRegistrations(initialPreRegistrations);
+  }, [initialPreRegistrations]);
+
+  // Poll pre-registrations every 10s (auth.users has no real-time support)
+  useEffect(() => {
+    const fetchPreRegs = async () => {
+      try {
+        const res = await fetch("/api/admin/pre-registrations");
+        if (res.ok) setPreRegistrations(await res.json());
+      } catch { /* ignore */ }
+    };
+    const interval = setInterval(fetchPreRegs, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [liveStats, setLiveStats] = useState({ totalUsers, totalApproved, totalVisitors });
 
   const refreshLiveStats = useCallback(async () => {
