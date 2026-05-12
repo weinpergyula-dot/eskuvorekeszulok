@@ -107,7 +107,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   const stats: { label: string; value: number; icon: React.ReactNode; target: Filter; highlight: boolean }[] = [
     { label: "Összes felhasználó", value: liveStats.totalUsers, icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "users",   highlight: false },
     { label: "Jóváhagyásra vár",   value: totalPending,         icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "pending", highlight: totalPending > 0 },
-    { label: "Kapcsolati üzenetek",value: unreadContact,         icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "contact", highlight: unreadContact > 0 },
+    { label: "Kapcsolati üzenetek",value: contactMessages.length, icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "contact", highlight: unreadContact > 0 },
   ];
 
   return (
@@ -140,7 +140,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
               { label: "Jóváhagyott szolgáltató",   value: liveStats.totalApproved },
               { label: "Jóváhagyásra vár",           value: totalPending },
               { label: "Látogató",                   value: liveStats.totalVisitors },
-              { label: "Kapcsolati üzenetek",        value: unreadContact },
+              { label: "Kapcsolati üzenetek",        value: contactMessages.length },
             ].map(({ label, value }) => (
               <div key={label} className="flex items-center justify-between gap-2">
                 <span className="text-sm text-gray-500 leading-tight">{label}</span>
