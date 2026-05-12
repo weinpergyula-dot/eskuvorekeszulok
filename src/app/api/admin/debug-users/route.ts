@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -10,12 +9,22 @@ export async function GET() {
     const { data: profile } = await supabase.from("profiles").select("role").eq("user_id", user.id).single();
     if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    const adminSupabase = createAdminClient();
-    const { data, error } = await adminSupabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const res = await fetch(`${supabaseUrl}/auth/v1/admin/users?page=1&per_page=1000`, {
+      headers: {
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: serviceKey,
+      },
+    });
 
-    const users = (data?.users ?? []).map((u) => ({
+    const data = await res.json();
+
+    if (!res.ok) return NextResponse.json({ error: data }, { status: 500 });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const users = (data.users ?? []).map((u: any) => ({
       id: u.id,
       email: u.email,
       confirmed_at: u.confirmed_at,

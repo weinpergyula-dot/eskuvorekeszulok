@@ -65,27 +65,49 @@ export default async function AdminPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  // Pre-registrations: signed up but email not confirmed
-  const { data: authUsersData } = await adminSupabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
-  const allAuthUsers = authUsersData?.users ?? [];
+  // Pre-registrations: signed up but email not confirmed (via REST API)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let allAuthUsers: any[] = [];
+  try {
+    const authRes = await fetch(`${supabaseUrl}/auth/v1/admin/users?page=1&per_page=1000`, {
+      headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey },
+    });
+    if (authRes.ok) {
+      const authData = await authRes.json();
+      allAuthUsers = authData.users ?? [];
+    }
+  } catch { /* ignore */ }
+
   const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
   const now = Date.now();
-  // confirmed_at is the canonical field; email_confirmed_at is also checked as fallback
-  const unconfirmed = allAuthUsers.filter((u) => !u.confirmed_at && !u.email_confirmed_at);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const unconfirmed = allAuthUsers.filter((u: any) => !u.confirmed_at && !u.email_confirmed_at);
   // Auto-delete expired (>24h) pre-registrations
-  const expired = unconfirmed.filter((u) => now - new Date(u.created_at).getTime() > TWENTY_FOUR_HOURS);
-  await Promise.all(expired.map((u) => adminSupabase.auth.admin.deleteUser(u.id)));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const expired = unconfirmed.filter((u: any) => now - new Date(u.created_at).getTime() > TWENTY_FOUR_HOURS);
+  await Promise.all(expired.map((u: { id: string }) =>
+    fetch(`${supabaseUrl}/auth/v1/admin/users/${u.id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey },
+    })
+  ));
   // Remaining active pre-registrations
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const preRegistrations = unconfirmed
-    .filter((u) => now - new Date(u.created_at).getTime() <= TWENTY_FOUR_HOURS)
-    .map((u) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((u: any) => now - new Date(u.created_at).getTime() <= TWENTY_FOUR_HOURS)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .map((u: any) => ({
       id: u.id,
       email: u.email ?? "",
       full_name: (u.user_metadata?.full_name as string) ?? "",
       role: (u.user_metadata?.role as string) ?? "visitor",
       created_at: u.created_at,
     }))
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   return (
     <div>
