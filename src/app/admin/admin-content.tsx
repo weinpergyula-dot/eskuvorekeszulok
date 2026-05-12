@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Users, Clock as ClockIcon, Mail, BarChart2, Trash2, UserX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 type Filter = "pending" | "users" | "contact" | "prereg";
 
@@ -57,6 +58,8 @@ interface Props {
 }
 
 export function AdminContent({ totalUsers, totalApproved, totalVisitors, pendingProviders, pendingChanges, providerStatuses, contactMessages: initialContactMessages, preRegistrations: initialPreRegistrations }: Props) {
+  const router = useRouter();
+
   // Merge first-submissions + edits into one unified list
   type PendingItem = Provider & { kind: "registration" | "edit" };
   const allPending: PendingItem[] = [
@@ -72,21 +75,51 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
 
   const [liveStats, setLiveStats] = useState({ totalUsers, totalApproved, totalVisitors });
 
-  const refreshLiveStats = async () => {
+  const refreshLiveStats = useCallback(async () => {
     const supabase = createClient();
     const [{ count: u }, { count: a }, { count: v }] = await Promise.all([
       supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "approved"),
       supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "visitor"),
     ]);
-    setLiveStats({ totalUsers: u ?? liveStats.totalUsers, totalApproved: a ?? liveStats.totalApproved, totalVisitors: v ?? liveStats.totalVisitors });
-  };
+    setLiveStats((prev) => ({
+      totalUsers: u ?? prev.totalUsers,
+      totalApproved: a ?? prev.totalApproved,
+      totalVisitors: v ?? prev.totalVisitors,
+    }));
+  }, []);
 
   useEffect(() => {
-    const interval = setInterval(refreshLiveStats, 30000);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const supabase = createClient();
+
+    const channel = supabase
+      .channel("admin-realtime")
+      // profiles változás → stat frissítés
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        refreshLiveStats();
+        router.refresh(); // pendingProviders, preRegistrations szerver újratöltése
+      })
+      // providers változás → stat + pending lista frissítés
+      .on("postgres_changes", { event: "*", schema: "public", table: "providers" }, () => {
+        refreshLiveStats();
+        router.refresh();
+      })
+      // contact_messages változás → lista azonnali frissítése
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "contact_messages" }, (payload) => {
+        setContactMessages((prev) => [payload.new as ContactMessage, ...prev]);
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "contact_messages" }, (payload) => {
+        setContactMessages((prev) => prev.map((m) => m.id === (payload.new as ContactMessage).id ? (payload.new as ContactMessage) : m));
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "contact_messages" }, (payload) => {
+        setContactMessages((prev) => prev.filter((m) => m.id !== (payload.old as ContactMessage).id));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refreshLiveStats, router]);
 
   const defaultFilter: Filter = totalPending > 0 ? "pending" : preRegistrations.length > 0 ? "prereg" : unreadContact > 0 ? "contact" : "users";
 
