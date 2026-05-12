@@ -10,26 +10,32 @@ export default function ConfirmPage() {
   useEffect(() => {
     const supabase = createClient();
 
-    // The Supabase browser client auto-detects #access_token in the hash.
-    // Listen for the resulting SIGNED_IN / USER_UPDATED event and redirect.
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN" || event === "USER_UPDATED") {
-        subscription.unsubscribe();
-        router.replace("/auth/verified");
-      }
-    });
+    async function handleConfirm() {
+      // Read tokens from URL hash (#access_token=...&refresh_token=...)
+      const hash = window.location.hash.slice(1);
+      const params = new URLSearchParams(hash);
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
 
-    // If a session is already present (e.g. page re-visit), redirect immediately.
-    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (!error) {
+          router.replace("/auth/verified");
+          return;
+        }
+      }
+
+      // Fallback: session may already be set (e.g. page revisit)
+      const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        subscription.unsubscribe();
         router.replace("/auth/verified");
       }
-    });
+    }
 
-    return () => subscription.unsubscribe();
+    handleConfirm();
   }, [router]);
 
   return (
