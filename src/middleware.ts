@@ -2,6 +2,20 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const { pathname, searchParams, origin } = request.nextUrl;
+
+  // If Supabase redirects code/token_hash to homepage instead of /auth/callback, forward it
+  const code = searchParams.get("code");
+  const tokenHash = searchParams.get("token_hash");
+  const type = searchParams.get("type");
+  if ((code || tokenHash) && (pathname === "/" || !pathname.startsWith("/auth/callback"))) {
+    const callbackUrl = new URL(`${origin}/auth/callback`);
+    if (code) callbackUrl.searchParams.set("code", code);
+    if (tokenHash) callbackUrl.searchParams.set("token_hash", tokenHash);
+    if (type) callbackUrl.searchParams.set("type", type);
+    return NextResponse.redirect(callbackUrl);
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey =
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
