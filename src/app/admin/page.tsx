@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import { AdminContent } from "./admin-content";
 import { PageHeader } from "@/components/layout/page-header";
@@ -57,7 +58,8 @@ export default async function AdminPage() {
     .from("providers")
     .select("user_id, approval_status, pending_changes");
 
-  const { data: contactMessages } = await supabase
+  const adminSupabase = createAdminClient();
+  const { data: contactMessages } = await adminSupabase
     .from("contact_messages")
     .select("*")
     .order("created_at", { ascending: false });
