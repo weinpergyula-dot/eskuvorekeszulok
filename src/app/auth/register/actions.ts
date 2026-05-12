@@ -74,33 +74,42 @@ export async function createProviderProfileAction(
   userId: string,
   providerData: ProviderData
 ): Promise<{ error: string | null }> {
-  const admin = createAdminClient();
+  try {
+    const admin = createAdminClient();
 
-  const { error: providerError } = await admin.from("providers").insert({
-    user_id: userId,
-    ...providerData,
-    approval_status: "pending",
-  });
+    const { error: providerError } = await admin.from("providers").insert({
+      user_id: userId,
+      ...providerData,
+      approval_status: "pending",
+    });
 
-  if (providerError) return { error: providerError.message };
+    if (providerError) return { error: providerError.message };
 
-  const now = new Date().toISOString();
-  await admin.from("profiles").update({
-    accepted_tos_at: now,
-    accepted_privacy_at: now,
-  }).eq("user_id", userId);
+    const now = new Date().toISOString();
+    await admin.from("profiles").update({
+      accepted_tos_at: now,
+      accepted_privacy_at: now,
+    }).eq("user_id", userId);
 
-  return { error: null };
+    return { error: null };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Ismeretlen szerverhiba (provider)." };
+  }
 }
 
 /**
  * Updates profiles TOS acceptance for visitor registrations using admin client.
  */
-export async function acceptTosAction(userId: string): Promise<void> {
-  const admin = createAdminClient();
-  const now = new Date().toISOString();
-  await admin.from("profiles").update({
-    accepted_tos_at: now,
-    accepted_privacy_at: now,
-  }).eq("user_id", userId);
+export async function acceptTosAction(userId: string): Promise<{ error: string | null }> {
+  try {
+    const admin = createAdminClient();
+    const now = new Date().toISOString();
+    await admin.from("profiles").update({
+      accepted_tos_at: now,
+      accepted_privacy_at: now,
+    }).eq("user_id", userId);
+    return { error: null };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Ismeretlen szerverhiba (TOS)." };
+  }
 }

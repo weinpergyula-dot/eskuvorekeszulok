@@ -301,7 +301,8 @@ function RegisterContent() {
 
         if (providerError) throw new Error(providerError);
       } else {
-        await acceptTosAction(authData.user.id);
+        const { error: tosError } = await acceptTosAction(authData.user.id);
+        if (tosError) throw new Error(tosError);
       }
 
       router.push(
