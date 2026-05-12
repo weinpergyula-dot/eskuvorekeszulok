@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, Clock as ClockIcon, Mail, BarChart2 } from "lucide-react";
+import { Users, Clock as ClockIcon, Mail, BarChart2, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
@@ -94,6 +94,13 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
     if (unreadIds.length === 0) return;
     await supabase.from("contact_messages").update({ read: true }).in("id", unreadIds);
     setContactMessages((prev) => prev.map((m) => ({ ...m, read: true })));
+    window.dispatchEvent(new CustomEvent("contact-message-read"));
+  };
+
+  const deleteMessage = async (id: string) => {
+    const supabase = createClient();
+    await supabase.from("contact_messages").delete().eq("id", id);
+    setContactMessages((prev) => prev.filter((m) => m.id !== id));
     window.dispatchEvent(new CustomEvent("contact-message-read"));
   };
 
@@ -224,14 +231,24 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                       )}
                       <p className="text-base text-gray-900 mt-3 whitespace-pre-wrap">{msg.message}</p>
                     </div>
-                    {!msg.read && (
+                    <div className="flex flex-col gap-2 shrink-0 items-end">
+                      {!msg.read && (
+                        <button
+                          onClick={() => markRead(msg.id)}
+                          className="text-sm text-[#84AAA6] hover:underline"
+                        >
+                          Olvasottnak jelöl
+                        </button>
+                      )}
                       <button
-                        onClick={() => markRead(msg.id)}
-                        className="text-sm text-[#84AAA6] hover:underline shrink-0"
+                        onClick={() => deleteMessage(msg.id)}
+                        className="text-sm text-[#F06C6C] hover:text-[#d94f4f] flex items-center gap-1"
+                        title="Üzenet törlése"
                       >
-                        Olvasottnak jelöl
+                        <Trash2 className="h-4 w-4" strokeWidth={1.5} />
+                        Törlés
                       </button>
-                    )}
+                    </div>
                   </div>
                 </div>
               ))}

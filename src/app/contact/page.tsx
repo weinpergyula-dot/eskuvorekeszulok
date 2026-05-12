@@ -43,20 +43,6 @@ export default function ContactPage() {
       <PageHeader title="Kapcsolat" icon={Mail} />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-        {/* Contact info */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-3 mb-10">
-          <p className="text-lg text-gray-900">
-            <span className="font-medium">Email:</span>{" "}
-            <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] hover:underline">
-              info@eskuvorekeszulok.hu
-            </a>
-          </p>
-          <p className="text-lg text-gray-900">
-            <span className="font-medium">Weboldal:</span>{" "}
-            <span className="text-gray-900">www.eskuvorekeszulok.hu</span>
-          </p>
-        </div>
-
         {/* Contact form */}
         <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
           <Send className="h-5 w-5 text-[#84AAA6]" strokeWidth={1.5} />
@@ -111,6 +97,20 @@ export default function ContactPage() {
             </p>
           </form>
         )}
+
+        {/* Contact info */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-3 mt-10">
+          <p className="text-lg text-gray-900">
+            <span className="font-medium">Email:</span>{" "}
+            <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] hover:underline">
+              info@eskuvorekeszulok.hu
+            </a>
+          </p>
+          <p className="text-lg text-gray-900">
+            <span className="font-medium">Weboldal:</span>{" "}
+            <span className="text-gray-900">www.eskuvorekeszulok.hu</span>
+          </p>
+        </div>
       </div>
     </div>
   );

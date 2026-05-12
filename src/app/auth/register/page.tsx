@@ -310,7 +310,7 @@ function RegisterContent() {
       router.push(
         role === "provider"
           ? "/auth/register/success?provider=true"
-          : "/auth/login?registered=true"
+          : "/auth/register/success?visitor=true"
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Hiba történt a regisztráció során.";
