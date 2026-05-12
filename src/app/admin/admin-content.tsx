@@ -487,9 +487,40 @@ function ProviderRow({ provider, type }: { provider: Provider; type: "registrati
               <p className="text-base text-gray-900 mb-0.5">{cnts.join(", ")}</p>
             )}
             {type === "registration" && header.description ? (
-              <p className="text-base text-gray-900 mt-2 line-clamp-2 max-w-md">
-                {String(header.description)}
-              </p>
+              <div className="mt-2 max-w-md">
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-0.5">Rövid bemutatkozás</p>
+                <p className="text-base text-gray-900">{String(header.description)}</p>
+              </div>
+            ) : null}
+
+            {type === "registration" && header.detailed_description ? (
+              <div className="mt-2 max-w-md">
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-0.5">Részletes bemutatkozás</p>
+                <p className="text-base text-gray-900 whitespace-pre-line">{String(header.detailed_description)}</p>
+              </div>
+            ) : null}
+
+            {type === "registration" && header.website ? (
+              <div className="mt-2">
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-0.5">Weboldal</p>
+                <a href={String(header.website)} target="_blank" rel="noopener noreferrer" className="text-base text-[#84AAA6] hover:underline break-all">
+                  {String(header.website)}
+                </a>
+              </div>
+            ) : null}
+
+            {type === "registration" && Array.isArray(header.gallery_urls) && (header.gallery_urls as string[]).length > 0 ? (
+              <div className="mt-3">
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">Galéria ({(header.gallery_urls as string[]).length} kép)</p>
+                <div className="flex flex-wrap gap-2">
+                  {(header.gallery_urls as string[]).map((url, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                      <img src={url} alt={`Galéria ${i + 1}`} className="w-16 h-16 object-cover rounded border border-gray-200 hover:opacity-80 transition-opacity" />
+                    </a>
+                  ))}
+                </div>
+              </div>
             ) : null}
 
             {/* Diff view for edits */}
