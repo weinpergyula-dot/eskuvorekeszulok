@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Hiányzó mezők." }, { status: 400 });
     }
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const { error } = await supabase.from("contact_messages").insert({
       name,
       email,
