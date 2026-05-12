@@ -41,13 +41,17 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
             if (e.animationName === "autofill-cancel") setAutofilled(false);
           }}
           className={cn(
-            "w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white",
+            "w-full h-14 border rounded-xl px-4 outline-none transition-colors bg-white",
             isPassword && "pr-11",
-            isPassword && !showPassword && "text-xl tracking-[0.2em]",
             !focused && "border-gray-300",
             className
           )}
-          style={{ borderColor: focused ? accentColor : undefined }}
+          style={{
+            borderColor: focused ? accentColor : undefined,
+            fontSize: isPassword && !showPassword ? "1.75rem" : "1rem",
+            letterSpacing: isPassword && !showPassword ? "0.15em" : undefined,
+            lineHeight: "1",
+          }}
           placeholder=""
           {...props}
         />
