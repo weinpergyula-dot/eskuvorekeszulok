@@ -392,11 +392,11 @@ function RegisterContent() {
       <div>
         <PageHeader
           icon={UserRound}
-          title={role === "visitor" ? "Regisztráció – Látogató" : "Regisztráció – Szolgáltató"}
+          title={role === "visitor" ? "Regisztráció – Látogató" : "Regisztráció – Szolgáltatói fiók"}
           description={
             role === "visitor"
               ? "Értékeld a szolgáltatókat, ments kedvenceket, és küldj ajánlatkérést egyszerre több szakembernek – ingyenesen, egy helyen."
-              : "Mutatkozz be ezer leendő párnak – hozz létre ingyenes profilt, fogadj ajánlatkéréseket, és kezeld üzeneteidet egy helyen."
+              : "Add meg a bejelentkezési adataidat. A következő lépésben töltheted ki a nyilvános profilodat."
           }
           bgColor="#84AAA6"
         />
@@ -529,7 +529,7 @@ function RegisterContent() {
   // Step 3 – Provider details
   return (
     <div>
-      <PageHeader icon={UserRound} title="Regisztráció" bgColor="#84AAA6" />
+      <PageHeader icon={UserRound} title="Regisztráció – Szolgáltatói profil" description="Töltsd ki a nyilvános profilodat – ez jelenik majd meg az oldalon az érdeklődő pároknak." bgColor="#84AAA6" />
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
         <div className="mb-6">
