@@ -19,12 +19,22 @@ export default function ContactPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return;
-      const fullName = user.user_metadata?.full_name ?? "";
       const userEmail = user.email ?? "";
-      if (fullName) setName(fullName);
       if (userEmail) setEmail(userEmail);
+      // Try metadata first, fall back to profiles table
+      const metaName = user.user_metadata?.full_name ?? "";
+      if (metaName) {
+        setName(metaName);
+      } else {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("user_id", user.id)
+          .single();
+        if (profile?.full_name) setName(profile.full_name);
+      }
     });
   }, []);
 
