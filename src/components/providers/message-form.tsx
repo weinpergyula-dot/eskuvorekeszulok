@@ -62,7 +62,7 @@ export function MessageForm({ recipientId, providerId }: Props) {
             <p>✓ Üzeneted elküldve! A szolgáltató hamarosan válaszol.</p>
             <p className="text-sm text-green-600">
               A további üzenetváltásokat a szolgáltatóval az{" "}
-              <Link href="/profil?section=messages" className="underline underline-offset-2 hover:text-green-800 font-medium">
+              <Link href="/profil?tab=messages" className="underline underline-offset-2 hover:text-green-800 font-medium">
                 Üzenetek
               </Link>{" "}
               menüpontból kezdeményezheted.
