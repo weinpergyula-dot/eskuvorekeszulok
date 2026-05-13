@@ -39,6 +39,7 @@ export default function ResetPasswordPage() {
       return;
     }
 
+    await supabase.auth.signOut();
     router.push("/auth/login?reset=1");
   };
 
