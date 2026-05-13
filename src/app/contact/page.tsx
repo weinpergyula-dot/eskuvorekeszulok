@@ -35,6 +35,13 @@ export default function ContactPage() {
           .single();
         if (profile?.full_name) setName(profile.full_name);
       }
+      // Auto-fill phone for providers
+      const { data: providerData } = await supabase
+        .from("providers")
+        .select("phone")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (providerData?.phone) setPhone(providerData.phone);
     });
   }, []);
 
@@ -46,6 +53,8 @@ export default function ContactPage() {
       setEmailError(null);
     }
   };
+
+  const formValid = name.trim() !== "" && email.trim() !== "" && !emailError && message.trim() !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,80 +84,66 @@ export default function ContactPage() {
     <div>
       <PageHeader title="Kapcsolat" icon={Mail} />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Send className="h-5 w-5 text-[#84AAA6]" strokeWidth={1.5} />
+            Írj nekünk
+          </h2>
 
-        {/* Contact form */}
-        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Send className="h-5 w-5 text-[#84AAA6]" strokeWidth={1.5} />
-          Írj nekünk
-        </h2>
-
-        {sent ? (
-          <div className="flex flex-col items-center text-center py-10 gap-4">
-            <CheckCircle className="h-14 w-14 text-[#84AAA6]" strokeWidth={1.5} />
-            <p className="text-xl font-semibold text-gray-900">Üzeneted megkaptuk!</p>
-            <p className="text-base text-gray-600">Hamarosan felvesszük veled a kapcsolatot.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-            {error && (
-              <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-base px-4 py-3 rounded-xl border border-[#F06C6C]/30">
-                {error}
-              </div>
-            )}
-            <FloatingInput
-              id="contact-name"
-              label="Név *"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <div>
-              <FloatingInput
-                id="contact-email"
-                label="Email cím *"
-                type="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
-                onBlur={() => validateEmail(email)}
-              />
-              {emailError && (
-                <p className="text-sm text-[#F06C6C] mt-1 px-1">{emailError}</p>
-              )}
+          {sent ? (
+            <div className="flex flex-col items-center text-center py-10 gap-4">
+              <CheckCircle className="h-14 w-14 text-[#84AAA6]" strokeWidth={1.5} />
+              <p className="text-xl font-semibold text-gray-900">Üzeneted megkaptuk!</p>
+              <p className="text-base text-gray-600">Hamarosan felvesszük veled a kapcsolatot.</p>
             </div>
-            <FloatingInput
-              id="contact-phone"
-              label="Telefonszám (opcionális)"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <FloatingTextarea
-              id="contact-message"
-              label="Üzenet *"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={4}
-            />
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Küldés..." : "Üzenet küldése"}
-            </Button>
-            <p className="text-sm text-gray-500 text-center">
-              <span className="text-base font-bold align-middle">*</span> A csillaggal jelöltek kitöltése kötelező.
-            </p>
-          </form>
-        )}
-
-        {/* Contact info */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-3 mt-10">
-          <p className="text-lg text-gray-900">
-            <span className="font-medium">Email:</span>{" "}
-            <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] hover:underline">
-              info@eskuvorekeszulok.hu
-            </a>
-          </p>
-          <p className="text-lg text-gray-900">
-            <span className="font-medium">Weboldal:</span>{" "}
-            <span className="text-gray-900">www.eskuvorekeszulok.hu</span>
-          </p>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+              {error && (
+                <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-base px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+                  {error}
+                </div>
+              )}
+              <FloatingInput
+                id="contact-name"
+                label="Név *"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <div>
+                <FloatingInput
+                  id="contact-email"
+                  label="Email cím *"
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
+                  onBlur={() => validateEmail(email)}
+                />
+                {emailError && (
+                  <p className="text-sm text-[#F06C6C] mt-1 px-1">{emailError}</p>
+                )}
+              </div>
+              <FloatingInput
+                id="contact-phone"
+                label="Telefonszám (opcionális)"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+              <FloatingTextarea
+                id="contact-message"
+                label="Üzenet *"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={4}
+              />
+              <Button type="submit" className="w-full" disabled={loading || !formValid}>
+                {loading ? "Küldés..." : "Üzenet küldése"}
+              </Button>
+              <p className="text-sm text-gray-500 text-center">
+                <span className="text-base font-bold align-middle">*</span> A csillaggal jelöltek kitöltése kötelező.
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </div>

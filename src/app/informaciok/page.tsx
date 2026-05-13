@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Info, Heart, Search, Star, Briefcase, UserRound, ImagePlus, Bell, ShieldCheck, Send, Inbox } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 
 export const metadata = {
   title: "Információk – Esküvőre Készülök",
@@ -126,15 +127,18 @@ export default function InformaciokPage() {
         <hr className="border-gray-200 mb-10" />
 
         {/* CTA */}
-        <div className="rounded-2xl p-8 text-center" style={{ backgroundColor: "#F0F6F5" }}>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Készen állsz?</h2>
-          <p className="text-gray-600 text-base mb-6">Böngészd az elérhető szolgáltatókat, vagy regisztrálj te is!</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="rounded-2xl p-8 text-center" style={{ backgroundColor: "#84AAA6" }}>
+          <h2 className="text-xl font-bold text-white mb-2">Készen állsz?</h2>
+          <p className="text-white/80 text-base mb-6">Böngészd az elérhető szolgáltatókat, vagy regisztrálj te is!</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap items-center">
             <Link href="/services">
-              <Button size="lg" className="w-full sm:w-auto">Megnézem a kategóriákat</Button>
+              <Button size="lg" className="bg-white text-[#84AAA6] hover:bg-white/90 px-6">
+                Megnézem a kínálatot
+              </Button>
             </Link>
+            <VisitorRegisterButton />
             <Link href="/auth/register?type=provider">
-              <Button size="lg" className="w-full sm:w-auto bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5] hover:text-white">
+              <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
                 Regisztrálok szolgáltatónak
               </Button>
             </Link>
