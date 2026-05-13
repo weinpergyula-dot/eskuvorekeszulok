@@ -58,9 +58,16 @@ export function MessageForm({ recipientId, providerId }: Props) {
 
       {loggedIn ? (
         success ? (
-          <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
-            ✓ Üzeneted elküldve! A szolgáltató hamarosan válaszol.
-          </p>
+          <div className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3 space-y-1">
+            <p>✓ Üzeneted elküldve! A szolgáltató hamarosan válaszol.</p>
+            <p className="text-sm text-green-600">
+              A további üzenetváltásokat a szolgáltatóval az{" "}
+              <Link href="/profil?section=messages" className="underline underline-offset-2 hover:text-green-800 font-medium">
+                Üzenetek
+              </Link>{" "}
+              menüpontból kezdeményezheted.
+            </p>
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
             <FloatingInput
