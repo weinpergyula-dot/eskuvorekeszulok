@@ -105,15 +105,18 @@ export default function EditProfilePage() {
 
       if (data) {
         setProvider(data);
-        setFullName(data.full_name);
-        setPhone(data.phone);
-        setCounties(data.counties ?? []);
-        setCategories((data.categories as ServiceCategory[]) ?? []);
-        setDescription(data.description);
-        setDetailedDescription(data.detailed_description ?? "");
-        setWebsite(data.website ?? "");
-        setAvatarPreview(data.avatar_url ?? null);
-        setExistingGalleryUrls(data.gallery_urls ?? []);
+        // Prefer pending_changes values (the provider's last submission) over
+        // the live approved data, so the form reflects what they last sent.
+        const pc = (data.pending_changes as Record<string, unknown> | null) ?? {};
+        setFullName((pc.full_name as string) ?? data.full_name ?? "");
+        setPhone((pc.phone as string) ?? data.phone ?? "");
+        setCounties(((pc.counties as string[]) ?? data.counties) ?? []);
+        setCategories((((pc.categories as ServiceCategory[]) ?? data.categories) ?? []) as ServiceCategory[]);
+        setDescription((pc.description as string) ?? data.description ?? "");
+        setDetailedDescription((pc.detailed_description as string) ?? data.detailed_description ?? "");
+        setWebsite((pc.website as string) ?? data.website ?? "");
+        setAvatarPreview((pc.avatar_url as string) ?? data.avatar_url ?? null);
+        setExistingGalleryUrls(((pc.gallery_urls as string[]) ?? data.gallery_urls) ?? []);
       }
       setLoading(false);
     };

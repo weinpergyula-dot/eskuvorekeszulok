@@ -416,6 +416,8 @@ function DiffValue({ value, field }: { value: unknown; field?: string }) {
 function EditDiff({ current, proposed }: { current: Provider; proposed: Record<string, unknown> }) {
   const fields = Object.keys(FIELD_LABELS) as (keyof typeof FIELD_LABELS)[];
   const changed = fields.filter((f) => {
+    // Only consider fields that were explicitly included in the pending_changes payload
+    if (!(f in proposed)) return false;
     const oldVal = current[f] ?? null;
     const newVal = proposed[f] ?? null;
     const serialize = (v: unknown) => Array.isArray(v) ? JSON.stringify([...v].sort()) : String(v ?? "");
