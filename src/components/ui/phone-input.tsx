@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const COUNTRY_CODES = [
   { code: "+36", flag: "🇭🇺", name: "HU" },
@@ -27,6 +27,23 @@ export function PhoneInput({
   const p1Ref = useRef<HTMLInputElement>(null);
   const p2Ref = useRef<HTMLInputElement>(null);
   const p3Ref = useRef<HTMLInputElement>(null);
+  const parsedRef = useRef(false);
+
+  // Parse incoming value on initial load (e.g. when editing a saved profile)
+  useEffect(() => {
+    if (parsedRef.current || !value) return;
+    const parts = value.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      const code = COUNTRY_CODES.find((c) => c.code === parts[0]);
+      if (code) {
+        parsedRef.current = true;
+        setCountryCode(parts[0]);
+        setP1(parts[1] ?? "");
+        setP2(parts[2] ?? "");
+        setP3(parts[3] ?? "");
+      }
+    }
+  }, [value]);
 
   const update = (code: string, a: string, b: string, c: string) => {
     const full = a || b || c ? `${code} ${a} ${b} ${c}`.trimEnd() : "";
