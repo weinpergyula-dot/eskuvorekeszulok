@@ -37,9 +37,8 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    await supabase.auth.signOut();
-    // Full page reload so the Supabase client reinitialises without the recovery session
-    window.location.href = "/auth/login?reset=1";
+    // Server-side signout so HTTP-only session cookies are properly cleared
+    window.location.href = "/auth/signout?next=/auth/login%3Freset%3D1";
   };
 
   return (
