@@ -3,6 +3,7 @@ import { Info, Heart, Search, Star, Briefcase, UserRound, ImagePlus, Bell, Shiel
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
+import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 
 export const metadata = {
   title: "Információk – Esküvőre Készülök",
@@ -137,11 +138,7 @@ export default function InformaciokPage() {
               </Button>
             </Link>
             <VisitorRegisterButton />
-            <Link href="/auth/register?type=provider">
-              <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
-                Regisztrálok szolgáltatónak
-              </Button>
-            </Link>
+            <ProviderRegisterButton />
           </div>
         </div>
 

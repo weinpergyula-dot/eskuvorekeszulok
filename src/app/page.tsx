@@ -4,6 +4,7 @@ import { Users, Briefcase } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
+import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 
 export default function HomePage() {
   return (
@@ -89,11 +90,7 @@ export default function HomePage() {
               <p className="text-base text-white leading-relaxed mb-5">
                 Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Fogadj ajánlatkéréseket közvetlenül az érdeklődő páraktól, és válaszolj nekik az oldalon keresztül.
               </p>
-              <Link href="/auth/register?type=provider">
-                <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
-                  Regisztrálok szolgáltatónak
-                </Button>
-              </Link>
+              <ProviderRegisterButton />
             </div>
           </div>
         </div>

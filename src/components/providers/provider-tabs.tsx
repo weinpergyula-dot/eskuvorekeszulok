@@ -73,7 +73,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
             key={tab.id}
             onClick={() => setActive(tab.id)}
             className={cn(
-              "flex-1 sm:flex-none px-2 sm:px-4 py-3 text-sm sm:text-base font-extrabold border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap [font-family:'BloomSpeakBody']",
+              "flex-1 sm:flex-none px-2 sm:px-4 py-3 text-sm sm:text-base font-extrabold border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap",
               tab.desktopOnly ? "hidden sm:block" : "",
               active === tab.id
                 ? "border-[#84AAA6] text-[#84AAA6]"

@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
+import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { TopLoader } from "@/components/layout/top-loader";
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Esküvőre Készülök – Esküvői Szolgáltatók",
@@ -16,18 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="hu" className="h-full">
-      <head>
-        <link rel="preload" href="/fonts/BloomSpeakBody-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/BloomSpeakBody-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/BloomSpeakBody-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/BloomSpeakTitle-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/BloomSpeakTitle-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/BloomSpeakTitle-ExtraBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-      </head>
+    <html lang="hu" className={`h-full ${cormorant.variable}`}>
       <body className="min-h-full flex flex-col antialiased">
         <TopLoader />
-<Navbar />
+        <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
