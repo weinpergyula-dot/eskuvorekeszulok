@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil, Images } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -21,6 +21,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
+  const hasGallery = (provider.gallery_urls ?? []).length > 0;
 
   const Wrapper = disableLink ? "div" : "a";
   const wrapperProps = disableLink ? {} : { href: `/providers/${provider.id}` };
@@ -33,27 +34,29 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         disableLink ? "cursor-default" : "hover:border-[#84AAA6] hover:shadow-md transition-all cursor-pointer group"
       )}
     >
-      {/* Header – matches provider profile hero */}
+      {/* Header */}
       <div className="relative flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
-        {/* Mobile: edit (owner) or favorite (others) top-left */}
+        {/* Top-left: edit (owner) or favorite (icon only) */}
         {!disableLink && (
-          <div className="absolute top-2 left-2 sm:hidden" onClick={(e) => e.preventDefault()}>
+          <div className="absolute top-2 left-2" onClick={(e) => e.preventDefault()}>
             {isOwner ? (
               <a href="/profil#provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
                 <Pencil className="h-4 w-4" />
               </a>
             ) : (
-              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile />
+              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile iconOnly />
             )}
           </div>
         )}
-        {/* Mobile: visitor count top-right */}
-        <div className="absolute top-2 right-2 sm:hidden">
+
+        {/* Top-right: view count */}
+        <div className="absolute top-2 right-2">
           <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
             <Eye className="h-3.5 w-3.5" />
             {viewCount}
           </span>
         </div>
+
         {/* Avatar */}
         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0">
           {provider.avatar_url ? (
@@ -90,6 +93,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             )}
           </div>
         )}
+
         {/* Counties */}
         <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
           <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
@@ -99,8 +103,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </span>
         </div>
 
-        {/* Rating – desktop only (mobile shows in footer) */}
-        <div className="hidden sm:flex items-center gap-1.5">
+        {/* Rating – both mobile and desktop */}
+        <div className="flex items-center gap-1.5">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star
               key={star}
@@ -141,9 +145,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         )}
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-gray-100 mx-5" />
-
       {/* Contact info */}
       <div className="px-5 py-4 space-y-2 flex-1">
         <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
@@ -165,45 +166,41 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         )}
       </div>
 
-      {/* Footer – desktop */}
+      {/* Footer action bar */}
       {!disableLink && (
-        <div className="border-t border-gray-100 px-5 py-3 hidden sm:flex items-center justify-between">
-          {isOwner ? (
-            <a href="/profil#provider" className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white hover:bg-[#84AAA6]/10 transition-colors px-3 py-1.5" onClick={(e) => e.stopPropagation()}>
-              <Pencil className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-700">Profil szerkesztés</span>
+        <div className="border-t border-gray-100 px-4 py-3 flex items-center justify-between gap-2">
+          {/* Left: Üzenetküldés */}
+          <a
+            href={`/providers/${provider.id}#messages`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            Üzenetküldés
+          </a>
+
+          {/* Center: Galéria (only if gallery exists) */}
+          {hasGallery && (
+            <a
+              href={`/providers/${provider.id}#gallery`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
+            >
+              <Images className="h-3.5 w-3.5" />
+              Galéria
             </a>
-          ) : (
-            <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} />
           )}
-          <div className="flex items-center gap-1 text-gray-900 text-base">
-            <Eye className="h-3.5 w-3.5" />
-            <span>{viewCount}</span>
-          </div>
+
+          {/* Right: Részletek */}
+          <a
+            href={`/providers/${provider.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="ml-auto flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
+          >
+            Részletek
+          </a>
         </div>
       )}
-      {/* Footer – mobile */}
-      <div className="border-t border-gray-100 px-4 py-3 flex sm:hidden items-center justify-between">
-        <div className="flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Star
-              key={star}
-              className={cn(
-                "h-4 w-4",
-                star <= Math.round(rating)
-                  ? "fill-amber-400 text-amber-400"
-                  : "fill-gray-200 text-gray-200"
-              )}
-            />
-          ))}
-          <span className="text-sm font-semibold text-gray-900 ml-1">
-            {rating > 0 ? rating.toFixed(1) : "–"}
-          </span>
-        </div>
-        <span className="text-sm font-medium text-[#84AAA6] border border-[#84AAA6] px-3 py-1 rounded-full">
-          Részletek
-        </span>
-      </div>
     </Wrapper>
   );
 }

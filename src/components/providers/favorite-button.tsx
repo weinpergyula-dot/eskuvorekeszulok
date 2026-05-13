@@ -10,11 +10,13 @@ export function FavoriteButton({
   initialLiked,
   onUnlike,
   hideTextOnMobile = false,
+  iconOnly = false,
 }: {
   providerId: string;
   initialLiked: boolean;
   onUnlike?: (id: string) => void;
   hideTextOnMobile?: boolean;
+  iconOnly?: boolean;
 }) {
   const [liked, setLiked] = useState(initialLiked);
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,12 @@ export function FavoriteButton({
         onClick={handleClick}
         aria-label="Kedvenc"
         disabled={loading}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#FAF0F7] transition-colors cursor-pointer disabled:cursor-default"
+        className={cn(
+          "flex items-center justify-center transition-colors cursor-pointer disabled:cursor-default",
+          iconOnly
+            ? "w-8 h-8 rounded-full border border-gray-200 bg-white/80 hover:bg-[#FAF0F7]"
+            : "gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#FAF0F7]"
+        )}
       >
         {loading ? (
           <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
@@ -65,9 +72,11 @@ export function FavoriteButton({
             )}
           />
         )}
-        <span className={cn("text-sm text-gray-700", hideTextOnMobile && !liked ? "hidden sm:inline" : "")}>
-          {liked ? "Kedvenc" : "Kedvencnek jelölöm"}
-        </span>
+        {!iconOnly && (
+          <span className={cn("text-sm text-gray-700", hideTextOnMobile && !liked ? "hidden sm:inline" : "")}>
+            {liked ? "Kedvenc" : "Kedvencnek jelölöm"}
+          </span>
+        )}
       </button>
       {tooltipRect && typeof document !== "undefined" && createPortal(
         <div
