@@ -84,8 +84,8 @@ function deriveSidebarIndicator(
     return { color: "bg-amber-400", tooltip: `${diffCount} mező jóváhagyásra vár` };
   if (isFirstSubmission && provider.approval_status === "pending")
     return { color: "bg-amber-400", tooltip: "Jóváhagyásra vár" };
-  if (showApprovalDot)
-    return { color: "bg-green-500", tooltip: "Profil jóváhagyva!" };
+  if (provider.approval_status === "approved" && isProviderActive)
+    return { color: "bg-green-500", tooltip: "Aktív profil" };
   if (!isProviderActive)
     return { color: "bg-gray-400",  tooltip: "Kikapcsolva" };
   return null;

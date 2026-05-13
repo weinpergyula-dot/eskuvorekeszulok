@@ -82,15 +82,14 @@ export function Navbar() {
     if (!supabase || !user) { setProfile(null); setProviderDot(null); setHasProvider(false); setUnreadMessages(0); return; }
     supabase.from("profiles").select("*").eq("user_id", user.id).single()
       .then(({ data }) => setProfile(data));
-    supabase.from("providers").select("approval_status, pending_changes").eq("user_id", user.id).maybeSingle()
+    supabase.from("providers").select("approval_status, pending_changes, active").eq("user_id", user.id).maybeSingle()
       .then(({ data: p }) => {
         if (!p) { setProviderDot(null); setHasProvider(false); return; }
         setHasProvider(true);
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
         if (p.approval_status === "approved") {
-          const ack = localStorage.getItem(`provider_approval_ack_${user.id}`);
-          setProviderDot(ack !== "approved" ? "green" : null);
+          setProviderDot(p.active !== false ? "green" : null);
           return;
         }
         setProviderDot(null);
