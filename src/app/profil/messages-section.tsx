@@ -12,6 +12,8 @@ interface Message {
   sender_name: string;
   sender_role: string;
   sender_provider_id: string | null;
+  recipient_name: string | null;
+  recipient_provider_id: string | null;
   is_own: boolean;
   subject: string;
   body: string;
@@ -181,6 +183,16 @@ function ThreadCard({
     ? otherParticipant.sender_id
     : (thread.messages[0]?.recipient_id ?? "");
 
+  // Direction for the preview label
+  const firstMsg = thread.messages[0];
+  const isOutgoing = firstMsg?.is_own ?? false;
+  const otherName = isOutgoing
+    ? (firstMsg?.recipient_name ?? "")
+    : (otherParticipant?.sender_name ?? "");
+  const otherProviderId = isOutgoing
+    ? (firstMsg?.recipient_provider_id ?? null)
+    : (otherParticipant?.sender_provider_id ?? null);
+
   const handleExpand = async () => {
     if (expanded) {
       setExpanded(false);
@@ -211,10 +223,6 @@ function ThreadCard({
     onDeleted(ids);
   };
 
-  const otherNames = [
-    ...new Set(thread.messages.filter((m) => !m.is_own).map((m) => m.sender_name)),
-  ];
-
   return (
     <div
       className={`border rounded-xl overflow-hidden transition-colors ${
@@ -239,7 +247,18 @@ function ThreadCard({
           </p>
           <p className="text-sm text-gray-500 truncate">
             {thread.messages.length} üzenet
-            {otherNames.length > 0 && ` · ${otherNames.join(", ")}`}
+            {" · "}
+            {isOutgoing ? "Címzett: " : "Feladó: "}
+            {otherProviderId ? (
+              <span
+                className="text-[#84AAA6] hover:underline cursor-pointer"
+                onClick={(e) => { e.stopPropagation(); window.open(`/providers/${otherProviderId}`, "_blank"); }}
+              >
+                {otherName}
+              </span>
+            ) : (
+              <span className="text-gray-700">{otherName}</span>
+            )}
             {" · "}
             {formatDate(thread.lastAt)}
           </p>

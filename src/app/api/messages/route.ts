@@ -16,19 +16,28 @@ export async function GET() {
     .order("created_at", { ascending: false });
 
   const senderIds = [...new Set((messages ?? []).filter(m => m.sender_id !== user.id).map((m) => m.sender_id))];
+  const recipientIds = [...new Set((messages ?? []).filter(m => m.sender_id === user.id).map((m) => m.recipient_id))];
 
   const adminClient = createAdminClient();
-  const [{ data: profiles }, { data: senderProviders }] = await Promise.all([
+  const [{ data: profiles }, { data: senderProviders }, { data: recipientProfiles }, { data: recipientProviders }] = await Promise.all([
     senderIds.length > 0
       ? adminClient.from("profiles").select("user_id, full_name, role").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
     senderIds.length > 0
       ? adminClient.from("providers").select("user_id, id").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
+    recipientIds.length > 0
+      ? adminClient.from("profiles").select("user_id, full_name").in("user_id", recipientIds)
+      : Promise.resolve({ data: [] }),
+    recipientIds.length > 0
+      ? adminClient.from("providers").select("user_id, id").in("user_id", recipientIds)
+      : Promise.resolve({ data: [] }),
   ]);
 
   const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, { name: p.full_name, role: p.role }]));
   const providerMap = Object.fromEntries((senderProviders ?? []).map((p) => [p.user_id, p.id]));
+  const recipientProfileMap = Object.fromEntries((recipientProfiles ?? []).map((p) => [p.user_id, p.full_name as string]));
+  const recipientProviderMap = Object.fromEntries((recipientProviders ?? []).map((p) => [p.user_id, p.id as string]));
 
   const enriched = (messages ?? []).map((m) => {
     const isOwn = m.sender_id === user.id;
@@ -38,6 +47,8 @@ export async function GET() {
       sender_name: isOwn ? "Ön" : (profileMap[m.sender_id]?.name || "Névtelen felhasználó"),
       sender_role: isOwn ? "self" : (profileMap[m.sender_id]?.role ?? "visitor"),
       sender_provider_id: isOwn ? null : (providerMap[m.sender_id] ?? null),
+      recipient_name: isOwn ? (recipientProfileMap[m.recipient_id] ?? "Névtelen") : null,
+      recipient_provider_id: isOwn ? (recipientProviderMap[m.recipient_id] ?? null) : null,
     };
   });
 
