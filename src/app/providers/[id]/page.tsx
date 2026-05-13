@@ -92,7 +92,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           {/* Top-left: edit (owner) or favorite (others) – mobile only */}
           <div className="absolute top-3 left-3 sm:hidden">
             {isOwner ? (
-              <a href="/profil#provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
+              <a href="/profil?tab=provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
                 <Pencil className="h-4 w-4" />
               </a>
             ) : (
@@ -103,7 +103,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           <div className="absolute top-3 right-3 hidden sm:flex items-center gap-2">
             <ShareButton title={provider.full_name} />
             {isOwner ? (
-              <a href="/profil#provider" className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#84AAA6]/10 transition-colors px-3 py-1.5">
+              <a href="/profil?tab=provider" className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#84AAA6]/10 transition-colors px-3 py-1.5">
                 <Pencil className="h-4 w-4 text-gray-400" />
                 <span className="text-sm text-gray-700">Profil szerkesztés</span>
               </a>

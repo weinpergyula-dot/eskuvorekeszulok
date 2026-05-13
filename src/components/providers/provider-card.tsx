@@ -40,7 +40,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {!disableLink && (
           <div className="absolute top-2 left-2" onClick={(e) => e.preventDefault()}>
             {isOwner ? (
-              <a href="/profil#provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
+              <a href="/profil?tab=provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
                 <Pencil className="h-4 w-4" />
               </a>
             ) : (

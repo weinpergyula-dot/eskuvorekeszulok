@@ -410,15 +410,10 @@ function RegisterContent() {
               : "Add meg a bejelentkezési adataidat. A következő lépésben töltheted ki a nyilvános profilodat."
           }
           bgColor="#84AAA6"
+          backHref="/auth/register"
         />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
-          <button
-            onClick={() => { setStep("role"); router.replace("/auth/register"); }}
-            className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
-          >
-            ← Vissza
-          </button>
           <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           <p className="text-gray-900 text-lg mb-6">Alapadatok megadása</p>
 
@@ -543,23 +538,22 @@ function RegisterContent() {
       <PageHeader icon={UserRound} title="Regisztráció – Szolgáltatói profil" description="Töltsd ki a nyilvános profilodat – ez jelenik majd meg az oldalon az érdeklődő pároknak." bgColor="#84AAA6" />
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
-        <div className="mb-6">
-          {!isUpgrade && (
-            <button
-              onClick={() => setStep("basic")}
-              className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
-            >
-              ← Vissza
-            </button>
-          )}
-          {isUpgrade && (
-            <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-4">
-              <p className="text-base text-gray-900">
-                Bejelentkezve mint <strong>{email}</strong>. Add meg a szolgáltatói adataidat, és jóváhagyás után megjelensz a kínálatban.
-              </p>
-            </div>
-          )}
-        </div>
+        {!isUpgrade && (
+          <button
+            onClick={() => setStep("basic")}
+            className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
+          >
+            ← Vissza
+          </button>
+        )}
+        <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+        {isUpgrade && (
+          <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-6">
+            <p className="text-base text-gray-900">
+              Bejelentkezve mint <strong>{email}</strong>. Add meg a szolgáltatói adataidat, és jóváhagyás után megjelensz a kínálatban.
+            </p>
+          </div>
+        )}
 
         {/* Progress */}
         <div className="flex gap-2 mb-8">
@@ -743,6 +737,7 @@ function RegisterContent() {
             </p>
           </div>
         </form>
+        </div>
       </div>
       </div>
     </div>
