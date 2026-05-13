@@ -13,6 +13,7 @@ interface Message {
   sender_role: string;
   sender_provider_id: string | null;
   recipient_name: string | null;
+  recipient_role: string | null;
   recipient_provider_id: string | null;
   is_own: boolean;
   subject: string;
@@ -189,6 +190,9 @@ function ThreadCard({
   const otherName = isOutgoing
     ? (firstMsg?.recipient_name ?? "")
     : (otherParticipant?.sender_name ?? "");
+  const otherRole = isOutgoing
+    ? (firstMsg?.recipient_role ?? null)
+    : (otherParticipant?.sender_role ?? null);
   const otherProviderId = isOutgoing
     ? (firstMsg?.recipient_provider_id ?? null)
     : (otherParticipant?.sender_provider_id ?? null);
@@ -258,6 +262,9 @@ function ThreadCard({
               </span>
             ) : (
               <span className="text-gray-700">{otherName}</span>
+            )}
+            {otherRole === "admin" && (
+              <span className="text-gray-400"> (Admin)</span>
             )}
             {" · "}
             {formatDate(thread.lastAt)}
