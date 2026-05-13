@@ -164,7 +164,7 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
   const isProvider = userId === providerUserId;
 
   return (
-    <section className="mt-8 pt-8 border-t border-gray-100">
+    <section className="mt-8">
       <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
         <Star className="h-5 w-5 text-[#84AAA6]" />
         Értékelések
