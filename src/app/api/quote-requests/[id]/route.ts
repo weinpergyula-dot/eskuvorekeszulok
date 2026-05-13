@@ -86,9 +86,25 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
 
   const admin = createAdminClient();
 
-  // Ha van provider rekordja → csak a saját recipient sorát töröljük
+  // Ha van provider rekordja → csak a saját recipient sorát töröljük + rendszerüzenet a látogatónak
   const { data: providerData } = await admin.from("providers").select("id").eq("user_id", user.id).maybeSingle();
   if (providerData) {
+    // Fetch quote request to get visitor and subject for system message
+    const { data: qr } = await admin
+      .from("quote_requests")
+      .select("visitor_id, subject")
+      .eq("id", id)
+      .single();
+
+    if (qr?.visitor_id) {
+      await admin.from("messages").insert({
+        sender_id: user.id,
+        recipient_id: qr.visitor_id,
+        subject: qr.subject ?? "Ajánlatkérés",
+        body: `__SYSTEM__:A szolgáltató visszavonta magát a(z) „${qr.subject}" ajánlatkérésből. Válaszadásra nincs lehetőség.`,
+      });
+    }
+
     const { error } = await admin
       .from("quote_request_recipients")
       .delete()
@@ -98,7 +114,23 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ ok: true });
   }
 
-  // Látogató → töröljük az egész ajánlatkérést (cascade: recipients + messages)
+  // Látogató → rendszerüzenet minden érintett szolgáltatónak, majd töröljük az egész ajánlatkérést
+  const [{ data: recipients }, { data: qr }] = await Promise.all([
+    admin.from("quote_request_recipients").select("provider_user_id").eq("quote_request_id", id),
+    admin.from("quote_requests").select("subject").eq("id", id).single(),
+  ]);
+
+  await Promise.all(
+    (recipients ?? []).map((rec) =>
+      admin.from("messages").insert({
+        sender_id: user.id,
+        recipient_id: rec.provider_user_id,
+        subject: qr?.subject ?? "Ajánlatkérés",
+        body: `__SYSTEM__:A kérelmező visszavonta a(z) „${qr?.subject}" ajánlatkérését. Válaszadásra nincs lehetőség.`,
+      })
+    )
+  );
+
   const { error } = await admin
     .from("quote_requests")
     .delete()

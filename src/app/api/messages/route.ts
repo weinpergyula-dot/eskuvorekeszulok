@@ -91,8 +91,37 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Hiányzó azonosítók." }, { status: 400 });
   }
 
-  // Use admin client to bypass RLS; restrict to rows belonging to the user
   const admin = createAdminClient();
+
+  // Fetch thread info to find the other party and the subject
+  const { data: threadMessages } = await admin
+    .from("messages")
+    .select("sender_id, recipient_id, subject, body")
+    .in("id", ids);
+
+  // Determine the other user (not the current user)
+  const msgs = threadMessages ?? [];
+  const otherUserId =
+    msgs.find((m) => m.sender_id !== user.id)?.sender_id ??
+    msgs.find((m) => m.recipient_id !== user.id)?.recipient_id ?? null;
+
+  const subject = msgs[0]?.subject?.replace(/^(Re:\s*)+/i, "").trim() ?? "";
+
+  // Only insert a system message if the thread wasn't already terminated by the other side
+  const alreadyTerminated = msgs.some(
+    (m) => m.sender_id !== user.id && (m.body as string).startsWith("__SYSTEM__:")
+  );
+
+  if (otherUserId && !alreadyTerminated) {
+    await admin.from("messages").insert({
+      sender_id: user.id,
+      recipient_id: otherUserId,
+      subject,
+      body: "__SYSTEM__:A másik fél törölte ezt a beszélgetést. Válaszadásra nincs lehetőség.",
+    });
+  }
+
+  // Delete original messages only (the system message we just inserted is excluded)
   const { error } = await admin
     .from("messages")
     .delete()

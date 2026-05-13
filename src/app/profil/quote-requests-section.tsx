@@ -544,7 +544,7 @@ function VisitorRequestRow({
               </button>
             ) : (
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd? <span className="text-gray-400">Az ajánlatkérés minden szolgáltató postaládájából is törlődik.</span></span>
+                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
@@ -760,7 +760,7 @@ function ProviderRequestRow({
               </button>
             ) : (
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd? <span className="text-gray-400">Az ajánlatkérés csak a te bejövőidből tűnik el — a látogató és a többi szolgáltató számára megmarad.</span></span>
+                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}

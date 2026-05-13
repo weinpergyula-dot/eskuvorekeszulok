@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, Mail, MailOpen, CornerDownRight, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Mail, MailOpen, CornerDownRight, Trash2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingTextarea } from "@/components/ui/floating-input";
 
@@ -34,13 +34,19 @@ interface Props {
   onUnreadChange: (count: number) => void;
 }
 
+const SYSTEM_PREFIX = "__SYSTEM__:";
+const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
+const systemText  = (body: string) => body.slice(SYSTEM_PREFIX.length);
+
 function normalizeSubject(s: string) {
   return s.replace(/^(Re:\s*)+/i, "").trim();
 }
 
 function buildThreads(messages: Message[]): Thread[] {
+  // Hide system messages sent by the current user (they deleted that thread — they shouldn't see it)
+  const visible = messages.filter((m) => !(m.is_own && isSystemMsg(m.body)));
   const map = new Map<string, Thread>();
-  for (const msg of messages) {
+  for (const msg of visible) {
     const otherId = msg.is_own ? msg.recipient_id : msg.sender_id;
     const key = `${normalizeSubject(msg.subject)}|${otherId}`;
     if (!map.has(key)) {
@@ -179,6 +185,9 @@ function ThreadCard({
   const [deleting, setDeleting] = useState(false);
   const [localHasUnread, setLocalHasUnread] = useState(thread.hasUnread);
 
+  // Detect if the other party terminated the conversation with a system message
+  const hasSystemMessage = thread.messages.some((m) => !m.is_own && isSystemMsg(m.body));
+
   const otherParticipant = thread.messages.find((m) => !m.is_own);
   const recipientId = otherParticipant
     ? otherParticipant.sender_id
@@ -281,26 +290,33 @@ function ThreadCard({
       {expanded && (
         <div className="border-t border-gray-100">
           <div className="divide-y divide-gray-100">
-            {thread.messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`px-4 py-3 ${msg.is_own ? "bg-gray-50" : "bg-white"}`}
-              >
-                <div className="flex items-center justify-between mb-1.5 gap-4">
-                  <span className="text-sm text-gray-500">
-                    <SenderLabel msg={msg} />
-                  </span>
-                  <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
+            {thread.messages.map((msg) =>
+              isSystemMsg(msg.body) ? (
+                <div key={msg.id} className="px-4 py-3 bg-amber-50 flex items-start gap-2.5">
+                  <Info className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                  <p className="text-sm text-amber-800 italic">{systemText(msg.body)}</p>
                 </div>
-                <p className="text-base text-gray-900 whitespace-pre-line leading-relaxed">
-                  {msg.body}
-                </p>
-              </div>
-            ))}
+              ) : (
+                <div
+                  key={msg.id}
+                  className={`px-4 py-3 ${msg.is_own ? "bg-gray-50" : "bg-white"}`}
+                >
+                  <div className="flex items-center justify-between mb-1.5 gap-4">
+                    <span className="text-sm text-gray-500">
+                      <SenderLabel msg={msg} />
+                    </span>
+                    <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
+                  </div>
+                  <p className="text-base text-gray-900 whitespace-pre-line leading-relaxed">
+                    {msg.body}
+                  </p>
+                </div>
+              )
+            )}
           </div>
 
           {/* Reply form */}
-          {replying && recipientId && (
+          {replying && recipientId && !hasSystemMessage && (
             <div className="px-4 pb-4">
               <ReplyForm
                 subject={thread.subject}
@@ -316,7 +332,7 @@ function ThreadCard({
           {/* Footer: reply + delete */}
           {!replying && (
             <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between gap-4">
-              {recipientId && (
+              {recipientId && !hasSystemMessage && (
                 <button
                   onClick={() => setReplying(true)}
                   className="flex items-center gap-1.5 text-sm text-[#84AAA6] hover:underline cursor-pointer"
