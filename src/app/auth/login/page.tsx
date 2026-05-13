@@ -86,7 +86,7 @@ function LoginForm() {
         )}
         {reset && (
           <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
-            Jelszavad sikeresen megváltozott. Jelentkezz be az új jelszavaddal.
+            Jelszavad sikeresen megváltozott. Jelentkezz be.
           </div>
         )}
         {error && (

@@ -49,14 +49,17 @@ export async function GET(request: NextRequest) {
       try {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (!error) {
-          // After exchange, check if this was a password-reset code
-          const { data: { user } } = await supabase.auth.getUser();
-          const recoverySentAt = user?.recovery_sent_at
-            ? new Date(user.recovery_sent_at).getTime()
-            : 0;
-          const isPasswordReset =
-            hintIsRecovery ||
-            (recoverySentAt > 0 && Date.now() - recoverySentAt < 2 * 60 * 60 * 1000);
+          let isPasswordReset = hintIsRecovery;
+
+          // Only call getUser() as a fallback when the URL gives no hint —
+          // avoids an extra round-trip on every email confirmation click.
+          if (!isPasswordReset) {
+            const { data: { user } } = await supabase.auth.getUser();
+            const recoverySentAt = user?.recovery_sent_at
+              ? new Date(user.recovery_sent_at).getTime()
+              : 0;
+            isPasswordReset = recoverySentAt > 0 && Date.now() - recoverySentAt < 2 * 60 * 60 * 1000;
+          }
 
           const dest = isPasswordReset
             ? `${origin}/auth/reset-password`
