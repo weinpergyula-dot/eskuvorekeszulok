@@ -413,7 +413,7 @@ function RegisterContent() {
           backHref="/auth/register"
         />
         <div className="flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-lg">
           <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           <p className="text-gray-900 text-lg mb-6">Alapadatok megadása</p>
 
