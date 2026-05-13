@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
+import { ImagePlus, X } from "lucide-react";
 
 function PillSelect<T extends string>({
   label,
@@ -68,6 +70,7 @@ export default function EditProfilePage() {
   const router = useRouter();
   const supabase = createClient();
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const [provider, setProvider] = useState<Provider | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,9 +84,12 @@ export default function EditProfilePage() {
   const [counties, setCounties] = useState<string[]>([]);
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [description, setDescription] = useState("");
+  const [detailedDescription, setDetailedDescription] = useState("");
   const [website, setWebsite] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [existingGalleryUrls, setExistingGalleryUrls] = useState<string[]>([]);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
 
   useEffect(() => {
     const load = async () => {
@@ -104,8 +110,10 @@ export default function EditProfilePage() {
         setCounties(data.counties ?? []);
         setCategories((data.categories as ServiceCategory[]) ?? []);
         setDescription(data.description);
+        setDetailedDescription(data.detailed_description ?? "");
         setWebsite(data.website ?? "");
         setAvatarPreview(data.avatar_url ?? null);
+        setExistingGalleryUrls(data.gallery_urls ?? []);
       }
       setLoading(false);
     };
@@ -142,14 +150,28 @@ export default function EditProfilePage() {
         avatarUrl = urlData.publicUrl;
       }
 
+      // Upload new gallery files and combine with kept existing ones
+      let galleryUrls = existingGalleryUrls;
+      for (let i = 0; i < galleryFiles.length; i++) {
+        const path = `${user.id}/edit-${Date.now()}-${i}`;
+        const { error: gErr } = await supabase.storage
+          .from("gallery")
+          .upload(path, galleryFiles[i], { upsert: true });
+        if (gErr) throw gErr;
+        const { data: gUrlData } = supabase.storage.from("gallery").getPublicUrl(path);
+        galleryUrls = [...galleryUrls, gUrlData.publicUrl];
+      }
+
       const changes = {
         full_name: fullName,
         phone,
         counties,
         categories,
         description,
+        detailed_description: detailedDescription || null,
         website: website || null,
         avatar_url: avatarUrl || null,
+        gallery_urls: galleryUrls,
       };
 
       // Store as pending_changes; admin must approve
@@ -261,14 +283,8 @@ export default function EditProfilePage() {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="phone">Telefonszám *</Label>
-          <Input
-            id="phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
+          <Label>Telefonszám *</Label>
+          <PhoneInput value={phone} onChange={setPhone} />
         </div>
 
         <PillSelect
@@ -286,13 +302,24 @@ export default function EditProfilePage() {
         />
 
         <div className="space-y-1.5">
-          <Label htmlFor="description">Leírás *</Label>
+          <Label htmlFor="description">Rövid bemutatkozás *</Label>
           <Textarea
             id="description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={5}
+            onChange={(e) => setDescription(e.target.value.slice(0, 200))}
+            rows={3}
             required
+          />
+          <p className="text-xs text-gray-400 text-right">{description.length} / 200</p>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="detailed-description">Részletes bemutatkozás</Label>
+          <Textarea
+            id="detailed-description"
+            value={detailedDescription}
+            onChange={(e) => setDetailedDescription(e.target.value)}
+            rows={6}
           />
         </div>
 
@@ -305,6 +332,83 @@ export default function EditProfilePage() {
             onChange={(e) => setWebsite(e.target.value)}
             placeholder="https://www.pelda.hu"
           />
+        </div>
+
+        {/* Gallery */}
+        <div className="space-y-1.5">
+          <Label>Galéria képek</Label>
+
+          {/* Existing images */}
+          {existingGalleryUrls.length > 0 && (
+            <div>
+              <p className="text-sm text-gray-500 mb-2">Jelenlegi képek (kattints az X-re a törléshez):</p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {existingGalleryUrls.map((url, i) => (
+                  <div key={i} className="relative group">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} alt="" className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+                    <button
+                      type="button"
+                      onClick={() => setExistingGalleryUrls((prev) => prev.filter((_, idx) => idx !== i))}
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Add new files */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => galleryInputRef.current?.click()}
+              disabled={(existingGalleryUrls.length + galleryFiles.length) >= 10}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ImagePlus className="h-4 w-4" />
+              Képek hozzáadása
+            </button>
+            {(existingGalleryUrls.length + galleryFiles.length) > 0 && (
+              <span className="text-sm text-gray-500">
+                {existingGalleryUrls.length + galleryFiles.length} / 10
+              </span>
+            )}
+          </div>
+          <input
+            ref={galleryInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              const newFiles = Array.from(e.target.files ?? []);
+              setGalleryFiles((prev) =>
+                [...prev, ...newFiles].slice(0, 10 - existingGalleryUrls.length)
+              );
+              e.target.value = "";
+            }}
+          />
+
+          {/* New files list */}
+          {galleryFiles.length > 0 && (
+            <ul className="space-y-1">
+              {galleryFiles.map((file, idx) => (
+                <li key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                  <span className="text-gray-700 truncate flex-1">{file.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setGalleryFiles((prev) => prev.filter((_, i) => i !== idx))}
+                    className="text-gray-400 hover:text-red-500 transition-colors shrink-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="flex gap-3 pt-2">
