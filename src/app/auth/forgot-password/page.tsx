@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
         <div className="w-full max-w-xl bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           {sent ? (
             <div className="text-center space-y-6">
-              <div className="bg-green-50 text-green-700 px-4 py-4 rounded-xl border border-green-200 space-y-1">
+              <div className="bg-green-50 text-green-700 px-4 py-4 rounded-xl border border-green-200 space-y-3">
                 <p className="text-lg font-semibold">Elküldtük a visszaállítási linket!</p>
                 <p className="text-base leading-relaxed">
                   Keresd meg az e-mailt a <strong>{email}</strong> postaládájában, és kattints a levélben található linkre az új jelszavad megadásához – a SPAM mappát is ellenőrizd!
