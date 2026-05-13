@@ -70,7 +70,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full">
       <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Jelentkezz be a fiókodba!</p>
 
       <form
@@ -142,9 +142,11 @@ export default function LoginPage() {
     <div>
       <PageHeader title="Bejelentkezés" icon={LogIn} description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a bejelentkezés." />
       <div className="flex items-center justify-center py-12 px-4">
-        <Suspense>
-          <LoginForm />
-        </Suspense>
+        <div className="w-full max-w-md bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+          <Suspense>
+            <LoginForm />
+          </Suspense>
+        </div>
       </div>
     </div>
   );

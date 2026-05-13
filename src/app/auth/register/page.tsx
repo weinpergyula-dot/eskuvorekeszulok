@@ -413,15 +413,14 @@ function RegisterContent() {
         />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
-          <div className="mb-6">
-            <button
-              onClick={() => { setStep("role"); router.replace("/auth/register"); }}
-              className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
-            >
-              ← Vissza
-            </button>
-            <p className="text-gray-900 text-lg">Alapadatok megadása</p>
-          </div>
+          <button
+            onClick={() => { setStep("role"); router.replace("/auth/register"); }}
+            className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
+          >
+            ← Vissza
+          </button>
+          <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+          <p className="text-gray-900 text-lg mb-6">Alapadatok megadása</p>
 
           {/* Progress */}
           <div className="flex gap-2 mb-6">
@@ -531,6 +530,7 @@ function RegisterContent() {
               Jelentkezz be
             </Link>
           </p>
+          </div>
         </div>
         </div>
       </div>
