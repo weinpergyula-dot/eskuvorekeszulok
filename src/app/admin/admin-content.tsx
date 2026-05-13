@@ -23,6 +23,7 @@ interface Provider {
 }
 
 interface ProviderStatus {
+  id: string;
   user_id: string;
   approval_status: string;
   pending_changes: unknown;

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -15,9 +16,11 @@ interface UserProfile {
   created_at: string;
   providerApprovalStatus?: string | null;
   providerHasPendingChanges?: boolean;
+  providerId?: string | null;
 }
 
 interface ProviderStatus {
+  id: string;
   user_id: string;
   approval_status: string;
   pending_changes: unknown;
@@ -71,6 +74,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
             ...u,
             providerApprovalStatus: prov?.approval_status ?? null,
             providerHasPendingChanges: !!prov?.pending_changes,
+            providerId: prov?.id ?? null,
           };
         }));
         setLoading(false);
@@ -233,7 +237,18 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           >
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                <span className="font-medium text-gray-900 text-lg">{u.full_name || "–"}</span>
+                {u.providerApprovalStatus === "approved" && u.providerId ? (
+                  <Link
+                    href={`/providers/${u.providerId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-lg text-[#84AAA6] hover:underline"
+                  >
+                    {u.full_name || "–"}
+                  </Link>
+                ) : (
+                  <span className="font-medium text-gray-900 text-lg">{u.full_name || "–"}</span>
+                )}
                 <Badge variant={ROLE_BADGE[u.role]} className="text-base">
                   {ROLE_LABELS[u.role]}
                 </Badge>

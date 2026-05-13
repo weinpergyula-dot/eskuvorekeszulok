@@ -56,7 +56,7 @@ export default async function AdminPage() {
   // Fetch all provider statuses server-side (bypasses RLS – admin only route)
   const { data: allProviderStatuses } = await supabase
     .from("providers")
-    .select("user_id, approval_status, pending_changes");
+    .select("id, user_id, approval_status, pending_changes");
 
   const adminSupabase = createAdminClient();
 
