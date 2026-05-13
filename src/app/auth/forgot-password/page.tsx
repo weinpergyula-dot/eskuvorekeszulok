@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
                 <div>
                   <FloatingInput
                     id="email"
-                    label="E-mail-cím"
+                    label="E-mail cím"
                     type="email"
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
