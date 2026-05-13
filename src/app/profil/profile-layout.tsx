@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, ShieldCheck, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
@@ -13,7 +13,7 @@ import { QuoteRequestsSection } from "./quote-requests-section";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages";
+type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "admin";
 
 interface Props {
   userId: string;
@@ -25,6 +25,7 @@ interface Props {
 }
 
 const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
+  { id: "admin",    label: "Admin",               icon: <ShieldCheck className="h-4 w-4" /> },
   { id: "account",   label: "Fiók adatok",          icon: <User className="h-4 w-4" /> },
   { id: "password",  label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
   { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
@@ -35,6 +36,7 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
+  admin:     "Admin",
   account:   "Fiók adatok",
   password:  "Jelszó módosítás",
   provider:  "Szolgáltatói profil",
@@ -342,6 +344,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive, showApprovalDot);
 
   const switchTo = (section: Section) => {
+    if (section === "admin") {
+      window.location.href = "/admin";
+      return;
+    }
     setActive(section);
     window.location.hash = section;
     if (section === "provider" && showApprovalDot) {
@@ -387,7 +393,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
         <aside className="sm:w-56 shrink-0 sm:border-r sm:border-gray-200 sm:pr-6">
           {/* Mobile custom dropdown */}
           <MobileMenuDropdown
-            items={MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider")}
+            items={MENU_ITEMS.filter(item =>
+              (item.id !== "admin"     || role === "admin") &&
+              (item.id !== "dashboard" || role === "provider")
+            )}
             active={active}
             onSelect={switchTo}
             unreadCount={unreadCount}
@@ -397,7 +406,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
-            {MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider").map((item) => (
+            {MENU_ITEMS.filter(item =>
+              (item.id !== "admin"     || role === "admin") &&
+              (item.id !== "dashboard" || role === "provider")
+            ).map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
