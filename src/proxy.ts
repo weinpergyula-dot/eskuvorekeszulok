@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname, searchParams, origin } = request.nextUrl;
 
   // If Supabase redirects code/token_hash to homepage instead of /auth/callback, forward it
