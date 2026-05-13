@@ -53,6 +53,7 @@ export default function ForgotPasswordPage() {
                   Keresd meg az e-mailt a <strong>{email}</strong> postaládájában, és kattints a levélben található linkre az új jelszavad megadásához – a SPAM mappát is ellenőrizd!
                 </p>
               </div>
+              <hr className="border-gray-200" />
               <Link href="/auth/login" className="block text-lg text-[#84AAA6] hover:underline">
                 Vissza a bejelentkezéshez
               </Link>
