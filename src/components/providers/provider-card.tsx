@@ -171,7 +171,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className="border-t border-gray-100 px-4 py-3 flex items-center justify-between gap-2">
           {/* Left: Üzenetküldés */}
           <a
-            href={`/providers/${provider.id}#messages`}
+            href={`/providers/${provider.id}#message`}
             onClick={(e) => e.stopPropagation()}
             className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
           >

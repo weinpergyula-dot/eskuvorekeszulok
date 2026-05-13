@@ -81,10 +81,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       <PageHeader
         icon={User}
         title="Szolgáltatói profil"
-        breadcrumb={[
-          { label: "Szolgáltatók", href: "/services" },
-          ...(firstCategory ? [{ label: firstCategoryLabel, href: `/services/${firstCategory}` }] : []),
-        ]}
+        backHref={firstCategory ? `/services/${firstCategory}` : "/services"}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ViewTracker providerId={provider.id} />

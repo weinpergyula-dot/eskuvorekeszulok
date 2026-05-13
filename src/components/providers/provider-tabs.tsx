@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Phone, Mail, Globe, MessageSquare } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
@@ -36,11 +36,26 @@ function ContactItem({
   );
 }
 
+const HASH_TO_TAB: Record<string, Tab> = {
+  gallery: "gallery",
+  message: "message",
+  messages: "message",
+  reviews: "reviews",
+  about: "about",
+};
+
 export function ProviderTabs({ provider }: { provider: Provider }) {
   const [active, setActive] = useState<Tab>("about");
 
   const reviewCount = provider.review_count ?? 0;
   const hasGallery = (provider.gallery_urls ?? []).length > 0;
+
+  // Switch to tab based on URL hash on mount
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    const tab = HASH_TO_TAB[hash];
+    if (tab) setActive(tab);
+  }, []);
 
   const tabs: { id: Tab; label: string; desktopOnly?: boolean }[] = [
     { id: "about",   label: "Bemutatkozás" },

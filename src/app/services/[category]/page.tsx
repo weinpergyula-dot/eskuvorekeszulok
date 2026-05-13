@@ -75,7 +75,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       <PageHeader
         icon={CATEGORY_LUCIDE_ICONS[category as ServiceCategory]}
         title={label}
-        breadcrumb={[{ label: "Szolgáltatók", href: "/services" }]}
+        backHref="/services"
         description={CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
       />
 

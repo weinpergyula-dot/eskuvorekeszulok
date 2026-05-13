@@ -215,7 +215,7 @@ export default function EditProfilePage() {
     <div>
       <PageHeader
         title="Profil szerkesztése"
-        breadcrumb={[{ label: "Profilom", href: "/profil" }]}
+        backHref="/profil"
       />
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <p className="text-lg text-gray-900 mb-6">
