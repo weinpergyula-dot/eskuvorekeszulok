@@ -91,7 +91,9 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Hiányzó azonosítók." }, { status: 400 });
   }
 
-  const { error } = await supabase
+  // Use admin client to bypass RLS; restrict to rows belonging to the user
+  const admin = createAdminClient();
+  const { error } = await admin
     .from("messages")
     .delete()
     .in("id", ids)
