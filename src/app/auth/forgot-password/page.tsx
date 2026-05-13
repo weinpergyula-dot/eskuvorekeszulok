@@ -13,6 +13,13 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+
+  const validateEmailFormat = (val: string) => {
+    if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim()))
+      setEmailError("Adj meg érvényes e-mail-címet (pl. nev@example.hu).");
+    else setEmailError(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +44,7 @@ export default function ForgotPasswordPage() {
     <div>
       <PageHeader title="Elfelejtett jelszó" icon={Lock} />
       <div className="flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-lg bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+        <div className="w-full max-w-xl bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           {sent ? (
             <div className="text-center space-y-6">
               <div className="bg-green-50 text-green-700 px-4 py-4 rounded-xl border border-green-200 space-y-1">
@@ -54,7 +61,7 @@ export default function ForgotPasswordPage() {
             <>
               <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Jelszó visszaállítása</p>
               <p className="text-gray-500 text-center text-base mb-6 leading-relaxed">
-                Add meg a fiókodhoz tartozó e-mail-címet, és elküldjük a visszaállítási linket.
+                Add meg a fiókodhoz tartozó e-mail címet, és elküldjük a visszaállítási linket.
               </p>
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
@@ -62,15 +69,21 @@ export default function ForgotPasswordPage() {
                     {error}
                   </div>
                 )}
-                <FloatingInput
-                  id="email"
-                  label="E-mail-cím"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <Button type="submit" className="w-full" disabled={loading || !email.trim()}>
+                <div>
+                  <FloatingInput
+                    id="email"
+                    label="E-mail-cím"
+                    type="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
+                    onBlur={() => validateEmailFormat(email)}
+                    required
+                  />
+                  {emailError && (
+                    <p className="text-sm text-[#F06C6C] mt-1 px-1">{emailError}</p>
+                  )}
+                </div>
+                <Button type="submit" className="w-full" disabled={loading || !email.trim() || !!emailError}>
                   {loading ? "Küldés..." : "Visszaállítási link küldése"}
                 </Button>
               </form>
