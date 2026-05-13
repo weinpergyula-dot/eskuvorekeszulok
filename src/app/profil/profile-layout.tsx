@@ -328,6 +328,47 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       .catch(() => {});
   }, []);
 
+  // Realtime: new incoming message → update sidebar badge immediately
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
+    const channel = supabase
+      .channel(`profile-msg-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
+        () => {
+          fetch("/api/messages")
+            .then((r) => r.json())
+            .then((data: { read: boolean; is_own: boolean }[]) =>
+              setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
+            )
+            .catch(() => {});
+        }
+      )
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "quote_messages" },
+        () => {
+          fetch("/api/quote-requests")
+            .then((r) => r.json())
+            .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
+              const unread = data.reduce(
+                (s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0),
+                0
+              );
+              setUnreadQuotes(unread);
+              window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
+            })
+            .catch(() => {});
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
+
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(

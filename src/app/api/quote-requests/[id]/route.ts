@@ -86,54 +86,47 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
 
   const admin = createAdminClient();
 
-  // Ha van provider rekordja → csak a saját recipient sorát töröljük + rendszerüzenet a látogatónak
+  // Ha van provider rekordja → soft-delete a saját recipient során + rendszerüzenet a quote_messages-ben
   const { data: providerData } = await admin.from("providers").select("id").eq("user_id", user.id).maybeSingle();
   if (providerData) {
-    // Fetch quote request to get visitor and subject for system message
-    const { data: qr } = await admin
-      .from("quote_requests")
-      .select("visitor_id, subject")
-      .eq("id", id)
-      .single();
+    // Insert system message into quote_messages (visible to visitor in Ajánlatkérések)
+    await admin.from("quote_messages").insert({
+      quote_request_id: id,
+      provider_id: providerData.id,
+      sender_id: user.id,
+      body: "__SYSTEM__:A szolgáltató visszavonta magát az ajánlatkérésből. Válaszadásra nincs lehetőség.",
+    });
 
-    if (qr?.visitor_id) {
-      await admin.from("messages").insert({
-        sender_id: user.id,
-        recipient_id: qr.visitor_id,
-        subject: qr.subject ?? "Ajánlatkérés",
-        body: `__SYSTEM__:A szolgáltató visszavonta magát a(z) „${qr.subject}" ajánlatkérésből. Válaszadásra nincs lehetőség.`,
-      });
-    }
-
+    // Soft-delete: mark as deleted for provider (keeps row so visitor still sees the thread)
     const { error } = await admin
       .from("quote_request_recipients")
-      .delete()
+      .update({ deleted_by_provider: true })
       .eq("quote_request_id", id)
       .eq("provider_user_id", user.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ ok: true });
   }
 
-  // Látogató → rendszerüzenet minden érintett szolgáltatónak, majd töröljük az egész ajánlatkérést
+  // Látogató → rendszerüzenet a quote_messages-ben minden szolgáltatónak + soft-delete az ajánlatkérésen
   const [{ data: recipients }, { data: qr }] = await Promise.all([
-    admin.from("quote_request_recipients").select("provider_user_id").eq("quote_request_id", id),
+    admin.from("quote_request_recipients").select("provider_id").eq("quote_request_id", id),
     admin.from("quote_requests").select("subject").eq("id", id).single(),
   ]);
 
   await Promise.all(
     (recipients ?? []).map((rec) =>
-      admin.from("messages").insert({
+      admin.from("quote_messages").insert({
+        quote_request_id: id,
+        provider_id: rec.provider_id,
         sender_id: user.id,
-        recipient_id: rec.provider_user_id,
-        subject: qr?.subject ?? "Ajánlatkérés",
-        body: `__SYSTEM__:A kérelmező visszavonta a(z) „${qr?.subject}" ajánlatkérését. Válaszadásra nincs lehetőség.`,
+        body: `__SYSTEM__:A kérelmező visszavonta a(z) „${qr?.subject ?? "ezt az ajánlatkérést"}". Válaszadásra nincs lehetőség.`,
       })
     )
   );
 
   const { error } = await admin
     .from("quote_requests")
-    .delete()
+    .update({ deleted_by_visitor: true })
     .eq("id", id)
     .eq("visitor_id", user.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

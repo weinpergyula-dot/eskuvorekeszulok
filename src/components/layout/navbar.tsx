@@ -78,6 +78,45 @@ export function Navbar() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  // Realtime: new incoming message → update navbar badge immediately
+  useEffect(() => {
+    if (!supabase || !user) return;
+    const channel = supabase
+      .channel(`navbar-msg-${user.id}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
+        () => {
+          fetch("/api/messages")
+            .then((r) => r.json())
+            .then((data: { read: boolean; is_own: boolean }[]) =>
+              setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length)
+            )
+            .catch(() => {});
+        }
+      )
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "quote_messages" },
+        () => {
+          fetch("/api/quote-requests")
+            .then((r) => r.json())
+            .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
+              const unread = data.reduce(
+                (s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0),
+                0
+              );
+              window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
+            })
+            .catch(() => {});
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
   useEffect(() => {
     if (!supabase || !user) { setProfile(null); setProviderDot(null); setHasProvider(false); setUnreadMessages(0); return; }
     supabase.from("profiles").select("*").eq("user_id", user.id).single()
