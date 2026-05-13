@@ -1,13 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
 import { Lock } from "lucide-react";
+import { resetPasswordAction } from "./actions";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
+  const searchParams = useSearchParams();
+  const code = searchParams.get("code") ?? "";
+
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,64 +28,66 @@ export default function ResetPasswordPage() {
       setError("A jelszónak legalább 6 karakter hosszúnak kell lennie.");
       return;
     }
+    if (!code) {
+      setError("Hiányzó visszaállítási kód. Kérj új linket.");
+      return;
+    }
 
-    const supabase = createClient();
-    if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
     setLoading(true);
     setError(null);
 
-    const { error: updateError } = await supabase.auth.updateUser({ password });
+    const result = await resetPasswordAction(code, password);
 
-    if (updateError) {
-      setError("Hiba történt a jelszó mentésekor. Kérj új visszaállítási linket.");
+    if (result.error) {
+      setError(result.error);
       setLoading(false);
       return;
     }
 
-    // 1) Client-side signOut clears localStorage / in-memory session
-    await supabase.auth.signOut();
-    // 2) Server-side route clears the HTTP-only session cookies
-    window.location.href = "/auth/signout?next=/auth/login%3Freset%3D1";
+    // Full page reload to login — browser has no session to clear
+    window.location.href = "/auth/login?reset=1";
   };
 
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+          {error}
+        </div>
+      )}
+      <FloatingInput
+        id="password"
+        label="Új jelszó"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <FloatingInput
+        id="confirm"
+        label="Jelszó megerősítése"
+        type="password"
+        value={confirm}
+        onChange={(e) => setConfirm(e.target.value)}
+        required
+      />
+      <Button type="submit" className="w-full" disabled={loading || !password || !confirm}>
+        {loading ? "Mentés..." : "Jelszó mentése"}
+      </Button>
+    </form>
+  );
+}
+
+export default function ResetPasswordPage() {
   return (
     <div>
       <PageHeader title="Új jelszó" icon={Lock} />
       <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-lg bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Új jelszó megadása</p>
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-4"
-          >
-            {error && (
-              <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
-                {error}
-              </div>
-            )}
-
-            <FloatingInput
-              id="password"
-              label="Új jelszó"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-
-            <FloatingInput
-              id="confirm"
-              label="Jelszó megerősítése"
-              type="password"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              required
-            />
-
-            <Button type="submit" className="w-full" disabled={loading || !password || !confirm}>
-              {loading ? "Mentés..." : "Jelszó mentése"}
-            </Button>
-          </form>
+          <Suspense>
+            <ResetPasswordForm />
+          </Suspense>
         </div>
       </div>
     </div>

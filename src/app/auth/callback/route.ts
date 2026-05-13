@@ -46,26 +46,31 @@ export async function GET(request: NextRequest) {
 
     // ── PKCE code exchange ────────────────────────────────────────────────────
     if (code) {
+      // For recovery (password reset): do NOT exchange the code here.
+      // Pass it to the reset-password page which handles exchange + update
+      // server-side so the browser never receives a session cookie.
+      if (hintIsRecovery) {
+        return NextResponse.redirect(`${origin}/auth/reset-password?code=${encodeURIComponent(code)}`);
+      }
+
       try {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (!error) {
-          let isPasswordReset = hintIsRecovery;
+          // Email confirmation — check if it might be an undetected recovery
+          const { data: { user } } = await supabase.auth.getUser();
+          const recoverySentAt = user?.recovery_sent_at
+            ? new Date(user.recovery_sent_at).getTime()
+            : 0;
+          const isPasswordReset = recoverySentAt > 0 && Date.now() - recoverySentAt < 2 * 60 * 60 * 1000;
 
-          // Only call getUser() as a fallback when the URL gives no hint —
-          // avoids an extra round-trip on every email confirmation click.
-          if (!isPasswordReset) {
-            const { data: { user } } = await supabase.auth.getUser();
-            const recoverySentAt = user?.recovery_sent_at
-              ? new Date(user.recovery_sent_at).getTime()
-              : 0;
-            isPasswordReset = recoverySentAt > 0 && Date.now() - recoverySentAt < 2 * 60 * 60 * 1000;
+          if (isPasswordReset) {
+            // Exchange already happened — sign out immediately to avoid browser session,
+            // then hand off to reset-password page
+            await supabase.auth.signOut();
+            return NextResponse.redirect(`${origin}/auth/reset-password?code=${encodeURIComponent(code)}`);
           }
 
-          const dest = isPasswordReset
-            ? `${origin}/auth/reset-password`
-            : `${origin}/auth/verified`;
-
-          const response = NextResponse.redirect(dest);
+          const response = NextResponse.redirect(`${origin}/auth/verified`);
           copyCookies(cookieHolder, response);
           return response;
         }
