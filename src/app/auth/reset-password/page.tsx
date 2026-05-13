@@ -37,7 +37,9 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    // Server-side signout so HTTP-only session cookies are properly cleared
+    // 1) Client-side signOut clears localStorage / in-memory session
+    await supabase.auth.signOut();
+    // 2) Server-side route clears the HTTP-only session cookies
     window.location.href = "/auth/signout?next=/auth/login%3Freset%3D1";
   };
 
