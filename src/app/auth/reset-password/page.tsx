@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
@@ -11,32 +10,24 @@ import { resetPasswordAction } from "./actions";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
-  const code = searchParams.get("code") ?? "";
+  const code      = searchParams.get("code")       ?? undefined;
+  const tokenHash = searchParams.get("token_hash") ?? undefined;
 
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [confirm, setConfirm]   = useState("");
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirm) {
-      setError("A két jelszó nem egyezik.");
-      return;
-    }
-    if (password.length < 6) {
-      setError("A jelszónak legalább 6 karakter hosszúnak kell lennie.");
-      return;
-    }
-    if (!code) {
-      setError("Hiányzó visszaállítási kód. Kérj új linket.");
-      return;
-    }
+    if (password !== confirm) { setError("A két jelszó nem egyezik."); return; }
+    if (password.length < 6)  { setError("A jelszónak legalább 6 karakter hosszúnak kell lennie."); return; }
+    if (!code && !tokenHash)  { setError("Hiányzó visszaállítási link. Kérj új linket."); return; }
 
     setLoading(true);
     setError(null);
 
-    const result = await resetPasswordAction(code, password);
+    const result = await resetPasswordAction({ code, tokenHash }, password);
 
     if (result.error) {
       setError(result.error);
@@ -44,7 +35,7 @@ function ResetPasswordForm() {
       return;
     }
 
-    // Full page reload to login — browser has no session to clear
+    // Full reload — browser never had a session, so just navigate to login
     window.location.href = "/auth/login?reset=1";
   };
 

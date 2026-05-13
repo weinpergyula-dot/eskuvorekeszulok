@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function resetPasswordAction(
-  code: string,
+  params: { code?: string; tokenHash?: string },
   password: string
 ): Promise<{ error?: string }> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -13,8 +13,9 @@ export async function resetPasswordAction(
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) return { error: "Konfiguráció hiányzik." };
+  if (!params.code && !params.tokenHash) return { error: "Hiányzó visszaállítási token." };
 
-  // Temporary cookie store — we deliberately do NOT persist these to the browser
+  // Temporary in-memory cookie store — never written to the browser
   const tempCookies = new Map<string, string>();
   const cookieStore = await cookies();
 
@@ -27,19 +28,27 @@ export async function resetPasswordAction(
         ];
       },
       setAll(cookiesToSet) {
-        // Store in memory only — never written to the browser response
         cookiesToSet.forEach(({ name, value }) => tempCookies.set(name, value));
       },
     },
   });
 
-  const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-  if (exchangeError) return { error: "Érvénytelen vagy lejárt visszaállítási link. Kérj újat." };
+  // Exchange the token/code to get a temporary server-side session
+  if (params.tokenHash) {
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash: params.tokenHash,
+      type: "recovery",
+    });
+    if (error) return { error: "Érvénytelen vagy lejárt visszaállítási link. Kérj újat." };
+  } else if (params.code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(params.code);
+    if (error) return { error: "Érvénytelen vagy lejárt visszaállítási link. Kérj újat." };
+  }
 
   const { error: updateError } = await supabase.auth.updateUser({ password });
   if (updateError) return { error: "Hiba történt a jelszó mentésekor. Kérj új visszaállítási linket." };
 
-  // Sign out server-side — tokens in tempCookies are revoked on Supabase's side
+  // Revoke the server-side session — browser never had it
   await supabase.auth.signOut();
 
   return {};
