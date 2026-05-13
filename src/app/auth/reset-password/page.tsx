@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
@@ -9,7 +8,6 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Lock } from "lucide-react";
 
 export default function ResetPasswordPage() {
-  const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,7 +38,8 @@ export default function ResetPasswordPage() {
     }
 
     await supabase.auth.signOut();
-    router.push("/auth/login?reset=1");
+    // Full page reload so the Supabase client reinitialises without the recovery session
+    window.location.href = "/auth/login?reset=1";
   };
 
   return (
