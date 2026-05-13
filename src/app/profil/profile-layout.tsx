@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, ShieldCheck, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
@@ -369,6 +369,17 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     return () => { supabase.removeChannel(channel); };
   }, [userId]);
 
+  const [messagesKey, setMessagesKey] = useState(0);
+  const [quotesKey, setQuotesKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    if (active === "messages") setMessagesKey((k) => k + 1);
+    if (active === "quotes") setQuotesKey((k) => k + 1);
+    setTimeout(() => setRefreshing(false), 600);
+  };
+
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(
@@ -496,9 +507,20 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Content */}
         <div className="flex-1 min-w-0 sm:pl-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">
-            {SECTION_TITLES[active]}
-          </h2>
+          <div className="flex items-center gap-2.5 mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              {SECTION_TITLES[active]}
+            </h2>
+            {(active === "messages" || active === "quotes") && (
+              <button
+                onClick={handleRefresh}
+                title="Frissítés"
+                className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
+              >
+                <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+              </button>
+            )}
+          </div>
 
           {active === "account" && (
             <AccountInfoForm userId={userId} initialName={initialName} email={email} />
@@ -600,11 +622,11 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           )}
 
           {active === "quotes" && (
-            <QuoteRequestsSection isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+            <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
           )}
 
           {active === "messages" && (
-            <MessagesSection onUnreadChange={setUnreadCount} />
+            <MessagesSection key={messagesKey} onUnreadChange={setUnreadCount} />
           )}
         </div>
       </div>
