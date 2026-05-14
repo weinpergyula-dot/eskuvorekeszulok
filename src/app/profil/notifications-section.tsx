@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { UserRole } from "@/lib/types";
+import { Button } from "@/components/ui/button";
 
 interface Prefs {
   notify_new_message: boolean;
@@ -16,10 +17,9 @@ interface ToggleRowProps {
   description: string;
   checked: boolean;
   onChange: (val: boolean) => void;
-  saving: boolean;
 }
 
-function ToggleRow({ label, description, checked, onChange, saving }: ToggleRowProps) {
+function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
   return (
     <div className="flex items-start justify-between gap-4 py-4 border-b border-gray-100 last:border-0">
       <div className="flex-1 min-w-0">
@@ -30,9 +30,8 @@ function ToggleRow({ label, description, checked, onChange, saving }: ToggleRowP
         type="button"
         role="switch"
         aria-checked={checked}
-        disabled={saving}
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed mt-0.5 ${
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none mt-0.5 ${
           checked ? "bg-[#84AAA6]" : "bg-gray-200"
         }`}
       >
@@ -54,6 +53,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
     notify_quote_reply: true,
     notify_contact_message: true,
   });
+  const [savedPrefs, setSavedPrefs] = useState<Prefs | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -61,26 +61,39 @@ export function NotificationsSection({ role }: { role: UserRole }) {
   useEffect(() => {
     fetch("/api/notification-preferences")
       .then((r) => r.json())
-      .then((data: Prefs) => setPrefs(data))
+      .then((data: Prefs) => {
+        setPrefs(data);
+        setSavedPrefs(data);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  const update = async (key: keyof Prefs, value: boolean) => {
-    setPrefs((prev) => ({ ...prev, [key]: value }));
+  const isDirty = savedPrefs !== null && (
+    prefs.notify_new_message       !== savedPrefs.notify_new_message       ||
+    prefs.notify_new_review        !== savedPrefs.notify_new_review        ||
+    prefs.notify_new_quote_request !== savedPrefs.notify_new_quote_request ||
+    prefs.notify_quote_reply       !== savedPrefs.notify_quote_reply       ||
+    prefs.notify_contact_message   !== savedPrefs.notify_contact_message
+  );
+
+  const handleSave = async () => {
     setSaving(true);
     setSaved(false);
     try {
-      await fetch("/api/notification-preferences", {
+      const res = await fetch("/api/notification-preferences", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ [key]: value }),
+        body: JSON.stringify(prefs),
       });
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      if (res.ok) {
+        setSavedPrefs({ ...prefs });
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
     } catch {
-      // visszaállítás hiba esetén
-      setPrefs((prev) => ({ ...prev, [key]: !value }));
+      // hiba esetén visszaállítás az utolsó mentett állapotra
+      if (savedPrefs) setPrefs({ ...savedPrefs });
     } finally {
       setSaving(false);
     }
@@ -103,14 +116,12 @@ export function NotificationsSection({ role }: { role: UserRole }) {
   return (
     <div className="space-y-6">
       <div className="bg-white border border-gray-200 rounded-2xl px-6 divide-y divide-gray-100">
-
         {/* Üzenetek – mindenki */}
         <ToggleRow
           label="Új üzenet"
           description="E-mail értesítő, ha új üzeneted érkezik a Profil / Üzenetek szekcióban."
           checked={prefs.notify_new_message}
-          onChange={(v) => update("notify_new_message", v)}
-          saving={saving}
+          onChange={(v) => setPrefs((p) => ({ ...p, notify_new_message: v }))}
         />
 
         {/* Értékelés – csak szolgáltató */}
@@ -119,8 +130,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
             label="Új értékelés"
             description="E-mail értesítő, ha valaki értékelést hagyott a profilodon."
             checked={prefs.notify_new_review}
-            onChange={(v) => update("notify_new_review", v)}
-            saving={saving}
+            onChange={(v) => setPrefs((p) => ({ ...p, notify_new_review: v }))}
           />
         )}
 
@@ -130,8 +140,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
             label="Új ajánlatkérés"
             description="E-mail értesítő, ha egy látogató ajánlatkérést küldött a profilodra."
             checked={prefs.notify_new_quote_request}
-            onChange={(v) => update("notify_new_quote_request", v)}
-            saving={saving}
+            onChange={(v) => setPrefs((p) => ({ ...p, notify_new_quote_request: v }))}
           />
         )}
 
@@ -141,8 +150,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
             label="Válasz az ajánlatkérésedre"
             description="E-mail értesítő, ha egy szolgáltató válaszolt az ajánlatkérésedre."
             checked={prefs.notify_quote_reply}
-            onChange={(v) => update("notify_quote_reply", v)}
-            saving={saving}
+            onChange={(v) => setPrefs((p) => ({ ...p, notify_quote_reply: v }))}
           />
         )}
 
@@ -152,15 +160,31 @@ export function NotificationsSection({ role }: { role: UserRole }) {
             label="Kapcsolati üzenet"
             description="E-mail értesítő, ha valaki üzenetet küldött a Kapcsolat oldalon keresztül."
             checked={prefs.notify_contact_message}
-            onChange={(v) => update("notify_contact_message", v)}
-            saving={saving}
+            onChange={(v) => setPrefs((p) => ({ ...p, notify_contact_message: v }))}
           />
         )}
       </div>
 
-      {saved && (
-        <p className="text-sm text-[#84AAA6] font-medium">Beállítások mentve.</p>
-      )}
+      <div className="flex items-center gap-3">
+        <Button
+          onClick={handleSave}
+          disabled={!isDirty || saving}
+          className="bg-[#84AAA6] hover:bg-[#6B8E8A] min-w-[140px]"
+        >
+          {saving ? (
+            <span className="flex items-center gap-2">
+              <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              Mentés...
+            </span>
+          ) : "Beállítások mentése"}
+        </Button>
+        {saved && (
+          <span className="text-sm text-[#84AAA6] font-medium">Mentve.</span>
+        )}
+      </div>
 
       <p className="text-sm text-gray-400">
         Az e-mail értesítők az általad megadott e-mail-címre érkeznek.

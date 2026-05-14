@@ -39,7 +39,7 @@ export function ProviderRejectedEmail({ name, reason }: ProviderRejectedEmailPro
         <a href="https://www.eskuvorekeszulok.hu/kapcsolat" style={s.link}>
           Kapcsolat
         </a>{" "}
-        menüpont alatt.
+        menü alatt.
       </p>
     </EmailLayout>
   );

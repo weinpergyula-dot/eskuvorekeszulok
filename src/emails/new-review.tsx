@@ -46,7 +46,7 @@ export function NewReviewEmail({ providerName, reviewerName, rating, comment, ct
         <a href="https://www.eskuvorekeszulok.hu/kapcsolat" style={s.link}>
           Kapcsolat
         </a>{" "}
-        menüpont alatt.
+        menü alatt.
       </p>
     </EmailLayout>
   );
