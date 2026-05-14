@@ -10,10 +10,14 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Only return messages that the current user hasn't soft-deleted
   const { data: messages } = await supabase
     .from("messages")
     .select("*")
-    .or(`recipient_id.eq.${user.id},sender_id.eq.${user.id}`)
+    .or(
+      `and(sender_id.eq.${user.id},deleted_for_sender.eq.false),` +
+      `and(recipient_id.eq.${user.id},deleted_for_recipient.eq.false)`
+    )
     .order("created_at", { ascending: false });
 
   const senderIds = [...new Set((messages ?? []).filter(m => m.sender_id !== user.id).map((m) => m.sender_id))];
@@ -119,21 +123,32 @@ export async function DELETE(req: Request) {
   );
 
   if (otherUserId && !alreadyTerminated) {
+    // Insert system message for the other party.
+    // Mark deleted_for_sender=true so the deleting user never sees it.
     await admin.from("messages").insert({
       sender_id: user.id,
       recipient_id: otherUserId,
       subject,
       body: "__SYSTEM__:A másik fél törölte ezt a beszélgetést. Válaszadásra nincs lehetőség.",
+      deleted_for_sender: true,
     });
   }
 
-  // Delete original messages only (the system message we just inserted is excluded)
-  const { error } = await admin
-    .from("messages")
-    .delete()
-    .in("id", ids)
-    .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`);
+  // Soft-delete: mark messages as deleted for the current user instead of hard-deleting.
+  // The other party still sees the original messages plus the system notification above.
+  const [{ error: e1 }, { error: e2 }] = await Promise.all([
+    admin
+      .from("messages")
+      .update({ deleted_for_sender: true })
+      .in("id", ids)
+      .eq("sender_id", user.id),
+    admin
+      .from("messages")
+      .update({ deleted_for_recipient: true })
+      .in("id", ids)
+      .eq("recipient_id", user.id),
+  ]);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (e1 || e2) return NextResponse.json({ error: (e1 ?? e2)?.message }, { status: 500 });
   return NextResponse.json({ ok: true });
 }
