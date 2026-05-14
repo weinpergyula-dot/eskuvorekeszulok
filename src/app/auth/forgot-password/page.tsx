@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
@@ -23,21 +22,23 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
-    if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
     setLoading(true);
     setError(null);
 
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/auth/reset-password`,
-    });
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
 
-    if (resetError) {
-      setError("Hiba történt. Ellenőrizd az email címet.");
-    } else {
+      if (!res.ok) throw new Error("network");
       setSent(true);
+    } catch {
+      setError("Hiba történt. Próbáld újra később.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -50,7 +51,9 @@ export default function ForgotPasswordPage() {
               <div className="bg-green-50 text-green-700 px-4 py-4 rounded-xl border border-green-200 space-y-3">
                 <p className="text-lg font-semibold">Elküldtük a visszaállítási linket!</p>
                 <p className="text-base leading-relaxed">
-                  Keresd meg az e-mailt a <strong>{email}</strong> postaládájában, és kattints a levélben található linkre az új jelszavad megadásához – a SPAM mappát is ellenőrizd!
+                  Keresd meg az e-mailt a <strong>{email}</strong> postaládájában,
+                  és kattints a levélben található linkre az új jelszavad megadásához –
+                  a SPAM mappát is ellenőrizd!
                 </p>
               </div>
               <hr className="border-gray-200" />
@@ -60,7 +63,9 @@ export default function ForgotPasswordPage() {
             </div>
           ) : (
             <>
-              <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Jelszó visszaállítása</p>
+              <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>
+                Jelszó visszaállítása
+              </p>
               <p className="text-gray-500 text-center text-base mb-6 leading-relaxed">
                 Add meg a fiókodhoz tartozó e-mail címet, és elküldjük a visszaállítási linket.
               </p>
@@ -84,7 +89,11 @@ export default function ForgotPasswordPage() {
                     <p className="text-sm text-[#F06C6C] mt-1 px-1">{emailError}</p>
                   )}
                 </div>
-                <Button type="submit" className="w-full" disabled={loading || !email.trim() || !!emailError}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={loading || !email.trim() || !!emailError}
+                >
                   {loading ? "Küldés..." : "Visszaállítási link küldése"}
                 </Button>
               </form>
