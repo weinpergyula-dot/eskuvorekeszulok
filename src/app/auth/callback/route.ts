@@ -62,7 +62,12 @@ export async function GET(request: NextRequest) {
     if (tokenHash && type) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as any });
-      if (!error) return response;
+      if (!error) {
+        // Az email-megerősítés után NEM tartjuk fenn a munkamenetet –
+        // a felhasználónak kézzel kell bejelentkeznie.
+        await supabase.auth.signOut();
+        return response;
+      }
     }
 
     return NextResponse.redirect(`${origin}/auth/login?error=auth`);
