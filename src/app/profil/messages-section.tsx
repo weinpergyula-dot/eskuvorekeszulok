@@ -43,7 +43,6 @@ function normalizeSubject(s: string) {
 }
 
 function buildThreads(messages: Message[]): Thread[] {
-  // Hide system messages sent by the current user (they deleted that thread — they shouldn't see it)
   const visible = messages.filter((m) => !(m.is_own && isSystemMsg(m.body)));
   const map = new Map<string, Thread>();
   for (const msg of visible) {
@@ -67,107 +66,15 @@ function buildThreads(messages: Message[]): Thread[] {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("hu-HU", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    year: "numeric", month: "long", day: "numeric",
+    hour: "2-digit", minute: "2-digit",
   });
 }
 
-function SenderLabel({ msg }: { msg: Message }) {
-  if (msg.is_own) return <span className="font-medium text-gray-700">Te</span>;
-  if (msg.sender_role === "admin") return <span className="font-medium text-gray-700">Admin</span>;
-  if (msg.sender_provider_id) {
-    return (
-      <a
-        href={`/providers/${msg.sender_provider_id}`}
-        className="text-[#84AAA6] hover:underline font-medium"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {msg.sender_name}
-      </a>
-    );
-  }
-  return (
-    <span>
-      {msg.sender_name} <span className="text-gray-400">(Látogató)</span>
-    </span>
-  );
-}
-
-function ReplyForm({
-  subject,
-  recipientId,
-  onSent,
-}: {
-  subject: string;
-  recipientId: string;
-  onSent: () => void;
-}) {
-  const [body, setBody] = useState("");
-  const [sending, setSending] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSending(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          recipient_id: recipientId,
-          subject: `Re: ${subject}`,
-          body: body.trim(),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
-      setSuccess(true);
-      setBody("");
-      setTimeout(onSent, 1200);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Hiba történt.");
-    } finally {
-      setSending(false);
-    }
-  };
-
-  if (success) {
-    return (
-      <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mt-3">
-        ✓ Válasz elküldve!
-      </p>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="mt-3 space-y-3 border-t border-gray-100 pt-3">
-      <div className="flex items-center gap-2 text-sm text-gray-500">
-        <CornerDownRight className="h-4 w-4 shrink-0" />
-        <span>Válasz — {subject}</span>
-      </div>
-      <FloatingTextarea
-        id={`reply-${subject}`}
-        label="Válasz üzenet"
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        required
-        rows={3}
-      />
-      {error && (
-        <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
-          {error}
-        </p>
-      )}
-      <Button type="submit" size="sm" disabled={sending}>
-        {sending ? "Küldés..." : "Válasz küldése"}
-      </Button>
-    </form>
-  );
+function senderLabel(msg: Message): React.ReactNode {
+  if (msg.is_own) return "Te";
+  if (msg.sender_role === "admin") return "Admin";
+  return msg.sender_name || "Névtelen";
 }
 
 function ThreadCard({
@@ -180,48 +87,85 @@ function ThreadCard({
   onUnreadMarked: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [replying, setReplying] = useState(false);
+  const [replyBody, setReplyBody] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [localHasUnread, setLocalHasUnread] = useState(thread.hasUnread);
+  const [localMessages, setLocalMessages] = useState(thread.messages);
 
-  // Detect if the other party terminated the conversation with a system message
-  const hasSystemMessage = thread.messages.some((m) => !m.is_own && isSystemMsg(m.body));
+  const hasSystemMessage = localMessages.some((m) => !m.is_own && isSystemMsg(m.body));
 
-  const otherParticipant = thread.messages.find((m) => !m.is_own);
+  const otherParticipant = localMessages.find((m) => !m.is_own);
   const recipientId = otherParticipant
     ? otherParticipant.sender_id
-    : (thread.messages[0]?.recipient_id ?? "");
+    : (localMessages[0]?.recipient_id ?? "");
 
-  // Direction for the preview label
-  const firstMsg = thread.messages[0];
+  const firstMsg = localMessages[0];
   const isOutgoing = firstMsg?.is_own ?? false;
   const otherName = isOutgoing
     ? (firstMsg?.recipient_name ?? "")
     : (otherParticipant?.sender_name ?? "");
-  const otherRole = isOutgoing
-    ? (firstMsg?.recipient_role ?? null)
-    : (otherParticipant?.sender_role ?? null);
   const otherProviderId = isOutgoing
     ? (firstMsg?.recipient_provider_id ?? null)
     : (otherParticipant?.sender_provider_id ?? null);
 
   const handleExpand = async () => {
-    if (expanded) {
-      setExpanded(false);
-      setReplying(false);
-      setConfirmDelete(false);
-      return;
-    }
+    if (expanded) { setExpanded(false); return; }
     setExpanded(true);
     if (localHasUnread) {
-      const unread = thread.messages.filter((m) => !m.read && !m.is_own);
+      const unread = localMessages.filter((m) => !m.read && !m.is_own);
       await Promise.all(
         unread.map((m) => fetch(`/api/messages/${m.id}/read`, { method: "PATCH" }))
       );
       setLocalHasUnread(false);
       onUnreadMarked();
       window.dispatchEvent(new CustomEvent("messages-read"));
+    }
+  };
+
+  const handleReply = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!replyBody.trim() || !recipientId) return;
+    setSending(true);
+    setSendError(null);
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipient_id: recipientId,
+          subject: `Re: ${thread.subject}`,
+          body: replyBody.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
+      setLocalMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          sender_id: "me",
+          recipient_id: recipientId,
+          sender_name: "Te",
+          sender_role: "self",
+          sender_provider_id: null,
+          recipient_name: otherName,
+          recipient_role: null,
+          recipient_provider_id: null,
+          is_own: true,
+          subject: `Re: ${thread.subject}`,
+          body: replyBody.trim(),
+          read: true,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+      setReplyBody("");
+    } catch (err: unknown) {
+      setSendError(err instanceof Error ? err.message : "Hiba történt.");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -237,29 +181,20 @@ function ThreadCard({
   };
 
   return (
-    <div
-      className={`border rounded-xl overflow-hidden transition-colors ${
-        localHasUnread
-          ? "border-[#84AAA6] bg-[#84AAA6]/5"
-          : "border-gray-200 bg-white"
-      }`}
-    >
+    <div className={`border rounded-xl overflow-hidden transition-colors ${
+      localHasUnread ? "border-[#84AAA6] bg-[#84AAA6]/5" : "border-gray-200 bg-white"
+    }`}>
       {/* Thread header */}
-      <button
-        onClick={handleExpand}
-        className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer"
-      >
-        {localHasUnread ? (
-          <Mail className="h-4 w-4 text-[#84AAA6] shrink-0" />
-        ) : (
-          <MailOpen className="h-4 w-4 text-gray-400 shrink-0" />
-        )}
+      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer">
+        {localHasUnread
+          ? <Mail className="h-4 w-4 text-[#84AAA6] shrink-0" />
+          : <MailOpen className="h-4 w-4 text-gray-400 shrink-0" />}
         <div className="flex-1 min-w-0">
           <p className={`text-base truncate text-gray-900 ${localHasUnread ? "font-semibold" : ""}`}>
             {thread.subject}
           </p>
           <p className="text-sm text-gray-500 truncate">
-            {thread.messages.length} üzenet
+            {localMessages.length} üzenet
             {" · "}
             {isOutgoing ? "Címzett: " : "Feladó: "}
             {otherProviderId ? (
@@ -272,97 +207,87 @@ function ThreadCard({
             ) : (
               <span className="text-gray-700">{otherName}</span>
             )}
-            {otherRole === "admin" && (
-              <span className="text-gray-400"> (Admin)</span>
-            )}
-            {" · "}
-            {formatDate(thread.lastAt)}
+            {" · "}{formatDate(thread.lastAt)}
           </p>
         </div>
-        {expanded ? (
-          <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
+        {localHasUnread && (
+          <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">Új</span>
         )}
+        {expanded
+          ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" />
+          : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />}
       </button>
 
-      {/* Expanded: message list */}
+      {/* Expanded body */}
       {expanded && (
-        <div className="border-t border-gray-100">
-          <div className="divide-y divide-gray-100">
-            {thread.messages.map((msg) =>
+        <div className="border-t border-gray-100 px-4 py-3 space-y-3">
+          {/* Messages */}
+          <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 overflow-hidden">
+            {localMessages.map((msg) =>
               isSystemMsg(msg.body) ? (
-                <div key={msg.id} className="px-4 py-3 bg-amber-50 flex items-start gap-2.5">
-                  <Info className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
-                  <p className="text-sm text-amber-800 italic">{systemText(msg.body)}</p>
+                <div key={msg.id} className="px-3 py-2.5 bg-amber-50 flex items-start gap-2">
+                  <Info className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+                  <p className="text-xs text-amber-800 italic">{systemText(msg.body)}</p>
                 </div>
               ) : (
-                <div
-                  key={msg.id}
-                  className={`px-4 py-3 ${msg.is_own ? "bg-gray-50" : "bg-white"}`}
-                >
-                  <div className="flex items-center justify-between mb-1.5 gap-4">
-                    <span className="text-sm text-gray-500">
-                      <SenderLabel msg={msg} />
-                    </span>
+                <div key={msg.id} className={`px-3 py-2.5 ${msg.is_own ? "bg-gray-50" : "bg-white"}`}>
+                  <div className="flex items-center justify-between gap-3 mb-1">
+                    <span className="text-xs font-medium text-gray-600">{senderLabel(msg)}</span>
                     <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
                   </div>
-                  <p className="text-base text-gray-900 whitespace-pre-line leading-relaxed">
-                    {msg.body}
-                  </p>
+                  <p className="text-sm text-gray-900 whitespace-pre-line leading-relaxed">{msg.body}</p>
                 </div>
               )
             )}
           </div>
 
-          {/* Reply form */}
-          {replying && recipientId && !hasSystemMessage && (
-            <div className="px-4 pb-4">
-              <ReplyForm
-                subject={thread.subject}
-                recipientId={recipientId}
-                onSent={() => {
-                  setReplying(false);
-                  window.location.reload();
-                }}
+          {/* Reply form — always visible unless system message */}
+          {!hasSystemMessage && recipientId && (
+            <form onSubmit={handleReply} className="space-y-2">
+              <FloatingTextarea
+                id={`reply-${thread.key}`}
+                label="Válasz írása..."
+                value={replyBody}
+                onChange={(e) => setReplyBody(e.target.value)}
+                rows={3}
               />
-            </div>
+              {sendError && <p className="text-xs text-[#F06C6C]">{sendError}</p>}
+              <Button type="submit" size="sm" disabled={sending || !replyBody.trim()}>
+                <CornerDownRight className="h-3.5 w-3.5 mr-1" />
+                {sending ? "Küldés..." : "Válasz küldése"}
+              </Button>
+            </form>
           )}
 
-          {/* Footer: reply + delete */}
-          {!replying && (
-            <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between gap-4">
-              {recipientId && !hasSystemMessage && (
+          {/* Delete */}
+          <div className="pt-1 border-t border-gray-100 flex justify-end">
+            {!confirmDelete ? (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#F06C6C] transition-colors cursor-pointer"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Törlés
+              </button>
+            ) : (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
                 <button
-                  onClick={() => setReplying(true)}
-                  className="flex items-center gap-1.5 text-sm text-[#84AAA6] hover:underline cursor-pointer"
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="text-sm font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 transition-colors cursor-pointer disabled:opacity-50"
                 >
-                  <CornerDownRight className="h-3.5 w-3.5" />
-                  Válasz
+                  {deleting ? "Törlés..." : "Igen, törlöm"}
                 </button>
-              )}
-
-              {confirmDelete ? (
-                <div className="flex items-center gap-2 ml-auto">
-                  <span className="text-sm text-gray-600">Törlöd az összes üzenetet?</span>
-                  <Button size="sm" variant="destructive" disabled={deleting} onClick={handleDelete}>
-                    {deleting ? "Törlés..." : "Törlés"}
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => setConfirmDelete(false)}>
-                    Mégse
-                  </Button>
-                </div>
-              ) : (
                 <button
-                  onClick={() => setConfirmDelete(true)}
-                  className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#F06C6C] cursor-pointer ml-auto transition-colors"
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  Törlés
+                  Mégse
                 </button>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -384,9 +309,7 @@ export function MessagesSection({ onUnreadChange }: Props) {
       .catch(() => setLoading(false));
   };
 
-  useEffect(() => {
-    loadMessages();
-  }, []);
+  useEffect(() => { loadMessages(); }, []);
 
   const threads = buildThreads(messages);
 

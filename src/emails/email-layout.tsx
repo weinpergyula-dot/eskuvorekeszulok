@@ -51,7 +51,8 @@ export function EmailLayout({ preview, iconChar, title, subtitle, children }: Em
                 <tr>
                   <td style={s.tealCell}>
                     {iconChar && (
-                      <p style={s.iconChar}>{iconChar}</p>
+                      /* ︎ = text variation selector-15: forces text (not emoji) rendering in Outlook Mobile */
+                      <p style={s.iconChar}>{iconChar}{"︎"}</p>
                     )}
                     <h1 style={s.tealTitle}>{title}</h1>
                     {subtitle && (
