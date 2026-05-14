@@ -11,8 +11,8 @@ import type { ReactNode } from "react";
 interface EmailLayoutProps {
   /** Inbox előnézeti szöveg */
   preview?: string;
-  /** Teal fejléc ikon — fehér SVG data URI (teal háttéren fehér ikon) */
-  iconSrc?: string;
+  /** Teal fejléc ikon — Unicode karakter, fehér színnel (pl. "✓", "✕", "♥") */
+  iconChar?: string;
   /** Teal fejléc cím */
   title: string;
   /** Teal fejléc alcím (opcionális) */
@@ -21,7 +21,7 @@ interface EmailLayoutProps {
   children: ReactNode;
 }
 
-export function EmailLayout({ preview, iconSrc, title, subtitle, children }: EmailLayoutProps) {
+export function EmailLayout({ preview, iconChar, title, subtitle, children }: EmailLayoutProps) {
   return (
     <Html lang="hu">
       <Head />
@@ -50,14 +50,8 @@ export function EmailLayout({ preview, iconSrc, title, subtitle, children }: Ema
                 {/* Teal fejléc — fehér ikon + cím + alcím */}
                 <tr>
                   <td style={s.tealCell}>
-                    {iconSrc && (
-                      <Img
-                        src={iconSrc}
-                        width={48}
-                        height={48}
-                        alt=""
-                        style={{ display: "block", margin: "0 auto 16px auto" }}
-                      />
+                    {iconChar && (
+                      <p style={s.iconChar}>{iconChar}</p>
                     )}
                     <h1 style={s.tealTitle}>{title}</h1>
                     {subtitle && (
@@ -126,6 +120,14 @@ const s = {
     padding: "32px 40px 28px 40px",
     textAlign: "center" as const,
   },
+  iconChar: {
+    margin: "0 0 14px 0",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: "40px",
+    color: "#ffffff",
+    textAlign: "center" as const,
+    lineHeight: "1",
+  } as React.CSSProperties,
   tealTitle: {
     margin: 0,
     fontFamily: "Arial, Helvetica, sans-serif",
