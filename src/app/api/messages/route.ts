@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyNewMessage } from "@/lib/notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +79,11 @@ export async function POST(req: Request) {
   });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Értesítés küldése (fire-and-forget – nem blokkolja a választ)
+  const origin = new URL(req.url).origin;
+  notifyNewMessage({ recipientId: recipient_id, senderId: user.id, subject: subject.trim(), origin }).catch(() => {});
+
   return NextResponse.json({ ok: true });
 }
 

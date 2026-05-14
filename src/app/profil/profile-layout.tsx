@@ -3,17 +3,18 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, Bell, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { MessagesSection } from "./messages-section";
 import { QuoteRequestsSection } from "./quote-requests-section";
+import { NotificationsSection } from "./notifications-section";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "admin";
+type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "notifications" | "admin";
 
 interface Props {
   userId: string;
@@ -32,7 +33,8 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
   { id: "quotes",    label: "Ajánlatkérések",   icon: <FileText className="h-4 w-4" /> },
-  { id: "messages",  label: "Üzenetek",         icon: <MessageSquare className="h-4 w-4" /> },
+  { id: "messages",       label: "Üzenetek",          icon: <MessageSquare className="h-4 w-4" /> },
+  { id: "notifications",  label: "Értesítések",       icon: <Bell className="h-4 w-4" /> },
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
@@ -43,7 +45,8 @@ const SECTION_TITLES: Record<Section, string> = {
   dashboard: "Dashboard",
   favorites: "Kedvencek",
   quotes:    "Ajánlatkérések",
-  messages:  "Üzenetek",
+  messages:      "Üzenetek",
+  notifications: "Értesítések",
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -295,7 +298,7 @@ function MobileMenuDropdown({
 
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
-const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "quotes", "messages"];
+const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "quotes", "messages", "notifications"];
 
 function hashToSection(hash: string): Section | null {
   const s = hash.replace("#", "") as Section;
@@ -627,6 +630,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "messages" && (
             <MessagesSection key={messagesKey} onUnreadChange={setUnreadCount} />
+          )}
+
+          {active === "notifications" && (
+            <NotificationsSection role={role} />
           )}
         </div>
       </div>

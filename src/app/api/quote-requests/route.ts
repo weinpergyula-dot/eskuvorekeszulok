@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyNewQuoteRequest } from "@/lib/notifications";
 
 export async function GET() {
   const supabase = await createClient();
@@ -119,6 +120,21 @@ export async function POST(request: NextRequest) {
       )
     );
     insertedCount = results.filter((r) => r.status === "fulfilled").length;
+  }
+
+  // Értesítések küldése a megfelelő szolgáltatóknak (fire-and-forget)
+  const origin = request.nextUrl.origin;
+  for (const p of targetProviders) {
+    if (p.user_id) {
+      notifyNewQuoteRequest({
+        providerUserId: p.user_id,
+        visitorUserId: user.id,
+        subject,
+        category,
+        message,
+        origin,
+      }).catch(() => {});
+    }
   }
 
   return NextResponse.json({ id: qr.id, recipient_count: insertedCount });

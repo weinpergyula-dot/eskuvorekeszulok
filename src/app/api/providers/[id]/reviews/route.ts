@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyNewReview } from "@/lib/notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +67,18 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     .eq("id", id);
 
   if (updateError) console.error("Aggregate update failed:", updateError.message);
+
+  // Értesítés a szolgáltatónak (fire-and-forget)
+  if (provider?.user_id) {
+    const origin = new URL(req.url).origin;
+    notifyNewReview({
+      providerUserId: provider.user_id,
+      reviewerUserId: user.id,
+      rating,
+      comment: comment?.trim() || undefined,
+      origin,
+    }).catch(() => {});
+  }
 
   return NextResponse.json({ ok: true, review_count: count, average_rating: Math.round(avg * 10) / 10 });
 }
