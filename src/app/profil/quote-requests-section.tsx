@@ -550,7 +550,7 @@ function VisitorRequestRow({
             {!confirmDelete ? (
               <button
                 onClick={() => setConfirmDelete(true)}
-                className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#F06C6C] transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 text-sm text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer"
               >
                 <Trash2 className="h-3.5 w-3.5" />
                 Törlés
@@ -777,7 +777,7 @@ function ProviderRequestRow({
             {!confirmDelete ? (
               <button
                 onClick={() => setConfirmDelete(true)}
-                className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#F06C6C] transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 text-sm text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer"
               >
                 <Trash2 className="h-3.5 w-3.5" />
                 Törlés
