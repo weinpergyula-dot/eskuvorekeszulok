@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction } from "./actions";
+import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction, sendConfirmationEmailAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Label } from "@/components/ui/label";
@@ -271,16 +271,19 @@ function RegisterContent() {
         return;
       }
 
-      // Normal registration flow – use server action so Supabase sends token_hash email (no PKCE)
+      // Normal registration flow – Supabase creates the user (email sending disabled on Supabase)
       const { userId: newUserId, error: signUpError } = await signUpAction(
         email,
         password,
-        `${window.location.origin}/auth/confirm`,
+        `${window.location.origin}/auth/callback`,
         { full_name: fullName, role }
       );
 
       if (signUpError) throw new Error(signUpError);
       if (!newUserId) throw new Error("Ismeretlen hiba történt.");
+
+      // Saját megerősítő email küldése Resenden keresztül
+      await sendConfirmationEmailAction(email, fullName, window.location.origin);
 
       // Wrap in a plain object so the rest of the code can use authData.user.id
       const authData = { user: { id: newUserId } };

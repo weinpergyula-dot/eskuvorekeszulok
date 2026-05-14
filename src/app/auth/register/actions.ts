@@ -1,6 +1,9 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendEmail } from "@/lib/resend";
+import { ConfirmEmail } from "@/emails/confirm-email";
+import React from "react";
 
 /**
  * Signs up a new user via the Supabase REST API directly, without including a
@@ -51,6 +54,43 @@ export async function signUpAction(
   if (!userId) return { userId: null, error: "Ismeretlen hiba történt." };
 
   return { userId, error: null };
+}
+
+/**
+ * Generates a signup confirmation link and sends it via Resend.
+ * Call this after signUpAction succeeds (when Supabase email is disabled).
+ */
+export async function sendConfirmationEmailAction(
+  email: string,
+  name: string,
+  origin: string
+): Promise<{ error: string | null }> {
+  try {
+    const admin = createAdminClient();
+
+    const { data, error } = await admin.auth.admin.generateLink({
+      type: "signup",
+      email,
+    });
+
+    if (error || !data?.properties?.hashed_token) {
+      console.error("[sendConfirmationEmail] generateLink error:", error?.message);
+      return { error: "Nem sikerült a megerősítő email generálása." };
+    }
+
+    const confirmLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=signup`;
+
+    await sendEmail({
+      to: email,
+      subject: "Regisztráció megerősítése – Esküvőre Készülök",
+      template: React.createElement(ConfirmEmail, { confirmLink, name }),
+    });
+
+    return { error: null };
+  } catch (err) {
+    console.error("[sendConfirmationEmail] hiba:", err);
+    return { error: "Hiba történt az email küldésekor." };
+  }
 }
 
 /**
