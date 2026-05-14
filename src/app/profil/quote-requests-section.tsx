@@ -381,8 +381,8 @@ function ProviderThread({
   };
 
   return (
-    <div className={`border rounded-lg overflow-hidden ${localUnread > 0 ? "border-[#84AAA6] bg-[#84AAA6]/5" : "border-gray-200 bg-white"}`}>
-      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-3 py-2.5 text-left cursor-pointer">
+    <div className={`border rounded-lg overflow-hidden ${localUnread > 0 ? "border-[#84AAA6]" : "border-gray-200"}`}>
+      <button onClick={handleExpand} className={`w-full flex items-center gap-3 px-3 py-2.5 text-left cursor-pointer ${localUnread > 0 ? "bg-[#84AAA6]/10" : "bg-gray-50"}`}>
         <div className="flex-1 min-w-0">
           <p className={`text-sm font-medium truncate ${localUnread > 0 ? "text-[#84AAA6]" : "text-gray-800"}`}>
             {provider.full_name}
@@ -498,7 +498,7 @@ function VisitorRequestRow({
 
   return (
     <div className={`border rounded-xl overflow-hidden ${localUnread > 0 ? "border-[#84AAA6]" : "border-gray-200"}`}>
-      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer">
+      <button onClick={handleExpand} className={`w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer ${localUnread > 0 ? "bg-[#84AAA6]/10" : "bg-gray-50"}`}>
         <FileText className={`h-4 w-4 shrink-0 ${localUnread > 0 ? "text-[#84AAA6]" : "text-gray-400"}`} />
         <div className="flex-1 min-w-0">
           <p className={`text-base truncate text-gray-900 ${localUnread > 0 ? "font-semibold" : ""}`}>
@@ -697,8 +697,8 @@ function ProviderRequestRow({
   };
 
   return (
-    <div className={`border rounded-xl overflow-hidden ${!localRead ? "border-[#84AAA6] bg-[#84AAA6]/5" : "border-gray-200 bg-white"}`}>
-      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer">
+    <div className={`border rounded-xl overflow-hidden ${!localRead ? "border-[#84AAA6]" : "border-gray-200"}`}>
+      <button onClick={handleExpand} className={`w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer ${!localRead ? "bg-[#84AAA6]/10" : "bg-gray-50"}`}>
         <FileText className={`h-4 w-4 shrink-0 ${!localRead ? "text-[#84AAA6]" : "text-gray-400"}`} />
         <div className="flex-1 min-w-0">
           <p className={`text-base truncate text-gray-900 ${!localRead ? "font-semibold" : ""}`}>

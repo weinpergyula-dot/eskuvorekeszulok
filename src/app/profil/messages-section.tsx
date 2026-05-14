@@ -185,7 +185,7 @@ function ThreadCard({
       localHasUnread ? "border-[#84AAA6] bg-[#84AAA6]/5" : "border-gray-200 bg-white"
     }`}>
       {/* Thread header */}
-      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer">
+      <button onClick={handleExpand} className={`w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer ${localHasUnread ? "bg-[#84AAA6]/10" : "bg-gray-50"}`}>
         {localHasUnread
           ? <Mail className="h-4 w-4 text-[#84AAA6] shrink-0" />
           : <MailOpen className="h-4 w-4 text-gray-400 shrink-0" />}
