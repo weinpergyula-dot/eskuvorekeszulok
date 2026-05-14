@@ -16,9 +16,10 @@ interface ProviderCardProps {
   hideCategories?: boolean;
   disableLink?: boolean;
   isOwner?: boolean;
+  nameFontSize?: string;
 }
 
-export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false }: ProviderCardProps) {
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px" }: ProviderCardProps) {
   const [expanded, setExpanded] = useState(false);
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
@@ -76,7 +77,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-900 text-center mb-2 group-hover:text-[#84AAA6] transition-colors" style={{ fontSize: "22px" }}>
+        <h3 className="font-bold text-gray-900 text-center mb-2 group-hover:text-[#84AAA6] transition-colors" style={{ fontSize: nameFontSize }}>
           {provider.full_name}
         </h3>
 

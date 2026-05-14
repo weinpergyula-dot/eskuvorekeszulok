@@ -31,7 +31,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
               // Each card occupies slightly less than half the viewport so 2 are visible
               style={{ width: "calc(50vw - 20px)", flexShrink: 0 }}
             >
-              <ProviderCard provider={provider} hideCategories />
+              <ProviderCard provider={provider} hideCategories nameFontSize="18px" />
             </div>
           ))}
         </div>
