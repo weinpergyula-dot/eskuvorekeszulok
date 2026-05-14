@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -23,6 +23,7 @@ interface ProviderCardProps {
 
 export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px", inCarousel = false }: ProviderCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
@@ -65,7 +66,19 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         )}
 
         {/* Avatar */}
-        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0">
+        <div
+          className={cn(
+            "w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0",
+            provider.avatar_url && "cursor-zoom-in"
+          )}
+          onClick={(e) => {
+            if (!provider.avatar_url) return;
+            e.preventDefault();
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            setAvatarOpen(true);
+          }}
+        >
           {provider.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -114,8 +127,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
           <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
           <span className="text-sm sm:text-base text-gray-900">
-            {(provider.counties ?? []).slice(0, 2).join(", ")}
-            {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
+            {inCarousel ? (
+              <>
+                {(provider.counties ?? [])[0] ?? ""}
+                {(provider.counties ?? []).length > 1 && ` +${(provider.counties ?? []).length - 1}`}
+              </>
+            ) : (
+              <>
+                {(provider.counties ?? []).slice(0, 2).join(", ")}
+                {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
+              </>
+            )}
           </span>
         </div>
 
@@ -160,19 +182,27 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </Badge>
         )}
 
-        {/* Mobile expand/collapse toggle — hidden in carousel mode */}
-        {!inCarousel && (
-          <div className="sm:hidden flex justify-center w-full mt-3">
-            <button
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded((v) => !v); }}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
-            >
-              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            </button>
-          </div>
-        )}
 
       </div>
+
+      {/* Mobile expand/collapse row — white background, outside the teal header */}
+      {!inCarousel && (
+        <div className="sm:hidden flex items-center justify-center py-2.5 bg-white border-b border-gray-100">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
+              setExpanded((v) => !v);
+            }}
+            className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
+          >
+            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <span>Több infó</span>
+          </button>
+        </div>
+      )}
 
       {/* Contact info — hidden in carousel mode */}
       {!inCarousel && (
@@ -230,6 +260,28 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           >
             Részletek
           </a>
+        </div>
+      )}
+      {/* Avatar lightbox */}
+      {avatarOpen && provider.avatar_url && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
+          onClick={() => setAvatarOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setAvatarOpen(false)}
+            className="absolute top-4 right-4 text-white/80 hover:text-white p-2"
+          >
+            <X className="h-7 w-7" />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={provider.avatar_url}
+            alt={provider.full_name}
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl select-none"
+          />
         </div>
       )}
     </Wrapper>

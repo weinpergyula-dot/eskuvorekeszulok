@@ -40,7 +40,8 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       .order("created_at", { ascending: false });
 
     if (county) {
-      query = query.contains("counties", [county]);
+      // Include providers with the selected county OR marked as "Országos"
+      query = query.or(`counties.cs.{"${county}"},counties.cs.{"Országos"}`);
     }
 
     const { data, error } = await query;
