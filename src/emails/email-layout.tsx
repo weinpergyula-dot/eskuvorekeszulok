@@ -4,7 +4,6 @@ import {
   Html,
   Img,
   Preview,
-  Section,
   Text,
 } from "@react-email/components";
 import type { ReactNode } from "react";
@@ -12,6 +11,8 @@ import type { ReactNode } from "react";
 interface EmailLayoutProps {
   /** Inbox előnézeti szöveg */
   preview?: string;
+  /** Teal fejléc ikon — fehér SVG data URI (teal háttéren fehér ikon) */
+  iconSrc?: string;
   /** Teal fejléc cím */
   title: string;
   /** Teal fejléc alcím (opcionális) */
@@ -20,7 +21,7 @@ interface EmailLayoutProps {
   children: ReactNode;
 }
 
-export function EmailLayout({ preview, title, subtitle, children }: EmailLayoutProps) {
+export function EmailLayout({ preview, iconSrc, title, subtitle, children }: EmailLayoutProps) {
   return (
     <Html lang="hu">
       <Head />
@@ -34,21 +35,30 @@ export function EmailLayout({ preview, title, subtitle, children }: EmailLayoutP
               {/* Card */}
               <table role="presentation" width="100%" style={s.card}>
 
-                {/* Logo sor */}
+                {/* Logo sor — fehér háttér */}
                 <tr>
                   <td style={s.logoCell}>
                     <Img
                       src="https://eskuvorekeszulok.hu/logo.png"
                       alt="Esküvőre Készülök"
                       height={40}
-                      style={{ display: "block", margin: "0" }}
+                      style={{ display: "block", margin: "0 auto" }}
                     />
                   </td>
                 </tr>
 
-                {/* Teal fejléc */}
+                {/* Teal fejléc — fehér ikon + cím + alcím */}
                 <tr>
                   <td style={s.tealCell}>
+                    {iconSrc && (
+                      <Img
+                        src={iconSrc}
+                        width={48}
+                        height={48}
+                        alt=""
+                        style={{ display: "block", margin: "0 auto 16px auto" }}
+                      />
+                    )}
                     <h1 style={s.tealTitle}>{title}</h1>
                     {subtitle && (
                       <p style={s.tealSubtitle}>{subtitle}</p>
@@ -56,7 +66,7 @@ export function EmailLayout({ preview, title, subtitle, children }: EmailLayoutP
                   </td>
                 </tr>
 
-                {/* Body tartalom */}
+                {/* Body tartalom — fehér háttér */}
                 <tr>
                   <td style={s.bodyCell}>
                     {children}
