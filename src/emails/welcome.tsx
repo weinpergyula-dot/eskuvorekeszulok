@@ -1,4 +1,3 @@
-import { Button, Heading, Text } from "@react-email/components";
 import { EmailLayout } from "./email-layout";
 
 interface WelcomeEmailProps {
@@ -7,64 +6,74 @@ interface WelcomeEmailProps {
 
 export function WelcomeEmail({ name }: WelcomeEmailProps) {
   return (
-    <EmailLayout preview={`Üdvözlünk, ${name}! Regisztrációd sikeres volt.`}>
-      <Heading
-        style={{
-          color: "#18181b",
-          fontSize: "22px",
-          fontWeight: "700",
-          margin: "0 0 16px",
-        }}
-      >
-        Üdvözlünk az Esküvőre Készülőn! 🎉
-      </Heading>
+    <EmailLayout
+      preview={`Üdvözlünk, ${name}! Regisztrációd sikeres volt.`}
+      title="Üdvözlünk az Esküvőre Készülőn!"
+      subtitle="Örömmel üdvözlünk a közösségünkben."
+    >
+      <p style={s.text}>Kedves {name},</p>
 
-      <Text style={textStyle}>Kedves {name},</Text>
+      <p style={s.text}>
+        Regisztrációd sikeresen megtörtént az <strong>Esküvőre Készülök</strong> oldalon!
+        Mostantól böngészheted az esküvői szakemberek és helyszínek széles kínálatát,
+        jelölheted kedvenceidet, és ajánlatkérést küldhetsz nekik.
+      </p>
 
-      <Text style={textStyle}>
-        Örömmel üdvözlünk közösségünkben! Regisztrációd sikeresen megtörtént –
-        mostantól böngészheted az esküvői szolgáltatók kínálatát, jelölheted
-        kedvenceidet, és ajánlatkérést küldhetsz nekik.
-      </Text>
+      {/* CTA gomb */}
+      <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: "28px auto" }}>
+        <tr>
+          <td style={s.btnCell}>
+            <a href="https://eskuvorekeszulok.hu/services" style={s.btn}>
+              Szolgáltatók böngészése
+            </a>
+          </td>
+        </tr>
+      </table>
 
-      <Button
-        href="https://eskuvorekeszulok.hu/services"
-        style={buttonStyle}
-      >
-        Szolgáltatók böngészése
-      </Button>
-
-      <Text style={{ ...textStyle, marginTop: "24px" }}>
+      <p style={s.mutedText}>
         Ha kérdésed van, bármikor elérsz minket az{" "}
-        <a href="mailto:info@eskuvorekeszulok.hu" style={{ color: "#84AAA6" }}>
+        <a href="mailto:info@eskuvorekeszulok.hu" style={s.link}>
           info@eskuvorekeszulok.hu
         </a>{" "}
         címen.
-      </Text>
+      </p>
     </EmailLayout>
   );
 }
 
-// Alapértelmezett props (React Email preview-hoz)
-WelcomeEmail.defaultProps = {
-  name: "Minta Felhasználó",
-};
+WelcomeEmail.defaultProps = { name: "Minta Felhasználó" };
 
-const textStyle = {
-  color: "#3f3f46",
-  fontSize: "15px",
-  lineHeight: "1.7",
-  margin: "0 0 12px",
-};
-
-const buttonStyle = {
-  backgroundColor: "#84AAA6",
-  color: "#ffffff",
-  padding: "12px 24px",
-  borderRadius: "6px",
-  fontSize: "15px",
-  fontWeight: "600",
-  textDecoration: "none",
-  display: "inline-block",
-  marginTop: "8px",
-};
+const s = {
+  text: {
+    margin: "0 0 16px 0",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: "16px",
+    color: "#404040",
+    lineHeight: "1.6",
+  } as React.CSSProperties,
+  mutedText: {
+    margin: "0 0 8px 0",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: "14px",
+    color: "#888888",
+    lineHeight: "1.6",
+  } as React.CSSProperties,
+  btnCell: {
+    backgroundColor: "#84AAA6",
+    borderRadius: "8px",
+  },
+  btn: {
+    display: "inline-block",
+    padding: "14px 32px",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: "16px",
+    fontWeight: 700,
+    color: "#ffffff",
+    textDecoration: "none",
+    borderRadius: "8px",
+  } as React.CSSProperties,
+  link: {
+    color: "#84AAA6",
+    textDecoration: "underline",
+  },
+} as const;
