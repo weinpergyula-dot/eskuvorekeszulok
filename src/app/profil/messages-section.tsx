@@ -181,31 +181,29 @@ function ThreadCard({
   };
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-colors ${
-      localHasUnread ? "border-[#84AAA6] bg-[#84AAA6]/5" : "border-gray-200 bg-white"
-    }`}>
+    <div className="border border-[#84AAA6] rounded-xl overflow-hidden bg-white">
       {/* Thread header */}
-      <button onClick={handleExpand} className={`w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer ${localHasUnread ? "bg-[#84AAA6]/10" : "bg-gray-50"}`}>
+      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer bg-[#84AAA6]">
         {localHasUnread
-          ? <Mail className="h-4 w-4 text-[#84AAA6] shrink-0" />
-          : <MailOpen className="h-4 w-4 text-gray-400 shrink-0" />}
+          ? <Mail className="h-4 w-4 text-white shrink-0" />
+          : <MailOpen className="h-4 w-4 text-white/80 shrink-0" />}
         <div className="flex-1 min-w-0">
-          <p className={`text-base truncate text-gray-900 ${localHasUnread ? "font-semibold" : ""}`}>
+          <p className={`text-base truncate text-white ${localHasUnread ? "font-semibold" : ""}`}>
             {thread.subject}
           </p>
-          <p className="text-sm text-gray-500 truncate">
+          <p className="text-sm text-white/75 truncate">
             {localMessages.length} üzenet
             {" · "}
             {isOutgoing ? "Címzett: " : "Feladó: "}
             {otherProviderId ? (
               <span
-                className="text-[#84AAA6] hover:underline cursor-pointer"
+                className="text-white underline cursor-pointer"
                 onClick={(e) => { e.stopPropagation(); window.open(`/providers/${otherProviderId}`, "_blank"); }}
               >
                 {otherName}
               </span>
             ) : (
-              <span className="text-gray-700">{otherName}</span>
+              <span className="text-white/90">{otherName}</span>
             )}
             {" · "}{formatDate(thread.lastAt)}
           </p>
@@ -214,8 +212,8 @@ function ThreadCard({
           <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">Új</span>
         )}
         {expanded
-          ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" />
-          : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />}
+          ? <ChevronUp className="h-4 w-4 text-white/80 shrink-0" />
+          : <ChevronDown className="h-4 w-4 text-white/80 shrink-0" />}
       </button>
 
       {/* Expanded body */}
