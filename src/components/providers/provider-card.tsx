@@ -41,8 +41,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     >
       {/* Header */}
       <div className="relative flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
-        {/* Top-left: edit (owner) or favorite (icon only) */}
-        {!disableLink && (
+        {/* Top-left: edit (owner) or favorite — hidden in carousel */}
+        {!inCarousel && !disableLink && (
           <div className="absolute top-2 left-2" onClick={(e) => e.stopPropagation()}>
             {isOwner ? (
               <a href="/profil?tab=provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
@@ -54,13 +54,15 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </div>
         )}
 
-        {/* Top-right: view count */}
-        <div className="absolute top-2 right-2">
-          <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
-            <Eye className="h-3.5 w-3.5" />
-            {viewCount}
-          </span>
-        </div>
+        {/* Top-right: view count — hidden in carousel */}
+        {!inCarousel && (
+          <div className="absolute top-2 right-2">
+            <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
+              <Eye className="h-3.5 w-3.5" />
+              {viewCount}
+            </span>
+          </div>
+        )}
 
         {/* Avatar */}
         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0">
@@ -170,16 +172,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </div>
         )}
 
-        {/* Carousel mode: Részletek button inside header */}
-        {inCarousel && !disableLink && (
-          <div className="flex justify-center w-full mt-3">
-            <a
-              href={`/providers/${provider.id}`}
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-4 py-1.5 rounded-full whitespace-nowrap"
-            >
-              Részletek
-            </a>
+        {/* Carousel mode: category badge(s) at bottom */}
+        {inCarousel && (provider.categories ?? []).length > 0 && (
+          <div className="flex flex-wrap justify-center gap-1.5 mt-3">
+            {(provider.categories ?? []).slice(0, 2).map((cat) => (
+              <Badge key={cat} variant="outline" className="text-xs">
+                {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+              </Badge>
+            ))}
           </div>
         )}
       </div>
