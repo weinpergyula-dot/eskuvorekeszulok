@@ -1,6 +1,7 @@
 "use client";
 
-import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil, Images } from "lucide-react";
+import { useState } from "react";
+import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -18,6 +19,7 @@ interface ProviderCardProps {
 }
 
 export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false }: ProviderCardProps) {
+  const [expanded, setExpanded] = useState(false);
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
@@ -143,10 +145,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               : "Jóváhagyásra vár"}
           </Badge>
         )}
+
+        {/* Mobile expand/collapse toggle */}
+        <div className="sm:hidden flex justify-center w-full mt-3">
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded((v) => !v); }}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
+          >
+            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+        </div>
       </div>
 
       {/* Contact info */}
-      <div className="px-5 py-4 space-y-2 flex-1">
+      <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
         <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
         <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
         {provider.website && (
@@ -168,7 +180,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Footer action bar */}
       {!disableLink && (
-        <div className="border-t border-gray-100 px-4 py-3 flex items-center justify-between gap-2">
+        <div className={cn("border-t border-gray-100 px-4 py-3 items-center justify-between gap-2", expanded ? "flex" : "hidden sm:flex")}>
           {/* Left: Üzenetküldés */}
           <a
             href={`/providers/${provider.id}#message`}
