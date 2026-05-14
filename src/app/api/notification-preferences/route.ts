@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -16,13 +17,13 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data } = await supabase
+  const admin = createAdminClient();
+  const { data } = await admin
     .from("notification_preferences")
     .select("*")
     .eq("user_id", user.id)
     .maybeSingle();
 
-  // Ha még nincs sor, adjuk vissza az alapértelmezett beállításokat
   const defaults = Object.fromEntries(ALLOWED_KEYS.map((k) => [k, true]));
   return NextResponse.json(data ?? defaults);
 }
@@ -34,7 +35,6 @@ export async function PATCH(req: Request) {
 
   const body = await req.json();
 
-  // Csak az engedélyezett kulcsokat fogadjuk el
   const patch: Record<string, boolean> = {};
   for (const key of ALLOWED_KEYS) {
     if (key in body && typeof body[key] === "boolean") {
@@ -46,13 +46,17 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Nincs érvényes mező." }, { status: 400 });
   }
 
-  const { error } = await supabase
+  const admin = createAdminClient();
+  const { error } = await admin
     .from("notification_preferences")
     .upsert(
       { user_id: user.id, ...patch, updated_at: new Date().toISOString() },
       { onConflict: "user_id" }
     );
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[notification-preferences] upsert error:", error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
   return NextResponse.json({ ok: true });
 }

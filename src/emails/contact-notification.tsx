@@ -18,7 +18,7 @@ export function ContactNotificationEmail({
   return (
     <EmailLayout
       preview={`Új kapcsolatfelvételi üzenet: ${senderName} – Esküvőre Készülök`}
-      iconChar="✦"
+      iconChar="✉"
       title="Új kapcsolatfelvételi üzenet"
       subtitle="Valaki üzenetet küldött a kapcsolati oldalon."
     >

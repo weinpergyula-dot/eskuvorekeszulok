@@ -57,6 +57,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/notification-preferences")
@@ -80,6 +81,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
   const handleSave = async () => {
     setSaving(true);
     setSaved(false);
+    setSaveError(null);
     try {
       const res = await fetch("/api/notification-preferences", {
         method: "PATCH",
@@ -90,9 +92,13 @@ export function NotificationsSection({ role }: { role: UserRole }) {
         setSavedPrefs({ ...prefs });
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
+      } else {
+        const json = await res.json().catch(() => ({}));
+        setSaveError(json?.error ?? "Hiba történt a mentés során.");
+        if (savedPrefs) setPrefs({ ...savedPrefs });
       }
     } catch {
-      // hiba esetén visszaállítás az utolsó mentett állapotra
+      setSaveError("Hálózati hiba. Kérjük, próbáld újra.");
       if (savedPrefs) setPrefs({ ...savedPrefs });
     } finally {
       setSaving(false);
@@ -169,7 +175,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
         <Button
           onClick={handleSave}
           disabled={!isDirty || saving}
-          className="bg-[#84AAA6] hover:bg-[#6B8E8A] min-w-[140px]"
+          className="bg-[#84AAA6] hover:bg-[#6B8E8A] min-w-[160px]"
         >
           {saving ? (
             <span className="flex items-center gap-2">
@@ -182,7 +188,10 @@ export function NotificationsSection({ role }: { role: UserRole }) {
           ) : "Beállítások mentése"}
         </Button>
         {saved && (
-          <span className="text-sm text-[#84AAA6] font-medium">Mentve.</span>
+          <span className="text-sm text-[#84AAA6] font-medium">✓ Beállítások mentve.</span>
+        )}
+        {saveError && (
+          <span className="text-sm text-[#F06C6C]">{saveError}</span>
         )}
       </div>
 

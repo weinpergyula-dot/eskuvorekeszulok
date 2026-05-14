@@ -11,7 +11,7 @@ export function NewMessageEmail({ recipientName, senderName, subject, ctaUrl }: 
   return (
     <EmailLayout
       preview={`${senderName} üzenetet küldött neked – Esküvőre Készülök`}
-      iconChar="✦"
+      iconChar="✉"
       title="Új üzeneted érkezett"
       subtitle="Valaki üzenetet küldött neked az Esküvőre Készülök oldalon."
     >
