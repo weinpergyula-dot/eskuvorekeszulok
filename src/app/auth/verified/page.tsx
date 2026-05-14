@@ -14,7 +14,7 @@ export default function VerifiedPage() {
             E-mail-cím sikeresen megerősítve!
           </h1>
           <p className="text-gray-900 mb-4 text-lg leading-relaxed">
-            Fiókod aktiválva lett. Mostantól bejelentkezhetsz az oldalra.
+            Fiókod aktiválva lett, jelentkezz be az oldalra.
           </p>
           <p className="text-gray-500 mb-8 text-base leading-relaxed">
             Ha szolgáltatóként regisztráltál, profilod adminisztrátori jóváhagyásra kerül – erről e-mailben értesítünk.

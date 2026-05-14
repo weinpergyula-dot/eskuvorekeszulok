@@ -53,6 +53,24 @@ export async function signUpAction(
   return { userId, error: null };
 }
 
+/**
+ * Returns a pre-signed upload URL so the browser can upload a file to
+ * Supabase Storage without needing an authenticated session.
+ */
+export async function getSignedUploadUrlAction(
+  bucket: string,
+  path: string
+): Promise<{ signedUrl: string; token: string; path: string } | { error: string }> {
+  try {
+    const admin = createAdminClient();
+    const { data, error } = await admin.storage.from(bucket).createSignedUploadUrl(path);
+    if (error) return { error: error.message };
+    return data;
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Signed URL hiba." };
+  }
+}
+
 interface ProviderData {
   full_name: string;
   email: string;

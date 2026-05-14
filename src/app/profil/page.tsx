@@ -22,11 +22,29 @@ export default async function ProfilPage() {
 
   if (!profile) redirect("/auth/login");
 
-  const { data: provider } = await supabase
+  const { data: providerStats } = await supabase
     .from("providers_with_stats")
     .select("*")
     .eq("user_id", user.id)
     .single();
+
+  // providers_with_stats is a view created before detailed_description was
+  // added to the base table, so it may not include that column. Fetch it
+  // explicitly from the base table and merge.
+  const { data: providerBase } = await supabase
+    .from("providers")
+    .select("detailed_description, gallery_urls, pending_changes")
+    .eq("user_id", user.id)
+    .single();
+
+  const provider = providerStats
+    ? {
+        ...providerStats,
+        detailed_description: providerBase?.detailed_description ?? null,
+        gallery_urls: (providerBase?.gallery_urls as string[]) ?? [],
+        pending_changes: providerBase?.pending_changes ?? providerStats.pending_changes ?? null,
+      }
+    : null;
 
   const { data: favRows } = await supabase
     .from("favorites")

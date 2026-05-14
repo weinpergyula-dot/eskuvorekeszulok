@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
@@ -13,7 +13,7 @@ import { QuoteRequestsSection } from "./quote-requests-section";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages";
+type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "admin";
 
 interface Props {
   userId: string;
@@ -25,6 +25,7 @@ interface Props {
 }
 
 const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
+  { id: "admin",    label: "Admin",               icon: <ShieldCheck className="h-4 w-4" /> },
   { id: "account",   label: "Fiók adatok",          icon: <User className="h-4 w-4" /> },
   { id: "password",  label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
   { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
@@ -35,6 +36,7 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
+  admin:     "Admin",
   account:   "Fiók adatok",
   password:  "Jelszó módosítás",
   provider:  "Szolgáltatói profil",
@@ -84,8 +86,8 @@ function deriveSidebarIndicator(
     return { color: "bg-amber-400", tooltip: `${diffCount} mező jóváhagyásra vár` };
   if (isFirstSubmission && provider.approval_status === "pending")
     return { color: "bg-amber-400", tooltip: "Jóváhagyásra vár" };
-  if (showApprovalDot)
-    return { color: "bg-green-500", tooltip: "Profil jóváhagyva!" };
+  if (provider.approval_status === "approved" && isProviderActive)
+    return { color: "bg-green-500", tooltip: "Aktív profil" };
   if (!isProviderActive)
     return { color: "bg-gray-400",  tooltip: "Kikapcsolva" };
   return null;
@@ -326,6 +328,58 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       .catch(() => {});
   }, []);
 
+  // Realtime: new incoming message → update sidebar badge immediately
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
+    const channel = supabase
+      .channel(`profile-msg-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
+        () => {
+          fetch("/api/messages")
+            .then((r) => r.json())
+            .then((data: { read: boolean; is_own: boolean }[]) =>
+              setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
+            )
+            .catch(() => {});
+        }
+      )
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "quote_messages" },
+        () => {
+          fetch("/api/quote-requests")
+            .then((r) => r.json())
+            .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
+              const unread = data.reduce(
+                (s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0),
+                0
+              );
+              setUnreadQuotes(unread);
+              window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
+            })
+            .catch(() => {});
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
+
+  const [messagesKey, setMessagesKey] = useState(0);
+  const [quotesKey, setQuotesKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    if (active === "messages") setMessagesKey((k) => k + 1);
+    if (active === "quotes") setQuotesKey((k) => k + 1);
+    setTimeout(() => setRefreshing(false), 600);
+  };
+
   const [favoriteProviders, setFavoriteProviders] = useState<Provider[]>(initialFavoriteProviders);
 
   const [isProviderActive, setIsProviderActive] = useState(
@@ -342,6 +396,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive, showApprovalDot);
 
   const switchTo = (section: Section) => {
+    if (section === "admin") {
+      window.location.href = "/admin";
+      return;
+    }
     setActive(section);
     window.location.hash = section;
     if (section === "provider" && showApprovalDot) {
@@ -387,7 +445,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
         <aside className="sm:w-56 shrink-0 sm:border-r sm:border-gray-200 sm:pr-6">
           {/* Mobile custom dropdown */}
           <MobileMenuDropdown
-            items={MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider")}
+            items={MENU_ITEMS.filter(item =>
+              (item.id !== "admin"     || role === "admin") &&
+              (item.id !== "dashboard" || role === "provider")
+            )}
             active={active}
             onSelect={switchTo}
             unreadCount={unreadCount}
@@ -397,7 +458,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
-            {MENU_ITEMS.filter(item => item.id !== "dashboard" || role === "provider").map((item) => (
+            {MENU_ITEMS.filter(item =>
+              (item.id !== "admin"     || role === "admin") &&
+              (item.id !== "dashboard" || role === "provider")
+            ).map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
@@ -443,9 +507,20 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Content */}
         <div className="flex-1 min-w-0 sm:pl-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">
-            {SECTION_TITLES[active]}
-          </h2>
+          <div className="flex items-center gap-2.5 mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              {SECTION_TITLES[active]}
+            </h2>
+            {(active === "messages" || active === "quotes") && (
+              <button
+                onClick={handleRefresh}
+                title="Frissítés"
+                className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
+              >
+                <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+              </button>
+            )}
+          </div>
 
           {active === "account" && (
             <AccountInfoForm userId={userId} initialName={initialName} email={email} />
@@ -547,11 +622,11 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           )}
 
           {active === "quotes" && (
-            <QuoteRequestsSection isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+            <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
           )}
 
           {active === "messages" && (
-            <MessagesSection onUnreadChange={setUnreadCount} />
+            <MessagesSection key={messagesKey} onUnreadChange={setUnreadCount} />
           )}
         </div>
       </div>

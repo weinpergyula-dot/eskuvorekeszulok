@@ -33,7 +33,7 @@ export function GalleryLightbox({ urls, alt }: { urls: string[]; alt: string }) 
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+      <div className="columns-2 sm:columns-3 md:columns-4 gap-2">
         {urls.map((url, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -41,7 +41,7 @@ export function GalleryLightbox({ urls, alt }: { urls: string[]; alt: string }) 
             src={url}
             alt={`${alt} ${i + 1}`}
             onClick={() => setOpen(i)}
-            className="w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+            className="w-full mb-2 rounded-lg cursor-pointer hover:opacity-90 transition-opacity break-inside-avoid"
           />
         ))}
       </div>

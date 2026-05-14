@@ -50,7 +50,7 @@ export function MessageForm({ recipientId, providerId }: Props) {
   if (loggedIn === null) return null;
 
   return (
-    <section className="mt-8 pt-8 border-t border-gray-100">
+    <section className="mt-8">
       <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
         <MessageSquare className="h-5 w-5 text-[#84AAA6]" />
         Üzenet küldése
@@ -58,9 +58,16 @@ export function MessageForm({ recipientId, providerId }: Props) {
 
       {loggedIn ? (
         success ? (
-          <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
-            ✓ Üzeneted elküldve! A szolgáltató hamarosan válaszol.
-          </p>
+          <div className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3 space-y-1">
+            <p>✓ Üzeneted elküldve! A szolgáltató hamarosan válaszol.</p>
+            <p className="text-sm text-green-600">
+              A további üzenetváltásokat a szolgáltatóval az{" "}
+              <Link href="/profil?tab=messages" className="underline underline-offset-2 hover:text-green-800 font-medium">
+                Üzenetek
+              </Link>{" "}
+              menüpontból kezdeményezheted.
+            </p>
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
             <FloatingInput
@@ -81,7 +88,7 @@ export function MessageForm({ recipientId, providerId }: Props) {
             {error && (
               <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">{error}</p>
             )}
-            <Button type="submit" disabled={sending}>
+            <Button type="submit" disabled={sending || !subject.trim() || !body.trim()}>
               {sending ? "Küldés..." : "Üzenet küldése"}
             </Button>
           </form>

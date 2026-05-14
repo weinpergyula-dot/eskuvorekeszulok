@@ -32,20 +32,32 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   try {
     const supabase = await createClient();
 
-    let query = supabase
-      .from("providers")
-      .select("*")
-      .contains("categories", [category])
-      .eq("approval_status", "approved")
-      .order("created_at", { ascending: false });
+    const baseQ = () =>
+      supabase
+        .from("providers")
+        .select("*")
+        .contains("categories", [category])
+        .eq("approval_status", "approved")
+        .order("created_at", { ascending: false });
+
+    let raw: Provider[];
 
     if (county) {
-      query = query.contains("counties", [county]);
+      // Two separate queries then deduplicate — avoids PostgREST array OR encoding issues
+      const [r1, r2] = await Promise.all([
+        baseQ().contains("counties", [county]),
+        baseQ().contains("counties", ["Országosan"]),
+      ]);
+      const seen = new Set<string>();
+      raw = [];
+      for (const p of [...(r1.data ?? []), ...(r2.data ?? [])]) {
+        if (!seen.has(p.id)) { seen.add(p.id); raw.push(p as Provider); }
+      }
+    } else {
+      const { data, error } = await baseQ();
+      if (error) console.error("providers query error:", error);
+      raw = (data as Provider[]) ?? [];
     }
-
-    const { data, error } = await query;
-    if (error) console.error("providers query error:", error);
-    const raw = (data as Provider[]) ?? [];
 
     // Compute live review aggregates
     const ids = raw.map((p) => p.id);
@@ -75,7 +87,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       <PageHeader
         icon={CATEGORY_LUCIDE_ICONS[category as ServiceCategory]}
         title={label}
-        breadcrumb={[{ label: "Szolgáltatók", href: "/services" }]}
+        backHref="/services"
         description={CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
       />
 

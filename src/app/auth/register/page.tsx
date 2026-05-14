@@ -4,15 +4,14 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { signUpAction, createProviderProfileAction, acceptTosAction } from "./actions";
+import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { UserRound, Briefcase } from "lucide-react";
+import { UserRound, Briefcase, ImagePlus, X } from "lucide-react";
 
 type Step = "role" | "basic" | "provider-details";
 
@@ -97,6 +96,7 @@ function RegisterContent() {
   const searchParams = useSearchParams();
   const supabase = createClient();
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<Step>("role");
   const [role, setRole] = useState<"visitor" | "provider">("visitor");
@@ -191,15 +191,26 @@ function RegisterContent() {
     setAvatarPreview(URL.createObjectURL(file));
   };
 
-  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []).slice(0, 10);
-    setGalleryFiles(files);
+  const handleGalleryAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = Array.from(e.target.files ?? []);
+    setGalleryFiles((prev) => [...prev, ...newFiles].slice(0, 10));
+    e.target.value = "";
+  };
+
+  const removeGalleryFile = (index: number) => {
+    setGalleryFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeAvatar = () => {
+    setAvatarFile(null);
+    setAvatarPreview(null);
+    if (avatarInputRef.current) avatarInputRef.current.value = "";
   };
 
   const uploadFile = async (file: File, bucket: string, path: string) => {
-    const { error } = await supabase.storage.from(bucket).upload(path, file, {
-      upsert: true,
-    });
+    const result = await getSignedUploadUrlAction(bucket, path);
+    if ("error" in result) throw new Error(result.error);
+    const { error } = await supabase.storage.from(bucket).uploadToSignedUrl(result.path, result.token, file);
     if (error) throw error;
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     return data.publicUrl;
@@ -399,18 +410,12 @@ function RegisterContent() {
               : "Add meg a bejelentkezési adataidat. A következő lépésben töltheted ki a nyilvános profilodat."
           }
           bgColor="#84AAA6"
+          backHref="/auth/register"
         />
         <div className="flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
-          <div className="mb-6">
-            <button
-              onClick={() => { setStep("role"); router.replace("/auth/register"); }}
-              className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
-            >
-              ← Vissza
-            </button>
-            <p className="text-gray-900 text-lg">Alapadatok megadása</p>
-          </div>
+        <div className="w-full max-w-lg">
+          <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+          <p className="text-gray-900 text-lg mb-6">Alapadatok megadása</p>
 
           {/* Progress */}
           <div className="flex gap-2 mb-6">
@@ -520,6 +525,7 @@ function RegisterContent() {
               Jelentkezz be
             </Link>
           </p>
+          </div>
         </div>
         </div>
       </div>
@@ -532,23 +538,22 @@ function RegisterContent() {
       <PageHeader icon={UserRound} title="Regisztráció – Szolgáltatói profil" description="Töltsd ki a nyilvános profilodat – ez jelenik majd meg az oldalon az érdeklődő pároknak." bgColor="#84AAA6" />
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
-        <div className="mb-6">
-          {!isUpgrade && (
-            <button
-              onClick={() => setStep("basic")}
-              className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
-            >
-              ← Vissza
-            </button>
-          )}
-          {isUpgrade && (
-            <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-4">
-              <p className="text-base text-gray-900">
-                Bejelentkezve mint <strong>{email}</strong>. Add meg a szolgáltatói adataidat, és jóváhagyás után megjelensz a kínálatban.
-              </p>
-            </div>
-          )}
-        </div>
+        {!isUpgrade && (
+          <button
+            onClick={() => setStep("basic")}
+            className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
+          >
+            ← Vissza
+          </button>
+        )}
+        <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+        {isUpgrade && (
+          <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-6">
+            <p className="text-base text-gray-900">
+              Bejelentkezve mint <strong>{email}</strong>. Add meg a szolgáltatói adataidat, és jóváhagyás után megjelensz a kínálatban.
+            </p>
+          </div>
+        )}
 
         {/* Progress */}
         <div className="flex gap-2 mb-8">
@@ -565,7 +570,7 @@ function RegisterContent() {
                 <p className="text-base text-gray-800">Tölts fel egy profilképet, hogy a látogatók felismerhessenek.</p>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
+                    className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50 shrink-0"
                     onClick={() => avatarInputRef.current?.click()}
                   >
                     {avatarPreview ? (
@@ -575,14 +580,28 @@ function RegisterContent() {
                       <span className="text-2xl">📷</span>
                     )}
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => avatarInputRef.current?.click()}
-                  >
-                    Kép feltöltése
-                  </Button>
+                  <div className="flex flex-col gap-1.5 min-w-0">
+                    <button
+                      type="button"
+                      onClick={() => avatarInputRef.current?.click()}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
+                    >
+                      <ImagePlus className="h-4 w-4" />
+                      {avatarFile ? "Csere" : "Kép feltöltése"}
+                    </button>
+                    {avatarFile && (
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200 text-sm max-w-xs">
+                        <span className="text-gray-700 truncate flex-1">{avatarFile.name}</span>
+                        <button
+                          type="button"
+                          onClick={removeAvatar}
+                          className="text-gray-400 hover:text-red-500 transition-colors shrink-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <input
                   ref={avatarInputRef}
@@ -662,16 +681,43 @@ function RegisterContent() {
               {/* Gallery */}
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Tölts fel képeket a munkáidról. (opcionális, max 10 db)</p>
-                <Input
-                  id="gallery"
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => galleryInputRef.current?.click()}
+                    disabled={galleryFiles.length >= 10}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ImagePlus className="h-4 w-4" />
+                    Képek hozzáadása
+                  </button>
+                  {galleryFiles.length > 0 && (
+                    <span className="text-sm text-gray-500">{galleryFiles.length} / 10</span>
+                  )}
+                </div>
+                <input
+                  ref={galleryInputRef}
                   type="file"
                   accept="image/*"
                   multiple
-                  onChange={handleGalleryChange}
-                  className="cursor-pointer"
+                  className="hidden"
+                  onChange={handleGalleryAdd}
                 />
                 {galleryFiles.length > 0 && (
-                  <p className="text-base text-gray-900">{galleryFiles.length} kép kiválasztva</p>
+                  <ul className="space-y-1 mt-1">
+                    {galleryFiles.map((file, idx) => (
+                      <li key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                        <span className="text-gray-700 truncate flex-1">{file.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeGalleryFile(idx)}
+                          className="text-gray-400 hover:text-red-500 transition-colors shrink-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
             </div>
@@ -691,6 +737,7 @@ function RegisterContent() {
             </p>
           </div>
         </form>
+        </div>
       </div>
       </div>
     </div>

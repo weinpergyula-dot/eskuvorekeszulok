@@ -2,10 +2,44 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Users, Briefcase } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
+import { ProviderCarousel } from "@/components/home/provider-carousel";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
+import { ProviderRegisterButton } from "@/components/home/provider-register-button";
+import { createClient } from "@/lib/supabase/server";
+import type { Provider } from "@/lib/types";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch approved providers: category counts + carousel picks in one query
+  let carouselProviders: Provider[] = [];
+  let categoryCounts: Record<string, number> = {};
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("providers")
+      .select("*")
+      .eq("approval_status", "approved")
+      .limit(200);
+
+    if (data && data.length > 0) {
+      // Count per category
+      for (const p of data) {
+        for (const cat of (p.categories ?? []) as string[]) {
+          categoryCounts[cat] = (categoryCounts[cat] ?? 0) + 1;
+        }
+      }
+
+      // Shuffle for carousel (Fisher-Yates), take first 6
+      const arr = [...data] as Provider[];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      carouselProviders = arr.slice(0, 6);
+    }
+  } catch {
+    // non-critical, silently ignore
+  }
   return (
     <>
       {/* Mobile hero slideshow */}
@@ -89,11 +123,7 @@ export default function HomePage() {
               <p className="text-base text-white leading-relaxed mb-5">
                 Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Fogadj ajánlatkéréseket közvetlenül az érdeklődő páraktól, és válaszolj nekik az oldalon keresztül.
               </p>
-              <Link href="/auth/register?type=provider">
-                <Button size="lg" className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6">
-                  Regisztrálok szolgáltatónak
-                </Button>
-              </Link>
+              <ProviderRegisterButton />
             </div>
           </div>
         </div>
@@ -101,11 +131,14 @@ export default function HomePage() {
 
       {/* Services section */}
       <section id="kategoriak" className="bg-white scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-10 sm:pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Kategóriák</h2>
-          <CategorySearch />
+          <CategorySearch counts={categoryCounts} />
         </div>
       </section>
+
+      {/* Featured providers carousel – mobile only */}
+      <ProviderCarousel providers={carouselProviders} />
     </>
   );
 }

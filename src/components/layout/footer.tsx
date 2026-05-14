@@ -16,7 +16,7 @@ export function Footer() {
           </div>
 
           <div className="hidden md:block">
-            <h3 className="text-base font-semibold text-gray-900 mb-3">Szolgáltatók</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-3">Kategóriák</h3>
             <ul className="space-y-2">
               {[
                 { href: "/services/fotosok-videosok", label: "Fotósok, Videósok" },
@@ -40,10 +40,10 @@ export function Footer() {
             <h3 className="text-base font-semibold text-gray-900 mb-3">Hasznos linkek</h3>
             <ul className="space-y-2">
               {[
-                { href: "/services", label: "Kategóriák" },
-                { href: "/informaciok", label: "Információk" },
-                { href: "/auth/register", label: "Regisztráció" },
                 { href: "/auth/login", label: "Bejelentkezés" },
+                { href: "/auth/register", label: "Regisztráció" },
+                { href: "/informaciok", label: "Információk" },
+                { href: "/services", label: "Kategóriák" },
                 { href: "/contact", label: "Kapcsolat" },
               ].map((item) => (
                 <li key={item.href}>

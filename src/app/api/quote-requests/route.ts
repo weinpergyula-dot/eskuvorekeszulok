@@ -17,6 +17,7 @@ export async function GET() {
       .from("quote_request_recipients")
       .select("id, read, created_at, quote_request_id")
       .eq("provider_user_id", user.id)
+      .eq("deleted_by_provider", false)
       .order("created_at", { ascending: false });
 
     if (!recipients) return NextResponse.json([]);
@@ -50,6 +51,7 @@ export async function GET() {
     .from("quote_requests")
     .select("id, subject, category, counties, message, created_at")
     .eq("visitor_id", user.id)
+    .eq("deleted_by_visitor", false)
     .order("created_at", { ascending: false });
 
   if (!requests) return NextResponse.json([]);

@@ -86,22 +86,47 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
 
   const admin = createAdminClient();
 
-  // Ha van provider rekordja → csak a saját recipient sorát töröljük
+  // Ha van provider rekordja → soft-delete a saját recipient során + rendszerüzenet a quote_messages-ben
   const { data: providerData } = await admin.from("providers").select("id").eq("user_id", user.id).maybeSingle();
   if (providerData) {
+    // Insert system message into quote_messages (visible to visitor in Ajánlatkérések)
+    await admin.from("quote_messages").insert({
+      quote_request_id: id,
+      provider_id: providerData.id,
+      sender_id: user.id,
+      body: "__SYSTEM__:A szolgáltató visszavonta magát az ajánlatkérésből. Válaszadásra nincs lehetőség.",
+    });
+
+    // Soft-delete: mark as deleted for provider (keeps row so visitor still sees the thread)
     const { error } = await admin
       .from("quote_request_recipients")
-      .delete()
+      .update({ deleted_by_provider: true })
       .eq("quote_request_id", id)
       .eq("provider_user_id", user.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ ok: true });
   }
 
-  // Látogató → töröljük az egész ajánlatkérést (cascade: recipients + messages)
+  // Látogató → rendszerüzenet a quote_messages-ben minden szolgáltatónak + soft-delete az ajánlatkérésen
+  const [{ data: recipients }, { data: qr }] = await Promise.all([
+    admin.from("quote_request_recipients").select("provider_id").eq("quote_request_id", id),
+    admin.from("quote_requests").select("subject").eq("id", id).single(),
+  ]);
+
+  await Promise.all(
+    (recipients ?? []).map((rec) =>
+      admin.from("quote_messages").insert({
+        quote_request_id: id,
+        provider_id: rec.provider_id,
+        sender_id: user.id,
+        body: `__SYSTEM__:A kérelmező visszavonta a(z) „${qr?.subject ?? "ezt az ajánlatkérést"}". Válaszadásra nincs lehetőség.`,
+      })
+    )
+  );
+
   const { error } = await admin
     .from("quote_requests")
-    .delete()
+    .update({ deleted_by_visitor: true })
     .eq("id", id)
     .eq("visitor_id", user.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

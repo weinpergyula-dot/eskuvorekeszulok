@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight, Trash2, Star } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight, Trash2, Star, Info } from "lucide-react";
+
+const SYSTEM_PREFIX = "__SYSTEM__:";
+const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
+const systemText  = (body: string) => body.slice(SYSTEM_PREFIX.length);
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -331,6 +335,8 @@ function ProviderThread({
   const [messages, setMessages] = useState<QuoteMessage[]>(provider.messages);
   const [sendError, setSendError] = useState<string | null>(null);
 
+  const hasSystemMessage = messages.some((m) => isSystemMsg(m.body));
+
   const handleExpand = async () => {
     if (expanded) { setExpanded(false); return; }
     setExpanded(true);
@@ -399,20 +405,27 @@ function ProviderThread({
             {messages.length === 0 ? (
               <p className="px-3 py-3 text-sm text-gray-400">Még nem érkezett üzenet ettől a szolgáltatótól.</p>
             ) : (
-              messages.map(msg => (
-                <div key={msg.id} className={`px-3 py-2.5 ${msg.sender_id === userId ? "bg-gray-50" : "bg-white"}`}>
-                  <div className="flex items-center justify-between gap-3 mb-1">
-                    <span className="text-xs font-medium text-gray-600">
-                      {msg.sender_id === userId ? "Te" : provider.full_name}
-                    </span>
-                    <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
+              messages.map(msg =>
+                isSystemMsg(msg.body) ? (
+                  <div key={msg.id} className="px-3 py-2.5 bg-amber-50 flex items-start gap-2">
+                    <Info className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-800 italic">{systemText(msg.body)}</p>
                   </div>
-                  <p className="text-sm text-gray-900 whitespace-pre-line">{msg.body}</p>
-                </div>
-              ))
+                ) : (
+                  <div key={msg.id} className={`px-3 py-2.5 ${msg.sender_id === userId ? "bg-gray-50" : "bg-white"}`}>
+                    <div className="flex items-center justify-between gap-3 mb-1">
+                      <span className="text-xs font-medium text-gray-600">
+                        {msg.sender_id === userId ? "Te" : provider.full_name}
+                      </span>
+                      <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
+                    </div>
+                    <p className="text-sm text-gray-900 whitespace-pre-line">{msg.body}</p>
+                  </div>
+                )
+              )
             )}
           </div>
-          <form onSubmit={handleReply} className="px-3 py-3 border-t border-gray-100 space-y-2">
+          {!hasSystemMessage && <form onSubmit={handleReply} className="px-3 py-3 border-t border-gray-100 space-y-2">
             <FloatingTextarea
               id={`reply-${provider.id}`}
               label="Válasz..."
@@ -425,7 +438,7 @@ function ProviderThread({
               <CornerDownRight className="h-3.5 w-3.5 mr-1" />
               {replying ? "Küldés..." : "Küldés"}
             </Button>
-          </form>
+          </form>}
         </div>
       )}
     </div>
@@ -533,7 +546,7 @@ function VisitorRequestRow({
             )}
           </div>
 
-          <div className="pt-1 border-t border-gray-100">
+          <div className="pt-1 border-t border-gray-100 flex justify-end">
             {!confirmDelete ? (
               <button
                 onClick={() => setConfirmDelete(true)}
@@ -544,7 +557,7 @@ function VisitorRequestRow({
               </button>
             ) : (
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd? <span className="text-gray-400">Az ajánlatkérés minden szolgáltató postaládájából is törlődik.</span></span>
+                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
@@ -593,6 +606,8 @@ function ProviderRequestRow({
   const [sendError, setSendError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const hasSystemMessage = messages.some((m) => isSystemMsg(m.body));
 
   const handleExpand = async () => {
     if (expanded) { setExpanded(false); return; }
@@ -719,37 +734,46 @@ function ProviderRequestRow({
               <p className="text-sm text-gray-400">Még nem volt üzenetváltás.</p>
             ) : (
               <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 overflow-hidden">
-                {messages.map(msg => (
-                  <div key={msg.id} className={`px-3 py-2.5 ${msg.sender_id === userId ? "bg-gray-50" : "bg-white"}`}>
-                    <div className="flex items-center justify-between gap-3 mb-1">
-                      <span className="text-xs font-medium text-gray-600">
-                        {msg.sender_id === userId ? "Te" : request.visitor_name}
-                      </span>
-                      <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
+                {messages.map(msg =>
+                  isSystemMsg(msg.body) ? (
+                    <div key={msg.id} className="px-3 py-2.5 bg-amber-50 flex items-start gap-2">
+                      <Info className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+                      <p className="text-xs text-amber-800 italic">{systemText(msg.body)}</p>
                     </div>
-                    <p className="text-sm text-gray-900 whitespace-pre-line">{msg.body}</p>
-                  </div>
-                ))}
+                  ) : (
+                    <div key={msg.id} className={`px-3 py-2.5 ${msg.sender_id === userId ? "bg-gray-50" : "bg-white"}`}>
+                      <div className="flex items-center justify-between gap-3 mb-1">
+                        <span className="text-xs font-medium text-gray-600">
+                          {msg.sender_id === userId ? "Te" : request.visitor_name}
+                        </span>
+                        <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
+                      </div>
+                      <p className="text-sm text-gray-900 whitespace-pre-line">{msg.body}</p>
+                    </div>
+                  )
+                )}
               </div>
             )}
           </div>
 
-          <form onSubmit={handleReply} className="space-y-2">
-            <FloatingTextarea
-              id={`prov-reply-${request.quote_request_id}`}
-              label="Válasz írása..."
-              value={replyBody}
-              onChange={e => setReplyBody(e.target.value)}
-              rows={3}
-            />
-            {sendError && <p className="text-xs text-[#F06C6C]">{sendError}</p>}
-            <Button type="submit" size="sm" disabled={replying || !replyBody.trim()}>
-              <CornerDownRight className="h-3.5 w-3.5 mr-1" />
-              {replying ? "Küldés..." : "Válasz küldése"}
-            </Button>
-          </form>
+          {!hasSystemMessage && (
+            <form onSubmit={handleReply} className="space-y-2">
+              <FloatingTextarea
+                id={`prov-reply-${request.quote_request_id}`}
+                label="Válasz írása..."
+                value={replyBody}
+                onChange={e => setReplyBody(e.target.value)}
+                rows={3}
+              />
+              {sendError && <p className="text-xs text-[#F06C6C]">{sendError}</p>}
+              <Button type="submit" size="sm" disabled={replying || !replyBody.trim()}>
+                <CornerDownRight className="h-3.5 w-3.5 mr-1" />
+                {replying ? "Küldés..." : "Válasz küldése"}
+              </Button>
+            </form>
+          )}
 
-          <div className="pt-1 border-t border-gray-100">
+          <div className="pt-1 border-t border-gray-100 flex justify-end">
             {!confirmDelete ? (
               <button
                 onClick={() => setConfirmDelete(true)}
@@ -760,7 +784,7 @@ function ProviderRequestRow({
               </button>
             ) : (
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd? <span className="text-gray-400">Az ajánlatkérés csak a te bejövőidből tűnik el — a látogató és a többi szolgáltató számára megmarad.</span></span>
+                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
