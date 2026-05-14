@@ -13,7 +13,7 @@ export function ProviderApprovedEmail({ name }: ProviderApprovedEmailProps) {
     <EmailLayout
       preview="Profilod jóváhagyásra került – mostantól látható a látogatók számára!"
       iconSrc={ICON_WHITE_CHECK}
-      title="Profilod jóváhagyásra került!"
+      title="Profilod jóváhagyásra került"
       subtitle="Mostantól megtalálnak téged a leendő párok."
     >
       <p style={s.text}>Kedves {name},</p>
@@ -35,7 +35,7 @@ export function ProviderApprovedEmail({ name }: ProviderApprovedEmailProps) {
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: "28px auto" }}>
         <tr>
           <td style={s.btnCell}>
-            <a href="https://eskuvorekeszulok.hu/profil" style={s.btn}>
+            <a href="https://www.eskuvorekeszulok.hu/profil#provider" style={s.btn}>
               Profil megtekintése
             </a>
           </td>
