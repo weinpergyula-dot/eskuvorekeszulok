@@ -283,7 +283,8 @@ function RegisterContent() {
       if (!newUserId) throw new Error("Ismeretlen hiba történt.");
 
       // Saját megerősítő email küldése Resenden keresztül
-      await sendConfirmationEmailAction(email, fullName, window.location.origin);
+      const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
+      if (confirmError) throw new Error(confirmError);
 
       // Wrap in a plain object so the rest of the code can use authData.user.id
       const authData = { user: { id: newUserId } };

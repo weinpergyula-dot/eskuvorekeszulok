@@ -6,54 +6,37 @@ import { ConfirmEmail } from "@/emails/confirm-email";
 import React from "react";
 
 /**
- * Signs up a new user via the Supabase REST API directly, without including a
- * PKCE code_challenge. This makes Supabase send a token_hash-based confirmation
- * email that can be verified from any browser or device.
+ * Creates a new user via the Supabase Admin API.
+ * Using the admin client bypasses GoTrue's built-in email sending entirely,
+ * so no confirmation email is triggered by Supabase — we handle that ourselves.
  */
 export async function signUpAction(
   email: string,
   password: string,
-  emailRedirectTo: string,
+  _emailRedirectTo: string,
   userData: Record<string, unknown>
 ): Promise<{ userId: string | null; error: string | null }> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  try {
+    const admin = createAdminClient();
 
-  if (!supabaseUrl || !supabaseKey) {
-    return { userId: null, error: "Supabase nincs konfigurálva." };
-  }
-
-  // redirect_to must be a query parameter – passing it in the body is ignored by GoTrue
-  const signupUrl = new URL(`${supabaseUrl}/auth/v1/signup`);
-  signupUrl.searchParams.set("redirect_to", emailRedirectTo);
-
-  const res = await fetch(signupUrl.toString(), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      apikey: supabaseKey,
-      Authorization: `Bearer ${supabaseKey}`,
-    },
-    body: JSON.stringify({
+    const { data, error } = await admin.auth.admin.createUser({
       email,
       password,
-      data: userData,
-      // No code_challenge → Supabase sends OTP/implicit-flow email (works from any browser)
-      gotrue_meta_security: {},
-    }),
-  });
+      email_confirm: false, // nem erősítjük meg azonnal — a saját emailünk végzi el
+      user_metadata: userData,
+    });
 
-  const json = await res.json();
+    if (error) {
+      return { userId: null, error: error.message };
+    }
 
-  if (!res.ok) {
-    const msg: string = json?.msg ?? json?.error_description ?? json?.message ?? "Ismeretlen hiba.";
-    return { userId: null, error: msg };
+    const userId = data?.user?.id ?? null;
+    if (!userId) return { userId: null, error: "Ismeretlen hiba történt." };
+
+    return { userId, error: null };
+  } catch (err) {
+    return { userId: null, error: err instanceof Error ? err.message : "Ismeretlen hiba." };
   }
-
-  const userId: string | null = json?.id ?? null;
-  if (!userId) return { userId: null, error: "Ismeretlen hiba történt." };
-
-  return { userId, error: null };
 }
 
 /**
