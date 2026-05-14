@@ -17,9 +17,11 @@ interface ProviderCardProps {
   disableLink?: boolean;
   isOwner?: boolean;
   nameFontSize?: string;
+  /** Carousel mode: fixed name height, no collapsible content, Részletek button */
+  inCarousel?: boolean;
 }
 
-export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px" }: ProviderCardProps) {
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px", inCarousel = false }: ProviderCardProps) {
   const [expanded, setExpanded] = useState(false);
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
@@ -77,7 +79,16 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-900 text-center mb-2 group-hover:text-[#84AAA6] transition-colors" style={{ fontSize: nameFontSize }}>
+        <h3
+          className={cn(
+            "font-bold text-gray-900 text-center mb-2 group-hover:text-[#84AAA6] transition-colors",
+            inCarousel && "line-clamp-2 leading-snug w-full"
+          )}
+          style={{
+            fontSize: nameFontSize,
+            ...(inCarousel ? { height: "calc(2 * 1.35 * 18px)", overflow: "hidden" } : {}),
+          }}
+        >
           {provider.full_name}
         </h3>
 
@@ -147,40 +158,57 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </Badge>
         )}
 
-        {/* Mobile expand/collapse toggle */}
-        <div className="sm:hidden flex justify-center w-full mt-3">
-          <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded((v) => !v); }}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
-          >
-            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Contact info */}
-      <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
-        <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
-        <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
-        {provider.website && (
-          <ContactRow
-            icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
-            value={provider.website}
-            isLink={!disableLink}
-          />
+        {/* Mobile expand/collapse toggle — hidden in carousel mode */}
+        {!inCarousel && (
+          <div className="sm:hidden flex justify-center w-full mt-3">
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded((v) => !v); }}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
+            >
+              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </button>
+          </div>
         )}
-        {provider.description && (
-          <div className="flex gap-2.5">
-            <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
-            <p className="text-base text-gray-900 line-clamp-3 leading-relaxed">
-              {provider.description}
-            </p>
+
+        {/* Carousel mode: Részletek button inside header */}
+        {inCarousel && !disableLink && (
+          <div className="flex justify-center w-full mt-3">
+            <a
+              href={`/providers/${provider.id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-4 py-1.5 rounded-full whitespace-nowrap"
+            >
+              Részletek
+            </a>
           </div>
         )}
       </div>
 
-      {/* Footer action bar */}
-      {!disableLink && (
+      {/* Contact info — hidden in carousel mode */}
+      {!inCarousel && (
+        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
+          <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
+          <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
+          {provider.website && (
+            <ContactRow
+              icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
+              value={provider.website}
+              isLink={!disableLink}
+            />
+          )}
+          {provider.description && (
+            <div className="flex gap-2.5">
+              <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
+              <p className="text-base text-gray-900 line-clamp-3 leading-relaxed">
+                {provider.description}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Footer action bar — hidden in carousel mode */}
+      {!inCarousel && !disableLink && (
         <div className={cn("border-t border-gray-100 px-4 py-3 items-center justify-between gap-2", expanded ? "flex" : "hidden sm:flex")}>
           {/* Left: Üzenetküldés */}
           <a
