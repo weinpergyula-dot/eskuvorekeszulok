@@ -66,9 +66,9 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
   };
 
   return (
-    <section className="sm:hidden bg-white pt-2 pb-10 overflow-hidden">
-      <div className="px-4 mb-5">
-        <h2 className="text-2xl font-bold text-gray-900">Kiemelt szolgáltatók</h2>
+    <section className="sm:hidden bg-white pt-10 pb-10 overflow-hidden">
+      <div className="px-4 mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Kiemelt szolgáltatók</h2>
       </div>
 
       <div
