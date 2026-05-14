@@ -8,7 +8,7 @@ export async function proxy(request: NextRequest) {
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  if ((code || tokenHash) && (pathname === "/" || !pathname.startsWith("/auth/callback"))) {
+  if ((code || tokenHash) && !pathname.startsWith("/auth/")) {
     const callbackUrl = new URL(`${origin}/auth/callback`);
     if (code) callbackUrl.searchParams.set("code", code);
     if (tokenHash) callbackUrl.searchParams.set("token_hash", tokenHash);
