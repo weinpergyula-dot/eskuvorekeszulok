@@ -8,7 +8,7 @@ export function ResetPasswordEmail({ resetLink }: ResetPasswordEmailProps) {
   return (
     <EmailLayout
       preview="Jelszó visszaállítási link – Esküvőre Készülök"
-      iconChar="🔑"
+      iconChar="✦"
       title="Jelszó visszaállítása"
       subtitle="Kattints a gombra az új jelszavad megadásához."
     >
