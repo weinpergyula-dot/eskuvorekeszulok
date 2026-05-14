@@ -317,7 +317,7 @@ export function Navbar() {
                 )}
               </div>
 
-              <Link href="/contact" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kapcsolat</Link>
+              <Link href="/kapcsolat" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kapcsolat</Link>
             </div>
           </div>
 
@@ -408,7 +408,7 @@ export function Navbar() {
           <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kezdőlap</Link>
           <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Információk</Link>
           <Link href="/services" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kategóriák</Link>
-          <Link href="/contact" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
+          <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
               <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-[#C65EA5] border border-[#C65EA5] rounded-lg py-2 hover:bg-[#C65EA5]/10 transition-colors">

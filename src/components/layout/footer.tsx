@@ -44,7 +44,7 @@ export function Footer() {
                 { href: "/auth/register", label: "Regisztráció" },
                 { href: "/informaciok", label: "Információk" },
                 { href: "/services", label: "Kategóriák" },
-                { href: "/contact", label: "Kapcsolat" },
+                { href: "/kapcsolat", label: "Kapcsolat" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
