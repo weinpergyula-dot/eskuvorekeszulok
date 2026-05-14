@@ -45,8 +45,7 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
 
   const filtered = query.trim()
     ? ALL_CATEGORIES.filter((cat) =>
-        CATEGORY_LABELS[cat].toLowerCase().includes(query.toLowerCase()) ||
-        CATEGORY_DESCRIPTIONS[cat].toLowerCase().includes(query.toLowerCase())
+        CATEGORY_LABELS[cat].toLowerCase().includes(query.toLowerCase())
       )
     : ALL_CATEGORIES;
 
