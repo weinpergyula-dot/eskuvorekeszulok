@@ -35,13 +35,11 @@ export function ProviderRejectedEmail({ name, reason }: ProviderRejectedEmailPro
 
       <p style={s.text}>
         Ha úgy gondolod, hogy ez tévedés, vagy szeretnéd módosítva újra
-        benyújtani a profilodat, kérjük vedd fel velünk a kapcsolatot.
-      </p>
-
-      <p style={s.mutedText}>
-        <a href="mailto:info@eskuvorekeszulok.hu" style={s.link}>
-          info@eskuvorekeszulok.hu
-        </a>
+        benyújtani a profilodat, keress minket a weboldalon lévő{" "}
+        <a href="https://www.eskuvorekeszulok.hu/kapcsolat" style={s.link}>
+          Kapcsolat
+        </a>{" "}
+        menüpont alatt.
       </p>
     </EmailLayout>
   );

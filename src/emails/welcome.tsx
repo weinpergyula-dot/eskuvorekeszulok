@@ -32,11 +32,11 @@ export function WelcomeEmail({ name }: WelcomeEmailProps) {
       </table>
 
       <p style={s.mutedText}>
-        Ha kérdésed van, bármikor elérsz minket az{" "}
-        <a href="mailto:info@eskuvorekeszulok.hu" style={s.link}>
-          info@eskuvorekeszulok.hu
+        Ha kérdésed van, keress minket a weboldalon lévő{" "}
+        <a href="https://www.eskuvorekeszulok.hu/kapcsolat" style={s.link}>
+          Kapcsolat
         </a>{" "}
-        címen.
+        menüpont alatt.
       </p>
     </EmailLayout>
   );
