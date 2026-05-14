@@ -46,7 +46,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       // Two separate queries then deduplicate — avoids PostgREST array OR encoding issues
       const [r1, r2] = await Promise.all([
         baseQ().contains("counties", [county]),
-        baseQ().contains("counties", ["Országos"]),
+        baseQ().contains("counties", ["Országosan"]),
       ]);
       const seen = new Set<string>();
       raw = [];
