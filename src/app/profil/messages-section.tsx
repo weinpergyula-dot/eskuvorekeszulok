@@ -181,7 +181,7 @@ function ThreadCard({
   };
 
   return (
-    <div className="border border-[#84AAA6] rounded-xl overflow-hidden bg-white">
+    <div className="border border-[#84AAA6]/15 rounded-xl overflow-hidden bg-white">
       {/* Thread header */}
       <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer bg-[#84AAA6]/15">
         {localHasUnread

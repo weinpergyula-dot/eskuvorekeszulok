@@ -381,7 +381,7 @@ function ProviderThread({
   };
 
   return (
-    <div className={`border rounded-lg overflow-hidden ${localUnread > 0 ? "border-[#84AAA6]" : "border-gray-200"}`}>
+    <div className="border border-[#84AAA6]/15 rounded-lg overflow-hidden">
       <button onClick={handleExpand} className="w-full flex items-center gap-3 px-3 py-2.5 text-left cursor-pointer bg-[#84AAA6]/15">
         <div className="flex-1 min-w-0">
           <p className={`text-sm font-medium truncate text-gray-800 ${localUnread > 0 ? "font-semibold" : ""}`}>
@@ -497,7 +497,7 @@ function VisitorRequestRow({
   };
 
   return (
-    <div className={`border rounded-xl overflow-hidden ${localUnread > 0 ? "border-[#84AAA6]" : "border-gray-200"}`}>
+    <div className="border border-[#84AAA6]/15 rounded-xl overflow-hidden">
       <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer bg-[#84AAA6]/15">
         <FileText className="h-4 w-4 shrink-0 text-[#84AAA6]" />
         <div className="flex-1 min-w-0">
@@ -697,7 +697,7 @@ function ProviderRequestRow({
   };
 
   return (
-    <div className={`border rounded-xl overflow-hidden ${!localRead ? "border-[#84AAA6]" : "border-gray-200"}`}>
+    <div className="border border-[#84AAA6]/15 rounded-xl overflow-hidden">
       <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer bg-[#84AAA6]/15">
         <FileText className="h-4 w-4 shrink-0 text-[#84AAA6]" />
         <div className="flex-1 min-w-0">
