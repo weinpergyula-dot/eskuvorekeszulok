@@ -29,15 +29,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const viewCount = provider.view_count ?? 0;
   const hasGallery = (provider.gallery_urls ?? []).length > 0;
 
-  const Wrapper = disableLink ? "div" : "a";
-  const wrapperProps = disableLink ? {} : { href: `/providers/${provider.id}` };
-
   return (
-    <Wrapper
-      {...wrapperProps}
+    <div
       className={cn(
         "bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden",
-        disableLink ? "cursor-default" : "hover:border-[#84AAA6] hover:shadow-md transition-all cursor-pointer group"
+        !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
       )}
     >
       {/* Header */}
@@ -72,11 +68,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             provider.avatar_url && "cursor-zoom-in"
           )}
           onClick={(e) => {
-            if (!provider.avatar_url) return;
             e.preventDefault();
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
-            setAvatarOpen(true);
+            if (inCarousel) {
+              window.location.href = `/providers/${provider.id}`;
+            } else if (provider.avatar_url) {
+              setAvatarOpen(true);
+            }
           }}
         >
           {provider.avatar_url ? (
@@ -262,8 +261,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </a>
         </div>
       )}
-      {/* Avatar lightbox */}
-      {avatarOpen && provider.avatar_url && (
+      {/* Avatar lightbox — only outside carousel mode */}
+      {!inCarousel && avatarOpen && provider.avatar_url && (
         <div
           className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
           onClick={() => setAvatarOpen(false)}
@@ -284,7 +283,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           />
         </div>
       )}
-    </Wrapper>
+    </div>
   );
 }
 

@@ -32,21 +32,32 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   try {
     const supabase = await createClient();
 
-    let query = supabase
-      .from("providers")
-      .select("*")
-      .contains("categories", [category])
-      .eq("approval_status", "approved")
-      .order("created_at", { ascending: false });
+    const baseQ = () =>
+      supabase
+        .from("providers")
+        .select("*")
+        .contains("categories", [category])
+        .eq("approval_status", "approved")
+        .order("created_at", { ascending: false });
+
+    let raw: Provider[];
 
     if (county) {
-      // Include providers with the selected county OR marked as "Országos"
-      query = query.or(`counties.cs.{"${county}"},counties.cs.{"Országos"}`);
+      // Two separate queries then deduplicate — avoids PostgREST array OR encoding issues
+      const [r1, r2] = await Promise.all([
+        baseQ().contains("counties", [county]),
+        baseQ().contains("counties", ["Országos"]),
+      ]);
+      const seen = new Set<string>();
+      raw = [];
+      for (const p of [...(r1.data ?? []), ...(r2.data ?? [])]) {
+        if (!seen.has(p.id)) { seen.add(p.id); raw.push(p as Provider); }
+      }
+    } else {
+      const { data, error } = await baseQ();
+      if (error) console.error("providers query error:", error);
+      raw = (data as Provider[]) ?? [];
     }
-
-    const { data, error } = await query;
-    if (error) console.error("providers query error:", error);
-    const raw = (data as Provider[]) ?? [];
 
     // Compute live review aggregates
     const ids = raw.map((p) => p.id);
