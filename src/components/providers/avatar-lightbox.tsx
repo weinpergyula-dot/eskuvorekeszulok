@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AvatarLightboxProps {
-  src: string | null;
+  src: string | null | undefined;
   name: string;
   size?: string;
 }
