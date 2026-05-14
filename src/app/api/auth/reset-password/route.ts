@@ -26,8 +26,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    // Saját callback URL-t építünk a token_hash alapján
-    const resetLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=recovery`;
+    // Közvetlenül a reset-password oldalra mutat, callback nélkül
+    const resetLink = `${origin}/auth/reset-password?token_hash=${encodeURIComponent(data.properties.hashed_token)}`;
 
     await sendEmail({
       to: email.trim().toLowerCase(),
