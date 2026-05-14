@@ -129,6 +129,9 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* Featured providers carousel – mobile only */}
+      <ProviderCarousel providers={carouselProviders} />
+
       {/* Services section */}
       <section id="kategoriak" className="bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-10 sm:pb-16">
@@ -136,9 +139,6 @@ export default async function HomePage() {
           <CategorySearch counts={categoryCounts} />
         </div>
       </section>
-
-      {/* Featured providers carousel – mobile only */}
-      <ProviderCarousel providers={carouselProviders} />
     </>
   );
 }

@@ -218,7 +218,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {provider.description && (
             <div className="flex gap-2.5">
               <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
-              <p className="text-base text-gray-900 line-clamp-3 leading-relaxed">
+              <p className={cn("text-base text-gray-900 leading-relaxed", !expanded && "sm:line-clamp-3")}>
                 {provider.description}
               </p>
             </div>

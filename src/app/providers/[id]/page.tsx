@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { ProviderTabs } from "@/components/providers/provider-tabs";
 import { FavoriteButton } from "@/components/providers/favorite-button";
 import { ShareButton } from "@/components/providers/share-button";
+import { AvatarLightbox } from "@/components/providers/avatar-lightbox";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -115,21 +116,12 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           <div className="absolute top-3 right-3 sm:hidden">
             <ShareButton title={provider.full_name} iconOnly />
           </div>
-          {/* Avatar */}
-          <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center shrink-0">
-            {provider.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={provider.avatar_url}
-                alt={provider.full_name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-4xl font-bold text-gray-900">
-                {provider.full_name.charAt(0)}
-              </span>
-            )}
-          </div>
+          {/* Avatar – kattintható lightbox */}
+          <AvatarLightbox
+            src={provider.avatar_url}
+            name={provider.full_name}
+            size="w-28 h-28"
+          />
 
           {/* Name & meta */}
           <div className="flex-1 text-center sm:text-left">
