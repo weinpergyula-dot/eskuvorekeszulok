@@ -14,7 +14,7 @@ export function NewReviewEmail({ providerName, reviewerName, rating, comment, ct
   return (
     <EmailLayout
       preview={`${reviewerName} értékelte a profilodat – Esküvőre Készülök`}
-      iconChar="★"
+      iconChar="✦"
       title="Új értékelés érkezett"
       subtitle="Valaki értékelést hagyott a profilodon."
     >

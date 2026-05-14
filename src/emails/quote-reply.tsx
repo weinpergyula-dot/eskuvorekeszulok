@@ -11,7 +11,7 @@ export function QuoteReplyEmail({ visitorName, providerName, subject, ctaUrl }: 
   return (
     <EmailLayout
       preview={`${providerName} válaszolt az ajánlatkérésedre – Esküvőre Készülök`}
-      iconChar="✉"
+      iconChar="✦"
       title="Válasz érkezett az ajánlatkérésedre"
       subtitle="Egy szolgáltató reagált a kérésedre."
     >
