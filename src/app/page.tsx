@@ -10,17 +10,26 @@ import { createClient } from "@/lib/supabase/server";
 import type { Provider } from "@/lib/types";
 
 export default async function HomePage() {
-  // Fetch random approved providers for the mobile carousel
+  // Fetch approved providers: category counts + carousel picks in one query
   let carouselProviders: Provider[] = [];
+  let categoryCounts: Record<string, number> = {};
   try {
     const supabase = await createClient();
     const { data } = await supabase
       .from("providers")
       .select("*")
       .eq("approval_status", "approved")
-      .limit(30);
+      .limit(200);
+
     if (data && data.length > 0) {
-      // Fisher-Yates shuffle, take first 6
+      // Count per category
+      for (const p of data) {
+        for (const cat of (p.categories ?? []) as string[]) {
+          categoryCounts[cat] = (categoryCounts[cat] ?? 0) + 1;
+        }
+      }
+
+      // Shuffle for carousel (Fisher-Yates), take first 6
       const arr = [...data] as Provider[];
       for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -29,7 +38,7 @@ export default async function HomePage() {
       carouselProviders = arr.slice(0, 6);
     }
   } catch {
-    // carousel is non-critical, silently ignore
+    // non-critical, silently ignore
   }
   return (
     <>
@@ -124,7 +133,7 @@ export default async function HomePage() {
       <section id="kategoriak" className="bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-10 sm:pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Kategóriák</h2>
-          <CategorySearch />
+          <CategorySearch counts={categoryCounts} />
         </div>
       </section>
 

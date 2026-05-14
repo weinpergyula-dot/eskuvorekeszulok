@@ -172,16 +172,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </div>
         )}
 
-        {/* Carousel mode: category badge(s) at bottom */}
-        {inCarousel && (provider.categories ?? []).length > 0 && (
-          <div className="flex flex-wrap justify-center gap-1.5 mt-3">
-            {(provider.categories ?? []).slice(0, 2).map((cat) => (
-              <Badge key={cat} variant="outline" className="text-xs">
-                {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-              </Badge>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Contact info — hidden in carousel mode */}

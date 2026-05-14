@@ -6,7 +6,6 @@ import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   CATEGORY_LABELS,
-  CATEGORY_DESCRIPTIONS,
   type ServiceCategory,
 } from "@/lib/types";
 import { CATEGORY_LUCIDE_ICONS } from "@/lib/category-icons";
@@ -36,7 +35,11 @@ const ALL_CATEGORIES: ServiceCategory[] = [
 
 const MOBILE_VISIBLE = 6;
 
-export function CategorySearch() {
+interface CategorySearchProps {
+  counts?: Record<string, number>;
+}
+
+export function CategorySearch({ counts = {} }: CategorySearchProps) {
   const [query, setQuery] = useState("");
   const [showAll, setShowAll] = useState(false);
 
@@ -84,8 +87,8 @@ export function CategorySearch() {
                   {CATEGORY_LABELS[category]}
                 </h3>
                 <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#84AAA6] transition-colors mb-2" />
-                <p className="text-base text-gray-900 line-clamp-2">
-                  {CATEGORY_DESCRIPTIONS[category]}
+                <p className="text-sm text-gray-500">
+                  Aktív szolgáltató: <span className="font-semibold text-gray-900">{counts[category] ?? 0} db</span>
                 </p>
               </Link>
             ))}
