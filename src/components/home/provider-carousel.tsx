@@ -87,7 +87,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
               key={`${provider.id}-${i}`}
               style={{ width: "calc(50vw - 20px)", flexShrink: 0 }}
             >
-              <ProviderCard provider={provider} nameFontSize="18px" inCarousel />
+              <ProviderCard provider={provider} nameFontSize="16px" inCarousel />
             </div>
           ))}
         </div>

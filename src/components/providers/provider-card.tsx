@@ -110,12 +110,12 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {!hideCategories && (
           <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
             {(provider.categories ?? []).slice(0, 2).map((cat) => (
-              <Badge key={cat} variant="outline" className="text-sm sm:text-base">
+              <Badge key={cat} variant="outline" className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base")}>
                 {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
               </Badge>
             ))}
             {(provider.categories ?? []).length > 2 && (
-              <Badge variant="outline" className="text-sm sm:text-base">
+              <Badge variant="outline" className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base")}>
                 +{(provider.categories ?? []).length - 2}
               </Badge>
             )}
@@ -125,7 +125,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {/* Counties */}
         <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
           <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
-          <span className="text-sm sm:text-base text-gray-900">
+          <span className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base", "text-gray-900")}>
             {inCarousel ? (
               <>
                 {(provider.counties ?? [])[0] ?? ""}
@@ -153,11 +153,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               )}
             />
           ))}
-          <span className="text-base font-semibold text-gray-900 ml-1">
+          <span className={cn(inCarousel ? "text-sm" : "text-base", "font-semibold text-gray-900 ml-1")}>
             {rating > 0 ? rating.toFixed(1) : "–"}
           </span>
           {reviewCount > 0 && (
-            <span className="text-base text-gray-900">({reviewCount})</span>
+            <span className={cn(inCarousel ? "text-sm" : "text-base", "text-gray-900")}>({reviewCount})</span>
           )}
         </div>
 

@@ -1,6 +1,66 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { Resend } from "resend";
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+async function sendProviderEmail(
+  adminClient: ReturnType<typeof createAdminClient>,
+  providerId: string,
+  action: "approve" | "reject",
+  reason?: string
+) {
+  if (!resend) return;
+  try {
+    // Get provider + email
+    const { data: prov } = await adminClient
+      .from("providers")
+      .select("user_id, full_name")
+      .eq("id", providerId)
+      .single();
+    if (!prov) return;
+
+    const { data: authUser } = await adminClient.auth.admin.getUserById(prov.user_id);
+    const email = authUser?.user?.email;
+    if (!email) return;
+
+    if (action === "approve") {
+      await resend.emails.send({
+        from: "Esküvőre Készülök <info@eskuvorekeszulok.hu>",
+        to: email,
+        subject: "✅ Profilod jóváhagyásra került – Esküvőre Készülök",
+        html: `
+          <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto;">
+            <h2 style="color: #84AAA6;">Profiljod jóváhagyásra került!</h2>
+            <p>Kedves ${prov.full_name},</p>
+            <p>Örömmel értesítünk, hogy szolgáltatói profilod az <strong>Esküvőre Készülök</strong> oldalon <strong>jóváhagyásra került</strong>, és mostantól látható a látogatók számára.</p>
+            <p><a href="https://eskuvorekeszulok.hu/profil" style="background:#84AAA6;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;margin-top:8px;">Profil megtekintése</a></p>
+            <p style="color:#888;font-size:13px;margin-top:24px;">Esküvőre Készülök csapata</p>
+          </div>
+        `,
+      });
+    } else {
+      await resend.emails.send({
+        from: "Esküvőre Készülök <info@eskuvorekeszulok.hu>",
+        to: email,
+        subject: "❌ Profilod elutasításra került – Esküvőre Készülök",
+        html: `
+          <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto;">
+            <h2 style="color: #c0392b;">Profilod elutasításra került</h2>
+            <p>Kedves ${prov.full_name},</p>
+            <p>Sajnálattal értesítünk, hogy szolgáltatói profilod az <strong>Esküvőre Készülök</strong> oldalon <strong>nem került jóváhagyásra</strong>.</p>
+            ${reason ? `<p><strong>Indoklás:</strong> ${reason}</p>` : ""}
+            <p>Ha kérdésed van, vedd fel velünk a kapcsolatot.</p>
+            <p style="color:#888;font-size:13px;margin-top:24px;">Esküvőre Készülök csapata</p>
+          </div>
+        `,
+      });
+    }
+  } catch (err) {
+    console.error("Email send error:", err);
+  }
+}
 
 const VALID_KEYS = [
   "full_name", "phone", "counties", "categories",
@@ -34,6 +94,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         .update({ ...safeChanges, pending_changes: null, approval_status: "approved", rejection_reason: null })
         .eq("id", id);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      await sendProviderEmail(admin, id, "approve");
     } else {
       const { error } = await admin
         .from("providers")
@@ -51,6 +112,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           .eq("user_id", provRec.user_id)
           .eq("role", "visitor");
       }
+      await sendProviderEmail(admin, id, "approve");
     }
   } else if (action === "reject") {
     if (type === "edit") {
@@ -59,12 +121,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         .update({ pending_changes: null, approval_status: "approved", rejection_reason: reason || null })
         .eq("id", id);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      await sendProviderEmail(admin, id, "reject", reason);
     } else {
       const { error } = await admin
         .from("providers")
         .update({ approval_status: "rejected", rejection_reason: reason || null })
         .eq("id", id);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      await sendProviderEmail(admin, id, "reject", reason);
     }
   } else {
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
