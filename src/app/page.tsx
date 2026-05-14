@@ -2,11 +2,35 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Users, Briefcase } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
+import { ProviderCarousel } from "@/components/home/provider-carousel";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
+import { createClient } from "@/lib/supabase/server";
+import type { Provider } from "@/lib/types";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch random approved providers for the mobile carousel
+  let carouselProviders: Provider[] = [];
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("providers")
+      .select("*")
+      .eq("approval_status", "approved")
+      .limit(30);
+    if (data && data.length > 0) {
+      // Fisher-Yates shuffle, take first 6
+      const arr = [...data] as Provider[];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      carouselProviders = arr.slice(0, 6);
+    }
+  } catch {
+    // carousel is non-critical, silently ignore
+  }
   return (
     <>
       {/* Mobile hero slideshow */}
@@ -98,11 +122,14 @@ export default function HomePage() {
 
       {/* Services section */}
       <section id="kategoriak" className="bg-white scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-10 sm:pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Kategóriák</h2>
           <CategorySearch />
         </div>
       </section>
+
+      {/* Featured providers carousel – mobile only */}
+      <ProviderCarousel providers={carouselProviders} />
     </>
   );
 }
