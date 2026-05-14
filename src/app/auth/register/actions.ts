@@ -69,7 +69,7 @@ export async function sendConfirmationEmailAction(
     const admin = createAdminClient();
 
     const { data, error } = await admin.auth.admin.generateLink({
-      type: "signup",
+      type: "magiclink",
       email,
     });
 
@@ -78,7 +78,7 @@ export async function sendConfirmationEmailAction(
       return { error: "Nem sikerült a megerősítő email generálása." };
     }
 
-    const confirmLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=signup`;
+    const confirmLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=magiclink`;
 
     await sendEmail({
       to: email,
