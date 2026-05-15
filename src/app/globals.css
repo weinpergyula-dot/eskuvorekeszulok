@@ -225,6 +225,14 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
   animation-play-state: paused;
 }
 
+/* ── Desktop: +2px betűméret az üzenetek és ajánlatkérés szekciókban ── */
+@media (min-width: 640px) {
+  .section-larger-text .text-xs   { font-size: 0.875rem; line-height: 1.25rem; }  /* 12→14px */
+  .section-larger-text .text-sm   { font-size: 1rem;     line-height: 1.5rem;  }  /* 14→16px */
+  .section-larger-text .text-base { font-size: 1.125rem; line-height: 1.75rem; }  /* 16→18px */
+  .section-larger-text .text-lg   { font-size: 1.25rem;  line-height: 1.75rem; }  /* 18→20px */
+}
+
 /* ── Chat mode: lock body scroll on mobile ───────────── */
 /* The fixed chat overlay covers everything; prevent background scroll. */
 @media (max-width: 639px) {

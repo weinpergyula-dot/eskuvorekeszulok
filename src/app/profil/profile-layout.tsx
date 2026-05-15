@@ -625,11 +625,15 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           )}
 
           {active === "quotes" && (
-            <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+            <div className="section-larger-text">
+              <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+            </div>
           )}
 
           {active === "messages" && (
-            <MessagesSection key={messagesKey} userId={userId} onUnreadChange={setUnreadCount} />
+            <div className="section-larger-text">
+              <MessagesSection key={messagesKey} userId={userId} onUnreadChange={setUnreadCount} />
+            </div>
           )}
 
           {active === "notifications" && (

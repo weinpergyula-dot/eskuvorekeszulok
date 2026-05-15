@@ -164,7 +164,8 @@ function ThreadChat({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
   const [localMessages, setLocalMessages] = useState(thread.messages);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const bottomRef   = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const hasSystemMessage = localMessages.some((m) => !m.is_own && isSystemMsg(m.body));
   const otherParticipant = localMessages.find((m) => !m.is_own);
@@ -310,6 +311,7 @@ function ThreadChat({
         },
       ]);
       setReplyBody("");
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
     } catch (err: unknown) {
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
     } finally {
@@ -424,12 +426,18 @@ function ThreadChat({
         <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
           <form onSubmit={handleReply} className="flex gap-2 items-end">
             <textarea
+              ref={textareaRef}
               value={replyBody}
-              onChange={(e) => setReplyBody(e.target.value)}
+              onChange={(e) => {
+                setReplyBody(e.target.value);
+                e.target.style.height = "auto";
+                e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+              }}
               onKeyDown={handleKeyDown}
-              placeholder="Írj üzenetet… (Ctrl+Enter a küldéshez)"
-              rows={2}
-              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors"
+              placeholder="Írj üzenetet…"
+              rows={1}
+              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors overflow-hidden"
+              style={{ maxHeight: "120px" }}
             />
             <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
               <Send className="h-3.5 w-3.5 mr-1" />
@@ -496,9 +504,9 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
        */
       <div className="fixed sm:relative inset-0 sm:inset-auto z-[100] sm:z-auto flex flex-col bg-white sm:min-h-[520px]">
 
-        {/* "Chat" page-header – mobile only, matches profile-layout's h2 style */}
-        <div className="shrink-0 flex items-center gap-2.5 px-4 py-4 border-b border-gray-100 bg-white sm:hidden">
-          <h2 className="text-xl font-semibold text-gray-900">Chat</h2>
+        {/* "Chat" page-header – mobile only */}
+        <div className="shrink-0 flex items-center gap-2.5 px-4 py-4 bg-[#84AAA6] sm:hidden">
+          <h2 className="text-xl font-semibold text-white">Chat</h2>
         </div>
 
         {/* ThreadChat – fills remaining space between title and footer */}
