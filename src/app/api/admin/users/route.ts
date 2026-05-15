@@ -17,13 +17,28 @@ export async function GET() {
       .single();
     if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id, user_id, email, full_name, role, created_at")
-      .order("created_at", { ascending: false });
+    const [{ data: profiles, error }, { data: providers }] = await Promise.all([
+      supabase.from("profiles").select("id, user_id, email, full_name, role, created_at").order("created_at", { ascending: false }),
+      supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes"),
+    ]);
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data);
+
+    const provMap = new Map((providers ?? []).map((p) => [p.user_id, p]));
+    const enriched = (profiles ?? []).map((u) => {
+      const prov = provMap.get(u.user_id);
+      return {
+        ...u,
+        phone: prov?.phone ?? null,
+        providerCategories: (prov?.categories ?? null) as string[] | null,
+        providerViewCount: (prov?.view_count ?? null) as number | null,
+        providerId: prov?.id ?? null,
+        providerApprovalStatus: prov?.approval_status ?? null,
+        providerHasPendingChanges: !!prov?.pending_changes,
+      };
+    });
+
+    return NextResponse.json(enriched);
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
