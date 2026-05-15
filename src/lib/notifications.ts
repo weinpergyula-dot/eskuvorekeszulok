@@ -1,7 +1,12 @@
 /**
  * Értesítési segédfüggvények.
- * Az API route-ok hívják ezeket a megfelelő esemény után.
- * Minden függvény fire-and-forget jellegű: a hívó nem vár a végeredményre.
+ *
+ * Az azonnali értesítések (új értékelés, ajánlatkérés, kapcsolati üzenet)
+ * fire-and-forget jelleggel mennek ki a hívás pillanatában.
+ *
+ * Az üzenet-alapú értesítések (new_message, quote_reply) késleltetett sorba
+ * kerülnek (pending_notifications tábla), és a cron job küldi ki őket 5 perccel
+ * az utolsó üzenet után – de csak akkor, ha a fogadó közben nem olvasta el.
  */
 
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -12,6 +17,11 @@ import { NewQuoteRequestEmail } from "@/emails/new-quote-request";
 import { QuoteReplyEmail } from "@/emails/quote-reply";
 import { ContactNotificationEmail } from "@/emails/contact-notification";
 import React from "react";
+
+// ── Konstansok ─────────────────────────────────────────────────────────────────
+
+/** Ennyi perccel az utolsó üzenet után megy ki az email, ha nem olvasták el. */
+const NOTIFICATION_DELAY_MINUTES = 5;
 
 // ── Preference helpers ─────────────────────────────────────────────────────────
 
@@ -31,7 +41,6 @@ async function getPrefs(userId: string): Promise<NotificationPrefs> {
     .eq("user_id", userId)
     .maybeSingle();
 
-  // Ha még nincs sor, az alapértelmezett true mindenhol
   return {
     notify_new_message:       data?.notify_new_message       ?? true,
     notify_new_review:        data?.notify_new_review        ?? true,
@@ -66,68 +75,35 @@ async function getAdminUserIds(): Promise<string[]> {
   return (data ?? []).map((p: { user_id: string }) => p.user_id);
 }
 
-// ── Notification senders ───────────────────────────────────────────────────────
+// ── Késleltetett értesítés ütemezése ──────────────────────────────────────────
 
-/**
- * Új üzenet értesítő — hívd a POST /api/messages után.
- */
-function normalizeSubject(s: string) {
-  return s.replace(/^(Re:\s*)+/i, "").trim();
-}
-
-/** Returns true if the recipient currently has this thread open (within 2 minutes). */
-async function isRecipientPresent(recipientId: string, senderId: string, subject: string): Promise<boolean> {
-  try {
-    const admin = createAdminClient();
-    const threadKey = `${normalizeSubject(subject)}|${senderId}`;
-    const { data } = await admin
-      .from("message_presence")
-      .select("updated_at")
-      .eq("user_id", recipientId)
-      .eq("thread_key", threadKey)
-      .maybeSingle();
-    if (!data) return false;
-    return new Date(data.updated_at) > new Date(Date.now() - 2 * 60 * 1000);
-  } catch {
-    return false;
-  }
-}
-
-export async function notifyNewMessage(params: {
+async function scheduleNotification(params: {
+  type: "new_message" | "quote_reply";
   recipientId: string;
   senderId: string;
-  subject: string;
-  origin: string;
+  payload: Record<string, unknown>;
 }): Promise<void> {
-  try {
-    const prefs = await getPrefs(params.recipientId);
-    if (!prefs.notify_new_message) return;
+  const admin = createAdminClient();
+  const sendAfter = new Date(
+    Date.now() + NOTIFICATION_DELAY_MINUTES * 60 * 1000
+  ).toISOString();
 
-    // Skip email if recipient has this chat open right now
-    const present = await isRecipientPresent(params.recipientId, params.senderId, params.subject);
-    if (present) return;
-
-    const [recipientEmail, recipientName, senderName] = await Promise.all([
-      getUserEmail(params.recipientId),
-      getUserName(params.recipientId),
-      getUserName(params.senderId),
-    ]);
-    if (!recipientEmail) return;
-
-    await sendEmail({
-      to: recipientEmail,
-      subject: "Új üzeneted érkezett – Esküvőre Készülök",
-      template: React.createElement(NewMessageEmail, {
-        recipientName,
-        senderName,
-        subject: params.subject,
-        ctaUrl: `${params.origin}/profil#messages`,
-      }),
-    });
-  } catch (err) {
-    console.error("[notifyNewMessage] hiba:", err);
-  }
+  // Ha már van függőben lévő értesítés ugyanerre a (típus, fogadó, feladó) párosra,
+  // frissítjük a send_after időt (azaz az utolsó üzenet után 5 perccel küldünk).
+  await admin.from("pending_notifications").upsert(
+    {
+      type: params.type,
+      recipient_id: params.recipientId,
+      sender_id: params.senderId,
+      payload: params.payload,
+      send_after: sendAfter,
+      sent: false,
+    },
+    { onConflict: "type,recipient_id,sender_id" }
+  );
 }
+
+// ── Azonnali értesítők (ezek változatlanul működnek) ─────────────────────────
 
 /**
  * Új értékelés értesítő — hívd a POST /api/providers/[id]/reviews után.
@@ -167,8 +143,7 @@ export async function notifyNewReview(params: {
 }
 
 /**
- * Új ajánlatkérés értesítő egy adott szolgáltatónak.
- * Hívd a POST /api/quote-requests után minden érintett providerre.
+ * Új ajánlatkérés értesítő — hívd a POST /api/quote-requests után minden érintett providerre.
  */
 export async function notifyNewQuoteRequest(params: {
   providerUserId: string;
@@ -203,42 +178,6 @@ export async function notifyNewQuoteRequest(params: {
     });
   } catch (err) {
     console.error("[notifyNewQuoteRequest] hiba:", err);
-  }
-}
-
-/**
- * Válasz értesítő a látogatónak — hívd a POST /api/quote-requests/[id]/messages után,
- * ha a feladó a szolgáltató (azaz a látogató a fogadó fél).
- */
-export async function notifyQuoteReply(params: {
-  visitorUserId: string;
-  providerUserId: string;
-  subject: string;
-  origin: string;
-}): Promise<void> {
-  try {
-    const prefs = await getPrefs(params.visitorUserId);
-    if (!prefs.notify_quote_reply) return;
-
-    const [visitorEmail, visitorName, providerName] = await Promise.all([
-      getUserEmail(params.visitorUserId),
-      getUserName(params.visitorUserId),
-      getUserName(params.providerUserId),
-    ]);
-    if (!visitorEmail) return;
-
-    await sendEmail({
-      to: visitorEmail,
-      subject: "Válasz érkezett az ajánlatkérésedre – Esküvőre Készülök",
-      template: React.createElement(QuoteReplyEmail, {
-        visitorName,
-        providerName,
-        subject: params.subject,
-        ctaUrl: `${params.origin}/profil?tab=quotes`,
-      }),
-    });
-  } catch (err) {
-    console.error("[notifyQuoteReply] hiba:", err);
   }
 }
 
@@ -280,4 +219,188 @@ export async function notifyContactMessage(params: {
   } catch (err) {
     console.error("[notifyContactMessage] hiba:", err);
   }
+}
+
+// ── Késleltetett értesítők (sorba írják az emailt) ────────────────────────────
+
+/**
+ * Üzenet értesítő ütemezése — hívd a POST /api/messages után.
+ * Az email 5 perccel az utolsó üzenet után megy ki, ha a fogadó nem olvasta el.
+ */
+export async function notifyNewMessage(params: {
+  recipientId: string;
+  senderId: string;
+  subject: string;
+  origin: string;
+}): Promise<void> {
+  try {
+    await scheduleNotification({
+      type: "new_message",
+      recipientId: params.recipientId,
+      senderId: params.senderId,
+      payload: { subject: params.subject, origin: params.origin },
+    });
+  } catch (err) {
+    console.error("[notifyNewMessage] ütemezési hiba:", err);
+  }
+}
+
+/**
+ * Ajánlatkérés-válasz értesítő ütemezése — hívd a POST /api/quote-requests/[id]/messages után,
+ * ha a feladó a szolgáltató.
+ */
+export async function notifyQuoteReply(params: {
+  visitorUserId: string;
+  providerUserId: string;
+  subject: string;
+  origin: string;
+}): Promise<void> {
+  try {
+    await scheduleNotification({
+      type: "quote_reply",
+      recipientId: params.visitorUserId,
+      senderId: params.providerUserId,
+      payload: { subject: params.subject, origin: params.origin },
+    });
+  } catch (err) {
+    console.error("[notifyQuoteReply] ütemezési hiba:", err);
+  }
+}
+
+// ── Cron feldolgozó ───────────────────────────────────────────────────────────
+
+/**
+ * A cron job hívja ezt percenként.
+ * Felszedi a lejárt, el nem küldött értesítéseket, ellenőrzi az olvasottságot,
+ * és szükség esetén elküldi az emailt.
+ */
+export async function processPendingNotifications(): Promise<void> {
+  const admin = createAdminClient();
+  const now = new Date().toISOString();
+
+  // Atomikusan lefoglalja a lejárt sorokat (sent = true),
+  // hogy párhuzamos futás esetén se menjen ki kétszer email.
+  const { data: claimed } = await admin
+    .from("pending_notifications")
+    .update({ sent: true })
+    .lte("send_after", now)
+    .eq("sent", false)
+    .select();
+
+  if (!claimed || claimed.length === 0) return;
+
+  await Promise.allSettled(
+    claimed.map(async (n) => {
+      try {
+        if (n.type === "new_message") {
+          await sendDeferredNewMessage(n);
+        } else if (n.type === "quote_reply") {
+          await sendDeferredQuoteReply(n);
+        }
+      } catch (err) {
+        console.error("[processPendingNotifications]", n.type, err);
+      }
+    })
+  );
+
+  // Régi, már elküldött sorok törlése (1 napnál régebbiek)
+  await admin
+    .from("pending_notifications")
+    .delete()
+    .eq("sent", true)
+    .lt("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+    .then(() => {})
+    .catch(() => {});
+}
+
+// ── Deferred küldők ───────────────────────────────────────────────────────────
+
+async function sendDeferredNewMessage(n: {
+  recipient_id: string;
+  sender_id: string;
+  payload: unknown;
+}): Promise<void> {
+  const payload = n.payload as { subject: string; origin: string };
+  const admin = createAdminClient();
+
+  // Van-e még olvasatlan üzenet ettől a feladótól ennek a fogadónak?
+  const { count } = await admin
+    .from("messages")
+    .select("*", { count: "exact", head: true })
+    .eq("recipient_id", n.recipient_id)
+    .eq("sender_id", n.sender_id)
+    .eq("read", false)
+    .eq("deleted_for_recipient", false);
+
+  if ((count ?? 0) === 0) return; // Már elolvasta, nem kell email
+
+  const prefs = await getPrefs(n.recipient_id);
+  if (!prefs.notify_new_message) return;
+
+  const [recipientEmail, recipientName, senderName] = await Promise.all([
+    getUserEmail(n.recipient_id),
+    getUserName(n.recipient_id),
+    getUserName(n.sender_id),
+  ]);
+  if (!recipientEmail) return;
+
+  await sendEmail({
+    to: recipientEmail,
+    subject: "Új üzeneted érkezett – Esküvőre Készülök",
+    template: React.createElement(NewMessageEmail, {
+      recipientName,
+      senderName,
+      subject: payload.subject,
+      ctaUrl: `${payload.origin}/profil#messages`,
+    }),
+  });
+}
+
+async function sendDeferredQuoteReply(n: {
+  recipient_id: string; // visitor
+  sender_id: string;    // provider user_id
+  payload: unknown;
+}): Promise<void> {
+  const payload = n.payload as { subject: string; origin: string };
+  const admin = createAdminClient();
+
+  // Megkeressük a látogató ajánlatkéréseit
+  const { data: visitorRequests } = await admin
+    .from("quote_requests")
+    .select("id")
+    .eq("visitor_id", n.recipient_id);
+
+  const reqIds = (visitorRequests ?? []).map((r: { id: string }) => r.id);
+  if (reqIds.length === 0) return;
+
+  // Van-e még olvasatlan válaszüzenet ettől a szolgáltatótól?
+  const { count } = await admin
+    .from("quote_messages")
+    .select("*", { count: "exact", head: true })
+    .in("quote_request_id", reqIds)
+    .eq("sender_id", n.sender_id)
+    .eq("read", false);
+
+  if ((count ?? 0) === 0) return; // Már elolvasta
+
+  const prefs = await getPrefs(n.recipient_id);
+  if (!prefs.notify_quote_reply) return;
+
+  const [visitorEmail, visitorName, providerName] = await Promise.all([
+    getUserEmail(n.recipient_id),
+    getUserName(n.recipient_id),
+    getUserName(n.sender_id),
+  ]);
+  if (!visitorEmail) return;
+
+  await sendEmail({
+    to: visitorEmail,
+    subject: "Válasz érkezett az ajánlatkérésedre – Esküvőre Készülök",
+    template: React.createElement(QuoteReplyEmail, {
+      visitorName,
+      providerName,
+      subject: payload.subject,
+      ctaUrl: `${payload.origin}/profil?tab=quotes`,
+    }),
+  });
 }
