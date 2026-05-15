@@ -84,7 +84,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
         title="Szolgáltatói profil"
         backHref={firstCategory ? `/services/${firstCategory}` : "/services"}
       />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
       <ViewTracker providerId={provider.id} />
 
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
