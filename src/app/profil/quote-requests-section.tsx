@@ -459,7 +459,7 @@ function QuoteChat({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-white sm:relative sm:inset-auto sm:z-auto sm:max-h-[680px]">
+    <div className="fixed inset-0 z-[100] flex flex-col bg-white sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
       {/* Mobil: teal page header */}
       <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
         <button onClick={onBack} className="text-white cursor-pointer shrink-0">

@@ -172,9 +172,7 @@ function ThreadChat({
   const otherName = isOutgoing
     ? (firstMsg?.recipient_name ?? "Névtelen")
     : (otherParticipant?.sender_name ?? "Névtelen");
-  const otherProviderId = isOutgoing
-    ? (firstMsg?.recipient_provider_id ?? null)
-    : (otherParticipant?.sender_provider_id ?? null);
+  const otherProviderId = thread.otherProviderId;
 
   // ── Mark as read on mount ──────────────────────────────────────────────────
   useEffect(() => {
@@ -340,8 +338,31 @@ function ThreadChat({
   return (
     <div className="flex flex-col flex-1 min-h-0">
 
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
+      {/* Mobile: teal header */}
+      <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
+        <button onClick={onBack} className="text-white cursor-pointer shrink-0">
+          <ArrowLeft className="h-5 w-5" />
+        </button>
+        <div className="flex-1 min-w-0 px-3">
+          <h2 className="text-base font-semibold text-center truncate">Chat</h2>
+          <p className="text-xs text-white/80 text-center truncate">{thread.subject} · {otherName}</p>
+        </div>
+        {!confirmDelete ? (
+          <button onClick={() => setConfirmDelete(true)} className="text-white/80 hover:text-white cursor-pointer shrink-0" title="Törlés">
+            <Trash2 className="h-4 w-4" />
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 shrink-0">
+            <button onClick={handleDelete} disabled={deleting} className="text-xs font-medium text-white cursor-pointer disabled:opacity-50">
+              {deleting ? "..." : "Törlés"}
+            </button>
+            <button onClick={() => setConfirmDelete(false)} className="text-xs text-white/70 hover:text-white cursor-pointer">Mégse</button>
+          </div>
+        )}
+      </div>
+
+      {/* Desktop: white header */}
+      <div className="hidden sm:flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer shrink-0"
@@ -353,15 +374,7 @@ function ThreadChat({
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-gray-900 truncate">{thread.subject}</p>
           <p className="text-xs text-gray-500 truncate">
-            {isOutgoing ? "Címzett: " : "Feladó: "}
-            {otherProviderId ? (
-              <span
-                className="text-[#84AAA6] hover:underline cursor-pointer"
-                onClick={() => window.open(`/providers/${otherProviderId}`, "_blank")}
-              >
-                {otherName}
-              </span>
-            ) : otherName}
+            {isOutgoing ? "Címzett: " : "Feladó: "}{otherName}
           </p>
         </div>
         {!confirmDelete ? (
@@ -506,14 +519,9 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
        * Mobile:  fixed full-screen overlay (z-100, covers navbar + footer)
        * Desktop: normal document flow with a minimum height
        */
-      <div className="fixed sm:relative inset-0 sm:inset-auto z-[100] sm:z-auto flex flex-col bg-white sm:max-h-[680px]">
+      <div className="fixed sm:relative inset-0 sm:inset-auto z-[100] sm:z-auto flex flex-col bg-white sm:h-[680px]">
 
-        {/* "Chat" page-header – mobile only */}
-        <div className="shrink-0 flex items-center gap-2.5 px-4 py-4 bg-[#84AAA6] sm:hidden">
-          <h2 className="text-xl font-semibold text-white">Chat</h2>
-        </div>
-
-        {/* ThreadChat – fills remaining space between title and footer */}
+        {/* ThreadChat – owns its own mobile/desktop header */}
         <ThreadChat
           thread={selectedThread}
           userId={userId}
