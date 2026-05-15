@@ -337,7 +337,7 @@ function ThreadChat({
   };
 
   return (
-    <div className="flex flex-col" style={{ minHeight: "520px" }}>
+    <div className="flex flex-col flex-1 min-h-0">
 
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
@@ -392,7 +392,7 @@ function ThreadChat({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
         {localMessages.map((msg) =>
           isSystemMsg(msg.body) ? (
             <div key={msg.id} className="flex justify-center">
@@ -490,13 +490,33 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
   // ── Chat view ──
   if (selectedThread) {
     return (
-      <ThreadChat
-        thread={selectedThread}
-        userId={userId}
-        onBack={() => setSelectedThread(null)}
-        onDeleted={handleDeleted}
-        onUnreadMarked={handleUnreadMarked}
-      />
+      /*
+       * Mobile:  fixed full-screen overlay (z-100, covers navbar + footer)
+       * Desktop: normal document flow with a minimum height
+       */
+      <div className="fixed sm:relative inset-0 sm:inset-auto z-[100] sm:z-auto flex flex-col bg-white sm:min-h-[520px]">
+
+        {/* "Chat" page-header – mobile only, matches profile-layout's h2 style */}
+        <div className="shrink-0 flex items-center gap-2.5 px-4 py-4 border-b border-gray-100 bg-white sm:hidden">
+          <h2 className="text-xl font-semibold text-gray-900">Chat</h2>
+        </div>
+
+        {/* ThreadChat – fills remaining space between title and footer */}
+        <ThreadChat
+          thread={selectedThread}
+          userId={userId}
+          onBack={() => setSelectedThread(null)}
+          onDeleted={handleDeleted}
+          onUnreadMarked={handleUnreadMarked}
+        />
+
+        {/* Compact footer – mobile only, always at viewport bottom */}
+        <div className="shrink-0 sm:hidden border-t border-gray-100 bg-gray-50 py-2.5 px-4">
+          <p className="text-center text-xs text-gray-400">
+            © {new Date().getFullYear()} Esküvőre Készülök. Minden jog fenntartva.
+          </p>
+        </div>
+      </div>
     );
   }
 

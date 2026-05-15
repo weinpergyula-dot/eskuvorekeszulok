@@ -225,7 +225,16 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
   animation-play-state: paused;
 }
 
-/* ── Chat mode: compact footer on mobile ─────────────── */
+/* ── Chat mode: lock body scroll on mobile ───────────── */
+/* The fixed chat overlay covers everything; prevent background scroll. */
+@media (max-width: 639px) {
+  body.chat-mode {
+    overflow: hidden;
+  }
+}
+
+/* ── Chat mode: compact footer on mobile (quote-requests) ── */
+/* Messages section uses a fixed overlay instead, so these only affect quotes. */
 @media (max-width: 639px) {
   body.chat-mode .footer-full-content {
     display: none;
