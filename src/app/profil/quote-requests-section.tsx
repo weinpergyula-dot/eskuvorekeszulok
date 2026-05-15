@@ -267,11 +267,21 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
 
 // ── Inbox list item ───────────────────────────────────────────────────────────
 
-function QuoteInboxItem({
-  subject, subtitle, date, unread, onSelect,
+function QuoteListItem({
+  subject,
+  categoryLabel,
+  recipientName,
+  recipientHref,
+  lastMessage,
+  date,
+  unread,
+  onSelect,
 }: {
   subject: string;
-  subtitle: string;
+  categoryLabel: string;
+  recipientName: string;
+  recipientHref?: string;
+  lastMessage: string;
   date: string;
   unread: number;
   onSelect: () => void;
@@ -282,17 +292,33 @@ function QuoteInboxItem({
       className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
     >
       <div className="flex items-start gap-3">
-        <div className="mt-0.5 shrink-0">
+        <div className="mt-1 shrink-0">
           <FileText className={`h-4 w-4 ${unread > 0 ? "text-gray-500" : "text-gray-300"}`} />
         </div>
         <div className="flex-1 min-w-0">
+          {/* Tárgy + dátum */}
           <div className="flex items-center justify-between gap-2 mb-0.5">
             <p className={`text-sm truncate ${unread > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
               {subject}
             </p>
             <span className="text-xs text-gray-400 shrink-0">{formatShort(date)}</span>
           </div>
-          <p className="text-xs text-gray-500 truncate">{subtitle}</p>
+          {/* Kategória */}
+          <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>
+          {/* Címzett */}
+          {recipientHref ? (
+            <a
+              href={recipientHref}
+              onClick={(e) => e.stopPropagation()}
+              className="text-xs text-gray-500 hover:text-[#84AAA6] hover:underline truncate block mb-0.5 transition-colors"
+            >
+              {recipientName}
+            </a>
+          ) : (
+            <p className="text-xs text-gray-500 truncate mb-0.5">{recipientName}</p>
+          )}
+          {/* Utolsó üzenet */}
+          <p className="text-xs text-gray-400 truncate">{lastMessage}</p>
         </div>
         {unread > 0 && (
           <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
@@ -446,8 +472,30 @@ function QuoteChat({
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col bg-white sm:relative sm:inset-auto sm:z-auto sm:max-h-[680px]">
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
+      {/* Mobil: teal page header */}
+      <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
+        <button onClick={onBack} className="text-white cursor-pointer shrink-0">
+          <ArrowLeft className="h-5 w-5" />
+        </button>
+        <div className="flex-1 min-w-0 px-3">
+          <h2 className="text-base font-semibold text-center truncate">Ajánlatkérés – Chat</h2>
+          <p className="text-xs text-white/80 text-center truncate">{subject} · {otherName}</p>
+        </div>
+        {!confirmDelete ? (
+          <button onClick={() => setConfirmDelete(true)} className="text-white/80 hover:text-white cursor-pointer shrink-0" title="Törlés">
+            <Trash2 className="h-4 w-4" />
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 shrink-0">
+            <button onClick={handleDelete} disabled={deleting} className="text-xs font-medium text-white cursor-pointer disabled:opacity-50">
+              {deleting ? "..." : "Törlés"}
+            </button>
+            <button onClick={() => setConfirmDelete(false)} className="text-xs text-white/70 hover:text-white cursor-pointer">Mégse</button>
+          </div>
+        )}
+      </div>
+      {/* Desktop: chat header */}
+      <div className="hidden sm:flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
         <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer shrink-0">
           <ArrowLeft className="h-4 w-4" />
           <span>Vissza</span>
@@ -600,9 +648,10 @@ function ProviderChatLoader({
 export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Props) {
   const [visitorChats, setVisitorChats]       = useState<VisitorChat[]>([]);
   const [providerRequests, setProviderRequests] = useState<ProviderRequest[]>([]);
-  const [loading, setLoading]     = useState(true);
-  const [showForm, setShowForm]   = useState(false);
-  const [view, setView]           = useState<View>({ mode: "list" });
+  const [loading, setLoading]         = useState(true);
+  const [showForm, setShowForm]       = useState(false);
+  const [view, setView]               = useState<View>({ mode: "list" });
+  const [filterCategory, setFilterCategory] = useState<string | null>(null);
 
   const loadRequests = useCallback(() => {
     fetch("/api/quote-requests")
@@ -712,48 +761,80 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
 
   // ── Provider: list view ──
   if (isProvider) {
+    const providerCategories = [...new Set(providerRequests.map(r => r.category))];
+    const visibleProviderReqs = filterCategory
+      ? providerRequests.filter(r => r.category === filterCategory)
+      : providerRequests;
+
     return (
-      <div>
+      <div className="space-y-3">
         {providerRequests.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
             <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
             <p className="text-base">Még nem érkezett ajánlatkérés.</p>
           </div>
         ) : (
-          <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-            {providerRequests.map(req => {
-              const unread = (req.read ? 0 : 1) + (req.unread_reply_count ?? 0);
-              return (
-                <QuoteInboxItem
-                  key={req.recipient_id}
-                  subject={req.subject}
-                  subtitle={`${req.visitor_name} · ${CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}`}
-                  date={req.created_at}
-                  unread={unread}
-                  onSelect={async () => {
-                    // Mark request as read before opening
-                    if (!req.read) {
-                      await fetch(`/api/quote-requests/${req.quote_request_id}/read`, {
-                        method: "PATCH",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ type: "request" }),
-                      });
-                      setProviderRequests(prev => prev.map(r =>
-                        r.recipient_id === req.recipient_id ? { ...r, read: true } : r
-                      ));
-                    }
-                    setView({ mode: "provider-chat", req });
-                  }}
-                />
-              );
-            })}
-          </div>
+          <>
+            {providerCategories.length > 1 && (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setFilterCategory(null)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                >
+                  Összes
+                </button>
+                {providerCategories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setFilterCategory(c => c === cat ? null : cat)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                  >
+                    {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+              {visibleProviderReqs.map(req => {
+                const unread = (req.read ? 0 : 1) + (req.unread_reply_count ?? 0);
+                return (
+                  <QuoteListItem
+                    key={req.recipient_id}
+                    subject={req.subject}
+                    categoryLabel={CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
+                    recipientName={req.visitor_name}
+                    lastMessage={req.message.slice(0, 100)}
+                    date={req.created_at}
+                    unread={unread}
+                    onSelect={async () => {
+                      if (!req.read) {
+                        await fetch(`/api/quote-requests/${req.quote_request_id}/read`, {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ type: "request" }),
+                        });
+                        setProviderRequests(prev => prev.map(r =>
+                          r.recipient_id === req.recipient_id ? { ...r, read: true } : r
+                        ));
+                      }
+                      setView({ mode: "provider-chat", req });
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
     );
   }
 
   // ── Visitor: list view ──
+  const visitorCategories = [...new Set(visitorChats.map(c => c.category))];
+  const visibleVisitorChats = filterCategory
+    ? visitorChats.filter(c => c.category === filterCategory)
+    : visitorChats;
+
   return (
     <div className="space-y-4">
       {!showForm && (
@@ -771,32 +852,56 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
           <p className="text-sm mt-1">Kattints a gombra, hogy elküldd az első ajánlatkérésedet több szolgáltatónak egyszerre.</p>
         </div>
       ) : (
-        <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-          {visitorChats.map(chat => {
-            const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
-            let preview: string;
-            if (lastMsg) {
-              if (isSystemMsg(lastMsg.body)) {
-                preview = systemText(lastMsg.body);
+        <>
+          {visitorCategories.length > 1 && (
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setFilterCategory(null)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+              >
+                Összes
+              </button>
+              {visitorCategories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setFilterCategory(c => c === cat ? null : cat)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                >
+                  {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+            {visibleVisitorChats.map(chat => {
+              const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
+              let lastMessage: string;
+              if (lastMsg) {
+                if (isSystemMsg(lastMsg.body)) {
+                  lastMessage = systemText(lastMsg.body);
+                } else {
+                  const prefix = lastMsg.sender_id === userId ? "Te" : chat.provider_full_name;
+                  lastMessage = `${prefix}: ${lastMsg.body}`;
+                }
               } else {
-                const prefix = lastMsg.sender_id === userId ? "Te" : chat.provider_full_name;
-                preview = `${prefix}: ${lastMsg.body}`;
+                lastMessage = `Te: ${chat.message}`;
               }
-            } else {
-              preview = `Te: ${chat.message}`;
-            }
-            return (
-              <QuoteInboxItem
-                key={`${chat.request_id}__${chat.provider_id}`}
-                subject={chat.subject}
-                subtitle={`${chat.provider_full_name} · ${preview}`}
-                date={chat.last_at}
-                unread={chat.unread_count}
-                onSelect={() => setView({ mode: "visitor-chat", chat })}
-              />
-            );
-          })}
-        </div>
+              return (
+                <QuoteListItem
+                  key={`${chat.request_id}__${chat.provider_id}`}
+                  subject={chat.subject}
+                  categoryLabel={CATEGORY_LABELS[chat.category as keyof typeof CATEGORY_LABELS] ?? chat.category}
+                  recipientName={chat.provider_full_name}
+                  recipientHref={`/providers/${chat.provider_id}`}
+                  lastMessage={lastMessage}
+                  date={chat.last_at}
+                  unread={chat.unread_count}
+                  onSelect={() => setView({ mode: "visitor-chat", chat })}
+                />
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );
