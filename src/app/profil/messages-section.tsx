@@ -320,7 +320,7 @@ function ThreadChat({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && replyBody.trim()) {
+    if (e.key === "Enter" && !e.shiftKey && replyBody.trim()) {
       e.preventDefault();
       handleReply(e as unknown as React.FormEvent);
     }
@@ -424,7 +424,7 @@ function ThreadChat({
       {/* Reply */}
       {!hasSystemMessage && recipientId && (
         <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
-          <form onSubmit={handleReply} className="flex gap-2 items-end">
+          <form onSubmit={handleReply} className="flex gap-2 items-stretch">
             <textarea
               ref={textareaRef}
               value={replyBody}
@@ -434,13 +434,13 @@ function ThreadChat({
                 e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Írj üzenetet…"
+              placeholder="Írj üzenetet… (Shift+Enter = új sor)"
               rows={1}
               className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors overflow-hidden"
               style={{ maxHeight: "120px" }}
             />
-            <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
-              <Send className="h-3.5 w-3.5 mr-1" />
+            <Button type="submit" disabled={sending || !replyBody.trim()} className="shrink-0 h-auto self-stretch px-4">
+              <Send className="h-4 w-4 mr-1.5" />
               {sending ? "..." : "Küldés"}
             </Button>
           </form>
@@ -471,10 +471,14 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
 
   useEffect(() => { loadMessages(); }, []);
 
-  // Add/remove body class for compact footer in mobile chat mode
+  // Add/remove body class + scroll to top on desktop when entering chat
   useEffect(() => {
     if (selectedThread) {
       document.body.classList.add("chat-mode");
+      // On desktop (sm+), scroll to top so the chat is fully visible
+      if (window.innerWidth >= 640) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     } else {
       document.body.classList.remove("chat-mode");
     }
@@ -502,7 +506,7 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
        * Mobile:  fixed full-screen overlay (z-100, covers navbar + footer)
        * Desktop: normal document flow with a minimum height
        */
-      <div className="fixed sm:relative inset-0 sm:inset-auto z-[100] sm:z-auto flex flex-col bg-white sm:min-h-[520px]">
+      <div className="fixed sm:relative inset-0 sm:inset-auto z-[100] sm:z-auto flex flex-col bg-white sm:max-h-[680px]">
 
         {/* "Chat" page-header – mobile only */}
         <div className="shrink-0 flex items-center gap-2.5 px-4 py-4 bg-[#84AAA6] sm:hidden">

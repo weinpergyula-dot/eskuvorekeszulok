@@ -510,7 +510,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Content */}
         <div className="flex-1 min-w-0 sm:pl-8">
-          <div className="flex items-center gap-2.5 mb-6">
+          <div className="section-chat-header flex items-center gap-2.5 mb-6">
             <h2 className="text-xl font-semibold text-gray-900">
               {SECTION_TITLES[active]}
             </h2>
