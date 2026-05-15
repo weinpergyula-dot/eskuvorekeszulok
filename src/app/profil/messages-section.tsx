@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, Mail, MailOpen, CornerDownRight, Trash2, Info } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ArrowLeft, Mail, MailOpen, Trash2, Info, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FloatingTextarea } from "@/components/ui/floating-input";
 
 interface Message {
   id: string;
@@ -71,59 +70,116 @@ function formatDate(iso: string) {
   });
 }
 
-function senderLabel(msg: Message): React.ReactNode {
-  if (msg.is_own) return "Te";
-  if (msg.sender_role === "admin") return "Admin";
-  return msg.sender_name || "Névtelen";
+function formatShort(iso: string) {
+  const d = new Date(iso);
+  const now = new Date();
+  const isToday =
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate();
+  if (isToday) {
+    return d.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" });
+  }
+  return d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
 }
 
-function ThreadCard({
+// ─── Inbox list item ────────────────────────────────────────────────────────
+
+function InboxItem({ thread, onSelect }: { thread: Thread; onSelect: () => void }) {
+  const firstMsg = thread.messages[0];
+  const isOutgoing = firstMsg?.is_own ?? false;
+  const otherParticipant = thread.messages.find((m) => !m.is_own);
+  const otherName = isOutgoing
+    ? (firstMsg?.recipient_name ?? "Névtelen")
+    : (otherParticipant?.sender_name ?? "Névtelen");
+  const lastMsg = thread.messages[thread.messages.length - 1];
+  const preview = isSystemMsg(lastMsg?.body ?? "")
+    ? systemText(lastMsg.body)
+    : (lastMsg?.body ?? "");
+
+  return (
+    <button
+      onClick={onSelect}
+      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors group"
+    >
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 shrink-0">
+          {thread.hasUnread
+            ? <Mail className="h-4 w-4 text-gray-500" />
+            : <MailOpen className="h-4 w-4 text-gray-300" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-0.5">
+            <p className={`text-sm truncate ${thread.hasUnread ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
+              {thread.subject}
+            </p>
+            <span className="text-xs text-gray-400 shrink-0">{formatShort(thread.lastAt)}</span>
+          </div>
+          <p className="text-xs text-gray-500 truncate">
+            <span className="text-gray-400">{isOutgoing ? "Nekik" : otherName}: </span>
+            {preview}
+          </p>
+        </div>
+        {thread.hasUnread && (
+          <span className="w-2 h-2 rounded-full bg-[#F06C6C] shrink-0 mt-1.5" />
+        )}
+      </div>
+    </button>
+  );
+}
+
+// ─── Thread / chat view ─────────────────────────────────────────────────────
+
+function ThreadChat({
   thread,
+  onBack,
   onDeleted,
   onUnreadMarked,
 }: {
   thread: Thread;
+  onBack: () => void;
   onDeleted: (ids: string[]) => void;
-  onUnreadMarked: () => void;
+  onUnreadMarked: (count: number) => void;
 }) {
-  const [expanded, setExpanded] = useState(false);
-  const [replyBody, setReplyBody] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sendError, setSendError] = useState<string | null>(null);
+  const [replyBody, setReplyBody]       = useState("");
+  const [sending, setSending]           = useState(false);
+  const [sendError, setSendError]       = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [localHasUnread, setLocalHasUnread] = useState(thread.hasUnread);
+  const [deleting, setDeleting]         = useState(false);
   const [localMessages, setLocalMessages] = useState(thread.messages);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const hasSystemMessage = localMessages.some((m) => !m.is_own && isSystemMsg(m.body));
-
   const otherParticipant = localMessages.find((m) => !m.is_own);
   const recipientId = otherParticipant
     ? otherParticipant.sender_id
     : (localMessages[0]?.recipient_id ?? "");
-
   const firstMsg = localMessages[0];
   const isOutgoing = firstMsg?.is_own ?? false;
   const otherName = isOutgoing
-    ? (firstMsg?.recipient_name ?? "")
-    : (otherParticipant?.sender_name ?? "");
+    ? (firstMsg?.recipient_name ?? "Névtelen")
+    : (otherParticipant?.sender_name ?? "Névtelen");
   const otherProviderId = isOutgoing
     ? (firstMsg?.recipient_provider_id ?? null)
     : (otherParticipant?.sender_provider_id ?? null);
 
-  const handleExpand = async () => {
-    if (expanded) { setExpanded(false); return; }
-    setExpanded(true);
-    if (localHasUnread) {
-      const unread = localMessages.filter((m) => !m.read && !m.is_own);
-      await Promise.all(
-        unread.map((m) => fetch(`/api/messages/${m.id}/read`, { method: "PATCH" }))
-      );
-      setLocalHasUnread(false);
-      onUnreadMarked();
+  // Mark unread on mount
+  useEffect(() => {
+    const unread = thread.messages.filter((m) => !m.read && !m.is_own);
+    if (unread.length > 0) {
+      Promise.all(unread.map((m) =>
+        fetch(`/api/messages/${m.id}/read`, { method: "PATCH" })
+      ));
+      onUnreadMarked(unread.length);
       window.dispatchEvent(new CustomEvent("messages-read"));
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [localMessages]);
 
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,123 +234,130 @@ function ThreadCard({
       body: JSON.stringify({ ids }),
     });
     onDeleted(ids);
+    onBack();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && replyBody.trim()) {
+      e.preventDefault();
+      handleReply(e as unknown as React.FormEvent);
+    }
   };
 
   return (
-    <div className="border border-[#84AAA6]/15 rounded-xl overflow-hidden bg-white">
-      {/* Thread header */}
-      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer bg-[#84AAA6]/15">
-        {localHasUnread
-          ? <Mail className="h-4 w-4 text-[#84AAA6] shrink-0" />
-          : <MailOpen className="h-4 w-4 text-[#84AAA6]/70 shrink-0" />}
+    <div className="flex flex-col" style={{ minHeight: "520px" }}>
+
+      {/* Header */}
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer shrink-0"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Vissza</span>
+        </button>
+        <div className="h-4 w-px bg-gray-200 shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className={`text-base truncate text-gray-900 ${localHasUnread ? "font-semibold" : ""}`}>
-            {thread.subject}
-          </p>
-          <p className="text-sm text-gray-500 truncate">
-            {localMessages.length} üzenet
-            {" · "}
+          <p className="text-sm font-semibold text-gray-900 truncate">{thread.subject}</p>
+          <p className="text-xs text-gray-500 truncate">
             {isOutgoing ? "Címzett: " : "Feladó: "}
             {otherProviderId ? (
               <span
                 className="text-[#84AAA6] hover:underline cursor-pointer"
-                onClick={(e) => { e.stopPropagation(); window.open(`/providers/${otherProviderId}`, "_blank"); }}
+                onClick={() => window.open(`/providers/${otherProviderId}`, "_blank")}
               >
                 {otherName}
               </span>
-            ) : (
-              <span className="text-gray-700">{otherName}</span>
-            )}
-            {" · "}{formatDate(thread.lastAt)}
+            ) : otherName}
           </p>
         </div>
-        {localHasUnread && (
-          <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">Új</span>
+        {/* Delete */}
+        {!confirmDelete ? (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer shrink-0"
+            title="Törlés"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs text-gray-600">Biztosan törlöd?</span>
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="text-xs font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 cursor-pointer disabled:opacity-50"
+            >
+              {deleting ? "..." : "Igen"}
+            </button>
+            <button
+              onClick={() => setConfirmDelete(false)}
+              className="text-xs text-gray-400 hover:text-gray-600 cursor-pointer"
+            >
+              Mégse
+            </button>
+          </div>
         )}
-        {expanded
-          ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" />
-          : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />}
-      </button>
+      </div>
 
-      {/* Expanded body */}
-      {expanded && (
-        <div className="border-t border-gray-100 px-4 py-3 space-y-3">
-          {/* Messages */}
-          <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 overflow-hidden">
-            {localMessages.map((msg) =>
-              isSystemMsg(msg.body) ? (
-                <div key={msg.id} className="px-3 py-2.5 bg-amber-50 flex items-start gap-2">
-                  <Info className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                  <p className="text-xs text-amber-800 italic">{systemText(msg.body)}</p>
-                </div>
-              ) : (
-                <div key={msg.id} className={`px-3 py-2.5 ${msg.is_own ? "bg-gray-50" : "bg-white"}`}>
-                  <div className="flex items-center justify-between gap-3 mb-1">
-                    <span className="text-xs font-medium text-gray-600">{senderLabel(msg)}</span>
-                    <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
-                  </div>
-                  <p className="text-sm text-gray-900 whitespace-pre-line leading-relaxed">{msg.body}</p>
-                </div>
-              )
-            )}
-          </div>
-
-          {/* Reply form — always visible unless system message */}
-          {!hasSystemMessage && recipientId && (
-            <form onSubmit={handleReply} className="space-y-2">
-              <FloatingTextarea
-                id={`reply-${thread.key}`}
-                label="Válasz írása..."
-                value={replyBody}
-                onChange={(e) => setReplyBody(e.target.value)}
-                rows={3}
-              />
-              {sendError && <p className="text-xs text-[#F06C6C]">{sendError}</p>}
-              <Button type="submit" size="sm" disabled={sending || !replyBody.trim()}>
-                <CornerDownRight className="h-3.5 w-3.5 mr-1" />
-                {sending ? "Küldés..." : "Válasz küldése"}
-              </Button>
-            </form>
-          )}
-
-          {/* Delete */}
-          <div className="pt-1 border-t border-gray-100 flex justify-end">
-            {!confirmDelete ? (
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className="flex items-center gap-1.5 text-sm text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-                Törlés
-              </button>
-            ) : (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="text-sm font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 transition-colors cursor-pointer disabled:opacity-50"
-                >
-                  {deleting ? "Törlés..." : "Igen, törlöm"}
-                </button>
-                <button
-                  onClick={() => setConfirmDelete(false)}
-                  className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-                >
-                  Mégse
-                </button>
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+        {localMessages.map((msg) =>
+          isSystemMsg(msg.body) ? (
+            <div key={msg.id} className="flex justify-center">
+              <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
+                <Info className="h-3 w-3 text-amber-500 shrink-0" />
+                <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div key={msg.id} className={`flex ${msg.is_own ? "justify-end" : "justify-start"}`}>
+              <div className={`flex flex-col gap-1 max-w-[75%] ${msg.is_own ? "items-end" : "items-start"}`}>
+                <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
+                  msg.is_own
+                    ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
+                    : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
+                }`}>
+                  {msg.body}
+                </div>
+                <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
+              </div>
+            </div>
+          )
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Reply */}
+      {!hasSystemMessage && recipientId && (
+        <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
+          <form onSubmit={handleReply} className="flex gap-2 items-end">
+            <textarea
+              value={replyBody}
+              onChange={(e) => setReplyBody(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Írj üzenetet… (Ctrl+Enter a küldéshez)"
+              rows={2}
+              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors"
+            />
+            <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
+              <Send className="h-3.5 w-3.5 mr-1" />
+              {sending ? "Küldés..." : "Küldés"}
+            </Button>
+          </form>
+          {sendError && <p className="text-xs text-[#F06C6C] mt-1.5">{sendError}</p>}
         </div>
       )}
     </div>
   );
 }
 
+// ─── Main section ────────────────────────────────────────────────────────────
+
 export function MessagesSection({ onUnreadChange }: Props) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [messages, setMessages]           = useState<Message[]>([]);
+  const [loading, setLoading]             = useState(true);
+  const [selectedThread, setSelectedThread] = useState<Thread | null>(null);
 
   const loadMessages = () => {
     fetch("/api/messages")
@@ -315,14 +378,28 @@ export function MessagesSection({ onUnreadChange }: Props) {
     const next = messages.filter((m) => !deletedIds.includes(m.id));
     setMessages(next);
     onUnreadChange(next.filter((m) => !m.read && !m.is_own).length);
+    setSelectedThread(null);
   };
 
-  const handleUnreadMarked = () => {
-    onUnreadChange(messages.filter((m) => !m.read && !m.is_own).length - 1);
+  const handleUnreadMarked = (count: number) => {
+    onUnreadChange(Math.max(0, messages.filter((m) => !m.read && !m.is_own).length - count));
   };
 
   if (loading) return <p className="text-base text-gray-500">Betöltés...</p>;
 
+  // ── Chat view ──
+  if (selectedThread) {
+    return (
+      <ThreadChat
+        thread={selectedThread}
+        onBack={() => setSelectedThread(null)}
+        onDeleted={handleDeleted}
+        onUnreadMarked={handleUnreadMarked}
+      />
+    );
+  }
+
+  // ── Inbox view ──
   if (threads.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
@@ -333,13 +410,12 @@ export function MessagesSection({ onUnreadChange }: Props) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
       {threads.map((thread) => (
-        <ThreadCard
+        <InboxItem
           key={thread.key}
           thread={thread}
-          onDeleted={handleDeleted}
-          onUnreadMarked={handleUnreadMarked}
+          onSelect={() => setSelectedThread(thread)}
         />
       ))}
     </div>
