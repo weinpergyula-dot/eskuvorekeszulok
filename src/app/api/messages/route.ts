@@ -29,20 +29,20 @@ export async function GET() {
       ? adminClient.from("profiles").select("user_id, full_name, role").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
     senderIds.length > 0
-      ? adminClient.from("providers").select("user_id, id").in("user_id", senderIds)
+      ? adminClient.from("providers").select("user_id, id, categories").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
     recipientIds.length > 0
       ? adminClient.from("profiles").select("user_id, full_name, role").in("user_id", recipientIds)
       : Promise.resolve({ data: [] }),
     recipientIds.length > 0
-      ? adminClient.from("providers").select("user_id, id").in("user_id", recipientIds)
+      ? adminClient.from("providers").select("user_id, id, categories").in("user_id", recipientIds)
       : Promise.resolve({ data: [] }),
   ]);
 
   const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, { name: p.full_name, role: p.role }]));
-  const providerMap = Object.fromEntries((senderProviders ?? []).map((p) => [p.user_id, p.id]));
+  const providerMap = Object.fromEntries((senderProviders ?? []).map((p) => [p.user_id, { id: p.id, categories: (p.categories ?? []) as string[] }]));
   const recipientProfileMap = Object.fromEntries((recipientProfiles ?? []).map((p) => [p.user_id, { name: p.full_name as string, role: p.role as string }]));
-  const recipientProviderMap = Object.fromEntries((recipientProviders ?? []).map((p) => [p.user_id, p.id as string]));
+  const recipientProviderMap = Object.fromEntries((recipientProviders ?? []).map((p) => [p.user_id, { id: p.id as string, categories: (p.categories ?? []) as string[] }]));
 
   const enriched = (messages ?? []).map((m) => {
     const isOwn = m.sender_id === user.id;
@@ -51,10 +51,12 @@ export async function GET() {
       is_own: isOwn,
       sender_name: isOwn ? "Ön" : (profileMap[m.sender_id]?.name || "Névtelen felhasználó"),
       sender_role: isOwn ? "self" : (profileMap[m.sender_id]?.role ?? "visitor"),
-      sender_provider_id: isOwn ? null : (providerMap[m.sender_id] ?? null),
+      sender_provider_id: isOwn ? null : (providerMap[m.sender_id]?.id ?? null),
+      sender_provider_categories: isOwn ? null : (providerMap[m.sender_id]?.categories ?? null),
       recipient_name: isOwn ? (recipientProfileMap[m.recipient_id]?.name ?? "Névtelen") : null,
       recipient_role: isOwn ? (recipientProfileMap[m.recipient_id]?.role ?? null) : null,
-      recipient_provider_id: isOwn ? (recipientProviderMap[m.recipient_id] ?? null) : null,
+      recipient_provider_id: isOwn ? (recipientProviderMap[m.recipient_id]?.id ?? null) : null,
+      recipient_provider_categories: isOwn ? (recipientProviderMap[m.recipient_id]?.categories ?? null) : null,
     };
   });
 

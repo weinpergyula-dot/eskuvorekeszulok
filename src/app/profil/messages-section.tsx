@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Mail, MailOpen, Trash2, Info, Send } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { ArrowLeft, Mail, Trash2, Info, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import { CATEGORY_LABELS } from "@/lib/types";
 
 interface Message {
   id: string;
@@ -12,9 +13,11 @@ interface Message {
   sender_name: string;
   sender_role: string;
   sender_provider_id: string | null;
+  sender_provider_categories: string[] | null;
   recipient_name: string | null;
   recipient_role: string | null;
   recipient_provider_id: string | null;
+  recipient_provider_categories: string[] | null;
   is_own: boolean;
   subject: string;
   body: string;
@@ -28,6 +31,11 @@ interface Thread {
   messages: Message[];
   lastAt: string;
   hasUnread: boolean;
+  category: string | null;
+  providerLinkId: string | null;
+  otherName: string;
+  otherProviderId: string | null;
+  recipientId: string;
 }
 
 interface Props {
@@ -45,7 +53,7 @@ function normalizeSubject(s: string) {
 
 function buildThreads(messages: Message[]): Thread[] {
   const visible = messages.filter((m) => !(m.is_own && isSystemMsg(m.body)));
-  const map = new Map<string, Thread>();
+  const map = new Map<string, Omit<Thread, "category" | "providerLinkId" | "otherName" | "otherProviderId" | "recipientId">>();
   for (const msg of visible) {
     const otherId = msg.is_own ? msg.recipient_id : msg.sender_id;
     const key = `${normalizeSubject(msg.subject)}|${otherId}`;
@@ -59,10 +67,19 @@ function buildThreads(messages: Message[]): Thread[] {
   }
   return [...map.values()]
     .sort((a, b) => b.lastAt.localeCompare(a.lastAt))
-    .map((t) => ({
-      ...t,
-      messages: t.messages.sort((a, b) => a.created_at.localeCompare(b.created_at)),
-    }));
+    .map((t) => {
+      const sorted = t.messages.sort((a, b) => a.created_at.localeCompare(b.created_at));
+      const firstMsg = sorted[0];
+      const isOutgoing = firstMsg?.is_own ?? false;
+      const incomingMsg = sorted.find(m => !m.is_own);
+      const otherName = isOutgoing ? (firstMsg?.recipient_name ?? "Névtelen") : (incomingMsg?.sender_name ?? "Névtelen");
+      const otherProviderId = isOutgoing ? (firstMsg?.recipient_provider_id ?? null) : (incomingMsg?.sender_provider_id ?? null);
+      const recipientId = incomingMsg ? incomingMsg.sender_id : (sorted[0]?.recipient_id ?? "");
+      const category = isOutgoing
+        ? ((firstMsg?.recipient_provider_categories ?? [])[0] ?? null)
+        : ((incomingMsg?.sender_provider_categories ?? [])[0] ?? null);
+      return { ...t, messages: sorted, category, providerLinkId: otherProviderId, otherName, otherProviderId, recipientId };
+    });
 }
 
 function formatDate(iso: string) {
@@ -86,31 +103,14 @@ function formatShort(iso: string) {
 
 // ─── Inbox list item ────────────────────────────────────────────────────────
 
-function InboxItem({ thread, onSelect }: { thread: Thread; onSelect: () => void }) {
-  const firstMsg = thread.messages[0];
-  const isOutgoing = firstMsg?.is_own ?? false;
-  const otherParticipant = thread.messages.find((m) => !m.is_own);
-  const otherName = isOutgoing
-    ? (firstMsg?.recipient_name ?? "Névtelen")
-    : (otherParticipant?.sender_name ?? "Névtelen");
-
-  // Preview: last message with "Te:" / sender name prefix
+function InboxListItem({ thread, onSelect }: { thread: Thread; onSelect: () => void }) {
   const lastMsg = thread.messages[thread.messages.length - 1];
-  let previewLabel: string;
-  let previewBody: string;
-  if (isSystemMsg(lastMsg?.body ?? "")) {
-    previewLabel = "";
-    previewBody = systemText(lastMsg.body);
-  } else if (lastMsg?.is_own) {
-    previewLabel = "Te";
-    previewBody = lastMsg.body;
-  } else if (lastMsg?.sender_role === "admin") {
-    previewLabel = "Admin";
-    previewBody = lastMsg.body;
-  } else {
-    previewLabel = otherName;
-    previewBody = lastMsg?.body ?? "";
-  }
+  const lastText = lastMsg
+    ? (isSystemMsg(lastMsg.body) ? systemText(lastMsg.body) : lastMsg.body)
+    : "";
+  const categoryLabel = thread.category
+    ? (CATEGORY_LABELS[thread.category as keyof typeof CATEGORY_LABELS] ?? thread.category)
+    : null;
 
   return (
     <button
@@ -118,10 +118,8 @@ function InboxItem({ thread, onSelect }: { thread: Thread; onSelect: () => void 
       className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
     >
       <div className="flex items-start gap-3">
-        <div className="mt-0.5 shrink-0">
-          {thread.hasUnread
-            ? <Mail className="h-4 w-4 text-gray-500" />
-            : <MailOpen className="h-4 w-4 text-gray-300" />}
+        <div className="mt-1 shrink-0">
+          <Mail className={`h-4 w-4 ${thread.hasUnread ? "text-[#84AAA6]" : "text-gray-300"}`} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-0.5">
@@ -130,14 +128,15 @@ function InboxItem({ thread, onSelect }: { thread: Thread; onSelect: () => void 
             </p>
             <span className="text-xs text-gray-400 shrink-0">{formatShort(thread.lastAt)}</span>
           </div>
-          <p className="text-xs text-gray-500 truncate">
-            {previewLabel && <span className="text-gray-400">{previewLabel}: </span>}
-            {previewBody}
-          </p>
+          {categoryLabel && <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>}
+          {thread.providerLinkId ? (
+            <a href={`/providers/${thread.providerLinkId}`} onClick={(e) => e.stopPropagation()} className="text-xs text-gray-500 hover:text-[#84AAA6] hover:underline truncate block mb-0.5 transition-colors">{thread.otherName}</a>
+          ) : (
+            <p className="text-xs text-gray-500 truncate mb-0.5">{thread.otherName}</p>
+          )}
+          <p className="text-xs text-gray-400 truncate">{lastText}</p>
         </div>
-        {thread.hasUnread && (
-          <span className="w-2 h-2 rounded-full bg-[#F06C6C] shrink-0 mt-1.5" />
-        )}
+        {thread.hasUnread && <span className="w-2 h-2 rounded-full bg-[#F06C6C] shrink-0 mt-1.5" />}
       </div>
     </button>
   );
@@ -457,8 +456,9 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
   const [messages, setMessages]             = useState<Message[]>([]);
   const [loading, setLoading]               = useState(true);
   const [selectedThread, setSelectedThread] = useState<Thread | null>(null);
+  const [filterCategory, setFilterCategory] = useState<string | null>(null);
 
-  const loadMessages = () => {
+  const loadMessages = useCallback(() => {
     fetch("/api/messages")
       .then((r) => r.json())
       .then((data: Message[]) => {
@@ -467,9 +467,9 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  };
+  }, [onUnreadChange]);
 
-  useEffect(() => { loadMessages(); }, []);
+  useEffect(() => { loadMessages(); }, [loadMessages]);
 
   // Add/remove body class + scroll to top on desktop when entering chat
   useEffect(() => {
@@ -517,7 +517,7 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
         <ThreadChat
           thread={selectedThread}
           userId={userId}
-          onBack={() => setSelectedThread(null)}
+          onBack={() => { setSelectedThread(null); loadMessages(); }}
           onDeleted={handleDeleted}
           onUnreadMarked={handleUnreadMarked}
         />
@@ -542,15 +542,39 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
     );
   }
 
+  const categories = [...new Set(threads.map(t => t.category).filter(Boolean))] as string[];
+  const visibleThreads = filterCategory ? threads.filter(t => t.category === filterCategory) : threads;
+
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-      {threads.map((thread) => (
-        <InboxItem
-          key={thread.key}
-          thread={thread}
-          onSelect={() => setSelectedThread(thread)}
-        />
-      ))}
+    <div className="space-y-3">
+      {categories.length > 1 && (
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setFilterCategory(null)}
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+          >
+            Összes
+          </button>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setFilterCategory(c => c === cat ? null : cat)}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+            >
+              {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+        {visibleThreads.map((thread) => (
+          <InboxListItem
+            key={thread.key}
+            thread={thread}
+            onSelect={() => setSelectedThread(thread)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
