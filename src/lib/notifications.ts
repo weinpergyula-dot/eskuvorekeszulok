@@ -71,6 +71,28 @@ async function getAdminUserIds(): Promise<string[]> {
 /**
  * Új üzenet értesítő — hívd a POST /api/messages után.
  */
+function normalizeSubject(s: string) {
+  return s.replace(/^(Re:\s*)+/i, "").trim();
+}
+
+/** Returns true if the recipient currently has this thread open (within 2 minutes). */
+async function isRecipientPresent(recipientId: string, senderId: string, subject: string): Promise<boolean> {
+  try {
+    const admin = createAdminClient();
+    const threadKey = `${normalizeSubject(subject)}|${senderId}`;
+    const { data } = await admin
+      .from("message_presence")
+      .select("updated_at")
+      .eq("user_id", recipientId)
+      .eq("thread_key", threadKey)
+      .maybeSingle();
+    if (!data) return false;
+    return new Date(data.updated_at) > new Date(Date.now() - 2 * 60 * 1000);
+  } catch {
+    return false;
+  }
+}
+
 export async function notifyNewMessage(params: {
   recipientId: string;
   senderId: string;
@@ -80,6 +102,10 @@ export async function notifyNewMessage(params: {
   try {
     const prefs = await getPrefs(params.recipientId);
     if (!prefs.notify_new_message) return;
+
+    // Skip email if recipient has this chat open right now
+    const present = await isRecipientPresent(params.recipientId, params.senderId, params.subject);
+    if (present) return;
 
     const [recipientEmail, recipientName, senderName] = await Promise.all([
       getUserEmail(params.recipientId),

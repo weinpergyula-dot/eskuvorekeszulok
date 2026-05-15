@@ -224,3 +224,17 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
 .carousel-track:hover {
   animation-play-state: paused;
 }
+
+/* ── Chat mode: compact footer on mobile ─────────────── */
+@media (max-width: 639px) {
+  body.chat-mode .footer-full-content {
+    display: none;
+  }
+  body.chat-mode .footer-chat-logo {
+    display: flex;
+  }
+  body.chat-mode .footer-inner {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+}

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Mail, MailOpen, Trash2, Info, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 
 interface Message {
   id: string;
@@ -30,6 +31,7 @@ interface Thread {
 }
 
 interface Props {
+  userId: string;
   onUnreadChange: (count: number) => void;
 }
 
@@ -75,12 +77,11 @@ function formatShort(iso: string) {
   const now = new Date();
   const isToday =
     d.getFullYear() === now.getFullYear() &&
-    d.getMonth() === now.getMonth() &&
-    d.getDate() === now.getDate();
-  if (isToday) {
-    return d.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" });
-  }
-  return d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
+    d.getMonth()    === now.getMonth()    &&
+    d.getDate()     === now.getDate();
+  return isToday
+    ? d.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })
+    : d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
 }
 
 // ─── Inbox list item ────────────────────────────────────────────────────────
@@ -92,15 +93,29 @@ function InboxItem({ thread, onSelect }: { thread: Thread; onSelect: () => void 
   const otherName = isOutgoing
     ? (firstMsg?.recipient_name ?? "Névtelen")
     : (otherParticipant?.sender_name ?? "Névtelen");
+
+  // Preview: last message with "Te:" / sender name prefix
   const lastMsg = thread.messages[thread.messages.length - 1];
-  const preview = isSystemMsg(lastMsg?.body ?? "")
-    ? systemText(lastMsg.body)
-    : (lastMsg?.body ?? "");
+  let previewLabel: string;
+  let previewBody: string;
+  if (isSystemMsg(lastMsg?.body ?? "")) {
+    previewLabel = "";
+    previewBody = systemText(lastMsg.body);
+  } else if (lastMsg?.is_own) {
+    previewLabel = "Te";
+    previewBody = lastMsg.body;
+  } else if (lastMsg?.sender_role === "admin") {
+    previewLabel = "Admin";
+    previewBody = lastMsg.body;
+  } else {
+    previewLabel = otherName;
+    previewBody = lastMsg?.body ?? "";
+  }
 
   return (
     <button
       onClick={onSelect}
-      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors group"
+      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
     >
       <div className="flex items-start gap-3">
         <div className="mt-0.5 shrink-0">
@@ -116,8 +131,8 @@ function InboxItem({ thread, onSelect }: { thread: Thread; onSelect: () => void 
             <span className="text-xs text-gray-400 shrink-0">{formatShort(thread.lastAt)}</span>
           </div>
           <p className="text-xs text-gray-500 truncate">
-            <span className="text-gray-400">{isOutgoing ? "Nekik" : otherName}: </span>
-            {preview}
+            {previewLabel && <span className="text-gray-400">{previewLabel}: </span>}
+            {previewBody}
           </p>
         </div>
         {thread.hasUnread && (
@@ -132,20 +147,22 @@ function InboxItem({ thread, onSelect }: { thread: Thread; onSelect: () => void 
 
 function ThreadChat({
   thread,
+  userId,
   onBack,
   onDeleted,
   onUnreadMarked,
 }: {
   thread: Thread;
+  userId: string;
   onBack: () => void;
   onDeleted: (ids: string[]) => void;
   onUnreadMarked: (count: number) => void;
 }) {
-  const [replyBody, setReplyBody]       = useState("");
-  const [sending, setSending]           = useState(false);
-  const [sendError, setSendError]       = useState<string | null>(null);
+  const [replyBody, setReplyBody]         = useState("");
+  const [sending, setSending]             = useState(false);
+  const [sendError, setSendError]         = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting]         = useState(false);
+  const [deleting, setDeleting]           = useState(false);
   const [localMessages, setLocalMessages] = useState(thread.messages);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -163,7 +180,7 @@ function ThreadChat({
     ? (firstMsg?.recipient_provider_id ?? null)
     : (otherParticipant?.sender_provider_id ?? null);
 
-  // Mark unread on mount
+  // ── Mark as read on mount ──────────────────────────────────────────────────
   useEffect(() => {
     const unread = thread.messages.filter((m) => !m.read && !m.is_own);
     if (unread.length > 0) {
@@ -176,11 +193,82 @@ function ThreadChat({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Scroll to bottom on new messages
+  // ── Scroll to bottom on new messages ──────────────────────────────────────
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [localMessages]);
 
+  // ── Presence tracking ─────────────────────────────────────────────────────
+  useEffect(() => {
+    const threadKey = `${thread.subject}|${userId}`;
+    const pingPresence = () =>
+      fetch("/api/messages/presence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ thread_key: threadKey }),
+      }).catch(() => {});
+
+    pingPresence();
+    const interval = setInterval(pingPresence, 60_000);
+
+    return () => {
+      clearInterval(interval);
+      fetch("/api/messages/presence", { method: "DELETE", keepalive: true }).catch(() => {});
+    };
+  }, [thread.subject, userId]);
+
+  // ── Realtime: new incoming messages ───────────────────────────────────────
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
+
+    const channel = supabase
+      .channel(`thread-${thread.key}-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `recipient_id=eq.${userId}`,
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (payload: any) => {
+          const raw = payload.new;
+          // Only handle messages that belong to this thread
+          if (normalizeSubject(raw.subject) !== thread.subject) return;
+          if (raw.sender_id !== recipientId) return;
+
+          const newMsg: Message = {
+            id:                   raw.id,
+            sender_id:            raw.sender_id,
+            recipient_id:         raw.recipient_id,
+            sender_name:          otherName,
+            sender_role:          "unknown",
+            sender_provider_id:   otherProviderId,
+            recipient_name:       null,
+            recipient_role:       null,
+            recipient_provider_id: null,
+            is_own:               false,
+            subject:              raw.subject,
+            body:                 raw.body,
+            read:                 false,
+            created_at:           raw.created_at,
+          };
+
+          setLocalMessages((prev) => [...prev, newMsg]);
+          // Auto-mark as read since we're looking at it
+          fetch(`/api/messages/${raw.id}/read`, { method: "PATCH" }).catch(() => {});
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, thread.key, thread.subject, recipientId]);
+
+  // ── Reply ──────────────────────────────────────────────────────────────────
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!replyBody.trim() || !recipientId) return;
@@ -201,20 +289,20 @@ function ThreadChat({
       setLocalMessages((prev) => [
         ...prev,
         {
-          id: crypto.randomUUID(),
-          sender_id: "me",
-          recipient_id: recipientId,
-          sender_name: "Te",
-          sender_role: "self",
-          sender_provider_id: null,
-          recipient_name: otherName,
-          recipient_role: null,
+          id:                   crypto.randomUUID(),
+          sender_id:            userId,
+          recipient_id:         recipientId,
+          sender_name:          "Te",
+          sender_role:          "self",
+          sender_provider_id:   null,
+          recipient_name:       otherName,
+          recipient_role:       null,
           recipient_provider_id: null,
-          is_own: true,
-          subject: `Re: ${thread.subject}`,
-          body: replyBody.trim(),
-          read: true,
-          created_at: new Date().toISOString(),
+          is_own:               true,
+          subject:              `Re: ${thread.subject}`,
+          body:                 replyBody.trim(),
+          read:                 true,
+          created_at:           new Date().toISOString(),
         },
       ]);
       setReplyBody("");
@@ -222,6 +310,13 @@ function ThreadChat({
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
     } finally {
       setSending(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && replyBody.trim()) {
+      e.preventDefault();
+      handleReply(e as unknown as React.FormEvent);
     }
   };
 
@@ -235,13 +330,6 @@ function ThreadChat({
     });
     onDeleted(ids);
     onBack();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && replyBody.trim()) {
-      e.preventDefault();
-      handleReply(e as unknown as React.FormEvent);
-    }
   };
 
   return (
@@ -271,7 +359,6 @@ function ThreadChat({
             ) : otherName}
           </p>
         </div>
-        {/* Delete */}
         {!confirmDelete ? (
           <button
             onClick={() => setConfirmDelete(true)}
@@ -342,7 +429,7 @@ function ThreadChat({
             />
             <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
               <Send className="h-3.5 w-3.5 mr-1" />
-              {sending ? "Küldés..." : "Küldés"}
+              {sending ? "..." : "Küldés"}
             </Button>
           </form>
           {sendError && <p className="text-xs text-[#F06C6C] mt-1.5">{sendError}</p>}
@@ -354,9 +441,9 @@ function ThreadChat({
 
 // ─── Main section ────────────────────────────────────────────────────────────
 
-export function MessagesSection({ onUnreadChange }: Props) {
-  const [messages, setMessages]           = useState<Message[]>([]);
-  const [loading, setLoading]             = useState(true);
+export function MessagesSection({ userId, onUnreadChange }: Props) {
+  const [messages, setMessages]             = useState<Message[]>([]);
+  const [loading, setLoading]               = useState(true);
   const [selectedThread, setSelectedThread] = useState<Thread | null>(null);
 
   const loadMessages = () => {
@@ -372,13 +459,22 @@ export function MessagesSection({ onUnreadChange }: Props) {
 
   useEffect(() => { loadMessages(); }, []);
 
+  // Add/remove body class for compact footer in mobile chat mode
+  useEffect(() => {
+    if (selectedThread) {
+      document.body.classList.add("chat-mode");
+    } else {
+      document.body.classList.remove("chat-mode");
+    }
+    return () => { document.body.classList.remove("chat-mode"); };
+  }, [selectedThread]);
+
   const threads = buildThreads(messages);
 
   const handleDeleted = (deletedIds: string[]) => {
     const next = messages.filter((m) => !deletedIds.includes(m.id));
     setMessages(next);
     onUnreadChange(next.filter((m) => !m.read && !m.is_own).length);
-    setSelectedThread(null);
   };
 
   const handleUnreadMarked = (count: number) => {
@@ -392,6 +488,7 @@ export function MessagesSection({ onUnreadChange }: Props) {
     return (
       <ThreadChat
         thread={selectedThread}
+        userId={userId}
         onBack={() => setSelectedThread(null)}
         onDeleted={handleDeleted}
         onUnreadMarked={handleUnreadMarked}

@@ -629,7 +629,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           )}
 
           {active === "messages" && (
-            <MessagesSection key={messagesKey} onUnreadChange={setUnreadCount} />
+            <MessagesSection key={messagesKey} userId={userId} onUnreadChange={setUnreadCount} />
           )}
 
           {active === "notifications" && (
