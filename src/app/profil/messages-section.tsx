@@ -123,18 +123,14 @@ function InboxListItem({ thread, onSelect }: { thread: Thread; onSelect: () => v
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-0.5">
-            <p className={`text-sm truncate ${thread.hasUnread ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
+            <p className={`text-base sm:text-sm truncate ${thread.hasUnread ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
               {thread.subject}
             </p>
-            <span className="text-xs text-gray-400 shrink-0">{formatShort(thread.lastAt)}</span>
+            <span className="text-sm sm:text-xs text-gray-400 shrink-0">{formatShort(thread.lastAt)}</span>
           </div>
-          {categoryLabel && <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>}
-          {thread.providerLinkId ? (
-            <a href={`/providers/${thread.providerLinkId}`} onClick={(e) => e.stopPropagation()} className="text-xs text-gray-500 hover:text-[#84AAA6] hover:underline truncate block mb-0.5 transition-colors">{thread.otherName}</a>
-          ) : (
-            <p className="text-xs text-gray-500 truncate mb-0.5">{thread.otherName}</p>
-          )}
-          <p className="text-xs text-gray-400 truncate">{lastText}</p>
+          {categoryLabel && <p className="text-sm sm:text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>}
+          <p className="text-sm sm:text-xs text-gray-500 truncate mb-0.5">{thread.otherName}</p>
+          <p className="text-sm sm:text-xs text-gray-400 truncate">{lastText}</p>
         </div>
         {thread.hasUnread && <span className="w-2 h-2 rounded-full bg-[#F06C6C] shrink-0 mt-1.5" />}
       </div>

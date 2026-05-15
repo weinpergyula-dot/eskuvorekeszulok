@@ -271,7 +271,6 @@ function QuoteListItem({
   subject,
   categoryLabel,
   recipientName,
-  recipientHref,
   lastMessage,
   date,
   unread,
@@ -280,7 +279,6 @@ function QuoteListItem({
   subject: string;
   categoryLabel: string;
   recipientName: string;
-  recipientHref?: string;
   lastMessage: string;
   date: string;
   unread: number;
@@ -298,27 +296,17 @@ function QuoteListItem({
         <div className="flex-1 min-w-0">
           {/* Tárgy + dátum */}
           <div className="flex items-center justify-between gap-2 mb-0.5">
-            <p className={`text-sm truncate ${unread > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
+            <p className={`text-base truncate ${unread > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
               {subject}
             </p>
-            <span className="text-xs text-gray-400 shrink-0">{formatShort(date)}</span>
+            <span className="text-sm text-gray-400 shrink-0">{formatShort(date)}</span>
           </div>
           {/* Kategória */}
-          <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>
+          <p className="text-sm text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>
           {/* Címzett */}
-          {recipientHref ? (
-            <a
-              href={recipientHref}
-              onClick={(e) => e.stopPropagation()}
-              className="text-xs text-gray-500 hover:text-[#84AAA6] hover:underline truncate block mb-0.5 transition-colors"
-            >
-              {recipientName}
-            </a>
-          ) : (
-            <p className="text-xs text-gray-500 truncate mb-0.5">{recipientName}</p>
-          )}
+          <p className="text-sm text-gray-500 truncate mb-0.5">{recipientName}</p>
           {/* Utolsó üzenet */}
-          <p className="text-xs text-gray-400 truncate">{lastMessage}</p>
+          <p className="text-sm text-gray-400 truncate">{lastMessage}</p>
         </div>
         {unread > 0 && (
           <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
@@ -892,7 +880,6 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
                   subject={chat.subject}
                   categoryLabel={CATEGORY_LABELS[chat.category as keyof typeof CATEGORY_LABELS] ?? chat.category}
                   recipientName={chat.provider_full_name}
-                  recipientHref={`/providers/${chat.provider_id}`}
                   lastMessage={lastMessage}
                   date={chat.last_at}
                   unread={chat.unread_count}
