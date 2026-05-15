@@ -304,13 +304,15 @@ export async function processPendingNotifications(): Promise<void> {
   );
 
   // Régi, már elküldött sorok törlése (1 napnál régebbiek)
-  await admin
-    .from("pending_notifications")
-    .delete()
-    .eq("sent", true)
-    .lt("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-    .then(() => {})
-    .catch(() => {});
+  try {
+    await admin
+      .from("pending_notifications")
+      .delete()
+      .eq("sent", true)
+      .lt("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+  } catch {
+    // nem kritikus, következő futásnál újra megpróbálja
+  }
 }
 
 // ── Deferred küldők ───────────────────────────────────────────────────────────
