@@ -69,7 +69,6 @@ interface Props {
 type View =
   | { mode: "list" }
   | { mode: "provider-chat"; req: ProviderRequest }
-  | { mode: "visitor-detail"; req: VisitorRequest }
   | { mode: "visitor-chat"; req: VisitorRequest; provider: QuoteProvider };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -554,126 +553,148 @@ function QuoteChat({
   );
 }
 
-// ── Visitor: request detail (list of providers) ───────────────────────────────
+// ── Visitor: accordion request row (inline expand + provider list) ────────────
 
-function VisitorDetailView({
+function VisitorAccordionItem({
   req,
   userId,
-  onBack,
+  expanded,
+  onToggle,
   onOpenChat,
   onDeleted,
-  onUnreadMarked,
 }: {
   req: VisitorRequest;
   userId: string;
-  onBack: () => void;
+  expanded: boolean;
+  onToggle: () => void;
   onOpenChat: (provider: QuoteProvider) => void;
   onDeleted: () => void;
-  onUnreadMarked: (count: number) => void;
 }) {
-  const [providers, setProviders] = useState<QuoteProvider[]>([]);
-  const [loading, setLoading]     = useState(true);
+  const [providers, setProviders]         = useState<QuoteProvider[]>([]);
+  const [loading, setLoading]             = useState(false);
+  const [loaded, setLoaded]               = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting]   = useState(false);
+  const [deleting, setDeleting]           = useState(false);
 
   useEffect(() => {
+    if (!expanded || loaded) return;
+    setLoading(true);
     fetch(`/api/quote-requests/${req.id}`)
       .then(r => r.json())
-      .then(data => {
-        setProviders(data.providers ?? []);
-        setLoading(false);
-      })
+      .then(data => { setProviders(data.providers ?? []); setLoaded(true); setLoading(false); })
       .catch(() => setLoading(false));
-  }, [req.id]);
+  }, [expanded, loaded, req.id]);
 
   const handleDelete = async () => {
     setDeleting(true);
     await fetch(`/api/quote-requests/${req.id}`, { method: "DELETE" });
     onDeleted();
-    onBack();
   };
 
+  const unread = req.unread_reply_count ?? 0;
+
   return (
-    <div className="flex flex-col" style={{ minHeight: "520px" }}>
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
-        <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer shrink-0">
-          <ArrowLeft className="h-4 w-4" />
-          <span>Vissza</span>
-        </button>
-        <div className="h-4 w-px bg-gray-200 shrink-0" />
-        <p className="flex-1 text-sm font-semibold text-gray-900 truncate">{req.subject}</p>
-        {!confirmDelete ? (
-          <button onClick={() => setConfirmDelete(true)} className="text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer shrink-0" title="Törlés">
-            <Trash2 className="h-4 w-4" />
-          </button>
-        ) : (
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs text-gray-600">Biztosan törlöd?</span>
-            <button onClick={handleDelete} disabled={deleting} className="text-xs font-medium text-[#F06C6C] cursor-pointer disabled:opacity-50">{deleting ? "..." : "Igen"}</button>
-            <button onClick={() => setConfirmDelete(false)} className="text-xs text-gray-400 hover:text-gray-600 cursor-pointer">Mégse</button>
+    <div className="border-b border-gray-100 last:border-b-0">
+      {/* Header row */}
+      <button
+        onClick={onToggle}
+        className="w-full text-left px-4 py-3.5 hover:bg-gray-50 transition-colors flex items-start gap-3"
+      >
+        <FileText className={`h-4 w-4 mt-0.5 shrink-0 ${unread > 0 ? "text-gray-500" : "text-gray-300"}`} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-0.5">
+            <p className={`text-sm truncate ${unread > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
+              {req.subject}
+            </p>
+            <span className="text-xs text-gray-400 shrink-0">{formatShort(req.created_at)}</span>
           </div>
+          <p className="text-xs text-gray-500 truncate">
+            {CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
+            {" · "}{req.counties.join(", ")}
+            {" · "}{req.recipient_count} szolgáltató
+          </p>
+        </div>
+        {unread > 0 && (
+          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+            {unread > 9 ? "9+" : unread}
+          </span>
         )}
-      </div>
+        <ArrowLeft className={`h-4 w-4 text-gray-400 shrink-0 mt-0.5 transition-transform ${expanded ? "-rotate-90" : "rotate-180"}`} />
+      </button>
 
-      {/* Request details */}
-      <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 shrink-0">
-        <p className="text-xs text-gray-500 mb-1">
-          {CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
-          {" · "}{req.counties.join(", ")}
-          {" · "}{formatDate(req.created_at)}
-        </p>
-        <p className="text-sm text-gray-700 whitespace-pre-line">{req.message}</p>
-      </div>
+      {/* Expanded body */}
+      {expanded && (
+        <div className="border-t border-gray-100 bg-gray-50/50">
+          {/* Request message */}
+          <div className="px-4 py-3 border-b border-gray-100">
+            <p className="text-xs text-gray-400 mb-1">
+              {req.counties.join(", ")} · {formatDate(req.created_at)}
+            </p>
+            <p className="text-sm text-gray-700 whitespace-pre-line">{req.message}</p>
+          </div>
 
-      {/* Provider list */}
-      <div className="flex-1 overflow-y-auto bg-white">
-        {loading ? (
-          <p className="text-sm text-gray-400 p-4">Betöltés...</p>
-        ) : providers.length === 0 ? (
-          <p className="text-sm text-gray-400 p-4 text-center">Még nem érkezett válasz.</p>
-        ) : (
-          <div>
-            <p className="text-xs text-gray-400 px-4 pt-3 pb-1 font-medium uppercase tracking-wide">Szolgáltatók válaszai</p>
-            {providers.map(prov => {
-              const lastMsg = prov.messages[prov.messages.length - 1];
-              const preview = lastMsg
-                ? (isSystemMsg(lastMsg.body) ? systemText(lastMsg.body) : lastMsg.body)
-                : "Még nem válaszolt";
-              const previewSender = lastMsg && !isSystemMsg(lastMsg.body)
-                ? (lastMsg.sender_id === userId ? "Te" : prov.full_name)
-                : null;
-              return (
-                <button
-                  key={prov.id}
-                  onClick={() => onOpenChat(prov)}
-                  className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-0.5">
-                        <p className={`text-sm truncate ${prov.unread_count > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
-                          {prov.full_name}
+          {/* Provider threads */}
+          {loading ? (
+            <p className="text-sm text-gray-400 px-4 py-3">Betöltés...</p>
+          ) : providers.length === 0 ? (
+            <p className="text-sm text-gray-400 px-4 py-3 text-center">Még nem érkezett válasz.</p>
+          ) : (
+            <div>
+              {providers.map(prov => {
+                const lastMsg = prov.messages[prov.messages.length - 1];
+                const preview = lastMsg
+                  ? (isSystemMsg(lastMsg.body) ? systemText(lastMsg.body) : lastMsg.body)
+                  : "Még nem válaszolt";
+                const previewSender = lastMsg && !isSystemMsg(lastMsg.body)
+                  ? (lastMsg.sender_id === userId ? "Te" : prov.full_name)
+                  : null;
+                return (
+                  <button
+                    key={prov.id}
+                    onClick={() => onOpenChat(prov)}
+                    className="w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 hover:bg-white transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-0.5">
+                          <p className={`text-sm truncate ${prov.unread_count > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
+                            {prov.full_name}
+                          </p>
+                          {lastMsg && <span className="text-xs text-gray-400 shrink-0">{formatShort(lastMsg.created_at)}</span>}
+                        </div>
+                        <p className="text-xs text-gray-500 truncate">
+                          {previewSender && <span className="text-gray-400">{previewSender}: </span>}
+                          {preview}
                         </p>
-                        {lastMsg && <span className="text-xs text-gray-400 shrink-0">{formatShort(lastMsg.created_at)}</span>}
                       </div>
-                      <p className="text-xs text-gray-500 truncate">
-                        {previewSender && <span className="text-gray-400">{previewSender}: </span>}
-                        {preview}
-                      </p>
+                      {prov.unread_count > 0 && (
+                        <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                          {prov.unread_count}
+                        </span>
+                      )}
                     </div>
-                    {prov.unread_count > 0 && (
-                      <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-                        {prov.unread_count}
-                      </span>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Delete */}
+          <div className="px-4 py-2.5 flex justify-end border-t border-gray-100">
+            {!confirmDelete ? (
+              <button onClick={() => setConfirmDelete(true)} className="flex items-center gap-1.5 text-xs text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer">
+                <Trash2 className="h-3.5 w-3.5" /> Törlés
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-600">Biztosan törlöd?</span>
+                <button onClick={handleDelete} disabled={deleting} className="text-xs font-medium text-[#F06C6C] cursor-pointer disabled:opacity-50">{deleting ? "..." : "Igen"}</button>
+                <button onClick={() => setConfirmDelete(false)} className="text-xs text-gray-400 hover:text-gray-600 cursor-pointer">Mégse</button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -725,9 +746,10 @@ function ProviderChatLoader({
 export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Props) {
   const [visitorRequests, setVisitorRequests] = useState<VisitorRequest[]>([]);
   const [providerRequests, setProviderRequests] = useState<ProviderRequest[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [view, setView]         = useState<View>({ mode: "list" });
+  const [loading, setLoading]     = useState(true);
+  const [showForm, setShowForm]   = useState(false);
+  const [view, setView]           = useState<View>({ mode: "list" });
+  const [expandedReqId, setExpandedReqId] = useState<string | null>(null);
 
   const loadRequests = useCallback(() => {
     fetch("/api/quote-requests")
@@ -797,31 +819,6 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
     );
   }
 
-  // ── Visitor: request detail ──
-  if (view.mode === "visitor-detail") {
-    const req = view.req;
-    return (
-      <VisitorDetailView
-        req={req}
-        userId={userId}
-        onBack={() => setView({ mode: "list" })}
-        onOpenChat={(provider) => setView({ mode: "visitor-chat", req, provider })}
-        onDeleted={() => {
-          const updated = visitorRequests.filter(r => r.id !== req.id);
-          setVisitorRequests(updated);
-          broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
-        }}
-        onUnreadMarked={(count) => {
-          const updated = visitorRequests.map(r =>
-            r.id === req.id ? { ...r, unread_reply_count: Math.max(0, r.unread_reply_count - count) } : r
-          );
-          setVisitorRequests(updated);
-          broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
-        }}
-      />
-    );
-  }
-
   // ── Visitor: provider chat ──
   if (view.mode === "visitor-chat") {
     const { req, provider } = view;
@@ -834,10 +831,11 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
         requestContext={null}
         userId={userId}
         initialMessages={provider.messages}
-        onBack={() => setView({ mode: "visitor-detail", req })}
+        onBack={() => setView({ mode: "list" })}
         onDeleted={() => {
           const updated = visitorRequests.filter(r => r.id !== req.id);
           setVisitorRequests(updated);
+          setExpandedReqId(null);
           broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
         }}
         onUnreadMarked={(count) => {
@@ -914,13 +912,19 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
       ) : (
         <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
           {visitorRequests.map(req => (
-            <QuoteInboxItem
+            <VisitorAccordionItem
               key={req.id}
-              subject={req.subject}
-              subtitle={`${CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category} · ${req.counties.join(", ")} · ${req.recipient_count} szolgáltató`}
-              date={req.created_at}
-              unread={req.unread_reply_count ?? 0}
-              onSelect={() => setView({ mode: "visitor-detail", req })}
+              req={req}
+              userId={userId}
+              expanded={expandedReqId === req.id}
+              onToggle={() => setExpandedReqId(v => v === req.id ? null : req.id)}
+              onOpenChat={(provider) => setView({ mode: "visitor-chat", req, provider })}
+              onDeleted={() => {
+                const updated = visitorRequests.filter(r => r.id !== req.id);
+                setVisitorRequests(updated);
+                setExpandedReqId(null);
+                broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
+              }}
             />
           ))}
         </div>
