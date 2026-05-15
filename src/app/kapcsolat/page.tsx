@@ -83,7 +83,7 @@ export default function ContactPage() {
   return (
     <div>
       <PageHeader title="Kapcsolat" icon={Mail} />
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             <Send className="h-5 w-5 text-[#84AAA6]" strokeWidth={1.5} />

@@ -91,7 +91,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         description={CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
       />
 
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
       <CategoryContent
         providers={providers}
         counties={COUNTIES as unknown as string[]}
