@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { processPendingNotifications } from "@/lib/notifications";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
 
 /**
  * GET /api/cron/notifications
