@@ -1,0 +1,17 @@
+name: Process pending notifications
+
+on:
+  schedule:
+    # Percenként fut (GitHub Actions minimuma 5 perc, de ezt tolerálja)
+    - cron: "*/5 * * * *"
+  workflow_dispatch: # manuálisan is indítható
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call notification cron endpoint
+        run: |
+          curl -s -f \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.NEXT_PUBLIC_APP_URL }}/api/cron/notifications"
