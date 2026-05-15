@@ -21,25 +21,17 @@ interface QuoteMessage {
   created_at: string;
 }
 
-interface QuoteProvider {
-  id: string;
-  full_name: string;
-  avatar_url?: string | null;
-  recipient_id: string;
-  messages: QuoteMessage[];
-  has_reply: boolean;
-  unread_count: number;
-}
-
-interface VisitorRequest {
-  id: string;
+interface VisitorChat {
+  request_id: string;
   subject: string;
   category: string;
   counties: string[];
   message: string;
-  created_at: string;
-  recipient_count: number;
-  unread_reply_count: number;
+  provider_id: string;
+  provider_full_name: string;
+  messages: QuoteMessage[];
+  unread_count: number;
+  last_at: string;
 }
 
 interface ProviderRequest {
@@ -69,7 +61,7 @@ interface Props {
 type View =
   | { mode: "list" }
   | { mode: "provider-chat"; req: ProviderRequest }
-  | { mode: "visitor-chat"; req: VisitorRequest; provider: QuoteProvider };
+  | { mode: "visitor-chat"; chat: VisitorChat };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -453,7 +445,7 @@ function QuoteChat({
   };
 
   return (
-    <div className="flex flex-col" style={{ minHeight: "520px" }}>
+    <div className="fixed inset-0 z-[100] flex flex-col bg-white sm:relative sm:inset-auto sm:z-auto sm:max-h-[680px]">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
         <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer shrink-0">
@@ -501,7 +493,7 @@ function QuoteChat({
       )}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
         {messages.length === 0 && (
           <p className="text-sm text-gray-400 text-center py-8">Még nem volt üzenetváltás.</p>
         )}
@@ -534,7 +526,7 @@ function QuoteChat({
       {/* Reply */}
       {!hasSystemMessage && (
         <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
-          <form onSubmit={handleReply} className="flex gap-2 items-stretch">
+          <form onSubmit={handleReply} className="flex gap-2 items-end">
             <textarea
               ref={textareaRef}
               value={replyBody}
@@ -546,159 +538,15 @@ function QuoteChat({
               onKeyDown={handleKeyDown}
               placeholder="Írj üzenetet… (Shift+Enter = új sor)"
               rows={1}
-              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors overflow-hidden"
+              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors overflow-hidden"
               style={{ maxHeight: "120px" }}
             />
-            <Button type="submit" disabled={sending || !replyBody.trim()} className="shrink-0 h-auto self-stretch px-4">
-              <Send className="h-4 w-4 mr-1.5" />
+            <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
+              <Send className="h-3.5 w-3.5 mr-1" />
               {sending ? "..." : "Küldés"}
             </Button>
           </form>
           {sendError && <p className="text-xs text-[#F06C6C] mt-1.5">{sendError}</p>}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── Visitor: accordion request row (inline expand + provider list) ────────────
-
-function VisitorAccordionItem({
-  req,
-  userId,
-  expanded,
-  onToggle,
-  onOpenChat,
-  onDeleted,
-}: {
-  req: VisitorRequest;
-  userId: string;
-  expanded: boolean;
-  onToggle: () => void;
-  onOpenChat: (provider: QuoteProvider) => void;
-  onDeleted: () => void;
-}) {
-  const [providers, setProviders]         = useState<QuoteProvider[]>([]);
-  const [loading, setLoading]             = useState(false);
-  const [loaded, setLoaded]               = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting]           = useState(false);
-
-  useEffect(() => {
-    if (!expanded || loaded) return;
-    setLoading(true);
-    fetch(`/api/quote-requests/${req.id}`)
-      .then(r => r.json())
-      .then(data => { setProviders(data.providers ?? []); setLoaded(true); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [expanded, loaded, req.id]);
-
-  const handleDelete = async () => {
-    setDeleting(true);
-    await fetch(`/api/quote-requests/${req.id}`, { method: "DELETE" });
-    onDeleted();
-  };
-
-  const unread = req.unread_reply_count ?? 0;
-
-  return (
-    <div className="border-b border-gray-100 last:border-b-0">
-      {/* Header row */}
-      <button
-        onClick={onToggle}
-        className="w-full text-left px-4 py-3.5 hover:bg-gray-50 transition-colors flex items-start gap-3"
-      >
-        <FileText className={`h-4 w-4 mt-0.5 shrink-0 ${unread > 0 ? "text-gray-500" : "text-gray-300"}`} />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2 mb-0.5">
-            <p className={`text-sm truncate ${unread > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
-              {req.subject}
-            </p>
-            <span className="text-xs text-gray-400 shrink-0">{formatShort(req.created_at)}</span>
-          </div>
-          <p className="text-xs text-gray-500 truncate">
-            {CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
-            {" · "}{req.counties.join(", ")}
-            {" · "}{req.recipient_count} szolgáltató
-          </p>
-        </div>
-        {unread > 0 && (
-          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-            {unread > 9 ? "9+" : unread}
-          </span>
-        )}
-        <ArrowLeft className={`h-4 w-4 text-gray-400 shrink-0 mt-0.5 transition-transform ${expanded ? "-rotate-90" : "rotate-180"}`} />
-      </button>
-
-      {/* Expanded body */}
-      {expanded && (
-        <div className="border-t border-gray-100 bg-gray-50/50">
-          {/* Request message */}
-          <div className="px-4 py-3 border-b-2 border-gray-200">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Üzenet</p>
-            <p className="text-sm text-gray-700 whitespace-pre-line">{req.message}</p>
-          </div>
-
-          {/* Provider threads */}
-          {loading ? (
-            <p className="text-sm text-gray-400 px-4 py-3">Betöltés...</p>
-          ) : providers.length === 0 ? (
-            <p className="text-sm text-gray-400 px-4 py-3 text-center">Még nem érkezett válasz.</p>
-          ) : (
-            <div>
-              {providers.map(prov => {
-                const lastMsg = prov.messages[prov.messages.length - 1];
-                const preview = lastMsg
-                  ? (isSystemMsg(lastMsg.body) ? systemText(lastMsg.body) : lastMsg.body)
-                  : "Még nem válaszolt";
-                const previewSender = lastMsg && !isSystemMsg(lastMsg.body)
-                  ? (lastMsg.sender_id === userId ? "Te" : prov.full_name)
-                  : null;
-                return (
-                  <button
-                    key={prov.id}
-                    onClick={() => onOpenChat(prov)}
-                    className="w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 hover:bg-white transition-colors"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2 mb-0.5">
-                          <p className={`text-sm truncate ${prov.unread_count > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
-                            {prov.full_name}
-                          </p>
-                          {lastMsg && <span className="text-xs text-gray-400 shrink-0">{formatShort(lastMsg.created_at)}</span>}
-                        </div>
-                        <p className="text-xs text-gray-500 truncate">
-                          {previewSender && <span className="text-gray-400">{previewSender}: </span>}
-                          {preview}
-                        </p>
-                      </div>
-                      {prov.unread_count > 0 && (
-                        <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-                          {prov.unread_count}
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Delete */}
-          <div className="px-4 py-2.5 flex justify-end border-t border-gray-100">
-            {!confirmDelete ? (
-              <button onClick={() => setConfirmDelete(true)} className="flex items-center gap-1.5 text-xs text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer">
-                <Trash2 className="h-3.5 w-3.5" /> Törlés
-              </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-600">Biztosan törlöd?</span>
-                <button onClick={handleDelete} disabled={deleting} className="text-xs font-medium text-[#F06C6C] cursor-pointer disabled:opacity-50">{deleting ? "..." : "Igen"}</button>
-                <button onClick={() => setConfirmDelete(false)} className="text-xs text-gray-400 hover:text-gray-600 cursor-pointer">Mégse</button>
-              </div>
-            )}
-          </div>
         </div>
       )}
     </div>
@@ -750,12 +598,11 @@ function ProviderChatLoader({
 // ── Main section ──────────────────────────────────────────────────────────────
 
 export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Props) {
-  const [visitorRequests, setVisitorRequests] = useState<VisitorRequest[]>([]);
+  const [visitorChats, setVisitorChats]       = useState<VisitorChat[]>([]);
   const [providerRequests, setProviderRequests] = useState<ProviderRequest[]>([]);
   const [loading, setLoading]     = useState(true);
   const [showForm, setShowForm]   = useState(false);
   const [view, setView]           = useState<View>({ mode: "list" });
-  const [expandedReqId, setExpandedReqId] = useState<string | null>(null);
 
   const loadRequests = useCallback(() => {
     fetch("/api/quote-requests")
@@ -767,9 +614,9 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
           const unread = reqs.filter(r => !r.read).length + reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
           broadcastUnread(unread, onUnreadChange);
         } else {
-          const reqs = data as VisitorRequest[];
-          setVisitorRequests(reqs);
-          broadcastUnread(reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
+          const chats = data as VisitorChat[];
+          setVisitorChats(chats);
+          broadcastUnread(chats.reduce((s, c) => s + (c.unread_count ?? 0), 0), onUnreadChange);
         }
         setLoading(false);
       })
@@ -831,31 +678,33 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
     );
   }
 
-  // ── Visitor: provider chat ──
+  // ── Visitor: chat view ──
   if (view.mode === "visitor-chat") {
-    const { req, provider } = view;
+    const { chat } = view;
     return (
       <QuoteChat
-        requestId={req.id}
-        providerId={provider.id}
-        subject={req.subject}
-        otherName={provider.full_name}
-        requestContext={null}
+        requestId={chat.request_id}
+        providerId={chat.provider_id}
+        subject={chat.subject}
+        otherName={chat.provider_full_name}
+        requestContext={{ category: chat.category, counties: chat.counties, message: chat.message }}
         userId={userId}
-        initialMessages={provider.messages}
+        initialMessages={chat.messages}
         onBack={() => setView({ mode: "list" })}
         onDeleted={() => {
-          const updated = visitorRequests.filter(r => r.id !== req.id);
-          setVisitorRequests(updated);
-          setExpandedReqId(null);
-          broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
+          // Törlés: az összes chat eltávolítása ugyanazzal a request_id-vel
+          const updated = visitorChats.filter(c => c.request_id !== chat.request_id);
+          setVisitorChats(updated);
+          broadcastUnread(updated.reduce((s, c) => s + c.unread_count, 0), onUnreadChange);
         }}
         onUnreadMarked={(count) => {
-          const updated = visitorRequests.map(r =>
-            r.id === req.id ? { ...r, unread_reply_count: Math.max(0, r.unread_reply_count - count) } : r
+          const updated = visitorChats.map(c =>
+            c.request_id === chat.request_id && c.provider_id === chat.provider_id
+              ? { ...c, unread_count: Math.max(0, c.unread_count - count) }
+              : c
           );
-          setVisitorRequests(updated);
-          broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
+          setVisitorChats(updated);
+          broadcastUnread(updated.reduce((s, c) => s + c.unread_count, 0), onUnreadChange);
         }}
       />
     );
@@ -915,7 +764,7 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
       {showForm && (
         <SendForm onSent={() => { setShowForm(false); loadRequests(); }} onCancel={() => setShowForm(false)} />
       )}
-      {visitorRequests.length === 0 && !showForm ? (
+      {visitorChats.length === 0 && !showForm ? (
         <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
           <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
           <p className="text-base">Még nem küldtél ajánlatkérést.</p>
@@ -923,22 +772,30 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
         </div>
       ) : (
         <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-          {visitorRequests.map(req => (
-            <VisitorAccordionItem
-              key={req.id}
-              req={req}
-              userId={userId}
-              expanded={expandedReqId === req.id}
-              onToggle={() => setExpandedReqId(v => v === req.id ? null : req.id)}
-              onOpenChat={(provider) => setView({ mode: "visitor-chat", req, provider })}
-              onDeleted={() => {
-                const updated = visitorRequests.filter(r => r.id !== req.id);
-                setVisitorRequests(updated);
-                setExpandedReqId(null);
-                broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
-              }}
-            />
-          ))}
+          {visitorChats.map(chat => {
+            const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
+            let preview: string;
+            if (lastMsg) {
+              if (isSystemMsg(lastMsg.body)) {
+                preview = systemText(lastMsg.body);
+              } else {
+                const prefix = lastMsg.sender_id === userId ? "Te" : chat.provider_full_name;
+                preview = `${prefix}: ${lastMsg.body}`;
+              }
+            } else {
+              preview = `Te: ${chat.message}`;
+            }
+            return (
+              <QuoteInboxItem
+                key={`${chat.request_id}__${chat.provider_id}`}
+                subject={chat.subject}
+                subtitle={`${chat.provider_full_name} · ${preview}`}
+                date={chat.last_at}
+                unread={chat.unread_count}
+                onSelect={() => setView({ mode: "visitor-chat", chat })}
+              />
+            );
+          })}
         </div>
       )}
     </div>
