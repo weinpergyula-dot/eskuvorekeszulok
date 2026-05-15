@@ -186,9 +186,10 @@ function ThreadChat({
     if (unread.length > 0) {
       Promise.all(unread.map((m) =>
         fetch(`/api/messages/${m.id}/read`, { method: "PATCH" })
-      ));
-      onUnreadMarked(unread.length);
-      window.dispatchEvent(new CustomEvent("messages-read"));
+      )).then(() => {
+        onUnreadMarked(unread.length);
+        window.dispatchEvent(new CustomEvent("messages-read"));
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -200,7 +201,8 @@ function ThreadChat({
 
   // ── Presence tracking ─────────────────────────────────────────────────────
   useEffect(() => {
-    const threadKey = `${thread.subject}|${userId}`;
+    // thread.key = "normalizedSubject|otherUserId" — matches the server-side check
+    const threadKey = thread.key;
     const pingPresence = () =>
       fetch("/api/messages/presence", {
         method: "POST",
@@ -258,8 +260,10 @@ function ThreadChat({
           };
 
           setLocalMessages((prev) => [...prev, newMsg]);
-          // Auto-mark as read since we're looking at it
-          fetch(`/api/messages/${raw.id}/read`, { method: "PATCH" }).catch(() => {});
+          // Auto-mark as read since we're looking at it, then update badge
+          fetch(`/api/messages/${raw.id}/read`, { method: "PATCH" })
+            .then(() => window.dispatchEvent(new CustomEvent("messages-read")))
+            .catch(() => {});
         }
       )
       .subscribe();

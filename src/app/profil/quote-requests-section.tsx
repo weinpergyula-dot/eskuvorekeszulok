@@ -1,14 +1,17 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ChevronDown, ChevronUp, FileText, Send, CornerDownRight, Trash2, Star, Info } from "lucide-react";
+import { ArrowLeft, FileText, Send, Trash2, Star, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
+import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+import { createClient } from "@/lib/supabase/client";
 
 const SYSTEM_PREFIX = "__SYSTEM__:";
 const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
 const systemText  = (body: string) => body.slice(SYSTEM_PREFIX.length);
-import { Button } from "@/components/ui/button";
-import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
-import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+
+// ── Interfaces ────────────────────────────────────────────────────────────────
 
 interface QuoteMessage {
   id: string;
@@ -53,17 +56,68 @@ interface ProviderRequest {
   unread_reply_count: number;
 }
 
+interface MatchingProvider { id: string; full_name: string; average_rating: number | null; }
+
 interface Props {
   isProvider: boolean;
   userId: string;
   onUnreadChange: (count: number) => void;
 }
 
+// ── Navigation state ──────────────────────────────────────────────────────────
+
+type View =
+  | { mode: "list" }
+  | { mode: "provider-chat"; req: ProviderRequest }
+  | { mode: "visitor-detail"; req: VisitorRequest }
+  | { mode: "visitor-chat"; req: VisitorRequest; provider: QuoteProvider };
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("hu-HU", {
     year: "numeric", month: "long", day: "numeric",
     hour: "2-digit", minute: "2-digit",
   });
+}
+
+function formatShort(iso: string) {
+  const d = new Date(iso);
+  const now = new Date();
+  const isToday =
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth()    === now.getMonth()    &&
+    d.getDate()     === now.getDate();
+  return isToday
+    ? d.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })
+    : d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
+}
+
+function broadcastUnread(count: number, onChange: (n: number) => void) {
+  onChange(count);
+  window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
+}
+
+// ── StarRating ────────────────────────────────────────────────────────────────
+
+function StarRating({ rating }: { rating: number | null }) {
+  if (!rating) return <span className="text-xs text-gray-400">Nincs értékelés</span>;
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5;
+  return (
+    <span className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map(i => (
+        <Star
+          key={i}
+          className="h-3 w-3"
+          fill={i <= full ? "#f59e0b" : i === full + 1 && half ? "url(#half)" : "none"}
+          stroke="#f59e0b"
+          strokeWidth={1.5}
+        />
+      ))}
+      <span className="text-xs text-gray-500 ml-1">{rating.toFixed(1)}</span>
+    </span>
+  );
 }
 
 // ── CategorySelect ────────────────────────────────────────────────────────────
@@ -93,28 +147,17 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
         <span style={{ color: selectedLabel ? "#111827" : "#9CA3AF" }}>
           {selectedLabel ?? "Válassz kategóriát..."} <span className="text-[1.2em] font-bold leading-none align-middle">*</span>
         </span>
-        <ChevronDown
-          className="h-4 w-4 shrink-0 transition-transform"
-          style={{ color: "#9CA3AF", transform: open ? "rotate(180deg)" : "none" }}
-        />
+        <ArrowLeft className="h-4 w-4 shrink-0 -rotate-90 transition-transform" style={{ color: "#9CA3AF", transform: open ? "rotate(90deg)" : "rotate(-90deg)" }} />
       </button>
-
       {open && (
-        <div
-          className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50 overflow-y-auto"
-          style={{ maxHeight: 448 }}
-        >
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-30 max-h-60 overflow-y-auto">
           {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
             <button
               key={key}
               type="button"
               onClick={() => { onChange(key); setOpen(false); }}
               className="w-full text-left px-4 py-2.5 text-base transition-colors cursor-pointer hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
-              style={{
-                color: value === key ? "#84AAA6" : "#111827",
-                background: value === key ? "rgba(132,170,166,0.1)" : undefined,
-                fontWeight: value === key ? 500 : undefined,
-              }}
+              style={{ color: value === key ? "#84AAA6" : "#111827" }}
             >
               {label}
             </button>
@@ -122,31 +165,6 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
         </div>
       )}
     </div>
-  );
-}
-
-// ── StarRating ────────────────────────────────────────────────────────────────
-
-interface MatchingProvider { id: string; full_name: string; average_rating: number | null; }
-
-function StarRating({ rating }: { rating: number | null }) {
-  if (!rating) return <span className="text-xs text-gray-400">Nincs értékelés</span>;
-  const full = Math.floor(rating);
-  const half = rating - full >= 0.5;
-  return (
-    <span className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map(i => (
-        <Star
-          key={i}
-          className="h-3.5 w-3.5"
-          style={{
-            fill: i <= full ? "#F59E0B" : i === full + 1 && half ? "url(#half)" : "none",
-            color: i <= full || (i === full + 1 && half) ? "#F59E0B" : "#D1D5DB",
-          }}
-        />
-      ))}
-      <span className="text-xs text-gray-500 ml-1">{rating.toFixed(1)}</span>
-    </span>
   );
 }
 
@@ -187,23 +205,14 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
     if (!category) { setError("Válassz kategóriát!"); return; }
     if (!selectedCounties.length) { setError("Válassz legalább egy megyét!"); return; }
     if (!message.trim()) { setError("Írj üzenetet a szolgáltatóknak!"); return; }
-    if (checkedIds.size === 0) {
-      setError("Legalább egy szolgáltatót jelölj be.");
-      return;
-    }
+    if (checkedIds.size === 0) { setError("Legalább egy szolgáltatót jelölj be."); return; }
     setSending(true);
     setError(null);
     try {
       const res = await fetch("/api/quote-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject,
-          category,
-          counties: selectedCounties,
-          message,
-          selectedProviderIds: [...checkedIds],
-        }),
+        body: JSON.stringify({ subject, category, counties: selectedCounties, message, selectedProviderIds: [...checkedIds] }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
@@ -220,605 +229,505 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
       <h3 className="text-base font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
-
-      <FloatingInput
-        id="qs-subject"
-        label="Tárgy *"
-        value={subject}
-        onChange={e => setSubject(e.target.value)}
-      />
-
+      <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} />
       <CategorySelect value={category} onChange={setCategory} />
-
       <div>
         <p className="text-sm text-gray-600 mb-2">Megye(k) <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
           {geographicCounties.map(county => (
             <label key={county} className="flex items-center gap-1.5 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={selectedCounties.includes(county)}
-                onChange={() => toggleCounty(county)}
-                className="rounded accent-[#84AAA6]"
-              />
+              <input type="checkbox" checked={selectedCounties.includes(county)} onChange={() => toggleCounty(county)} className="rounded accent-[#84AAA6]" />
               <span className="text-sm text-gray-700">{county}</span>
             </label>
           ))}
         </div>
       </div>
-
-      <FloatingTextarea
-        id="qs-message"
-        label="Üzenet *"
-        value={message}
-        onChange={e => setMessage(e.target.value)}
-        rows={4}
-      />
-
+      <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} />
       {matchingProviders !== null && (
         <div className="space-y-2">
           {matchingProviders.length === 0 ? (
             <p className="text-sm text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
           ) : (
             <div>
-              <p className="text-sm text-gray-600 mb-2">
-                Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:
-              </p>
+              <p className="text-sm text-gray-600 mb-2">Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:</p>
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
                 {matchingProviders.map(p => (
-                  <label
-                    key={p.id}
-                    className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checkedIds.has(p.id)}
-                      onChange={() => {
-                        setCheckedIds(prev => {
-                          const next = new Set(prev);
-                          if (next.has(p.id)) next.delete(p.id); else next.add(p.id);
-                          return next;
-                        });
-                      }}
-                      className="rounded accent-[#84AAA6] shrink-0"
-                    />
+                  <label key={p.id} className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input type="checkbox" checked={checkedIds.has(p.id)} onChange={() => { setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; }); }} className="rounded accent-[#84AAA6] shrink-0" />
                     <span className="flex-1 text-sm font-medium text-gray-900 truncate">{p.full_name}</span>
                     <StarRating rating={p.average_rating} />
                   </label>
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-1.5">
-                {checkedIds.size} / {matchingProviders.length} szolgáltató kijelölve
-              </p>
+              <p className="text-xs text-gray-400 mt-1.5">{checkedIds.size} / {matchingProviders.length} szolgáltató kijelölve</p>
             </div>
           )}
         </div>
       )}
-
-      {error && (
-        <div className="bg-[#F06C6C]/10 text-[#F06C6C] px-4 py-3 rounded-xl border border-[#F06C6C]/30">
-          {error}
-        </div>
-      )}
-
+      {error && <div className="bg-[#F06C6C]/10 text-[#F06C6C] px-4 py-3 rounded-xl border border-[#F06C6C]/30">{error}</div>}
       <div className="flex gap-3">
-        <Button type="submit" disabled={sending}>
-          <Send className="h-4 w-4 mr-2" />
-          {sending ? "Küldés..." : "Elküld"}
-        </Button>
+        <Button type="submit" disabled={sending}><Send className="h-4 w-4 mr-2" />{sending ? "Küldés..." : "Elküld"}</Button>
         <Button type="button" variant="outline" onClick={onCancel}>Mégse</Button>
       </div>
-      <p className="text-sm text-gray-500">
-        <span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.
-      </p>
+      <p className="text-sm text-gray-500"><span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.</p>
     </form>
   );
 }
 
-// ── ProviderThread (inside visitor request) ───────────────────────────────────
+// ── Inbox list item ───────────────────────────────────────────────────────────
 
-function ProviderThread({
-  provider,
+function QuoteInboxItem({
+  subject, subtitle, date, unread, onSelect,
+}: {
+  subject: string;
+  subtitle: string;
+  date: string;
+  unread: number;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      onClick={onSelect}
+      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+    >
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 shrink-0">
+          <FileText className={`h-4 w-4 ${unread > 0 ? "text-gray-500" : "text-gray-300"}`} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-0.5">
+            <p className={`text-sm truncate ${unread > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
+              {subject}
+            </p>
+            <span className="text-xs text-gray-400 shrink-0">{formatShort(date)}</span>
+          </div>
+          <p className="text-xs text-gray-500 truncate">{subtitle}</p>
+        </div>
+        {unread > 0 && (
+          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+            {unread > 9 ? "9+" : unread}
+          </span>
+        )}
+      </div>
+    </button>
+  );
+}
+
+// ── Unified quote chat view ───────────────────────────────────────────────────
+
+function QuoteChat({
   requestId,
+  providerId,
+  subject,
+  otherName,
+  requestContext,
   userId,
+  initialMessages,
+  onBack,
+  onDeleted,
   onUnreadMarked,
 }: {
-  provider: QuoteProvider;
   requestId: string;
+  providerId: string;
+  subject: string;
+  otherName: string;
+  requestContext?: { category: string; counties: string[]; message: string } | null;
   userId: string;
+  initialMessages: QuoteMessage[];
+  onBack: () => void;
+  onDeleted: () => void;
   onUnreadMarked: (count: number) => void;
 }) {
-  const [expanded, setExpanded] = useState(false);
-  const [localUnread, setLocalUnread] = useState(provider.unread_count);
-  const [replyBody, setReplyBody] = useState("");
-  const [replying, setReplying] = useState(false);
-  const [messages, setMessages] = useState<QuoteMessage[]>(provider.messages);
-  const [sendError, setSendError] = useState<string | null>(null);
+  const [messages, setMessages]           = useState(initialMessages);
+  const [replyBody, setReplyBody]         = useState("");
+  const [sending, setSending]             = useState(false);
+  const [sendError, setSendError]         = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting]           = useState(false);
+  const [showContext, setShowContext]      = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const hasSystemMessage = messages.some((m) => isSystemMsg(m.body));
 
-  const handleExpand = async () => {
-    if (expanded) { setExpanded(false); return; }
-    setExpanded(true);
-    if (localUnread > 0) {
-      await fetch(`/api/quote-requests/${requestId}/read`, {
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Mark unread as read on mount
+  useEffect(() => {
+    const unread = initialMessages.filter((m) => !m.read && m.sender_id !== userId);
+    if (unread.length > 0) {
+      fetch(`/api/quote-requests/${requestId}/read`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "messages", provider_id: provider.id }),
+        body: JSON.stringify({ type: "messages", provider_id: providerId }),
+      }).then(() => {
+        onUnreadMarked(unread.length);
+        window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
       });
-      onUnreadMarked(localUnread);
-      setLocalUnread(0);
-      window.dispatchEvent(new CustomEvent("quotes-read"));
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Realtime: new incoming quote messages
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
+
+    const channel = supabase
+      .channel(`quote-chat-${requestId}-${providerId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "quote_messages",
+          filter: `quote_request_id=eq.${requestId}`,
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (payload: any) => {
+          const raw = payload.new;
+          if (raw.provider_id !== providerId) return;
+          if (raw.sender_id === userId) return; // own message already shown optimistically
+          const newMsg: QuoteMessage = {
+            id: raw.id, sender_id: raw.sender_id, body: raw.body,
+            read: false, created_at: raw.created_at,
+          };
+          setMessages((prev) => [...prev, newMsg]);
+          // Auto-mark as read
+          fetch(`/api/quote-requests/${requestId}/read`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: "messages", provider_id: providerId }),
+          }).then(() => window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh")))
+            .catch(() => {});
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestId, providerId, userId]);
 
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!replyBody.trim()) return;
-    setReplying(true);
+    setSending(true);
     setSendError(null);
     try {
       const res = await fetch(`/api/quote-requests/${requestId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ provider_id: provider.id, body: replyBody.trim() }),
+        body: JSON.stringify({ body: replyBody.trim(), provider_id: providerId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
-      setMessages(prev => [...prev, {
-        id: crypto.randomUUID(),
-        sender_id: userId,
-        body: replyBody.trim(),
-        read: false,
+      setMessages((prev) => [...prev, {
+        id: crypto.randomUUID(), sender_id: userId,
+        body: replyBody.trim(), read: true,
         created_at: new Date().toISOString(),
       }]);
       setReplyBody("");
     } catch (err: unknown) {
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
     } finally {
-      setReplying(false);
+      setSending(false);
     }
   };
 
-  return (
-    <div className="border border-[#84AAA6]/15 rounded-lg overflow-hidden">
-      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-3 py-2.5 text-left cursor-pointer bg-[#84AAA6]/15">
-        <div className="flex-1 min-w-0">
-          <p className={`text-sm font-medium truncate text-gray-800 ${localUnread > 0 ? "font-semibold" : ""}`}>
-            {provider.full_name}
-          </p>
-          <p className="text-xs text-gray-500">
-            {messages.length} üzenet · {provider.has_reply ? "válaszolt" : "még nem válaszolt"}
-          </p>
-        </div>
-        {localUnread > 0 && (
-          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-            {localUnread}
-          </span>
-        )}
-        {expanded ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" /> : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />}
-      </button>
-
-      {expanded && (
-        <div className="border-t border-gray-100">
-          <div className="divide-y divide-gray-50">
-            {messages.length === 0 ? (
-              <p className="px-3 py-3 text-sm text-gray-400">Még nem érkezett üzenet ettől a szolgáltatótól.</p>
-            ) : (
-              messages.map(msg =>
-                isSystemMsg(msg.body) ? (
-                  <div key={msg.id} className="px-3 py-2.5 bg-amber-50 flex items-start gap-2">
-                    <Info className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                    <p className="text-xs text-amber-800 italic">{systemText(msg.body)}</p>
-                  </div>
-                ) : (
-                  <div key={msg.id} className={`px-3 py-2.5 ${msg.sender_id === userId ? "bg-gray-50" : "bg-white"}`}>
-                    <div className="flex items-center justify-between gap-3 mb-1">
-                      <span className="text-xs font-medium text-gray-600">
-                        {msg.sender_id === userId ? "Te" : provider.full_name}
-                      </span>
-                      <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
-                    </div>
-                    <p className="text-sm text-gray-900 whitespace-pre-line">{msg.body}</p>
-                  </div>
-                )
-              )
-            )}
-          </div>
-          {!hasSystemMessage && <form onSubmit={handleReply} className="px-3 py-3 border-t border-gray-100 space-y-2">
-            <FloatingTextarea
-              id={`reply-${provider.id}`}
-              label="Válasz..."
-              value={replyBody}
-              onChange={e => setReplyBody(e.target.value)}
-              rows={2}
-            />
-            {sendError && <p className="text-xs text-[#F06C6C]">{sendError}</p>}
-            <Button type="submit" size="sm" disabled={replying || !replyBody.trim()}>
-              <CornerDownRight className="h-3.5 w-3.5 mr-1" />
-              {replying ? "Küldés..." : "Küldés"}
-            </Button>
-          </form>}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── VisitorRequestRow ─────────────────────────────────────────────────────────
-
-function VisitorRequestRow({
-  request,
-  userId,
-  onUnreadMarked,
-  onDelete,
-}: {
-  request: VisitorRequest;
-  userId: string;
-  onUnreadMarked: (delta: number) => void;
-  onDelete: () => void;
-}) {
-  const [expanded, setExpanded] = useState(false);
-  const [providers, setProviders] = useState<QuoteProvider[] | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [localUnread, setLocalUnread] = useState(request.unread_reply_count);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  const handleExpand = async () => {
-    if (expanded) { setExpanded(false); return; }
-    setExpanded(true);
-    if (!providers) {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/quote-requests/${request.id}`);
-        const data = await res.json();
-        setProviders(data.providers ?? []);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const handleUnreadMarked = (count: number) => {
-    setLocalUnread(prev => Math.max(0, prev - count));
-    onUnreadMarked(count);
-  };
-
-  const handleDelete = async () => {
-    setDeleting(true);
-    try {
-      await fetch(`/api/quote-requests/${request.id}`, { method: "DELETE" });
-      onDelete();
-    } finally {
-      setDeleting(false);
-      setConfirmDelete(false);
-    }
-  };
-
-  return (
-    <div className="border border-[#84AAA6]/15 rounded-xl overflow-hidden">
-      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer bg-[#84AAA6]/15">
-        <FileText className="h-4 w-4 shrink-0 text-[#84AAA6]" />
-        <div className="flex-1 min-w-0">
-          <p className={`text-base truncate text-gray-900 ${localUnread > 0 ? "font-semibold" : ""}`}>
-            {request.subject}
-          </p>
-          <p className="text-sm text-gray-500 truncate">
-            {CATEGORY_LABELS[request.category as keyof typeof CATEGORY_LABELS] ?? request.category}
-            {" · "}{request.counties.join(", ")}
-            {" · "}{request.recipient_count} szolgáltató
-            {" · "}{formatDate(request.created_at)}
-          </p>
-        </div>
-        {localUnread > 0 && (
-          <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-            {localUnread > 9 ? "9+" : localUnread}
-          </span>
-        )}
-        {expanded ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" /> : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />}
-      </button>
-
-      {expanded && (
-        <div className="border-t border-gray-100 px-4 py-3 space-y-4">
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-sm text-gray-700 whitespace-pre-line">{request.message}</p>
-          </div>
-
-          <div>
-            <p className="text-sm font-medium text-gray-700 mb-2">Szolgáltatók válaszai:</p>
-            {loading ? (
-              <p className="text-sm text-gray-400">Betöltés...</p>
-            ) : providers && providers.length > 0 ? (
-              <div className="space-y-2">
-                {providers.map(p => (
-                  <ProviderThread
-                    key={p.id}
-                    provider={p}
-                    requestId={request.id}
-                    userId={userId}
-                    onUnreadMarked={handleUnreadMarked}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-400">Még nem érkezett válasz.</p>
-            )}
-          </div>
-
-          <div className="pt-1 border-t border-gray-100 flex justify-end">
-            {!confirmDelete ? (
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className="flex items-center gap-1.5 text-sm text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-                Törlés
-              </button>
-            ) : (
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="text-sm font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
-                >
-                  {deleting ? "Törlés..." : "Igen, törlöm"}
-                </button>
-                <button
-                  onClick={() => setConfirmDelete(false)}
-                  className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer shrink-0"
-                >
-                  Mégse
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── ProviderRequestRow ────────────────────────────────────────────────────────
-
-function ProviderRequestRow({
-  request,
-  userId,
-  onRead,
-  onReplyRead,
-  onDelete,
-}: {
-  request: ProviderRequest;
-  userId: string;
-  onRead: () => void;
-  onReplyRead: () => void;
-  onDelete: () => void;
-}) {
-  const [expanded, setExpanded] = useState(false);
-  const [localRead, setLocalRead] = useState(request.read);
-  const [localUnreadReplies, setLocalUnreadReplies] = useState(request.unread_reply_count);
-  const [messages, setMessages] = useState<QuoteMessage[]>([]);
-  const [loadedMessages, setLoadedMessages] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [replyBody, setReplyBody] = useState("");
-  const [replying, setReplying] = useState(false);
-  const [sendError, setSendError] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  const hasSystemMessage = messages.some((m) => isSystemMsg(m.body));
-
-  const handleExpand = async () => {
-    if (expanded) { setExpanded(false); return; }
-    setExpanded(true);
-
-    const patches: Promise<Response>[] = [];
-
-    if (!localRead) {
-      patches.push(fetch(`/api/quote-requests/${request.quote_request_id}/read`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "request" }),
-      }));
-    }
-
-    if (!loadedMessages) {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/quote-requests/${request.quote_request_id}`);
-        const data = await res.json();
-        setMessages(data.messages ?? []);
-        setLoadedMessages(true);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    // Mark visitor replies as read when provider sees them
-    if (localUnreadReplies > 0) {
-      patches.push(fetch(`/api/quote-requests/${request.quote_request_id}/read`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "messages", provider_id: request.provider_id }),
-      }));
-    }
-
-    if (patches.length > 0) {
-      await Promise.all(patches);
-      if (!localRead) {
-        setLocalRead(true);
-        onRead();
-      }
-      if (localUnreadReplies > 0) {
-        setLocalUnreadReplies(0);
-        onReplyRead();
-      }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && replyBody.trim()) {
+      e.preventDefault();
+      handleReply(e as unknown as React.FormEvent);
     }
   };
 
   const handleDelete = async () => {
     setDeleting(true);
-    try {
-      await fetch(`/api/quote-requests/${request.quote_request_id}`, { method: "DELETE" });
-      onDelete();
-    } finally {
-      setDeleting(false);
-      setConfirmDelete(false);
-    }
-  };
-
-  const handleReply = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!replyBody.trim()) return;
-    setReplying(true);
-    setSendError(null);
-    try {
-      const res = await fetch(`/api/quote-requests/${request.quote_request_id}/messages`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ provider_id: request.provider_id, body: replyBody.trim() }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
-      setMessages(prev => [...prev, {
-        id: crypto.randomUUID(),
-        sender_id: userId,
-        body: replyBody.trim(),
-        read: false,
-        created_at: new Date().toISOString(),
-      }]);
-      setReplyBody("");
-    } catch (err: unknown) {
-      setSendError(err instanceof Error ? err.message : "Hiba történt.");
-    } finally {
-      setReplying(false);
-    }
+    await fetch(`/api/quote-requests/${requestId}`, { method: "DELETE" });
+    onDeleted();
+    onBack();
   };
 
   return (
-    <div className="border border-[#84AAA6]/15 rounded-xl overflow-hidden">
-      <button onClick={handleExpand} className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer bg-[#84AAA6]/15">
-        <FileText className="h-4 w-4 shrink-0 text-[#84AAA6]" />
+    <div className="flex flex-col" style={{ minHeight: "520px" }}>
+      {/* Header */}
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
+        <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer shrink-0">
+          <ArrowLeft className="h-4 w-4" />
+          <span>Vissza</span>
+        </button>
+        <div className="h-4 w-px bg-gray-200 shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className={`text-base truncate text-gray-900 ${!localRead ? "font-semibold" : ""}`}>
-            {request.subject}
-          </p>
-          <p className="text-sm text-gray-500 truncate">
-            {request.visitor_name}
-            {" · "}{CATEGORY_LABELS[request.category as keyof typeof CATEGORY_LABELS] ?? request.category}
-            {" · "}{formatDate(request.created_at)}
-          </p>
+          <p className="text-sm font-semibold text-gray-900 truncate">{subject}</p>
+          <p className="text-xs text-gray-500 truncate">{otherName}</p>
         </div>
-        {!localRead && (
-          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">Új</span>
+        {requestContext && (
+          <button
+            onClick={() => setShowContext(v => !v)}
+            className="text-xs text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer shrink-0"
+            title="Ajánlatkérés részletei"
+          >
+            <FileText className="h-4 w-4" />
+          </button>
         )}
-        {expanded ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" /> : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />}
-      </button>
+        {!confirmDelete ? (
+          <button onClick={() => setConfirmDelete(true)} className="text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer shrink-0" title="Törlés">
+            <Trash2 className="h-4 w-4" />
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs text-gray-600">Biztosan törlöd?</span>
+            <button onClick={handleDelete} disabled={deleting} className="text-xs font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 cursor-pointer disabled:opacity-50">
+              {deleting ? "..." : "Igen"}
+            </button>
+            <button onClick={() => setConfirmDelete(false)} className="text-xs text-gray-400 hover:text-gray-600 cursor-pointer">Mégse</button>
+          </div>
+        )}
+      </div>
 
-      {expanded && (
-        <div className="border-t border-gray-100 px-4 py-3 space-y-4">
-          <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-              <span><strong>Kategória:</strong> {CATEGORY_LABELS[request.category as keyof typeof CATEGORY_LABELS] ?? request.category}</span>
-              <span><strong>Megye:</strong> {request.counties.join(", ")}</span>
+      {/* Request context (collapsible) */}
+      {requestContext && showContext && (
+        <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 shrink-0">
+          <p className="text-xs font-medium text-gray-500 mb-1">
+            {CATEGORY_LABELS[requestContext.category as keyof typeof CATEGORY_LABELS] ?? requestContext.category}
+            {" · "}{requestContext.counties.join(", ")}
+          </p>
+          <p className="text-sm text-gray-700 whitespace-pre-line">{requestContext.message}</p>
+        </div>
+      )}
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+        {messages.length === 0 && (
+          <p className="text-sm text-gray-400 text-center py-8">Még nem volt üzenetváltás.</p>
+        )}
+        {messages.map((msg) =>
+          isSystemMsg(msg.body) ? (
+            <div key={msg.id} className="flex justify-center">
+              <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
+                <Info className="h-3 w-3 text-amber-500 shrink-0" />
+                <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
+              </div>
             </div>
-            <p className="text-sm text-gray-700 whitespace-pre-line">{request.message}</p>
-          </div>
-
-          <div>
-            <p className="text-sm font-medium text-gray-700 mb-2">Üzenetek:</p>
-            {loading ? (
-              <p className="text-sm text-gray-400">Betöltés...</p>
-            ) : messages.length === 0 ? (
-              <p className="text-sm text-gray-400">Még nem volt üzenetváltás.</p>
-            ) : (
-              <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 overflow-hidden">
-                {messages.map(msg =>
-                  isSystemMsg(msg.body) ? (
-                    <div key={msg.id} className="px-3 py-2.5 bg-amber-50 flex items-start gap-2">
-                      <Info className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                      <p className="text-xs text-amber-800 italic">{systemText(msg.body)}</p>
-                    </div>
-                  ) : (
-                    <div key={msg.id} className={`px-3 py-2.5 ${msg.sender_id === userId ? "bg-gray-50" : "bg-white"}`}>
-                      <div className="flex items-center justify-between gap-3 mb-1">
-                        <span className="text-xs font-medium text-gray-600">
-                          {msg.sender_id === userId ? "Te" : request.visitor_name}
-                        </span>
-                        <span className="text-xs text-gray-400 shrink-0">{formatDate(msg.created_at)}</span>
-                      </div>
-                      <p className="text-sm text-gray-900 whitespace-pre-line">{msg.body}</p>
-                    </div>
-                  )
-                )}
+          ) : (
+            <div key={msg.id} className={`flex ${msg.sender_id === userId ? "justify-end" : "justify-start"}`}>
+              <div className={`flex flex-col gap-1 max-w-[75%] ${msg.sender_id === userId ? "items-end" : "items-start"}`}>
+                <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
+                  msg.sender_id === userId
+                    ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
+                    : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
+                }`}>
+                  {msg.body}
+                </div>
+                <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
               </div>
-            )}
-          </div>
+            </div>
+          )
+        )}
+        <div ref={bottomRef} />
+      </div>
 
-          {!hasSystemMessage && (
-            <form onSubmit={handleReply} className="space-y-2">
-              <FloatingTextarea
-                id={`prov-reply-${request.quote_request_id}`}
-                label="Válasz írása..."
-                value={replyBody}
-                onChange={e => setReplyBody(e.target.value)}
-                rows={3}
-              />
-              {sendError && <p className="text-xs text-[#F06C6C]">{sendError}</p>}
-              <Button type="submit" size="sm" disabled={replying || !replyBody.trim()}>
-                <CornerDownRight className="h-3.5 w-3.5 mr-1" />
-                {replying ? "Küldés..." : "Válasz küldése"}
-              </Button>
-            </form>
-          )}
-
-          <div className="pt-1 border-t border-gray-100 flex justify-end">
-            {!confirmDelete ? (
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className="flex items-center gap-1.5 text-sm text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-                Törlés
-              </button>
-            ) : (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Biztosan törlöd?</span>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="text-sm font-medium text-[#F06C6C] hover:text-[#F06C6C]/80 transition-colors cursor-pointer disabled:opacity-50"
-                >
-                  {deleting ? "Törlés..." : "Igen, törlöm"}
-                </button>
-                <button
-                  onClick={() => setConfirmDelete(false)}
-                  className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-                >
-                  Mégse
-                </button>
-              </div>
-            )}
-          </div>
+      {/* Reply */}
+      {!hasSystemMessage && (
+        <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
+          <form onSubmit={handleReply} className="flex gap-2 items-end">
+            <textarea
+              value={replyBody}
+              onChange={(e) => setReplyBody(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Írj üzenetet… (Ctrl+Enter a küldéshez)"
+              rows={2}
+              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors"
+            />
+            <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
+              <Send className="h-3.5 w-3.5 mr-1" />
+              {sending ? "..." : "Küldés"}
+            </Button>
+          </form>
+          {sendError && <p className="text-xs text-[#F06C6C] mt-1.5">{sendError}</p>}
         </div>
       )}
     </div>
   );
 }
 
-// ── Main export ───────────────────────────────────────────────────────────────
+// ── Visitor: request detail (list of providers) ───────────────────────────────
 
-function broadcastUnread(count: number, onChange: (n: number) => void) {
-  onChange(count);
-  window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
+function VisitorDetailView({
+  req,
+  userId,
+  onBack,
+  onOpenChat,
+  onDeleted,
+  onUnreadMarked,
+}: {
+  req: VisitorRequest;
+  userId: string;
+  onBack: () => void;
+  onOpenChat: (provider: QuoteProvider) => void;
+  onDeleted: () => void;
+  onUnreadMarked: (count: number) => void;
+}) {
+  const [providers, setProviders] = useState<QuoteProvider[]>([]);
+  const [loading, setLoading]     = useState(true);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting]   = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/quote-requests/${req.id}`)
+      .then(r => r.json())
+      .then(data => {
+        setProviders(data.providers ?? []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [req.id]);
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    await fetch(`/api/quote-requests/${req.id}`, { method: "DELETE" });
+    onDeleted();
+    onBack();
+  };
+
+  return (
+    <div className="flex flex-col" style={{ minHeight: "520px" }}>
+      {/* Header */}
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
+        <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer shrink-0">
+          <ArrowLeft className="h-4 w-4" />
+          <span>Vissza</span>
+        </button>
+        <div className="h-4 w-px bg-gray-200 shrink-0" />
+        <p className="flex-1 text-sm font-semibold text-gray-900 truncate">{req.subject}</p>
+        {!confirmDelete ? (
+          <button onClick={() => setConfirmDelete(true)} className="text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer shrink-0" title="Törlés">
+            <Trash2 className="h-4 w-4" />
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs text-gray-600">Biztosan törlöd?</span>
+            <button onClick={handleDelete} disabled={deleting} className="text-xs font-medium text-[#F06C6C] cursor-pointer disabled:opacity-50">{deleting ? "..." : "Igen"}</button>
+            <button onClick={() => setConfirmDelete(false)} className="text-xs text-gray-400 hover:text-gray-600 cursor-pointer">Mégse</button>
+          </div>
+        )}
+      </div>
+
+      {/* Request details */}
+      <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 shrink-0">
+        <p className="text-xs text-gray-500 mb-1">
+          {CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
+          {" · "}{req.counties.join(", ")}
+          {" · "}{formatDate(req.created_at)}
+        </p>
+        <p className="text-sm text-gray-700 whitespace-pre-line">{req.message}</p>
+      </div>
+
+      {/* Provider list */}
+      <div className="flex-1 overflow-y-auto bg-white">
+        {loading ? (
+          <p className="text-sm text-gray-400 p-4">Betöltés...</p>
+        ) : providers.length === 0 ? (
+          <p className="text-sm text-gray-400 p-4 text-center">Még nem érkezett válasz.</p>
+        ) : (
+          <div>
+            <p className="text-xs text-gray-400 px-4 pt-3 pb-1 font-medium uppercase tracking-wide">Szolgáltatók válaszai</p>
+            {providers.map(prov => {
+              const lastMsg = prov.messages[prov.messages.length - 1];
+              const preview = lastMsg
+                ? (isSystemMsg(lastMsg.body) ? systemText(lastMsg.body) : lastMsg.body)
+                : "Még nem válaszolt";
+              const previewSender = lastMsg && !isSystemMsg(lastMsg.body)
+                ? (lastMsg.sender_id === userId ? "Te" : prov.full_name)
+                : null;
+              return (
+                <button
+                  key={prov.id}
+                  onClick={() => onOpenChat(prov)}
+                  className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2 mb-0.5">
+                        <p className={`text-sm truncate ${prov.unread_count > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
+                          {prov.full_name}
+                        </p>
+                        {lastMsg && <span className="text-xs text-gray-400 shrink-0">{formatShort(lastMsg.created_at)}</span>}
+                      </div>
+                      <p className="text-xs text-gray-500 truncate">
+                        {previewSender && <span className="text-gray-400">{previewSender}: </span>}
+                        {preview}
+                      </p>
+                    </div>
+                    {prov.unread_count > 0 && (
+                      <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        {prov.unread_count}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
+
+// ── Provider chat loader (fetches messages before showing chat) ───────────────
+
+function ProviderChatLoader({
+  req,
+  userId,
+  onBack,
+  onDeleted,
+  onUnreadMarked,
+}: {
+  req: ProviderRequest;
+  userId: string;
+  onBack: () => void;
+  onDeleted: () => void;
+  onUnreadMarked: () => void;
+}) {
+  const [messages, setMessages] = useState<QuoteMessage[] | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/quote-requests/${req.quote_request_id}`)
+      .then(r => r.json())
+      .then(data => setMessages(data.messages ?? []))
+      .catch(() => setMessages([]));
+  }, [req.quote_request_id]);
+
+  if (messages === null) return <p className="text-base text-gray-500 p-4">Betöltés...</p>;
+
+  return (
+    <QuoteChat
+      requestId={req.quote_request_id}
+      providerId={req.provider_id}
+      subject={req.subject}
+      otherName={req.visitor_name}
+      requestContext={{ category: req.category, counties: req.counties, message: req.message }}
+      userId={userId}
+      initialMessages={messages}
+      onBack={onBack}
+      onDeleted={onDeleted}
+      onUnreadMarked={onUnreadMarked}
+    />
+  );
+}
+
+// ── Main section ──────────────────────────────────────────────────────────────
 
 export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Props) {
   const [visitorRequests, setVisitorRequests] = useState<VisitorRequest[]>([]);
   const [providerRequests, setProviderRequests] = useState<ProviderRequest[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]   = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [view, setView]         = useState<View>({ mode: "list" });
 
   const loadRequests = useCallback(() => {
     fetch("/api/quote-requests")
@@ -841,56 +750,151 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
 
   useEffect(() => { loadRequests(); }, [loadRequests]);
 
+  // Compact footer in chat/detail views
+  useEffect(() => {
+    const inChat = view.mode !== "list";
+    if (inChat) document.body.classList.add("chat-mode");
+    else document.body.classList.remove("chat-mode");
+    return () => document.body.classList.remove("chat-mode");
+  }, [view.mode]);
+
+  // Listen for realtime quote count refresh
+  useEffect(() => {
+    const handler = () => loadRequests();
+    window.addEventListener("quotes-unread-count-refresh", handler);
+    return () => window.removeEventListener("quotes-unread-count-refresh", handler);
+  }, [loadRequests]);
+
   if (loading) return <p className="text-base text-gray-500">Betöltés...</p>;
 
+  // ── Provider: chat view ──
+  if (view.mode === "provider-chat") {
+    const req = view.req;
+    return (
+      <ProviderChatLoader
+        req={req}
+        userId={userId}
+        onBack={() => setView({ mode: "list" })}
+        onDeleted={() => {
+          setProviderRequests(prev => prev.filter(r => r.recipient_id !== req.recipient_id));
+          const updated = providerRequests.filter(r => r.recipient_id !== req.recipient_id);
+          broadcastUnread(
+            updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0),
+            onUnreadChange
+          );
+        }}
+        onUnreadMarked={() => {
+          const updated = providerRequests.map(r =>
+            r.recipient_id === req.recipient_id ? { ...r, read: true, unread_reply_count: 0 } : r
+          );
+          setProviderRequests(updated);
+          broadcastUnread(
+            updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0),
+            onUnreadChange
+          );
+        }}
+      />
+    );
+  }
+
+  // ── Visitor: request detail ──
+  if (view.mode === "visitor-detail") {
+    const req = view.req;
+    return (
+      <VisitorDetailView
+        req={req}
+        userId={userId}
+        onBack={() => setView({ mode: "list" })}
+        onOpenChat={(provider) => setView({ mode: "visitor-chat", req, provider })}
+        onDeleted={() => {
+          const updated = visitorRequests.filter(r => r.id !== req.id);
+          setVisitorRequests(updated);
+          broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
+        }}
+        onUnreadMarked={(count) => {
+          const updated = visitorRequests.map(r =>
+            r.id === req.id ? { ...r, unread_reply_count: Math.max(0, r.unread_reply_count - count) } : r
+          );
+          setVisitorRequests(updated);
+          broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
+        }}
+      />
+    );
+  }
+
+  // ── Visitor: provider chat ──
+  if (view.mode === "visitor-chat") {
+    const { req, provider } = view;
+    return (
+      <QuoteChat
+        requestId={req.id}
+        providerId={provider.id}
+        subject={req.subject}
+        otherName={provider.full_name}
+        requestContext={null}
+        userId={userId}
+        initialMessages={provider.messages}
+        onBack={() => setView({ mode: "visitor-detail", req })}
+        onDeleted={() => {
+          const updated = visitorRequests.filter(r => r.id !== req.id);
+          setVisitorRequests(updated);
+          broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
+        }}
+        onUnreadMarked={(count) => {
+          const updated = visitorRequests.map(r =>
+            r.id === req.id ? { ...r, unread_reply_count: Math.max(0, r.unread_reply_count - count) } : r
+          );
+          setVisitorRequests(updated);
+          broadcastUnread(updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0), onUnreadChange);
+        }}
+      />
+    );
+  }
+
+  // ── Provider: list view ──
   if (isProvider) {
     return (
-      <div className="space-y-2">
+      <div>
         {providerRequests.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
             <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
             <p className="text-base">Még nem érkezett ajánlatkérés.</p>
           </div>
         ) : (
-          providerRequests.map(req => (
-            <ProviderRequestRow
-              key={req.recipient_id}
-              request={req}
-              userId={userId}
-              onRead={() => {
-                let unread = 0;
-                setProviderRequests(prev => {
-                  const updated = prev.map(r => r.recipient_id === req.recipient_id ? { ...r, read: true } : r);
-                  unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-                  return updated;
-                });
-                broadcastUnread(unread, onUnreadChange);
-              }}
-              onReplyRead={() => {
-                let unread = 0;
-                setProviderRequests(prev => {
-                  const updated = prev.map(r => r.recipient_id === req.recipient_id ? { ...r, unread_reply_count: 0 } : r);
-                  unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-                  return updated;
-                });
-                broadcastUnread(unread, onUnreadChange);
-              }}
-              onDelete={() => {
-                let unread = 0;
-                setProviderRequests(prev => {
-                  const updated = prev.filter(r => r.recipient_id !== req.recipient_id);
-                  unread = updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-                  return updated;
-                });
-                broadcastUnread(unread, onUnreadChange);
-              }}
-            />
-          ))
+          <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+            {providerRequests.map(req => {
+              const unread = (req.read ? 0 : 1) + (req.unread_reply_count ?? 0);
+              return (
+                <QuoteInboxItem
+                  key={req.recipient_id}
+                  subject={req.subject}
+                  subtitle={`${req.visitor_name} · ${CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}`}
+                  date={req.created_at}
+                  unread={unread}
+                  onSelect={async () => {
+                    // Mark request as read before opening
+                    if (!req.read) {
+                      await fetch(`/api/quote-requests/${req.quote_request_id}/read`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ type: "request" }),
+                      });
+                      setProviderRequests(prev => prev.map(r =>
+                        r.recipient_id === req.recipient_id ? { ...r, read: true } : r
+                      ));
+                    }
+                    setView({ mode: "provider-chat", req });
+                  }}
+                />
+              );
+            })}
+          </div>
         )}
       </div>
     );
   }
 
+  // ── Visitor: list view ──
   return (
     <div className="space-y-4">
       {!showForm && (
@@ -898,14 +902,9 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
           + Új ajánlatkérés
         </Button>
       )}
-
       {showForm && (
-        <SendForm
-          onSent={() => { setShowForm(false); loadRequests(); }}
-          onCancel={() => setShowForm(false)}
-        />
+        <SendForm onSent={() => { setShowForm(false); loadRequests(); }} onCancel={() => setShowForm(false)} />
       )}
-
       {visitorRequests.length === 0 && !showForm ? (
         <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
           <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
@@ -913,32 +912,15 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
           <p className="text-sm mt-1">Kattints a gombra, hogy elküldd az első ajánlatkérésedet több szolgáltatónak egyszerre.</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
           {visitorRequests.map(req => (
-            <VisitorRequestRow
+            <QuoteInboxItem
               key={req.id}
-              request={req}
-              userId={userId}
-              onUnreadMarked={delta => {
-                let unread = 0;
-                setVisitorRequests(prev => {
-                  const updated = prev.map(r =>
-                    r.id === req.id ? { ...r, unread_reply_count: Math.max(0, r.unread_reply_count - delta) } : r
-                  );
-                  unread = updated.reduce((s, r) => s + r.unread_reply_count, 0);
-                  return updated;
-                });
-                broadcastUnread(unread, onUnreadChange);
-              }}
-              onDelete={() => {
-                let unread = 0;
-                setVisitorRequests(prev => {
-                  const updated = prev.filter(r => r.id !== req.id);
-                  unread = updated.reduce((s, r) => s + r.unread_reply_count, 0);
-                  return updated;
-                });
-                broadcastUnread(unread, onUnreadChange);
-              }}
+              subject={req.subject}
+              subtitle={`${CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category} · ${req.counties.join(", ")} · ${req.recipient_count} szolgáltató`}
+              date={req.created_at}
+              unread={req.unread_reply_count ?? 0}
+              onSelect={() => setView({ mode: "visitor-detail", req })}
             />
           ))}
         </div>
