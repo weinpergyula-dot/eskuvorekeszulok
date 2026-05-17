@@ -256,27 +256,96 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           <p className="text-gray-500 text-sm">Nincs találat.</p>
         )}
 
-        <div className="space-y-3">
+        {/* Desktop table */}
+        <div className="hidden sm:block rounded-xl border border-gray-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Név</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">E-mail</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Telefon</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Kategóriák</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Regisztrált</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">
+                  <Eye className="h-3.5 w-3.5 inline" />
+                </th>
+                <th className="px-4 py-2.5" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {paginated.map((u) => (
+                <tr key={u.id} className="bg-white hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-2.5">
+                    <div className="flex items-center gap-2">
+                      {u.providerApprovalStatus === "approved" && u.providerId ? (
+                        <Link href={`/providers/${u.providerId}`} target="_blank" rel="noopener noreferrer"
+                          className="font-medium text-[#84AAA6] hover:underline whitespace-nowrap">
+                          {u.full_name || "–"}
+                        </Link>
+                      ) : (
+                        <span className="font-medium text-gray-900 whitespace-nowrap">{u.full_name || "–"}</span>
+                      )}
+                      <Badge variant={ROLE_BADGE[u.role]} className="text-xs shrink-0">{ROLE_LABELS[u.role]}</Badge>
+                    </div>
+                  </td>
+                  <td className="px-4 py-2.5 text-gray-600 max-w-[180px] truncate">{u.email}</td>
+                  <td className="px-4 py-2.5 text-gray-600 whitespace-nowrap">{u.phone || "–"}</td>
+                  <td className="px-4 py-2.5 text-gray-600 max-w-[200px]">
+                    <span className="line-clamp-2 leading-snug">
+                      {(u.providerCategories ?? []).length > 0
+                        ? (u.providerCategories ?? []).map((c) => CATEGORY_LABELS[c as keyof typeof CATEGORY_LABELS] ?? c).join(", ")
+                        : "–"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">
+                    {new Date(u.created_at).toLocaleDateString("hu-HU")}
+                  </td>
+                  <td className="px-4 py-2.5 text-gray-400 whitespace-nowrap">
+                    {u.providerViewCount ?? "–"}
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <div className="flex items-center gap-2 justify-end">
+                      {u.role !== "admin" ? (
+                        <Button size="sm" variant="outline" disabled={updating === u.user_id}
+                          onClick={() => setRole(u.user_id, "admin")}
+                          className="text-xs cursor-pointer h-7 px-2.5 whitespace-nowrap">
+                          Admin legyen
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="outline" disabled={updating === u.user_id}
+                          onClick={() => setRole(u.user_id, "visitor")}
+                          className="text-xs cursor-pointer h-7 px-2.5 whitespace-nowrap">
+                          Admin jog elvétele
+                        </Button>
+                      )}
+                      <Button size="sm" variant="destructive" disabled={deleting === u.user_id}
+                        onClick={() => setConfirmDelete(u)}
+                        className="text-xs cursor-pointer h-7 px-2.5">
+                        Törlés
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile cards */}
+        <div className="sm:hidden space-y-3">
           {paginated.map((u) => (
             <div key={u.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-              {/* Card header: name + badge + view count */}
               <div className="px-4 pt-3 pb-2 flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap min-w-0">
                   {u.providerApprovalStatus === "approved" && u.providerId ? (
-                    <Link
-                      href={`/providers/${u.providerId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-base text-[#84AAA6] hover:underline truncate"
-                    >
+                    <Link href={`/providers/${u.providerId}`} target="_blank" rel="noopener noreferrer"
+                      className="font-semibold text-base text-[#84AAA6] hover:underline truncate">
                       {u.full_name || "–"}
                     </Link>
                   ) : (
                     <span className="font-semibold text-base text-gray-900 truncate">{u.full_name || "–"}</span>
                   )}
-                  <Badge variant={ROLE_BADGE[u.role]} className="text-xs shrink-0">
-                    {ROLE_LABELS[u.role]}
-                  </Badge>
+                  <Badge variant={ROLE_BADGE[u.role]} className="text-xs shrink-0">{ROLE_LABELS[u.role]}</Badge>
                 </div>
                 {u.providerViewCount != null && (
                   <span className="flex items-center gap-1 text-xs text-gray-400 shrink-0">
@@ -285,8 +354,6 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   </span>
                 )}
               </div>
-
-              {/* Details */}
               <div className="px-4 pb-2 space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-gray-600">
                   <Mail className="h-3.5 w-3.5 text-gray-400 shrink-0" />
@@ -311,37 +378,23 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   <span>Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}</span>
                 </div>
               </div>
-
-              {/* Actions */}
               <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex gap-2 flex-wrap">
                 {u.role !== "admin" ? (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={updating === u.user_id}
+                  <Button size="sm" variant="outline" disabled={updating === u.user_id}
                     onClick={() => setRole(u.user_id, "admin")}
-                    className="text-xs cursor-pointer h-7 px-2.5"
-                  >
+                    className="text-xs cursor-pointer h-7 px-2.5">
                     Admin legyen
                   </Button>
                 ) : (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={updating === u.user_id}
+                  <Button size="sm" variant="outline" disabled={updating === u.user_id}
                     onClick={() => setRole(u.user_id, "visitor")}
-                    className="text-xs cursor-pointer h-7 px-2.5"
-                  >
+                    className="text-xs cursor-pointer h-7 px-2.5">
                     Admin jog elvétele
                   </Button>
                 )}
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  disabled={deleting === u.user_id}
+                <Button size="sm" variant="destructive" disabled={deleting === u.user_id}
                   onClick={() => setConfirmDelete(u)}
-                  className="text-xs cursor-pointer h-7 px-2.5"
-                >
+                  className="text-xs cursor-pointer h-7 px-2.5">
                   Törlés
                 </Button>
               </div>
