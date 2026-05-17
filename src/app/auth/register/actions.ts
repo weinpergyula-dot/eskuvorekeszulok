@@ -139,6 +139,21 @@ export async function createProviderProfileAction(
 }
 
 /**
+ * Deletes an auth user — used to roll back a partially completed provider registration
+ * if any step after user creation fails (provider profile insert, email send, etc.).
+ */
+export async function deleteUserAction(userId: string): Promise<{ error: string | null }> {
+  try {
+    const admin = createAdminClient();
+    const { error } = await admin.auth.admin.deleteUser(userId);
+    if (error) return { error: error.message };
+    return { error: null };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Törlési hiba." };
+  }
+}
+
+/**
  * Updates profiles TOS acceptance for visitor registrations using admin client.
  */
 export async function acceptTosAction(userId: string): Promise<{ error: string | null }> {

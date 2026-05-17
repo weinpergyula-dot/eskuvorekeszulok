@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction, sendConfirmationEmailAction } from "./actions";
+import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction, sendConfirmationEmailAction, deleteUserAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Label } from "@/components/ui/label";
@@ -282,42 +282,46 @@ function RegisterContent() {
       if (signUpError) throw new Error(signUpError);
       if (!newUserId) throw new Error("Ismeretlen hiba történt.");
 
-      // Saját megerősítő email küldése Resenden keresztül
-      const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
-      if (confirmError) throw new Error(confirmError);
-
-      // Wrap in a plain object so the rest of the code can use authData.user.id
-      const authData = { user: { id: newUserId } };
-
       if (role === "provider") {
-        let avatarUrl = "";
-        const galleryUrls: string[] = [];
+        // Any failure after user creation rolls back by deleting the auth user,
+        // so we never end up with a provider profile-less "zombie" account.
+        try {
+          let avatarUrl = "";
+          const galleryUrls: string[] = [];
 
-        if (avatarFile) {
-          avatarUrl = await uploadFile(avatarFile, "avatars", `${authData.user.id}/avatar`);
+          if (avatarFile) {
+            avatarUrl = await uploadFile(avatarFile, "avatars", `${newUserId}/avatar`);
+          }
+          for (let i = 0; i < galleryFiles.length; i++) {
+            galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${newUserId}/gallery-${i}`));
+          }
+
+          const { error: providerError } = await createProviderProfileAction(newUserId, {
+            full_name: fullName,
+            email,
+            phone,
+            counties,
+            categories,
+            description,
+            detailed_description: detailedDescription || null,
+            website: website || null,
+            avatar_url: avatarUrl || null,
+            gallery_urls: galleryUrls,
+          });
+          if (providerError) throw new Error(providerError);
+
+          const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
+          if (confirmError) throw new Error(confirmError);
+        } catch (innerErr) {
+          await deleteUserAction(newUserId);
+          throw innerErr;
         }
-
-        for (let i = 0; i < galleryFiles.length; i++) {
-          galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${authData.user.id}/gallery-${i}`));
-        }
-
-        const { error: providerError } = await createProviderProfileAction(authData.user.id, {
-          full_name: fullName,
-          email,
-          phone,
-          counties,
-          categories,
-          description,
-          detailed_description: detailedDescription || null,
-          website: website || null,
-          avatar_url: avatarUrl || null,
-          gallery_urls: galleryUrls,
-        });
-
-        if (providerError) throw new Error(providerError);
       } else {
-        const { error: tosError } = await acceptTosAction(authData.user.id);
+        const { error: tosError } = await acceptTosAction(newUserId);
         if (tosError) throw new Error(tosError);
+
+        const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
+        if (confirmError) throw new Error(confirmError);
       }
 
       router.push(
