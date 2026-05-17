@@ -60,9 +60,10 @@ export function CategoryContent({
 
   const cq = countyQuery.trim().toLowerCase();
 
+  const geoCounties = counties.filter((c) => c !== "Országosan");
   const filteredCounties = cq
-    ? counties.filter((c) => c.toLowerCase().includes(cq))
-    : counties;
+    ? geoCounties.filter((c) => c.toLowerCase().includes(cq))
+    : geoCounties;
 
   const filteredProviders = sortBy === "default"
     ? shuffled
@@ -95,7 +96,7 @@ export function CategoryContent({
         </div>
         {/* Mobile collapsible */}
         <div className="lg:hidden">
-          <CountyFilter counties={counties} selected={selected} category={category} countByCounty={countyCountMap} />
+          <CountyFilter counties={geoCounties} selected={selected} category={category} countByCounty={countyCountMap} />
         </div>
       </aside>
 
