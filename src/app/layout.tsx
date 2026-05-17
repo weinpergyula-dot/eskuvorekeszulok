@@ -3,6 +3,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { TopLoader } from "@/components/layout/top-loader";
+import { CookieBanner } from "@/components/layout/cookie-banner";
 
 export const metadata: Metadata = {
   title: "Esküvőre Készülök – Esküvői Szolgáltatók",
@@ -30,6 +31,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieBanner />
       </body>
     </html>
   );
