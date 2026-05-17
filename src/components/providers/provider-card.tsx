@@ -33,7 +33,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     <div
       className={cn(
         "bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden",
-        !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
+        !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group",
+        !inCarousel && "sm:h-[600px]"
       )}
     >
       {/* Header */}
@@ -205,7 +206,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Contact info — hidden in carousel mode */}
       {!inCarousel && (
-        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
+        <div className={cn("px-5 py-4 space-y-2 flex-1 overflow-hidden", expanded ? "block" : "hidden sm:block")}>
           <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
           <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
           {provider.website && (
@@ -218,8 +219,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {provider.description && (
             <div className="flex gap-2.5">
               <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
-              <p className={cn("text-base text-gray-900 leading-relaxed", !expanded && "sm:line-clamp-3")}>
-                {provider.description}
+              <p className="text-base text-gray-900 leading-relaxed">
+                {provider.description.length > 200
+                  ? provider.description.slice(0, 200) + "…"
+                  : provider.description}
               </p>
             </div>
           )}
