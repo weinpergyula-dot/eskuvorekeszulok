@@ -24,6 +24,8 @@ interface ProviderCardProps {
 export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px", inCarousel = false }: ProviderCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
+  const [countiesExpanded, setCountiesExpanded] = useState(false);
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
@@ -33,8 +35,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     <div
       className={cn(
         "bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden",
-        !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group",
-        !inCarousel && "sm:h-[600px]"
+        !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
       )}
     >
       {/* Header */}
@@ -126,7 +127,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {/* Counties */}
         <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
           <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
-          <span className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base", "text-gray-900")}>
+          <span className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base", "text-gray-900 text-center")}>
             {inCarousel ? (
               <>
                 {(provider.counties ?? [])[0] ?? ""}
@@ -134,8 +135,25 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               </>
             ) : (
               <>
-                {(provider.counties ?? []).slice(0, 2).join(", ")}
-                {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
+                {countiesExpanded
+                  ? (provider.counties ?? []).join(", ")
+                  : (provider.counties ?? []).slice(0, 2).join(", ")}
+                {!countiesExpanded && (provider.counties ?? []).length > 2 && (
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountiesExpanded(true); }}
+                    className="text-[#84AAA6] hover:underline font-medium ml-1"
+                  >
+                    és még {(provider.counties ?? []).length - 2} megye
+                  </button>
+                )}
+                {countiesExpanded && (provider.counties ?? []).length > 2 && (
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountiesExpanded(false); }}
+                    className="text-[#84AAA6] hover:underline font-medium ml-1"
+                  >
+                    kevesebb
+                  </button>
+                )}
               </>
             )}
           </span>
@@ -206,7 +224,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Contact info — hidden in carousel mode */}
       {!inCarousel && (
-        <div className={cn("px-5 py-4 space-y-2 flex-1 overflow-hidden", expanded ? "block" : "hidden sm:block")}>
+        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
           <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
           <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
           {provider.website && (
@@ -220,9 +238,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             <div className="flex gap-2.5">
               <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
               <p className="text-base text-gray-900 leading-relaxed">
-                {provider.description.length > 200
+                {!descExpanded && provider.description.length > 200
                   ? provider.description.slice(0, 200) + "…"
                   : provider.description}
+                {provider.description.length > 200 && (
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDescExpanded(v => !v); }}
+                    className="text-[#84AAA6] hover:underline font-medium ml-1 text-sm"
+                  >
+                    {descExpanded ? "kevesebb" : "több..."}
+                  </button>
+                )}
               </p>
             </div>
           )}
