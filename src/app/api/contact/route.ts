@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (e) {
-    await logError("api/contact POST", String(e), { name, email });
+    await logError("api/contact POST", String(e));
     return NextResponse.json({ error: "Hiba történt az üzenet küldése során." }, { status: 500 });
   }
 }
