@@ -6,12 +6,29 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get("category");
   const countiesParam = searchParams.get("counties");
 
-  if (!category || !countiesParam) return NextResponse.json({ providers: [] });
+  if (!category) return NextResponse.json({ providers: [] });
+
+  const admin = createAdminClient();
+
+  // No county filter → return all providers with counties for client-side count computation
+  if (!countiesParam) {
+    const { data } = await admin
+      .from("providers")
+      .select("id, user_id, full_name, counties")
+      .eq("approval_status", "approved")
+      .contains("categories", [category]);
+    const seen = new Set<string>();
+    const unique = (data ?? []).filter((p) => {
+      const key = p.user_id || p.id;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    return NextResponse.json({ providers: unique });
+  }
 
   const counties = countiesParam.split(",").filter(Boolean);
   const searchCounties = [...counties, "Országosan"];
-
-  const admin = createAdminClient();
 
   // Fetch matching providers
   const { data: rawProviders } = await admin

@@ -170,6 +170,26 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [countyCountMap, setCountyCountMap] = useState<Record<string, number>>({});
+
+  // Fetch per-county provider counts when category changes
+  useEffect(() => {
+    if (!category) { setCountyCountMap({}); return; }
+    fetch(`/api/providers/matching-count?category=${encodeURIComponent(category)}`)
+      .then(r => r.json())
+      .then(d => {
+        const map: Record<string, number> = {};
+        for (const p of (d.providers ?? []) as Array<{ counties?: string[] }>) {
+          if (p.counties?.includes("Országosan")) {
+            for (const c of geographicCounties) map[c] = (map[c] ?? 0) + 1;
+          } else {
+            for (const c of p.counties ?? []) map[c] = (map[c] ?? 0) + 1;
+          }
+        }
+        setCountyCountMap(map);
+      })
+      .catch(() => {});
+  }, [category]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!category || selectedCounties.length === 0) { setMatchingProviders(null); setCheckedIds(new Set()); return; }
@@ -228,7 +248,11 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
           {geographicCounties.map(county => (
             <label key={county} className="flex items-center gap-1.5 cursor-pointer select-none">
               <input type="checkbox" checked={selectedCounties.includes(county)} onChange={() => toggleCounty(county)} className="rounded accent-[#84AAA6]" />
-              <span className="text-sm text-gray-700">{county}</span>
+              <span className="text-sm text-gray-700">
+                {county}{countyCountMap[county] != null && category && (
+                  <span className="ml-1 opacity-60 font-normal">({countyCountMap[county]})</span>
+                )}
+              </span>
             </label>
           ))}
         </div>

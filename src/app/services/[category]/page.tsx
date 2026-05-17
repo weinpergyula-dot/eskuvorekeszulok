@@ -36,35 +36,47 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   if (!label) notFound();
 
   let providers: Provider[] = [];
+  const countyCountMap: Record<string, number> = {};
 
   try {
     const supabase = await createClient();
 
-    const baseQ = () =>
-      supabase
-        .from("providers")
-        .select("*")
-        .contains("categories", [category])
-        .eq("approval_status", "approved")
-        .order("created_at", { ascending: false });
+    // Fetch all approved providers for this category in one query
+    const { data, error } = await supabase
+      .from("providers")
+      .select("*")
+      .contains("categories", [category])
+      .eq("approval_status", "approved")
+      .order("created_at", { ascending: false });
 
+    if (error) console.error("providers query error:", error);
+    const allProviders = (data as Provider[]) ?? [];
+
+    // County counts: Országosan providers count in every geographic county
+    const geoCo = (COUNTIES as unknown as string[]).filter((c) => c !== "Országosan");
+    for (const p of allProviders) {
+      if ((p.counties as string[] | undefined)?.includes("Országosan")) {
+        for (const c of geoCo) countyCountMap[c] = (countyCountMap[c] ?? 0) + 1;
+      } else {
+        for (const c of (p.counties as string[] | undefined) ?? []) {
+          countyCountMap[c] = (countyCountMap[c] ?? 0) + 1;
+        }
+      }
+    }
+
+    // Filter for display if county is selected
     let raw: Provider[];
-
     if (county) {
-      // Two separate queries then deduplicate — avoids PostgREST array OR encoding issues
-      const [r1, r2] = await Promise.all([
-        baseQ().contains("counties", [county]),
-        baseQ().contains("counties", ["Országosan"]),
-      ]);
       const seen = new Set<string>();
       raw = [];
-      for (const p of [...(r1.data ?? []), ...(r2.data ?? [])]) {
-        if (!seen.has(p.id)) { seen.add(p.id); raw.push(p as Provider); }
+      for (const p of allProviders) {
+        const co = (p.counties as string[] | undefined) ?? [];
+        if (co.includes(county) || co.includes("Országosan")) {
+          if (!seen.has(p.id)) { seen.add(p.id); raw.push(p); }
+        }
       }
     } else {
-      const { data, error } = await baseQ();
-      if (error) console.error("providers query error:", error);
-      raw = (data as Provider[]) ?? [];
+      raw = allProviders;
     }
 
     // Compute live review aggregates
@@ -106,6 +118,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         selected={county}
         category={category}
         label={label}
+        countyCountMap={countyCountMap}
       />
     </div>
     </div>
