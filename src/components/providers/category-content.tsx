@@ -48,6 +48,16 @@ export function CategoryContent({
 
   const shuffled = useMemo(() => [...providers].sort(() => Math.random() - 0.5), [providers]);
 
+  const countByCounty = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const p of providers) {
+      for (const c of (p.counties ?? [])) {
+        map[c] = (map[c] ?? 0) + 1;
+      }
+    }
+    return map;
+  }, [providers]);
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false);
@@ -89,11 +99,11 @@ export function CategoryContent({
               className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
             />
           </div>
-          <CountyFilter counties={filteredCounties} selected={selected} category={category} />
+          <CountyFilter counties={filteredCounties} selected={selected} category={category} countByCounty={countByCounty} />
         </div>
         {/* Mobile collapsible */}
         <div className="lg:hidden">
-          <CountyFilter counties={counties} selected={selected} category={category} />
+          <CountyFilter counties={counties} selected={selected} category={category} countByCounty={countByCounty} />
         </div>
       </aside>
 
