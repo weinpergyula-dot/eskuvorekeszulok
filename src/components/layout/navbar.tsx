@@ -251,7 +251,7 @@ export function Navbar() {
       <div className="border-b border-gray-100 mb-1 pb-1">
         <button
           onClick={() => navTo("quotes", closeAll)}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10 text-left"
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#C65EA5] font-semibold hover:bg-[#C65EA5]/10 text-left"
         >
           <FileText className="h-4 w-4 shrink-0" strokeWidth={1.5} />
           <span className="flex-1">Ajánlatkérés</span>
