@@ -46,9 +46,20 @@ export function Navbar() {
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [navCategoryCounts, setNavCategoryCounts] = useState<Record<string, number>>({});
+  const categoryCountsFetched = useRef(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const desktopCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openServices = () => {
+    setServicesOpen(true);
+    if (!categoryCountsFetched.current) {
+      categoryCountsFetched.current = true;
+      fetch("/api/providers/category-counts")
+        .then(r => r.json()).then(setNavCategoryCounts).catch(() => {});
+    }
+  };
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -228,15 +239,29 @@ export function Navbar() {
       { id: "provider",  label: "Szolgáltatói profil", Icon: Briefcase },
       { id: "dashboard", label: "Dashboard",           Icon: LayoutDashboard },
     ] : []),
-    { id: "favorites", label: "Kedvencek",             Icon: Heart },
-    { id: "quotes",    label: "Ajánlatkérések",        Icon: FileText },
-    { id: "messages",       label: "Üzenetek",    Icon: MessageSquare },
-    { id: "notifications",  label: "Értesítések", Icon: Bell },
+    { id: "favorites",      label: "Kedvencek",    Icon: Heart },
+    { id: "messages",       label: "Üzenetek",     Icon: MessageSquare },
+    { id: "notifications",  label: "Értesítések",  Icon: Bell },
   ];
 
   // ── Shared dropdown panel renderer ──────────────────────────────────────────
   const DropdownPanel = ({ closeAll }: { closeAll: () => void }) => (
     <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+      {/* Ajánlatkérés – highlighted at top */}
+      <div className="border-b border-gray-100 mb-1 pb-1">
+        <button
+          onClick={() => navTo("quotes", closeAll)}
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10 text-left"
+        >
+          <FileText className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+          <span className="flex-1">Ajánlatkérés</span>
+          {unreadQuotes > 0 && (
+            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
+              {unreadQuotes > 99 ? "99+" : unreadQuotes}
+            </span>
+          )}
+        </button>
+      </div>
       {profileItems.map(({ id, label, Icon }) => (
         <button
           key={id}
@@ -248,11 +273,6 @@ export function Navbar() {
           {id === "admin" && pendingCount > 0 && (
             <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
               {pendingCount > 99 ? "99+" : pendingCount}
-            </span>
-          )}
-          {id === "quotes" && unreadQuotes > 0 && (
-            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-              {unreadQuotes > 99 ? "99+" : unreadQuotes}
             </span>
           )}
           {id === "messages" && unreadMessages > 0 && (
@@ -296,16 +316,19 @@ export function Navbar() {
               <Link href="/informaciok" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Információk</Link>
 
               {/* Kategóriák dropdown */}
-              <div className="relative" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
+              <div className="relative" onMouseEnter={openServices} onMouseLeave={() => setServicesOpen(false)}>
                 <button className="flex items-center gap-1 text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">
                   Kategóriák <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 {servicesOpen && (
-                  <div className="absolute top-full left-0 pt-2 w-56 z-50">
+                  <div className="absolute top-full left-0 pt-2 w-64 z-50">
                     <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
                       {mainCategories.map((cat) => (
-                        <Link key={cat} href={`/services/${cat}`} className="block px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]">
-                          {CATEGORY_LABELS[cat]}
+                        <Link key={cat} href={`/services/${cat}`} className="flex items-center justify-between px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]">
+                          <span>{CATEGORY_LABELS[cat]}</span>
+                          {navCategoryCounts[cat] != null && (
+                            <span className="text-sm text-gray-400 font-normal ml-2">({navCategoryCounts[cat]})</span>
+                          )}
                         </Link>
                       ))}
                       <div className="border-t border-gray-100 mt-1 pt-1">

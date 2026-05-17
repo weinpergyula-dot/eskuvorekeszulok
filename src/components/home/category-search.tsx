@@ -86,8 +86,8 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
                   {CATEGORY_LABELS[category]}
                 </h3>
                 <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#84AAA6] transition-colors mb-2" />
-                <p className="text-sm text-gray-500">
-                  Aktív szolgáltató: <span className="font-semibold text-gray-900">{counts[category] ?? 0} db</span>
+                <p className="text-sm text-gray-500 font-semibold text-gray-900">
+                  ({counts[category] ?? 0})
                 </p>
               </Link>
             ))}

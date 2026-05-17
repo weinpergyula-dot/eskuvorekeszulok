@@ -1,7 +1,25 @@
 import Link from "next/link";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
 
-export function Footer() {
+const footerCategories = [
+  { href: "/services/fotosok-videosok", key: "fotosok-videosok", label: "Fotósok, Videósok" },
+  { href: "/services/elo-zene-dj",      key: "elo-zene-dj",      label: "Élőzene, DJ" },
+  { href: "/services/smink",            key: "smink",             label: "Smink" },
+  { href: "/services/helyszin",         key: "helyszin",          label: "Helyszínek" },
+];
+
+export async function Footer() {
+  let counts: Record<string, number> = {};
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.from("providers").select("categories").eq("approval_status", "approved");
+    for (const p of data ?? []) {
+      for (const cat of (p.categories ?? []) as string[]) {
+        counts[cat] = (counts[cat] ?? 0) + 1;
+      }
+    }
+  } catch { /* non-critical */ }
   return (
     <footer className="bg-gray-50 border-t border-gray-200 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 footer-inner">
@@ -20,15 +38,12 @@ export function Footer() {
           <div className="hidden md:block">
             <h3 className="text-base font-semibold text-gray-900 mb-3">Kategóriák</h3>
             <ul className="space-y-2">
-              {[
-                { href: "/services/fotosok-videosok", label: "Fotósok, Videósok" },
-                { href: "/services/elo-zene-dj", label: "Élőzene, DJ" },
-                { href: "/services/smink", label: "Smink" },
-                { href: "/services/helyszin", label: "Helyszínek" },
-              ].map((item) => (
+              {footerCategories.map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="text-base text-gray-900 px-2 py-0.5 rounded-md hover:bg-[#F0F6F5] transition-colors">
-                    {item.label}
+                    {item.label}{counts[item.key] != null && (
+                      <span className="ml-1 text-gray-400 font-normal">({counts[item.key]})</span>
+                    )}
                   </Link>
                 </li>
               ))}
