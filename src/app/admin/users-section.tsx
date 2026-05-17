@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Mail, Calendar, Eye, Tag } from "lucide-react";
+import { Phone, Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
 
 interface UserProfile {
@@ -55,6 +55,16 @@ const FILTER_LABELS: Record<ApprovalFilter, string> = {
   admin:    "Admin",
 };
 
+type SortKey = "full_name" | "role" | "email" | "created_at" | "providerViewCount";
+type SortDir = "asc" | "desc";
+
+function SortIcon({ col, sortKey, dir }: { col: SortKey; sortKey: SortKey; dir: SortDir }) {
+  if (col !== sortKey) return <ChevronsUpDown className="h-3.5 w-3.5 text-gray-400 inline ml-1" />;
+  return dir === "asc"
+    ? <ChevronUp className="h-3.5 w-3.5 text-[#84AAA6] inline ml-1" />
+    : <ChevronDown className="h-3.5 w-3.5 text-[#84AAA6] inline ml-1" />;
+}
+
 export function UsersSection({ providerStatuses }: { providerStatuses: ProviderStatus[] }) {
   const router = useRouter();
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -67,9 +77,10 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
   const [approvalFilter, setApprovalFilter] = useState<ApprovalFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [sortKey, setSortKey] = useState<SortKey>("created_at");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   useEffect(() => {
-    // providerStatuses is kept for backwards compat but API now returns merged data
     void providerStatuses;
     fetch("/api/admin/users")
       .then((r) => r.json())
@@ -81,7 +92,6 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // All unique categories from providers
   const allCategories = useMemo(() => {
     const cats = new Set<string>();
     for (const u of users) {
@@ -117,12 +127,34 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
     });
   }, [users, search, approvalFilter, categoryFilter]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "full_name") cmp = a.full_name.localeCompare(b.full_name, "hu");
+      else if (sortKey === "role") cmp = a.role.localeCompare(b.role, "hu");
+      else if (sortKey === "email") cmp = a.email.localeCompare(b.email, "hu");
+      else if (sortKey === "created_at") cmp = a.created_at.localeCompare(b.created_at);
+      else if (sortKey === "providerViewCount") cmp = (a.providerViewCount ?? -1) - (b.providerViewCount ?? -1);
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+  }, [filtered, sortKey, sortDir]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+  const paginated = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handleSearch = (v: string) => { setSearch(v); setPage(1); };
   const handleFilter = (v: ApprovalFilter) => { setApprovalFilter(v); setPage(1); };
   const handleCategory = (v: string | null) => { setCategoryFilter(v); setPage(1); };
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => d === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+    setPage(1);
+  };
 
   const setRole = async (userId: string, role: string) => {
     setUpdating(userId);
@@ -168,6 +200,9 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
       <div className="w-8 h-8 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
     </div>
   );
+
+  const thClass = "px-4 py-2.5 font-semibold text-gray-700 text-left select-none cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap";
+  const thActive = "text-[#84AAA6]";
 
   return (
     <>
@@ -244,7 +279,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           </div>
         )}
 
-        <p className="text-sm text-gray-500">{filtered.length} felhasználó</p>
+        <p className="text-sm text-gray-500">{sorted.length} felhasználó</p>
 
         {error && (
           <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
@@ -261,13 +296,22 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Név</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">E-mail</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Telefon</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Kategóriák</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Regisztrált</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-gray-700">
-                  <Eye className="h-3.5 w-3.5 inline" />
+                <th className={`${thClass} ${sortKey === "full_name" ? thActive : ""}`} onClick={() => handleSort("full_name")}>
+                  Név <SortIcon col="full_name" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className={`${thClass} ${sortKey === "role" ? thActive : ""}`} onClick={() => handleSort("role")}>
+                  Fiók típusa <SortIcon col="role" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className={`${thClass} ${sortKey === "email" ? thActive : ""}`} onClick={() => handleSort("email")}>
+                  E-mail <SortIcon col="email" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className={`${thClass} cursor-default hover:bg-gray-50`}>Telefon</th>
+                <th className={`${thClass} cursor-default hover:bg-gray-50`}>Kategóriák</th>
+                <th className={`${thClass} ${sortKey === "created_at" ? thActive : ""}`} onClick={() => handleSort("created_at")}>
+                  Regisztrált <SortIcon col="created_at" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className={`${thClass} ${sortKey === "providerViewCount" ? thActive : ""}`} onClick={() => handleSort("providerViewCount")}>
+                  <Eye className="h-3.5 w-3.5 inline" /> <SortIcon col="providerViewCount" sortKey={sortKey} dir={sortDir} />
                 </th>
                 <th className="px-4 py-2.5" />
               </tr>
@@ -276,17 +320,17 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
               {paginated.map((u) => (
                 <tr key={u.id} className="bg-white hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-2.5">
-                    <div className="flex items-center gap-2">
-                      {u.providerApprovalStatus === "approved" && u.providerId ? (
-                        <Link href={`/providers/${u.providerId}`} target="_blank" rel="noopener noreferrer"
-                          className="font-medium text-[#84AAA6] hover:underline whitespace-nowrap">
-                          {u.full_name || "–"}
-                        </Link>
-                      ) : (
-                        <span className="font-medium text-gray-900 whitespace-nowrap">{u.full_name || "–"}</span>
-                      )}
-                      <Badge variant={ROLE_BADGE[u.role]} className="text-xs shrink-0">{ROLE_LABELS[u.role]}</Badge>
-                    </div>
+                    {u.providerApprovalStatus === "approved" && u.providerId ? (
+                      <Link href={`/providers/${u.providerId}`} target="_blank" rel="noopener noreferrer"
+                        className="font-medium text-[#84AAA6] hover:underline whitespace-nowrap">
+                        {u.full_name || "–"}
+                      </Link>
+                    ) : (
+                      <span className="font-medium text-gray-900 whitespace-nowrap">{u.full_name || "–"}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <Badge variant={ROLE_BADGE[u.role]} className="text-xs">{ROLE_LABELS[u.role]}</Badge>
                   </td>
                   <td className="px-4 py-2.5 text-gray-600 max-w-[180px] truncate">{u.email}</td>
                   <td className="px-4 py-2.5 text-gray-600 whitespace-nowrap">{u.phone || "–"}</td>
