@@ -23,14 +23,27 @@ export async function generateMetadata({ params }: PageProps) {
     const supabase = await createClient();
     const { data } = await supabase
       .from("providers")
-      .select("full_name, categories")
+      .select("full_name, categories, description, avatar_url")
       .eq("id", id)
       .eq("approval_status", "approved")
       .single();
     if (!data) return { title: "Szolgáltató" };
     const firstCat = (data.categories as ServiceCategory[])?.[0];
     const label = firstCat ? CATEGORY_LABELS[firstCat] : "Szolgáltató";
-    return { title: `${data.full_name} – ${label} | Esküvőre Készülök` };
+    const title = `${data.full_name} – ${label} | Esküvőre Készülök`;
+    const description = data.description
+      ? data.description.slice(0, 155) + (data.description.length > 155 ? "…" : "")
+      : `${data.full_name} esküvői ${label.toLowerCase()} – Esküvőre Készülök`;
+    const images = data.avatar_url
+      ? [{ url: data.avatar_url, width: 400, height: 400, alt: data.full_name }]
+      : [{ url: "/og-image.png", width: 1200, height: 630, alt: "Esküvőre Készülök" }];
+    return {
+      title,
+      description,
+      openGraph: { title, description, images, type: "profile" },
+      twitter: { card: "summary", title, description, images: [images[0].url] },
+      alternates: { canonical: `https://eskuvorekeszulok.hu/providers/${id}` },
+    };
   } catch {
     return { title: "Szolgáltató" };
   }

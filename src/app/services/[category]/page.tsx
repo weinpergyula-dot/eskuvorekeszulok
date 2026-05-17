@@ -17,7 +17,15 @@ export async function generateMetadata({ params }: PageProps) {
   const { category } = await params;
   const label = CATEGORY_LABELS[category as ServiceCategory];
   if (!label) return { title: "Nem található" };
-  return { title: `${label} – Esküvőre Készülök` };
+  const description = CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory];
+  const title = `${label} – Esküvőre Készülök`;
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+    twitter: { title, description },
+    alternates: { canonical: `https://eskuvorekeszulok.hu/services/${category}` },
+  };
 }
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {

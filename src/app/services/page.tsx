@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/page-header";
 import { CategorySearch } from "@/components/home/category-search";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "Esküvői szolgáltatók kategóriái",
+  description: "Böngéssz 20 kategóriában: fotósok, zenészek, vőfélyek, helyszínek, torták és még sok más esküvői szakember egy helyen.",
+  alternates: { canonical: "https://eskuvorekeszulok.hu/services" },
+};
 
 export default async function ServicesPage() {
   let categoryCounts: Record<string, number> = {};
