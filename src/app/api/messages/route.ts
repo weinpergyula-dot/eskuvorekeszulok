@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyNewMessage } from "@/lib/notifications";
+import { logError } from "@/lib/log-error";
 
 export const dynamic = "force-dynamic";
 
@@ -84,7 +85,7 @@ export async function POST(req: Request) {
     body: body.trim(),
   });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { await logError("api/messages POST", error.message, { sender: user.id, recipient_id }); return NextResponse.json({ error: error.message }, { status: 500 }); }
 
   // Értesítés küldése (fire-and-forget – nem blokkolja a választ)
   const origin = new URL(req.url).origin;
@@ -151,6 +152,6 @@ export async function DELETE(req: Request) {
       .eq("recipient_id", user.id),
   ]);
 
-  if (e1 || e2) return NextResponse.json({ error: (e1 ?? e2)?.message }, { status: 500 });
+  if (e1 || e2) { const msg = (e1 ?? e2)!.message; await logError("api/messages DELETE", msg, { user: user.id }); return NextResponse.json({ error: msg }, { status: 500 }); }
   return NextResponse.json({ ok: true });
 }

@@ -45,13 +45,12 @@ const ROLE_BADGE: Record<string, "default" | "secondary" | "approved"> = {
 
 const PAGE_SIZE = 10;
 
-type ApprovalFilter = "all" | "approved" | "pending" | "visitor" | "admin";
+type ApprovalFilter = "all" | "provider" | "visitor" | "admin";
 
 const FILTER_LABELS: Record<ApprovalFilter, string> = {
   all:      "Összes",
-  approved: "Jóváhagyott",
-  pending:  "Függőben",
-  visitor:  "Látogató",
+  provider: "Szolgáltatók",
+  visitor:  "Látogatók",
   admin:    "Admin",
 };
 
@@ -109,10 +108,8 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
         u.email.toLowerCase().includes(q);
 
       let matchesFilter = true;
-      if (approvalFilter === "approved") {
-        matchesFilter = u.role === "provider" && u.providerApprovalStatus === "approved" && !u.providerHasPendingChanges;
-      } else if (approvalFilter === "pending") {
-        matchesFilter = u.providerApprovalStatus === "pending" || !!u.providerHasPendingChanges;
+      if (approvalFilter === "provider") {
+        matchesFilter = u.role === "provider";
       } else if (approvalFilter === "visitor") {
         matchesFilter = u.role === "visitor";
       } else if (approvalFilter === "admin") {
@@ -235,7 +232,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
 
         {/* Role / status filters */}
         <div className="flex flex-wrap gap-2">
-          {(["all", "approved", "pending", "visitor", "admin"] as ApprovalFilter[]).map((f) => (
+          {(["all", "provider", "visitor", "admin"] as ApprovalFilter[]).map((f) => (
             <button
               key={f}
               onClick={() => handleFilter(f)}

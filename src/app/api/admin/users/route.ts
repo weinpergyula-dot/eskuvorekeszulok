@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { logError } from "@/lib/log-error";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export async function GET() {
       supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes"),
     ]);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { await logError("api/admin/users GET", error.message); return NextResponse.json({ error: error.message }, { status: 500 }); }
 
     const provMap = new Map((providers ?? []).map((p) => [p.user_id, p]));
     const enriched = (profiles ?? []).map((u) => {
@@ -72,9 +73,10 @@ export async function PATCH(request: Request) {
       .update({ role })
       .eq("user_id", userId);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { await logError("api/admin/users PATCH", error.message, { userId, role }); return NextResponse.json({ error: error.message }, { status: 500 }); }
     return NextResponse.json({ ok: true });
   } catch (e) {
+    await logError("api/admin/users PATCH", String(e));
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
@@ -102,9 +104,10 @@ export async function DELETE(request: Request) {
     const adminClient = createAdminClient();
     const { error } = await adminClient.auth.admin.deleteUser(userId);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { await logError("api/admin/users DELETE", error.message, { userId }); return NextResponse.json({ error: error.message }, { status: 500 }); }
     return NextResponse.json({ ok: true });
   } catch (e) {
+    await logError("api/admin/users DELETE", String(e));
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }

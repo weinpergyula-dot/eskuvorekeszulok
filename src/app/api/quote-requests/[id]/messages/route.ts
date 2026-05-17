@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyNewMessage, notifyQuoteReply } from "@/lib/notifications";
+import { logError } from "@/lib/log-error";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     body,
   });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { await logError("api/quote-requests/messages POST", error.message, { quoteRequestId: id, provider_id, sender: user.id }); return NextResponse.json({ error: error.message }, { status: 500 }); }
 
   // Értesítés: meghatározzuk ki a másik fél
   const origin = request.nextUrl.origin;

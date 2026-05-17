@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyNewQuoteRequest } from "@/lib/notifications";
+import { logError } from "@/lib/log-error";
 
 export async function GET() {
   const supabase = await createClient();
@@ -147,7 +148,7 @@ export async function POST(request: NextRequest) {
     .select("id")
     .single();
 
-  if (qrError || !qr) return NextResponse.json({ error: "Hiba az ajánlatkérés létrehozásakor." }, { status: 500 });
+  if (qrError || !qr) { await logError("api/quote-requests POST", qrError?.message ?? "insert returned null", { user: user.id, subject, category }); return NextResponse.json({ error: "Hiba az ajánlatkérés létrehozásakor." }, { status: 500 }); }
 
   const searchCounties = [...counties, "Országosan"];
   const { data: allProviders } = await admin

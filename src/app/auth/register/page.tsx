@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction, sendConfirmationEmailAction, deleteUserAction } from "./actions";
+import { logError } from "@/lib/log-error";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Label } from "@/components/ui/label";
@@ -313,6 +314,8 @@ function RegisterContent() {
           const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
           if (confirmError) throw new Error(confirmError);
         } catch (innerErr) {
+          const msg = innerErr instanceof Error ? innerErr.message : String(innerErr);
+          await logError("registration/provider", msg, { email });
           await deleteUserAction(newUserId);
           throw innerErr;
         }

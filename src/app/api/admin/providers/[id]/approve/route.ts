@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logError } from "@/lib/log-error";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/resend";
@@ -74,14 +75,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         .from("providers")
         .update({ ...safeChanges, pending_changes: null, approval_status: "approved", rejection_reason: null })
         .eq("id", id);
-      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      if (error) { await logError("api/admin/providers approve", error.message, { providerId: id, action, type }); return NextResponse.json({ error: error.message }, { status: 500 }); }
       await notifyProvider(admin, id, "approve");
     } else {
       const { error } = await admin
         .from("providers")
         .update({ approval_status: "approved", rejection_reason: null })
         .eq("id", id);
-      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      if (error) { await logError("api/admin/providers approve", error.message, { providerId: id, action, type }); return NextResponse.json({ error: error.message }, { status: 500 }); }
 
       // Új regisztráció jóváhagyásakor frissítjük a profiles.role-t "provider"-re
       // (csak ha eddig "visitor" volt — admin role-t nem írjuk felül)
@@ -101,14 +102,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         .from("providers")
         .update({ pending_changes: null, approval_status: "approved", rejection_reason: reason || null })
         .eq("id", id);
-      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      if (error) { await logError("api/admin/providers approve", error.message, { providerId: id, action, type }); return NextResponse.json({ error: error.message }, { status: 500 }); }
       await notifyProvider(admin, id, "reject", reason);
     } else {
       const { error } = await admin
         .from("providers")
         .update({ approval_status: "rejected", rejection_reason: reason || null })
         .eq("id", id);
-      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      if (error) { await logError("api/admin/providers approve", error.message, { providerId: id, action, type }); return NextResponse.json({ error: error.message }, { status: 500 }); }
       await notifyProvider(admin, id, "reject", reason);
     }
   } else {
