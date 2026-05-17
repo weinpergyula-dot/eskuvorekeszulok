@@ -24,7 +24,7 @@ export function Footer() {
                 { href: "/services/fotosok-videosok", label: "Fotósok, Videósok" },
                 { href: "/services/elo-zene-dj", label: "Élőzene, DJ" },
                 { href: "/services/smink", label: "Smink" },
-                { href: "/services/helyszin", label: "Helyszín" },
+                { href: "/services/helyszin", label: "Helyszínek" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="text-base text-gray-900 px-2 py-0.5 rounded-md hover:bg-[#F0F6F5] transition-colors">
@@ -32,6 +32,11 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/services" className="text-base text-[#84AAA6] px-2 py-0.5 rounded-md hover:bg-[#F0F6F5] transition-colors">
+                  Még több...
+                </Link>
+              </li>
             </ul>
           </div>
 
