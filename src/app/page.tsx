@@ -101,7 +101,7 @@ export default async function HomePage() {
               </h2>
               <hr className="border-white/30 mb-3" />
               <p className="text-base text-white leading-relaxed mb-5">
-                Böngészd át az esküvői szakemberek és helyszínek széles kínálatát! Fotósoktól, zenészektől kezdve a tortakészítőkig és virágkötőkig megtalálsz mindenkit, aki a nagy napod tökéletessé varázsolhat. Olvass értékeléseket, jelöld kedvenceidet, és küldj ajánlatkérést egyszerre több szolgáltatónak – egy helyen, egyetlen üzenettel.
+                Böngészd át az esküvői szakemberek és helyszínek széles kínálatát! Fotósoktól, zenészektől kezdve a tortakészítőkig és virágkötőkig megtalálsz mindenkit, akik a nagy napodat tökéletessé varázsolják. Olvass értékeléseket, jelöld kedvenceidet, és küldj ajánlatkérést egyszerre több szolgáltatónak – egy helyen, egyetlen üzenettel.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                 <Link href="#kategoriak">
