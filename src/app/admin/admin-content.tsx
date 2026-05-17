@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Users, Clock as ClockIcon, Mail, BarChart2, Trash2, UserX, AlertTriangle } from "lucide-react";
-import Link from "next/link";
+import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
@@ -201,16 +200,6 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
             <div className="text-base text-gray-900 mt-0.5">{s.label}</div>
           </button>
         ))}
-
-        {/* Dashboard link tile */}
-        <Link
-          href="/profil"
-          className="text-left rounded-lg p-4 border border-gray-200 bg-white hover:border-[#84AAA6] transition-all"
-        >
-          <div className="mb-2"><BarChart2 className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} /></div>
-          <div className="text-2xl font-bold text-gray-900">→</div>
-          <div className="text-base text-gray-900 mt-0.5">Dashboard</div>
-        </Link>
 
         {/* Summary tile */}
         <div className="rounded-lg p-4 border border-gray-200 bg-white">
