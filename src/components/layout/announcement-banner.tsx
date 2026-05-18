@@ -17,6 +17,30 @@ function setCookie(name: string) {
   document.cookie = `${name}=1; expires=${expires.toUTCString()}; path=/`;
 }
 
+function WarningTriangle() {
+  return (
+    <span
+      className="shrink-0"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 18,
+        height: 16,
+        clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+        backgroundColor: "#000",
+        color: "#fff",
+        fontSize: 9,
+        fontWeight: 900,
+        paddingTop: 5,
+        lineHeight: 1,
+      }}
+    >
+      !
+    </span>
+  );
+}
+
 export function AnnouncementBanner() {
   const [visible, setVisible] = useState(false);
 
@@ -33,9 +57,9 @@ export function AnnouncementBanner() {
 
   return (
     <div className="w-full bg-[#FEF9C3] border-b border-yellow-200 py-2 px-4">
-      <div className="relative flex items-start justify-center gap-1.5 pr-6">
-        <span className="shrink-0 font-black text-black leading-snug text-sm">!</span>
-        <p className="text-sm text-gray-900 text-center">{TEXT}</p>
+      <div className="relative flex items-start gap-2 sm:justify-center pr-6">
+        <WarningTriangle />
+        <p className="text-sm text-gray-900 sm:text-center">{TEXT}</p>
         <button
           onClick={dismiss}
           aria-label="Bezárás"
