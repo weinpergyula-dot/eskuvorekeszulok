@@ -45,6 +45,11 @@ export default async function HomePage() {
       {/* Mobile hero slideshow */}
       <div className="sm:hidden">
         <MobileHeroSlideshow />
+        <div className="px-5 py-4 text-center">
+          <p className="text-base text-gray-900 leading-relaxed">
+            Itt megtalálsz mindent egy helyen a nagy napodra!
+          </p>
+        </div>
       </div>
 
       {/* Hero – desktop only */}
@@ -74,8 +79,9 @@ export default async function HomePage() {
                 </span>
               </h1>
               <div className="w-full lg:w-[calc(100%+3rem)] h-px mb-4" style={{ backgroundColor: "#7F7F7F" }} />
-              <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
-                Fotós, helyszín, dekorátor – mindent egy helyen, egy kereséssel.
+              <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8 max-w-xs lg:max-w-none text-center">
+                Ugye mennyivel egyszerűbb lenne, ha az esküvődre mindent egy helyen el tudnál intézni?{" "}
+                <span className="block mt-1">A legjobb helyen jársz. Törekszünk arra, hogy a lehető legtöbb szolgáltató közül tudj dönteni.</span>
               </p>
               <div className="flex justify-center">
                 <Link href="/informaciok">

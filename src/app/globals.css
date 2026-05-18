@@ -225,6 +225,16 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
   animation-play-state: paused;
 }
 
+/* ── Announcement banner marquee ────────────────────── */
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee-scroll 40s linear infinite;
+}
+
 /* ── Desktop chat: cím + frissítés gomb elrejtése chat nézetben ─────── */
 @media (min-width: 640px) {
   body.chat-mode .section-chat-header {
