@@ -81,7 +81,7 @@ export default async function HomePage() {
               <div className="w-full lg:w-[calc(100%+3rem)] h-px mb-4" style={{ backgroundColor: "#7F7F7F" }} />
               <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8 max-w-xs lg:max-w-none text-center">
                 Ugye mennyivel egyszerűbb lenne, ha az esküvődre mindent egy helyen el tudnál intézni?{" "}
-                <span className="block mt-1">A legjobb helyen jársz. Törekszünk arra, hogy a lehető legtöbb szolgáltató közül tudj dönteni.</span>
+                <span className="block mt-1">A legjobb helyen jársz. Törekszünk arra, hogy a lehető legtöbb szolgáltató közül tudj választani.</span>
               </p>
               <div className="flex justify-center">
                 <Link href="/informaciok">

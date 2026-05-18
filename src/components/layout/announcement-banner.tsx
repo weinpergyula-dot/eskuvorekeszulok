@@ -1,18 +1,20 @@
 const TEXT =
-  "Az oldal fejlesztési fázisban jár – a szolgáltatók regisztrációja zajlik, ami hosszabb időt vehet igénybe.";
+  "Az oldal fejlesztési fázisban van – a szolgáltatók regisztrációja aktívan zajlik, ezért egyes kategóriákban még kevés ajánlatot találsz. Hamarosan teljes kínálattal várunk! Kövesd az oldalt és nézz vissza hamarosan.";
 
-const SEPARATOR = "   ·   ";
+const SEP = "   ·   ";
+
+const BLOCK = Array.from({ length: 4 }, () => TEXT).join(SEP) + SEP;
 
 export function AnnouncementBanner() {
-  const repeated = Array.from({ length: 6 }, () => TEXT).join(SEPARATOR);
-  const full = repeated + SEPARATOR;
-
   return (
     <div className="w-full overflow-hidden bg-[#FEF9C3] border-b border-yellow-200 py-1.5">
-      <div className="flex whitespace-nowrap marquee-track">
-        {/* Duplicate for seamless loop */}
-        <span className="text-sm text-gray-900 shrink-0 pr-8">{full}</span>
-        <span className="text-sm text-gray-900 shrink-0 pr-8" aria-hidden="true">{full}</span>
+      {/*
+        Two identical blocks side by side. The animation translates the wrapper
+        from 0 to -50% (= exactly one block width), then loops seamlessly.
+      */}
+      <div className="flex whitespace-nowrap marquee-track will-change-transform">
+        <span className="text-sm text-gray-900 shrink-0" style={{ minWidth: "max-content" }}>{BLOCK}</span>
+        <span className="text-sm text-gray-900 shrink-0" style={{ minWidth: "max-content" }} aria-hidden="true">{BLOCK}</span>
       </div>
     </div>
   );
