@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
+import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { Footer } from "@/components/layout/footer";
 import { TopLoader } from "@/components/layout/top-loader";
 import { CookieBanner } from "@/components/layout/cookie-banner";
@@ -70,6 +71,7 @@ export default function RootLayout({
           }}
         />
         <TopLoader />
+        <AnnouncementBanner />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

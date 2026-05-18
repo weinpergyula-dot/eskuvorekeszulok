@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 
 const COOKIE_KEY = "ann_banner_dismissed";
@@ -42,11 +43,14 @@ function WarningTriangle() {
 }
 
 export function AnnouncementBanner() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (!getCookie(COOKIE_KEY)) setVisible(true);
   }, []);
+
+  if (pathname !== "/") return null;
 
   if (!visible) return null;
 
