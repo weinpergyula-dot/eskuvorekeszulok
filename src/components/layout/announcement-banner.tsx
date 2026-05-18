@@ -5,18 +5,25 @@ const SEP = "   ·   ";
 
 const BLOCK = Array.from({ length: 4 }, () => TEXT).join(SEP) + SEP;
 
-const ANIMATION = "marquee-scroll 40s linear infinite";
-
 export function AnnouncementBanner() {
   return (
-    <div className="w-full overflow-hidden bg-[#FEF9C3] border-b border-yellow-200 py-1.5">
-      <div
-        className="flex whitespace-nowrap"
-        style={{ animation: ANIMATION, willChange: "transform" }}
-      >
-        <span className="text-sm text-gray-900 shrink-0" style={{ minWidth: "max-content" }}>{BLOCK}</span>
-        <span className="text-sm text-gray-900 shrink-0" style={{ minWidth: "max-content" }} aria-hidden="true">{BLOCK}</span>
+    <>
+      <style>{`
+        @keyframes ann-marquee {
+          from { transform: translate3d(0, 0, 0); }
+          to   { transform: translate3d(-50%, 0, 0); }
+        }
+        .ann-marquee-track {
+          animation: ann-marquee 40s linear infinite;
+          will-change: transform;
+        }
+      `}</style>
+      <div className="w-full overflow-hidden bg-[#FEF9C3] border-b border-yellow-200 py-1.5">
+        <div className="flex whitespace-nowrap ann-marquee-track">
+          <span className="text-sm text-gray-900 shrink-0" style={{ minWidth: "max-content" }}>{BLOCK}</span>
+          <span className="text-sm text-gray-900 shrink-0" style={{ minWidth: "max-content" }} aria-hidden="true">{BLOCK}</span>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
