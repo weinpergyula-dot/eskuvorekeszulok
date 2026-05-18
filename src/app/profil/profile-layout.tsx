@@ -375,6 +375,13 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [messagesKey, setMessagesKey] = useState(0);
   const [quotesKey, setQuotesKey] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [quotesFormOpen, setQuotesFormOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => setQuotesFormOpen((e as CustomEvent<boolean>).detail);
+    window.addEventListener("quotes-form-open", handler);
+    return () => window.removeEventListener("quotes-form-open", handler);
+  }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -514,7 +521,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             <h2 className="text-xl font-semibold text-gray-900">
               {SECTION_TITLES[active]}
             </h2>
-            {(active === "messages" || active === "quotes") && (
+            {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
               <button
                 onClick={handleRefresh}
                 title="Frissítés"

@@ -710,6 +710,11 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
     return () => window.removeEventListener("quotes-unread-count-refresh", handler);
   }, [loadRequests]);
 
+  // Notify parent layout when new-request form opens/closes
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("quotes-form-open", { detail: showForm }));
+  }, [showForm]);
+
   if (loading) return <p className="text-base text-gray-500">Betöltés...</p>;
 
   // ── Provider: chat view ──
@@ -866,7 +871,7 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
           <p className="text-base">Még nem küldtél ajánlatkérést.</p>
           <p className="text-sm mt-1">Kattints a gombra, hogy elküldd az első ajánlatkérésedet több szolgáltatónak egyszerre.</p>
         </div>
-      ) : (
+      ) : !showForm ? (
         <>
           {visitorCategories.length > 1 && (
             <div className="flex flex-wrap gap-2">
@@ -916,7 +921,7 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
             })}
           </div>
         </>
-      )}
+      ) : null}
     </div>
   );
 }
