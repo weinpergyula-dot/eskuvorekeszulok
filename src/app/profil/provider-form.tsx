@@ -235,7 +235,7 @@ export function ProviderForm({
           .from("avatars").upload(`${userId}/avatar`, avatarFile, { upsert: true });
         if (uploadError) throw uploadError;
         const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(`${userId}/avatar`);
-        avatarUrl = urlData.publicUrl;
+        avatarUrl = `${urlData.publicUrl}?v=${Date.now()}`;
       }
 
       // Upload new gallery images directly (no approval flow)
