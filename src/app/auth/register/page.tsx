@@ -89,6 +89,7 @@ function translateError(msg: string): string {
   if (msg.includes("Password should be at least")) return "A jelszónak legalább 6 karakter hosszúnak kell lennie.";
   if (msg.includes("Unable to validate email address") || msg.includes("Invalid email")) return "Érvénytelen e-mail cím.";
   if (msg.includes("rate limit") || msg.includes("too many")) return "Túl sok próbálkozás. Kérjük, várj egy kicsit.";
+  if (msg.toLowerCase().includes("failed to fetch") || msg.toLowerCase().includes("network") || msg.toLowerCase().includes("fetch")) return "A szerver átmenetileg nem elérhető. Kérjük, próbáld újra néhány perc múlva.";
   return msg;
 }
 
