@@ -232,7 +232,13 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
 }
 
 .marquee-track {
-  animation: marquee-scroll 40s linear infinite;
+  animation: marquee-scroll 22s linear infinite;
+}
+
+@media (min-width: 640px) {
+  .marquee-track {
+    animation-duration: 40s;
+  }
 }
 
 /* ── Desktop chat: cím + frissítés gomb elrejtése chat nézetben ─────── */
