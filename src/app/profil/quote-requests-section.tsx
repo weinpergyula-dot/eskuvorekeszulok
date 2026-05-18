@@ -179,11 +179,14 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
       .then(r => r.json())
       .then(d => {
         const map: Record<string, number> = {};
+        for (const c of geographicCounties) map[c] = 0;
         for (const p of (d.providers ?? []) as Array<{ counties?: string[] }>) {
           if (p.counties?.includes("Országosan")) {
-            for (const c of geographicCounties) map[c] = (map[c] ?? 0) + 1;
+            for (const c of geographicCounties) map[c]++;
           } else {
-            for (const c of p.counties ?? []) map[c] = (map[c] ?? 0) + 1;
+            for (const c of p.counties ?? []) {
+              if (c in map) map[c]++;
+            }
           }
         }
         setCountyCountMap(map);
