@@ -37,10 +37,10 @@ const ROLE_LABELS: Record<string, string> = {
   admin: "Admin",
 };
 
-const ROLE_BADGE: Record<string, "default" | "secondary" | "approved"> = {
+const ROLE_BADGE: Record<string, "default" | "secondary" | "approved" | "admin"> = {
   visitor: "secondary",
   provider: "default",
-  admin: "approved",
+  admin: "admin",
 };
 
 const PAGE_SIZE = 10;
