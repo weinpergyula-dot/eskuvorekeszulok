@@ -4,7 +4,6 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { TopLoader } from "@/components/layout/top-loader";
 import { CookieBanner } from "@/components/layout/cookie-banner";
-import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 
 const SITE_NAME = "Esküvőre Készülök";
 const SITE_URL = "https://eskuvorekeszulok.hu";
@@ -71,7 +70,6 @@ export default function RootLayout({
           }}
         />
         <TopLoader />
-        <AnnouncementBanner />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

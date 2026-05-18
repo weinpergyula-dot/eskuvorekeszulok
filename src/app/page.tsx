@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { Users, Briefcase, Check } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
 import { ProviderCarousel } from "@/components/home/provider-carousel";
@@ -42,6 +43,7 @@ export default async function HomePage() {
   }
   return (
     <>
+      <AnnouncementBanner />
       {/* Mobile hero slideshow */}
       <div className="sm:hidden">
         <MobileHeroSlideshow />
