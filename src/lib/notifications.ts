@@ -128,7 +128,7 @@ export async function notifyNewReview(params: {
 
     await sendEmail({
       to: providerEmail,
-      subject: "Új értékelés érkezett – Esküvőre Készülök",
+      subject: "Új értékelés érkezett",
       template: React.createElement(NewReviewEmail, {
         providerName,
         reviewerName,
@@ -166,7 +166,7 @@ export async function notifyNewQuoteRequest(params: {
 
     await sendEmail({
       to: providerEmail,
-      subject: "Új ajánlatkérés érkezett – Esküvőre Készülök",
+      subject: "Új ajánlatkérés érkezett",
       template: React.createElement(NewQuoteRequestEmail, {
         providerName,
         visitorName,
@@ -205,7 +205,7 @@ export async function notifyContactMessage(params: {
 
         await sendEmail({
           to: adminEmail,
-          subject: "Új kapcsolatfelvételi üzenet – Esküvőre Készülök",
+          subject: "Új kapcsolatfelvételi üzenet",
           template: React.createElement(ContactNotificationEmail, {
             senderName: params.senderName,
             senderEmail: params.senderEmail,
@@ -348,7 +348,7 @@ async function sendDeferredNewMessage(n: {
 
   await sendEmail({
     to: recipientEmail,
-    subject: "Új üzeneted érkezett – Esküvőre Készülök",
+    subject: "Új üzeneted érkezett",
     template: React.createElement(NewMessageEmail, {
       recipientName,
       senderName,
@@ -397,7 +397,7 @@ async function sendDeferredQuoteReply(n: {
 
   await sendEmail({
     to: visitorEmail,
-    subject: "Válasz érkezett az ajánlatkérésedre – Esküvőre Készülök",
+    subject: "Válasz érkezett az ajánlatkérésedre",
     template: React.createElement(QuoteReplyEmail, {
       visitorName,
       providerName,

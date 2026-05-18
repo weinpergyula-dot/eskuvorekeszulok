@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     await sendEmail({
       to: email.trim().toLowerCase(),
-      subject: "Jelszó visszaállítása – Esküvőre Készülök",
+      subject: "Jelszó visszaállítása",
       template: React.createElement(ResetPasswordEmail, { resetLink }),
     });
 

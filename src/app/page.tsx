@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Users, Briefcase } from "lucide-react";
+import { Users, Briefcase, Check } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
 import { ProviderCarousel } from "@/components/home/provider-carousel";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
@@ -75,7 +75,7 @@ export default async function HomePage() {
               </h1>
               <div className="w-full lg:w-[calc(100%+3rem)] h-px mb-4" style={{ backgroundColor: "#7F7F7F" }} />
               <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8">
-                Találj meg mindent egy helyen a nagy napodra!
+                Fotós, helyszín, dekorátor – mindent egy helyen, egy kereséssel.
               </p>
               <div className="flex justify-center">
                 <Link href="/informaciok">
@@ -100,9 +100,19 @@ export default async function HomePage() {
                 Látogatóknak
               </h2>
               <hr className="border-white/30 mb-3" />
-              <p className="text-base text-white leading-relaxed mb-5">
-                Böngészd át az esküvői szakemberek és helyszínek széles kínálatát! Fotósoktól, zenészektől kezdve a tortakészítőkig és virágkötőkig megtalálsz mindenkit, akik a nagy napodat tökéletessé varázsolják. Olvass értékeléseket, jelöld kedvenceidet, és küldj ajánlatkérést egyszerre több szolgáltatónak – egy helyen, egyetlen üzenettel.
-              </p>
+              <ul className="text-base text-white space-y-2 mb-5">
+                {[
+                  "Böngészd 20+ kategória kínálatát – fotóstól virágkötőig",
+                  "Olvass valódi értékeléseket más páriktól",
+                  "Jelöld kedvenceidet, térj vissza bármikor",
+                  "Küldj ajánlatkérést egyszerre több szolgáltatónak",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 mt-0.5 shrink-0 text-white/80" strokeWidth={2.5} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
               <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                 <Link href="#kategoriak">
                   <Button size="lg" className="bg-white text-[#84AAA6] hover:bg-white/90 px-6">
@@ -120,9 +130,19 @@ export default async function HomePage() {
                 Szolgáltatóknak
               </h2>
               <hr className="border-white/30 mb-3" />
-              <p className="text-base text-white leading-relaxed mb-5">
-                Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Fogadj ajánlatkéréseket közvetlenül az érdeklődő páraktól, és válaszolj nekik az oldalon keresztül.
-              </p>
+              <ul className="text-base text-white space-y-2 mb-5">
+                {[
+                  "Ingyenes profil képekkel, leírással és elérhetőséggel",
+                  "Fogadj ajánlatkérést közvetlenül érdeklődő páraktól",
+                  "Kezeld üzeneteidet és értékeléseidet egy helyen",
+                  "Jelenj meg aktívan kereső párok előtt",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 mt-0.5 shrink-0 text-white/80" strokeWidth={2.5} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
               <ProviderRegisterButton />
             </div>
           </div>

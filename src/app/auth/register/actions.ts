@@ -65,7 +65,7 @@ export async function sendConfirmationEmailAction(
 
     await sendEmail({
       to: email,
-      subject: "Regisztráció megerősítése – Esküvőre Készülök",
+      subject: "Regisztráció megerősítése",
       template: React.createElement(ConfirmEmail, { confirmLink, name }),
     });
 

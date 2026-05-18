@@ -33,13 +33,13 @@ async function notifyProvider(
     if (action === "approve") {
       await sendEmail({
         to: email,
-        subject: "Profilod jóváhagyásra került – Esküvőre Készülök",
+        subject: "Profilod jóváhagyásra került",
         template: React.createElement(ProviderApprovedEmail, { name: prov.full_name }),
       });
     } else {
       await sendEmail({
         to: email,
-        subject: "Tájékoztatás a szolgáltatói profil elbírálásáról – Esküvőre Készülök",
+        subject: "Tájékoztatás a szolgáltatói profil elbírálásáról",
         template: React.createElement(ProviderRejectedEmail, { name: prov.full_name, reason }),
       });
     }
