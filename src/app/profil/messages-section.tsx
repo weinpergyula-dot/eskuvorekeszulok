@@ -44,6 +44,7 @@ interface Thread {
 
 interface Props {
   userId: string;
+  role: string;
   onUnreadChange: (count: number) => void;
 }
 
@@ -480,7 +481,7 @@ function ThreadChat({
 
 type MessageTab = "bejovo" | "kimenő";
 
-export function MessagesSection({ userId, onUnreadChange }: Props) {
+export function MessagesSection({ userId, role, onUnreadChange }: Props) {
   const [messages, setMessages]             = useState<Message[]>([]);
   const [loading, setLoading]               = useState(true);
   const [selectedThread, setSelectedThread] = useState<Thread | null>(null);
@@ -559,8 +560,8 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
   // ── Inbox view ──
   const incomingThreads = threads.filter(t => !t.isOutgoing);
   const outgoingThreads = threads.filter(t => t.isOutgoing);
-  const hasTabs = incomingThreads.length > 0;
-  const tabThreads = hasTabs && tab === "bejovo" ? incomingThreads : outgoingThreads;
+  const hasTabs = role === "provider";
+  const tabThreads = hasTabs ? (tab === "bejovo" ? incomingThreads : outgoingThreads) : threads;
 
   const categories = [...new Set(tabThreads.map(t => t.category).filter(Boolean))] as string[];
   const visibleThreads = filterCategory ? tabThreads.filter(t => t.category === filterCategory) : tabThreads;
@@ -595,7 +596,9 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
       {visibleThreads.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
           <Mail className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
-          <p className="text-base">Még nem küldtél üzenetet.</p>
+          <p className="text-base">
+            {hasTabs && tab === "bejovo" ? "Még nem érkezett üzenet." : "Még nem küldtél üzenetet."}
+          </p>
         </div>
       ) : (
         <>

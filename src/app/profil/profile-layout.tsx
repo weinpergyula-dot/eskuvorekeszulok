@@ -725,7 +725,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "messages" && (
             <div className="section-larger-text">
-              <MessagesSection key={messagesKey} userId={userId} onUnreadChange={setUnreadCount} />
+              <MessagesSection key={messagesKey} userId={userId} role={role} onUnreadChange={setUnreadCount} />
             </div>
           )}
 
