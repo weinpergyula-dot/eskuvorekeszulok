@@ -160,25 +160,41 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
 
         {/* Rating – both mobile and desktop */}
-        <div className="flex items-center gap-1.5">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Star
-              key={star}
-              className={cn(
-                "h-4 w-4",
-                star <= Math.round(rating)
-                  ? "fill-amber-400 text-amber-400"
-                  : "fill-gray-200 text-gray-200"
+        {(() => {
+          const ratingContent = (
+            <>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className={cn(
+                    "h-4 w-4",
+                    star <= Math.round(rating)
+                      ? "fill-amber-400 text-amber-400"
+                      : "fill-gray-200 text-gray-200"
+                  )}
+                />
+              ))}
+              <span className={cn(inCarousel ? "text-sm" : "text-base", "font-semibold text-gray-900 ml-1")}>
+                {rating > 0 ? rating.toFixed(1) : "–"}
+              </span>
+              {reviewCount > 0 && (
+                <span className={cn(inCarousel ? "text-sm" : "text-base", "text-gray-900")}>({reviewCount})</span>
               )}
-            />
-          ))}
-          <span className={cn(inCarousel ? "text-sm" : "text-base", "font-semibold text-gray-900 ml-1")}>
-            {rating > 0 ? rating.toFixed(1) : "–"}
-          </span>
-          {reviewCount > 0 && (
-            <span className={cn(inCarousel ? "text-sm" : "text-base", "text-gray-900")}>({reviewCount})</span>
-          )}
-        </div>
+            </>
+          );
+          return !disableLink ? (
+            <a
+              href={`/providers/${provider.id}#reviews`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 hover:opacity-70 transition-opacity"
+            >
+              {ratingContent}
+            </a>
+          ) : (
+            <div className="flex items-center gap-1.5">{ratingContent}</div>
+          );
+        })()}
+>>>>>>> 8aad220 (feat: rating on provider card links to reviews tab)
 
         {/* Admin status badge */}
         {showStatus && (
