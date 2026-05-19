@@ -31,7 +31,7 @@ export function ProviderApprovedEmail({ name }: ProviderApprovedEmailProps) {
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: "28px auto" }}>
         <tr>
           <td style={s.btnCell}>
-            <a href="https://www.eskuvorekeszulok.hu/profil#provider" style={s.btn}>
+            <a href="https://www.eskuvorekeszulok.hu/profil?tab=provider" style={s.btn}>
               Profil megtekintése
             </a>
           </td>
