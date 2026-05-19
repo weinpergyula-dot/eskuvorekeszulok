@@ -79,13 +79,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Saját magadnak nem küldhetsz üzenetet." }, { status: 400 });
   }
 
-  const { error } = await supabase.from("messages").insert({
+  const { data: inserted, error } = await supabase.from("messages").insert({
     sender_id: user.id,
     recipient_id,
     provider_id: provider_id ?? null,
     subject: subject.trim(),
     body: body.trim(),
-  });
+  }).select("id").single();
 
   if (error) { await logError("api/messages POST", error.message, { sender: user.id, recipient_id }); return NextResponse.json({ error: error.message }, { status: 500 }); }
 
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
   const origin = new URL(req.url).origin;
   notifyNewMessage({ recipientId: recipient_id, senderId: user.id, subject: subject.trim(), origin }).catch(() => {});
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, id: inserted.id });
 }
 
 export async function DELETE(req: Request) {

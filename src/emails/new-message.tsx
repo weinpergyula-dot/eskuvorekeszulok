@@ -52,7 +52,7 @@ NewMessageEmail.defaultProps = {
   recipientName: undefined,
   senderName: "Valaki",
   subject: "Üzenet",
-  ctaUrl: "https://www.eskuvorekeszulok.hu/profil#messages",
+  ctaUrl: "https://www.eskuvorekeszulok.hu/profil?tab=messages",
 };
 
 const s = {

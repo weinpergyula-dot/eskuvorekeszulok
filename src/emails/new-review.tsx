@@ -57,7 +57,7 @@ NewReviewEmail.defaultProps = {
   reviewerName: "Valaki",
   rating: 5,
   comment: undefined,
-  ctaUrl: "https://www.eskuvorekeszulok.hu/profil#dashboard",
+  ctaUrl: "https://www.eskuvorekeszulok.hu/profil?tab=dashboard",
 };
 
 const s = {

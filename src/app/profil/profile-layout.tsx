@@ -429,6 +429,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     }
     if (section === "messages" && active === "messages") {
       window.dispatchEvent(new CustomEvent("messages-back-to-list"));
+      window.dispatchEvent(new CustomEvent("nav-complete"));
       return;
     }
     setActive(section);

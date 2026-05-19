@@ -134,7 +134,7 @@ export async function notifyNewReview(params: {
         reviewerName,
         rating: params.rating,
         comment: params.comment,
-        ctaUrl: `${params.origin}/profil#dashboard`,
+        ctaUrl: `${params.origin}/profil?tab=dashboard`,
       }),
     });
   } catch (err) {
@@ -353,7 +353,7 @@ async function sendDeferredNewMessage(n: {
       recipientName,
       senderName,
       subject: payload.subject,
-      ctaUrl: `${payload.origin}/profil#messages`,
+      ctaUrl: `${payload.origin}/profil?tab=messages`,
     }),
   });
 }
