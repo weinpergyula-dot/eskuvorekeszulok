@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export function TopLoader() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);
-  const prevPathname = useRef(pathname);
+  const prevRoute = useRef(`${pathname}?${searchParams}`);
   const ticker = useRef<ReturnType<typeof setInterval> | null>(null);
   const completeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -53,20 +54,21 @@ export function TopLoader() {
         href.startsWith("http") ||
         anchor.getAttribute("target") === "_blank"
       ) return;
-      if (href === pathname) return;
+      if (href === `${pathname}?${searchParams}` || href === pathname) return;
       start();
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
   }, [pathname]);
 
-  // Complete when route changes
+  // Complete when route or query params change
   useEffect(() => {
-    if (pathname !== prevPathname.current) {
-      prevPathname.current = pathname;
+    const current = `${pathname}?${searchParams}`;
+    if (current !== prevRoute.current) {
+      prevRoute.current = current;
       complete();
     }
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   useEffect(() => () => {
     if (ticker.current) clearInterval(ticker.current);
