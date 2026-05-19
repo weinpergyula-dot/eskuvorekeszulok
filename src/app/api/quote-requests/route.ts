@@ -4,85 +4,43 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyNewQuoteRequest } from "@/lib/notifications";
 import { logError } from "@/lib/log-error";
 
-export async function GET() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export const dynamic = "force-dynamic";
 
-  const admin = createAdminClient();
+// ── Visitor chat helper ───────────────────────────────────────────────────────
 
-  // Provider nézet ha van provider rekordja (role-tól függetlenül: visitor→provider átmenet, admin saját profil)
-  const { data: providerData } = await admin.from("providers").select("id").eq("user_id", user.id).maybeSingle();
+type RawReq = { id: string; subject: string; category: string; counties: string[]; message: string; created_at: string };
+type RawRec = { id: string; quote_request_id: string; provider_id: string; provider_user_id: string };
+type RawMsg = { id: string; quote_request_id: string; provider_id: string; sender_id: string; body: string; read: boolean; created_at: string };
 
-  if (providerData) {
-    const { data: recipients } = await admin
-      .from("quote_request_recipients")
-      .select("id, read, created_at, quote_request_id")
-      .eq("provider_user_id", user.id)
-      .eq("deleted_by_provider", false)
-      .order("created_at", { ascending: false });
-
-    if (!recipients) return NextResponse.json([]);
-
-    const enriched = await Promise.all(recipients.map(async (rec) => {
-      const [{ data: qr }, { data: unreadMsgs }] = await Promise.all([
-        admin.from("quote_requests").select("subject, category, counties, message, created_at, visitor_id").eq("id", rec.quote_request_id).single(),
-        admin.from("quote_messages").select("id").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).neq("sender_id", user.id).eq("read", false),
-      ]);
-      const { data: visitorProfile } = await admin.from("profiles").select("full_name").eq("user_id", qr?.visitor_id ?? "").single();
-      return {
-        recipient_id: rec.id,
-        quote_request_id: rec.quote_request_id,
-        provider_id: providerData.id,
-        subject: qr?.subject ?? "",
-        category: qr?.category ?? "",
-        counties: qr?.counties ?? [],
-        message: qr?.message ?? "",
-        created_at: qr?.created_at ?? rec.created_at,
-        read: rec.read,
-        visitor_name: visitorProfile?.full_name || "Ismeretlen látogató",
-        unread_reply_count: unreadMsgs?.length ?? 0,
-      };
-    }));
-
-    return NextResponse.json(enriched);
-  }
-
-  // Látogató / admin nézet (nincs provider rekordjuk)
-  // Visszaad egy lapos listát: minden (ajánlatkérés × szolgáltató) párhoz egy chat-rekord.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function fetchVisitorChats(admin: any, userId: string) {
   const { data: requests } = await admin
     .from("quote_requests")
     .select("id, subject, category, counties, message, created_at")
-    .eq("visitor_id", user.id)
+    .eq("visitor_id", userId)
     .eq("deleted_by_visitor", false);
 
-  if (!requests || requests.length === 0) return NextResponse.json([]);
+  if (!requests || requests.length === 0) return [];
 
-  type RawReq = { id: string; subject: string; category: string; counties: string[]; message: string; created_at: string };
   const reqIds = (requests as RawReq[]).map((r) => r.id);
 
-  // 2. Összes recipient az ajánlatkérésekhez (egy lekérdezéssel)
-  const { data: recipients } = await admin
-    .from("quote_request_recipients")
-    .select("id, quote_request_id, provider_id, provider_user_id")
-    .in("quote_request_id", reqIds);
+  const [{ data: recipients }, { data: allMessages }] = await Promise.all([
+    admin
+      .from("quote_request_recipients")
+      .select("id, quote_request_id, provider_id, provider_user_id")
+      .in("quote_request_id", reqIds),
+    admin
+      .from("quote_messages")
+      .select("id, quote_request_id, provider_id, sender_id, body, read, created_at")
+      .in("quote_request_id", reqIds)
+      .order("created_at", { ascending: true }),
+  ]);
 
-  if (!recipients || recipients.length === 0) return NextResponse.json([]);
+  if (!recipients || recipients.length === 0) return [];
 
-  // 3. Összes üzenet egy lekérdezéssel
-  const { data: allMessages } = await admin
-    .from("quote_messages")
-    .select("id, quote_request_id, provider_id, sender_id, body, read, created_at")
-    .in("quote_request_id", reqIds)
-    .order("created_at", { ascending: true });
-
-  // 4. Szolgáltató profilok egy lekérdezéssel
-  type RawRec = { id: string; quote_request_id: string; provider_id: string; provider_user_id: string };
   const providerUserIds: string[] = [
     ...new Set(
-      (recipients as RawRec[])
-        .map((r) => r.provider_user_id)
-        .filter(Boolean)
+      (recipients as RawRec[]).map((r) => r.provider_user_id).filter(Boolean)
     ),
   ];
   const { data: profiles } = await admin
@@ -94,8 +52,6 @@ export async function GET() {
     ((profiles ?? []) as { user_id: string; full_name: string }[]).map((p) => [p.user_id, p.full_name])
   );
 
-  // Üzenetek csoportosítása request+provider szerint
-  type RawMsg = { id: string; quote_request_id: string; provider_id: string; sender_id: string; body: string; read: boolean; created_at: string };
   const msgMap = new Map<string, RawMsg[]>();
   for (const msg of ((allMessages ?? []) as RawMsg[])) {
     const key = `${msg.quote_request_id}__${msg.provider_id}`;
@@ -105,12 +61,11 @@ export async function GET() {
 
   const reqMap = new Map<string, RawReq>((requests as RawReq[]).map((r) => [r.id, r]));
 
-  const visitorChats = (recipients as RawRec[]).map((rec) => {
+  const chats = (recipients as RawRec[]).map((rec) => {
     const req = reqMap.get(rec.quote_request_id);
     const msgs = msgMap.get(`${rec.quote_request_id}__${rec.provider_id}`) ?? [];
-    const unreadCount = msgs.filter((m) => !m.read && m.sender_id !== user.id).length;
+    const unreadCount = msgs.filter((m) => !m.read && m.sender_id !== userId).length;
     const lastMsg = msgs[msgs.length - 1];
-    const lastAt = lastMsg?.created_at ?? req?.created_at ?? "";
     return {
       request_id: rec.quote_request_id,
       subject: req?.subject ?? "",
@@ -121,13 +76,62 @@ export async function GET() {
       provider_full_name: profileMap.get(rec.provider_user_id) ?? "Ismeretlen",
       messages: msgs,
       unread_count: unreadCount,
-      last_at: lastAt,
+      last_at: lastMsg?.created_at ?? req?.created_at ?? "",
     };
   });
 
-  // Rendezés: utolsó aktivitás szerint csökkenő
-  visitorChats.sort((a, b) => new Date(b.last_at).getTime() - new Date(a.last_at).getTime());
+  chats.sort((a, b) => new Date(b.last_at).getTime() - new Date(a.last_at).getTime());
+  return chats;
+}
 
+// ── GET ───────────────────────────────────────────────────────────────────────
+
+export async function GET() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const admin = createAdminClient();
+
+  const { data: providerData } = await admin.from("providers").select("id").eq("user_id", user.id).maybeSingle();
+
+  if (providerData) {
+    const { data: recipients } = await admin
+      .from("quote_request_recipients")
+      .select("id, read, created_at, quote_request_id")
+      .eq("provider_user_id", user.id)
+      .eq("deleted_by_provider", false)
+      .order("created_at", { ascending: false });
+
+    const [providerRequests, visitorChats] = await Promise.all([
+      Promise.all((recipients ?? []).map(async (rec) => {
+        const [{ data: qr }, { data: unreadMsgs }] = await Promise.all([
+          admin.from("quote_requests").select("subject, category, counties, message, created_at, visitor_id").eq("id", rec.quote_request_id).single(),
+          admin.from("quote_messages").select("id").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).neq("sender_id", user.id).eq("read", false),
+        ]);
+        const { data: visitorProfile } = await admin.from("profiles").select("full_name").eq("user_id", qr?.visitor_id ?? "").single();
+        return {
+          recipient_id: rec.id,
+          quote_request_id: rec.quote_request_id,
+          provider_id: providerData.id,
+          subject: qr?.subject ?? "",
+          category: qr?.category ?? "",
+          counties: qr?.counties ?? [],
+          message: qr?.message ?? "",
+          created_at: qr?.created_at ?? rec.created_at,
+          read: rec.read,
+          visitor_name: visitorProfile?.full_name || "Ismeretlen látogató",
+          unread_reply_count: unreadMsgs?.length ?? 0,
+        };
+      })),
+      fetchVisitorChats(admin, user.id),
+    ]);
+
+    return NextResponse.json({ providerRequests, visitorChats });
+  }
+
+  // Visitor-only path
+  const visitorChats = await fetchVisitorChats(admin, user.id);
   return NextResponse.json(visitorChats);
 }
 
@@ -158,7 +162,6 @@ export async function POST(request: NextRequest) {
     .contains("categories", [category])
     .overlaps("counties", searchCounties);
 
-  // Deduplicate by user_id
   const seenUserIds = new Set<string>();
   const uniqueProviders = (allProviders ?? []).filter((p) => {
     if (!p.user_id || seenUserIds.has(p.user_id)) return false;
@@ -166,7 +169,6 @@ export async function POST(request: NextRequest) {
     return true;
   });
 
-  // If caller specified which providers to include, filter to those IDs
   const targetProviders = Array.isArray(selectedProviderIds) && selectedProviderIds.length > 0
     ? uniqueProviders.filter((p) => selectedProviderIds.includes(p.id))
     : uniqueProviders;
@@ -185,7 +187,6 @@ export async function POST(request: NextRequest) {
     insertedCount = results.filter((r) => r.status === "fulfilled").length;
   }
 
-  // Értesítések küldése a megfelelő szolgáltatóknak (fire-and-forget)
   const origin = request.nextUrl.origin;
   for (const p of targetProviders) {
     if (p.user_id) {

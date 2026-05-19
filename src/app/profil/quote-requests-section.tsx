@@ -58,6 +58,8 @@ interface Props {
 
 // ── Navigation state ──────────────────────────────────────────────────────────
 
+type ProviderTab = "incoming" | "sent";
+
 type View =
   | { mode: "list" }
   | { mode: "provider-chat"; req: ProviderRequest }
@@ -661,21 +663,28 @@ function ProviderChatLoader({
 // ── Main section ──────────────────────────────────────────────────────────────
 
 export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Props) {
-  const [visitorChats, setVisitorChats]       = useState<VisitorChat[]>([]);
+  const [visitorChats, setVisitorChats]         = useState<VisitorChat[]>([]);
   const [providerRequests, setProviderRequests] = useState<ProviderRequest[]>([]);
-  const [loading, setLoading]         = useState(true);
-  const [showForm, setShowForm]       = useState(false);
-  const [view, setView]               = useState<View>({ mode: "list" });
-  const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [loading, setLoading]                   = useState(true);
+  const [showForm, setShowForm]                 = useState(false);
+  const [view, setView]                         = useState<View>({ mode: "list" });
+  const [filterCategory, setFilterCategory]     = useState<string | null>(null);
+  const [providerTab, setProviderTab]           = useState<ProviderTab>("incoming");
 
   const loadRequests = useCallback(() => {
     fetch("/api/quote-requests")
       .then(r => r.json())
       .then(data => {
-        if (isProvider) {
-          const reqs = data as ProviderRequest[];
+        if (isProvider && data && typeof data === "object" && !Array.isArray(data)) {
+          // Combined provider+visitor response
+          const reqs = (data.providerRequests ?? []) as ProviderRequest[];
+          const chats = (data.visitorChats ?? []) as VisitorChat[];
           setProviderRequests(reqs);
-          const unread = reqs.filter(r => !r.read).length + reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+          setVisitorChats(chats);
+          const unread =
+            reqs.filter(r => !r.read).length +
+            reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0) +
+            chats.reduce((s, c) => s + (c.unread_count ?? 0), 0);
           broadcastUnread(unread, onUnreadChange);
         } else {
           const chats = data as VisitorChat[];
@@ -781,69 +790,161 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
 
   // ── Provider: list view ──
   if (isProvider) {
+    const incomingUnread = providerRequests.filter(r => !r.read).length + providerRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+    const sentUnread = visitorChats.reduce((s, c) => s + c.unread_count, 0);
+
     const providerCategories = [...new Set(providerRequests.map(r => r.category))];
     const visibleProviderReqs = filterCategory
       ? providerRequests.filter(r => r.category === filterCategory)
       : providerRequests;
 
+    const visitorCategories = [...new Set(visitorChats.map(c => c.category))];
+    const visibleVisitorChats = filterCategory
+      ? visitorChats.filter(c => c.category === filterCategory)
+      : visitorChats;
+
     return (
       <div className="space-y-3">
-        {providerRequests.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
-            <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
-            <p className="text-base">Még nem érkezett ajánlatkérés.</p>
-          </div>
-        ) : (
-          <>
-            {providerCategories.length > 1 && (
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setFilterCategory(null)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
-                >
-                  Összes
-                </button>
-                {providerCategories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setFilterCategory(c => c === cat ? null : cat)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
-                  >
-                    {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-                  </button>
-                ))}
-              </div>
+        {/* Tab switcher */}
+        <div className="flex gap-1 border-b border-gray-200">
+          <button
+            onClick={() => { setProviderTab("incoming"); setFilterCategory(null); }}
+            className={`relative px-4 py-2.5 text-sm font-medium transition-colors ${providerTab === "incoming" ? "text-[#84AAA6] border-b-2 border-[#84AAA6] -mb-px" : "text-gray-500 hover:text-gray-800"}`}
+          >
+            Beérkező
+            {incomingUnread > 0 && (
+              <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold leading-none">
+                {incomingUnread > 9 ? "9+" : incomingUnread}
+              </span>
             )}
-            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-              {visibleProviderReqs.map(req => {
-                const unread = (req.read ? 0 : 1) + (req.unread_reply_count ?? 0);
-                return (
-                  <QuoteListItem
-                    key={req.recipient_id}
-                    subject={req.subject}
-                    categoryLabel={CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
-                    recipientName={req.visitor_name}
-                    lastMessage={req.message.slice(0, 100)}
-                    date={req.created_at}
-                    unread={unread}
-                    onSelect={async () => {
-                      if (!req.read) {
-                        await fetch(`/api/quote-requests/${req.quote_request_id}/read`, {
-                          method: "PATCH",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ type: "request" }),
-                        });
-                        setProviderRequests(prev => prev.map(r =>
-                          r.recipient_id === req.recipient_id ? { ...r, read: true } : r
-                        ));
-                      }
-                      setView({ mode: "provider-chat", req });
-                    }}
-                  />
-                );
-              })}
-            </div>
+          </button>
+          <button
+            onClick={() => { setProviderTab("sent"); setFilterCategory(null); }}
+            className={`relative px-4 py-2.5 text-sm font-medium transition-colors ${providerTab === "sent" ? "text-[#84AAA6] border-b-2 border-[#84AAA6] -mb-px" : "text-gray-500 hover:text-gray-800"}`}
+          >
+            Elküldött
+            {sentUnread > 0 && (
+              <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold leading-none">
+                {sentUnread > 9 ? "9+" : sentUnread}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Incoming tab */}
+        {providerTab === "incoming" && (
+          <>
+            {providerRequests.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
+                <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
+                <p className="text-base">Még nem érkezett ajánlatkérés.</p>
+              </div>
+            ) : (
+              <>
+                {providerCategories.length > 1 && (
+                  <div className="flex flex-wrap gap-2">
+                    <button onClick={() => setFilterCategory(null)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>Összes</button>
+                    {providerCategories.map(cat => (
+                      <button key={cat} onClick={() => setFilterCategory(c => c === cat ? null : cat)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+                        {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                  {visibleProviderReqs.map(req => {
+                    const unread = (req.read ? 0 : 1) + (req.unread_reply_count ?? 0);
+                    return (
+                      <QuoteListItem
+                        key={req.recipient_id}
+                        subject={req.subject}
+                        categoryLabel={CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
+                        recipientName={req.visitor_name}
+                        lastMessage={req.message.slice(0, 100)}
+                        date={req.created_at}
+                        unread={unread}
+                        onSelect={async () => {
+                          if (!req.read) {
+                            await fetch(`/api/quote-requests/${req.quote_request_id}/read`, {
+                              method: "PATCH",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ type: "request" }),
+                            });
+                            setProviderRequests(prev => prev.map(r =>
+                              r.recipient_id === req.recipient_id ? { ...r, read: true } : r
+                            ));
+                          }
+                          setView({ mode: "provider-chat", req });
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </>
+        )}
+
+        {/* Sent tab */}
+        {providerTab === "sent" && (
+          <div className="space-y-4">
+            {!showForm && (
+              <Button onClick={() => setShowForm(true)} variant="outline" className="w-full sm:w-auto">
+                + Új ajánlatkérés
+              </Button>
+            )}
+            {showForm && (
+              <SendForm onSent={() => { setShowForm(false); loadRequests(); }} onCancel={() => setShowForm(false)} />
+            )}
+            {visitorChats.length === 0 && !showForm ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
+                <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
+                <p className="text-base">Még nem küldtél ajánlatkérést.</p>
+                <p className="text-sm mt-1">Kattints a gombra, hogy elküldd az első ajánlatkérésedet.</p>
+              </div>
+            ) : !showForm ? (
+              <>
+                {visitorCategories.length > 1 && (
+                  <div className="flex flex-wrap gap-2">
+                    <button onClick={() => setFilterCategory(null)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>Összes</button>
+                    {visitorCategories.map(cat => (
+                      <button key={cat} onClick={() => setFilterCategory(c => c === cat ? null : cat)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+                        {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                  {visibleVisitorChats.map(chat => {
+                    const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
+                    let lastMessage: string;
+                    if (lastMsg) {
+                      if (isSystemMsg(lastMsg.body)) {
+                        lastMessage = systemText(lastMsg.body);
+                      } else {
+                        const prefix = lastMsg.sender_id === userId ? "Te" : chat.provider_full_name;
+                        lastMessage = `${prefix}: ${lastMsg.body}`;
+                      }
+                    } else {
+                      lastMessage = `Te: ${chat.message}`;
+                    }
+                    return (
+                      <QuoteListItem
+                        key={`${chat.request_id}__${chat.provider_id}`}
+                        subject={chat.subject}
+                        categoryLabel={CATEGORY_LABELS[chat.category as keyof typeof CATEGORY_LABELS] ?? chat.category}
+                        recipientName={chat.provider_full_name}
+                        lastMessage={lastMessage}
+                        date={chat.last_at}
+                        unread={chat.unread_count}
+                        onSelect={() => setView({ mode: "visitor-chat", chat })}
+                      />
+                    );
+                  })}
+                </div>
+              </>
+            ) : null}
+          </div>
         )}
       </div>
     );
