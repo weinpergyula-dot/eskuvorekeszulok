@@ -385,13 +385,8 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         "postgres_changes" as any,
-        // No server-side filter — more reliable; recipient check done client-side below
-        { event: "INSERT", schema: "public", table: "messages" },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (payload: any) => {
-          if (payload.new?.recipient_id !== userId) return;
-          refetchMessages();
-        }
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
+        refetchMessages
       )
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

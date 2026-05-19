@@ -501,6 +501,22 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
 
   useEffect(() => { loadMessages(); }, [loadMessages]);
 
+  // Realtime: reload list when a new message arrives (updates tab badge + list)
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
+    const channel = supabase
+      .channel(`messages-list-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
+        () => { loadMessages(); }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId, loadMessages]);
+
   // Add/remove body class + scroll to top on desktop when entering chat
   useEffect(() => {
     if (selectedThread) {
