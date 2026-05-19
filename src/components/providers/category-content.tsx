@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, SearchX, ChevronDown } from "lucide-react";
+import { Search, SearchX, ChevronDown, LayoutGrid, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CountyFilter } from "./county-filter";
 import { ProviderCard } from "./provider-card";
@@ -32,6 +32,7 @@ export function CategoryContent({
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [sortOpen, setSortOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const sortRef = useRef<HTMLDivElement>(null);
 
   // Restore saved county filter when returning without URL param
@@ -109,6 +110,25 @@ export function CategoryContent({
                 {filteredProviders.length} szolgáltató található
                 {selected ? ` – ${selected}` : ""}
               </p>
+              <div className="flex items-center gap-2">
+                {/* View mode toggle */}
+                <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`p-1.5 transition-colors cursor-pointer ${viewMode === "grid" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
+                    aria-label="Csempés nézet"
+                  >
+                    <LayoutGrid className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-1.5 transition-colors cursor-pointer ${viewMode === "list" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
+                    aria-label="Listás nézet"
+                  >
+                    <List className="h-4 w-4" />
+                  </button>
+                </div>
+
               <div ref={sortRef} className="relative">
                 <button
                   onClick={() => setSortOpen((o) => !o)}
@@ -140,10 +160,11 @@ export function CategoryContent({
                   </div>
                 )}
               </div>
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5"}>
               {filteredProviders.map((provider) => (
-                <ProviderCard key={provider.id} provider={provider} hideCategories isOwner={!!currentUserId && currentUserId === provider.user_id} />
+                <ProviderCard key={provider.id} provider={provider} hideCategories isOwner={!!currentUserId && currentUserId === provider.user_id} listView={viewMode === "list"} />
               ))}
             </div>
           </>

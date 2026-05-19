@@ -367,7 +367,7 @@ export function Navbar() {
                     </span>
                   )}
                   {showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
                   )}
                 </button>
                 {desktopDropdownOpen && (
@@ -407,7 +407,7 @@ export function Navbar() {
                     </span>
                   )}
                   {showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
                   )}
                 </button>
                 {userDropdownOpen && (
