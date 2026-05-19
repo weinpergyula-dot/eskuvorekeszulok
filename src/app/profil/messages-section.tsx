@@ -278,9 +278,41 @@ function ThreadChat({
   // ── Reply ──────────────────────────────────────────────────────────────────
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!replyBody.trim() || !recipientId) return;
+    const bodyText = replyBody.trim();
+    if (!bodyText || !recipientId) return;
     setSending(true);
     setSendError(null);
+
+    const tempId = crypto.randomUUID();
+    setLocalMessages((prev) => [
+      ...prev,
+      {
+        id:                         tempId,
+        sender_id:                  userId,
+        recipient_id:               recipientId,
+        sender_name:                "Te",
+        sender_role:                "self",
+        sender_provider_id:         null,
+        sender_provider_categories: null,
+        sender_avatar_url:          null,
+        recipient_name:             otherName,
+        recipient_role:             null,
+        recipient_provider_id:      null,
+        recipient_provider_categories: null,
+        recipient_avatar_url:       null,
+        is_own:                     true,
+        subject:                    `Re: ${thread.subject}`,
+        body:                       bodyText,
+        read:                       true,
+        created_at:                 new Date().toISOString(),
+      },
+    ]);
+    setReplyBody("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.blur();
+    }
+
     try {
       const res = await fetch("/api/messages", {
         method: "POST",
@@ -288,40 +320,19 @@ function ThreadChat({
         body: JSON.stringify({
           recipient_id: recipientId,
           subject: `Re: ${thread.subject}`,
-          body: replyBody.trim(),
+          body: bodyText,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
-      setLocalMessages((prev) => [
-        ...prev,
-        {
-          id:                   crypto.randomUUID(),
-          sender_id:            userId,
-          recipient_id:         recipientId,
-          sender_name:          "Te",
-          sender_role:          "self",
-          sender_provider_id:   null,
-          sender_provider_categories: null,
-          sender_avatar_url:    null,
-          recipient_name:       otherName,
-          recipient_role:       null,
-          recipient_provider_id: null,
-          recipient_provider_categories: null,
-          recipient_avatar_url: null,
-          is_own:               true,
-          subject:              `Re: ${thread.subject}`,
-          body:                 replyBody.trim(),
-          read:                 true,
-          created_at:           new Date().toISOString(),
-        },
-      ]);
-      setReplyBody("");
-      if (textareaRef.current) {
-        textareaRef.current.style.height = "auto";
-        textareaRef.current.blur();
+      // Replace temp ID with real DB ID so server-sync dedup works correctly
+      if (data.id) {
+        setLocalMessages((prev) =>
+          prev.map((m) => m.id === tempId ? { ...m, id: data.id } : m)
+        );
       }
     } catch (err: unknown) {
+      setLocalMessages((prev) => prev.filter((m) => m.id !== tempId));
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
     } finally {
       setSending(false);
