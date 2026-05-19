@@ -560,7 +560,7 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
   // ── Inbox view ──
   const incomingThreads = threads.filter(t => !t.isOutgoing);
   const outgoingThreads = threads.filter(t => t.isOutgoing);
-  const hasTabs = role === "provider";
+  const hasTabs = role !== "visitor";
   const tabThreads = hasTabs ? (tab === "bejovo" ? incomingThreads : outgoingThreads) : threads;
 
   const categories = [...new Set(tabThreads.map(t => t.category).filter(Boolean))] as string[];
