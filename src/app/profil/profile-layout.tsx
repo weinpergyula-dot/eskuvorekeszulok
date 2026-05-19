@@ -367,19 +367,30 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   useEffect(() => {
     const supabase = createClient();
     if (!supabase) return;
+
+    const refetchMessages = () => {
+      fetch("/api/messages")
+        .then((r) => r.json())
+        .then((data: { read: boolean; is_own: boolean }[]) =>
+          setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
+        )
+        .catch(() => {});
+    };
+
+    // Also update badge when messages are marked as read inside MessagesSection
+    window.addEventListener("messages-read", refetchMessages);
+
     const channel = supabase
       .channel(`profile-msg-${userId}`)
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
-        () => {
-          fetch("/api/messages")
-            .then((r) => r.json())
-            .then((data: { read: boolean; is_own: boolean }[]) =>
-              setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
-            )
-            .catch(() => {});
+        // No server-side filter — more reliable; recipient check done client-side below
+        { event: "INSERT", schema: "public", table: "messages" },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (payload: any) => {
+          if (payload.new?.recipient_id !== userId) return;
+          refetchMessages();
         }
       )
       .on(
@@ -399,7 +410,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
         }
       )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      window.removeEventListener("messages-read", refetchMessages);
+      supabase.removeChannel(channel);
+    };
   }, [userId]);
 
   // Admin: fetch + realtime pending provider count

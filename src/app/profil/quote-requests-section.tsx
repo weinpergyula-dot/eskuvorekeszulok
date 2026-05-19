@@ -696,7 +696,9 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
     if (inChat) {
       document.body.classList.add("chat-mode");
       if (window.innerWidth >= 640) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        // setTimeout ensures the new view is in the DOM before scrolling,
+        // preventing the rendered chat height from overriding the scroll position.
+        setTimeout(() => window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }), 0);
       }
     } else {
       document.body.classList.remove("chat-mode");
