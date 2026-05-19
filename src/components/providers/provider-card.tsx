@@ -36,49 +36,53 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
     return (
-      <a
-        href={`/providers/${provider.id}`}
-        className="flex items-center gap-4 bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all cursor-pointer group px-4 py-3"
-      >
-        {/* Avatar */}
-        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0">
+      <div className="flex items-center gap-3 bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all px-4 py-3">
+        {/* Avatar – click opens lightbox */}
+        <button
+          type="button"
+          onClick={() => provider.avatar_url && setAvatarOpen(true)}
+          className={cn(
+            "w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0",
+            provider.avatar_url ? "cursor-zoom-in" : "cursor-default"
+          )}
+        >
           {provider.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
           ) : (
             <span className="text-lg font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
           )}
-        </div>
+        </button>
 
-        {/* Info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-bold text-gray-900 group-hover:text-[#84AAA6] transition-colors" style={{ fontSize: "17px" }}>
-              {provider.full_name}
-            </span>
-            {!hideCategories && (provider.categories ?? []).slice(0, 2).map((cat) => (
-              <Badge key={cat} variant="outline" className="text-xs">
-                {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-              </Badge>
-            ))}
+        {/* Avatar lightbox */}
+        {avatarOpen && provider.avatar_url && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 cursor-zoom-out"
+            onClick={() => setAvatarOpen(false)}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={provider.avatar_url} alt={provider.full_name} className="max-w-[90vw] max-h-[90vh] rounded-2xl object-contain shadow-2xl" />
           </div>
-          <div className="flex items-center gap-3 mt-1 flex-wrap">
-            <span className="flex items-center gap-1 text-sm text-gray-500">
-              <MapPin className="h-3 w-3 text-[#84AAA6]" />
+        )}
+
+        {/* Info – stacked */}
+        <div className="flex-1 min-w-0">
+          <div className="font-bold text-gray-900 truncate" style={{ fontSize: "16px" }}>
+            {provider.full_name}
+          </div>
+          <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
+            <MapPin className="h-3 w-3 text-[#84AAA6] shrink-0" />
+            <span className="truncate">
               {(provider.counties ?? []).slice(0, 2).join(", ")}
               {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
             </span>
-            <a
-              href={`/providers/${provider.id}#reviews`}
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1 hover:opacity-70 transition-opacity"
-            >
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} className={cn("h-3 w-3", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200")} />
-              ))}
-              <span className="text-sm font-semibold text-gray-900 ml-0.5">{rating > 0 ? rating.toFixed(1) : "–"}</span>
-              {reviewCount > 0 && <span className="text-sm text-gray-500">({reviewCount})</span>}
-            </a>
+          </div>
+          <div className="flex items-center gap-1 mt-0.5">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star key={star} className={cn("h-3 w-3", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200")} />
+            ))}
+            <span className="text-sm font-semibold text-gray-900 ml-0.5">{rating > 0 ? rating.toFixed(1) : "–"}</span>
+            {reviewCount > 0 && <span className="text-sm text-gray-500">({reviewCount})</span>}
           </div>
         </div>
 
@@ -86,17 +90,19 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className="flex items-center gap-2 shrink-0">
           <a
             href={`/providers/${provider.id}#message`}
-            onClick={(e) => e.stopPropagation()}
             className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
           >
             <MessageSquare className="h-3.5 w-3.5" />
             Üzenetküldés
           </a>
-          <span className="flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
+          <a
+            href={`/providers/${provider.id}`}
+            className="flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
+          >
             Részletek
-          </span>
+          </a>
         </div>
-      </a>
+      </div>
     );
   }
 
