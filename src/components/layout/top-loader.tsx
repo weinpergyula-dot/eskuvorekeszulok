@@ -35,8 +35,13 @@ function TopLoaderInner() {
 
   useEffect(() => {
     const onNavStart = () => start();
+    const onNavComplete = () => complete();
     window.addEventListener("nav-start", onNavStart);
-    return () => window.removeEventListener("nav-start", onNavStart);
+    window.addEventListener("nav-complete", onNavComplete);
+    return () => {
+      window.removeEventListener("nav-start", onNavStart);
+      window.removeEventListener("nav-complete", onNavComplete);
+    };
   }, []);
 
   useEffect(() => {
