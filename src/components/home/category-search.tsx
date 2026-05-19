@@ -82,7 +82,7 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
                 )}
               >
                 {(() => { const Icon = CATEGORY_LUCIDE_ICONS[category]; return <Icon className="h-9 w-9 mb-3 text-[#84AAA6]" strokeWidth={1.5} />; })()}
-                <h3 className="font-semibold text-gray-900 mb-1 leading-tight group-hover:text-[#84AAA6] transition-colors text-[20px] sm:text-[22px]">
+                <h3 className="font-semibold text-gray-900 mb-1 leading-tight group-hover:text-[#84AAA6] transition-colors text-[20px] sm:text-[22px] line-clamp-2 sm:line-clamp-none" style={{ minHeight: "calc(2 * 1.25 * 20px)" }}>
                   {CATEGORY_LABELS[category]}
                 </h3>
                 <div className="w-8 h-0.5 bg-gray-300 group-hover:bg-[#84AAA6] transition-colors mb-2" />
