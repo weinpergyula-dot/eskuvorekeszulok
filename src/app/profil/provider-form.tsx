@@ -291,15 +291,34 @@ export function ProviderForm({
           .from("providers").update({ categories, counties, phone }).eq("user_id", userId);
         if (catError) throw catError;
 
-        const { error: updateError } = await supabase.from("providers").update({
-          pending_changes: {
-            full_name: fullName, description,
-            detailed_description: detailedDescription || null,
-            website: website || null, avatar_url: avatarUrl || null,
-            gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
-          },
-        }).eq("user_id", userId);
-        if (updateError) throw updateError;
+        // Only create a pending review if approval-required fields actually changed
+        const existingPc = provider?.pending_changes as Record<string, unknown> | null | undefined;
+        const baseFullName   = String(existingPc?.full_name          ?? provider?.full_name          ?? "");
+        const baseDesc       = String(existingPc?.description         ?? provider?.description        ?? "");
+        const baseDetailDesc = String(existingPc?.detailed_description ?? provider?.detailed_description ?? "") || null;
+        const baseWebsite    = String(existingPc?.website             ?? provider?.website            ?? "") || null;
+        const baseAvatar     = String(existingPc?.avatar_url          ?? provider?.avatar_url         ?? "") || null;
+
+        const approvalFieldsChanged =
+          avatarFile !== null ||
+          galleryFiles.length > 0 ||
+          fullName              !== baseFullName   ||
+          description           !== baseDesc       ||
+          (detailedDescription || null) !== baseDetailDesc ||
+          (website || null)     !== baseWebsite    ||
+          (avatarUrl || null)   !== baseAvatar;
+
+        if (approvalFieldsChanged) {
+          const { error: updateError } = await supabase.from("providers").update({
+            pending_changes: {
+              full_name: fullName, description,
+              detailed_description: detailedDescription || null,
+              website: website || null, avatar_url: avatarUrl || null,
+              gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
+            },
+          }).eq("user_id", userId);
+          if (updateError) throw updateError;
+        }
       }
 
       setEditing(false);
