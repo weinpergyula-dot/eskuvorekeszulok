@@ -378,7 +378,6 @@ function QuoteChat({
   const [sendError, setSendError]         = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
-  const [showContext, setShowContext]      = useState(false);
   const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -522,15 +521,6 @@ function QuoteChat({
           <p className="text-sm font-semibold text-gray-900 truncate">{subject}</p>
           <p className="text-xs text-gray-500 truncate">{otherName}</p>
         </div>
-        {requestContext && (
-          <button
-            onClick={() => setShowContext(v => !v)}
-            className="text-xs text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer shrink-0"
-            title="Ajánlatkérés részletei"
-          >
-            <FileText className="h-4 w-4" />
-          </button>
-        )}
         {!confirmDelete ? (
           <button onClick={() => setConfirmDelete(true)} className="text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer shrink-0" title="Törlés">
             <Trash2 className="h-4 w-4" />
@@ -546,14 +536,10 @@ function QuoteChat({
         )}
       </div>
 
-      {/* Request context (collapsible) */}
-      {requestContext && showContext && (
-        <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 shrink-0">
-          <p className="text-xs font-medium text-gray-500 mb-1">
-            {CATEGORY_LABELS[requestContext.category as keyof typeof CATEGORY_LABELS] ?? requestContext.category}
-            {" · "}{requestContext.counties.join(", ")}
-          </p>
-          <p className="text-sm text-gray-700 whitespace-pre-line">{requestContext.message}</p>
+      {/* Pinned original message */}
+      {requestContext?.message && (
+        <div className="bg-[#84AAA6]/10 border-b border-[#84AAA6]/20 px-4 py-2.5 shrink-0">
+          <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{requestContext.message}</p>
         </div>
       )}
 

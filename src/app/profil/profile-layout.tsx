@@ -374,17 +374,15 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
         "postgres_changes" as any,
         { event: "INSERT", schema: "public", table: "quote_messages" },
         () => {
-          fetch("/api/quote-requests")
-            .then((r) => r.json())
-            .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
-              const unread = data.reduce(
-                (s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0),
-                0
-              );
-              setUnreadQuotes(unread);
-              window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
-            })
-            .catch(() => {});
+          window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
+        }
+      )
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "quote_request_recipients", filter: `provider_user_id=eq.${userId}` },
+        () => {
+          window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
         }
       )
       .subscribe();
