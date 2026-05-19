@@ -20,7 +20,7 @@ export async function GET() {
 
     const [{ data: profiles, error }, { data: providers }] = await Promise.all([
       supabase.from("profiles").select("id, user_id, email, full_name, role, created_at").order("created_at", { ascending: false }),
-      supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes, featured"),
+      supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes, featured, avatar_url"),
     ]);
 
     if (error) { await logError("api/admin/users GET", error.message); return NextResponse.json({ error: error.message }, { status: 500 }); }
@@ -30,6 +30,7 @@ export async function GET() {
       const prov = provMap.get(u.user_id);
       return {
         ...u,
+        avatar_url: prov?.avatar_url ?? null,
         phone: prov?.phone ?? null,
         providerCategories: (prov?.categories ?? null) as string[] | null,
         providerViewCount: (prov?.view_count ?? null) as number | null,

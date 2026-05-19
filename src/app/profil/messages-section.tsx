@@ -39,10 +39,12 @@ interface Thread {
   otherProviderId: string | null;
   otherAvatarUrl: string | null;
   recipientId: string;
+  isOutgoing: boolean;
 }
 
 interface Props {
   userId: string;
+  role: string;
   onUnreadChange: (count: number) => void;
 }
 
@@ -56,7 +58,7 @@ function normalizeSubject(s: string) {
 
 function buildThreads(messages: Message[]): Thread[] {
   const visible = messages.filter((m) => !(m.is_own && isSystemMsg(m.body)));
-  const map = new Map<string, Omit<Thread, "category" | "providerLinkId" | "otherName" | "otherProviderId" | "recipientId">>();
+  const map = new Map<string, Omit<Thread, "category" | "providerLinkId" | "otherName" | "otherProviderId" | "recipientId" | "isOutgoing">>();
   for (const msg of visible) {
     const otherId = msg.is_own ? msg.recipient_id : msg.sender_id;
     const key = `${normalizeSubject(msg.subject)}|${otherId}`;
@@ -82,7 +84,7 @@ function buildThreads(messages: Message[]): Thread[] {
       const category = isOutgoing
         ? ((firstMsg?.recipient_provider_categories ?? [])[0] ?? null)
         : ((incomingMsg?.sender_provider_categories ?? [])[0] ?? null);
-      return { ...t, messages: sorted, category, providerLinkId: otherProviderId, otherName, otherProviderId, otherAvatarUrl, recipientId };
+      return { ...t, messages: sorted, category, providerLinkId: otherProviderId, otherName, otherProviderId, otherAvatarUrl, recipientId, isOutgoing };
     });
 }
 
@@ -164,6 +166,18 @@ function ThreadChat({
   const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Sync new server messages into localMessages when thread prop refreshes (deduped)
+  const serverMsgCount = thread.messages.length;
+  useEffect(() => {
+    setLocalMessages(prev => {
+      const prevIds = new Set(prev.map(m => m.id));
+      const newMsgs = thread.messages.filter(m => !prevIds.has(m.id));
+      if (newMsgs.length === 0) return prev;
+      return [...prev, ...newMsgs].sort((a, b) => a.created_at.localeCompare(b.created_at));
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverMsgCount]);
+
   const hasSystemMessage = localMessages.some((m) => !m.is_own && isSystemMsg(m.body));
   const otherParticipant = localMessages.find((m) => !m.is_own);
   const recipientId = otherParticipant
@@ -215,62 +229,50 @@ function ThreadChat({
     };
   }, [thread.subject, userId]);
 
-  // ── Realtime: new incoming messages ───────────────────────────────────────
+  // ── Realtime: new incoming messages via navbar broadcast ─────────────────
+  // (No separate Supabase channel — navbar owns the single subscription)
   useEffect(() => {
-    const supabase = createClient();
-    if (!supabase) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handler = (e: any) => {
+      const raw = e.detail;
+      if (!raw) return;
+      if (normalizeSubject(raw.subject) !== thread.subject) return;
+      if (raw.sender_id !== recipientId) return;
 
-    const channel = supabase
-      .channel(`thread-${thread.key}-${userId}`)
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `recipient_id=eq.${userId}`,
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (payload: any) => {
-          const raw = payload.new;
-          // Only handle messages that belong to this thread
-          if (normalizeSubject(raw.subject) !== thread.subject) return;
-          if (raw.sender_id !== recipientId) return;
+      const newMsg: Message = {
+        id:                         raw.id,
+        sender_id:                  raw.sender_id,
+        recipient_id:               raw.recipient_id,
+        sender_name:                otherName,
+        sender_role:                "unknown",
+        sender_provider_id:         otherProviderId,
+        sender_provider_categories: null,
+        sender_avatar_url:          thread.otherAvatarUrl,
+        recipient_name:             null,
+        recipient_role:             null,
+        recipient_provider_id:      null,
+        recipient_provider_categories: null,
+        recipient_avatar_url:       null,
+        is_own:                     false,
+        subject:                    raw.subject,
+        body:                       raw.body,
+        read:                       false,
+        created_at:                 raw.created_at,
+      };
 
-          const newMsg: Message = {
-            id:                   raw.id,
-            sender_id:            raw.sender_id,
-            recipient_id:         raw.recipient_id,
-            sender_name:          otherName,
-            sender_role:          "unknown",
-            sender_provider_id:   otherProviderId,
-            sender_provider_categories: null,
-            sender_avatar_url:    thread.otherAvatarUrl,
-            recipient_name:       null,
-            recipient_role:       null,
-            recipient_provider_id: null,
-            recipient_provider_categories: null,
-            recipient_avatar_url: null,
-            is_own:               false,
-            subject:              raw.subject,
-            body:                 raw.body,
-            read:                 false,
-            created_at:           raw.created_at,
-          };
+      setLocalMessages((prev) => {
+        if (prev.some((m) => m.id === raw.id)) return prev; // dedup
+        return [...prev, newMsg];
+      });
+      fetch(`/api/messages/${raw.id}/read`, { method: "PATCH" })
+        .then(() => window.dispatchEvent(new CustomEvent("messages-read")))
+        .catch(() => {});
+    };
 
-          setLocalMessages((prev) => [...prev, newMsg]);
-          // Auto-mark as read since we're looking at it, then update badge
-          fetch(`/api/messages/${raw.id}/read`, { method: "PATCH" })
-            .then(() => window.dispatchEvent(new CustomEvent("messages-read")))
-            .catch(() => {});
-        }
-      )
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
+    window.addEventListener("message-inserted", handler);
+    return () => window.removeEventListener("message-inserted", handler);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, thread.key, thread.subject, recipientId]);
+  }, [thread.subject, thread.otherAvatarUrl, recipientId, otherName, otherProviderId]);
 
   // ── Reply ──────────────────────────────────────────────────────────────────
   const handleReply = async (e: React.FormEvent) => {
@@ -477,11 +479,17 @@ function ThreadChat({
 
 // ─── Main section ────────────────────────────────────────────────────────────
 
-export function MessagesSection({ userId, onUnreadChange }: Props) {
+type MessageTab = "bejovo" | "kimenő";
+
+export function MessagesSection({ userId, role, onUnreadChange }: Props) {
   const [messages, setMessages]             = useState<Message[]>([]);
   const [loading, setLoading]               = useState(true);
   const [selectedThread, setSelectedThread] = useState<Thread | null>(null);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [tab, setTab]                       = useState<MessageTab>("bejovo");
+
+  const selectedThreadRef = useRef<Thread | null>(null);
+  useEffect(() => { selectedThreadRef.current = selectedThread; }, [selectedThread]);
 
   const loadMessages = useCallback(() => {
     fetch("/api/messages")
@@ -490,11 +498,26 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
         setMessages(data);
         onUnreadChange(data.filter((m) => !m.read && !m.is_own).length);
         setLoading(false);
+        if (selectedThreadRef.current) {
+          const refreshed = buildThreads(data).find(t => t.key === selectedThreadRef.current!.key);
+          if (refreshed) setSelectedThread(refreshed);
+        }
       })
       .catch(() => setLoading(false));
   }, [onUnreadChange]);
 
   useEffect(() => { loadMessages(); }, [loadMessages]);
+
+  // Reload list when navbar broadcasts a new message count (new message arrived or messages read)
+  useEffect(() => {
+    const handler = () => loadMessages();
+    window.addEventListener("messages-unread-count", handler);
+    window.addEventListener("messages-read", handler);
+    return () => {
+      window.removeEventListener("messages-unread-count", handler);
+      window.removeEventListener("messages-read", handler);
+    };
+  }, [loadMessages]);
 
   // Add/remove body class + scroll to top on desktop when entering chat
   useEffect(() => {
@@ -553,48 +576,82 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
   }
 
   // ── Inbox view ──
-  if (threads.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
-        <Mail className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
-        <p className="text-base">Még nem érkezett üzeneted.</p>
-      </div>
-    );
-  }
+  const incomingThreads = threads.filter(t => !t.isOutgoing);
+  const outgoingThreads = threads.filter(t => t.isOutgoing);
+  const hasTabs = role !== "visitor";
+  const tabThreads = hasTabs ? (tab === "bejovo" ? incomingThreads : outgoingThreads) : threads;
 
-  const categories = [...new Set(threads.map(t => t.category).filter(Boolean))] as string[];
-  const visibleThreads = filterCategory ? threads.filter(t => t.category === filterCategory) : threads;
+  const categories = [...new Set(tabThreads.map(t => t.category).filter(Boolean))] as string[];
+  const visibleThreads = filterCategory ? tabThreads.filter(t => t.category === filterCategory) : tabThreads;
 
   return (
     <div className="space-y-3">
-      {categories.length > 1 && (
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setFilterCategory(null)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
-          >
-            Összes
-          </button>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setFilterCategory(c => c === cat ? null : cat)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
-            >
-              {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-            </button>
-          ))}
+      {/* Tabs – only shown when there are incoming messages (providers) */}
+      {hasTabs && (
+        <div className="flex border-b border-gray-200">
+          {(["bejovo", "kimenő"] as MessageTab[]).map((t) => {
+            const count = t === "bejovo"
+              ? incomingThreads.filter(th => th.hasUnread).length
+              : outgoingThreads.filter(th => th.hasUnread).length;
+            return (
+              <button
+                key={t}
+                onClick={() => { setTab(t); setFilterCategory(null); }}
+                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                  tab === t ? "border-[#84AAA6] text-[#84AAA6]" : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {t === "bejovo" ? "Beérkező" : "Elküldött"}
+                {count > 0 && (
+                  <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
-      <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-        {visibleThreads.map((thread) => (
-          <InboxListItem
-            key={thread.key}
-            thread={thread}
-            onSelect={() => setSelectedThread(thread)}
-          />
-        ))}
-      </div>
+
+      {visibleThreads.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
+          <Mail className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
+          <p className="text-base">
+            {hasTabs && tab === "bejovo" ? "Még nem érkezett üzenet." : "Még nem küldtél üzenetet."}
+          </p>
+        </div>
+      ) : (
+        <>
+          {categories.length > 1 && (
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setFilterCategory(null)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+              >
+                Összes
+              </button>
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setFilterCategory(c => c === cat ? null : cat)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                >
+                  {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+            {visibleThreads.map((thread) => (
+              <InboxListItem
+                key={thread.key}
+                thread={thread}
+                onSelect={() => setSelectedThread(thread)}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

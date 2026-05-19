@@ -114,7 +114,7 @@ export default async function HomePage() {
               <ul className="text-base text-white space-y-2 mb-5">
                 {[
                   "Böngészd 20+ kategória kínálatát – fotóstól virágkötőig",
-                  "Olvass valódi értékeléseket más páriktól",
+                  "Olvass valódi értékeléseket más pároktól",
                   "Jelöld kedvenceidet, térj vissza bármikor",
                   "Küldj ajánlatkérést egyszerre több szolgáltatónak",
                 ].map((item) => (
@@ -144,7 +144,7 @@ export default async function HomePage() {
               <ul className="text-base text-white space-y-2 mb-5">
                 {[
                   "Ingyenes profil képekkel, leírással és elérhetőséggel",
-                  "Fogadj ajánlatkérést közvetlenül érdeklődő páraktól",
+                  "Fogadj ajánlatkérést közvetlenül érdeklődő pároktól",
                   "Kezeld üzeneteidet és értékeléseidet egy helyen",
                   "Jelenj meg aktívan kereső párok előtt",
                 ].map((item) => (

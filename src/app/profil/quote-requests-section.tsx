@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { ArrowLeft, FileText, Send, Trash2, Star, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
-import { createClient } from "@/lib/supabase/client";
 
 const SYSTEM_PREFIX = "__SYSTEM__:";
 const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
@@ -378,7 +378,6 @@ function QuoteChat({
   const [sendError, setSendError]         = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
-  const [showContext, setShowContext]      = useState(false);
   const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -405,43 +404,39 @@ function QuoteChat({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Realtime: new incoming quote messages
+  // Realtime: subscribe to new quote_messages and refresh via API
   useEffect(() => {
     const supabase = createClient();
     if (!supabase) return;
-
     const channel = supabase
-      .channel(`quote-chat-${requestId}-${providerId}`)
+      .channel(`quote-chat-${requestId}-${providerId}-${userId}`)
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         "postgres_changes" as any,
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "quote_messages",
-          filter: `quote_request_id=eq.${requestId}`,
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (payload: any) => {
-          const raw = payload.new;
-          if (raw.provider_id !== providerId) return;
-          if (raw.sender_id === userId) return; // own message already shown optimistically
-          const newMsg: QuoteMessage = {
-            id: raw.id, sender_id: raw.sender_id, body: raw.body,
-            read: false, created_at: raw.created_at,
-          };
-          setMessages((prev) => [...prev, newMsg]);
-          // Auto-mark as read
-          fetch(`/api/quote-requests/${requestId}/read`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ type: "messages", provider_id: providerId }),
-          }).then(() => window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh")))
+        { event: "INSERT", schema: "public", table: "quote_messages", filter: `quote_request_id=eq.${requestId}` },
+        () => {
+          fetch(`/api/quote-requests/${requestId}`)
+            .then((r) => r.json())
+            .then((data) => {
+              if (!data.messages) return;
+              const sorted = [...data.messages].sort((a: QuoteMessage, b: QuoteMessage) =>
+                a.created_at.localeCompare(b.created_at)
+              );
+              setMessages(sorted);
+              const unread = sorted.filter((m: QuoteMessage) => !m.read && m.sender_id !== userId);
+              if (unread.length > 0) {
+                fetch(`/api/quote-requests/${requestId}/read`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ type: "messages", provider_id: providerId }),
+                }).then(() => window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh")))
+                  .catch(() => {});
+              }
+            })
             .catch(() => {});
         }
       )
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestId, providerId, userId]);
@@ -522,15 +517,6 @@ function QuoteChat({
           <p className="text-sm font-semibold text-gray-900 truncate">{subject}</p>
           <p className="text-xs text-gray-500 truncate">{otherName}</p>
         </div>
-        {requestContext && (
-          <button
-            onClick={() => setShowContext(v => !v)}
-            className="text-xs text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer shrink-0"
-            title="Ajánlatkérés részletei"
-          >
-            <FileText className="h-4 w-4" />
-          </button>
-        )}
         {!confirmDelete ? (
           <button onClick={() => setConfirmDelete(true)} className="text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer shrink-0" title="Törlés">
             <Trash2 className="h-4 w-4" />
@@ -546,14 +532,10 @@ function QuoteChat({
         )}
       </div>
 
-      {/* Request context (collapsible) */}
-      {requestContext && showContext && (
-        <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 shrink-0">
-          <p className="text-xs font-medium text-gray-500 mb-1">
-            {CATEGORY_LABELS[requestContext.category as keyof typeof CATEGORY_LABELS] ?? requestContext.category}
-            {" · "}{requestContext.counties.join(", ")}
-          </p>
-          <p className="text-sm text-gray-700 whitespace-pre-line">{requestContext.message}</p>
+      {/* Pinned original message */}
+      {requestContext?.message && (
+        <div className="bg-[#84AAA6]/10 border-b border-[#84AAA6]/20 px-4 py-2.5 shrink-0">
+          <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{requestContext.message}</p>
         </div>
       )}
 
@@ -710,7 +692,9 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
     if (inChat) {
       document.body.classList.add("chat-mode");
       if (window.innerWidth >= 640) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        // setTimeout ensures the new view is in the DOM before scrolling,
+        // preventing the rendered chat height from overriding the scroll position.
+        setTimeout(() => window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }), 0);
       }
     } else {
       document.body.classList.remove("chat-mode");

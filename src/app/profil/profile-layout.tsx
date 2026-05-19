@@ -32,7 +32,6 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
   { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
-  { id: "quotes",    label: "Ajánlatkérések",   icon: <FileText className="h-4 w-4" /> },
   { id: "messages",       label: "Üzenetek",          icon: <MessageSquare className="h-4 w-4" /> },
   { id: "notifications",  label: "Értesítések",       icon: <Bell className="h-4 w-4" /> },
 ];
@@ -207,6 +206,7 @@ function MobileMenuDropdown({
   onSelect,
   unreadCount,
   unreadQuotesCount,
+  adminPendingCount,
   sidebarIndicator,
   onQuotesCta,
 }: {
@@ -215,12 +215,15 @@ function MobileMenuDropdown({
   onSelect: (s: Section) => void;
   unreadCount: number;
   unreadQuotesCount: number;
+  adminPendingCount: number;
   sidebarIndicator: SidebarIndicator | null;
   onQuotesCta: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const activeItem = items.find((i) => i.id === active) ?? items[0];
+  const activeItem = active === "quotes"
+    ? { id: "quotes" as Section, label: "Ajánlatkérések", icon: <FileText className="h-4 w-4" /> }
+    : (items.find((i) => i.id === active) ?? items[0]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -252,6 +255,11 @@ function MobileMenuDropdown({
               {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
             </span>
           )}
+          {active === "admin" && adminPendingCount > 0 && (
+            <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+              {adminPendingCount > 9 ? "9+" : adminPendingCount}
+            </span>
+          )}
           {active === "provider" && sidebarIndicator && (
             <span className={`w-2.5 h-2.5 rounded-full ${sidebarIndicator.color}`} />
           )}
@@ -262,13 +270,16 @@ function MobileMenuDropdown({
       {/* Dropdown list */}
       {open && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-          {/* Ajánlatkérés CTA at top */}
+          {/* Ajánlatkérések CTA at top */}
           <button
             onClick={() => { onQuotesCta(); setOpen(false); }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-base font-semibold text-[#84AAA6] bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors cursor-pointer border-b border-gray-100"
+            className={cn(
+              "w-full flex items-center gap-3 px-4 py-3 text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer border-b border-gray-100",
+              active === "quotes" && "bg-[#84AAA6]/10"
+            )}
           >
             <FileText className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left">Ajánlatkérés</span>
+            <span className="flex-1 text-left">Ajánlatkérések</span>
             {unreadQuotesCount > 0 && (
               <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
                 {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
@@ -300,6 +311,11 @@ function MobileMenuDropdown({
                   {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
                 </span>
               )}
+              {item.id === "admin" && adminPendingCount > 0 && (
+                <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                  {adminPendingCount > 9 ? "9+" : adminPendingCount}
+                </span>
+              )}
               {item.id === "provider" && sidebarIndicator && (
                 <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${sidebarIndicator.color}`} />
               )}
@@ -315,77 +331,63 @@ function MobileMenuDropdown({
 
 const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "quotes", "messages", "notifications"];
 
-function hashToSection(hash: string): Section | null {
-  const s = hash.replace("#", "") as Section;
-  return VALID_SECTIONS.includes(s) ? s : null;
-}
-
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
   const searchParams = useSearchParams();
   const [active, setActive] = useState<Section>("account");
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
   const [showApprovalDot, setShowApprovalDot] = useState(false);
+  const [adminPending, setAdminPending] = useState(0);
 
   useEffect(() => {
     const tab = searchParams.get("tab") as Section | null;
     if (tab && VALID_SECTIONS.includes(tab)) {
       setActive(tab);
-      return;
     }
-    const s = hashToSection(window.location.hash);
-    if (s) setActive(s);
   }, [searchParams]);
 
+  // Badge counts come from navbar's realtime broadcasts via window events.
+  // No separate Supabase subscription here — avoids hitting channel limits.
   useEffect(() => {
-    fetch("/api/messages")
-      .then((r) => r.json())
-      .then((data: { read: boolean; is_own: boolean }[]) =>
-        setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
-      )
-      .catch(() => {});
+    const onMessagesCount = (e: Event) =>
+      setUnreadCount((e as CustomEvent<number>).detail);
+    window.addEventListener("messages-unread-count", onMessagesCount);
+    return () => window.removeEventListener("messages-unread-count", onMessagesCount);
   }, []);
 
-  // Realtime: new incoming message → update sidebar badge immediately
+  // Admin: fetch + realtime pending provider count
   useEffect(() => {
+    if (role !== "admin") return;
     const supabase = createClient();
     if (!supabase) return;
+
+    const fetchPending = () => {
+      supabase
+        .from("providers")
+        .select("id, approval_status, pending_changes", { count: "exact", head: false })
+        .then(({ data }) => {
+          if (!data) return;
+          const count = data.filter(
+            (p) => p.approval_status === "pending" || (p.approval_status === "approved" && p.pending_changes)
+          ).length;
+          setAdminPending(count);
+        });
+    };
+
+    fetchPending();
+
     const channel = supabase
-      .channel(`profile-msg-${userId}`)
+      .channel(`admin-pending-${userId}`)
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
-        () => {
-          fetch("/api/messages")
-            .then((r) => r.json())
-            .then((data: { read: boolean; is_own: boolean }[]) =>
-              setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
-            )
-            .catch(() => {});
-        }
-      )
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "quote_messages" },
-        () => {
-          fetch("/api/quote-requests")
-            .then((r) => r.json())
-            .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
-              const unread = data.reduce(
-                (s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0),
-                0
-              );
-              setUnreadQuotes(unread);
-              window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
-            })
-            .catch(() => {});
-        }
+        { event: "*", schema: "public", table: "providers" },
+        fetchPending
       )
       .subscribe();
+
     return () => { supabase.removeChannel(channel); };
-  }, [userId]);
+  }, [role, userId]);
 
   const [messagesKey, setMessagesKey] = useState(0);
   const [quotesKey, setQuotesKey] = useState(0);
@@ -426,7 +428,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       return;
     }
     setActive(section);
-    window.location.hash = section;
+    history.pushState(null, "", `?tab=${section}`);
     if (section === "provider" && showApprovalDot) {
       setShowApprovalDot(false);
       localStorage.setItem(`provider_approval_ack_${userId}`, "approved");
@@ -441,22 +443,19 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   };
 
   useEffect(() => {
-    const onHashChange = () => {
-      const s = hashToSection(window.location.hash);
-      if (s) setActive(s);
-    };
     const onProfileSection = (e: Event) => {
       const section = (e as CustomEvent).detail as Section;
-      if (VALID_SECTIONS.includes(section)) setActive(section);
+      if (VALID_SECTIONS.includes(section)) {
+        setActive(section);
+        history.pushState(null, "", `?tab=${section}`);
+      }
     };
     const onQuotesCount = (e: Event) => {
       setUnreadQuotes((e as CustomEvent<number>).detail);
     };
-    window.addEventListener("hashchange", onHashChange);
     window.addEventListener("profile-section", onProfileSection);
     window.addEventListener("quotes-unread-count", onQuotesCount);
     return () => {
-      window.removeEventListener("hashchange", onHashChange);
       window.removeEventListener("profile-section", onProfileSection);
       window.removeEventListener("quotes-unread-count", onQuotesCount);
     };
@@ -478,32 +477,35 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             onSelect={switchTo}
             unreadCount={unreadCount}
             unreadQuotesCount={unreadQuotes}
+            adminPendingCount={adminPending}
             sidebarIndicator={sidebarIndicator}
             onQuotesCta={() => switchTo("quotes")}
           />
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
-            {/* Ajánlatkérés CTA – highlighted at top */}
+            {/* Ajánlatkérések CTA – highlighted at top */}
+            <div className="border-b border-gray-100 pb-1 mb-1">
             <button
               onClick={() => switchTo("quotes")}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold transition-colors cursor-pointer w-full text-left mb-1 bg-[#84AAA6]/10 text-[#84AAA6] hover:bg-[#84AAA6]/20"
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
             >
               <FileText className="h-4 w-4 shrink-0" />
-              <span>Ajánlatkérés</span>
+              <span>Ajánlatkérések</span>
               {unreadQuotes > 0 && (
                 <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
                   {unreadQuotes > 9 ? "9+" : unreadQuotes}
                 </span>
               )}
             </button>
+            </div>
             {MENU_ITEMS.filter(item =>
               (item.id !== "admin"     || role === "admin") &&
               (item.id !== "dashboard" || role === "provider")
             ).map((item) => (
               <a
                 key={item.id}
-                href={`#${item.id}`}
+                href={`?tab=${item.id}`}
                 onClick={(e) => { e.preventDefault(); switchTo(item.id); }}
                 className={cn(
                   "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer",
@@ -528,6 +530,11 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 {item.id === "messages" && unreadCount > 0 && (
                   <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
                     {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+                {item.id === "admin" && adminPending > 0 && (
+                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
+                    {adminPending > 9 ? "9+" : adminPending}
                   </span>
                 )}
               </a>
@@ -668,7 +675,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "messages" && (
             <div className="section-larger-text">
-              <MessagesSection key={messagesKey} userId={userId} onUnreadChange={setUnreadCount} />
+              <MessagesSection key={messagesKey} userId={userId} role={role} onUnreadChange={setUnreadCount} />
             </div>
           )}
 

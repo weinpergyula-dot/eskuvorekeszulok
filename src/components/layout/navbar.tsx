@@ -89,40 +89,65 @@ export function Navbar() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  // Realtime: new incoming message → update navbar badge immediately
+  // Single source of realtime truth — navbar owns all Supabase subscriptions
+  // and broadcasts results via window events so other components don't need
+  // their own subscriptions (avoids hitting Supabase channel limits).
   useEffect(() => {
     if (!supabase || !user) return;
+
+    const broadcastMessages = (payload?: { new?: Record<string, unknown> }) => {
+      // Dispatch raw payload so chat views can show the new message immediately
+      if (payload?.new) {
+        window.dispatchEvent(new CustomEvent("message-inserted", { detail: payload.new }));
+      }
+      fetch("/api/messages")
+        .then((r) => r.json())
+        .then((data: { read: boolean; is_own: boolean }[]) => {
+          const count = data.filter((m) => !m.read && !m.is_own).length;
+          setUnreadMessages(count);
+          window.dispatchEvent(new CustomEvent("messages-unread-count", { detail: count }));
+        })
+        .catch(() => {});
+    };
+
+    const broadcastQuotes = (payload?: { new?: Record<string, unknown> }) => {
+      // Dispatch raw payload so quote chat views can show the new message immediately
+      if (payload?.new) {
+        window.dispatchEvent(new CustomEvent("quote-message-inserted", { detail: payload.new }));
+      }
+      fetch("/api/quote-requests")
+        .then((r) => r.json())
+        .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
+          const unread = data.reduce(
+            (s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0),
+            0
+          );
+          setUnreadQuotes(unread);
+          window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
+          window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
+        })
+        .catch(() => {});
+    };
+
     const channel = supabase
-      .channel(`navbar-msg-${user.id}`)
+      .channel(`navbar-realtime-${user.id}`)
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         "postgres_changes" as any,
         { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${user.id}` },
-        () => {
-          fetch("/api/messages")
-            .then((r) => r.json())
-            .then((data: { read: boolean; is_own: boolean }[]) =>
-              setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length)
-            )
-            .catch(() => {});
-        }
+        broadcastMessages
       )
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         "postgres_changes" as any,
         { event: "INSERT", schema: "public", table: "quote_messages" },
-        () => {
-          fetch("/api/quote-requests")
-            .then((r) => r.json())
-            .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
-              const unread = data.reduce(
-                (s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0),
-                0
-              );
-              window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
-            })
-            .catch(() => {});
-        }
+        broadcastQuotes
+      )
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "quote_request_recipients", filter: `provider_user_id=eq.${user.id}` },
+        broadcastQuotes
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -145,13 +170,17 @@ export function Navbar() {
         setProviderDot(null);
       });
     fetch("/api/messages").then((r) => r.json())
-      .then((data: { read: boolean; is_own: boolean }[]) =>
-        setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length))
+      .then((data: { read: boolean; is_own: boolean }[]) => {
+        const count = data.filter((m) => !m.read && !m.is_own).length;
+        setUnreadMessages(count);
+        window.dispatchEvent(new CustomEvent("messages-unread-count", { detail: count }));
+      })
       .catch(() => {});
     fetch("/api/quote-requests").then((r) => r.json())
       .then((data: { read?: boolean; unread_reply_count?: number }[]) => {
         const unread = data.reduce((s, r) => s + ("read" in r ? (r.read ? 0 : 1) : 0) + (r.unread_reply_count ?? 0), 0);
         setUnreadQuotes(unread);
+        window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
       })
       .catch(() => {});
   }, [user]);
@@ -174,22 +203,20 @@ export function Navbar() {
   }, [profile]);
 
   useEffect(() => {
-    const refresh = () => {
+    const onMessagesRead = () => {
       fetch("/api/messages").then((r) => r.json())
-        .then((data: { read: boolean; is_own: boolean }[]) =>
-          setUnreadMessages(data.filter((m) => !m.read && !m.is_own).length))
+        .then((data: { read: boolean; is_own: boolean }[]) => {
+          const count = data.filter((m) => !m.read && !m.is_own).length;
+          setUnreadMessages(count);
+          window.dispatchEvent(new CustomEvent("messages-unread-count", { detail: count }));
+        })
         .catch(() => {});
     };
-    const onQuotesCount = (e: Event) => {
-      setUnreadQuotes((e as CustomEvent<number>).detail);
-    };
     const onApprovalSeen = () => setProviderDot(null);
-    window.addEventListener("messages-read", refresh);
-    window.addEventListener("quotes-unread-count", onQuotesCount);
+    window.addEventListener("messages-read", onMessagesRead);
     window.addEventListener("provider-approval-seen", onApprovalSeen);
     return () => {
-      window.removeEventListener("messages-read", refresh);
-      window.removeEventListener("quotes-unread-count", onQuotesCount);
+      window.removeEventListener("messages-read", onMessagesRead);
       window.removeEventListener("provider-approval-seen", onApprovalSeen);
     };
   }, []);
