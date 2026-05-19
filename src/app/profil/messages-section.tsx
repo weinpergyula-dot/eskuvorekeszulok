@@ -522,6 +522,13 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
     };
   }, [loadMessages]);
 
+  // Back to list when user clicks the active "Üzenetek" menu item
+  useEffect(() => {
+    const handler = () => { setSelectedThread(null); loadMessages(); };
+    window.addEventListener("messages-back-to-list", handler);
+    return () => window.removeEventListener("messages-back-to-list", handler);
+  }, [loadMessages]);
+
   // Add/remove body class when entering/leaving chat
   useEffect(() => {
     if (selectedThread) {
