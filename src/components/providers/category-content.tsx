@@ -107,7 +107,7 @@ export function CategoryContent({
           <>
             <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
               <p className="text-lg text-gray-900">
-                {filteredProviders.length} szolgáltató található
+                {filteredProviders.length} találat
                 {selected ? ` – ${selected}` : ""}
               </p>
               <div className="flex items-center gap-2">
