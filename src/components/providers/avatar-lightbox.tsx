@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AvatarLightboxProps {
@@ -33,22 +32,14 @@ export function AvatarLightbox({ src, name, size = "w-28 h-28" }: AvatarLightbox
 
       {open && src && (
         <div
-          className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
+          className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center cursor-zoom-out"
           onClick={() => setOpen(false)}
         >
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="absolute top-4 right-4 text-white/80 hover:text-white p-2"
-          >
-            <X className="h-7 w-7" />
-          </button>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={src}
             alt={name}
-            onClick={(e) => e.stopPropagation()}
-            className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl select-none"
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl select-none cursor-zoom-out"
           />
         </div>
       )}
