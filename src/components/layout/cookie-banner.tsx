@@ -7,8 +7,8 @@ import { X } from "lucide-react";
 const STORAGE_KEY = "cookieConsent";
 
 function updateGtagConsent(granted: boolean) {
-  if (typeof window !== "undefined" && typeof (window as { gtag?: (...args: unknown[]) => void }).gtag === "function") {
-    (window as { gtag: (...args: unknown[]) => void }).gtag("consent", "update", {
+  if (typeof window !== "undefined" && typeof (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag === "function") {
+    (window as unknown as { gtag: (...args: unknown[]) => void }).gtag("consent", "update", {
       analytics_storage: granted ? "granted" : "denied",
     });
   }
