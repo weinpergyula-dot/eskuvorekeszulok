@@ -351,7 +351,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                         )}
                       </div>
                       {u.providerApprovalStatus === "approved" && u.providerId ? (
-                        <Link href={`/providers/${u.providerId}`} target="_blank" rel="noopener noreferrer"
+                        <Link href={`/providers/${u.providerId}`}
                           className="font-medium text-[#84AAA6] hover:underline whitespace-nowrap">
                           {u.full_name || "–"}
                         </Link>
@@ -438,7 +438,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   </div>
                   <div className="flex items-center gap-2 flex-wrap min-w-0">
                     {u.providerApprovalStatus === "approved" && u.providerId ? (
-                      <Link href={`/providers/${u.providerId}`} target="_blank" rel="noopener noreferrer"
+                      <Link href={`/providers/${u.providerId}`}
                         className="font-semibold text-base text-[#84AAA6] hover:underline truncate">
                         {u.full_name || "–"}
                       </Link>

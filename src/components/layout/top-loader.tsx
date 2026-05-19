@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
-export function TopLoader() {
+function TopLoaderInner() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);
-  const prevPathname = useRef(pathname);
+  const prevRoute = useRef(`${pathname}?${searchParams}`);
   const ticker = useRef<ReturnType<typeof setInterval> | null>(null);
   const completeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -32,14 +33,12 @@ export function TopLoader() {
     }, 350);
   };
 
-  // Listen for programmatic navigation (router.push from button dropdowns)
   useEffect(() => {
     const onNavStart = () => start();
     window.addEventListener("nav-start", onNavStart);
     return () => window.removeEventListener("nav-start", onNavStart);
   }, []);
 
-  // Intercept link clicks to start the bar
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement).closest("a");
@@ -53,20 +52,20 @@ export function TopLoader() {
         href.startsWith("http") ||
         anchor.getAttribute("target") === "_blank"
       ) return;
-      if (href === pathname) return;
+      if (href === `${pathname}?${searchParams}` || href === pathname) return;
       start();
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
-  // Complete when route changes
   useEffect(() => {
-    if (pathname !== prevPathname.current) {
-      prevPathname.current = pathname;
+    const current = `${pathname}?${searchParams}`;
+    if (current !== prevRoute.current) {
+      prevRoute.current = current;
       complete();
     }
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   useEffect(() => () => {
     if (ticker.current) clearInterval(ticker.current);
@@ -82,5 +81,13 @@ export function TopLoader() {
         style={{ width: `${progress}%` }}
       />
     </div>
+  );
+}
+
+export function TopLoader() {
+  return (
+    <Suspense>
+      <TopLoaderInner />
+    </Suspense>
   );
 }

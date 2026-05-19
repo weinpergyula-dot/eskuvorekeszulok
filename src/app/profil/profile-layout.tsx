@@ -427,6 +427,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       window.location.href = "/admin";
       return;
     }
+    if (section === "messages" && active === "messages") {
+      window.dispatchEvent(new CustomEvent("messages-back-to-list"));
+      return;
+    }
     setActive(section);
     history.pushState(null, "", `?tab=${section}`);
     if (section === "provider" && showApprovalDot) {

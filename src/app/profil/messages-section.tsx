@@ -163,8 +163,8 @@ function ThreadChat({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
   const [localMessages, setLocalMessages] = useState(thread.messages);
-  const bottomRef   = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef       = useRef<HTMLTextAreaElement>(null);
+  const messagesContainer = useRef<HTMLDivElement>(null);
 
   // Sync new server messages into localMessages when thread prop refreshes (deduped)
   const serverMsgCount = thread.messages.length;
@@ -206,7 +206,8 @@ function ThreadChat({
 
   // ── Scroll to bottom on new messages ──────────────────────────────────────
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = messagesContainer.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [localMessages]);
 
   // ── Presence tracking ─────────────────────────────────────────────────────
@@ -316,7 +317,10 @@ function ThreadChat({
         },
       ]);
       setReplyBody("");
-      if (textareaRef.current) textareaRef.current.style.height = "auto";
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.blur();
+      }
     } catch (err: unknown) {
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
     } finally {
@@ -414,7 +418,7 @@ function ThreadChat({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+      <div ref={messagesContainer} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
         {localMessages.map((msg) =>
           isSystemMsg(msg.body) ? (
             <div key={msg.id} className="flex justify-center">
@@ -438,7 +442,6 @@ function ThreadChat({
             </div>
           )
         )}
-        <div ref={bottomRef} />
       </div>
 
       {/* Subject label above reply box */}
@@ -519,14 +522,17 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
     };
   }, [loadMessages]);
 
-  // Add/remove body class + scroll to top on desktop when entering chat
+  // Back to list when user clicks the active "Üzenetek" menu item
+  useEffect(() => {
+    const handler = () => { setSelectedThread(null); loadMessages(); };
+    window.addEventListener("messages-back-to-list", handler);
+    return () => window.removeEventListener("messages-back-to-list", handler);
+  }, [loadMessages]);
+
+  // Add/remove body class when entering/leaving chat
   useEffect(() => {
     if (selectedThread) {
       document.body.classList.add("chat-mode");
-      // On desktop (sm+), scroll to top so the chat is fully visible
-      if (window.innerWidth >= 640) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
     } else {
       document.body.classList.remove("chat-mode");
     }
