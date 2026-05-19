@@ -559,40 +559,43 @@ export function MessagesSection({ userId, onUnreadChange }: Props) {
   // ── Inbox view ──
   const incomingThreads = threads.filter(t => !t.isOutgoing);
   const outgoingThreads = threads.filter(t => t.isOutgoing);
-  const tabThreads = tab === "bejovo" ? incomingThreads : outgoingThreads;
+  const hasTabs = incomingThreads.length > 0;
+  const tabThreads = hasTabs && tab === "bejovo" ? incomingThreads : outgoingThreads;
 
   const categories = [...new Set(tabThreads.map(t => t.category).filter(Boolean))] as string[];
   const visibleThreads = filterCategory ? tabThreads.filter(t => t.category === filterCategory) : tabThreads;
 
   return (
     <div className="space-y-3">
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200">
-        {(["bejovo", "kimenő"] as MessageTab[]).map((t) => {
-          const count = t === "bejovo" ? incomingThreads.filter(th => th.hasUnread).length : 0;
-          return (
-            <button
-              key={t}
-              onClick={() => { setTab(t); setFilterCategory(null); }}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-                tab === t ? "border-[#84AAA6] text-[#84AAA6]" : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {t === "bejovo" ? "Beérkező" : "Elküldött"}
-              {count > 0 && (
-                <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                  {count}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
+      {/* Tabs – only shown when there are incoming messages (providers) */}
+      {hasTabs && (
+        <div className="flex border-b border-gray-200">
+          {(["bejovo", "kimenő"] as MessageTab[]).map((t) => {
+            const count = t === "bejovo" ? incomingThreads.filter(th => th.hasUnread).length : 0;
+            return (
+              <button
+                key={t}
+                onClick={() => { setTab(t); setFilterCategory(null); }}
+                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                  tab === t ? "border-[#84AAA6] text-[#84AAA6]" : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {t === "bejovo" ? "Beérkező" : "Elküldött"}
+                {count > 0 && (
+                  <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {visibleThreads.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
           <Mail className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
-          <p className="text-base">{tab === "bejovo" ? "Még nem érkezett üzeneted." : "Még nem küldtél üzenetet."}</p>
+          <p className="text-base">Még nem küldtél üzenetet.</p>
         </div>
       ) : (
         <>
