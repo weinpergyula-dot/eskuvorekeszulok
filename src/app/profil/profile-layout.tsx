@@ -206,6 +206,7 @@ function MobileMenuDropdown({
   onSelect,
   unreadCount,
   unreadQuotesCount,
+  adminPendingCount,
   sidebarIndicator,
   onQuotesCta,
 }: {
@@ -214,6 +215,7 @@ function MobileMenuDropdown({
   onSelect: (s: Section) => void;
   unreadCount: number;
   unreadQuotesCount: number;
+  adminPendingCount: number;
   sidebarIndicator: SidebarIndicator | null;
   onQuotesCta: () => void;
 }) {
@@ -251,6 +253,11 @@ function MobileMenuDropdown({
           {active === "quotes" && unreadQuotesCount > 0 && (
             <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
               {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
+            </span>
+          )}
+          {active === "admin" && adminPendingCount > 0 && (
+            <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+              {adminPendingCount > 9 ? "9+" : adminPendingCount}
             </span>
           )}
           {active === "provider" && sidebarIndicator && (
@@ -304,6 +311,11 @@ function MobileMenuDropdown({
                   {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
                 </span>
               )}
+              {item.id === "admin" && adminPendingCount > 0 && (
+                <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                  {adminPendingCount > 9 ? "9+" : adminPendingCount}
+                </span>
+              )}
               {item.id === "provider" && sidebarIndicator && (
                 <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${sidebarIndicator.color}`} />
               )}
@@ -330,6 +342,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
   const [showApprovalDot, setShowApprovalDot] = useState(false);
+  const [adminPending, setAdminPending] = useState(0);
 
   useEffect(() => {
     const tab = searchParams.get("tab") as Section | null;
@@ -388,6 +401,40 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [userId]);
+
+  // Admin: fetch + realtime pending provider count
+  useEffect(() => {
+    if (role !== "admin") return;
+    const supabase = createClient();
+    if (!supabase) return;
+
+    const fetchPending = () => {
+      supabase
+        .from("providers")
+        .select("id, approval_status, pending_changes", { count: "exact", head: false })
+        .then(({ data }) => {
+          if (!data) return;
+          const count = data.filter(
+            (p) => p.approval_status === "pending" || (p.approval_status === "approved" && p.pending_changes)
+          ).length;
+          setAdminPending(count);
+        });
+    };
+
+    fetchPending();
+
+    const channel = supabase
+      .channel(`admin-pending-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "*", schema: "public", table: "providers" },
+        fetchPending
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [role, userId]);
 
   const [messagesKey, setMessagesKey] = useState(0);
   const [quotesKey, setQuotesKey] = useState(0);
@@ -480,6 +527,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             onSelect={switchTo}
             unreadCount={unreadCount}
             unreadQuotesCount={unreadQuotes}
+            adminPendingCount={adminPending}
             sidebarIndicator={sidebarIndicator}
             onQuotesCta={() => switchTo("quotes")}
           />
@@ -532,6 +580,11 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 {item.id === "messages" && unreadCount > 0 && (
                   <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
                     {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+                {item.id === "admin" && adminPending > 0 && (
+                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
+                    {adminPending > 9 ? "9+" : adminPending}
                   </span>
                 )}
               </a>
