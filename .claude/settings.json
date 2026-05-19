@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit *)",
+            "command": "input=$(cat); cmd=$(echo \"$input\" | jq -r '.tool_input.command' 2>/dev/null); [ -z \"$cmd\" ] && cmd=\"$input\"; if ! echo \"$cmd\" | grep -qE '#6|issues/6' && ! echo \"$cmd\" | grep -qiE 'Refs:|Closes:|Fixes:'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"REMINDER: A commit üzenetben nincs hivatkozás a #6-os issue-ra (https://github.com/weinpergyula-dot/eskuvorekeszulok/issues/6). Add hozzá a commit message végéhez: Refs: https://github.com/weinpergyula-dot/eskuvorekeszulok/issues/6\"}}'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -11,6 +11,8 @@ const SITE_URL = "https://eskuvorekeszulok.hu";
 const SITE_DESCRIPTION =
   "Találj meg mindent egy helyen a nagy napodra! Fotósok, zenészek, vőfélyek és egyéb esküvői szolgáltatók.";
 
+const GA_ID = "G-F3ZQFXKGET";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -44,6 +46,35 @@ export default function RootLayout({
   return (
     <html lang="hu" className="h-full">
       <head>
+        {/* Google Consent Mode v2 – minden más script elé, szinkron inicializálás */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent', 'default', {
+  'analytics_storage': 'denied',
+  'ad_storage': 'denied',
+  'ad_user_data': 'denied',
+  'ad_personalization': 'denied',
+  'wait_for_update': 500
+});
+            `.trim(),
+          }}
+        />
+        {/* Google Analytics 4 */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');
+            `.trim(),
+          }}
+        />
         <link rel="preload" href="/fonts/BloomSpeakBody-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/BloomSpeakBody-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/BloomSpeakBody-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />

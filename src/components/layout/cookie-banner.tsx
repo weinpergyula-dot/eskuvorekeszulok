@@ -4,19 +4,31 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 
-const STORAGE_KEY = "cookie_consent";
+const STORAGE_KEY = "cookieConsent";
+
+function updateGtagConsent(granted: boolean) {
+  if (typeof window !== "undefined" && typeof (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag === "function") {
+    (window as unknown as { gtag: (...args: unknown[]) => void }).gtag("consent", "update", {
+      analytics_storage: granted ? "granted" : "denied",
+    });
+  }
+}
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!localStorage.getItem(STORAGE_KEY)) {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
       setVisible(true);
+    } else if (stored === "accepted") {
+      updateGtagConsent(true);
     }
   }, []);
 
   const accept = () => {
     localStorage.setItem(STORAGE_KEY, "accepted");
+    updateGtagConsent(true);
     setVisible(false);
   };
 
@@ -32,8 +44,7 @@ export function CookieBanner() {
       <div className="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1 min-w-0">
           <p className="text-sm text-gray-700 leading-relaxed">
-            Az oldal az alapvető működéshez szükséges cookie-kat használ (bejelentkezési munkamenet).
-            Részletek a{" "}
+            Az oldal alapvető cookie-kat használ a bejelentkezési munkamenethez, és – hozzájárulás esetén – Google Analytics sütiket a névtelen forgalomméréshez. A beállítás bármikor módosítható. Részletek a{" "}
             <Link href="/cookies" className="text-[#84AAA6] underline hover:text-[#6B8E8A]">
               Cookie szabályzatban
             </Link>
