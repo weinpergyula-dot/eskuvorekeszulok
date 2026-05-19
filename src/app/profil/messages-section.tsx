@@ -61,7 +61,7 @@ function buildThreads(messages: Message[]): Thread[] {
     const otherId = msg.is_own ? msg.recipient_id : msg.sender_id;
     const key = `${normalizeSubject(msg.subject)}|${otherId}`;
     if (!map.has(key)) {
-      map.set(key, { key, subject: normalizeSubject(msg.subject), messages: [], lastAt: msg.created_at, hasUnread: false });
+      map.set(key, { key, subject: normalizeSubject(msg.subject), messages: [], lastAt: msg.created_at, hasUnread: false, otherAvatarUrl: null });
     }
     const t = map.get(key)!;
     t.messages.push(msg);
