@@ -57,7 +57,7 @@ function normalizeSubject(s: string) {
 
 function buildThreads(messages: Message[]): Thread[] {
   const visible = messages.filter((m) => !(m.is_own && isSystemMsg(m.body)));
-  const map = new Map<string, Omit<Thread, "category" | "providerLinkId" | "otherName" | "otherProviderId" | "otherAvatarUrl" | "recipientId" | "isOutgoing">>();
+  const map = new Map<string, Omit<Thread, "category" | "providerLinkId" | "otherName" | "otherProviderId" | "recipientId" | "isOutgoing">>();
   for (const msg of visible) {
     const otherId = msg.is_own ? msg.recipient_id : msg.sender_id;
     const key = `${normalizeSubject(msg.subject)}|${otherId}`;
