@@ -316,7 +316,10 @@ function ThreadChat({
         },
       ]);
       setReplyBody("");
-      if (textareaRef.current) textareaRef.current.style.height = "auto";
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.blur();
+      }
     } catch (err: unknown) {
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
     } finally {
