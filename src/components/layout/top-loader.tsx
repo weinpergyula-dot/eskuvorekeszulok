@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export function TopLoader() {
+function TopLoaderInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [visible, setVisible] = useState(false);
@@ -33,14 +33,12 @@ export function TopLoader() {
     }, 350);
   };
 
-  // Listen for programmatic navigation (router.push from button dropdowns)
   useEffect(() => {
     const onNavStart = () => start();
     window.addEventListener("nav-start", onNavStart);
     return () => window.removeEventListener("nav-start", onNavStart);
   }, []);
 
-  // Intercept link clicks to start the bar
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement).closest("a");
@@ -59,9 +57,8 @@ export function TopLoader() {
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
-  // Complete when route or query params change
   useEffect(() => {
     const current = `${pathname}?${searchParams}`;
     if (current !== prevRoute.current) {
@@ -84,5 +81,13 @@ export function TopLoader() {
         style={{ width: `${progress}%` }}
       />
     </div>
+  );
+}
+
+export function TopLoader() {
+  return (
+    <Suspense>
+      <TopLoaderInner />
+    </Suspense>
   );
 }
