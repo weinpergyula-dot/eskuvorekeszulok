@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction } from "./actions";
+import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction, sendConfirmationEmailAction, deleteUserAction, setProfileAvatarAction } from "./actions";
+import { logError } from "@/lib/log-error";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Label } from "@/components/ui/label";
@@ -94,6 +95,7 @@ function translateError(msg: string): string {
   if (msg.includes("Password should be at least")) return "A jelszónak legalább 6 karakter hosszúnak kell lennie.";
   if (msg.includes("Unable to validate email address") || msg.includes("Invalid email")) return "Érvénytelen e-mail cím.";
   if (msg.includes("rate limit") || msg.includes("too many")) return "Túl sok próbálkozás. Kérjük, várj egy kicsit.";
+  if (msg.toLowerCase().includes("failed to fetch") || msg.toLowerCase().includes("network") || msg.toLowerCase().includes("fetch")) return "A szerver átmenetileg nem elérhető. Kérjük, próbáld újra néhány perc múlva.";
   return msg;
 }
 
@@ -132,6 +134,11 @@ function RegisterContent() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
 
+  // Visitor avatar (basic step)
+  const [visitorAvatarFile, setVisitorAvatarFile] = useState<File | null>(null);
+  const [visitorAvatarPreview, setVisitorAvatarPreview] = useState<string | null>(null);
+  const visitorAvatarInputRef = useRef<HTMLInputElement>(null);
+
   const basicValid =
     fullName.trim().length > 0 &&
     email.trim().length > 0 &&
@@ -159,6 +166,9 @@ function RegisterContent() {
           setEmail(user.email ?? "");
           setIsUpgrade(true);
           setStep("provider-details");
+          // Pre-populate avatar from visitor profile if present
+          const { data: profileData } = await supabase.from("profiles").select("avatar_url").eq("user_id", user.id).single();
+          if (profileData?.avatar_url) setAvatarPreview(profileData.avatar_url);
         } else {
           setStep("basic");
         }
@@ -211,6 +221,19 @@ function RegisterContent() {
     setAvatarFile(null);
     setAvatarPreview(null);
     if (avatarInputRef.current) avatarInputRef.current.value = "";
+  };
+
+  const handleVisitorAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setVisitorAvatarFile(file);
+    setVisitorAvatarPreview(URL.createObjectURL(file));
+  };
+
+  const removeVisitorAvatar = () => {
+    setVisitorAvatarFile(null);
+    setVisitorAvatarPreview(null);
+    if (visitorAvatarInputRef.current) visitorAvatarInputRef.current.value = "";
   };
 
   const uploadFile = async (file: File, bucket: string, path: string) => {
@@ -277,49 +300,68 @@ function RegisterContent() {
         return;
       }
 
-      // Normal registration flow – use server action so Supabase sends token_hash email (no PKCE)
+      // Normal registration flow – Supabase creates the user (email sending disabled on Supabase)
       const { userId: newUserId, error: signUpError } = await signUpAction(
         email,
         password,
-        `${window.location.origin}/auth/confirm`,
+        `${window.location.origin}/auth/callback`,
         { full_name: fullName, role }
       );
 
       if (signUpError) throw new Error(signUpError);
       if (!newUserId) throw new Error("Ismeretlen hiba történt.");
 
-      // Wrap in a plain object so the rest of the code can use authData.user.id
-      const authData = { user: { id: newUserId } };
-
       if (role === "provider") {
-        let avatarUrl = "";
-        const galleryUrls: string[] = [];
+        // Any failure after user creation rolls back by deleting the auth user,
+        // so we never end up with a provider profile-less "zombie" account.
+        try {
+          let avatarUrl = "";
+          const galleryUrls: string[] = [];
 
-        if (avatarFile) {
-          avatarUrl = await uploadFile(avatarFile, "avatars", `${authData.user.id}/avatar`);
+          if (avatarFile) {
+            avatarUrl = await uploadFile(avatarFile, "avatars", `${newUserId}/avatar`);
+          }
+          for (let i = 0; i < galleryFiles.length; i++) {
+            galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${newUserId}/gallery-${i}`));
+          }
+
+          const { error: providerError } = await createProviderProfileAction(newUserId, {
+            full_name: fullName,
+            email,
+            phone,
+            counties,
+            categories,
+            description,
+            detailed_description: detailedDescription || null,
+            website: website || null,
+            avatar_url: avatarUrl || null,
+            gallery_urls: galleryUrls,
+          });
+          if (providerError) throw new Error(providerError);
+
+          const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
+          if (confirmError) throw new Error(confirmError);
+        } catch (innerErr) {
+          const msg = innerErr instanceof Error ? innerErr.message : String(innerErr);
+          await logError("registration/provider", msg, { email });
+          await deleteUserAction(newUserId);
+          throw innerErr;
         }
-
-        for (let i = 0; i < galleryFiles.length; i++) {
-          galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${authData.user.id}/gallery-${i}`));
-        }
-
-        const { error: providerError } = await createProviderProfileAction(authData.user.id, {
-          full_name: fullName,
-          email,
-          phone,
-          counties,
-          categories,
-          description,
-          detailed_description: detailedDescription || null,
-          website: website || null,
-          avatar_url: avatarUrl || null,
-          gallery_urls: galleryUrls,
-        });
-
-        if (providerError) throw new Error(providerError);
       } else {
-        const { error: tosError } = await acceptTosAction(authData.user.id);
+        const { error: tosError } = await acceptTosAction(newUserId);
         if (tosError) throw new Error(tosError);
+
+        if (visitorAvatarFile) {
+          try {
+            const avatarUrl = await uploadFile(visitorAvatarFile, "avatars", `${newUserId}/visitor-avatar`);
+            await setProfileAvatarAction(newUserId, avatarUrl);
+          } catch {
+            // non-fatal — avatar upload failure does not block registration
+          }
+        }
+
+        const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
+        if (confirmError) throw new Error(confirmError);
       }
 
       router.push(
@@ -485,6 +527,40 @@ function RegisterContent() {
                 <p className="text-sm text-[#F06C6C] mt-1 px-1">{confirmPasswordError}</p>
               )}
             </div>
+
+            {role === "visitor" && (
+              <div className="space-y-2">
+                <p className="text-base text-gray-800">Profilkép (opcionális)</p>
+                <div className="flex items-center gap-4">
+                  <div
+                    className="w-14 h-14 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50 shrink-0"
+                    onClick={() => visitorAvatarInputRef.current?.click()}
+                  >
+                    {visitorAvatarPreview
+                      // eslint-disable-next-line @next/next/no-img-element
+                      ? <img src={visitorAvatarPreview} alt="preview" className="w-full h-full object-cover" />
+                      : <span className="text-xl">📷</span>}
+                  </div>
+                  <div className="flex flex-col gap-1.5 min-w-0">
+                    <button type="button" onClick={() => visitorAvatarInputRef.current?.click()}
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
+                    >
+                      <ImagePlus className="h-4 w-4" />
+                      {visitorAvatarFile ? "Csere" : "Kép feltöltése"}
+                    </button>
+                    {visitorAvatarFile && (
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200 text-sm max-w-xs">
+                        <span className="text-gray-700 truncate flex-1">{visitorAvatarFile.name}</span>
+                        <button type="button" onClick={removeVisitorAvatar} className="text-gray-400 hover:text-red-500 transition-colors shrink-0">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <input ref={visitorAvatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleVisitorAvatarChange} />
+              </div>
+            )}
 
             <label className="flex items-start gap-3 cursor-pointer">
               <input

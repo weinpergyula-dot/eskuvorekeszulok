@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Phone, Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star } from "lucide-react";
+import { CATEGORY_LABELS } from "@/lib/types";
 
 interface UserProfile {
   id: string;
@@ -15,9 +17,13 @@ interface UserProfile {
   role: "visitor" | "provider" | "admin";
   created_at: string;
   avatar_url?: string | null;
+  phone: string | null;
+  providerCategories: string[] | null;
+  providerViewCount: number | null;
   providerApprovalStatus?: string | null;
   providerHasPendingChanges?: boolean;
   providerId?: string | null;
+  providerFeatured?: boolean;
 }
 
 interface ProviderStatus {
@@ -33,23 +39,32 @@ const ROLE_LABELS: Record<string, string> = {
   admin: "Admin",
 };
 
-const ROLE_BADGE: Record<string, "default" | "secondary" | "approved"> = {
+const ROLE_BADGE: Record<string, "default" | "secondary" | "approved" | "admin"> = {
   visitor: "secondary",
   provider: "default",
-  admin: "approved",
+  admin: "admin",
 };
 
 const PAGE_SIZE = 10;
 
-type ApprovalFilter = "all" | "approved" | "pending" | "visitor" | "admin";
+type ApprovalFilter = "all" | "provider" | "visitor" | "admin";
 
 const FILTER_LABELS: Record<ApprovalFilter, string> = {
   all:      "Összes",
-  approved: "Jóváhagyott",
-  pending:  "Jóváhagyásra vár",
-  visitor:  "Látogató",
+  provider: "Szolgáltatók",
+  visitor:  "Látogatók",
   admin:    "Admin",
 };
+
+type SortKey = "full_name" | "role" | "email" | "created_at" | "providerViewCount";
+type SortDir = "asc" | "desc";
+
+function SortIcon({ col, sortKey, dir }: { col: SortKey; sortKey: SortKey; dir: SortDir }) {
+  if (col !== sortKey) return <ChevronsUpDown className="h-3.5 w-3.5 text-gray-400 inline ml-1" />;
+  return dir === "asc"
+    ? <ChevronUp className="h-3.5 w-3.5 text-[#84AAA6] inline ml-1" />
+    : <ChevronDown className="h-3.5 w-3.5 text-[#84AAA6] inline ml-1" />;
+}
 
 export function UsersSection({ providerStatuses }: { providerStatuses: ProviderStatus[] }) {
   const router = useRouter();
@@ -61,27 +76,30 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [approvalFilter, setApprovalFilter] = useState<ApprovalFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [sortKey, setSortKey] = useState<SortKey>("created_at");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   useEffect(() => {
-    const providerMap = new Map(providerStatuses.map((p) => [p.user_id, p]));
+    void providerStatuses;
     fetch("/api/admin/users")
       .then((r) => r.json())
-      .then((profileData) => {
-        const profiles: UserProfile[] = Array.isArray(profileData) ? profileData : [];
-        setUsers(profiles.map((u) => {
-          const prov = providerMap.get(u.user_id);
-          return {
-            ...u,
-            providerApprovalStatus: prov?.approval_status ?? null,
-            providerHasPendingChanges: !!prov?.pending_changes,
-            providerId: prov?.id ?? null,
-          };
-        }));
+      .then((data) => {
+        setUsers(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [providerStatuses]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const allCategories = useMemo(() => {
+    const cats = new Set<string>();
+    for (const u of users) {
+      for (const c of u.providerCategories ?? []) cats.add(c);
+    }
+    return [...cats].sort();
+  }, [users]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -92,28 +110,50 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
         u.email.toLowerCase().includes(q);
 
       let matchesFilter = true;
-      if (approvalFilter === "approved") {
-        matchesFilter = u.role === "provider"
-          && u.providerApprovalStatus === "approved"
-          && !u.providerHasPendingChanges;
-      } else if (approvalFilter === "pending") {
-        matchesFilter = u.providerApprovalStatus === "pending" || !!u.providerHasPendingChanges;
+      if (approvalFilter === "provider") {
+        matchesFilter = u.role === "provider" || u.providerId != null;
       } else if (approvalFilter === "visitor") {
         matchesFilter = u.role === "visitor";
       } else if (approvalFilter === "admin") {
         matchesFilter = u.role === "admin";
       }
-      // "all" → matchesFilter stays true
 
-      return matchesSearch && matchesFilter;
+      const matchesCategory =
+        !categoryFilter ||
+        (u.providerCategories ?? []).includes(categoryFilter);
+
+      return matchesSearch && matchesFilter && matchesCategory;
     });
-  }, [users, search, approvalFilter]);
+  }, [users, search, approvalFilter, categoryFilter]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "full_name") cmp = a.full_name.localeCompare(b.full_name, "hu");
+      else if (sortKey === "role") cmp = a.role.localeCompare(b.role, "hu");
+      else if (sortKey === "email") cmp = a.email.localeCompare(b.email, "hu");
+      else if (sortKey === "created_at") cmp = a.created_at.localeCompare(b.created_at);
+      else if (sortKey === "providerViewCount") cmp = (a.providerViewCount ?? -1) - (b.providerViewCount ?? -1);
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+  }, [filtered, sortKey, sortDir]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+  const paginated = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handleSearch = (v: string) => { setSearch(v); setPage(1); };
   const handleFilter = (v: ApprovalFilter) => { setApprovalFilter(v); setPage(1); };
+  const handleCategory = (v: string | null) => { setCategoryFilter(v); setPage(1); };
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => d === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+    setPage(1);
+  };
 
   const setRole = async (userId: string, role: string) => {
     setUpdating(userId);
@@ -131,6 +171,26 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
         prev.map((u) => (u.user_id === userId ? { ...u, role: role as UserProfile["role"] } : u))
       );
       router.refresh();
+    }
+    setUpdating(null);
+  };
+
+  const toggleFeatured = async (u: UserProfile) => {
+    if (!u.providerId) return;
+    setUpdating(u.user_id);
+    setError(null);
+    const res = await fetch("/api/admin/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ toggleFeatured: true, providerId: u.providerId }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error ?? "Hiba történt.");
+    } else {
+      setUsers((prev) =>
+        prev.map((x) => x.user_id === u.user_id ? { ...x, providerFeatured: data.featured } : x)
+      );
     }
     setUpdating(null);
   };
@@ -160,185 +220,316 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
     </div>
   );
 
+  const thClass = "px-4 py-2.5 font-semibold text-gray-700 text-left select-none cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap";
+  const thActive = "text-[#84AAA6]";
+
   return (
     <>
-    {/* Confirm delete dialog */}
-    {confirmDelete && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
-          <h3 className="font-bold text-gray-900 mb-2">Felhasználó törlése</h3>
-          <p className="text-lg text-gray-900 mb-1">
-            Biztosan véglegesen törlöd ezt a felhasználót?
-          </p>
-          <p className="text-lg font-medium text-gray-900 mb-4">
-            {confirmDelete.full_name || confirmDelete.email}
-          </p>
-          <p className="text-base text-[#F06C6C] mb-5">
-            Ez a művelet nem visszavonható. A felhasználó összes adata törlődik.
-          </p>
-          <div className="flex gap-3 justify-end">
-            <Button size="sm" variant="outline" onClick={() => setConfirmDelete(null)}>
-              Mégse
-            </Button>
-            <Button
-              size="sm"
-              variant="destructive"
-              disabled={deleting === confirmDelete.user_id}
-              onClick={() => deleteUser(confirmDelete)}
-            >
-              {deleting === confirmDelete.user_id ? "Törlés..." : "Végleges törlés"}
-            </Button>
+      {/* Confirm delete dialog */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
+            <h3 className="font-bold text-gray-900 mb-2">Felhasználó törlése</h3>
+            <p className="text-lg text-gray-900 mb-1">Biztosan véglegesen törlöd ezt a felhasználót?</p>
+            <p className="text-lg font-medium text-gray-900 mb-4">{confirmDelete.full_name || confirmDelete.email}</p>
+            <p className="text-base text-[#F06C6C] mb-5">Ez a művelet nem visszavonható. A felhasználó összes adata törlődik.</p>
+            <div className="flex gap-3 justify-end">
+              <Button size="sm" variant="outline" onClick={() => setConfirmDelete(null)}>Mégse</Button>
+              <Button size="sm" variant="destructive" disabled={deleting === confirmDelete.user_id} onClick={() => deleteUser(confirmDelete)}>
+                {deleting === confirmDelete.user_id ? "Törlés..." : "Végleges törlés"}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-    <div className="space-y-4">
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      )}
+
+      <div className="space-y-4">
+        {/* Search */}
         <Input
           placeholder="Keresés név vagy email alapján..."
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
-          className="sm:max-w-xs"
+          className="max-w-sm"
         />
+
+        {/* Role / status filters */}
         <div className="flex flex-wrap gap-2">
-          {(["all", "approved", "pending", "visitor", "admin"] as ApprovalFilter[]).map((f) => (
+          {(["all", "provider", "visitor", "admin"] as ApprovalFilter[]).map((f) => (
             <button
               key={f}
               onClick={() => handleFilter(f)}
-              className={`px-3 py-1.5 rounded-md text-base font-medium border transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors cursor-pointer ${
                 approvalFilter === f
                   ? "bg-[#84AAA6] text-white border-[#84AAA6]"
-                  : "bg-white text-gray-900 border-gray-200 hover:border-[#84AAA6]"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
               {FILTER_LABELS[f]}
             </button>
           ))}
         </div>
-      </div>
 
-      <p className="text-base text-gray-900">{filtered.length} felhasználó</p>
+        {/* Category filters */}
+        {allCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleCategory(null)}
+              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer ${
+                categoryFilter === null
+                  ? "bg-gray-700 text-white border-gray-700"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+              }`}
+            >
+              Minden kategória
+            </button>
+            {allCategories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => handleCategory(cat === categoryFilter ? null : cat)}
+                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer ${
+                  categoryFilter === cat
+                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
+                }`}
+              >
+                {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+              </button>
+            ))}
+          </div>
+        )}
 
-      {error && (
-        <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
-          {error}
+        <p className="text-sm text-gray-500">{sorted.length} felhasználó</p>
+
+        {error && (
+          <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+            {error}
+          </div>
+        )}
+
+        {paginated.length === 0 && (
+          <p className="text-gray-500 text-sm">Nincs találat.</p>
+        )}
+
+        {/* Desktop table */}
+        <div className="hidden sm:block rounded-xl border border-gray-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className={`${thClass} ${sortKey === "full_name" ? thActive : ""}`} onClick={() => handleSort("full_name")}>
+                  Név <SortIcon col="full_name" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className={`${thClass} ${sortKey === "role" ? thActive : ""}`} onClick={() => handleSort("role")}>
+                  Fiók típusa <SortIcon col="role" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className={`${thClass} ${sortKey === "email" ? thActive : ""}`} onClick={() => handleSort("email")}>
+                  E-mail <SortIcon col="email" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className={`${thClass} cursor-default hover:bg-gray-50`}>Telefon</th>
+                <th className={`${thClass} cursor-default hover:bg-gray-50`}>Kategóriák</th>
+                <th className={`${thClass} ${sortKey === "created_at" ? thActive : ""}`} onClick={() => handleSort("created_at")}>
+                  Regisztrált <SortIcon col="created_at" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className={`${thClass} ${sortKey === "providerViewCount" ? thActive : ""}`} onClick={() => handleSort("providerViewCount")}>
+                  <Eye className="h-3.5 w-3.5 inline" /> <SortIcon col="providerViewCount" sortKey={sortKey} dir={sortDir} />
+                </th>
+                <th className="px-4 py-2.5" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {paginated.map((u) => (
+                <tr key={u.id} className="bg-white hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
+                        {u.avatar_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[10px] font-semibold text-[#84AAA6]">
+                            {(u.full_name || u.email || "?").split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("")}
+                          </span>
+                        )}
+                      </div>
+                      {u.providerApprovalStatus === "approved" && u.providerId ? (
+                        <Link href={`/providers/${u.providerId}`} target="_blank" rel="noopener noreferrer"
+                          className="font-medium text-[#84AAA6] hover:underline whitespace-nowrap">
+                          {u.full_name || "–"}
+                        </Link>
+                      ) : (
+                        <span className="font-medium text-gray-900 whitespace-nowrap">{u.full_name || "–"}</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <Badge variant={ROLE_BADGE[u.role]} className="text-xs">{ROLE_LABELS[u.role]}</Badge>
+                  </td>
+                  <td className="px-4 py-2.5 text-gray-600 max-w-[180px] truncate">{u.email}</td>
+                  <td className="px-4 py-2.5 text-gray-600 whitespace-nowrap">{u.phone || "–"}</td>
+                  <td className="px-4 py-2.5 text-gray-600 max-w-[200px]">
+                    <span className="line-clamp-2 leading-snug">
+                      {(u.providerCategories ?? []).length > 0
+                        ? (u.providerCategories ?? []).map((c) => CATEGORY_LABELS[c as keyof typeof CATEGORY_LABELS] ?? c).join(", ")
+                        : "–"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">
+                    {new Date(u.created_at).toLocaleDateString("hu-HU")}
+                  </td>
+                  <td className="px-4 py-2.5 text-gray-400 whitespace-nowrap">
+                    {u.providerViewCount ?? "–"}
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <div className="flex items-center gap-2 justify-end">
+                      {u.providerApprovalStatus === "approved" && u.providerId && (
+                        <button
+                          disabled={updating === u.user_id}
+                          onClick={() => toggleFeatured(u)}
+                          title={u.providerFeatured ? "Kiemelt – kattints az eltávolításhoz" : "Kiemelés a főoldalra"}
+                          className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                            u.providerFeatured
+                              ? "bg-amber-400 border-amber-400 text-white hover:bg-amber-500"
+                              : "bg-white border-gray-200 text-gray-400 hover:border-amber-400 hover:text-amber-400"
+                          }`}
+                        >
+                          <Star className="h-3.5 w-3.5" fill={u.providerFeatured ? "currentColor" : "none"} />
+                        </button>
+                      )}
+                      {u.role !== "admin" ? (
+                        <Button size="sm" variant="outline" disabled={updating === u.user_id}
+                          onClick={() => setRole(u.user_id, "admin")}
+                          className="text-xs cursor-pointer h-7 px-2.5 whitespace-nowrap">
+                          Admin legyen
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="outline" disabled={updating === u.user_id}
+                          onClick={() => setRole(u.user_id, "visitor")}
+                          className="text-xs cursor-pointer h-7 px-2.5 whitespace-nowrap">
+                          Admin jog elvétele
+                        </Button>
+                      )}
+                      <Button size="sm" variant="destructive" disabled={deleting === u.user_id}
+                        onClick={() => setConfirmDelete(u)}
+                        className="text-xs cursor-pointer h-7 px-2.5">
+                        Törlés
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
 
-      {paginated.length === 0 && (
-        <p className="text-gray-900 text-lg">Nincs találat.</p>
-      )}
-
-      <div className="space-y-3">
-        {paginated.map((u) => {
-          const initials = (u.full_name || u.email || "?")
-            .split(" ").filter(Boolean).slice(0, 2)
-            .map(w => w[0].toUpperCase()).join("");
-          return (
-          <div
-            key={u.id}
-            className="bg-white border border-gray-200 rounded-lg px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-          >
-            <div className="flex items-center gap-3">
-              {/* Avatar */}
-              <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
-                {u.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={u.avatar_url} alt={u.full_name} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-sm font-semibold text-[#84AAA6]">{initials}</span>
+        {/* Mobile cards */}
+        <div className="sm:hidden space-y-3">
+          {paginated.map((u) => (
+            <div key={u.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="px-4 pt-3 pb-2 flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-9 h-9 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
+                    {u.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-xs font-semibold text-[#84AAA6]">
+                        {(u.full_name || u.email || "?").split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("")}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap min-w-0">
+                    {u.providerApprovalStatus === "approved" && u.providerId ? (
+                      <Link href={`/providers/${u.providerId}`} target="_blank" rel="noopener noreferrer"
+                        className="font-semibold text-base text-[#84AAA6] hover:underline truncate">
+                        {u.full_name || "–"}
+                      </Link>
+                    ) : (
+                      <span className="font-semibold text-base text-gray-900 truncate">{u.full_name || "–"}</span>
+                    )}
+                    <Badge variant={ROLE_BADGE[u.role]} className="text-xs shrink-0">{ROLE_LABELS[u.role]}</Badge>
+                  </div>
+                </div>
+                {u.providerViewCount != null && (
+                  <span className="flex items-center gap-1 text-xs text-gray-400 shrink-0">
+                    <Eye className="h-3.5 w-3.5" />
+                    {u.providerViewCount}
+                  </span>
                 )}
               </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                  {u.providerApprovalStatus === "approved" && u.providerId ? (
-                    <Link
-                      href={`/providers/${u.providerId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-lg text-[#84AAA6] hover:underline"
-                    >
-                      {u.full_name || "–"}
-                    </Link>
-                  ) : (
-                    <span className="font-medium text-gray-900 text-lg">{u.full_name || "–"}</span>
-                  )}
-                  <Badge variant={ROLE_BADGE[u.role]} className="text-base">
-                    {ROLE_LABELS[u.role]}
-                  </Badge>
+              <div className="px-4 pb-2 space-y-1">
+                <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                  <Mail className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                  <span className="truncate">{u.email}</span>
                 </div>
-                <p className="text-base text-gray-900">{u.email}</p>
-                <p className="text-base text-gray-900 mt-0.5">
-                  Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}
-                </p>
+                {u.phone && (
+                  <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                    <Phone className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                    <span>{u.phone}</span>
+                  </div>
+                )}
+                {(u.providerCategories ?? []).length > 0 && (
+                  <div className="flex items-start gap-1.5 text-xs text-gray-600">
+                    <Tag className="h-3.5 w-3.5 text-gray-400 shrink-0 mt-0.5" />
+                    <span className="leading-relaxed">
+                      {(u.providerCategories ?? []).map((c) => CATEGORY_LABELS[c as keyof typeof CATEGORY_LABELS] ?? c).join(", ")}
+                    </span>
+                  </div>
+                )}
+                <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                  <Calendar className="h-3.5 w-3.5 shrink-0" />
+                  <span>Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}</span>
+                </div>
+              </div>
+              <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex gap-2 flex-wrap items-center">
+                {u.providerApprovalStatus === "approved" && u.providerId && (
+                  <button
+                    disabled={updating === u.user_id}
+                    onClick={() => toggleFeatured(u)}
+                    title={u.providerFeatured ? "Kiemelt – kattints az eltávolításhoz" : "Kiemelés a főoldalra"}
+                    className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                      u.providerFeatured
+                        ? "bg-amber-400 border-amber-400 text-white"
+                        : "bg-white border-gray-200 text-gray-400 hover:border-amber-400 hover:text-amber-400"
+                    }`}
+                  >
+                    <Star className="h-3.5 w-3.5" fill={u.providerFeatured ? "currentColor" : "none"} />
+                  </button>
+                )}
+                {u.role !== "admin" ? (
+                  <Button size="sm" variant="outline" disabled={updating === u.user_id}
+                    onClick={() => setRole(u.user_id, "admin")}
+                    className="text-xs cursor-pointer h-7 px-2.5">
+                    Admin legyen
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="outline" disabled={updating === u.user_id}
+                    onClick={() => setRole(u.user_id, "visitor")}
+                    className="text-xs cursor-pointer h-7 px-2.5">
+                    Admin jog elvétele
+                  </Button>
+                )}
+                <Button size="sm" variant="destructive" disabled={deleting === u.user_id}
+                  onClick={() => setConfirmDelete(u)}
+                  className="text-xs cursor-pointer h-7 px-2.5">
+                  Törlés
+                </Button>
               </div>
             </div>
-
-            <div className="flex gap-2 flex-wrap shrink-0">
-              {u.role !== "admin" && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={updating === u.user_id}
-                  onClick={() => setRole(u.user_id, "admin")}
-                  className="text-base cursor-pointer"
-                >
-                  Admin legyen
-                </Button>
-              )}
-              {u.role === "admin" && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={updating === u.user_id}
-                  onClick={() => setRole(u.user_id, "visitor")}
-                  className="text-base cursor-pointer"
-                >
-                  Admin jog elvétele
-                </Button>
-              )}
-              <Button
-                size="sm"
-                variant="destructive"
-                disabled={deleting === u.user_id}
-                onClick={() => setConfirmDelete(u)}
-                className="text-base cursor-pointer"
-              >
-                Törlés
-              </Button>
-            </div>
-          </div>
-        );})}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2">
-          <Button
-            size="sm"
-            variant="outline"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className="cursor-pointer"
-          >
-            ← Előző
-          </Button>
-          <span className="text-lg text-gray-900">
-            {page} / {totalPages}
-          </span>
-          <Button
-            size="sm"
-            variant="outline"
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
-            className="cursor-pointer"
-          >
-            Következő →
-          </Button>
+          ))}
         </div>
-      )}
-    </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between pt-2">
+            <Button size="sm" variant="outline" disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="cursor-pointer">
+              ← Előző
+            </Button>
+            <span className="text-sm text-gray-600">{page} / {totalPages}</span>
+            <Button size="sm" variant="outline" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)} className="cursor-pointer">
+              Következő →
+            </Button>
+          </div>
+        )}
+      </div>
     </>
   );
 }

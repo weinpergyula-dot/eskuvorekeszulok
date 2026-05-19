@@ -3,17 +3,18 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, Bell, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { MessagesSection } from "./messages-section";
 import { QuoteRequestsSection } from "./quote-requests-section";
+import { NotificationsSection } from "./notifications-section";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "admin";
+type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "notifications" | "admin";
 
 interface Props {
   userId: string;
@@ -31,7 +32,8 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
   { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
-  { id: "messages",  label: "Üzenetek",         icon: <MessageSquare className="h-4 w-4" /> },
+  { id: "messages",       label: "Üzenetek",          icon: <MessageSquare className="h-4 w-4" /> },
+  { id: "notifications",  label: "Értesítések",       icon: <Bell className="h-4 w-4" /> },
 ];
 
 const SECTION_TITLES: Record<Section, string> = {
@@ -42,7 +44,8 @@ const SECTION_TITLES: Record<Section, string> = {
   dashboard: "Dashboard",
   favorites: "Kedvencek",
   quotes:    "Ajánlatkérések",
-  messages:  "Üzenetek",
+  messages:      "Üzenetek",
+  notifications: "Értesítések",
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -204,6 +207,7 @@ function MobileMenuDropdown({
   unreadCount,
   unreadQuotesCount,
   sidebarIndicator,
+  onQuotesCta,
 }: {
   items: { id: Section; label: string; icon: React.ReactNode }[];
   active: Section;
@@ -211,6 +215,7 @@ function MobileMenuDropdown({
   unreadCount: number;
   unreadQuotesCount: number;
   sidebarIndicator: SidebarIndicator | null;
+  onQuotesCta: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -258,27 +263,22 @@ function MobileMenuDropdown({
       {/* Dropdown list */}
       {open && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-          <div className="border-b border-gray-100">
-            <button
-              onClick={() => { onSelect("quotes"); setOpen(false); }}
-              className={cn(
-                "w-full flex items-center justify-between gap-3 px-4 py-3 text-base font-semibold transition-colors cursor-pointer",
-                active === "quotes"
-                  ? "bg-[#84AAA6]/10 text-[#84AAA6]"
-                  : "text-[#84AAA6] hover:bg-[#84AAA6]/10"
-              )}
-            >
-              <span className="flex items-center gap-2.5">
-                <FileText className="h-4 w-4" />
-                <span>Ajánlatkérések</span>
+          {/* Ajánlatkérések CTA at top */}
+          <button
+            onClick={() => { onQuotesCta(); setOpen(false); }}
+            className={cn(
+              "w-full flex items-center gap-3 px-4 py-3 text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer border-b border-gray-100",
+              active === "quotes" && "bg-[#84AAA6]/10"
+            )}
+          >
+            <FileText className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-left">Ajánlatkérések</span>
+            {unreadQuotesCount > 0 && (
+              <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
+                {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
               </span>
-              {unreadQuotesCount > 0 && (
-                <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                  {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
-                </span>
-              )}
-            </button>
-          </div>
+            )}
+          </button>
           {items.map((item) => (
             <button
               key={item.id}
@@ -317,7 +317,7 @@ function MobileMenuDropdown({
 
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
-const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "quotes", "messages"];
+const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "quotes", "messages", "notifications"];
 
 function hashToSection(hash: string): Section | null {
   const s = hash.replace("#", "") as Section;
@@ -394,6 +394,13 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [messagesKey, setMessagesKey] = useState(0);
   const [quotesKey, setQuotesKey] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [quotesFormOpen, setQuotesFormOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => setQuotesFormOpen((e as CustomEvent<boolean>).detail);
+    window.addEventListener("quotes-form-open", handler);
+    return () => window.removeEventListener("quotes-form-open", handler);
+  }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -476,24 +483,25 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             unreadCount={unreadCount}
             unreadQuotesCount={unreadQuotes}
             sidebarIndicator={sidebarIndicator}
+            onQuotesCta={() => switchTo("quotes")}
           />
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
+            {/* Ajánlatkérések CTA – highlighted at top */}
             <div className="border-b border-gray-100 pb-1 mb-1">
-              <a
-                href="#quotes"
-                onClick={(e) => { e.preventDefault(); switchTo("quotes"); }}
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors w-full text-left cursor-pointer"
-              >
-                <FileText className="h-4 w-4" />
-                <span>Ajánlatkérések</span>
-                {unreadQuotes > 0 && (
-                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
-                    {unreadQuotes > 9 ? "9+" : unreadQuotes}
-                  </span>
-                )}
-              </a>
+            <button
+              onClick={() => switchTo("quotes")}
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
+            >
+              <FileText className="h-4 w-4 shrink-0" />
+              <span>Ajánlatkérések</span>
+              {unreadQuotes > 0 && (
+                <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
+                  {unreadQuotes > 9 ? "9+" : unreadQuotes}
+                </span>
+              )}
+            </button>
             </div>
             {MENU_ITEMS.filter(item =>
               (item.id !== "admin"     || role === "admin") &&
@@ -544,11 +552,11 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Content */}
         <div className="flex-1 min-w-0 sm:pl-8">
-          <div className="flex items-center gap-2.5 mb-6">
+          <div className="section-chat-header hidden sm:flex items-center gap-2.5 mb-6">
             <h2 className="text-xl font-semibold text-gray-900">
               {SECTION_TITLES[active]}
             </h2>
-            {(active === "messages" || active === "quotes") && (
+            {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
               <button
                 onClick={handleRefresh}
                 title="Frissítés"
@@ -659,11 +667,19 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           )}
 
           {active === "quotes" && (
-            <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+            <div className="section-larger-text">
+              <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+            </div>
           )}
 
           {active === "messages" && (
-            <MessagesSection key={messagesKey} onUnreadChange={setUnreadCount} />
+            <div className="section-larger-text">
+              <MessagesSection key={messagesKey} userId={userId} onUnreadChange={setUnreadCount} />
+            </div>
+          )}
+
+          {active === "notifications" && (
+            <NotificationsSection role={role} />
           )}
         </div>
       </div>

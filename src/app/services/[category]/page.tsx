@@ -17,7 +17,15 @@ export async function generateMetadata({ params }: PageProps) {
   const { category } = await params;
   const label = CATEGORY_LABELS[category as ServiceCategory];
   if (!label) return { title: "Nem található" };
-  return { title: `${label} – Esküvőre Készülök` };
+  const description = CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory];
+  const title = `${label} – Esküvőre Készülök`;
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+    twitter: { title, description },
+    alternates: { canonical: `https://eskuvorekeszulok.hu/services/${category}` },
+  };
 }
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {
@@ -28,24 +36,48 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   if (!label) notFound();
 
   let providers: Provider[] = [];
+  const countyCountMap: Record<string, number> = {};
 
   try {
     const supabase = await createClient();
 
-    let query = supabase
+    // Fetch all approved providers for this category in one query
+    const { data, error } = await supabase
       .from("providers")
       .select("*")
       .contains("categories", [category])
       .eq("approval_status", "approved")
       .order("created_at", { ascending: false });
 
-    if (county) {
-      query = query.contains("counties", [county]);
+    if (error) console.error("providers query error:", error);
+    const allProviders = (data as Provider[]) ?? [];
+
+    // County counts: Országosan providers count in every geographic county
+    const geoCo = (COUNTIES as unknown as string[]).filter((c) => c !== "Országosan");
+    for (const p of allProviders) {
+      if ((p.counties as string[] | undefined)?.includes("Országosan")) {
+        for (const c of geoCo) countyCountMap[c] = (countyCountMap[c] ?? 0) + 1;
+      } else {
+        for (const c of (p.counties as string[] | undefined) ?? []) {
+          countyCountMap[c] = (countyCountMap[c] ?? 0) + 1;
+        }
+      }
     }
 
-    const { data, error } = await query;
-    if (error) console.error("providers query error:", error);
-    const raw = (data as Provider[]) ?? [];
+    // Filter for display if county is selected
+    let raw: Provider[];
+    if (county) {
+      const seen = new Set<string>();
+      raw = [];
+      for (const p of allProviders) {
+        const co = (p.counties as string[] | undefined) ?? [];
+        if (co.includes(county) || co.includes("Országosan")) {
+          if (!seen.has(p.id)) { seen.add(p.id); raw.push(p); }
+        }
+      }
+    } else {
+      raw = allProviders;
+    }
 
     // Compute live review aggregates
     const ids = raw.map((p) => p.id);
@@ -79,13 +111,14 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         description={CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
       />
 
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <CategoryContent
         providers={providers}
         counties={COUNTIES as unknown as string[]}
         selected={county}
         category={category}
         label={label}
+        countyCountMap={countyCountMap}
       />
     </div>
     </div>

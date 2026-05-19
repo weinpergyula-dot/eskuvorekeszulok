@@ -9,9 +9,10 @@ interface CountyFilterProps {
   counties: string[];
   selected?: string;
   category: string;
+  countByCounty?: Record<string, number>;
 }
 
-export function CountyFilter({ counties, selected, category }: CountyFilterProps) {
+export function CountyFilter({ counties, selected, category, countByCounty }: CountyFilterProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [mobileQuery, setMobileQuery] = useState("");
@@ -53,7 +54,9 @@ export function CountyFilter({ counties, selected, category }: CountyFilterProps
               : "text-gray-900 hover:bg-gray-100"
           )}
         >
-          {county}
+          {county}{countByCounty?.[county] != null && (
+            <span className="ml-1.5 opacity-60 font-normal">({countByCounty[county]})</span>
+          )}
         </button>
       ))}
       {visibleList.length === 0 && (

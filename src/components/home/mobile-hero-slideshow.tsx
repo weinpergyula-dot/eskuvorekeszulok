@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const IMAGES = [
-  "/bride_full_1banner_mobile.webp",
+  "/hero1_mobile.png",
   "/fodraszok_mobil.webp",
   "/meghivok_mobil.webp",
   "/ruhak_csokrok_mobil.webp",

@@ -1,6 +1,7 @@
 "use client";
 
-import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil, Images } from "lucide-react";
+import { useState } from "react";
+import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -15,29 +16,107 @@ interface ProviderCardProps {
   hideCategories?: boolean;
   disableLink?: boolean;
   isOwner?: boolean;
+  nameFontSize?: string;
+  /** Carousel mode: fixed name height, no collapsible content, Részletek button */
+  inCarousel?: boolean;
+  /** List row mode: horizontal compact layout */
+  listView?: boolean;
 }
 
-export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false }: ProviderCardProps) {
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px", inCarousel = false, listView = false }: ProviderCardProps) {
+  const [expanded, setExpanded] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
+  const [countiesExpanded, setCountiesExpanded] = useState(false);
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
   const hasGallery = (provider.gallery_urls ?? []).length > 0;
 
-  const Wrapper = disableLink ? "div" : "a";
-  const wrapperProps = disableLink ? {} : { href: `/providers/${provider.id}` };
+  // ── List row mode ──────────────────────────────────────────────────────────
+  if (listView && !disableLink) {
+    return (
+      <div className="flex items-center gap-3 bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all px-4 py-3">
+        {/* Avatar – click opens lightbox */}
+        <button
+          type="button"
+          onClick={() => provider.avatar_url && setAvatarOpen(true)}
+          className={cn(
+            "w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0",
+            provider.avatar_url ? "cursor-zoom-in" : "cursor-default"
+          )}
+        >
+          {provider.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-lg font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
+          )}
+        </button>
+
+        {/* Avatar lightbox */}
+        {avatarOpen && provider.avatar_url && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 cursor-zoom-out"
+            onClick={() => setAvatarOpen(false)}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={provider.avatar_url} alt={provider.full_name} className="max-w-[90vw] max-h-[90vh] rounded-2xl object-contain shadow-2xl" />
+          </div>
+        )}
+
+        {/* Info – stacked */}
+        <div className="flex-1 min-w-0">
+          <div className="font-bold text-gray-900 truncate" style={{ fontSize: "16px" }}>
+            {provider.full_name}
+          </div>
+          <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
+            <MapPin className="h-3 w-3 text-[#84AAA6] shrink-0" />
+            <span className="truncate">
+              {(provider.counties ?? []).slice(0, 2).join(", ")}
+              {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 mt-0.5">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star key={star} className={cn("h-3 w-3", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200")} />
+            ))}
+            <span className="text-sm font-semibold text-gray-900 ml-0.5">{rating > 0 ? rating.toFixed(1) : "–"}</span>
+            {reviewCount > 0 && <span className="text-sm text-gray-500">({reviewCount})</span>}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2 shrink-0">
+          <a
+            href={`/providers/${provider.id}#message`}
+            className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            Üzenetküldés
+          </a>
+          <a
+            href={`/providers/${provider.id}`}
+            className="flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
+          >
+            Részletek
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <Wrapper
-      {...wrapperProps}
+    <div
       className={cn(
         "bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden",
-        disableLink ? "cursor-default" : "hover:border-[#84AAA6] hover:shadow-md transition-all cursor-pointer group"
+        !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
       )}
     >
       {/* Header */}
       <div className="relative flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
-        {/* Top-left: edit (owner) or favorite (icon only) */}
-        {!disableLink && (
+        {/* Top-left: edit (owner) or favorite — hidden in carousel */}
+        {!inCarousel && !disableLink && (
           <div className="absolute top-2 left-2" onClick={(e) => e.stopPropagation()}>
             {isOwner ? (
               <a href="/profil?tab=provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
@@ -49,16 +128,33 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </div>
         )}
 
-        {/* Top-right: view count */}
-        <div className="absolute top-2 right-2">
-          <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
-            <Eye className="h-3.5 w-3.5" />
-            {viewCount}
-          </span>
-        </div>
+        {/* Top-right: view count — hidden in carousel */}
+        {!inCarousel && (
+          <div className="absolute top-2 right-2">
+            <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
+              <Eye className="h-3.5 w-3.5" />
+              {viewCount}
+            </span>
+          </div>
+        )}
 
         {/* Avatar */}
-        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0">
+        <div
+          className={cn(
+            "w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0",
+            provider.avatar_url && "cursor-zoom-in"
+          )}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            if (inCarousel) {
+              window.location.href = `/providers/${provider.id}`;
+            } else if (provider.avatar_url) {
+              setAvatarOpen(true);
+            }
+          }}
+        >
           {provider.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -74,7 +170,16 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-gray-900 text-center mb-2 group-hover:text-[#84AAA6] transition-colors" style={{ fontSize: "22px" }}>
+        <h3
+          className={cn(
+            "font-bold text-gray-900 text-center mb-2 group-hover:text-[#84AAA6] transition-colors",
+            inCarousel && "line-clamp-2 leading-snug w-full"
+          )}
+          style={{
+            fontSize: nameFontSize,
+            ...(inCarousel ? { height: "calc(2 * 1.35 * 18px)", overflow: "hidden" } : {}),
+          }}
+        >
           {provider.full_name}
         </h3>
 
@@ -82,12 +187,12 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {!hideCategories && (
           <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
             {(provider.categories ?? []).slice(0, 2).map((cat) => (
-              <Badge key={cat} variant="outline" className="text-sm sm:text-base">
+              <Badge key={cat} variant="outline" className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base")}>
                 {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
               </Badge>
             ))}
             {(provider.categories ?? []).length > 2 && (
-              <Badge variant="outline" className="text-sm sm:text-base">
+              <Badge variant="outline" className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base")}>
                 +{(provider.categories ?? []).length - 2}
               </Badge>
             )}
@@ -97,9 +202,35 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {/* Counties */}
         <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
           <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
-          <span className="text-sm sm:text-base text-gray-900">
-            {(provider.counties ?? []).slice(0, 2).join(", ")}
-            {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
+          <span className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base", "text-gray-900 text-center")}>
+            {inCarousel ? (
+              <>
+                {(provider.counties ?? [])[0] ?? ""}
+                {(provider.counties ?? []).length > 1 && ` +${(provider.counties ?? []).length - 1}`}
+              </>
+            ) : (
+              <>
+                {countiesExpanded
+                  ? (provider.counties ?? []).join(", ")
+                  : (provider.counties ?? []).slice(0, 2).join(", ")}
+                {!countiesExpanded && (provider.counties ?? []).length > 2 && (
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountiesExpanded(true); }}
+                    className="text-[#84AAA6] hover:underline font-medium ml-1"
+                  >
+                    és még {(provider.counties ?? []).length - 2} megye
+                  </button>
+                )}
+                {countiesExpanded && (provider.counties ?? []).length > 2 && (
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountiesExpanded(false); }}
+                    className="text-[#84AAA6] hover:underline font-medium ml-1"
+                  >
+                    kevesebb
+                  </button>
+                )}
+              </>
+            )}
           </span>
         </div>
 
@@ -118,11 +249,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                   )}
                 />
               ))}
-              <span className="text-base font-semibold text-gray-900 ml-1">
+              <span className={cn(inCarousel ? "text-sm" : "text-base", "font-semibold text-gray-900 ml-1")}>
                 {rating > 0 ? rating.toFixed(1) : "–"}
               </span>
               {reviewCount > 0 && (
-                <span className="text-base text-gray-900">({reviewCount})</span>
+                <span className={cn(inCarousel ? "text-sm" : "text-base", "text-gray-900")}>({reviewCount})</span>
               )}
             </>
           );
@@ -138,7 +269,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             <div className="flex items-center gap-1.5">{ratingContent}</div>
           );
         })()}
-
         {/* Admin status badge */}
         {showStatus && (
           <Badge
@@ -158,32 +288,65 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               : "Jóváhagyásra vár"}
           </Badge>
         )}
+
+
       </div>
 
-      {/* Contact info */}
-      <div className="px-5 py-4 space-y-2 flex-1">
-        <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
-        <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
-        {provider.website && (
-          <ContactRow
-            icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
-            value={provider.website}
-            isLink={!disableLink}
-          />
-        )}
-        {provider.description && (
-          <div className="flex gap-2.5">
-            <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
-            <p className="text-base text-gray-900 line-clamp-3 leading-relaxed">
-              {provider.description}
-            </p>
-          </div>
-        )}
-      </div>
+      {/* Mobile expand/collapse row — white background, outside the teal header */}
+      {!inCarousel && (
+        <div className="sm:hidden flex items-center justify-center py-2.5 bg-white border-b border-gray-100">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
+              setExpanded((v) => !v);
+            }}
+            className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
+          >
+            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <span>Több infó</span>
+          </button>
+        </div>
+      )}
 
-      {/* Footer action bar */}
-      {!disableLink && (
-        <div className="border-t border-gray-100 px-4 py-3 flex items-center justify-between gap-2">
+      {/* Contact info — hidden in carousel mode */}
+      {!inCarousel && (
+        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
+          <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
+          <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
+          {provider.website && (
+            <ContactRow
+              icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
+              value={provider.website}
+              isLink={!disableLink}
+            />
+          )}
+          {provider.description && (
+            <div className="flex gap-2.5">
+              <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
+              <p className="text-base text-gray-900 leading-relaxed">
+                {!descExpanded && provider.description.length > 200
+                  ? provider.description.slice(0, 200) + "…"
+                  : provider.description}
+                {provider.description.length > 200 && (
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDescExpanded(v => !v); }}
+                    className="text-[#84AAA6] hover:underline font-medium ml-1 text-sm"
+                  >
+                    {descExpanded ? "kevesebb" : "több..."}
+                  </button>
+                )}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Footer action bar — hidden in carousel mode */}
+      {!inCarousel && !disableLink && (
+        <div className={cn("border-t border-gray-100 px-4 py-3 items-center justify-between gap-2", expanded ? "flex" : "hidden sm:flex")}>
           {/* Left: Üzenetküldés */}
           <a
             href={`/providers/${provider.id}#message`}
@@ -216,7 +379,29 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </a>
         </div>
       )}
-    </Wrapper>
+      {/* Avatar lightbox — only outside carousel mode */}
+      {!inCarousel && avatarOpen && provider.avatar_url && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
+          onClick={() => setAvatarOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setAvatarOpen(false)}
+            className="absolute top-4 right-4 text-white/80 hover:text-white p-2"
+          >
+            <X className="h-7 w-7" />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={provider.avatar_url}
+            alt={provider.full_name}
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl select-none"
+          />
+        </div>
+      )}
+    </div>
   );
 }
 

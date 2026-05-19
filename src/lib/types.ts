@@ -30,6 +30,7 @@ export interface Profile {
   email: string;
   full_name: string;
   role: UserRole;
+  avatar_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -56,6 +57,7 @@ export interface Provider {
   average_rating?: number;
   review_count?: number;
   view_count?: number;
+  featured?: boolean;
 }
 
 export interface ProviderUpdatePayload {
@@ -109,24 +111,24 @@ export type County = (typeof COUNTIES)[number];
 export const CATEGORY_LABELS: Record<ServiceCategory, string> = {
   "fotosok-videosok": "Fotósok, Videósok",
   "elo-zene-dj": "Élőzene, DJ",
-  vofely: "Vőfély",
-  "torta-sutemeny": "Torta, Sütemény",
-  "menyasszonyi-ruha": "Menyasszonyi ruha",
-  "oltonya-szmoking": "Öltöny, Szmoking",
-  "dekor-kellek": "Dekor, Kellék",
+  vofely: "Vőfélyek",
+  "torta-sutemeny": "Torták, Sütemények",
+  "menyasszonyi-ruha": "Menyasszonyi ruhák",
+  "oltonya-szmoking": "Öltönyök, Szmoking",
+  "dekor-kellek": "Dekor, Kellékek",
   smink: "Smink",
-  "fodrasz-borbely": "Fodrász, Borbély",
-  kormos: "Körmös",
-  "koszonto-ajandek": "Köszöntő, Ajándék",
+  "fodrasz-borbely": "Fodrászok, Borbélyok",
+  kormos: "Körmösök",
+  "koszonto-ajandek": "Köszöntők, Ajándékok",
   "pedikur-manikur": "Pedikűr, Manikűr",
-  kozmetika: "Kozmetika",
-  ekszer: "Ékszer",
-  meghivo: "Meghívó",
-  "auto-hinto": "Autó, Hintó",
+  kozmetika: "Kozmetikusok",
+  ekszer: "Ékszerek",
+  meghivo: "Meghívók",
+  "auto-hinto": "Autók, Hintók",
   tanckoktatas: "Táncoktatás",
   catering: "Catering",
-  helyszin: "Helyszín",
-  virag: "Virág",
+  helyszin: "Helyszínek",
+  virag: "Virágok, Virágkötők",
 };
 
 export const CATEGORY_ICONS: Record<ServiceCategory, string> = {

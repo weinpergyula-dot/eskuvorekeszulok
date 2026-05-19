@@ -1,5 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
+import { notifyContactMessage } from "@/lib/notifications";
+import { logError } from "@/lib/log-error";
 
 export async function POST(req: Request) {
   try {
@@ -15,8 +17,14 @@ export async function POST(req: Request) {
       message,
     });
     if (error) throw error;
+
+    // Adminok értesítése (fire-and-forget)
+    const origin = new URL(req.url).origin;
+    notifyContactMessage({ senderName: name, senderEmail: email, senderPhone: phone || undefined, message, origin }).catch(() => {});
+
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (e) {
+    await logError("api/contact POST", String(e));
     return NextResponse.json({ error: "Hiba történt az üzenet küldése során." }, { status: 500 });
   }
 }

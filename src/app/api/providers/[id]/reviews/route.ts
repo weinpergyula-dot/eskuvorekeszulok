@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyNewReview } from "@/lib/notifications";
+import { logError } from "@/lib/log-error";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +16,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     .eq("provider_id", id)
     .order("created_at", { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { await logError("api/providers/reviews GET", error.message, { providerId: id }); return NextResponse.json({ error: error.message }, { status: 500 }); }
 
   const reviewerIds = [...new Set((reviews ?? []).map((r) => r.visitor_id))];
   const adminClient = createAdminClient();
@@ -53,7 +55,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     { provider_id: id, visitor_id: user.id, rating, comment: comment?.trim() || null },
     { onConflict: "provider_id,visitor_id" }
   );
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { await logError("api/providers/reviews POST", error.message, { providerId: id, user: user.id, rating }); return NextResponse.json({ error: error.message }, { status: 500 }); }
 
   // Recalculate aggregate on providers table
   const adminClient = createAdminClient();
@@ -66,6 +68,18 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     .eq("id", id);
 
   if (updateError) console.error("Aggregate update failed:", updateError.message);
+
+  // Értesítés a szolgáltatónak (fire-and-forget)
+  if (provider?.user_id) {
+    const origin = new URL(req.url).origin;
+    notifyNewReview({
+      providerUserId: provider.user_id,
+      reviewerUserId: user.id,
+      rating,
+      comment: comment?.trim() || undefined,
+      origin,
+    }).catch(() => {});
+  }
 
   return NextResponse.json({ ok: true, review_count: count, average_rating: Math.round(avg * 10) / 10 });
 }

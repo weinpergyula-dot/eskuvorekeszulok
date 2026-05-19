@@ -104,7 +104,7 @@ export default async function AdminPage() {
   return (
     <div>
       <PageHeader title="Admin" icon={ShieldCheck} />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <AdminContent
           totalUsers={totalUsers ?? 0}
           totalApproved={totalApproved ?? 0}

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyNewMessage } from "@/lib/notifications";
+import { logError } from "@/lib/log-error";
 
 export const dynamic = "force-dynamic";
 
@@ -9,10 +11,14 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Only return messages that the current user hasn't soft-deleted
   const { data: messages } = await supabase
     .from("messages")
     .select("*")
-    .or(`recipient_id.eq.${user.id},sender_id.eq.${user.id}`)
+    .or(
+      `and(sender_id.eq.${user.id},deleted_for_sender.eq.false),` +
+      `and(recipient_id.eq.${user.id},deleted_for_recipient.eq.false)`
+    )
     .order("created_at", { ascending: false });
 
   const senderIds = [...new Set((messages ?? []).filter(m => m.sender_id !== user.id).map((m) => m.sender_id))];
@@ -21,23 +27,23 @@ export async function GET() {
   const adminClient = createAdminClient();
   const [{ data: profiles }, { data: senderProviders }, { data: recipientProfiles }, { data: recipientProviders }] = await Promise.all([
     senderIds.length > 0
-      ? adminClient.from("profiles").select("user_id, full_name, role").in("user_id", senderIds)
+      ? adminClient.from("profiles").select("user_id, full_name, role, avatar_url").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
     senderIds.length > 0
-      ? adminClient.from("providers").select("user_id, id, categories").in("user_id", senderIds)
+      ? adminClient.from("providers").select("user_id, id, categories, avatar_url").in("user_id", senderIds)
       : Promise.resolve({ data: [] }),
     recipientIds.length > 0
-      ? adminClient.from("profiles").select("user_id, full_name, role").in("user_id", recipientIds)
+      ? adminClient.from("profiles").select("user_id, full_name, role, avatar_url").in("user_id", recipientIds)
       : Promise.resolve({ data: [] }),
     recipientIds.length > 0
-      ? adminClient.from("providers").select("user_id, id, categories").in("user_id", recipientIds)
+      ? adminClient.from("providers").select("user_id, id, categories, avatar_url").in("user_id", recipientIds)
       : Promise.resolve({ data: [] }),
   ]);
 
-  const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, { name: p.full_name, role: p.role }]));
-  const providerMap = Object.fromEntries((senderProviders ?? []).map((p) => [p.user_id, { id: p.id, categories: (p.categories ?? []) as string[] }]));
-  const recipientProfileMap = Object.fromEntries((recipientProfiles ?? []).map((p) => [p.user_id, { name: p.full_name as string, role: p.role as string }]));
-  const recipientProviderMap = Object.fromEntries((recipientProviders ?? []).map((p) => [p.user_id, { id: p.id as string, categories: (p.categories ?? []) as string[] }]));
+  const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, { name: p.full_name, role: p.role, avatar_url: p.avatar_url ?? null }]));
+  const providerMap = Object.fromEntries((senderProviders ?? []).map((p) => [p.user_id, { id: p.id, categories: (p.categories ?? []) as string[], avatar_url: p.avatar_url ?? null }]));
+  const recipientProfileMap = Object.fromEntries((recipientProfiles ?? []).map((p) => [p.user_id, { name: p.full_name as string, role: p.role as string, avatar_url: p.avatar_url ?? null }]));
+  const recipientProviderMap = Object.fromEntries((recipientProviders ?? []).map((p) => [p.user_id, { id: p.id as string, categories: (p.categories ?? []) as string[], avatar_url: p.avatar_url ?? null }]));
 
   const enriched = (messages ?? []).map((m) => {
     const isOwn = m.sender_id === user.id;
@@ -48,10 +54,12 @@ export async function GET() {
       sender_role: isOwn ? "self" : (profileMap[m.sender_id]?.role ?? "visitor"),
       sender_provider_id: isOwn ? null : (providerMap[m.sender_id]?.id ?? null),
       sender_provider_categories: isOwn ? null : (providerMap[m.sender_id]?.categories ?? null),
+      sender_avatar_url: isOwn ? null : (providerMap[m.sender_id]?.avatar_url ?? profileMap[m.sender_id]?.avatar_url ?? null),
       recipient_name: isOwn ? (recipientProfileMap[m.recipient_id]?.name ?? "Névtelen") : null,
       recipient_role: isOwn ? (recipientProfileMap[m.recipient_id]?.role ?? null) : null,
       recipient_provider_id: isOwn ? (recipientProviderMap[m.recipient_id]?.id ?? null) : null,
       recipient_provider_categories: isOwn ? (recipientProviderMap[m.recipient_id]?.categories ?? null) : null,
+      recipient_avatar_url: isOwn ? (recipientProviderMap[m.recipient_id]?.avatar_url ?? recipientProfileMap[m.recipient_id]?.avatar_url ?? null) : null,
     };
   });
 
@@ -79,7 +87,12 @@ export async function POST(req: Request) {
     body: body.trim(),
   });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { await logError("api/messages POST", error.message, { sender: user.id, recipient_id }); return NextResponse.json({ error: error.message }, { status: 500 }); }
+
+  // Értesítés küldése (fire-and-forget – nem blokkolja a választ)
+  const origin = new URL(req.url).origin;
+  notifyNewMessage({ recipientId: recipient_id, senderId: user.id, subject: subject.trim(), origin }).catch(() => {});
+
   return NextResponse.json({ ok: true });
 }
 
@@ -115,21 +128,32 @@ export async function DELETE(req: Request) {
   );
 
   if (otherUserId && !alreadyTerminated) {
+    // Insert system message for the other party.
+    // Mark deleted_for_sender=true so the deleting user never sees it.
     await admin.from("messages").insert({
       sender_id: user.id,
       recipient_id: otherUserId,
       subject,
       body: "__SYSTEM__:A másik fél törölte ezt a beszélgetést. Válaszadásra nincs lehetőség.",
+      deleted_for_sender: true,
     });
   }
 
-  // Delete original messages only (the system message we just inserted is excluded)
-  const { error } = await admin
-    .from("messages")
-    .delete()
-    .in("id", ids)
-    .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`);
+  // Soft-delete: mark messages as deleted for the current user instead of hard-deleting.
+  // The other party still sees the original messages plus the system notification above.
+  const [{ error: e1 }, { error: e2 }] = await Promise.all([
+    admin
+      .from("messages")
+      .update({ deleted_for_sender: true })
+      .in("id", ids)
+      .eq("sender_id", user.id),
+    admin
+      .from("messages")
+      .update({ deleted_for_recipient: true })
+      .in("id", ids)
+      .eq("recipient_id", user.id),
+  ]);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (e1 || e2) { const msg = (e1 ?? e2)!.message; await logError("api/messages DELETE", msg, { user: user.id }); return NextResponse.json({ error: msg }, { status: 500 }); }
   return NextResponse.json({ ok: true });
 }

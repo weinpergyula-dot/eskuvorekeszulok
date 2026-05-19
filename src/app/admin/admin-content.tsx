@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Users, Clock as ClockIcon, Mail, BarChart2, Trash2, UserX } from "lucide-react";
+import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
+import { LogsSection } from "./logs-section";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-type Filter = "pending" | "users" | "contact" | "prereg";
+type Filter = "pending" | "users" | "contact" | "prereg" | "logs";
 
 interface Provider {
   id: string;
@@ -91,6 +92,11 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
     return () => clearInterval(interval);
   }, []);
 
+  const [logCount, setLogCount] = useState(0);
+  useEffect(() => {
+    fetch("/api/admin/logs").then(r => r.ok ? r.json() : []).then(data => setLogCount(Array.isArray(data) ? data.length : 0)).catch(() => {});
+  }, []);
+
   const [liveStats, setLiveStats] = useState({ totalUsers, totalApproved, totalVisitors });
 
   const refreshLiveStats = useCallback(async () => {
@@ -166,16 +172,17 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   };
 
   const stats: { label: string; value: number; icon: React.ReactNode; target: Filter; highlight: boolean }[] = [
-    { label: "Összes felhasználó",   value: liveStats.totalUsers,    icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "users",   highlight: false },
-    { label: "Jóváhagyásra vár",     value: totalPending,             icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "pending", highlight: totalPending > 0 },
-    { label: "Előregisztráció",      value: preRegistrations.length,  icon: <UserX className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,    target: "prereg",  highlight: preRegistrations.length > 0 },
-    { label: "Kapcsolati üzenetek",  value: contactMessages.length,   icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,     target: "contact", highlight: unreadContact > 0 },
+    { label: "Összes felhasználó",   value: liveStats.totalUsers,    icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,        target: "users",   highlight: false },
+    { label: "Jóváhagyásra vár",     value: totalPending,             icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,    target: "pending", highlight: totalPending > 0 },
+    { label: "Előregisztráció",      value: preRegistrations.length,  icon: <UserX className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,         target: "prereg",  highlight: preRegistrations.length > 0 },
+    { label: "Kapcsolati üzenetek",  value: contactMessages.length,   icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,          target: "contact", highlight: unreadContact > 0 },
+    { label: "Hibanapló",            value: logCount,                  icon: <AlertTriangle className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "logs",    highlight: logCount > 0 },
   ];
 
   return (
     <>
       {/* Stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
         {stats.map((s) => (
           <button
             key={s.label}
@@ -302,6 +309,14 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
               })}
             </div>
           )}
+        </section>
+      )}
+
+      {/* Error logs */}
+      {filter === "logs" && (
+        <section>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Hibanapló</h2>
+          <LogsSection />
         </section>
       )}
 

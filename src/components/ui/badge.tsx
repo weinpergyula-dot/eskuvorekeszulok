@@ -11,6 +11,7 @@ const badgeVariants = cva(
         secondary: "bg-gray-100 text-gray-900",
         pending: "bg-yellow-100 text-yellow-800",
         approved: "bg-green-100 text-green-800",
+        admin: "bg-[#C65EA5] text-white",
         rejected: "bg-[#F06C6C]/10 text-[#F06C6C]",
         outline: "border border-[#84AAA6] text-[#84AAA6]",
       },

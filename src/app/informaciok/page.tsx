@@ -6,7 +6,9 @@ import { VisitorRegisterButton } from "@/components/home/visitor-register-button
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 
 export const metadata = {
-  title: "Információk – Esküvőre Készülök",
+  title: "Információk",
+  description: "Ismerd meg az Esküvőre Készülök platformot: miért jött létre, mit kínál látogatóknak és szolgáltatóknak, és hogyan segítünk a tökéletes esküvő megszervezésében.",
+  alternates: { canonical: "https://eskuvorekeszulok.hu/informaciok" },
 };
 
 function Section({ icon: Icon, title, children }: { icon: React.ElementType; title: string; children: React.ReactNode }) {
@@ -39,7 +41,7 @@ export default function InformaciokPage() {
   return (
     <div>
       <PageHeader icon={Info} title="Információk" description="Tudj meg mindent az Esküvőre Készülök platformról – miért jött létre, és mit kínál számodra." />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
 
         {/* Miért jött létre */}
         <Section icon={Heart} title="Miért jött létre ez az oldal?">

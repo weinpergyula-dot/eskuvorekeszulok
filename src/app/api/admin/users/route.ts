@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { logError } from "@/lib/log-error";
 
 export const dynamic = "force-dynamic";
 
@@ -17,13 +18,29 @@ export async function GET() {
       .single();
     if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id, user_id, email, full_name, role, created_at, avatar_url")
-      .order("created_at", { ascending: false });
+    const [{ data: profiles, error }, { data: providers }] = await Promise.all([
+      supabase.from("profiles").select("id, user_id, email, full_name, role, created_at, avatar_url").order("created_at", { ascending: false }),
+      supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes, featured"),
+    ]);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data);
+    if (error) { await logError("api/admin/users GET", error.message); return NextResponse.json({ error: error.message }, { status: 500 }); }
+
+    const provMap = new Map((providers ?? []).map((p) => [p.user_id, p]));
+    const enriched = (profiles ?? []).map((u) => {
+      const prov = provMap.get(u.user_id);
+      return {
+        ...u,
+        phone: prov?.phone ?? null,
+        providerCategories: (prov?.categories ?? null) as string[] | null,
+        providerViewCount: (prov?.view_count ?? null) as number | null,
+        providerId: prov?.id ?? null,
+        providerApprovalStatus: prov?.approval_status ?? null,
+        providerHasPendingChanges: !!prov?.pending_changes,
+        providerFeatured: prov?.featured ?? false,
+      };
+    });
+
+    return NextResponse.json(enriched);
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
@@ -42,7 +59,17 @@ export async function PATCH(request: Request) {
       .single();
     if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    const { userId, role } = await request.json();
+    const body = await request.json();
+    const { userId, role, toggleFeatured, providerId } = body;
+
+    // Toggle featured on a provider
+    if (toggleFeatured && providerId) {
+      const { data: prov } = await supabase.from("providers").select("featured").eq("id", providerId).single();
+      const { error } = await supabase.from("providers").update({ featured: !prov?.featured }).eq("id", providerId);
+      if (error) { await logError("api/admin/users PATCH featured", error.message); return NextResponse.json({ error: error.message }, { status: 500 }); }
+      return NextResponse.json({ ok: true, featured: !prov?.featured });
+    }
+
     if (!userId || !["visitor", "provider", "admin"].includes(role)) {
       return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
     }
@@ -57,9 +84,10 @@ export async function PATCH(request: Request) {
       .update({ role })
       .eq("user_id", userId);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { await logError("api/admin/users PATCH", error.message, { userId, role }); return NextResponse.json({ error: error.message }, { status: 500 }); }
     return NextResponse.json({ ok: true });
   } catch (e) {
+    await logError("api/admin/users PATCH", String(e));
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
@@ -87,9 +115,10 @@ export async function DELETE(request: Request) {
     const adminClient = createAdminClient();
     const { error } = await adminClient.auth.admin.deleteUser(userId);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { await logError("api/admin/users DELETE", error.message, { userId }); return NextResponse.json({ error: error.message }, { status: 500 }); }
     return NextResponse.json({ ok: true });
   } catch (e) {
+    await logError("api/admin/users DELETE", String(e));
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
