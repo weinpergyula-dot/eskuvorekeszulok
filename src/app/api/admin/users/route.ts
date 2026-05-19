@@ -19,7 +19,7 @@ export async function GET() {
     if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const [{ data: profiles, error }, { data: providers }] = await Promise.all([
-      supabase.from("profiles").select("id, user_id, email, full_name, role, created_at, avatar_url").order("created_at", { ascending: false }),
+      supabase.from("profiles").select("id, user_id, email, full_name, role, created_at").order("created_at", { ascending: false }),
       supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes, featured"),
     ]);
 
