@@ -154,6 +154,23 @@ export async function deleteUserAction(userId: string): Promise<{ error: string 
 }
 
 /**
+ * Updates profiles.avatar_url for the given userId using the admin client.
+ */
+export async function setProfileAvatarAction(
+  userId: string,
+  avatarUrl: string
+): Promise<{ error: string | null }> {
+  try {
+    const admin = createAdminClient();
+    const { error } = await admin.from("profiles").update({ avatar_url: avatarUrl }).eq("user_id", userId);
+    if (error) return { error: error.message };
+    return { error: null };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Ismeretlen szerverhiba (avatar)." };
+  }
+}
+
+/**
  * Updates profiles TOS acceptance for visitor registrations using admin client.
  */
 export async function acceptTosAction(userId: string): Promise<{ error: string | null }> {

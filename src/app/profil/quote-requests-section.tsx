@@ -29,6 +29,7 @@ interface VisitorChat {
   message: string;
   provider_id: string;
   provider_full_name: string;
+  provider_avatar_url?: string | null;
   messages: QuoteMessage[];
   unread_count: number;
   last_at: string;
@@ -45,6 +46,7 @@ interface ProviderRequest {
   created_at: string;
   read: boolean;
   visitor_name: string;
+  visitor_avatar_url?: string | null;
   unread_reply_count: number;
 }
 
@@ -300,7 +302,7 @@ function QuoteListItem({
   subject,
   categoryLabel,
   recipientName,
-  lastMessage,
+  avatarUrl,
   date,
   unread,
   onSelect,
@@ -308,37 +310,35 @@ function QuoteListItem({
   subject: string;
   categoryLabel: string;
   recipientName: string;
-  lastMessage: string;
+  avatarUrl?: string | null;
   date: string;
   unread: number;
   onSelect: () => void;
 }) {
+  const initials = recipientName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
   return (
     <button
       onClick={onSelect}
       className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
     >
-      <div className="flex items-start gap-3">
-        <div className="mt-1 shrink-0">
-          <FileText className={`h-4 w-4 ${unread > 0 ? "text-gray-500" : "text-gray-300"}`} />
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
+          {avatarUrl
+            ? <img src={avatarUrl} alt={recipientName} className="w-full h-full object-cover" />
+            : initials}
         </div>
         <div className="flex-1 min-w-0">
-          {/* Tárgy + dátum */}
           <div className="flex items-center justify-between gap-2 mb-0.5">
-            <p className={`text-base truncate ${unread > 0 ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
-              {subject}
+            <p className={`text-sm font-bold truncate ${unread > 0 ? "text-gray-900" : "text-gray-700"}`}>
+              {recipientName}
             </p>
-            <span className="text-sm text-gray-400 shrink-0">{formatShort(date)}</span>
+            <span className="text-xs text-gray-400 shrink-0">{formatShort(date)}</span>
           </div>
-          {/* Kategória */}
-          <p className="text-sm text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>
-          {/* Címzett */}
-          <p className="text-sm text-gray-500 truncate mb-0.5">{recipientName}</p>
-          {/* Utolsó üzenet */}
-          <p className="text-sm text-gray-400 truncate">{lastMessage}</p>
+          <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>
+          <p className={`text-xs truncate ${unread > 0 ? "font-semibold text-gray-700" : "text-gray-500"}`}>{subject}</p>
         </div>
         {unread > 0 && (
-          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
@@ -586,6 +586,12 @@ function QuoteChat({
           )
         )}
         <div ref={bottomRef} />
+      </div>
+
+      {/* Subject label above reply box */}
+      <div className="hidden sm:flex items-center gap-1.5 px-4 py-1.5 border-t border-gray-100 bg-gray-50/80 shrink-0">
+        <span className="text-xs text-gray-400">Tárgy:</span>
+        <span className="text-xs text-gray-600 font-medium truncate">{subject}</span>
       </div>
 
       {/* Reply */}
@@ -860,7 +866,7 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
                         subject={req.subject}
                         categoryLabel={CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
                         recipientName={req.visitor_name}
-                        lastMessage={req.message.slice(0, 100)}
+                        avatarUrl={req.visitor_avatar_url}
                         date={req.created_at}
                         unread={unread}
                         onSelect={async () => {
@@ -916,25 +922,13 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
                 )}
                 <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
                   {visibleVisitorChats.map(chat => {
-                    const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
-                    let lastMessage: string;
-                    if (lastMsg) {
-                      if (isSystemMsg(lastMsg.body)) {
-                        lastMessage = systemText(lastMsg.body);
-                      } else {
-                        const prefix = lastMsg.sender_id === userId ? "Te" : chat.provider_full_name;
-                        lastMessage = `${prefix}: ${lastMsg.body}`;
-                      }
-                    } else {
-                      lastMessage = `Te: ${chat.message}`;
-                    }
                     return (
                       <QuoteListItem
                         key={`${chat.request_id}__${chat.provider_id}`}
                         subject={chat.subject}
                         categoryLabel={CATEGORY_LABELS[chat.category as keyof typeof CATEGORY_LABELS] ?? chat.category}
                         recipientName={chat.provider_full_name}
-                        lastMessage={lastMessage}
+                        avatarUrl={chat.provider_avatar_url}
                         date={chat.last_at}
                         unread={chat.unread_count}
                         onSelect={() => setView({ mode: "visitor-chat", chat })}
@@ -995,25 +989,13 @@ export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Pro
           )}
           <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
             {visibleVisitorChats.map(chat => {
-              const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
-              let lastMessage: string;
-              if (lastMsg) {
-                if (isSystemMsg(lastMsg.body)) {
-                  lastMessage = systemText(lastMsg.body);
-                } else {
-                  const prefix = lastMsg.sender_id === userId ? "Te" : chat.provider_full_name;
-                  lastMessage = `${prefix}: ${lastMsg.body}`;
-                }
-              } else {
-                lastMessage = `Te: ${chat.message}`;
-              }
               return (
                 <QuoteListItem
                   key={`${chat.request_id}__${chat.provider_id}`}
                   subject={chat.subject}
                   categoryLabel={CATEGORY_LABELS[chat.category as keyof typeof CATEGORY_LABELS] ?? chat.category}
                   recipientName={chat.provider_full_name}
-                  lastMessage={lastMessage}
+                  avatarUrl={chat.provider_avatar_url}
                   date={chat.last_at}
                   unread={chat.unread_count}
                   onSelect={() => setView({ mode: "visitor-chat", chat })}

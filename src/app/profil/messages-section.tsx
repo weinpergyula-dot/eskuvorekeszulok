@@ -14,10 +14,12 @@ interface Message {
   sender_role: string;
   sender_provider_id: string | null;
   sender_provider_categories: string[] | null;
+  sender_avatar_url: string | null;
   recipient_name: string | null;
   recipient_role: string | null;
   recipient_provider_id: string | null;
   recipient_provider_categories: string[] | null;
+  recipient_avatar_url: string | null;
   is_own: boolean;
   subject: string;
   body: string;
@@ -35,6 +37,7 @@ interface Thread {
   providerLinkId: string | null;
   otherName: string;
   otherProviderId: string | null;
+  otherAvatarUrl: string | null;
   recipientId: string;
 }
 
@@ -74,11 +77,12 @@ function buildThreads(messages: Message[]): Thread[] {
       const incomingMsg = sorted.find(m => !m.is_own);
       const otherName = isOutgoing ? (firstMsg?.recipient_name ?? "Névtelen") : (incomingMsg?.sender_name ?? "Névtelen");
       const otherProviderId = isOutgoing ? (firstMsg?.recipient_provider_id ?? null) : (incomingMsg?.sender_provider_id ?? null);
+      const otherAvatarUrl = isOutgoing ? (firstMsg?.recipient_avatar_url ?? null) : (incomingMsg?.sender_avatar_url ?? null);
       const recipientId = incomingMsg ? incomingMsg.sender_id : (sorted[0]?.recipient_id ?? "");
       const category = isOutgoing
         ? ((firstMsg?.recipient_provider_categories ?? [])[0] ?? null)
         : ((incomingMsg?.sender_provider_categories ?? [])[0] ?? null);
-      return { ...t, messages: sorted, category, providerLinkId: otherProviderId, otherName, otherProviderId, recipientId };
+      return { ...t, messages: sorted, category, providerLinkId: otherProviderId, otherName, otherProviderId, otherAvatarUrl, recipientId };
     });
 }
 
@@ -104,35 +108,33 @@ function formatShort(iso: string) {
 // ─── Inbox list item ────────────────────────────────────────────────────────
 
 function InboxListItem({ thread, onSelect }: { thread: Thread; onSelect: () => void }) {
-  const lastMsg = thread.messages[thread.messages.length - 1];
-  const lastText = lastMsg
-    ? (isSystemMsg(lastMsg.body) ? systemText(lastMsg.body) : lastMsg.body)
-    : "";
   const categoryLabel = thread.category
     ? (CATEGORY_LABELS[thread.category as keyof typeof CATEGORY_LABELS] ?? thread.category)
     : null;
+  const initials = thread.otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
 
   return (
     <button
       onClick={onSelect}
       className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
     >
-      <div className="flex items-start gap-3">
-        <div className="mt-1 shrink-0">
-          <Mail className={`h-4 w-4 ${thread.hasUnread ? "text-[#84AAA6]" : "text-gray-300"}`} />
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
+          {thread.otherAvatarUrl
+            ? <img src={thread.otherAvatarUrl} alt={thread.otherName} className="w-full h-full object-cover" />
+            : initials}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-0.5">
-            <p className={`text-base sm:text-sm truncate ${thread.hasUnread ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
-              {thread.subject}
+            <p className={`text-sm font-bold truncate ${thread.hasUnread ? "text-gray-900" : "text-gray-700"}`}>
+              {thread.otherName}
             </p>
-            <span className="text-sm sm:text-xs text-gray-400 shrink-0">{formatShort(thread.lastAt)}</span>
+            <span className="text-xs text-gray-400 shrink-0">{formatShort(thread.lastAt)}</span>
           </div>
-          {categoryLabel && <p className="text-sm sm:text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>}
-          <p className="text-sm sm:text-xs text-gray-500 truncate mb-0.5">{thread.otherName}</p>
-          <p className="text-sm sm:text-xs text-gray-400 truncate">{lastText}</p>
+          {categoryLabel && <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>}
+          <p className={`text-xs truncate ${thread.hasUnread ? "font-semibold text-gray-700" : "text-gray-500"}`}>{thread.subject}</p>
         </div>
-        {thread.hasUnread && <span className="w-2 h-2 rounded-full bg-[#F06C6C] shrink-0 mt-1.5" />}
+        {thread.hasUnread && <span className="w-2 h-2 rounded-full bg-[#F06C6C] shrink-0" />}
       </div>
     </button>
   );
@@ -244,10 +246,12 @@ function ThreadChat({
             sender_role:          "unknown",
             sender_provider_id:   otherProviderId,
             sender_provider_categories: null,
+            sender_avatar_url:    thread.otherAvatarUrl,
             recipient_name:       null,
             recipient_role:       null,
             recipient_provider_id: null,
             recipient_provider_categories: null,
+            recipient_avatar_url: null,
             is_own:               false,
             subject:              raw.subject,
             body:                 raw.body,
@@ -296,10 +300,12 @@ function ThreadChat({
           sender_role:          "self",
           sender_provider_id:   null,
           sender_provider_categories: null,
+          sender_avatar_url:    null,
           recipient_name:       otherName,
           recipient_role:       null,
           recipient_provider_id: null,
           recipient_provider_categories: null,
+          recipient_avatar_url: null,
           is_own:               true,
           subject:              `Re: ${thread.subject}`,
           body:                 replyBody.trim(),
@@ -431,6 +437,12 @@ function ThreadChat({
           )
         )}
         <div ref={bottomRef} />
+      </div>
+
+      {/* Subject label above reply box */}
+      <div className="hidden sm:flex items-center gap-1.5 px-4 py-1.5 border-t border-gray-100 bg-gray-50/80 shrink-0">
+        <span className="text-xs text-gray-400">Tárgy:</span>
+        <span className="text-xs text-gray-600 font-medium truncate">{thread.subject}</span>
       </div>
 
       {/* Reply */}

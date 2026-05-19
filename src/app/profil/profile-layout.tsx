@@ -208,6 +208,7 @@ function MobileMenuDropdown({
   unreadCount,
   unreadQuotesCount,
   sidebarIndicator,
+  onQuotesCta,
 }: {
   items: { id: Section; label: string; icon: React.ReactNode }[];
   active: Section;
@@ -215,6 +216,7 @@ function MobileMenuDropdown({
   unreadCount: number;
   unreadQuotesCount: number;
   sidebarIndicator: SidebarIndicator | null;
+  onQuotesCta: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -260,6 +262,19 @@ function MobileMenuDropdown({
       {/* Dropdown list */}
       {open && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+          {/* Ajánlatkérés CTA at top */}
+          <button
+            onClick={() => { onQuotesCta(); setOpen(false); }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-base font-semibold text-[#84AAA6] bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors cursor-pointer border-b border-gray-100"
+          >
+            <FileText className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-left">Ajánlatkérés</span>
+            {unreadQuotesCount > 0 && (
+              <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
+                {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
+              </span>
+            )}
+          </button>
           {items.map((item) => (
             <button
               key={item.id}
@@ -464,10 +479,24 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             unreadCount={unreadCount}
             unreadQuotesCount={unreadQuotes}
             sidebarIndicator={sidebarIndicator}
+            onQuotesCta={() => switchTo("quotes")}
           />
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
+            {/* Ajánlatkérés CTA – highlighted at top */}
+            <button
+              onClick={() => switchTo("quotes")}
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold transition-colors cursor-pointer w-full text-left mb-1 bg-[#84AAA6]/10 text-[#84AAA6] hover:bg-[#84AAA6]/20"
+            >
+              <FileText className="h-4 w-4 shrink-0" />
+              <span>Ajánlatkérés</span>
+              {unreadQuotes > 0 && (
+                <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
+                  {unreadQuotes > 9 ? "9+" : unreadQuotes}
+                </span>
+              )}
+            </button>
             {MENU_ITEMS.filter(item =>
               (item.id !== "admin"     || role === "admin") &&
               (item.id !== "dashboard" || role === "provider")

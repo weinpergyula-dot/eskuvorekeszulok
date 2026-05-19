@@ -43,13 +43,22 @@ async function fetchVisitorChats(admin: any, userId: string) {
       (recipients as RawRec[]).map((r) => r.provider_user_id).filter(Boolean)
     ),
   ];
-  const { data: profiles } = await admin
-    .from("profiles")
-    .select("user_id, full_name")
-    .in("user_id", providerUserIds);
+  const providerIds: string[] = [
+    ...new Set((recipients as RawRec[]).map((r) => r.provider_id).filter(Boolean)),
+  ];
+
+  const [{ data: profiles }, { data: providerAvatarRows }] = await Promise.all([
+    admin.from("profiles").select("user_id, full_name").in("user_id", providerUserIds),
+    providerIds.length > 0
+      ? admin.from("providers").select("id, avatar_url").in("id", providerIds)
+      : Promise.resolve({ data: [] }),
+  ]);
 
   const profileMap = new Map(
     ((profiles ?? []) as { user_id: string; full_name: string }[]).map((p) => [p.user_id, p.full_name])
+  );
+  const providerAvatarMap = new Map(
+    ((providerAvatarRows ?? []) as { id: string; avatar_url: string | null }[]).map((p) => [p.id, p.avatar_url])
   );
 
   const msgMap = new Map<string, RawMsg[]>();
@@ -74,6 +83,7 @@ async function fetchVisitorChats(admin: any, userId: string) {
       message: req?.message ?? "",
       provider_id: rec.provider_id,
       provider_full_name: profileMap.get(rec.provider_user_id) ?? "Ismeretlen",
+      provider_avatar_url: providerAvatarMap.get(rec.provider_id) ?? null,
       messages: msgs,
       unread_count: unreadCount,
       last_at: lastMsg?.created_at ?? req?.created_at ?? "",
@@ -109,7 +119,7 @@ export async function GET() {
           admin.from("quote_requests").select("subject, category, counties, message, created_at, visitor_id").eq("id", rec.quote_request_id).single(),
           admin.from("quote_messages").select("id").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).neq("sender_id", user.id).eq("read", false),
         ]);
-        const { data: visitorProfile } = await admin.from("profiles").select("full_name").eq("user_id", qr?.visitor_id ?? "").single();
+        const { data: visitorProfile } = await admin.from("profiles").select("full_name, avatar_url").eq("user_id", qr?.visitor_id ?? "").single();
         return {
           recipient_id: rec.id,
           quote_request_id: rec.quote_request_id,
@@ -121,6 +131,7 @@ export async function GET() {
           created_at: qr?.created_at ?? rec.created_at,
           read: rec.read,
           visitor_name: visitorProfile?.full_name || "Ismeretlen látogató",
+          visitor_avatar_url: visitorProfile?.avatar_url ?? null,
           unread_reply_count: unreadMsgs?.length ?? 0,
         };
       })),
