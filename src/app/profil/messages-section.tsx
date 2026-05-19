@@ -163,9 +163,8 @@ function ThreadChat({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
   const [localMessages, setLocalMessages] = useState(thread.messages);
-  const bottomRef      = useRef<HTMLDivElement>(null);
-  const textareaRef    = useRef<HTMLTextAreaElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef       = useRef<HTMLTextAreaElement>(null);
+  const messagesContainer = useRef<HTMLDivElement>(null);
 
   // Sync new server messages into localMessages when thread prop refreshes (deduped)
   const serverMsgCount = thread.messages.length;
@@ -207,8 +206,8 @@ function ThreadChat({
 
   // ── Scroll to bottom on new messages ──────────────────────────────────────
   useEffect(() => {
-    const container = messagesEndRef.current?.parentElement;
-    if (container) container.scrollTop = container.scrollHeight;
+    const el = messagesContainer.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [localMessages]);
 
   // ── Presence tracking ─────────────────────────────────────────────────────
@@ -419,7 +418,7 @@ function ThreadChat({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+      <div ref={messagesContainer} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
         {localMessages.map((msg) =>
           isSystemMsg(msg.body) ? (
             <div key={msg.id} className="flex justify-center">
@@ -443,7 +442,6 @@ function ThreadChat({
             </div>
           )
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Subject label above reply box */}
@@ -524,14 +522,10 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
     };
   }, [loadMessages]);
 
-  // Add/remove body class + scroll to top on desktop when entering chat
+  // Add/remove body class when entering/leaving chat
   useEffect(() => {
     if (selectedThread) {
       document.body.classList.add("chat-mode");
-      // On desktop (sm+), scroll to top so the chat is fully visible
-      if (window.innerWidth >= 640) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
     } else {
       document.body.classList.remove("chat-mode");
     }
