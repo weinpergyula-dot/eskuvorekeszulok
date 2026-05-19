@@ -14,6 +14,7 @@ interface UserProfile {
   full_name: string;
   role: "visitor" | "provider" | "admin";
   created_at: string;
+  avatar_url?: string | null;
   providerApprovalStatus?: string | null;
   providerHasPendingChanges?: boolean;
   providerId?: string | null;
@@ -230,33 +231,48 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
       )}
 
       <div className="space-y-3">
-        {paginated.map((u) => (
+        {paginated.map((u) => {
+          const initials = (u.full_name || u.email || "?")
+            .split(" ").filter(Boolean).slice(0, 2)
+            .map(w => w[0].toUpperCase()).join("");
+          return (
           <div
             key={u.id}
             className="bg-white border border-gray-200 rounded-lg px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
           >
-            <div>
-              <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                {u.providerApprovalStatus === "approved" && u.providerId ? (
-                  <Link
-                    href={`/providers/${u.providerId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium text-lg text-[#84AAA6] hover:underline"
-                  >
-                    {u.full_name || "–"}
-                  </Link>
+            <div className="flex items-center gap-3">
+              {/* Avatar */}
+              <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
+                {u.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={u.avatar_url} alt={u.full_name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="font-medium text-gray-900 text-lg">{u.full_name || "–"}</span>
+                  <span className="text-sm font-semibold text-[#84AAA6]">{initials}</span>
                 )}
-                <Badge variant={ROLE_BADGE[u.role]} className="text-base">
-                  {ROLE_LABELS[u.role]}
-                </Badge>
               </div>
-              <p className="text-base text-gray-900">{u.email}</p>
-              <p className="text-base text-gray-900 mt-0.5">
-                Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}
-              </p>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                  {u.providerApprovalStatus === "approved" && u.providerId ? (
+                    <Link
+                      href={`/providers/${u.providerId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-lg text-[#84AAA6] hover:underline"
+                    >
+                      {u.full_name || "–"}
+                    </Link>
+                  ) : (
+                    <span className="font-medium text-gray-900 text-lg">{u.full_name || "–"}</span>
+                  )}
+                  <Badge variant={ROLE_BADGE[u.role]} className="text-base">
+                    {ROLE_LABELS[u.role]}
+                  </Badge>
+                </div>
+                <p className="text-base text-gray-900">{u.email}</p>
+                <p className="text-base text-gray-900 mt-0.5">
+                  Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}
+                </p>
+              </div>
             </div>
 
             <div className="flex gap-2 flex-wrap shrink-0">
@@ -293,7 +309,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
               </Button>
             </div>
           </div>
-        ))}
+        );})}
       </div>
 
       {/* Pagination */}

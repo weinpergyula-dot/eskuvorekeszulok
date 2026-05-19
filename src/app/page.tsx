@@ -88,7 +88,7 @@ export default function HomePage() {
               </h2>
               <hr className="border-white/30 mb-3" />
               <p className="text-base text-white leading-relaxed mb-5">
-                Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Fogadj ajánlatkéréseket közvetlenül az érdeklődő páraktól, és válaszolj nekik az oldalon keresztül.
+                Mutatkozz be több ezer leendő párnak! Hozz létre ingyenes szolgáltatói profilt, töltsd fel képeidet, és kezeld elérhetőségeidet egy helyen. Fogadj ajánlatkéréseket közvetlenül az érdeklődő pároktól, és válaszolj nekik az oldalon keresztül.
               </p>
               <ProviderRegisterButton />
             </div>
