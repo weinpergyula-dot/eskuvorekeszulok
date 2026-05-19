@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { Phone, Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
 
 interface UserProfile {
@@ -22,6 +22,7 @@ interface UserProfile {
   providerApprovalStatus?: string | null;
   providerHasPendingChanges?: boolean;
   providerId?: string | null;
+  providerFeatured?: boolean;
 }
 
 interface ProviderStatus {
@@ -169,6 +170,26 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
         prev.map((u) => (u.user_id === userId ? { ...u, role: role as UserProfile["role"] } : u))
       );
       router.refresh();
+    }
+    setUpdating(null);
+  };
+
+  const toggleFeatured = async (u: UserProfile) => {
+    if (!u.providerId) return;
+    setUpdating(u.user_id);
+    setError(null);
+    const res = await fetch("/api/admin/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ toggleFeatured: true, providerId: u.providerId }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error ?? "Hiba történt.");
+    } else {
+      setUsers((prev) =>
+        prev.map((x) => x.user_id === u.user_id ? { ...x, providerFeatured: data.featured } : x)
+      );
     }
     setUpdating(null);
   };
@@ -346,6 +367,20 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   </td>
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-2 justify-end">
+                      {u.providerApprovalStatus === "approved" && u.providerId && (
+                        <button
+                          disabled={updating === u.user_id}
+                          onClick={() => toggleFeatured(u)}
+                          title={u.providerFeatured ? "Kiemelt – kattints az eltávolításhoz" : "Kiemelés a főoldalra"}
+                          className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                            u.providerFeatured
+                              ? "bg-amber-400 border-amber-400 text-white hover:bg-amber-500"
+                              : "bg-white border-gray-200 text-gray-400 hover:border-amber-400 hover:text-amber-400"
+                          }`}
+                        >
+                          <Star className="h-3.5 w-3.5" fill={u.providerFeatured ? "currentColor" : "none"} />
+                        </button>
+                      )}
                       {u.role !== "admin" ? (
                         <Button size="sm" variant="outline" disabled={updating === u.user_id}
                           onClick={() => setRole(u.user_id, "admin")}
@@ -419,7 +454,21 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   <span>Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}</span>
                 </div>
               </div>
-              <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex gap-2 flex-wrap">
+              <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex gap-2 flex-wrap items-center">
+                {u.providerApprovalStatus === "approved" && u.providerId && (
+                  <button
+                    disabled={updating === u.user_id}
+                    onClick={() => toggleFeatured(u)}
+                    title={u.providerFeatured ? "Kiemelt – kattints az eltávolításhoz" : "Kiemelés a főoldalra"}
+                    className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                      u.providerFeatured
+                        ? "bg-amber-400 border-amber-400 text-white"
+                        : "bg-white border-gray-200 text-gray-400 hover:border-amber-400 hover:text-amber-400"
+                    }`}
+                  >
+                    <Star className="h-3.5 w-3.5" fill={u.providerFeatured ? "currentColor" : "none"} />
+                  </button>
+                )}
                 {u.role !== "admin" ? (
                   <Button size="sm" variant="outline" disabled={updating === u.user_id}
                     onClick={() => setRole(u.user_id, "admin")}

@@ -20,7 +20,7 @@ export async function GET() {
 
     const [{ data: profiles, error }, { data: providers }] = await Promise.all([
       supabase.from("profiles").select("id, user_id, email, full_name, role, created_at").order("created_at", { ascending: false }),
-      supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes"),
+      supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes, featured"),
     ]);
 
     if (error) { await logError("api/admin/users GET", error.message); return NextResponse.json({ error: error.message }, { status: 500 }); }
@@ -36,6 +36,7 @@ export async function GET() {
         providerId: prov?.id ?? null,
         providerApprovalStatus: prov?.approval_status ?? null,
         providerHasPendingChanges: !!prov?.pending_changes,
+        providerFeatured: prov?.featured ?? false,
       };
     });
 
@@ -58,7 +59,17 @@ export async function PATCH(request: Request) {
       .single();
     if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    const { userId, role } = await request.json();
+    const body = await request.json();
+    const { userId, role, toggleFeatured, providerId } = body;
+
+    // Toggle featured on a provider
+    if (toggleFeatured && providerId) {
+      const { data: prov } = await supabase.from("providers").select("featured").eq("id", providerId).single();
+      const { error } = await supabase.from("providers").update({ featured: !prov?.featured }).eq("id", providerId);
+      if (error) { await logError("api/admin/users PATCH featured", error.message); return NextResponse.json({ error: error.message }, { status: 500 }); }
+      return NextResponse.json({ ok: true, featured: !prov?.featured });
+    }
+
     if (!userId || !["visitor", "provider", "admin"].includes(role)) {
       return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
     }

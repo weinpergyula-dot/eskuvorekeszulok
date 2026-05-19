@@ -29,13 +29,18 @@ export default async function HomePage() {
         }
       }
 
-      // Shuffle for carousel (Fisher-Yates), take first 6
-      const arr = [...data] as Provider[];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+      // Featured providers first; fall back to shuffled if none
+      const featured = (data as Provider[]).filter((p) => p.featured);
+      if (featured.length > 0) {
+        carouselProviders = featured;
+      } else {
+        const arr = [...data] as Provider[];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        carouselProviders = arr.slice(0, 6);
       }
-      carouselProviders = arr.slice(0, 6);
     }
   } catch {
     // non-critical, silently ignore
