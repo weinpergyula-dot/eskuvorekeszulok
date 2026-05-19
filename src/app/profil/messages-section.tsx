@@ -163,8 +163,9 @@ function ThreadChat({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
   const [localMessages, setLocalMessages] = useState(thread.messages);
-  const bottomRef   = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const bottomRef      = useRef<HTMLDivElement>(null);
+  const textareaRef    = useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Sync new server messages into localMessages when thread prop refreshes (deduped)
   const serverMsgCount = thread.messages.length;
@@ -206,7 +207,8 @@ function ThreadChat({
 
   // ── Scroll to bottom on new messages ──────────────────────────────────────
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesEndRef.current?.parentElement;
+    if (container) container.scrollTop = container.scrollHeight;
   }, [localMessages]);
 
   // ── Presence tracking ─────────────────────────────────────────────────────
@@ -441,7 +443,7 @@ function ThreadChat({
             </div>
           )
         )}
-        <div ref={bottomRef} />
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Subject label above reply box */}
