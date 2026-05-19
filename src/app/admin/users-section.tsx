@@ -110,7 +110,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
 
       let matchesFilter = true;
       if (approvalFilter === "provider") {
-        matchesFilter = u.role === "provider";
+        matchesFilter = u.role === "provider" || u.providerId != null;
       } else if (approvalFilter === "visitor") {
         matchesFilter = u.role === "visitor";
       } else if (approvalFilter === "admin") {
