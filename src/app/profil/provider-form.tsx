@@ -26,13 +26,16 @@ function PillSelect<T extends string>({
   options,
   selected,
   onChange,
+  disabledValues,
 }: {
   label: string;
   options: { value: T; label: string }[];
   selected: T[];
   onChange: (next: T[]) => void;
+  disabledValues?: T[];
 }) {
   const toggle = (value: T) => {
+    if (disabledValues?.includes(value)) return;
     onChange(
       selected.includes(value) ? selected.filter((v) => v !== value) : [...selected, value]
     );
@@ -48,15 +51,18 @@ function PillSelect<T extends string>({
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const isSelected = selected.includes(opt.value);
+          const isDisabled = disabledValues?.includes(opt.value) ?? false;
           return (
             <button
               key={opt.value}
               type="button"
               onClick={() => toggle(opt.value)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
-                isSelected
-                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                isDisabled
+                  ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
+                  : isSelected
+                    ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
               }`}
             >
               {opt.label}
@@ -280,14 +286,14 @@ export function ProviderForm({
         // Reset approval ack so next approval triggers the green dot again
         localStorage.removeItem(`provider_approval_ack_${userId}`);
       } else {
-        // Approved provider: categories & counties instant; everything else → pending_changes
+        // Approved provider: categories, counties & phone instant; everything else → pending_changes
         const { error: catError } = await supabase
-          .from("providers").update({ categories, counties }).eq("user_id", userId);
+          .from("providers").update({ categories, counties, phone }).eq("user_id", userId);
         if (catError) throw catError;
 
         const { error: updateError } = await supabase.from("providers").update({
           pending_changes: {
-            full_name: fullName, phone, description,
+            full_name: fullName, description,
             detailed_description: detailedDescription || null,
             website: website || null, avatar_url: avatarUrl || null,
             gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
@@ -364,8 +370,8 @@ export function ProviderForm({
                 <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
                   <Clock className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
                   <p className="text-sm text-amber-800">
-                    A <strong>kategória</strong> és <strong>megye</strong> módosítások azonnal érvénybe lépnek.
-                    A többi mező (név, telefonszám, bemutatkozás, weboldal, kép) adminisztrátori jóváhagyás után jelenik meg.
+                    A <strong>kategória</strong>, <strong>megye</strong> és <strong>telefonszám</strong> módosítások azonnal érvénybe lépnek.
+                    A többi mező (név, bemutatkozás, weboldal, kép) adminisztrátori jóváhagyás után jelenik meg.
                   </p>
                 </div>
               )}
@@ -419,7 +425,20 @@ export function ProviderForm({
                 label="Megye"
                 options={countyOptions}
                 selected={counties}
-                onChange={setCounties}
+                disabledValues={
+                  counties.includes("Országosan")
+                    ? countyOptions.map((o) => o.value).filter((v) => v !== "Országosan")
+                    : counties.length > 0
+                      ? ["Országosan" as string]
+                      : []
+                }
+                onChange={(next) => {
+                  if (!counties.includes("Országosan") && next.includes("Országosan")) {
+                    setCounties(["Országosan"]);
+                  } else {
+                    setCounties(next.filter((c) => c !== "Országosan"));
+                  }
+                }}
               />
               <PillSelect
                 label="Kategória"

@@ -23,6 +23,7 @@ function PillSelect<T extends string>({
   options,
   selected,
   onChange,
+  disabledValues,
 }: {
   label?: string;
   hint?: string;
@@ -30,8 +31,10 @@ function PillSelect<T extends string>({
   options: { value: T; label: string }[];
   selected: T[];
   onChange: (next: T[]) => void;
+  disabledValues?: T[];
 }) {
   const toggle = (value: T) => {
+    if (disabledValues?.includes(value)) return;
     if (selected.includes(value)) {
       onChange(selected.filter((v) => v !== value));
     } else {
@@ -64,15 +67,18 @@ function PillSelect<T extends string>({
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const isSelected = selected.includes(opt.value);
+          const isDisabled = disabledValues?.includes(opt.value) ?? false;
           return (
             <button
               key={opt.value}
               type="button"
               onClick={() => toggle(opt.value)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
-                isSelected
-                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                isDisabled
+                  ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
+                  : isSelected
+                    ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
               }`}
             >
               {opt.label}
@@ -679,7 +685,20 @@ function RegisterContent() {
                 required
                 options={countyOptions}
                 selected={counties}
-                onChange={setCounties}
+                disabledValues={
+                  counties.includes("Országosan")
+                    ? countyOptions.map((o) => o.value).filter((v) => v !== "Országosan")
+                    : counties.length > 0
+                      ? ["Országosan" as string]
+                      : []
+                }
+                onChange={(next) => {
+                  if (!counties.includes("Országosan") && next.includes("Országosan")) {
+                    setCounties(["Országosan"]);
+                  } else {
+                    setCounties(next.filter((c) => c !== "Országosan"));
+                  }
+                }}
               />
 
               <PillSelect
