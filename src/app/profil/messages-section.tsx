@@ -166,6 +166,18 @@ function ThreadChat({
   const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Sync new server messages into localMessages when thread prop refreshes (deduped)
+  const serverMsgCount = thread.messages.length;
+  useEffect(() => {
+    setLocalMessages(prev => {
+      const prevIds = new Set(prev.map(m => m.id));
+      const newMsgs = thread.messages.filter(m => !prevIds.has(m.id));
+      if (newMsgs.length === 0) return prev;
+      return [...prev, ...newMsgs].sort((a, b) => a.created_at.localeCompare(b.created_at));
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverMsgCount]);
+
   const hasSystemMessage = localMessages.some((m) => !m.is_own && isSystemMsg(m.body));
   const otherParticipant = localMessages.find((m) => !m.is_own);
   const recipientId = otherParticipant
@@ -476,6 +488,9 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [tab, setTab]                       = useState<MessageTab>("bejovo");
 
+  const selectedThreadRef = useRef<Thread | null>(null);
+  useEffect(() => { selectedThreadRef.current = selectedThread; }, [selectedThread]);
+
   const loadMessages = useCallback(() => {
     fetch("/api/messages")
       .then((r) => r.json())
@@ -483,6 +498,10 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
         setMessages(data);
         onUnreadChange(data.filter((m) => !m.read && !m.is_own).length);
         setLoading(false);
+        if (selectedThreadRef.current) {
+          const refreshed = buildThreads(data).find(t => t.key === selectedThreadRef.current!.key);
+          if (refreshed) setSelectedThread(refreshed);
+        }
       })
       .catch(() => setLoading(false));
   }, [onUnreadChange]);

@@ -331,11 +331,6 @@ function MobileMenuDropdown({
 
 const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "quotes", "messages", "notifications"];
 
-function hashToSection(hash: string): Section | null {
-  const s = hash.replace("#", "") as Section;
-  return VALID_SECTIONS.includes(s) ? s : null;
-}
-
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
   const searchParams = useSearchParams();
   const [active, setActive] = useState<Section>("account");
@@ -348,10 +343,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     const tab = searchParams.get("tab") as Section | null;
     if (tab && VALID_SECTIONS.includes(tab)) {
       setActive(tab);
-      return;
     }
-    const s = hashToSection(window.location.hash);
-    if (s) setActive(s);
   }, [searchParams]);
 
   // Badge counts come from navbar's realtime broadcasts via window events.
@@ -436,7 +428,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
       return;
     }
     setActive(section);
-    window.location.hash = section;
+    history.pushState(null, "", `?tab=${section}`);
     if (section === "provider" && showApprovalDot) {
       setShowApprovalDot(false);
       localStorage.setItem(`provider_approval_ack_${userId}`, "approved");
@@ -451,22 +443,19 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   };
 
   useEffect(() => {
-    const onHashChange = () => {
-      const s = hashToSection(window.location.hash);
-      if (s) setActive(s);
-    };
     const onProfileSection = (e: Event) => {
       const section = (e as CustomEvent).detail as Section;
-      if (VALID_SECTIONS.includes(section)) setActive(section);
+      if (VALID_SECTIONS.includes(section)) {
+        setActive(section);
+        history.pushState(null, "", `?tab=${section}`);
+      }
     };
     const onQuotesCount = (e: Event) => {
       setUnreadQuotes((e as CustomEvent<number>).detail);
     };
-    window.addEventListener("hashchange", onHashChange);
     window.addEventListener("profile-section", onProfileSection);
     window.addEventListener("quotes-unread-count", onQuotesCount);
     return () => {
-      window.removeEventListener("hashchange", onHashChange);
       window.removeEventListener("profile-section", onProfileSection);
       window.removeEventListener("quotes-unread-count", onQuotesCount);
     };
@@ -516,7 +505,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             ).map((item) => (
               <a
                 key={item.id}
-                href={`#${item.id}`}
+                href={`?tab=${item.id}`}
                 onClick={(e) => { e.preventDefault(); switchTo(item.id); }}
                 className={cn(
                   "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer",
