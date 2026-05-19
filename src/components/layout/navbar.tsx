@@ -95,7 +95,11 @@ export function Navbar() {
   useEffect(() => {
     if (!supabase || !user) return;
 
-    const broadcastMessages = () => {
+    const broadcastMessages = (payload?: { new?: Record<string, unknown> }) => {
+      // Dispatch raw payload so chat views can show the new message immediately
+      if (payload?.new) {
+        window.dispatchEvent(new CustomEvent("message-inserted", { detail: payload.new }));
+      }
       fetch("/api/messages")
         .then((r) => r.json())
         .then((data: { read: boolean; is_own: boolean }[]) => {
@@ -106,7 +110,11 @@ export function Navbar() {
         .catch(() => {});
     };
 
-    const broadcastQuotes = () => {
+    const broadcastQuotes = (payload?: { new?: Record<string, unknown> }) => {
+      // Dispatch raw payload so quote chat views can show the new message immediately
+      if (payload?.new) {
+        window.dispatchEvent(new CustomEvent("quote-message-inserted", { detail: payload.new }));
+      }
       fetch("/api/quote-requests")
         .then((r) => r.json())
         .then((data: { read?: boolean; unread_reply_count?: number }[]) => {

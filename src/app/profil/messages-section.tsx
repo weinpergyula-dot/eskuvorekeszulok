@@ -217,62 +217,50 @@ function ThreadChat({
     };
   }, [thread.subject, userId]);
 
-  // ── Realtime: new incoming messages ───────────────────────────────────────
+  // ── Realtime: new incoming messages via navbar broadcast ─────────────────
+  // (No separate Supabase channel — navbar owns the single subscription)
   useEffect(() => {
-    const supabase = createClient();
-    if (!supabase) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handler = (e: any) => {
+      const raw = e.detail;
+      if (!raw) return;
+      if (normalizeSubject(raw.subject) !== thread.subject) return;
+      if (raw.sender_id !== recipientId) return;
 
-    const channel = supabase
-      .channel(`thread-${thread.key}-${userId}`)
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `recipient_id=eq.${userId}`,
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (payload: any) => {
-          const raw = payload.new;
-          // Only handle messages that belong to this thread
-          if (normalizeSubject(raw.subject) !== thread.subject) return;
-          if (raw.sender_id !== recipientId) return;
+      const newMsg: Message = {
+        id:                         raw.id,
+        sender_id:                  raw.sender_id,
+        recipient_id:               raw.recipient_id,
+        sender_name:                otherName,
+        sender_role:                "unknown",
+        sender_provider_id:         otherProviderId,
+        sender_provider_categories: null,
+        sender_avatar_url:          thread.otherAvatarUrl,
+        recipient_name:             null,
+        recipient_role:             null,
+        recipient_provider_id:      null,
+        recipient_provider_categories: null,
+        recipient_avatar_url:       null,
+        is_own:                     false,
+        subject:                    raw.subject,
+        body:                       raw.body,
+        read:                       false,
+        created_at:                 raw.created_at,
+      };
 
-          const newMsg: Message = {
-            id:                   raw.id,
-            sender_id:            raw.sender_id,
-            recipient_id:         raw.recipient_id,
-            sender_name:          otherName,
-            sender_role:          "unknown",
-            sender_provider_id:   otherProviderId,
-            sender_provider_categories: null,
-            sender_avatar_url:    thread.otherAvatarUrl,
-            recipient_name:       null,
-            recipient_role:       null,
-            recipient_provider_id: null,
-            recipient_provider_categories: null,
-            recipient_avatar_url: null,
-            is_own:               false,
-            subject:              raw.subject,
-            body:                 raw.body,
-            read:                 false,
-            created_at:           raw.created_at,
-          };
+      setLocalMessages((prev) => {
+        if (prev.some((m) => m.id === raw.id)) return prev; // dedup
+        return [...prev, newMsg];
+      });
+      fetch(`/api/messages/${raw.id}/read`, { method: "PATCH" })
+        .then(() => window.dispatchEvent(new CustomEvent("messages-read")))
+        .catch(() => {});
+    };
 
-          setLocalMessages((prev) => [...prev, newMsg]);
-          // Auto-mark as read since we're looking at it, then update badge
-          fetch(`/api/messages/${raw.id}/read`, { method: "PATCH" })
-            .then(() => window.dispatchEvent(new CustomEvent("messages-read")))
-            .catch(() => {});
-        }
-      )
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
+    window.addEventListener("message-inserted", handler);
+    return () => window.removeEventListener("message-inserted", handler);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, thread.key, thread.subject, recipientId]);
+  }, [thread.subject, thread.otherAvatarUrl, recipientId, otherName, otherProviderId]);
 
   // ── Reply ──────────────────────────────────────────────────────────────────
   const handleReply = async (e: React.FormEvent) => {
