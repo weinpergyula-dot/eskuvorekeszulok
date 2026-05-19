@@ -501,21 +501,16 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
 
   useEffect(() => { loadMessages(); }, [loadMessages]);
 
-  // Realtime: reload list when a new message arrives (updates tab badge + list)
+  // Reload list when navbar broadcasts a new message count (new message arrived or messages read)
   useEffect(() => {
-    const supabase = createClient();
-    if (!supabase) return;
-    const channel = supabase
-      .channel(`messages-list-${userId}`)
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
-        () => { loadMessages(); }
-      )
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [userId, loadMessages]);
+    const handler = () => loadMessages();
+    window.addEventListener("messages-unread-count", handler);
+    window.addEventListener("messages-read", handler);
+    return () => {
+      window.removeEventListener("messages-unread-count", handler);
+      window.removeEventListener("messages-read", handler);
+    };
+  }, [loadMessages]);
 
   // Add/remove body class + scroll to top on desktop when entering chat
   useEffect(() => {
@@ -588,7 +583,9 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
       {hasTabs && (
         <div className="flex border-b border-gray-200">
           {(["bejovo", "kimenő"] as MessageTab[]).map((t) => {
-            const count = t === "bejovo" ? incomingThreads.filter(th => th.hasUnread).length : 0;
+            const count = t === "bejovo"
+              ? incomingThreads.filter(th => th.hasUnread).length
+              : outgoingThreads.filter(th => th.hasUnread).length;
             return (
               <button
                 key={t}

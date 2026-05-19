@@ -354,62 +354,14 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     if (s) setActive(s);
   }, [searchParams]);
 
+  // Badge counts come from navbar's realtime broadcasts via window events.
+  // No separate Supabase subscription here — avoids hitting channel limits.
   useEffect(() => {
-    fetch("/api/messages")
-      .then((r) => r.json())
-      .then((data: { read: boolean; is_own: boolean }[]) =>
-        setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
-      )
-      .catch(() => {});
+    const onMessagesCount = (e: Event) =>
+      setUnreadCount((e as CustomEvent<number>).detail);
+    window.addEventListener("messages-unread-count", onMessagesCount);
+    return () => window.removeEventListener("messages-unread-count", onMessagesCount);
   }, []);
-
-  // Realtime: new incoming message → update sidebar badge immediately
-  useEffect(() => {
-    const supabase = createClient();
-    if (!supabase) return;
-
-    const refetchMessages = () => {
-      fetch("/api/messages")
-        .then((r) => r.json())
-        .then((data: { read: boolean; is_own: boolean }[]) =>
-          setUnreadCount(data.filter((m) => !m.read && !m.is_own).length)
-        )
-        .catch(() => {});
-    };
-
-    // Also update badge when messages are marked as read inside MessagesSection
-    window.addEventListener("messages-read", refetchMessages);
-
-    const channel = supabase
-      .channel(`profile-msg-${userId}`)
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
-        refetchMessages
-      )
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "quote_messages" },
-        () => {
-          window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
-        }
-      )
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "quote_request_recipients", filter: `provider_user_id=eq.${userId}` },
-        () => {
-          window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
-        }
-      )
-      .subscribe();
-    return () => {
-      window.removeEventListener("messages-read", refetchMessages);
-      supabase.removeChannel(channel);
-    };
-  }, [userId]);
 
   // Admin: fetch + realtime pending provider count
   useEffect(() => {
