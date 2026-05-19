@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { ArrowLeft, FileText, Send, Trash2, Star, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
@@ -403,35 +404,40 @@ function QuoteChat({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Realtime: new incoming quote messages via navbar broadcast
-  // (No separate Supabase channel — navbar owns the single subscription)
+  // Realtime: subscribe to new quote_messages and refresh via API
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handler = (e: any) => {
-      const raw = e.detail;
-      if (!raw) return;
-      if (raw.quote_request_id !== requestId) return;
-      if (raw.provider_id !== providerId) return;
-      if (raw.sender_id === userId) return; // own message already shown optimistically
-
-      const newMsg: QuoteMessage = {
-        id: raw.id, sender_id: raw.sender_id, body: raw.body,
-        read: false, created_at: raw.created_at,
-      };
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === raw.id)) return prev; // dedup
-        return [...prev, newMsg];
-      });
-      fetch(`/api/quote-requests/${requestId}/read`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "messages", provider_id: providerId }),
-      }).then(() => window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh")))
-        .catch(() => {});
-    };
-
-    window.addEventListener("quote-message-inserted", handler);
-    return () => window.removeEventListener("quote-message-inserted", handler);
+    const supabase = createClient();
+    if (!supabase) return;
+    const channel = supabase
+      .channel(`quote-chat-${requestId}-${providerId}-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "quote_messages", filter: `quote_request_id=eq.${requestId}` },
+        () => {
+          fetch(`/api/quote-requests/${requestId}`)
+            .then((r) => r.json())
+            .then((data) => {
+              if (!data.messages) return;
+              const sorted = [...data.messages].sort((a: QuoteMessage, b: QuoteMessage) =>
+                a.created_at.localeCompare(b.created_at)
+              );
+              setMessages(sorted);
+              const unread = sorted.filter((m: QuoteMessage) => !m.read && m.sender_id !== userId);
+              if (unread.length > 0) {
+                fetch(`/api/quote-requests/${requestId}/read`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ type: "messages", provider_id: providerId }),
+                }).then(() => window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh")))
+                  .catch(() => {});
+              }
+            })
+            .catch(() => {});
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestId, providerId, userId]);
 
