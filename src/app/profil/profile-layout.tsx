@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageSquare, MessageCircle, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, Bell, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageCircle, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, Bell, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
@@ -33,7 +33,6 @@ const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
   { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
-  { id: "messages",       label: "Üzenetek",          icon: <MessageSquare className="h-4 w-4" /> },
   { id: "chat",           label: "Chat",              icon: <MessageCircle className="h-4 w-4" /> },
   { id: "notifications",  label: "Értesítések",       icon: <Bell className="h-4 w-4" /> },
 ];

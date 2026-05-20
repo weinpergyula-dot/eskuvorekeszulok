@@ -290,8 +290,9 @@ function ChatView({
   const [sendError, setSendError]         = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
-  const bottomRef   = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const bottomRef    = useRef<HTMLDivElement>(null);
+  const textareaRef  = useRef<HTMLTextAreaElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const hasSystemMessage = messages.some((m) => !m.is_own && isSystemMsg(m.body));
   const initials = provider.full_name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
@@ -308,6 +309,26 @@ function ChatView({
     }
     document.body.classList.add("chat-mode");
     return () => { document.body.classList.remove("chat-mode"); };
+  }, []);
+
+  // Mobile: resize container to match visual viewport so keyboard doesn't hide input
+  useEffect(() => {
+    if (window.innerWidth >= 640) return;
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => {
+      el.style.top    = `${vv.offsetTop}px`;
+      el.style.height = `${vv.height}px`;
+    };
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
   }, []);
 
   // Mark unread on mount
@@ -397,7 +418,10 @@ function ChatView({
         },
       ]);
       setReplyBody("");
-      if (textareaRef.current) textareaRef.current.style.height = "auto";
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.focus();
+      }
       onMessagesUpdated();
     } catch (err: unknown) {
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
@@ -428,7 +452,7 @@ function ChatView({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-white sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
+    <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white sm:relative sm:inset-auto sm:z-auto sm:h-[680px]" style={{ bottom: 0 }}>
 
       {/* Mobile header */}
       <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
