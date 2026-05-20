@@ -624,6 +624,7 @@ export function ChatSection({ userId }: Props) {
       full_name: thread.otherName,
       avatar_url: thread.otherAvatarUrl,
       categories: [],
+      counties: [],
       average_rating: null,
       review_count: null,
       featured: false,
