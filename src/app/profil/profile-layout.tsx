@@ -247,7 +247,7 @@ function MobileMenuDropdown({
           <span>{activeItem.label}</span>
         </span>
         <span className="flex items-center gap-2">
-          {active === "messages" && unreadCount > 0 && (
+          {active === "chat" && unreadCount > 0 && (
             <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
@@ -303,7 +303,7 @@ function MobileMenuDropdown({
                 {item.icon}
                 <span>{item.label}</span>
               </span>
-              {item.id === "messages" && unreadCount > 0 && (
+              {item.id === "chat" && unreadCount > 0 && (
                 <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
@@ -534,7 +534,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                     {unreadQuotes > 9 ? "9+" : unreadQuotes}
                   </span>
                 )}
-                {item.id === "messages" && unreadCount > 0 && (
+                {item.id === "chat" && unreadCount > 0 && (
                   <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>

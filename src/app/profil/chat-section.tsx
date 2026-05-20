@@ -293,13 +293,19 @@ function ChatView({
   const bottomRef    = useRef<HTMLDivElement>(null);
   const textareaRef  = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const hasSystemMessage = messages.some((m) => !m.is_own && isSystemMsg(m.body));
   const initials = provider.full_name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
-  // Scroll to bottom on new messages
+  // Scroll to bottom on new messages — on desktop scroll only the inner container
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (window.innerWidth >= 640) {
+      const el = scrollAreaRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    } else {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   // Scroll top on desktop when chat opens
@@ -524,7 +530,7 @@ function ChatView({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
             <MessageCircle className="h-12 w-12 mb-3 text-gray-200" strokeWidth={1} />
@@ -600,6 +606,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   const [filterCounty, setFilterCounty]     = useState("");
   const [currentPage, setCurrentPage]       = useState(0);
   const [selectedProvider, setSelectedProvider] = useState<ChatProvider | null>(null);
+  const hasAutoOpened = useRef(false);
 
   const providerUserIds = new Set(providers.map((p) => p.user_id));
   const threads = buildThreads(messages, providerUserIds);
@@ -618,12 +625,16 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
 
   useEffect(() => { loadAll(); }, [loadAll]);
 
-  // Auto-open chat when navigated here with ?with=providerUserId
+  // Auto-open chat when navigated here with ?with=providerUserId — fires only once
   useEffect(() => {
-    if (!withProviderUserId || loading || selectedProvider) return;
+    if (!withProviderUserId || loading || hasAutoOpened.current) return;
     const prov = providers.find((p) => p.user_id === withProviderUserId);
-    if (prov) setSelectedProvider(prov);
-  }, [withProviderUserId, providers, loading, selectedProvider]);
+    if (prov || !loading) {
+      hasAutoOpened.current = true;
+      if (prov) setSelectedProvider(prov);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [withProviderUserId, providers, loading]);
 
   // Reload when a message is read or new messages arrive
   useEffect(() => {
@@ -688,7 +699,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
         provider={selectedProvider}
         userId={userId}
         initialMessages={providerMessages}
-        onBack={() => { setSelectedProvider(null); loadAll(); }}
+        onBack={() => { window.history.replaceState(null, "", "?tab=chat"); setSelectedProvider(null); loadAll(); }}
         onMessagesUpdated={loadAll}
       />
     );

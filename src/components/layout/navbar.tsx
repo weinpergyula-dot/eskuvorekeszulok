@@ -302,7 +302,7 @@ export function Navbar() {
               {pendingCount > 99 ? "99+" : pendingCount}
             </span>
           )}
-          {id === "messages" && unreadMessages > 0 && (
+          {id === "chat" && unreadMessages > 0 && (
             <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
               {unreadMessages > 99 ? "99+" : unreadMessages}
             </span>
