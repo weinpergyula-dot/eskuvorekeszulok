@@ -644,7 +644,7 @@ function ChatView({
 
       {/* Pinned info bar */}
       {showInfoBar && (provider.categories.length > 0 || provider.counties.length > 0) && (
-        <div className="shrink-0 border-b border-yellow-200 bg-[#FEF9C3] px-4 py-2.5 flex items-start gap-3">
+        <div className="shrink-0 border-b border-yellow-100 bg-[#FFFDF0] px-4 py-2.5 flex items-start gap-3">
           <div className="flex-1 min-w-0 space-y-0.5">
             {provider.id ? (
               <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 hover:text-[#84AAA6] transition-colors">
