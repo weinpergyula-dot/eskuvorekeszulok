@@ -5,6 +5,7 @@ import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, Chev
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
