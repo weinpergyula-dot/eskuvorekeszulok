@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
-import { CATEGORY_LABELS } from "@/lib/types";
+import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -14,6 +14,7 @@ interface ChatProvider {
   full_name: string;
   avatar_url: string | null;
   categories: string[];
+  counties: string[];
   average_rating: number | null;
   review_count: number | null;
   featured: boolean;
@@ -161,12 +162,20 @@ function ProviderRow({
     <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/60 transition-colors">
       {/* Avatar */}
       <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
-        {provider.avatar_url
-          ? <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
-          : initials}
+        {provider.avatar_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={provider.avatar_url}
+            alt={provider.full_name}
+            className="w-full h-full object-cover"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+          />
+        ) : (
+          <span>{initials}</span>
+        )}
       </div>
 
-      {/* Name + category + rating */}
+      {/* Name + category (+ rating on mobile) */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
           <p className="text-sm font-semibold text-gray-900 truncate">{provider.full_name}</p>
@@ -179,13 +188,18 @@ function ProviderRow({
         {categoryLabel && (
           <p className="text-xs text-[#84AAA6] truncate mt-0.5">{categoryLabel}</p>
         )}
-        <div className="mt-1">
+        {/* Rating: visible only on mobile (hidden on sm+) */}
+        <div className="mt-1 sm:hidden">
           <StarRating rating={provider.average_rating} count={provider.review_count} />
         </div>
       </div>
 
       {/* Actions */}
       <div className="flex items-center gap-2 shrink-0">
+        {/* Rating: visible only on desktop */}
+        <div className="hidden sm:block">
+          <StarRating rating={provider.average_rating} count={provider.review_count} />
+        </div>
         <button
           onClick={onToggleFavorite}
           className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
@@ -198,7 +212,7 @@ function ProviderRow({
             strokeWidth={1.5}
           />
         </button>
-        <Button size="sm" onClick={onChat} className="text-xs">
+        <Button size="sm" onClick={onChat} className="text-xs whitespace-nowrap">
           <MessageCircle className="h-3.5 w-3.5 mr-1 shrink-0" />
           Chat
         </Button>
@@ -546,7 +560,8 @@ export function ChatSection({ userId }: Props) {
   const [messages, setMessages]             = useState<ChatMessage[]>([]);
   const [loading, setLoading]               = useState(true);
   const [searchQuery, setSearchQuery]       = useState("");
-  const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [filterCategory, setFilterCategory] = useState("");
+  const [filterCounty, setFilterCounty]     = useState("");
   const [selectedProvider, setSelectedProvider] = useState<ChatProvider | null>(null);
 
   const providerUserIds = new Set(providers.map((p) => p.user_id));
@@ -638,11 +653,13 @@ export function ChatSection({ userId }: Props) {
 
   // ── Filtered provider list ──
   const allCategories = [...new Set(providers.flatMap((p) => p.categories))].sort();
-  const visibleProviders = providers
-    .filter((p) =>
-      (!filterCategory || p.categories.includes(filterCategory)) &&
-      (!searchQuery.trim() || p.full_name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
-    );
+  const allCounties = COUNTIES.filter((c) => c !== "Országosan");
+  const visibleProviders = providers.filter((p) => {
+    if (filterCategory && !p.categories.includes(filterCategory)) return false;
+    if (filterCounty && !p.counties.includes(filterCounty) && !p.counties.includes("Országosan")) return false;
+    if (searchQuery.trim() && !p.full_name.toLowerCase().includes(searchQuery.trim().toLowerCase())) return false;
+    return true;
+  });
 
   return (
     <div className="space-y-3">
@@ -678,42 +695,41 @@ export function ChatSection({ userId }: Props) {
       {/* ── Providers tab ── */}
       {tab === "providers" && (
         <div className="space-y-3">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Keresés neve alapján…"
-              className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
-            />
-          </div>
-
-          {/* Category filter */}
-          {allCategories.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setFilterCategory(null)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                Összes
-              </button>
-              {allCategories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setFilterCategory((c) => (c === cat ? null : cat))}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                    filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-                </button>
-              ))}
+          {/* Search + dropdowns */}
+          <div className="flex flex-col sm:flex-row gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Keresés neve alapján…"
+                className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
+              />
             </div>
-          )}
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="h-10 px-3 border border-gray-200 rounded-xl text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors cursor-pointer"
+            >
+              <option value="">Összes kategória</option>
+              {allCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                </option>
+              ))}
+            </select>
+            <select
+              value={filterCounty}
+              onChange={(e) => setFilterCounty(e.target.value)}
+              className="h-10 px-3 border border-gray-200 rounded-xl text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors cursor-pointer"
+            >
+              <option value="">Összes megye</option>
+              {allCounties.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
 
           {/* List */}
           {visibleProviders.length === 0 ? (
