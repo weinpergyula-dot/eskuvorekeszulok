@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageCircle, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, Bell, type LucideIcon } from "lucide-react";
+import { User, Lock, Link2, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageCircle, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, Bell, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm } from "./account-form";
 import { ProviderForm } from "./provider-form";
@@ -12,10 +12,11 @@ import { MessagesSection } from "./messages-section";
 import { QuoteRequestsSection } from "./quote-requests-section";
 import { ChatSection } from "./chat-section";
 import { NotificationsSection } from "./notifications-section";
+import { ConnectedAccountsSection } from "./connected-accounts-section";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "chat" | "notifications" | "admin";
+type Section = "account" | "password" | "connected" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "chat" | "notifications" | "admin";
 
 interface Props {
   userId: string;
@@ -27,10 +28,11 @@ interface Props {
 }
 
 const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
-  { id: "admin",    label: "Admin",               icon: <ShieldCheck className="h-4 w-4" /> },
+  { id: "admin",     label: "Admin",               icon: <ShieldCheck className="h-4 w-4" /> },
   { id: "account",   label: "Fiók adatok",          icon: <User className="h-4 w-4" /> },
-  { id: "password",  label: "Jelszó módosítás", icon: <Lock className="h-4 w-4" /> },
-  { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
+  { id: "password",  label: "Jelszó módosítás",     icon: <Lock className="h-4 w-4" /> },
+  { id: "connected", label: "Kapcsolt fiókok",      icon: <Link2 className="h-4 w-4" /> },
+  { id: "provider",  label: "Szolgáltatói profil",  icon: <Briefcase className="h-4 w-4" /> },
   { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
   { id: "chat",           label: "Chat",              icon: <MessageCircle className="h-4 w-4" /> },
@@ -41,6 +43,7 @@ const SECTION_TITLES: Record<Section, string> = {
   admin:     "Admin",
   account:   "Fiók adatok",
   password:  "Jelszó módosítás",
+  connected: "Kapcsolt fiókok",
   provider:  "Szolgáltatói profil",
   dashboard: "Dashboard",
   favorites: "Kedvencek",
@@ -331,7 +334,7 @@ function MobileMenuDropdown({
 
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
-const VALID_SECTIONS: Section[] = ["account", "password", "provider", "dashboard", "favorites", "quotes", "messages", "chat", "notifications"];
+const VALID_SECTIONS: Section[] = ["account", "password", "connected", "provider", "dashboard", "favorites", "quotes", "messages", "chat", "notifications"];
 
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
   const searchParams = useSearchParams();
@@ -580,6 +583,8 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
           )}
 
           {active === "password" && <PasswordForm />}
+
+          {active === "connected" && <ConnectedAccountsSection />}
 
           {active === "provider" && (
             <div className="space-y-5">
