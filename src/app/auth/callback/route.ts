@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
         .single();
 
       if (!profile || !profile.accepted_tos_at) {
-        oauthResponse.headers.set("location", `${origin}/auth/complete-registration`);
+        oauthResponse.headers.set("location", `${origin}/auth/register?prefill=1`);
         return oauthResponse;
       }
 

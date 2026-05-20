@@ -186,3 +186,36 @@ export async function acceptTosAction(userId: string): Promise<{ error: string |
     return { error: err instanceof Error ? err.message : "Ismeretlen szerverhiba (TOS)." };
   }
 }
+
+/**
+ * Finalises an OAuth (Google) registration: sets full_name, role, and TOS acceptance
+ * on the profiles row and syncs role into auth user_metadata.
+ * Called instead of signUpAction + sendConfirmationEmailAction for OAuth users.
+ */
+export async function updateOAuthProfileAction(
+  userId: string,
+  fullName: string,
+  role: "visitor" | "provider"
+): Promise<{ error: string | null }> {
+  try {
+    const admin = createAdminClient();
+    const now = new Date().toISOString();
+
+    const { error: profileError } = await admin.from("profiles").update({
+      full_name: fullName,
+      role,
+      accepted_tos_at: now,
+      accepted_privacy_at: now,
+    }).eq("user_id", userId);
+    if (profileError) return { error: profileError.message };
+
+    const { error: metaError } = await admin.auth.admin.updateUserById(userId, {
+      user_metadata: { role, full_name: fullName },
+    });
+    if (metaError) return { error: metaError.message };
+
+    return { error: null };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Ismeretlen szerverhiba (OAuth)." };
+  }
+}

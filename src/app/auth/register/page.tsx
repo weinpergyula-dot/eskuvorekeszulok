@@ -4,16 +4,26 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction, sendConfirmationEmailAction, deleteUserAction, setProfileAvatarAction } from "./actions";
+import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction, sendConfirmationEmailAction, deleteUserAction, setProfileAvatarAction, updateOAuthProfileAction } from "./actions";
 import { logError } from "@/lib/log-error";
-import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Label } from "@/components/ui/label";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { UserRound, Briefcase, ImagePlus, X } from "lucide-react";
+import { UserRound, Briefcase, ImagePlus, X, CheckCircle2, Link2Off } from "lucide-react";
+
+function GoogleIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/>
+      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/>
+      <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/>
+      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
+    </svg>
+  );
+}
 
 type Step = "role" | "basic" | "provider-details";
 
@@ -110,6 +120,9 @@ function RegisterContent() {
   const [step, setStep] = useState<Step>("role");
   const [role, setRole] = useState<"visitor" | "provider">("visitor");
   const [isUpgrade, setIsUpgrade] = useState(false);
+  const [prefillMode, setPrefillMode] = useState(false);
+  const [oauthUserId, setOauthUserId] = useState<string | null>(null);
+  const [googleAvatarUrl, setGoogleAvatarUrl] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -140,15 +153,16 @@ function RegisterContent() {
   const [visitorAvatarPreview, setVisitorAvatarPreview] = useState<string | null>(null);
   const visitorAvatarInputRef = useRef<HTMLInputElement>(null);
 
-  const basicValid =
-    fullName.trim().length > 0 &&
-    email.trim().length > 0 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
-    !emailError &&
-    password.length > 0 &&
-    confirmPassword.length > 0 &&
-    password === confirmPassword &&
-    consentsAccepted;
+  const basicValid = prefillMode
+    ? fullName.trim().length > 0 && consentsAccepted
+    : (fullName.trim().length > 0 &&
+       email.trim().length > 0 &&
+       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+       !emailError &&
+       password.length > 0 &&
+       confirmPassword.length > 0 &&
+       password === confirmPassword &&
+       consentsAccepted);
 
   const providerValid =
     phone.trim().length > 0 &&
@@ -157,17 +171,40 @@ function RegisterContent() {
 
   useEffect(() => {
     const type = searchParams.get("type");
+    const prefill = searchParams.get("prefill");
+
     const init = async () => {
+      if (!supabase) return;
+
+      // ── OAuth prefill: user just returned from Google OAuth ──
+      if (prefill === "1") {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const savedRole = localStorage.getItem("oauth_register_role") as "visitor" | "provider" | null;
+        localStorage.removeItem("oauth_register_role");
+        const userRole = savedRole ?? "visitor";
+        setRole(userRole);
+        setStep("basic");
+        setPrefillMode(true);
+        setOauthUserId(user.id);
+        setFullName(user.user_metadata?.full_name ?? "");
+        setEmail(user.email ?? "");
+        if (user.user_metadata?.avatar_url) {
+          setGoogleAvatarUrl(user.user_metadata.avatar_url);
+          setVisitorAvatarPreview(user.user_metadata.avatar_url);
+        }
+        return;
+      }
+
+      // ── Normal type-based routing ──
       const { data: { user } } = await supabase.auth.getUser();
       if (type === "provider") {
         setRole("provider");
         if (user) {
-          // Logged-in visitor upgrading to provider — skip to details step
           setFullName(user.user_metadata?.full_name ?? "");
           setEmail(user.email ?? "");
           setIsUpgrade(true);
           setStep("provider-details");
-          // Pre-populate avatar from visitor profile if present
           const { data: profileData } = await supabase.from("profiles").select("avatar_url").eq("user_id", user.id).single();
           if (profileData?.avatar_url) setAvatarPreview(profileData.avatar_url);
         } else {
@@ -233,8 +270,38 @@ function RegisterContent() {
 
   const removeVisitorAvatar = () => {
     setVisitorAvatarFile(null);
-    setVisitorAvatarPreview(null);
+    setVisitorAvatarPreview(googleAvatarUrl ?? null);
     if (visitorAvatarInputRef.current) visitorAvatarInputRef.current.value = "";
+  };
+
+  const handleGooglePrefill = async () => {
+    if (!supabase) return;
+    setLoading(true);
+    localStorage.setItem("oauth_register_role", role);
+    const origin = window.location.origin;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${origin}/auth/callback` },
+    });
+    if (error) {
+      setError("Nem sikerült a Google OAuth elindítása. Kérjük, próbáld újra.");
+      localStorage.removeItem("oauth_register_role");
+      setLoading(false);
+    }
+    // On success the page redirects — no cleanup needed
+  };
+
+  const handleDisconnect = async () => {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setPrefillMode(false);
+    setOauthUserId(null);
+    setGoogleAvatarUrl(null);
+    setEmail("");
+    setFullName("");
+    setVisitorAvatarFile(null);
+    setVisitorAvatarPreview(null);
+    router.replace(`/auth/register?type=${role}`);
   };
 
   const uploadFile = async (file: File, bucket: string, path: string) => {
@@ -249,11 +316,13 @@ function RegisterContent() {
   const handleBasicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) { setError("Add meg a teljes nevedet!"); return; }
-    if (!email.trim()) { setError("Add meg az e-mail címedet!"); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Adj meg érvényes e-mail címet (pl. nev@example.hu)."); return; }
-    if (emailError) { setError(emailError); return; }
-    if (!password) { setError("Add meg a jelszavadat!"); return; }
-    if (password !== confirmPassword) { setError("A két jelszó nem egyezik meg."); return; }
+    if (!prefillMode) {
+      if (!email.trim()) { setError("Add meg az e-mail címedet!"); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Adj meg érvényes e-mail címet (pl. nev@example.hu)."); return; }
+      if (emailError) { setError(emailError); return; }
+      if (!password) { setError("Add meg a jelszavadat!"); return; }
+      if (password !== confirmPassword) { setError("A két jelszó nem egyezik meg."); return; }
+    }
     setError(null);
     if (role === "visitor") {
       await registerUser();
@@ -268,7 +337,47 @@ function RegisterContent() {
     setError(null);
 
     try {
-      // Upgrade flow: user already logged in as visitor, just create provider record
+      // ── OAuth prefill flow: user signed in via Google, just finalise registration ──
+      if (prefillMode && oauthUserId) {
+        if (role === "provider") {
+          let avatarUrl = "";
+          const galleryUrls: string[] = [];
+          if (avatarFile) avatarUrl = await uploadFile(avatarFile, "avatars", `${oauthUserId}/avatar`);
+          for (let i = 0; i < galleryFiles.length; i++) {
+            galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${oauthUserId}/gallery-${i}`));
+          }
+          const { error: providerError } = await createProviderProfileAction(oauthUserId, {
+            full_name: fullName,
+            email,
+            phone,
+            counties,
+            categories,
+            description,
+            detailed_description: detailedDescription || null,
+            website: website || null,
+            avatar_url: avatarUrl || null,
+            gallery_urls: galleryUrls,
+          });
+          if (providerError) throw new Error(providerError);
+          // createProviderProfileAction handles TOS; also update role + metadata
+          await updateOAuthProfileAction(oauthUserId, fullName, "provider");
+        } else {
+          const { error: oauthError } = await updateOAuthProfileAction(oauthUserId, fullName, "visitor");
+          if (oauthError) throw new Error(oauthError);
+          if (visitorAvatarFile) {
+            try {
+              const avatarUrl = await uploadFile(visitorAvatarFile, "avatars", `${oauthUserId}/visitor-avatar`);
+              await setProfileAvatarAction(oauthUserId, avatarUrl);
+            } catch {
+              // non-fatal
+            }
+          }
+        }
+        router.push(role === "provider" ? "/auth/register/success?provider=true" : "/auth/register/success?visitor=true");
+        return;
+      }
+
+      // ── Upgrade flow: user already logged in as visitor, just create provider record ──
       if (isUpgrade) {
         const { data: { user: currentUser } } = await supabase.auth.getUser();
         if (!currentUser) throw new Error("Nincs bejelentkezve. Kérjük, jelentkezz be újra.");
@@ -434,10 +543,6 @@ function RegisterContent() {
             </button>
           </div>
 
-          <div className="mt-2">
-            <SocialLoginButtons mode="register" />
-          </div>
-
           <p className="text-center text-lg text-gray-900 mt-4">
             Már van fiókod?{" "}
             <Link href="/auth/login" className="text-[#84AAA6] hover:underline">
@@ -477,6 +582,50 @@ function RegisterContent() {
           </div>
 
           <form onSubmit={handleBasicSubmit} className="space-y-4" noValidate>
+            {/* Google prefill / connected-account UI */}
+            {prefillMode ? (
+              <div className="flex items-center justify-between gap-4 px-4 py-3 bg-green-50 border border-green-200 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <GoogleIcon size={20} />
+                  <div>
+                    <p className="text-sm font-semibold text-green-800 flex items-center gap-1.5">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Google fiók összekapcsolva
+                    </p>
+                    <p className="text-sm text-green-700">{email}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleDisconnect}
+                  className="flex items-center gap-1 text-sm text-gray-500 hover:text-red-500 transition-colors shrink-0"
+                >
+                  <Link2Off className="h-3.5 w-3.5" />
+                  Leválaszt
+                </button>
+              </div>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={handleGooglePrefill}
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border-2 border-gray-200 rounded-xl text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors font-medium text-base disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  <GoogleIcon />
+                  {loading ? "Átirányítás..." : "Regisztráció Google-lal"}
+                </button>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200" />
+                  </div>
+                  <div className="relative flex justify-center">
+                    <span className="bg-white px-3 text-sm text-gray-400">vagy add meg manuálisan</span>
+                  </div>
+                </div>
+              </>
+            )}
+
             <FloatingInput
               accentColor="#84AAA6"
               id="fullName"
@@ -485,53 +634,59 @@ function RegisterContent() {
               onChange={(e) => setFullName(e.target.value)}
             />
 
-            <div>
+            {!prefillMode && (
+              <div>
+                <FloatingInput
+                  accentColor="#84AAA6"
+                  id="email"
+                  label="Email cím *"
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
+                  onBlur={() => checkEmail(email)}
+                />
+                {emailChecking && (
+                  <p className="text-sm text-gray-400 mt-1 px-1">Ellenőrzés...</p>
+                )}
+                {emailError && (
+                  <p className="text-sm text-[#F06C6C] mt-1 px-1">{emailError}</p>
+                )}
+              </div>
+            )}
+
+            {!prefillMode && (
               <FloatingInput
                 accentColor="#84AAA6"
-                id="email"
-                label="Email cím *"
-                type="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
-                onBlur={() => checkEmail(email)}
-              />
-              {emailChecking && (
-                <p className="text-sm text-gray-400 mt-1 px-1">Ellenőrzés...</p>
-              )}
-              {emailError && (
-                <p className="text-sm text-[#F06C6C] mt-1 px-1">{emailError}</p>
-              )}
-            </div>
-
-            <FloatingInput
-              accentColor="#84AAA6"
-              id="password"
-              label="Jelszó *"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <div>
-              <FloatingInput
-                accentColor="#84AAA6"
-                id="confirmPassword"
-                label="Jelszó megerősítése *"
+                id="password"
+                label="Jelszó *"
                 type="password"
-                value={confirmPassword}
-                onChange={(e) => { setConfirmPassword(e.target.value); setConfirmPasswordError(null); }}
-                onBlur={() => {
-                  if (confirmPassword && password !== confirmPassword) {
-                    setConfirmPasswordError("A két jelszó nem egyezik.");
-                  } else {
-                    setConfirmPasswordError(null);
-                  }
-                }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              {confirmPasswordError && (
-                <p className="text-sm text-[#F06C6C] mt-1 px-1">{confirmPasswordError}</p>
-              )}
-            </div>
+            )}
+
+            {!prefillMode && (
+              <div>
+                <FloatingInput
+                  accentColor="#84AAA6"
+                  id="confirmPassword"
+                  label="Jelszó megerősítése *"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => { setConfirmPassword(e.target.value); setConfirmPasswordError(null); }}
+                  onBlur={() => {
+                    if (confirmPassword && password !== confirmPassword) {
+                      setConfirmPasswordError("A két jelszó nem egyezik.");
+                    } else {
+                      setConfirmPasswordError(null);
+                    }
+                  }}
+                />
+                {confirmPasswordError && (
+                  <p className="text-sm text-[#F06C6C] mt-1 px-1">{confirmPasswordError}</p>
+                )}
+              </div>
+            )}
 
             {role === "visitor" && (
               <div className="space-y-2">
