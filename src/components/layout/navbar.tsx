@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageSquare, FileText, ShieldCheck, LogOut, Bell } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -267,7 +267,7 @@ export function Navbar() {
       { id: "dashboard", label: "Dashboard",           Icon: LayoutDashboard },
     ] : []),
     { id: "favorites",      label: "Kedvencek",    Icon: Heart },
-    { id: "messages",       label: "Üzenetek",     Icon: MessageSquare },
+    { id: "chat",           label: "Chat",         Icon: MessageCircle },
     { id: "notifications",  label: "Értesítések",  Icon: Bell },
   ];
 
@@ -302,7 +302,7 @@ export function Navbar() {
               {pendingCount > 99 ? "99+" : pendingCount}
             </span>
           )}
-          {id === "messages" && unreadMessages > 0 && (
+          {id === "chat" && unreadMessages > 0 && (
             <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
               {unreadMessages > 99 ? "99+" : unreadMessages}
             </span>
