@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -119,6 +120,108 @@ function buildThreads(messages: ChatMessage[], providerUserIds: Set<string>): Ch
     .map((t) => ({ ...t, messages: t.messages.sort((a, b) => a.created_at.localeCompare(b.created_at)) }));
 }
 
+// ── ChatSelect ────────────────────────────────────────────────────────────────
+
+function ChatSelect({
+  value,
+  onChange,
+  options,
+  placeholder,
+  searchable = false,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  placeholder: string;
+  searchable?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery]   = useState("");
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+        setQuery("");
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const selectedLabel = options.find((o) => o.value === value)?.label;
+  const filtered = searchable && query.trim()
+    ? options.filter((o) => o.label.toLowerCase().includes(query.toLowerCase()))
+    : options;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => { setOpen((v) => !v); setQuery(""); }}
+        className="h-10 w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-900 cursor-pointer hover:border-[#84AAA6] transition-colors"
+      >
+        <span className="flex items-center gap-1.5 truncate">
+          <span className="text-gray-500 shrink-0">Szűrés:</span>
+          <span className={cn("truncate", selectedLabel ? "text-[#84AAA6]" : "text-gray-500")}>
+            {selectedLabel ?? placeholder}
+          </span>
+        </span>
+        <ChevronDown className={cn("h-4 w-4 text-gray-400 shrink-0 transition-transform", open && "rotate-180")} />
+      </button>
+      {open && (
+        <div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+          {searchable && (
+            <div className="p-2 border-b border-gray-100">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Keresés..."
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus
+                  className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#84AAA6]"
+                />
+              </div>
+            </div>
+          )}
+          <div className="max-h-56 overflow-y-auto p-1.5 space-y-0.5">
+            <button
+              type="button"
+              onClick={() => { onChange(""); setOpen(false); setQuery(""); }}
+              className={cn(
+                "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
+                !value ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
+              )}
+            >
+              {placeholder}
+            </button>
+            {filtered.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => { onChange(o.value); setOpen(false); setQuery(""); }}
+                className={cn(
+                  "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
+                  value === o.value ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
+                )}
+              >
+                {o.label}
+              </button>
+            ))}
+            {filtered.length === 0 && (
+              <p className="px-3 py-2 text-sm text-gray-400">Nincs találat</p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── StarRating ────────────────────────────────────────────────────────────────
 
 function StarRating({ rating, count }: { rating: number | null; count?: number | null }) {
@@ -154,9 +257,16 @@ function ProviderRow({
 }: {
   provider: ChatProvider;
   onChat: () => void;
-  onToggleFavorite: () => void;
+  onToggleFavorite: () => Promise<void>;
 }) {
+  const [toggling, setToggling] = useState(false);
   const initials = provider.full_name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+
+  const handleFavorite = async () => {
+    if (toggling) return;
+    setToggling(true);
+    try { await onToggleFavorite(); } finally { setToggling(false); }
+  };
   const categoryLabel = provider.categories
     .map((c) => CATEGORY_LABELS[c as keyof typeof CATEGORY_LABELS] ?? c)
     .join(", ");
@@ -192,6 +302,15 @@ function ProviderRow({
         {categoryLabel && (
           <p className="text-xs text-[#84AAA6] truncate mt-0.5">{categoryLabel}</p>
         )}
+        {provider.counties.length > 0 && (
+          <p className="text-xs text-gray-400 flex items-center gap-0.5 mt-0.5">
+            <MapPin className="h-3 w-3 shrink-0" />
+            <span className="truncate">
+              {provider.counties[0]}
+              {provider.counties.length > 1 && ` +${provider.counties.length - 1}`}
+            </span>
+          </p>
+        )}
         {/* Rating: visible only on mobile (hidden on sm+) */}
         <div className="mt-1 sm:hidden">
           <StarRating rating={provider.average_rating} count={provider.review_count} />
@@ -205,16 +324,21 @@ function ProviderRow({
           <StarRating rating={provider.average_rating} count={provider.review_count} />
         </div>
         <button
-          onClick={onToggleFavorite}
-          className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+          onClick={handleFavorite}
+          disabled={toggling}
+          className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer disabled:cursor-default"
           title={provider.is_favorite ? "Eltávolítás a kedvencekből" : "Hozzáadás a kedvencekhez"}
         >
-          <Heart
-            className="h-4 w-4"
-            fill={provider.is_favorite ? "#F06C6C" : "none"}
-            stroke={provider.is_favorite ? "#F06C6C" : "#9CA3AF"}
-            strokeWidth={1.5}
-          />
+          {toggling ? (
+            <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
+          ) : (
+            <Heart
+              className="h-4 w-4"
+              fill={provider.is_favorite ? "#F06C6C" : "none"}
+              stroke={provider.is_favorite ? "#F06C6C" : "#9CA3AF"}
+              strokeWidth={1.5}
+            />
+          )}
         </button>
         <Button size="sm" onClick={onChat} className="text-xs whitespace-nowrap">
           <MessageCircle className="h-3.5 w-3.5 mr-1 shrink-0" />
@@ -290,6 +414,7 @@ function ChatView({
   const [sendError, setSendError]         = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
+  const [showInfoBar, setShowInfoBar] = useState(true);
   const bottomRef    = useRef<HTMLDivElement>(null);
   const textareaRef  = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -529,6 +654,39 @@ function ChatView({
         )}
       </div>
 
+      {/* Pinned info bar */}
+      {showInfoBar && (provider.categories.length > 0 || provider.counties.length > 0) && (
+        <div className="shrink-0 border-b border-yellow-200 bg-yellow-50 px-4 py-2.5 flex items-start gap-3">
+          <div className="flex-1 min-w-0 space-y-0.5">
+            {provider.id ? (
+              <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 hover:text-[#84AAA6] transition-colors">
+                {provider.full_name}
+              </a>
+            ) : (
+              <p className="text-sm font-semibold text-gray-900">{provider.full_name}</p>
+            )}
+            {provider.categories.length > 0 && (
+              <p className="text-xs text-[#84AAA6]">
+                {provider.categories.map((c) => CATEGORY_LABELS[c as keyof typeof CATEGORY_LABELS] ?? c).join(", ")}
+              </p>
+            )}
+            {provider.counties.length > 0 && (
+              <p className="text-xs text-gray-500 flex items-center gap-1 flex-wrap">
+                <MapPin className="h-3 w-3 text-gray-400 shrink-0" />
+                {provider.counties.join(", ")}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={() => setShowInfoBar(false)}
+            className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer shrink-0 mt-0.5"
+            title="Bezárás"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* Messages */}
       <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
         {messages.length === 0 && (
@@ -705,7 +863,11 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
     );
   }
 
-  if (loading) return <p className="text-base text-gray-500">Betöltés...</p>;
+  if (loading) return (
+    <div className="flex items-center justify-center py-12">
+      <div className="w-8 h-8 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
+    </div>
+  );
 
   // ── Filtered provider list ──
   const allCategories = [...new Set(providers.flatMap((p) => p.categories))].sort();
@@ -770,28 +932,25 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
               />
             </div>
-            <select
-              value={filterCategory}
-              onChange={(e) => { setFilterCategory(e.target.value); resetPage(); }}
-              className="h-10 px-3 border border-gray-200 rounded-xl text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors cursor-pointer"
-            >
-              <option value="">Összes kategória</option>
-              {allCategories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-                </option>
-              ))}
-            </select>
-            <select
-              value={filterCounty}
-              onChange={(e) => { setFilterCounty(e.target.value); resetPage(); }}
-              className="h-10 px-3 border border-gray-200 rounded-xl text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors cursor-pointer"
-            >
-              <option value="">Összes megye</option>
-              {allCounties.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
+            <div className="sm:w-52">
+              <ChatSelect
+                value={filterCategory}
+                onChange={(v) => { setFilterCategory(v); resetPage(); }}
+                placeholder="Összes kategória"
+                options={allCategories.map((cat) => ({
+                  value: cat,
+                  label: CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat,
+                }))}
+              />
+            </div>
+            <div className="sm:w-44">
+              <ChatSelect
+                value={filterCounty}
+                onChange={(v) => { setFilterCounty(v); resetPage(); }}
+                placeholder="Összes megye"
+                options={allCounties.map((c) => ({ value: c, label: c }))}
+              />
+            </div>
           </div>
 
           {/* List */}
