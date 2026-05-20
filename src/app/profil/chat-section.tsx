@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -257,9 +257,16 @@ function ProviderRow({
 }: {
   provider: ChatProvider;
   onChat: () => void;
-  onToggleFavorite: () => void;
+  onToggleFavorite: () => Promise<void>;
 }) {
+  const [toggling, setToggling] = useState(false);
   const initials = provider.full_name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+
+  const handleFavorite = async () => {
+    if (toggling) return;
+    setToggling(true);
+    try { await onToggleFavorite(); } finally { setToggling(false); }
+  };
   const categoryLabel = provider.categories
     .map((c) => CATEGORY_LABELS[c as keyof typeof CATEGORY_LABELS] ?? c)
     .join(", ");
@@ -317,16 +324,21 @@ function ProviderRow({
           <StarRating rating={provider.average_rating} count={provider.review_count} />
         </div>
         <button
-          onClick={onToggleFavorite}
-          className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+          onClick={handleFavorite}
+          disabled={toggling}
+          className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer disabled:cursor-default"
           title={provider.is_favorite ? "Eltávolítás a kedvencekből" : "Hozzáadás a kedvencekhez"}
         >
-          <Heart
-            className="h-4 w-4"
-            fill={provider.is_favorite ? "#F06C6C" : "none"}
-            stroke={provider.is_favorite ? "#F06C6C" : "#9CA3AF"}
-            strokeWidth={1.5}
-          />
+          {toggling ? (
+            <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
+          ) : (
+            <Heart
+              className="h-4 w-4"
+              fill={provider.is_favorite ? "#F06C6C" : "none"}
+              stroke={provider.is_favorite ? "#F06C6C" : "#9CA3AF"}
+              strokeWidth={1.5}
+            />
+          )}
         </button>
         <Button size="sm" onClick={onChat} className="text-xs whitespace-nowrap">
           <MessageCircle className="h-3.5 w-3.5 mr-1 shrink-0" />
