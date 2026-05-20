@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const tokenHash = searchParams.get("token_hash");
     const type      = searchParams.get("type");
     const next      = searchParams.get("next") ?? "/";
+    const intent    = searchParams.get("intent"); // "oauth" | "link" | null
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey =
@@ -19,7 +20,6 @@ export async function GET(request: NextRequest) {
     }
 
     // ── Password reset: token_hash flow (implicit / OTP) ─────────────────────
-    // Redirect WITHOUT creating a browser session — server action handles it.
     if (tokenHash && type === "recovery") {
       return NextResponse.redirect(
         `${origin}/auth/reset-password?token_hash=${encodeURIComponent(tokenHash)}`
@@ -27,11 +27,70 @@ export async function GET(request: NextRequest) {
     }
 
     // ── Password reset: code flow (PKCE) ─────────────────────────────────────
-    // Same: pass code to reset-password page, no exchange here.
     if (code && (type === "recovery" || next.startsWith("/auth/reset"))) {
       return NextResponse.redirect(
         `${origin}/auth/reset-password?code=${encodeURIComponent(code)}`
       );
+    }
+
+    // ── OAuth (Google / later Facebook) ──────────────────────────────────────
+    if (intent === "oauth" || intent === "link") {
+      if (!code) {
+        return NextResponse.redirect(`${origin}/auth/login?error=auth`);
+      }
+
+      const oauthResponse = NextResponse.redirect(`${origin}/`);
+      const supabase = createServerClient(supabaseUrl, supabaseKey, {
+        cookies: {
+          getAll() { return request.cookies.getAll(); },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              oauthResponse.cookies.set(name, value, options);
+            });
+          },
+        },
+      });
+
+      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+      if (exchangeError) {
+        return NextResponse.redirect(`${origin}/auth/login?error=auth`);
+      }
+
+      if (intent === "link") {
+        oauthResponse.headers.set(
+          "location",
+          `${origin}/profil?tab=connected&linked=google`
+        );
+        return oauthResponse;
+      }
+
+      // intent === "oauth": detect new vs returning user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        return NextResponse.redirect(`${origin}/auth/login?error=auth`);
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, accepted_tos_at")
+        .eq("user_id", user.id)
+        .single();
+
+      // Ha nincs profil vagy nincs elfogadott ToS → új Google user → regisztrációs flow
+      if (!profile || !profile.accepted_tos_at) {
+        oauthResponse.headers.set("location", `${origin}/auth/complete-registration`);
+        return oauthResponse;
+      }
+
+      // Visszatérő user – role alapján irányítás
+      if (profile.role === "admin") {
+        oauthResponse.headers.set("location", `${origin}/admin`);
+      } else if (profile.role === "provider") {
+        oauthResponse.headers.set("location", `${origin}/profil?tab=dashboard`);
+      } else {
+        oauthResponse.headers.set("location", `${origin}/`);
+      }
+      return oauthResponse;
     }
 
     // ── Email confirmation — create a session normally ────────────────────────
@@ -39,9 +98,7 @@ export async function GET(request: NextRequest) {
 
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
       cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
+        getAll() { return request.cookies.getAll(); },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             response.cookies.set(name, value, options);
@@ -63,8 +120,6 @@ export async function GET(request: NextRequest) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as any });
       if (!error) {
-        // Az email-megerősítés után NEM tartjuk fenn a munkamenetet –
-        // a felhasználónak kézzel kell bejelentkeznie.
         await supabase.auth.signOut();
         return response;
       }
