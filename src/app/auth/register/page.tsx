@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { signUpAction, createProviderProfileAction, acceptTosAction, getSignedUploadUrlAction, sendConfirmationEmailAction, deleteUserAction, setProfileAvatarAction } from "./actions";
 import { logError } from "@/lib/log-error";
+import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { Label } from "@/components/ui/label";
@@ -433,7 +434,11 @@ function RegisterContent() {
             </button>
           </div>
 
-          <p className="text-center text-lg text-gray-900">
+          <div className="mt-2">
+            <SocialLoginButtons mode="register" />
+          </div>
+
+          <p className="text-center text-lg text-gray-900 mt-4">
             Már van fiókod?{" "}
             <Link href="/auth/login" className="text-[#84AAA6] hover:underline">
               Jelentkezz be

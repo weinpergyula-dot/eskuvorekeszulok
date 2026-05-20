@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { PageHeader } from "@/components/layout/page-header";
+import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
 import { LogIn } from "lucide-react";
 
 function LoginForm() {
@@ -121,6 +122,8 @@ function LoginForm() {
           {loading ? "Bejelentkezés..." : "Bejelentkezés"}
         </Button>
       </form>
+
+      <SocialLoginButtons mode="login" />
 
       <p className="text-center text-lg text-gray-900 mt-4">
         Még nincs fiókod?{" "}
