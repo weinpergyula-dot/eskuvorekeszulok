@@ -83,12 +83,13 @@ export async function GET(request: NextRequest) {
       }
 
       // Visszatérő user – role alapján irányítás
+      const nextPath = searchParams.get("next") || "/";
       if (profile.role === "admin") {
         oauthResponse.headers.set("location", `${origin}/admin`);
       } else if (profile.role === "provider") {
         oauthResponse.headers.set("location", `${origin}/profil?tab=dashboard`);
       } else {
-        oauthResponse.headers.set("location", `${origin}/`);
+        oauthResponse.headers.set("location", `${origin}${nextPath}`);
       }
       return oauthResponse;
     }

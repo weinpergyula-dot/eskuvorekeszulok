@@ -29,6 +29,7 @@ function LoginForm() {
 
   const registered = searchParams.get("registered");
   const reset = searchParams.get("reset");
+  const next = searchParams.get("next");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +67,7 @@ function LoginForm() {
     } else if (profile?.role === "provider") {
       router.push("/profil?tab=dashboard");
     } else {
-      router.push("/");
+      router.push(next || "/");
     }
   };
 

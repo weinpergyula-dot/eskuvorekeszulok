@@ -406,7 +406,7 @@ export function Navbar() {
                 <Link href="/auth/register">
                   <Button className="text-base bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5]">Regisztráció</Button>
                 </Link>
-                <Link href="/auth/login">
+                <Link href={`/auth/login?next=${encodeURIComponent(pathname)}`}>
                   <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
                 </Link>
               </>
@@ -416,7 +416,7 @@ export function Navbar() {
           {/* Mobile: user icon + hamburger */}
           <div className="md:hidden flex items-center gap-1">
             {!user && (
-              <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+              <a href={`/auth/login?next=${encodeURIComponent(pathname)}`} className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
                 <UserIcon className="h-7 w-7" strokeWidth={2} />
               </a>
             )}

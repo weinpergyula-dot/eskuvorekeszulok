@@ -6,6 +6,16 @@ import { createClient } from "@/lib/supabase/client";
 import type { UserIdentity } from "@supabase/auth-js";
 import { CheckCircle2, Link2, Link2Off, AlertCircle } from "lucide-react";
 
+function translateProviderError(msg: string): string {
+  if (msg.toLowerCase().includes("manual linking is disabled"))
+    return "A fiók összekapcsolás/leválasztás funkció nincs engedélyezve. Kérjük, vedd fel a kapcsolatot az oldal üzemeltetőjével.";
+  if (msg.toLowerCase().includes("identity is already linked"))
+    return "Ez a Google fiók már össze van kötve egy másik fiókkal.";
+  if (msg.toLowerCase().includes("at least one"))
+    return "Nem lehet leválasztani – legalább egy bejelentkezési mód szükséges. Állíts be jelszót előbb.";
+  return "Hiba történt. Kérjük, próbáld újra.";
+}
+
 function GoogleIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -67,7 +77,7 @@ function ConnectedAccountsContent() {
       },
     });
     if (linkError) {
-      setError("Nem sikerült a Google összekapcsolása. Kérjük, próbáld újra.");
+      setError(translateProviderError(linkError.message));
       setActionLoading(false);
     }
     // Ha sikeres, az oldal átirányít Google-ra, nem kell setLoading(false)
@@ -88,7 +98,7 @@ function ConnectedAccountsContent() {
 
     const { error: unlinkError } = await supabase.auth.unlinkIdentity(googleIdentity);
     if (unlinkError) {
-      setError("Nem sikerült a Google leválasztása: " + unlinkError.message);
+      setError(translateProviderError(unlinkError.message));
     } else {
       setIdentities((prev) => prev.filter((i) => i.provider !== "google"));
       setJustLinked(false);

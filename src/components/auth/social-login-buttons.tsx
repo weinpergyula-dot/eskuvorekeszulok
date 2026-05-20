@@ -26,10 +26,11 @@ export function SocialLoginButtons({ mode }: Props) {
     if (!supabase) return;
     setGoogleLoading(true);
     const origin = window.location.origin;
+    const next = new URLSearchParams(window.location.search).get("next") || "/";
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${origin}/auth/callback?intent=oauth`,
+        redirectTo: `${origin}/auth/callback?intent=oauth&next=${encodeURIComponent(next)}`,
       },
     });
   };
