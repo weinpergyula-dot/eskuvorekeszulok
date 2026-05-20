@@ -325,7 +325,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           )}
           {provider.description && (
             <div className="flex gap-2.5">
-              <MessageSquare className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
+              <MessageCircle className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
               <p className="text-base text-gray-900 leading-relaxed">
                 {!descExpanded && provider.description.length > 200
                   ? provider.description.slice(0, 200) + "…"
