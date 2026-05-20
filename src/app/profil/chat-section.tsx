@@ -51,7 +51,10 @@ interface ChatThread {
 
 interface Props {
   userId: string;
+  withProviderUserId?: string;
 }
+
+const PROVIDERS_PER_PAGE = 10;
 
 type Tab = "providers" | "conversations";
 
@@ -161,24 +164,25 @@ function ProviderRow({
   return (
     <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/60 transition-colors">
       {/* Avatar */}
-      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
-        {provider.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={provider.avatar_url}
-            alt={provider.full_name}
-            className="w-full h-full object-cover"
-            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-          />
-        ) : (
-          <span>{initials}</span>
-        )}
-      </div>
+      <a href={`/providers/${provider.id}`} className="shrink-0">
+        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600">
+          <span className="absolute inset-0 flex items-center justify-center select-none">{initials}</span>
+          {provider.avatar_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={provider.avatar_url}
+              alt={provider.full_name}
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+            />
+          )}
+        </div>
+      </a>
 
       {/* Name + category (+ rating on mobile) */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <p className="text-sm font-semibold text-gray-900 truncate">{provider.full_name}</p>
+          <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 truncate hover:text-[#84AAA6] transition-colors">{provider.full_name}</a>
           {provider.featured && (
             <span className="text-[10px] font-medium text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-1.5 py-0.5 shrink-0">
               Kiemelt
@@ -554,7 +558,7 @@ function ChatView({
 
 // ── Main section ──────────────────────────────────────────────────────────────
 
-export function ChatSection({ userId }: Props) {
+export function ChatSection({ userId, withProviderUserId }: Props) {
   const [tab, setTab]                       = useState<Tab>("providers");
   const [providers, setProviders]           = useState<ChatProvider[]>([]);
   const [messages, setMessages]             = useState<ChatMessage[]>([]);
@@ -562,6 +566,7 @@ export function ChatSection({ userId }: Props) {
   const [searchQuery, setSearchQuery]       = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterCounty, setFilterCounty]     = useState("");
+  const [currentPage, setCurrentPage]       = useState(0);
   const [selectedProvider, setSelectedProvider] = useState<ChatProvider | null>(null);
 
   const providerUserIds = new Set(providers.map((p) => p.user_id));
@@ -580,6 +585,13 @@ export function ChatSection({ userId }: Props) {
   }, []);
 
   useEffect(() => { loadAll(); }, [loadAll]);
+
+  // Auto-open chat when navigated here with ?with=providerUserId
+  useEffect(() => {
+    if (!withProviderUserId || loading || selectedProvider) return;
+    const prov = providers.find((p) => p.user_id === withProviderUserId);
+    if (prov) setSelectedProvider(prov);
+  }, [withProviderUserId, providers, loading, selectedProvider]);
 
   // Reload when a message is read or new messages arrive
   useEffect(() => {
@@ -655,12 +667,19 @@ export function ChatSection({ userId }: Props) {
   // ── Filtered provider list ──
   const allCategories = [...new Set(providers.flatMap((p) => p.categories))].sort();
   const allCounties = COUNTIES.filter((c) => c !== "Országosan");
-  const visibleProviders = providers.filter((p) => {
+  const filteredProviders = providers.filter((p) => {
     if (filterCategory && !p.categories.includes(filterCategory)) return false;
     if (filterCounty && !p.counties.includes(filterCounty) && !p.counties.includes("Országosan")) return false;
     if (searchQuery.trim() && !p.full_name.toLowerCase().includes(searchQuery.trim().toLowerCase())) return false;
     return true;
   });
+  const totalPages = Math.ceil(filteredProviders.length / PROVIDERS_PER_PAGE);
+  const pagedProviders = filteredProviders.slice(
+    currentPage * PROVIDERS_PER_PAGE,
+    (currentPage + 1) * PROVIDERS_PER_PAGE
+  );
+
+  const resetPage = () => setCurrentPage(0);
 
   return (
     <div className="space-y-3">
@@ -703,14 +722,14 @@ export function ChatSection({ userId }: Props) {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { setSearchQuery(e.target.value); resetPage(); }}
                 placeholder="Keresés neve alapján…"
                 className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
               />
             </div>
             <select
               value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
+              onChange={(e) => { setFilterCategory(e.target.value); resetPage(); }}
               className="h-10 px-3 border border-gray-200 rounded-xl text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors cursor-pointer"
             >
               <option value="">Összes kategória</option>
@@ -722,7 +741,7 @@ export function ChatSection({ userId }: Props) {
             </select>
             <select
               value={filterCounty}
-              onChange={(e) => setFilterCounty(e.target.value)}
+              onChange={(e) => { setFilterCounty(e.target.value); resetPage(); }}
               className="h-10 px-3 border border-gray-200 rounded-xl text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors cursor-pointer"
             >
               <option value="">Összes megye</option>
@@ -733,22 +752,46 @@ export function ChatSection({ userId }: Props) {
           </div>
 
           {/* List */}
-          {visibleProviders.length === 0 ? (
+          {filteredProviders.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
               <Search className="h-10 w-10 mb-3 text-gray-200" />
               <p className="text-sm">Nincs találat.</p>
             </div>
           ) : (
-            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-              {visibleProviders.map((p) => (
-                <ProviderRow
-                  key={p.id}
-                  provider={p}
-                  onChat={() => openChat(p)}
-                  onToggleFavorite={() => handleToggleFavorite(p)}
-                />
-              ))}
-            </div>
+            <>
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                {pagedProviders.map((p) => (
+                  <ProviderRow
+                    key={p.id}
+                    provider={p}
+                    onChat={() => openChat(p)}
+                    onToggleFavorite={() => handleToggleFavorite(p)}
+                  />
+                ))}
+              </div>
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between gap-2 pt-1">
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                    disabled={currentPage === 0}
+                    className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    ← Előző
+                  </button>
+                  <span className="text-sm text-gray-500">
+                    {currentPage + 1} / {totalPages}
+                    <span className="text-gray-400 ml-1">({filteredProviders.length} szolgáltató)</span>
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+                    disabled={currentPage >= totalPages - 1}
+                    className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Következő →
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}

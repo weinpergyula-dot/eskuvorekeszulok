@@ -689,7 +689,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "chat" && (
             <div className="section-larger-text">
-              <ChatSection userId={userId} />
+              <ChatSection userId={userId} withProviderUserId={searchParams.get("with") ?? undefined} />
             </div>
           )}
 

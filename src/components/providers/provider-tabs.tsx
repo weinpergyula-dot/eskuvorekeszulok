@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Phone, Mail, Globe, MessageSquare } from "lucide-react";
+import { Phone, Mail, Globe, MessageCircle } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
-import { MessageForm } from "@/components/providers/message-form";
 import { ReviewSection } from "@/components/providers/review-section";
 import type { Provider } from "@/lib/types";
 
@@ -60,7 +59,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   const tabs: { id: Tab; label: string; desktopOnly?: boolean }[] = [
     { id: "about",   label: "Bemutatkozás" },
     ...(hasGallery ? [{ id: "gallery" as Tab, label: "Galéria", desktopOnly: true }] : []),
-    { id: "message", label: "Üzenetküldés" },
+    { id: "message", label: "Chat indítása" },
     { id: "reviews", label: reviewCount > 0 ? `Értékelések (${reviewCount})` : "Értékelések" },
   ];
 
@@ -137,13 +136,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                   />
                 )}
               </div>
-              <button
-                onClick={() => setActive("message")}
+              <a
+                href={`/profil?tab=chat&with=${provider.user_id}`}
                 className="w-full flex items-center justify-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
-                <MessageSquare className="h-4 w-4" strokeWidth={1.5} />
-                Belső üzenet küldése
-              </button>
+                <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
+                Chat indítása
+              </a>
             </div>
           </div>
         </div>
@@ -154,10 +153,21 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
         <GalleryLightbox urls={provider.gallery_urls ?? []} alt="Galéria" />
       )}
 
-      {/* Üzenet tab */}
+      {/* Chat tab */}
       {active === "message" && (
-        <div className="max-w-lg">
-          <MessageForm recipientId={provider.user_id} providerId={provider.id} />
+        <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
+          <MessageCircle className="h-14 w-14 text-[#84AAA6]" strokeWidth={1} />
+          <div>
+            <p className="text-base font-semibold text-gray-900 mb-1">Chat {provider.full_name} nevű szolgáltatóval</p>
+            <p className="text-sm text-gray-500">A chat a profilodon belüli Chat menüpontban folytatódik.</p>
+          </div>
+          <a
+            href={`/profil?tab=chat&with=${provider.user_id}`}
+            className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
+          >
+            <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
+            Chat indítása
+          </a>
         </div>
       )}
 

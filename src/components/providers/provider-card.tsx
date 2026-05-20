@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, Phone, Mail, Globe, MessageSquare, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -89,11 +89,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {/* Actions */}
         <div className="flex items-center gap-2 shrink-0">
           <a
-            href={`/providers/${provider.id}#message`}
+            href={`/profil?tab=chat&with=${provider.user_id}`}
             className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
           >
-            <MessageSquare className="h-3.5 w-3.5" />
-            Üzenetküldés
+            <MessageCircle className="h-3.5 w-3.5" />
+            Chat indítása
           </a>
           <a
             href={`/providers/${provider.id}`}
@@ -347,14 +347,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Footer action bar — hidden in carousel mode */}
       {!inCarousel && !disableLink && (
         <div className={cn("border-t border-gray-100 px-4 py-3 items-center justify-between gap-2", expanded ? "flex" : "hidden sm:flex")}>
-          {/* Left: Üzenetküldés */}
+          {/* Left: Chat indítása */}
           <a
-            href={`/providers/${provider.id}#message`}
+            href={`/profil?tab=chat&with=${provider.user_id}`}
             onClick={(e) => e.stopPropagation()}
             className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
           >
-            <MessageSquare className="h-3.5 w-3.5" />
-            Üzenetküldés
+            <MessageCircle className="h-3.5 w-3.5" />
+            Chat indítása
           </a>
 
           {/* Center: Galéria (only if gallery exists) */}
