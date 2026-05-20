@@ -380,51 +380,59 @@ function ChatView({
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!replyBody.trim()) return;
+    const body = replyBody.trim();
+    if (!body) return;
+
+    // Clear input and keep focus BEFORE the await so keyboard stays open on mobile
+    setReplyBody("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.focus();
+    }
+
+    const isFirst = messages.length === 0;
+    const lastSubject = messages[messages.length - 1]?.subject ?? `Chat – ${provider.full_name}`;
+    const subject = isFirst
+      ? `Chat – ${provider.full_name}`
+      : `Re: ${normalizeSubject(lastSubject)}`;
+
+    // Optimistic message
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        sender_id: userId,
+        recipient_id: provider.user_id,
+        sender_name: "Te",
+        sender_role: "self",
+        sender_provider_id: null,
+        sender_avatar_url: null,
+        recipient_name: provider.full_name,
+        recipient_role: "provider",
+        recipient_provider_id: provider.id || null,
+        recipient_avatar_url: provider.avatar_url,
+        is_own: true,
+        subject,
+        body,
+        read: true,
+        created_at: new Date().toISOString(),
+      },
+    ]);
+
     setSending(true);
     setSendError(null);
     try {
-      const isFirst = messages.length === 0;
-      const lastSubject = messages[messages.length - 1]?.subject ?? `Chat – ${provider.full_name}`;
-      const subject = isFirst
-        ? `Chat – ${provider.full_name}`
-        : `Re: ${normalizeSubject(lastSubject)}`;
       const res = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipient_id: provider.user_id, subject, body: replyBody.trim() }),
+        body: JSON.stringify({ recipient_id: provider.user_id, subject, body }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          sender_id: userId,
-          recipient_id: provider.user_id,
-          sender_name: "Te",
-          sender_role: "self",
-          sender_provider_id: null,
-          sender_avatar_url: null,
-          recipient_name: provider.full_name,
-          recipient_role: "provider",
-          recipient_provider_id: provider.id || null,
-          recipient_avatar_url: provider.avatar_url,
-          is_own: true,
-          subject,
-          body: replyBody.trim(),
-          read: true,
-          created_at: new Date().toISOString(),
-        },
-      ]);
-      setReplyBody("");
-      if (textareaRef.current) {
-        textareaRef.current.style.height = "auto";
-        textareaRef.current.focus();
-      }
       onMessagesUpdated();
     } catch (err: unknown) {
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
+      setReplyBody(body); // restore on failure
     } finally {
       setSending(false);
     }
@@ -452,7 +460,7 @@ function ChatView({
   };
 
   return (
-    <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white sm:relative sm:inset-auto sm:z-auto sm:h-[680px]" style={{ bottom: 0 }}>
+    <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white h-[100dvh] sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
 
       {/* Mobile header */}
       <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
