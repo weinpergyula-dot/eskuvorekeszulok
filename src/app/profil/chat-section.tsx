@@ -932,7 +932,6 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 value={filterCounty}
                 onChange={(v) => { setFilterCounty(v); resetPage(); }}
                 placeholder="Összes megye"
-                searchable
                 options={allCounties.map((c) => ({ value: c, label: c }))}
               />
             </div>
