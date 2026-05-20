@@ -230,50 +230,44 @@ function ThreadChat({
     };
   }, [thread.subject, userId]);
 
-  // ── Realtime: new incoming messages via navbar broadcast ─────────────────
-  // (No separate Supabase channel — navbar owns the single subscription)
+  // ── Realtime: new incoming messages ───────────────────────────────────────
+  // Subscription fires → fetch fresh enriched messages (don't rely on
+  // payload.new which may be empty depending on Supabase RLS config).
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handler = (e: any) => {
-      const raw = e.detail;
-      if (!raw) return;
-      if (normalizeSubject(raw.subject) !== thread.subject) return;
-      if (raw.sender_id !== recipientId) return;
-
-      const newMsg: Message = {
-        id:                         raw.id,
-        sender_id:                  raw.sender_id,
-        recipient_id:               raw.recipient_id,
-        sender_name:                otherName,
-        sender_role:                "unknown",
-        sender_provider_id:         otherProviderId,
-        sender_provider_categories: null,
-        sender_avatar_url:          thread.otherAvatarUrl,
-        recipient_name:             null,
-        recipient_role:             null,
-        recipient_provider_id:      null,
-        recipient_provider_categories: null,
-        recipient_avatar_url:       null,
-        is_own:                     false,
-        subject:                    raw.subject,
-        body:                       raw.body,
-        read:                       false,
-        created_at:                 raw.created_at,
-      };
-
-      setLocalMessages((prev) => {
-        if (prev.some((m) => m.id === raw.id)) return prev; // dedup
-        return [...prev, newMsg];
-      });
-      fetch(`/api/messages/${raw.id}/read`, { method: "PATCH" })
-        .then(() => window.dispatchEvent(new CustomEvent("messages-read")))
-        .catch(() => {});
-    };
-
-    window.addEventListener("message-inserted", handler);
-    return () => window.removeEventListener("message-inserted", handler);
+    const supabase = createClient();
+    if (!supabase) return;
+    const channel = supabase
+      .channel(`thread-${thread.key}-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
+        () => {
+          fetch("/api/messages")
+            .then((r) => r.json())
+            .then((allMsgs: Message[]) => {
+              const visible = allMsgs
+                .filter((m) => !(m.is_own && isSystemMsg(m.body)))
+                .filter((m) => {
+                  const otherId = m.is_own ? m.recipient_id : m.sender_id;
+                  return normalizeSubject(m.subject) === thread.subject && otherId === recipientId;
+                })
+                .sort((a, b) => a.created_at.localeCompare(b.created_at));
+              setLocalMessages(visible);
+              const unread = visible.filter((m) => !m.read && !m.is_own);
+              if (unread.length > 0) {
+                Promise.all(unread.map((m) =>
+                  fetch(`/api/messages/${m.id}/read`, { method: "PATCH" })
+                )).then(() => window.dispatchEvent(new CustomEvent("messages-read")));
+              }
+            })
+            .catch(() => {});
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thread.subject, thread.otherAvatarUrl, recipientId, otherName, otherProviderId]);
+  }, [userId, thread.key, thread.subject, recipientId]);
 
   // ── Reply ──────────────────────────────────────────────────────────────────
   const handleReply = async (e: React.FormEvent) => {
