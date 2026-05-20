@@ -7,8 +7,6 @@ export async function GET(request: NextRequest) {
     const code      = searchParams.get("code");
     const tokenHash = searchParams.get("token_hash");
     const type      = searchParams.get("type");
-    const next      = searchParams.get("next") ?? "/";
-    const intent    = searchParams.get("intent"); // "oauth" | "link" | null
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey =
@@ -19,7 +17,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${origin}/auth/login?error=config`);
     }
 
-    // ── Password reset: token_hash flow (implicit / OTP) ─────────────────────
+    // ── Password reset: token_hash flow ──────────────────────────────────────
     if (tokenHash && type === "recovery") {
       return NextResponse.redirect(
         `${origin}/auth/reset-password?token_hash=${encodeURIComponent(tokenHash)}`
@@ -27,18 +25,16 @@ export async function GET(request: NextRequest) {
     }
 
     // ── Password reset: code flow (PKCE) ─────────────────────────────────────
-    if (code && (type === "recovery" || next.startsWith("/auth/reset"))) {
+    if (code && type === "recovery") {
       return NextResponse.redirect(
         `${origin}/auth/reset-password?code=${encodeURIComponent(code)}`
       );
     }
 
-    // ── OAuth (Google / later Facebook) ──────────────────────────────────────
-    if (intent === "oauth" || intent === "link") {
-      if (!code) {
-        return NextResponse.redirect(`${origin}/auth/login?error=auth`);
-      }
-
+    // ── PKCE code exchange (OAuth login / account linking) ───────────────────
+    // Az app saját email-megerősítése token_hash-t használ, nem code-ot,
+    // ezért ha code érkezik (és nem recovery), az mindig OAuth callback.
+    if (code) {
       const oauthResponse = NextResponse.redirect(`${origin}/`);
       const supabase = createServerClient(supabaseUrl, supabaseKey, {
         cookies: {
@@ -56,45 +52,43 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${origin}/auth/login?error=auth`);
       }
 
-      if (intent === "link") {
-        oauthResponse.headers.set(
-          "location",
-          `${origin}/profil?tab=connected&linked=google`
-        );
-        return oauthResponse;
-      }
-
-      // intent === "oauth": detect new vs returning user
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         return NextResponse.redirect(`${origin}/auth/login?error=auth`);
       }
 
+      // Account linking callback – profil oldalra vissza
+      const intent = searchParams.get("intent");
+      if (intent === "link") {
+        oauthResponse.headers.set("location", `${origin}/profil?tab=connected&linked=google`);
+        return oauthResponse;
+      }
+
+      // Profil ellenőrzés – új user vagy visszatérő
       const { data: profile } = await supabase
         .from("profiles")
         .select("role, accepted_tos_at")
         .eq("user_id", user.id)
         .single();
 
-      // Ha nincs profil vagy nincs elfogadott ToS → új Google user → regisztrációs flow
       if (!profile || !profile.accepted_tos_at) {
         oauthResponse.headers.set("location", `${origin}/auth/complete-registration`);
         return oauthResponse;
       }
 
-      // Visszatérő user – role alapján irányítás
-      const nextPath = searchParams.get("next") || "/";
       if (profile.role === "admin") {
         oauthResponse.headers.set("location", `${origin}/admin`);
       } else if (profile.role === "provider") {
         oauthResponse.headers.set("location", `${origin}/profil?tab=dashboard`);
       } else {
+        // Látogató: a next param megmaradhat ha Supabase átadja, egyébként főoldal
+        const nextPath = searchParams.get("next") ?? "/";
         oauthResponse.headers.set("location", `${origin}${nextPath}`);
       }
       return oauthResponse;
     }
 
-    // ── Email confirmation — create a session normally ────────────────────────
+    // ── Email megerősítés (token_hash + type=magiclink) ───────────────────────
     const response = NextResponse.redirect(`${origin}/auth/verified`);
 
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
@@ -107,15 +101,6 @@ export async function GET(request: NextRequest) {
         },
       },
     });
-
-    if (code) {
-      try {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (!error) return response;
-      } catch {
-        // PKCE verifier missing — fall through
-      }
-    }
 
     if (tokenHash && type) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
