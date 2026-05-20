@@ -644,7 +644,7 @@ function ChatView({
 
       {/* Pinned info bar */}
       {showInfoBar && (provider.categories.length > 0 || provider.counties.length > 0) && (
-        <div className="shrink-0 border-b border-gray-100 bg-[#F7FAF9] px-4 py-2.5 flex items-start gap-3">
+        <div className="shrink-0 border-b border-yellow-200 bg-[#FEF9C3] px-4 py-2.5 flex items-start gap-3">
           <div className="flex-1 min-w-0 space-y-0.5">
             {provider.id ? (
               <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 hover:text-[#84AAA6] transition-colors">
@@ -916,22 +916,26 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
               />
             </div>
-            <ChatSelect
-              value={filterCategory}
-              onChange={(v) => { setFilterCategory(v); resetPage(); }}
-              placeholder="Összes kategória"
-              options={allCategories.map((cat) => ({
-                value: cat,
-                label: CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat,
-              }))}
-            />
-            <ChatSelect
-              value={filterCounty}
-              onChange={(v) => { setFilterCounty(v); resetPage(); }}
-              placeholder="Összes megye"
-              searchable
-              options={allCounties.map((c) => ({ value: c, label: c }))}
-            />
+            <div className="sm:w-52">
+              <ChatSelect
+                value={filterCategory}
+                onChange={(v) => { setFilterCategory(v); resetPage(); }}
+                placeholder="Összes kategória"
+                options={allCategories.map((cat) => ({
+                  value: cat,
+                  label: CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat,
+                }))}
+              />
+            </div>
+            <div className="sm:w-44">
+              <ChatSelect
+                value={filterCounty}
+                onChange={(v) => { setFilterCounty(v); resetPage(); }}
+                placeholder="Összes megye"
+                searchable
+                options={allCounties.map((c) => ({ value: c, label: c }))}
+              />
+            </div>
           </div>
 
           {/* List */}
