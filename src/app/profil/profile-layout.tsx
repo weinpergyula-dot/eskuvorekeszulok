@@ -454,6 +454,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     setRefreshing(true);
     if (active === "messages") setMessagesKey((k) => k + 1);
     if (active === "quotes") setQuotesKey((k) => k + 1);
+    if (active === "chat") window.dispatchEvent(new CustomEvent("chat-refresh"));
     setTimeout(() => setRefreshing(false), 600);
   };
 
@@ -520,9 +521,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   }, []);
 
   const mainMenuItems = MAIN_MENU_ITEMS.filter(
-    (item) =>
-      (item.id !== "provider"  || role === "provider") &&
-      (item.id !== "dashboard" || role === "provider")
+    (item) => item.id !== "dashboard" || role === "provider"
   );
 
   // Shared nav item class helper
@@ -691,7 +690,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
               <h2 className="text-xl font-semibold text-gray-900">
                 {SECTION_TITLES[active]}
               </h2>
-              {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
+              {(active === "messages" || (active === "quotes" && !quotesFormOpen) || (active === "chat" && !chatConversationOpen)) && (
                 <button
                   onClick={handleRefresh}
                   title="Frissítés"

@@ -139,6 +139,9 @@ function RegisterContent() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // Provider-only fields
+  const [displayNameChoice, setDisplayNameChoice] = useState<"own" | "business">("own");
+  const [businessName, setBusinessName] = useState("");
+  const providerDisplayName = displayNameChoice === "own" ? fullName : businessName;
   const [phone, setPhone] = useState("");
   const [counties, setCounties] = useState<string[]>([]);
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
@@ -166,6 +169,7 @@ function RegisterContent() {
        consentsAccepted);
 
   const providerValid =
+    providerDisplayName.trim().length > 0 &&
     phone.trim().length > 0 &&
     counties.length > 0 &&
     categories.length > 0;
@@ -353,7 +357,7 @@ function RegisterContent() {
             galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${oauthUserId}/gallery-${i}`));
           }
           const { error: providerError } = await createProviderProfileAction(oauthUserId, {
-            full_name: fullName,
+            full_name: providerDisplayName,
             email,
             phone,
             counties,
@@ -442,7 +446,7 @@ function RegisterContent() {
           }
 
           const { error: providerError } = await createProviderProfileAction(newUserId, {
-            full_name: fullName,
+            full_name: providerDisplayName,
             email,
             phone,
             counties,
@@ -909,6 +913,49 @@ function RegisterContent() {
                   className="hidden"
                   onChange={handleAvatarChange}
                 />
+              </div>
+
+              {/* Display name */}
+              <div className="space-y-2">
+                <p className="text-base text-gray-800">
+                  Milyen névvel jelenj meg a profilkártyádon?<span className="text-[1.2em] font-bold align-middle ml-0.5">*</span>
+                </p>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="displayNameChoice"
+                      value="own"
+                      checked={displayNameChoice === "own"}
+                      onChange={() => setDisplayNameChoice("own")}
+                      className="h-4 w-4 accent-[#84AAA6]"
+                    />
+                    <span className="text-base text-gray-700">
+                      Saját nevem{fullName ? <span className="ml-1 text-gray-500">({fullName})</span> : null}
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="displayNameChoice"
+                      value="business"
+                      checked={displayNameChoice === "business"}
+                      onChange={() => setDisplayNameChoice("business")}
+                      className="h-4 w-4 accent-[#84AAA6]"
+                    />
+                    <span className="text-base text-gray-700">Vállalkozásom neve</span>
+                  </label>
+                </div>
+                {displayNameChoice === "business" && (
+                  <FloatingInput
+                    accentColor="#84AAA6"
+                    id="businessName"
+                    label="Vállalkozás neve *"
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    compact
+                  />
+                )}
               </div>
 
               {/* Short description */}

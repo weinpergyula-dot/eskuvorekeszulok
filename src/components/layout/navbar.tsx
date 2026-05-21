@@ -267,9 +267,9 @@ export function Navbar() {
   ];
 
   const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
+    { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
     ...(hasProvider ? [
-      { id: "provider",  label: "Szolgáltatói profil", Icon: Briefcase },
-      { id: "dashboard", label: "Dashboard",           Icon: LayoutDashboard },
+      { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek", Icon: Heart },
     { id: "chat",      label: "Chat",      Icon: MessageCircle },
