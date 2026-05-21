@@ -198,13 +198,16 @@ function ConnectedAccountsContent() {
       </div>
 
       {googleIdentity && !canUnlink && (
-        <p className="text-sm text-gray-400">
-          A Google fiók leválasztásához először{" "}
-          <a href="?tab=password" className="text-[#84AAA6] hover:underline">
-            állíts be jelszót
-          </a>
-          .
-        </p>
+        <div className="flex items-start gap-2.5 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-base">
+          <span className="shrink-0 mt-0.5">ⓘ</span>
+          <span>
+            A Google fiók leválasztásához először{" "}
+            <a href="?tab=password" className="font-semibold underline hover:text-amber-900">
+              állíts be jelszót
+            </a>
+            , hogy ne veszítsd el a hozzáférést a fiókodhoz.
+          </span>
+        </div>
       )}
     </div>
   );
