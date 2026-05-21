@@ -221,9 +221,6 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
   animation: carousel-scroll 35s linear infinite;
 }
 
-.carousel-track:hover {
-  animation-play-state: paused;
-}
 
 
 /* ── Desktop chat: cím + frissítés gomb elrejtése chat nézetben ─────── */

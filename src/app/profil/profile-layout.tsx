@@ -383,7 +383,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [chatConversationOpen, setChatConversationOpen] = useState(false);
   const [showApprovalDot, setShowApprovalDot] = useState(false);
   const [adminPending, setAdminPending] = useState(0);
-  const [accountSettingsOpen, setAccountSettingsOpen] = useState(true);
+  const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
 
   useEffect(() => {
     const tab = searchParams.get("tab") as Section | null;
