@@ -16,7 +16,8 @@ export default async function ServicesPage() {
     const { data } = await supabase
       .from("providers")
       .select("categories")
-      .eq("approval_status", "approved");
+      .eq("approval_status", "approved")
+      .or("active.is.null,active.eq.true");
     for (const p of data ?? []) {
       for (const cat of (p.categories ?? []) as string[]) {
         categoryCounts[cat] = (categoryCounts[cat] ?? 0) + 1;

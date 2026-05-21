@@ -175,6 +175,7 @@ export async function POST(request: NextRequest) {
     .from("providers")
     .select("id, user_id")
     .eq("approval_status", "approved")
+    .or("active.is.null,active.eq.true")
     .contains("categories", [category])
     .overlaps("counties", searchCounties);
 

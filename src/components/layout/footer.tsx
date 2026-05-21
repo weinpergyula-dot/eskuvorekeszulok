@@ -13,7 +13,7 @@ export async function Footer() {
   let counts: Record<string, number> = {};
   try {
     const supabase = await createClient();
-    const { data } = await supabase.from("providers").select("categories").eq("approval_status", "approved");
+    const { data } = await supabase.from("providers").select("categories").eq("approval_status", "approved").or("active.is.null,active.eq.true");
     for (const p of data ?? []) {
       for (const cat of (p.categories ?? []) as string[]) {
         counts[cat] = (counts[cat] ?? 0) + 1;

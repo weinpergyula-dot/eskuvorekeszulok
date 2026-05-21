@@ -19,6 +19,7 @@ export default async function HomePage() {
       .from("providers")
       .select("*")
       .eq("approval_status", "approved")
+      .or("active.is.null,active.eq.true")
       .limit(200);
 
     if (data && data.length > 0) {

@@ -8,7 +8,8 @@ export async function GET() {
   const { data } = await admin
     .from("providers")
     .select("categories")
-    .eq("approval_status", "approved");
+    .eq("approval_status", "approved")
+    .or("active.is.null,active.eq.true");
   const counts: Record<string, number> = {};
   for (const p of data ?? []) {
     for (const cat of (p.categories ?? []) as string[]) {

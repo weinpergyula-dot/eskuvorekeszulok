@@ -344,7 +344,9 @@ export function QuoteChat({
   providerId,
   subject,
   otherName,
+  otherAvatarUrl,
   requestContext,
+  requestMsgIsOwn = false,
   userId,
   initialMessages,
   onBack,
@@ -355,7 +357,9 @@ export function QuoteChat({
   providerId: string;
   subject: string;
   otherName: string;
+  otherAvatarUrl?: string | null;
   requestContext?: { category: string; counties: string[]; message: string } | null;
+  requestMsgIsOwn?: boolean;
   userId: string;
   initialMessages: QuoteMessage[];
   onBack: () => void;
@@ -525,13 +529,18 @@ export function QuoteChat({
   return (
     <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white h-[100dvh] sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
       {/* Mobil: teal page header */}
-      <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
+      <div className="flex items-center gap-3 px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
         <button onClick={onBack} className="text-white cursor-pointer shrink-0">
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="flex-1 min-w-0 px-3">
-          <h2 className="text-base font-semibold text-center truncate">Ajánlatkérés – Chat</h2>
-          <p className="text-xs text-white/80 text-center truncate">{subject} · {otherName}</p>
+        <div className="w-8 h-8 rounded-full overflow-hidden bg-white/30 flex items-center justify-center text-xs font-semibold text-white shrink-0">
+          {otherAvatarUrl
+            ? <img src={otherAvatarUrl} alt={otherName} className="w-full h-full object-cover" />
+            : otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-white truncate">{otherName}</p>
+          <p className="text-xs text-white/80 truncate">{subject}</p>
         </div>
         {!confirmDelete ? (
           <button onClick={() => setConfirmDelete(true)} className="text-white/80 hover:text-white cursor-pointer shrink-0" title="Törlés">
@@ -553,9 +562,14 @@ export function QuoteChat({
           <span>Vissza</span>
         </button>
         <div className="h-4 w-px bg-gray-200 shrink-0" />
+        <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600 shrink-0">
+          {otherAvatarUrl
+            ? <img src={otherAvatarUrl} alt={otherName} className="w-full h-full object-cover" />
+            : otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+        </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-900 truncate">{subject}</p>
-          <p className="text-xs text-gray-500 truncate">{otherName}</p>
+          <p className="text-sm font-semibold text-gray-900 truncate">{otherName}</p>
+          <p className="text-xs text-gray-500 truncate">{subject}</p>
         </div>
         {!confirmDelete ? (
           <button onClick={() => setConfirmDelete(true)} className="text-[#F06C6C] hover:text-[#F06C6C]/70 transition-colors cursor-pointer shrink-0" title="Törlés">
@@ -572,17 +586,21 @@ export function QuoteChat({
         )}
       </div>
 
-      {/* Pinned original message */}
-      {requestContext?.message && (
-        <div className="bg-[#84AAA6]/10 border-b border-[#84AAA6]/20 px-4 py-2.5 shrink-0">
-          <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{requestContext.message}</p>
-        </div>
-      )}
-
       {/* Messages */}
       <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
-        {messages.length === 0 && (
-          <p className="text-sm text-gray-400 text-center py-8">Még nem volt üzenetváltás.</p>
+        {/* Original request message shown as first chat bubble */}
+        {requestContext?.message && (
+          <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
+            <div className={`flex flex-col gap-1 max-w-[75%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
+              <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
+                requestMsgIsOwn
+                  ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
+                  : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
+              }`}>
+                {requestContext.message}
+              </div>
+            </div>
+          </div>
         )}
         {messages.map((msg) =>
           isSystemMsg(msg.body) ? (
@@ -611,12 +629,6 @@ export function QuoteChat({
           )
         )}
         <div ref={bottomRef} />
-      </div>
-
-      {/* Subject label above reply box */}
-      <div className="hidden sm:flex items-center gap-1.5 px-4 py-1.5 border-t border-gray-100 bg-gray-50/80 shrink-0">
-        <span className="text-xs text-gray-400">Tárgy:</span>
-        <span className="text-xs text-gray-600 font-medium truncate">{subject}</span>
       </div>
 
       {/* Reply */}
@@ -681,7 +693,9 @@ export function ProviderChatLoader({
       providerId={req.provider_id}
       subject={req.subject}
       otherName={req.visitor_name}
+      otherAvatarUrl={req.visitor_avatar_url}
       requestContext={{ category: req.category, counties: req.counties, message: req.message }}
+      requestMsgIsOwn={false}
       userId={userId}
       initialMessages={messages}
       onBack={onBack}

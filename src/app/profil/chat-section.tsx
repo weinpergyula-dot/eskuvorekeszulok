@@ -661,13 +661,16 @@ function ChatView({
     <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white h-[100dvh] sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
 
       {/* Mobile header */}
-      <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
+      <div className="flex items-center gap-3 px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
         <button onClick={onBack} className="text-white cursor-pointer shrink-0">
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="flex-1 min-w-0 px-3">
-          <h2 className="text-base font-semibold text-center truncate">{provider.full_name}</h2>
+        <div className="w-8 h-8 rounded-full overflow-hidden bg-white/30 flex items-center justify-center text-xs font-semibold text-white shrink-0">
+          {provider.avatar_url
+            ? <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+            : initials}
         </div>
+        <p className="flex-1 min-w-0 text-sm font-semibold text-white truncate">{provider.full_name}</p>
         {!confirmDelete ? (
           messages.length > 0 && (
             <button onClick={() => setConfirmDelete(true)} className="text-white/80 hover:text-white cursor-pointer shrink-0">
@@ -992,7 +995,9 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
           providerId={chat.provider_id}
           subject={chat.subject}
           otherName={chat.provider_full_name}
+          otherAvatarUrl={chat.provider_avatar_url}
           requestContext={{ category: chat.category, counties: chat.counties, message: chat.message }}
+          requestMsgIsOwn={true}
           userId={userId}
           initialMessages={chat.messages}
           onBack={goBack}
