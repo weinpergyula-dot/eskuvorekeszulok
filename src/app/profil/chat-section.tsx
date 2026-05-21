@@ -932,7 +932,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
               />
             </div>
-            <div className="sm:w-52">
+            <div className="sm:w-64">
               <ChatSelect
                 value={filterCategory}
                 onChange={(v) => { setFilterCategory(v); resetPage(); }}
@@ -943,7 +943,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 }))}
               />
             </div>
-            <div className="sm:w-44">
+            <div className="sm:w-52">
               <ChatSelect
                 value={filterCounty}
                 onChange={(v) => { setFilterCounty(v); resetPage(); }}
