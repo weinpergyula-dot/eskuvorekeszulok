@@ -34,7 +34,55 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // ── Email confirmation — create a session normally ────────────────────────
+    // ── OAuth code exchange (Google login / account linking) ─────────────────
+    if (code) {
+      const oauthResponse = NextResponse.redirect(`${origin}/`);
+      const supabase = createServerClient(supabaseUrl, supabaseKey, {
+        cookies: {
+          getAll() { return request.cookies.getAll(); },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              oauthResponse.cookies.set(name, value, options);
+            });
+          },
+        },
+      });
+
+      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+      if (exchangeError) {
+        return NextResponse.redirect(`${origin}/auth/login?error=auth`);
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        return NextResponse.redirect(`${origin}/auth/login?error=auth`);
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, accepted_tos_at")
+        .eq("user_id", user.id)
+        .single();
+
+      // Admin accounts may not have accepted_tos_at set — exempt them from TOS check
+      const isNew = !profile || (!profile.accepted_tos_at && profile.role !== "admin");
+      if (isNew) {
+        oauthResponse.headers.set("location", `${origin}/auth/register?prefill=1`);
+        return oauthResponse;
+      }
+
+      if (profile.role === "admin") {
+        oauthResponse.headers.set("location", `${origin}/admin`);
+      } else if (profile.role === "provider") {
+        oauthResponse.headers.set("location", `${origin}/profil?tab=dashboard`);
+      } else {
+        const nextPath = next;
+        oauthResponse.headers.set("location", `${origin}${nextPath}`);
+      }
+      return oauthResponse;
+    }
+
+    // ── Email confirmation ────────────────────────────────────────────────────
     const response = NextResponse.redirect(`${origin}/auth/verified`);
 
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
@@ -49,15 +97,6 @@ export async function GET(request: NextRequest) {
         },
       },
     });
-
-    if (code) {
-      try {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (!error) return response;
-      } catch {
-        // PKCE verifier missing — fall through
-      }
-    }
 
     if (tokenHash && type) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
