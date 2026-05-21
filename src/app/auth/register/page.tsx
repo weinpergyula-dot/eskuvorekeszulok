@@ -531,35 +531,35 @@ function RegisterContent() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
                 onClick={() => { setRole("visitor"); setPrefillRoleSelect(false); setStep("basic"); }}
-                className="flex flex-col items-start p-6 bg-[#84AAA6] border-2 border-[#84AAA6] rounded-xl hover:shadow-md transition-all text-left"
+                className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
               >
-                <UserRound className="h-10 w-10 mb-3 text-white/80" strokeWidth={1.5} />
-                <span className="font-semibold text-white text-xl mb-0.5">Látogató</span>
-                <span className="text-sm text-white/70 mb-4">Ingyenes fiók</span>
-                <ul className="space-y-2 text-sm text-white flex-1">
-                  <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Böngészés 20 kategóriában</li>
-                  <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Értékelések olvasása és írása</li>
-                  <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Kedvencek mentése</li>
-                  <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Csoportos ajánlatkérés</li>
+                <UserRound className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
+                <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Látogató</span>
+                <span className="text-sm text-gray-400 mb-4">Ingyenes fiók</span>
+                <ul className="space-y-2 text-sm text-gray-700 flex-1">
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Böngészés 20 kategóriában</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékelések olvasása és írása</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Kedvencek mentése</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos ajánlatkérés</li>
                 </ul>
-                <span className="sm:hidden mt-4 w-full text-center py-2 bg-white/20 rounded-lg text-white font-semibold block">
+                <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
                   Regisztrálok
                 </span>
               </button>
               <button
                 onClick={() => { setRole("provider"); setPrefillRoleSelect(false); setStep("basic"); }}
-                className="flex flex-col items-start p-6 bg-[#D07AB5] border-2 border-[#D07AB5] rounded-xl hover:shadow-md transition-all text-left"
+                className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
               >
-                <Briefcase className="h-10 w-10 mb-3 text-white/80" strokeWidth={1.5} />
-                <span className="font-semibold text-white text-xl mb-0.5">Szolgáltató</span>
-                <span className="text-sm text-white/70 mb-4">Ingyenes profil</span>
-                <ul className="space-y-2 text-sm text-white flex-1">
-                  <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Ingyenes szolgáltatói profil</li>
-                  <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Képgaléria feltöltése</li>
-                  <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Ajánlatkérések fogadása</li>
-                  <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Belső üzenetküldő</li>
+                <Briefcase className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
+                <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Szolgáltató</span>
+                <span className="text-sm text-gray-400 mb-4">Ingyenes profil</span>
+                <ul className="space-y-2 text-sm text-gray-700 flex-1">
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ingyenes szolgáltatói profil</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Képgaléria feltöltése</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkérések fogadása</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő</li>
                 </ul>
-                <span className="sm:hidden mt-4 w-full text-center py-2 bg-white/20 rounded-lg text-white font-semibold block">
+                <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
                   Regisztrálok
                 </span>
               </button>
@@ -582,35 +582,35 @@ function RegisterContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <button
               onClick={() => { setRole("visitor"); setStep("basic"); router.replace("/auth/register?type=visitor"); }}
-              className="flex flex-col items-start p-6 bg-[#84AAA6] border-2 border-[#84AAA6] rounded-xl hover:shadow-md transition-all text-left"
+              className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
             >
-              <UserRound className="h-10 w-10 mb-3 text-white/80" strokeWidth={1.5} />
-              <span className="font-semibold text-white text-xl mb-0.5">Látogató</span>
-              <span className="text-sm text-white/70 mb-4">Ingyenes fiók</span>
-              <ul className="space-y-2 text-sm text-white flex-1">
-                <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Böngészés 20 kategóriában</li>
-                <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Értékelések olvasása és írása</li>
-                <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Kedvencek mentése</li>
-                <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Csoportos ajánlatkérés küldése több szolgáltatónak egyszerre</li>
+              <UserRound className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
+              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Látogató</span>
+              <span className="text-sm text-gray-400 mb-4">Ingyenes fiók</span>
+              <ul className="space-y-2 text-sm text-gray-700 flex-1">
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Böngészés 20 kategóriában</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékelések olvasása és írása</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Kedvencek mentése</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos ajánlatkérés küldése több szolgáltatónak egyszerre</li>
               </ul>
-              <span className="sm:hidden mt-4 w-full text-center py-2 bg-white/20 rounded-lg text-white font-semibold block">
+              <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
                 Regisztrálok
               </span>
             </button>
             <button
               onClick={() => { setRole("provider"); setStep("basic"); router.replace("/auth/register?type=provider"); }}
-              className="flex flex-col items-start p-6 bg-[#D07AB5] border-2 border-[#D07AB5] rounded-xl hover:shadow-md transition-all text-left"
+              className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
             >
-              <Briefcase className="h-10 w-10 mb-3 text-white/80" strokeWidth={1.5} />
-              <span className="font-semibold text-white text-xl mb-0.5">Szolgáltató</span>
-              <span className="text-sm text-white/70 mb-4">Ingyenes profil</span>
-              <ul className="space-y-2 text-sm text-white flex-1">
-                <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Ingyenes szolgáltatói profil létrehozása</li>
-                <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Képgaléria feltöltése</li>
-                <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Ajánlatkérések fogadása érdeklődő páraktól</li>
-                <li className="flex items-start gap-2"><span className="text-white/80 font-bold shrink-0">✓</span> Belső üzenetküldő az érdeklődőkkel</li>
+              <Briefcase className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
+              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Szolgáltató</span>
+              <span className="text-sm text-gray-400 mb-4">Ingyenes profil</span>
+              <ul className="space-y-2 text-sm text-gray-700 flex-1">
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ingyenes szolgáltatói profil létrehozása</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Képgaléria feltöltése</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkérések fogadása érdeklődő páraktól</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő az érdeklődőkkel</li>
               </ul>
-              <span className="sm:hidden mt-4 w-full text-center py-2 bg-white/20 rounded-lg text-white font-semibold block">
+              <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
                 Regisztrálok
               </span>
             </button>
