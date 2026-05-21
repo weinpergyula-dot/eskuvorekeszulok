@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, FileText, Send, Trash2, Star, Info } from "lucide-react";
+import { ArrowLeft, Send, Trash2, Star, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -13,7 +13,7 @@ const systemText  = (body: string) => body.slice(SYSTEM_PREFIX.length);
 
 // ── Interfaces ────────────────────────────────────────────────────────────────
 
-interface QuoteMessage {
+export interface QuoteMessage {
   id: string;
   sender_id: string;
   body: string;
@@ -21,7 +21,7 @@ interface QuoteMessage {
   created_at: string;
 }
 
-interface VisitorChat {
+export interface VisitorChat {
   request_id: string;
   subject: string;
   category: string;
@@ -35,7 +35,7 @@ interface VisitorChat {
   last_at: string;
 }
 
-interface ProviderRequest {
+export interface ProviderRequest {
   recipient_id: string;
   quote_request_id: string;
   provider_id: string;
@@ -58,15 +58,6 @@ interface Props {
   onUnreadChange: (count: number) => void;
 }
 
-// ── Navigation state ──────────────────────────────────────────────────────────
-
-type ProviderTab = "incoming" | "sent";
-
-type View =
-  | { mode: "list" }
-  | { mode: "provider-chat"; req: ProviderRequest }
-  | { mode: "visitor-chat"; chat: VisitorChat };
-
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function formatDate(iso: string) {
@@ -86,11 +77,6 @@ function formatShort(iso: string) {
   return isToday
     ? d.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })
     : d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
-}
-
-function broadcastUnread(count: number, onChange: (n: number) => void) {
-  onChange(count);
-  window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
 }
 
 // ── StarRating ────────────────────────────────────────────────────────────────
@@ -165,7 +151,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
 
 // ── SendForm ──────────────────────────────────────────────────────────────────
 
-function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => void }) {
+function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => void }) {
   const [subject, setSubject] = useState("");
   const [category, setCategory] = useState("");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
@@ -289,7 +275,7 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel: () => vo
       {error && <div className="bg-[#F06C6C]/10 text-[#F06C6C] px-4 py-3 rounded-xl border border-[#F06C6C]/30">{error}</div>}
       <div className="flex gap-3">
         <Button type="submit" disabled={sending}><Send className="h-4 w-4 mr-2" />{sending ? "Küldés..." : "Elküld"}</Button>
-        <Button type="button" variant="outline" onClick={onCancel}>Mégse</Button>
+        {onCancel && <Button type="button" variant="outline" onClick={onCancel}>Mégse</Button>}
       </div>
       <p className="text-sm text-gray-500"><span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.</p>
     </form>
@@ -349,7 +335,7 @@ function QuoteListItem({
 
 // ── Unified quote chat view ───────────────────────────────────────────────────
 
-function QuoteChat({
+export function QuoteChat({
   requestId,
   providerId,
   subject,
@@ -608,7 +594,7 @@ function QuoteChat({
 
 // ── Provider chat loader (fetches messages before showing chat) ───────────────
 
-function ProviderChatLoader({
+export function ProviderChatLoader({
   req,
   userId,
   onBack,
@@ -650,345 +636,29 @@ function ProviderChatLoader({
 
 // ── Main section ──────────────────────────────────────────────────────────────
 
-export function QuoteRequestsSection({ isProvider, userId, onUnreadChange }: Props) {
-  const [visitorChats, setVisitorChats]         = useState<VisitorChat[]>([]);
-  const [providerRequests, setProviderRequests] = useState<ProviderRequest[]>([]);
-  const [loading, setLoading]                   = useState(true);
-  const [showForm, setShowForm]                 = useState(false);
-  const [view, setView]                         = useState<View>({ mode: "list" });
-  const [filterCategory, setFilterCategory]     = useState<string | null>(null);
-  const [providerTab, setProviderTab]           = useState<ProviderTab>("incoming");
+export function QuoteRequestsSection({ onUnreadChange }: Pick<Props, "onUnreadChange">) {
+  const [sent, setSent] = useState(false);
 
-  const loadRequests = useCallback(() => {
-    fetch("/api/quote-requests")
-      .then(r => r.json())
-      .then(data => {
-        if (isProvider && data && typeof data === "object" && !Array.isArray(data)) {
-          // Combined provider+visitor response
-          const reqs = (data.providerRequests ?? []) as ProviderRequest[];
-          const chats = (data.visitorChats ?? []) as VisitorChat[];
-          setProviderRequests(reqs);
-          setVisitorChats(chats);
-          const unread =
-            reqs.filter(r => !r.read).length +
-            reqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0) +
-            chats.reduce((s, c) => s + (c.unread_count ?? 0), 0);
-          broadcastUnread(unread, onUnreadChange);
-        } else {
-          const chats = data as VisitorChat[];
-          setVisitorChats(chats);
-          broadcastUnread(chats.reduce((s, c) => s + (c.unread_count ?? 0), 0), onUnreadChange);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [isProvider, onUnreadChange]);
-
-  useEffect(() => { loadRequests(); }, [loadRequests]);
-
-  // Compact footer in chat/detail views + scroll to top on desktop
   useEffect(() => {
-    const inChat = view.mode !== "list";
-    if (inChat) {
-      document.body.classList.add("chat-mode");
-      if (window.innerWidth >= 640) {
-        // setTimeout ensures the new view is in the DOM before scrolling,
-        // preventing the rendered chat height from overriding the scroll position.
-        setTimeout(() => window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }), 0);
-      }
-    } else {
-      document.body.classList.remove("chat-mode");
-    }
-    return () => document.body.classList.remove("chat-mode");
-  }, [view.mode]);
+    onUnreadChange(0);
+    window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: 0 }));
+  }, [onUnreadChange]);
 
-  // Listen for realtime quote count refresh
   useEffect(() => {
-    const handler = () => loadRequests();
-    window.addEventListener("quotes-unread-count-refresh", handler);
-    return () => window.removeEventListener("quotes-unread-count-refresh", handler);
-  }, [loadRequests]);
+    window.dispatchEvent(new CustomEvent("quotes-form-open", { detail: !sent }));
+  }, [sent]);
 
-  // Notify parent layout when new-request form opens/closes
-  useEffect(() => {
-    window.dispatchEvent(new CustomEvent("quotes-form-open", { detail: showForm }));
-  }, [showForm]);
-
-  if (loading) return <p className="text-base text-gray-500">Betöltés...</p>;
-
-  // ── Provider: chat view ──
-  if (view.mode === "provider-chat") {
-    const req = view.req;
+  if (sent) {
     return (
-      <ProviderChatLoader
-        req={req}
-        userId={userId}
-        onBack={() => setView({ mode: "list" })}
-        onDeleted={() => {
-          setProviderRequests(prev => prev.filter(r => r.recipient_id !== req.recipient_id));
-          const updated = providerRequests.filter(r => r.recipient_id !== req.recipient_id);
-          broadcastUnread(
-            updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0),
-            onUnreadChange
-          );
-        }}
-        onUnreadMarked={() => {
-          const updated = providerRequests.map(r =>
-            r.recipient_id === req.recipient_id ? { ...r, read: true, unread_reply_count: 0 } : r
-          );
-          setProviderRequests(updated);
-          broadcastUnread(
-            updated.filter(r => !r.read).length + updated.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0),
-            onUnreadChange
-          );
-        }}
-      />
-    );
-  }
-
-  // ── Visitor: chat view ──
-  if (view.mode === "visitor-chat") {
-    const { chat } = view;
-    return (
-      <QuoteChat
-        requestId={chat.request_id}
-        providerId={chat.provider_id}
-        subject={chat.subject}
-        otherName={chat.provider_full_name}
-        requestContext={{ category: chat.category, counties: chat.counties, message: chat.message }}
-        userId={userId}
-        initialMessages={chat.messages}
-        onBack={() => setView({ mode: "list" })}
-        onDeleted={() => {
-          // Törlés: az összes chat eltávolítása ugyanazzal a request_id-vel
-          const updated = visitorChats.filter(c => c.request_id !== chat.request_id);
-          setVisitorChats(updated);
-          broadcastUnread(updated.reduce((s, c) => s + c.unread_count, 0), onUnreadChange);
-        }}
-        onUnreadMarked={(count) => {
-          const updated = visitorChats.map(c =>
-            c.request_id === chat.request_id && c.provider_id === chat.provider_id
-              ? { ...c, unread_count: Math.max(0, c.unread_count - count) }
-              : c
-          );
-          setVisitorChats(updated);
-          broadcastUnread(updated.reduce((s, c) => s + c.unread_count, 0), onUnreadChange);
-        }}
-      />
-    );
-  }
-
-  // ── Provider: list view ──
-  if (isProvider) {
-    const incomingUnread = providerRequests.filter(r => !r.read).length + providerRequests.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
-    const sentUnread = visitorChats.reduce((s, c) => s + c.unread_count, 0);
-
-    const providerCategories = [...new Set(providerRequests.map(r => r.category))];
-    const visibleProviderReqs = filterCategory
-      ? providerRequests.filter(r => r.category === filterCategory)
-      : providerRequests;
-
-    const visitorCategories = [...new Set(visitorChats.map(c => c.category))];
-    const visibleVisitorChats = filterCategory
-      ? visitorChats.filter(c => c.category === filterCategory)
-      : visitorChats;
-
-    return (
-      <div className="space-y-3">
-        {/* Tab switcher */}
-        <div className="flex gap-1 border-b border-gray-200">
-          <button
-            onClick={() => { setProviderTab("incoming"); setFilterCategory(null); }}
-            className={`relative px-4 py-2.5 text-sm font-medium transition-colors ${providerTab === "incoming" ? "text-[#84AAA6] border-b-2 border-[#84AAA6] -mb-px" : "text-gray-500 hover:text-gray-800"}`}
-          >
-            Beérkező
-            {incomingUnread > 0 && (
-              <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold leading-none">
-                {incomingUnread > 9 ? "9+" : incomingUnread}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => { setProviderTab("sent"); setFilterCategory(null); }}
-            className={`relative px-4 py-2.5 text-sm font-medium transition-colors ${providerTab === "sent" ? "text-[#84AAA6] border-b-2 border-[#84AAA6] -mb-px" : "text-gray-500 hover:text-gray-800"}`}
-          >
-            Elküldött
-            {sentUnread > 0 && (
-              <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold leading-none">
-                {sentUnread > 9 ? "9+" : sentUnread}
-              </span>
-            )}
-          </button>
+      <div className="space-y-4">
+        <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-5 py-4">
+          <p className="text-base font-medium text-[#84AAA6]">Az ajánlatkérésed elküldve.</p>
+          <p className="text-sm text-gray-600 mt-1">A válaszokat a Chat menüpontban találod.</p>
         </div>
-
-        {/* Incoming tab */}
-        {providerTab === "incoming" && (
-          <>
-            {providerRequests.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
-                <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
-                <p className="text-base">Még nem érkezett ajánlatkérés.</p>
-              </div>
-            ) : (
-              <>
-                {providerCategories.length > 1 && (
-                  <div className="flex flex-wrap gap-2">
-                    <button onClick={() => setFilterCategory(null)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>Összes</button>
-                    {providerCategories.map(cat => (
-                      <button key={cat} onClick={() => setFilterCategory(c => c === cat ? null : cat)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
-                        {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-                  {visibleProviderReqs.map(req => {
-                    const unread = (req.read ? 0 : 1) + (req.unread_reply_count ?? 0);
-                    return (
-                      <QuoteListItem
-                        key={req.recipient_id}
-                        subject={req.subject}
-                        categoryLabel={CATEGORY_LABELS[req.category as keyof typeof CATEGORY_LABELS] ?? req.category}
-                        recipientName={req.visitor_name}
-                        avatarUrl={req.visitor_avatar_url}
-                        date={req.created_at}
-                        unread={unread}
-                        onSelect={async () => {
-                          if (!req.read) {
-                            await fetch(`/api/quote-requests/${req.quote_request_id}/read`, {
-                              method: "PATCH",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ type: "request" }),
-                            });
-                            setProviderRequests(prev => prev.map(r =>
-                              r.recipient_id === req.recipient_id ? { ...r, read: true } : r
-                            ));
-                          }
-                          setView({ mode: "provider-chat", req });
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </>
-            )}
-          </>
-        )}
-
-        {/* Sent tab */}
-        {providerTab === "sent" && (
-          <div className="space-y-4">
-            {!showForm && (
-              <Button onClick={() => setShowForm(true)} variant="outline" className="w-full sm:w-auto">
-                + Új ajánlatkérés
-              </Button>
-            )}
-            {showForm && (
-              <SendForm onSent={() => { setShowForm(false); loadRequests(); }} onCancel={() => setShowForm(false)} />
-            )}
-            {visitorChats.length === 0 && !showForm ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
-                <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
-                <p className="text-base">Még nem küldtél ajánlatkérést.</p>
-                <p className="text-sm mt-1">Kattints a gombra, hogy elküldd az első ajánlatkérésedet.</p>
-              </div>
-            ) : !showForm ? (
-              <>
-                {visitorCategories.length > 1 && (
-                  <div className="flex flex-wrap gap-2">
-                    <button onClick={() => setFilterCategory(null)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>Összes</button>
-                    {visitorCategories.map(cat => (
-                      <button key={cat} onClick={() => setFilterCategory(c => c === cat ? null : cat)} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
-                        {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-                  {visibleVisitorChats.map(chat => {
-                    return (
-                      <QuoteListItem
-                        key={`${chat.request_id}__${chat.provider_id}`}
-                        subject={chat.subject}
-                        categoryLabel={CATEGORY_LABELS[chat.category as keyof typeof CATEGORY_LABELS] ?? chat.category}
-                        recipientName={chat.provider_full_name}
-                        avatarUrl={chat.provider_avatar_url}
-                        date={chat.last_at}
-                        unread={chat.unread_count}
-                        onSelect={() => setView({ mode: "visitor-chat", chat })}
-                      />
-                    );
-                  })}
-                </div>
-              </>
-            ) : null}
-          </div>
-        )}
+        <Button variant="outline" onClick={() => setSent(false)}>+ Újabb ajánlatkérés</Button>
       </div>
     );
   }
 
-  // ── Visitor: list view ──
-  const visitorCategories = [...new Set(visitorChats.map(c => c.category))];
-  const visibleVisitorChats = filterCategory
-    ? visitorChats.filter(c => c.category === filterCategory)
-    : visitorChats;
-
-  return (
-    <div className="space-y-4">
-      {!showForm && (
-        <Button onClick={() => setShowForm(true)} variant="outline" className="w-full sm:w-auto">
-          + Új ajánlatkérés
-        </Button>
-      )}
-      {showForm && (
-        <SendForm onSent={() => { setShowForm(false); loadRequests(); }} onCancel={() => setShowForm(false)} />
-      )}
-      {visitorChats.length === 0 && !showForm ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
-          <FileText className="h-10 w-10 mb-3 text-gray-300" strokeWidth={1.5} />
-          <p className="text-base">Még nem küldtél ajánlatkérést.</p>
-          <p className="text-sm mt-1">Kattints a gombra, hogy elküldd az első ajánlatkérésedet több szolgáltatónak egyszerre.</p>
-        </div>
-      ) : !showForm ? (
-        <>
-          {visitorCategories.length > 1 && (
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setFilterCategory(null)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
-              >
-                Összes
-              </button>
-              {visitorCategories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setFilterCategory(c => c === cat ? null : cat)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
-                >
-                  {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-                </button>
-              ))}
-            </div>
-          )}
-          <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-            {visibleVisitorChats.map(chat => {
-              return (
-                <QuoteListItem
-                  key={`${chat.request_id}__${chat.provider_id}`}
-                  subject={chat.subject}
-                  categoryLabel={CATEGORY_LABELS[chat.category as keyof typeof CATEGORY_LABELS] ?? chat.category}
-                  recipientName={chat.provider_full_name}
-                  avatarUrl={chat.provider_avatar_url}
-                  date={chat.last_at}
-                  unread={chat.unread_count}
-                  onSelect={() => setView({ mode: "visitor-chat", chat })}
-                />
-              );
-            })}
-          </div>
-        </>
-      ) : null}
-    </div>
-  );
+  return <SendForm onSent={() => setSent(true)} />;
 }

@@ -285,12 +285,7 @@ export function Navbar() {
           className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#84AAA6] font-semibold hover:bg-[#84AAA6]/10 text-left"
         >
           <FileText className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-          <span className="flex-1">Ajánlatkérés</span>
-          {unreadQuotes > 0 && (
-            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-              {unreadQuotes > 99 ? "99+" : unreadQuotes}
-            </span>
-          )}
+          <span className="flex-1">Ajánlatot kérek</span>
         </button>
       </div>
 
@@ -343,9 +338,9 @@ export function Navbar() {
         >
           <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
           <span className="flex-1">{label}</span>
-          {id === "chat" && unreadMessages > 0 && (
+          {id === "chat" && (unreadMessages + unreadQuotes) > 0 && (
             <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-              {unreadMessages > 99 ? "99+" : unreadMessages}
+              {(unreadMessages + unreadQuotes) > 99 ? "99+" : (unreadMessages + unreadQuotes)}
             </span>
           )}
           {id === "provider" && providerDot && (

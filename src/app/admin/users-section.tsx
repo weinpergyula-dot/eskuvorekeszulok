@@ -45,7 +45,7 @@ const ROLE_BADGE: Record<string, "default" | "secondary" | "approved" | "admin">
   admin: "admin",
 };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE_OPTIONS = [10, 50, 100];
 
 type ApprovalFilter = "all" | "provider" | "visitor" | "admin";
 
@@ -78,6 +78,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
   const [approvalFilter, setApprovalFilter] = useState<ApprovalFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("created_at");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
@@ -138,8 +139,8 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
     });
   }, [filtered, sortKey, sortDir]);
 
-  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
-  const paginated = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const paginated = sorted.slice((page - 1) * pageSize, page * pageSize);
 
   const handleSearch = (v: string) => { setSearch(v); setPage(1); };
   const handleFilter = (v: ApprovalFilter) => { setApprovalFilter(v); setPage(1); };
@@ -298,7 +299,27 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           </div>
         )}
 
-        <p className="text-sm text-gray-500">{sorted.length} felhasználó</p>
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm text-gray-500">{sorted.length} felhasználó</p>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500">Oldalanként:</span>
+            <div className="flex gap-1">
+              {PAGE_SIZE_OPTIONS.map((n) => (
+                <button
+                  key={n}
+                  onClick={() => { setPageSize(n); setPage(1); }}
+                  className={`px-2.5 py-1 rounded text-sm font-medium border transition-colors cursor-pointer ${
+                    pageSize === n
+                      ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
         {error && (
           <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">

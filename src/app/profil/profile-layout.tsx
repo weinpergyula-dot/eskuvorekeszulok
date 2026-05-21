@@ -34,7 +34,7 @@ const SECTION_TITLES: Record<Section, string> = {
   provider:        "Szolgáltatói profil",
   dashboard:       "Dashboard",
   favorites:       "Kedvencek",
-  quotes:          "Ajánlatkérések",
+  quotes:          "Ajánlatot kérek",
   messages:        "Üzenetek",
   chat:            "Chat",
 };
@@ -228,7 +228,7 @@ function MobileMenuDropdown({
   const isAccountSettings = ACCOUNT_SETTINGS_SECTIONS.includes(active);
   const activeAccountItem = isAccountSettings ? ACCOUNT_SETTINGS_ITEMS.find((i) => i.id === active) : undefined;
   const activeItem = active === "quotes"
-    ? { id: "quotes" as Section, label: "Ajánlatkérések", icon: <FileText className="h-4 w-4" /> }
+    ? { id: "quotes" as Section, label: "Ajánlatot kérek", icon: <FileText className="h-4 w-4" /> }
     : active === "admin"
     ? { id: "admin" as Section, label: "Admin", icon: <ShieldCheck className="h-4 w-4" /> }
     : activeAccountItem
@@ -253,14 +253,9 @@ function MobileMenuDropdown({
           <span>{activeItem?.label}</span>
         </span>
         <span className="flex items-center gap-2">
-          {active === "chat" && unreadCount > 0 && (
+          {active === "chat" && (unreadCount + unreadQuotes) > 0 && (
             <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-          {active === "quotes" && unreadQuotesCount > 0 && (
-            <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-              {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
+              {(unreadCount + unreadQuotes) > 9 ? "9+" : (unreadCount + unreadQuotes)}
             </span>
           )}
           {active === "admin" && adminPendingCount > 0 && (
@@ -286,12 +281,7 @@ function MobileMenuDropdown({
             )}
           >
             <FileText className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left">Ajánlatkérések</span>
-            {unreadQuotesCount > 0 && (
-              <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-                {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
-              </span>
-            )}
+            <span className="flex-1 text-left">Ajánlatot kérek</span>
           </button>
 
           {/* Admin */}
@@ -365,9 +355,9 @@ function MobileMenuDropdown({
                 {item.icon}
                 <span>{item.label}</span>
               </span>
-              {item.id === "chat" && unreadCount > 0 && (
+              {item.id === "chat" && (unreadCount + unreadQuotesCount) > 0 && (
                 <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                  {unreadCount > 9 ? "9+" : unreadCount}
+                  {(unreadCount + unreadQuotesCount) > 9 ? "9+" : (unreadCount + unreadQuotesCount)}
                 </span>
               )}
               {item.id === "provider" && sidebarIndicator && (
@@ -567,12 +557,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
               >
                 <FileText className="h-4 w-4 shrink-0" />
-                <span>Ajánlatkérések</span>
-                {unreadQuotes > 0 && (
-                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
-                    {unreadQuotes > 9 ? "9+" : unreadQuotes}
-                  </span>
-                )}
+                <span>Ajánlatot kérek</span>
               </button>
             </div>
 
@@ -675,9 +660,9 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             >
               <MessageCircle className="h-4 w-4 shrink-0" />
               <span>Chat</span>
-              {unreadCount > 0 && (
+              {(unreadCount + unreadQuotes) > 0 && (
                 <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
-                  {unreadCount > 9 ? "9+" : unreadCount}
+                  {(unreadCount + unreadQuotes) > 9 ? "9+" : (unreadCount + unreadQuotes)}
                 </span>
               )}
             </a>
@@ -815,7 +800,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "quotes" && (
             <div className="section-larger-text">
-              <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+              <QuoteRequestsSection key={quotesKey} onUnreadChange={setUnreadQuotes} />
             </div>
           )}
 
@@ -827,7 +812,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "chat" && (
             <div className="section-larger-text">
-              <ChatSection userId={userId} withProviderUserId={searchParams.get("with") ?? undefined} />
+              <ChatSection userId={userId} isProvider={provider !== null} withProviderUserId={searchParams.get("with") ?? undefined} />
             </div>
           )}
         </div>
