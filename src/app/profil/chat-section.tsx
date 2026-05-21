@@ -93,17 +93,8 @@ function formatShort(iso: string) {
     : d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
 }
 
-function buildThreads(messages: ChatMessage[], providerUserIds: Set<string>): ChatThread[] {
-  const filtered = messages
-    .filter((m) => !(m.is_own && isSystemMsg(m.body)))
-    .filter((m) => {
-      const otherId = m.is_own ? m.recipient_id : m.sender_id;
-      // Include if other party is in active providers list OR has a provider role
-      const otherIsProvider = m.is_own
-        ? (m.recipient_role === "provider" || m.recipient_provider_id !== null)
-        : (m.sender_role === "provider" || m.sender_provider_id !== null);
-      return providerUserIds.has(otherId) || otherIsProvider;
-    });
+function buildThreads(messages: ChatMessage[]): ChatThread[] {
+  const filtered = messages.filter((m) => !(m.is_own && isSystemMsg(m.body)));
 
   const map = new Map<string, ChatThread>();
   for (const msg of filtered) {
@@ -842,8 +833,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   const hasAutoOpened = useRef(false);
   const autoTabbed = useRef(false);
 
-  const providerUserIds = new Set(providers.map((p) => p.user_id));
-  const threads = buildThreads(messages, providerUserIds);
+  const threads = buildThreads(messages);
 
   const quoteUnread =
     visitorQuoteChats.reduce((s, c) => s + c.unread_count, 0) +
@@ -918,57 +908,15 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
     };
   }, []);
 
-  // Background realtime: keep list + badges live even when no specific chat is open
-  const selectedViewRef = useRef<SelectedView | null>(null);
-  useEffect(() => { selectedViewRef.current = selectedView; }, [selectedView]);
-
-  useEffect(() => {
-    const supabase = createClient();
-    if (!supabase) return;
-
-    // New regular messages directed at this user → reload message list
-    const msgChannel = supabase
-      .channel(`chat-section-msg-${userId}`)
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
-        () => {
-          fetch("/api/messages").then((r) => r.json()).then((msgs) => {
-            if (Array.isArray(msgs)) setMessages(msgs);
-          }).catch(() => {});
-        }
-      )
-      .subscribe();
-
-    // New quote messages → reload quote lists (skip if QuoteChat already handles it)
-    const quoteChannel = supabase
-      .channel(`chat-section-quote-${userId}`)
-      .on(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        "postgres_changes" as any,
-        { event: "INSERT", schema: "public", table: "quote_messages" },
-        () => {
-          const v = selectedViewRef.current;
-          if (v?.kind !== "quote-visitor" && v?.kind !== "quote-provider") {
-            loadAll();
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(msgChannel);
-      supabase.removeChannel(quoteChannel);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, loadAll]);
-
-  // Reload all data when parent requests a chat refresh
+  // Reload quote lists when navbar broadcasts a new quote message
   useEffect(() => {
     const handler = () => loadAll();
+    window.addEventListener("quotes-unread-count-refresh", handler);
     window.addEventListener("chat-refresh", handler);
-    return () => window.removeEventListener("chat-refresh", handler);
+    return () => {
+      window.removeEventListener("quotes-unread-count-refresh", handler);
+      window.removeEventListener("chat-refresh", handler);
+    };
   }, [loadAll]);
 
   const handleToggleFavorite = async (provider: ChatProvider) => {
