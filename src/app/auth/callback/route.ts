@@ -57,13 +57,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${origin}/auth/login?error=auth`);
       }
 
-      // Account linking callback – profil oldalra vissza
-      const intent = searchParams.get("intent");
-      if (intent === "link") {
-        oauthResponse.headers.set("location", `${origin}/profil?tab=connected&linked=google`);
-        return oauthResponse;
-      }
-
       // Profil ellenőrzés – új user vagy visszatérő
       const { data: profile } = await supabase
         .from("profiles")
