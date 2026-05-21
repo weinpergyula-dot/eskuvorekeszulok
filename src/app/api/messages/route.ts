@@ -136,6 +136,7 @@ export async function DELETE(req: Request) {
       subject,
       body: "__SYSTEM__:A másik fél törölte ezt a beszélgetést. Válaszadásra nincs lehetőség.",
       deleted_for_sender: true,
+      read: true,
     });
   }
 
