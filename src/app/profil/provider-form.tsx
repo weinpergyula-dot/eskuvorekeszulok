@@ -24,12 +24,14 @@ interface Props {
 // ── Pill multi-select ────────────────────────────────────────────────────────
 function PillSelect<T extends string>({
   label,
+  required,
   options,
   selected,
   onChange,
   disabledValues,
 }: {
   label: string;
+  required?: boolean;
   options: { value: T; label: string }[];
   selected: T[];
   onChange: (next: T[]) => void;
@@ -44,7 +46,7 @@ function PillSelect<T extends string>({
   return (
     <div className="space-y-2">
       <div className="flex items-baseline justify-between">
-        <Label>{label}</Label>
+        <Label>{label}{required && <span className="text-[1.2em] font-bold align-middle ml-0.5">*</span>}</Label>
         {selected.length > 0 && (
           <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
         )}
@@ -438,7 +440,7 @@ export function ProviderForm({
               {/* Display name */}
               <div className="space-y-2">
                 <p className="text-base text-gray-800">
-                  Milyen névvel jelenj meg a profilkártyádon?<span className="text-[1.2em] font-bold align-middle ml-0.5 text-gray-400">*</span>
+                  Milyen névvel jelenj meg a profilkártyádon?<span className="text-[1.2em] font-bold align-middle ml-0.5">*</span>
                 </p>
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -483,6 +485,7 @@ export function ProviderForm({
 
               <PillSelect
                 label="Megye"
+                required
                 options={countyOptions}
                 selected={counties}
                 disabledValues={
@@ -502,6 +505,7 @@ export function ProviderForm({
               />
               <PillSelect
                 label="Kategória"
+                required
                 options={categoryOptions}
                 selected={categories}
                 onChange={setCategories}
@@ -575,6 +579,10 @@ export function ProviderForm({
                 </Button>
                 <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryChange} />
               </div>
+
+              <p className="text-sm text-gray-500">
+                <span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.
+              </p>
 
               <div className="flex gap-3 pt-2 flex-wrap">
                 <Button type="submit" disabled={saving}>
