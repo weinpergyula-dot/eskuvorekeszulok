@@ -903,7 +903,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [withProviderUserId, providers, loading]);
 
-  // Reload when a message is read or new messages arrive
+  // Reload when a message is read or new messages arrive (window events from ChatView)
   useEffect(() => {
     const handler = () => {
       fetch("/api/messages").then((r) => r.json()).then((msgs) => {
@@ -917,6 +917,52 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
       window.removeEventListener("messages-read", handler);
     };
   }, []);
+
+  // Background realtime: keep list + badges live even when no specific chat is open
+  const selectedViewRef = useRef<SelectedView | null>(null);
+  useEffect(() => { selectedViewRef.current = selectedView; }, [selectedView]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
+
+    // New regular messages directed at this user → reload message list
+    const msgChannel = supabase
+      .channel(`chat-section-msg-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
+        () => {
+          fetch("/api/messages").then((r) => r.json()).then((msgs) => {
+            if (Array.isArray(msgs)) setMessages(msgs);
+          }).catch(() => {});
+        }
+      )
+      .subscribe();
+
+    // New quote messages → reload quote lists (skip if QuoteChat already handles it)
+    const quoteChannel = supabase
+      .channel(`chat-section-quote-${userId}`)
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "quote_messages" },
+        () => {
+          const v = selectedViewRef.current;
+          if (v?.kind !== "quote-visitor" && v?.kind !== "quote-provider") {
+            loadAll();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(msgChannel);
+      supabase.removeChannel(quoteChannel);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, loadAll]);
 
   // Reload all data when parent requests a chat refresh
   useEffect(() => {
