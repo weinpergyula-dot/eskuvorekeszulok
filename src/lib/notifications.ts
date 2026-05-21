@@ -281,20 +281,33 @@ export async function notifyQuoteReply(params: {
  * Felszedi a lejárt, el nem küldött értesítéseket, ellenőrzi az olvasottságot,
  * és szükség esetén elküldi az emailt.
  */
-export async function processPendingNotifications(): Promise<void> {
+export async function processPendingNotifications(): Promise<{ processed: number; errors: string[] }> {
   const admin = createAdminClient();
   const now = new Date().toISOString();
+  const errors: string[] = [];
 
   // Atomikusan lefoglalja a lejárt sorokat (sent = true),
   // hogy párhuzamos futás esetén se menjen ki kétszer email.
-  const { data: claimed } = await admin
+  const { data: claimed, error: claimError } = await admin
     .from("pending_notifications")
     .update({ sent: true })
     .lte("send_after", now)
     .eq("sent", false)
     .select();
 
-  if (!claimed || claimed.length === 0) return;
+  if (claimError) {
+    const msg = `[processPendingNotifications] update hiba: ${claimError.message} (code: ${claimError.code})`;
+    console.error(msg);
+    errors.push(msg);
+    return { processed: 0, errors };
+  }
+
+  if (!claimed || claimed.length === 0) {
+    console.log("[processPendingNotifications] nincs feldolgozandó sor (now=" + now + ")");
+    return { processed: 0, errors };
+  }
+
+  console.log(`[processPendingNotifications] ${claimed.length} sort dolgoz fel`);
 
   await Promise.allSettled(
     claimed.map(async (n) => {
@@ -305,7 +318,9 @@ export async function processPendingNotifications(): Promise<void> {
           await sendDeferredQuoteReply(n);
         }
       } catch (err) {
-        console.error("[processPendingNotifications]", n.type, err);
+        const msg = `[processPendingNotifications] ${n.type} küldési hiba: ${String(err)}`;
+        console.error(msg);
+        errors.push(msg);
       }
     })
   );
@@ -320,6 +335,8 @@ export async function processPendingNotifications(): Promise<void> {
   } catch {
     // nem kritikus, következő futásnál újra megpróbálja
   }
+
+  return { processed: claimed.length, errors };
 }
 
 // ── Deferred küldők ───────────────────────────────────────────────────────────

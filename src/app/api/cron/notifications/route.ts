@@ -20,10 +20,14 @@ export async function GET(req: Request) {
   }
 
   try {
-    await processPendingNotifications();
-    return NextResponse.json({ ok: true });
+    const result = await processPendingNotifications();
+    console.log("[cron/notifications] kész:", result);
+    if (result.errors.length > 0) {
+      return NextResponse.json({ ok: false, ...result }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true, ...result });
   } catch (err) {
-    console.error("[cron/notifications]", err);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    console.error("[cron/notifications] kivétel:", err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }
