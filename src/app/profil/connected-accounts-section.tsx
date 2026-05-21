@@ -102,11 +102,17 @@ function ConnectedAccountsContent() {
     const supabase = createClient();
     if (!supabase) return;
 
-    const { error: unlinkError } = await supabase.auth.unlinkIdentity(googleIdentity);
+    // Use RPC to bypass Supabase's single_identity_not_deletable restriction
+    // when the user has a password set (they can still sign in with email+password)
+    const { error: unlinkError } = hasPassword
+      ? await supabase.rpc("unlink_google_identity")
+      : await supabase.auth.unlinkIdentity(googleIdentity);
+
     if (unlinkError) {
       setError(translateProviderError(unlinkError.message));
     } else {
       setIdentities((prev) => prev.filter((i) => i.provider !== "google"));
+      setHasPassword(false);
       setJustLinked(false);
     }
     setActionLoading(false);
