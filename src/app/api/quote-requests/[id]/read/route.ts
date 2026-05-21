@@ -20,7 +20,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   } else if (type === "messages" && provider_id) {
     await admin
       .from("quote_messages")
-      .update({ read: true })
+      .update({ read: true, read_at: new Date().toISOString() })
       .eq("quote_request_id", id)
       .eq("provider_id", provider_id)
       .neq("sender_id", user.id);

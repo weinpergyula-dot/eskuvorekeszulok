@@ -39,6 +39,7 @@ interface ChatMessage {
   subject: string;
   body: string;
   read: boolean;
+  read_at: string | null;
   created_at: string;
 }
 
@@ -774,6 +775,9 @@ function ChatView({
                   {msg.body}
                 </div>
                 <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
+                {msg.is_own && msg.read && msg.read_at && (
+                  <span className="text-[10px] text-[#84AAA6] px-1">Elolvasva: {formatDate(msg.read_at)}</span>
+                )}
               </div>
             </div>
           )

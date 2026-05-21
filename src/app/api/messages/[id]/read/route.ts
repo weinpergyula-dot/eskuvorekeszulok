@@ -11,7 +11,7 @@ export async function PATCH(_req: Request, { params }: { params: Promise<{ id: s
 
   const { error } = await supabase
     .from("messages")
-    .update({ read: true })
+    .update({ read: true, read_at: new Date().toISOString() })
     .eq("id", id)
     .eq("recipient_id", user.id);
 
