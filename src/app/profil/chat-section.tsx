@@ -857,6 +857,18 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
 
   useEffect(() => { loadAll(); }, [loadAll]);
 
+  // Broadcast whether a conversation is open so the parent can show/hide the section title
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("chat-conversation-open", { detail: selectedView !== null }));
+  }, [selectedView]);
+
+  // Scroll to top on desktop when a conversation is opened
+  useEffect(() => {
+    if (selectedView !== null && window.innerWidth >= 640) {
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    }
+  }, [selectedView]);
+
   // Default to Conversations tab on first load if any conversations exist
   useEffect(() => {
     if (loading || autoTabbed.current) return;

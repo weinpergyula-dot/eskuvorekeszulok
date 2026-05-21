@@ -233,7 +233,7 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
       <h3 className="text-sm font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
-      <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} />
+      <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} compact />
       <CategorySelect value={category} onChange={setCategory} />
       <div>
         <p className="text-xs text-gray-600 mb-2">Megye(k) <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
@@ -250,7 +250,7 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
           ))}
         </div>
       </div>
-      <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} />
+      <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} compact />
       {matchingProviders !== null && (
         <div className="space-y-2">
           {matchingProviders.length === 0 ? (
@@ -274,7 +274,7 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
       )}
       {error && <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-xs px-4 py-3 rounded-xl border border-[#F06C6C]/30">{error}</div>}
       <div className="flex gap-3">
-        <Button type="submit" disabled={sending}><Send className="h-4 w-4 mr-2" />{sending ? "Küldés..." : "Elküld"}</Button>
+        <Button type="submit" size="sm" disabled={sending}><Send className="h-3.5 w-3.5 mr-1.5" />{sending ? "Küldés..." : "Elküld"}</Button>
         {onCancel && <Button type="button" variant="outline" onClick={onCancel}>Mégse</Button>}
       </div>
       <p className="text-xs text-gray-500"><span className="text-sm font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.</p>

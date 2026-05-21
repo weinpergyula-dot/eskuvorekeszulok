@@ -380,6 +380,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [active, setActive] = useState<Section>("account");
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
+  const [chatConversationOpen, setChatConversationOpen] = useState(false);
   const [showApprovalDot, setShowApprovalDot] = useState(false);
   const [adminPending, setAdminPending] = useState(0);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(true);
@@ -507,11 +508,14 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     const onQuotesCount = (e: Event) => {
       setUnreadQuotes((e as CustomEvent<number>).detail);
     };
+    const onChatConvOpen = (e: Event) => setChatConversationOpen((e as CustomEvent<boolean>).detail);
     window.addEventListener("profile-section", onProfileSection);
     window.addEventListener("quotes-unread-count", onQuotesCount);
+    window.addEventListener("chat-conversation-open", onChatConvOpen);
     return () => {
       window.removeEventListener("profile-section", onProfileSection);
       window.removeEventListener("quotes-unread-count", onQuotesCount);
+      window.removeEventListener("chat-conversation-open", onChatConvOpen);
     };
   }, []);
 
@@ -682,7 +686,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Content */}
         <div className="flex-1 min-w-0 sm:pl-8">
-          {active !== "chat" && (
+          {!(active === "chat" && chatConversationOpen) && (
             <div className="section-chat-header hidden sm:flex items-center gap-2.5 mb-6">
               <h2 className="text-xl font-semibold text-gray-900">
                 {SECTION_TITLES[active]}
