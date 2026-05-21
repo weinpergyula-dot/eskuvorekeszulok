@@ -517,7 +517,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   }, []);
 
   const mainMenuItems = MAIN_MENU_ITEMS.filter(
-    (item) => item.id !== "dashboard" || role === "provider" || role === "admin"
+    (item) => item.id !== "dashboard" || role === "admin" || (role === "provider" && isProviderActive)
   );
 
   // Shared nav item class helper
@@ -629,8 +629,8 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
               )}
             </a>
 
-            {/* Dashboard (provider + admin only) */}
-            {(role === "provider" || role === "admin") && (
+            {/* Dashboard (provider + admin only, hidden when provider is inactive) */}
+            {(role === "admin" || (role === "provider" && isProviderActive)) && (
               <a
                 href="?tab=dashboard"
                 onClick={(e) => { e.preventDefault(); switchTo("dashboard"); }}

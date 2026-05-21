@@ -57,6 +57,7 @@ export function Navbar() {
   const [unreadQuotes, setUnreadQuotes] = useState(0);
   const [providerDot, setProviderDot] = useState<"amber" | "red" | "green" | null>(null);
   const [hasProvider, setHasProvider] = useState(false);
+  const [providerIsActive, setProviderIsActive] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
@@ -173,8 +174,9 @@ export function Navbar() {
       .then(({ data }) => setProfile(data));
     supabase.from("providers").select("approval_status, pending_changes, active").eq("user_id", user.id).maybeSingle()
       .then(({ data: p }) => {
-        if (!p) { setProviderDot(null); setHasProvider(false); return; }
+        if (!p) { setProviderDot(null); setHasProvider(false); setProviderIsActive(true); return; }
         setHasProvider(true);
+        setProviderIsActive(p.active !== false);
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
         if (p.approval_status === "approved") {
@@ -281,7 +283,7 @@ export function Navbar() {
 
   const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
     { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
-    ...(hasProvider || profile?.role === "admin" ? [
+    ...((hasProvider && providerIsActive) || profile?.role === "admin" ? [
       { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek", Icon: Heart },
