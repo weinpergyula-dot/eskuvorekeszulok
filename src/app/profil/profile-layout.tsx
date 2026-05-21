@@ -618,31 +618,31 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
               )}
             </div>
 
-            {/* Szolgáltatói profil + Dashboard (providers only) */}
-            {role === "provider" && (
-              <>
-                <a
-                  href="?tab=provider"
-                  onClick={(e) => { e.preventDefault(); switchTo("provider"); }}
-                  className={navItemClass("provider")}
-                >
-                  <Briefcase className="h-4 w-4 shrink-0" />
-                  <span>Szolgáltatói profil</span>
-                  {sidebarIndicator && (
-                    <span className="ml-auto shrink-0" title={sidebarIndicator.tooltip}>
-                      <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
-                    </span>
-                  )}
-                </a>
-                <a
-                  href="?tab=dashboard"
-                  onClick={(e) => { e.preventDefault(); switchTo("dashboard"); }}
-                  className={navItemClass("dashboard")}
-                >
-                  <LayoutDashboard className="h-4 w-4 shrink-0" />
-                  <span>Dashboard</span>
-                </a>
-              </>
+            {/* Szolgáltatói profil */}
+            <a
+              href="?tab=provider"
+              onClick={(e) => { e.preventDefault(); switchTo("provider"); }}
+              className={navItemClass("provider")}
+            >
+              <Briefcase className="h-4 w-4 shrink-0" />
+              <span>Szolgáltatói profil</span>
+              {sidebarIndicator && (
+                <span className="ml-auto shrink-0" title={sidebarIndicator.tooltip}>
+                  <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
+                </span>
+              )}
+            </a>
+
+            {/* Dashboard (provider + admin only) */}
+            {(role === "provider" || role === "admin") && (
+              <a
+                href="?tab=dashboard"
+                onClick={(e) => { e.preventDefault(); switchTo("dashboard"); }}
+                className={navItemClass("dashboard")}
+              >
+                <LayoutDashboard className="h-4 w-4 shrink-0" />
+                <span>Dashboard</span>
+              </a>
             )}
 
             {/* Kedvencek */}
