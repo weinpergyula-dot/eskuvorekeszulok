@@ -17,23 +17,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${origin}/auth/login?error=config`);
     }
 
-    // ── Password reset: token_hash flow ──────────────────────────────────────
+    // -- Password reset: token_hash flow
     if (tokenHash && type === "recovery") {
       return NextResponse.redirect(
         `${origin}/auth/reset-password?token_hash=${encodeURIComponent(tokenHash)}`
       );
     }
 
-    // ── Password reset: code flow (PKCE) ─────────────────────────────────────
+    // -- Password reset: code flow (PKCE)
     if (code && type === "recovery") {
       return NextResponse.redirect(
         `${origin}/auth/reset-password?code=${encodeURIComponent(code)}`
       );
     }
 
-    // ── PKCE code exchange (OAuth login / account linking) ───────────────────
-    // Az app saját email-megerősítése token_hash-t használ, nem code-ot,
-    // ezért ha code érkezik (és nem recovery), az mindig OAuth callback.
+    // -- PKCE code exchange (OAuth login / account linking)
     if (code) {
       const oauthResponse = NextResponse.redirect(`${origin}/`);
       const supabase = createServerClient(supabaseUrl, supabaseKey, {
@@ -57,14 +55,15 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${origin}/auth/login?error=auth`);
       }
 
-      // Profil ellenőrzés – új user vagy visszatérő
       const { data: profile } = await supabase
         .from("profiles")
         .select("role, accepted_tos_at")
         .eq("user_id", user.id)
         .single();
 
-      if (!profile || !profile.accepted_tos_at) {
+      // Admin accounts may not have accepted_tos_at set -- exempt them from TOS check
+      const isNew = !profile || (!profile.accepted_tos_at && profile.role !== "admin");
+      if (isNew) {
         oauthResponse.headers.set("location", `${origin}/auth/register?prefill=1`);
         return oauthResponse;
       }
@@ -74,14 +73,13 @@ export async function GET(request: NextRequest) {
       } else if (profile.role === "provider") {
         oauthResponse.headers.set("location", `${origin}/profil?tab=dashboard`);
       } else {
-        // Látogató: a next param megmaradhat ha Supabase átadja, egyébként főoldal
         const nextPath = searchParams.get("next") ?? "/";
         oauthResponse.headers.set("location", `${origin}${nextPath}`);
       }
       return oauthResponse;
     }
 
-    // ── Email megerősítés (token_hash + type=magiclink) ───────────────────────
+    // -- Email confirmation
     const response = NextResponse.redirect(`${origin}/auth/verified`);
 
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
