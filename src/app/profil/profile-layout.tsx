@@ -1,22 +1,20 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { User, Lock, Link2, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageCircle, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, Bell, type LucideIcon } from "lucide-react";
+import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, BarChart2, ClipboardList, Heart, MessageCircle, FileText, ChevronDown, LogOut, ShieldCheck, RefreshCw, Bell, Settings, Link2, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { AccountInfoForm, PasswordForm } from "./account-form";
+import { AccountInfoForm, PasswordForm, LinkedAccountsSection } from "./account-form";
 import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { MessagesSection } from "./messages-section";
 import { QuoteRequestsSection } from "./quote-requests-section";
 import { ChatSection } from "./chat-section";
 import { NotificationsSection } from "./notifications-section";
-import { ConnectedAccountsSection } from "./connected-accounts-section";
 import type { Provider, UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Section = "account" | "password" | "connected" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "chat" | "notifications" | "admin";
+type Section = "account" | "password" | "linked-accounts" | "provider" | "dashboard" | "favorites" | "quotes" | "messages" | "chat" | "notifications" | "admin";
 
 interface Props {
   userId: string;
@@ -27,35 +25,39 @@ interface Props {
   initialFavoriteProviders: Provider[];
 }
 
-const MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
-  { id: "admin",     label: "Admin",               icon: <ShieldCheck className="h-4 w-4" /> },
-  { id: "account",   label: "Fiók adatok",          icon: <User className="h-4 w-4" /> },
-  { id: "password",  label: "Jelszó módosítás",     icon: <Lock className="h-4 w-4" /> },
-  { id: "connected", label: "Kapcsolt fiókok",      icon: <Link2 className="h-4 w-4" /> },
-  { id: "provider",  label: "Szolgáltatói profil",  icon: <Briefcase className="h-4 w-4" /> },
-  { id: "dashboard", label: "Dashboard",        icon: <LayoutDashboard className="h-4 w-4" /> },
-  { id: "favorites", label: "Kedvencek",        icon: <Heart className="h-4 w-4" /> },
-  { id: "chat",           label: "Chat",              icon: <MessageCircle className="h-4 w-4" /> },
-  { id: "notifications",  label: "Értesítések",       icon: <Bell className="h-4 w-4" /> },
+const SECTION_TITLES: Record<Section, string> = {
+  admin:           "Admin",
+  account:         "Fiók adatok",
+  password:        "Jelszó módosítás",
+  "linked-accounts": "Kapcsolt fiókok",
+  notifications:   "Értesítések",
+  provider:        "Szolgáltatói profil",
+  dashboard:       "Dashboard",
+  favorites:       "Kedvencek",
+  quotes:          "Ajánlatot kérek",
+  messages:        "Üzenetek",
+  chat:            "Chat",
+};
+
+const ACCOUNT_SETTINGS_SECTIONS: Section[] = ["account", "password", "linked-accounts", "notifications"];
+
+const ACCOUNT_SETTINGS_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
+  { id: "account",         label: "Fiók adatok",       icon: <User className="h-3.5 w-3.5" /> },
+  { id: "password",        label: "Jelszó módosítás",  icon: <Lock className="h-3.5 w-3.5" /> },
+  { id: "linked-accounts", label: "Kapcsolt fiókok",   icon: <Link2 className="h-3.5 w-3.5" /> },
+  { id: "notifications",   label: "Értesítések",       icon: <Bell className="h-3.5 w-3.5" /> },
 ];
 
-const SECTION_TITLES: Record<Section, string> = {
-  admin:     "Admin",
-  account:   "Fiók adatok",
-  password:  "Jelszó módosítás",
-  connected: "Kapcsolt fiókok",
-  provider:  "Szolgáltatói profil",
-  dashboard: "Dashboard",
-  favorites: "Kedvencek",
-  quotes:    "Ajánlatkérések",
-  messages:      "Üzenetek",
-  chat:          "Chat",
-  notifications: "Értesítések",
-};
+// Items shown after the "Fiók beállítások" group (filtered by role at call site)
+const MAIN_MENU_ITEMS: { id: Section; label: string; icon: React.ReactNode }[] = [
+  { id: "provider",  label: "Szolgáltatói profil", icon: <Briefcase className="h-4 w-4" /> },
+  { id: "dashboard", label: "Dashboard",           icon: <LayoutDashboard className="h-4 w-4" /> },
+  { id: "favorites", label: "Kedvencek",           icon: <Heart className="h-4 w-4" /> },
+  { id: "chat",      label: "Chat",                icon: <MessageCircle className="h-4 w-4" /> },
+];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-/** Count fields that genuinely differ between live data and pending_changes. */
 function countDiffs(provider: Provider): number {
   const pc = provider.pending_changes;
   if (!pc) return 0;
@@ -102,13 +104,7 @@ function deriveSidebarIndicator(
 
 // ── StatusCard ────────────────────────────────────────────────────────────────
 
-function StatusCard({
-  provider,
-  isProviderActive,
-}: {
-  provider: Provider;
-  isProviderActive: boolean;
-}) {
+function StatusCard({ provider, isProviderActive }: { provider: Provider; isProviderActive: boolean }) {
   const isFirstSubmission = provider.approval_status !== "approved";
   const diffCount         = countDiffs(provider);
   const hasPendingUpdate  = provider.approval_status === "approved"
@@ -118,7 +114,6 @@ function StatusCard({
                             && !provider.pending_changes
                             && !!provider.rejection_reason;
 
-  // ── Row 1: LiveStatusRow ─────────────────────────────────────────────────
   let liveRow: React.ReactNode;
 
   if (!isProviderActive) {
@@ -156,7 +151,6 @@ function StatusCard({
     );
   }
 
-  // ── Row 2: PendingRow (only when relevant) ───────────────────────────────
   let pendingRow: React.ReactNode = null;
 
   if (isFirstSubmission && provider.approval_status === "pending") {
@@ -174,9 +168,7 @@ function StatusCard({
       <div className="flex items-start gap-2.5 bg-amber-50 border-t border-amber-200 px-4 py-3">
         <Clock className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
         <div className="space-y-0.5">
-          <p className="text-sm font-medium text-amber-800">
-            {diffCount} mező módosítása jóváhagyásra vár
-          </p>
+          <p className="text-sm font-medium text-amber-800">{diffCount} mező módosítása jóváhagyásra vár</p>
           <p className="text-sm text-amber-700">Az élő adatok addig változatlanok maradnak.</p>
         </div>
       </div>
@@ -206,7 +198,7 @@ function StatusCard({
 // ── MobileMenuDropdown ────────────────────────────────────────────────────────
 
 function MobileMenuDropdown({
-  items,
+  mainItems,
   active,
   onSelect,
   unreadCount,
@@ -214,8 +206,11 @@ function MobileMenuDropdown({
   adminPendingCount,
   sidebarIndicator,
   onQuotesCta,
+  showAdmin,
+  accountSettingsOpen,
+  onToggleAccountSettings,
 }: {
-  items: { id: Section; label: string; icon: React.ReactNode }[];
+  mainItems: { id: Section; label: string; icon: React.ReactNode }[];
   active: Section;
   onSelect: (s: Section) => void;
   unreadCount: number;
@@ -223,12 +218,21 @@ function MobileMenuDropdown({
   adminPendingCount: number;
   sidebarIndicator: SidebarIndicator | null;
   onQuotesCta: () => void;
+  showAdmin: boolean;
+  accountSettingsOpen: boolean;
+  onToggleAccountSettings: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const isAccountSettings = ACCOUNT_SETTINGS_SECTIONS.includes(active);
+  const activeAccountItem = isAccountSettings ? ACCOUNT_SETTINGS_ITEMS.find((i) => i.id === active) : undefined;
   const activeItem = active === "quotes"
-    ? { id: "quotes" as Section, label: "Ajánlatkérések", icon: <FileText className="h-4 w-4" /> }
-    : (items.find((i) => i.id === active) ?? items[0]);
+    ? { id: "quotes" as Section, label: "Ajánlatot kérek", icon: <FileText className="h-4 w-4" /> }
+    : active === "admin"
+    ? { id: "admin" as Section, label: "Admin", icon: <ShieldCheck className="h-4 w-4" /> }
+    : activeAccountItem
+    ?? (mainItems.find((i) => i.id === active) ?? mainItems[0]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -240,24 +244,18 @@ function MobileMenuDropdown({
 
   return (
     <div ref={ref} className="sm:hidden relative mb-4 z-20">
-      {/* Trigger */}
       <button
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-white border border-gray-200 rounded-xl text-base font-semibold text-gray-900 shadow-sm cursor-pointer"
       >
         <span className="flex items-center gap-2.5">
-          {activeItem.icon}
-          <span>{activeItem.label}</span>
+          {activeItem?.icon}
+          <span>{activeItem?.label}</span>
         </span>
         <span className="flex items-center gap-2">
-          {active === "chat" && unreadCount > 0 && (
+          {active === "chat" && (unreadCount + unreadQuotesCount) > 0 && (
             <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-          {active === "quotes" && unreadQuotesCount > 0 && (
-            <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-              {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
+              {(unreadCount + unreadQuotesCount) > 9 ? "9+" : (unreadCount + unreadQuotesCount)}
             </span>
           )}
           {active === "admin" && adminPendingCount > 0 && (
@@ -272,10 +270,9 @@ function MobileMenuDropdown({
         </span>
       </button>
 
-      {/* Dropdown list */}
       {open && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-          {/* Ajánlatkérések CTA at top */}
+          {/* Ajánlatkérések */}
           <button
             onClick={() => { onQuotesCta(); setOpen(false); }}
             className={cn(
@@ -284,14 +281,66 @@ function MobileMenuDropdown({
             )}
           >
             <FileText className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left">Ajánlatkérések</span>
-            {unreadQuotesCount > 0 && (
-              <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-                {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
-              </span>
-            )}
+            <span className="flex-1 text-left">Ajánlatot kérek</span>
           </button>
-          {items.map((item) => (
+
+          {/* Admin */}
+          {showAdmin && (
+            <button
+              onClick={() => { onSelect("admin"); setOpen(false); }}
+              className={cn(
+                "w-full flex items-center justify-between gap-3 px-4 py-3 text-base font-medium transition-colors cursor-pointer",
+                active === "admin" ? "bg-[#84AAA6]/10 text-[#84AAA6] font-semibold" : "text-gray-900 hover:bg-gray-50"
+              )}
+            >
+              <span className="flex items-center gap-2.5">
+                <ShieldCheck className="h-4 w-4 shrink-0" />
+                <span>Admin</span>
+              </span>
+              {adminPendingCount > 0 && (
+                <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                  {adminPendingCount > 9 ? "9+" : adminPendingCount}
+                </span>
+              )}
+            </button>
+          )}
+
+          {/* Fiók beállítások group */}
+          <button
+            onClick={onToggleAccountSettings}
+            className={cn(
+              "w-full flex items-center justify-between gap-3 px-4 py-3 text-base font-medium transition-colors cursor-pointer",
+              isAccountSettings && !accountSettingsOpen ? "bg-[#84AAA6]/10 text-[#84AAA6] font-semibold" : "text-gray-900 hover:bg-gray-50"
+            )}
+          >
+            <span className="flex items-center gap-2.5">
+              <Settings className="h-4 w-4 shrink-0" />
+              <span>Fiók beállítások</span>
+            </span>
+            <ChevronDown className={cn("h-4 w-4 text-gray-400 transition-transform", accountSettingsOpen && "rotate-180")} />
+          </button>
+          {accountSettingsOpen && (
+            <div className="border-l-2 border-[#84AAA6]/30 ml-6 mb-1">
+              {ACCOUNT_SETTINGS_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => { onSelect(item.id); setOpen(false); }}
+                  className={cn(
+                    "w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer",
+                    active === item.id
+                      ? "bg-[#84AAA6]/10 text-[#84AAA6] font-semibold"
+                      : "text-gray-700 hover:bg-gray-50"
+                  )}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Main items (provider, dashboard, favorites, chat) */}
+          {mainItems.map((item) => (
             <button
               key={item.id}
               onClick={() => { onSelect(item.id); setOpen(false); }}
@@ -306,19 +355,9 @@ function MobileMenuDropdown({
                 {item.icon}
                 <span>{item.label}</span>
               </span>
-              {item.id === "chat" && unreadCount > 0 && (
+              {item.id === "chat" && (unreadCount + unreadQuotesCount) > 0 && (
                 <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </span>
-              )}
-              {item.id === "quotes" && unreadQuotesCount > 0 && (
-                <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                  {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
-                </span>
-              )}
-              {item.id === "admin" && adminPendingCount > 0 && (
-                <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                  {adminPendingCount > 9 ? "9+" : adminPendingCount}
+                  {(unreadCount + unreadQuotesCount) > 9 ? "9+" : (unreadCount + unreadQuotesCount)}
                 </span>
               )}
               {item.id === "provider" && sidebarIndicator && (
@@ -334,15 +373,17 @@ function MobileMenuDropdown({
 
 // ── ProfileLayout ─────────────────────────────────────────────────────────────
 
-const VALID_SECTIONS: Section[] = ["account", "password", "connected", "provider", "dashboard", "favorites", "quotes", "messages", "chat", "notifications"];
+const VALID_SECTIONS: Section[] = ["account", "password", "linked-accounts", "provider", "dashboard", "favorites", "quotes", "messages", "chat", "notifications"];
 
 export function ProfileLayout({ userId, initialName, email, role, provider, initialFavoriteProviders }: Props) {
   const searchParams = useSearchParams();
   const [active, setActive] = useState<Section>("account");
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
+  const [chatConversationOpen, setChatConversationOpen] = useState(false);
   const [showApprovalDot, setShowApprovalDot] = useState(false);
   const [adminPending, setAdminPending] = useState(0);
+  const [accountSettingsOpen, setAccountSettingsOpen] = useState(true);
 
   useEffect(() => {
     const tab = searchParams.get("tab") as Section | null;
@@ -351,8 +392,13 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     }
   }, [searchParams]);
 
-  // Badge counts come from navbar's realtime broadcasts via window events.
-  // No separate Supabase subscription here — avoids hitting channel limits.
+  // Auto-expand account settings group when a sub-section is active
+  useEffect(() => {
+    if (ACCOUNT_SETTINGS_SECTIONS.includes(active)) {
+      setAccountSettingsOpen(true);
+    }
+  }, [active]);
+
   useEffect(() => {
     const onMessagesCount = (e: Event) =>
       setUnreadCount((e as CustomEvent<number>).detail);
@@ -360,7 +406,6 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     return () => window.removeEventListener("messages-unread-count", onMessagesCount);
   }, []);
 
-  // Admin: fetch + realtime pending provider count
   useEffect(() => {
     if (role !== "admin") return;
     const supabase = createClient();
@@ -463,13 +508,28 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     const onQuotesCount = (e: Event) => {
       setUnreadQuotes((e as CustomEvent<number>).detail);
     };
+    const onChatConvOpen = (e: Event) => setChatConversationOpen((e as CustomEvent<boolean>).detail);
     window.addEventListener("profile-section", onProfileSection);
     window.addEventListener("quotes-unread-count", onQuotesCount);
+    window.addEventListener("chat-conversation-open", onChatConvOpen);
     return () => {
       window.removeEventListener("profile-section", onProfileSection);
       window.removeEventListener("quotes-unread-count", onQuotesCount);
+      window.removeEventListener("chat-conversation-open", onChatConvOpen);
     };
   }, []);
+
+  const mainMenuItems = MAIN_MENU_ITEMS.filter(
+    (item) =>
+      (item.id !== "provider"  || role === "provider") &&
+      (item.id !== "dashboard" || role === "provider")
+  );
+
+  // Shared nav item class helper
+  const navItemClass = (id: Section) => cn(
+    "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer w-full",
+    active === id ? "bg-[#84AAA6] text-white" : "text-gray-900 hover:bg-gray-100"
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -479,10 +539,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
         <aside className="sm:w-56 shrink-0 sm:border-r sm:border-gray-200 sm:pr-6">
           {/* Mobile custom dropdown */}
           <MobileMenuDropdown
-            items={MENU_ITEMS.filter(item =>
-              (item.id !== "admin"     || role === "admin") &&
-              (item.id !== "dashboard" || role === "provider")
-            )}
+            mainItems={mainMenuItems}
             active={active}
             onSelect={switchTo}
             unreadCount={unreadCount}
@@ -490,65 +547,131 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             adminPendingCount={adminPending}
             sidebarIndicator={sidebarIndicator}
             onQuotesCta={() => switchTo("quotes")}
+            showAdmin={role === "admin"}
+            accountSettingsOpen={accountSettingsOpen}
+            onToggleAccountSettings={() => setAccountSettingsOpen((v) => !v)}
           />
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex flex-col gap-1">
-            {/* Ajánlatkérések CTA – highlighted at top */}
+            {/* Ajánlatkérések CTA */}
             <div className="border-b border-gray-100 pb-1 mb-1">
-            <button
-              onClick={() => switchTo("quotes")}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
-            >
-              <FileText className="h-4 w-4 shrink-0" />
-              <span>Ajánlatkérések</span>
-              {unreadQuotes > 0 && (
-                <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
-                  {unreadQuotes > 9 ? "9+" : unreadQuotes}
-                </span>
-              )}
-            </button>
-            </div>
-            {MENU_ITEMS.filter(item =>
-              (item.id !== "admin"     || role === "admin") &&
-              (item.id !== "dashboard" || role === "provider")
-            ).map((item) => (
-              <a
-                key={item.id}
-                href={`?tab=${item.id}`}
-                onClick={(e) => { e.preventDefault(); switchTo(item.id); }}
-                className={cn(
-                  "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer",
-                  active === item.id
-                    ? "bg-[#84AAA6] text-white"
-                    : "text-gray-900 hover:bg-gray-100"
-                )}
+              <button
+                onClick={() => switchTo("quotes")}
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
               >
-                {item.icon}
-                <span>{item.label}</span>
+                <FileText className="h-4 w-4 shrink-0" />
+                <span>Ajánlatot kérek</span>
+              </button>
+            </div>
 
-                {item.id === "provider" && sidebarIndicator && (
-                  <span className="ml-auto shrink-0" title={sidebarIndicator.tooltip}>
-                    <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
-                  </span>
-                )}
-                {item.id === "quotes" && unreadQuotes > 0 && (
-                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
-                    {unreadQuotes > 9 ? "9+" : unreadQuotes}
-                  </span>
-                )}
-                {item.id === "chat" && unreadCount > 0 && (
-                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                )}
-                {item.id === "admin" && adminPending > 0 && (
+            {/* Admin */}
+            {role === "admin" && (
+              <a
+                href="?tab=admin"
+                onClick={(e) => { e.preventDefault(); switchTo("admin"); }}
+                className={navItemClass("admin")}
+              >
+                <ShieldCheck className="h-4 w-4 shrink-0" />
+                <span>Admin</span>
+                {adminPending > 0 && (
                   <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
                     {adminPending > 9 ? "9+" : adminPending}
                   </span>
                 )}
               </a>
-            ))}
+            )}
+
+            {/* Fiók beállítások group */}
+            <div>
+              <button
+                onClick={() => setAccountSettingsOpen((v) => !v)}
+                className={cn(
+                  "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer w-full",
+                  ACCOUNT_SETTINGS_SECTIONS.includes(active)
+                    ? "text-gray-900 bg-gray-100"
+                    : "text-gray-900 hover:bg-gray-100"
+                )}
+              >
+                <Settings className="h-4 w-4 shrink-0" />
+                <span className="flex-1">Fiók beállítások</span>
+                <ChevronDown className={cn("h-4 w-4 text-gray-400 shrink-0 transition-transform", accountSettingsOpen && "rotate-180")} />
+              </button>
+              {accountSettingsOpen && (
+                <div className="ml-3 pl-3 border-l-2 border-[#84AAA6]/30 mt-0.5 mb-0.5 space-y-0.5">
+                  {ACCOUNT_SETTINGS_ITEMS.map((item) => (
+                    <a
+                      key={item.id}
+                      href={`?tab=${item.id}`}
+                      onClick={(e) => { e.preventDefault(); switchTo(item.id); }}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer",
+                        active === item.id
+                          ? "bg-[#84AAA6] text-white"
+                          : "text-gray-700 hover:bg-gray-100"
+                      )}
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Szolgáltatói profil + Dashboard (providers only) */}
+            {role === "provider" && (
+              <>
+                <a
+                  href="?tab=provider"
+                  onClick={(e) => { e.preventDefault(); switchTo("provider"); }}
+                  className={navItemClass("provider")}
+                >
+                  <Briefcase className="h-4 w-4 shrink-0" />
+                  <span>Szolgáltatói profil</span>
+                  {sidebarIndicator && (
+                    <span className="ml-auto shrink-0" title={sidebarIndicator.tooltip}>
+                      <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
+                    </span>
+                  )}
+                </a>
+                <a
+                  href="?tab=dashboard"
+                  onClick={(e) => { e.preventDefault(); switchTo("dashboard"); }}
+                  className={navItemClass("dashboard")}
+                >
+                  <LayoutDashboard className="h-4 w-4 shrink-0" />
+                  <span>Dashboard</span>
+                </a>
+              </>
+            )}
+
+            {/* Kedvencek */}
+            <a
+              href="?tab=favorites"
+              onClick={(e) => { e.preventDefault(); switchTo("favorites"); }}
+              className={navItemClass("favorites")}
+            >
+              <Heart className="h-4 w-4 shrink-0" />
+              <span>Kedvencek</span>
+            </a>
+
+            {/* Chat */}
+            <a
+              href="?tab=chat"
+              onClick={(e) => { e.preventDefault(); switchTo("chat"); }}
+              className={navItemClass("chat")}
+            >
+              <MessageCircle className="h-4 w-4 shrink-0" />
+              <span>Chat</span>
+              {(unreadCount + unreadQuotes) > 0 && (
+                <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
+                  {(unreadCount + unreadQuotes) > 9 ? "9+" : (unreadCount + unreadQuotes)}
+                </span>
+              )}
+            </a>
+
+            {/* Kijelentkezés */}
             <div className="mt-4 pt-4 border-t border-gray-200">
               <button
                 onClick={handleSignOut}
@@ -563,28 +686,32 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Content */}
         <div className="flex-1 min-w-0 sm:pl-8">
-          <div className="section-chat-header hidden sm:flex items-center gap-2.5 mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">
-              {SECTION_TITLES[active]}
-            </h2>
-            {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
-              <button
-                onClick={handleRefresh}
-                title="Frissítés"
-                className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
-              >
-                <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
-              </button>
-            )}
-          </div>
+          {!(active === "chat" && chatConversationOpen) && (
+            <div className="section-chat-header hidden sm:flex items-center gap-2.5 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {SECTION_TITLES[active]}
+              </h2>
+              {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
+                <button
+                  onClick={handleRefresh}
+                  title="Frissítés"
+                  className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
+                >
+                  <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+                </button>
+              )}
+            </div>
+          )}
 
           {active === "account" && (
-            <AccountInfoForm userId={userId} initialName={initialName} email={email} />
+            <AccountInfoForm userId={userId} initialName={initialName} email={email} role={role} />
           )}
 
           {active === "password" && <PasswordForm />}
 
-          {active === "connected" && <ConnectedAccountsSection />}
+          {active === "linked-accounts" && <LinkedAccountsSection />}
+
+          {active === "notifications" && <NotificationsSection role={role} />}
 
           {active === "provider" && (
             <div className="space-y-5">
@@ -596,7 +723,6 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                   Az adminisztrátor jóváhagyása után megjelensz a listában.
                 </p>
               )}
-
               <ProviderForm
                 userId={userId}
                 role={role}
@@ -658,7 +784,6 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                   </div>
                 </div>
               )}
-
               <div>
                 <h3 className="text-base font-semibold text-gray-900 uppercase tracking-wide mb-3">Statisztikák</h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -681,7 +806,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "quotes" && (
             <div className="section-larger-text">
-              <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+              <QuoteRequestsSection key={quotesKey} onUnreadChange={setUnreadQuotes} />
             </div>
           )}
 
@@ -693,12 +818,8 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "chat" && (
             <div className="section-larger-text">
-              <ChatSection userId={userId} withProviderUserId={searchParams.get("with") ?? undefined} />
+              <ChatSection userId={userId} isProvider={provider !== null} withProviderUserId={searchParams.get("with") ?? undefined} />
             </div>
-          )}
-
-          {active === "notifications" && (
-            <NotificationsSection role={role} />
           )}
         </div>
       </div>
