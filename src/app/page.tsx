@@ -106,10 +106,11 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
             {/* Left – visitors */}
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
+              <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2.5">
                 <Users className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 Látogatóknak
               </h2>
+              <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes fiók</p>
               <hr className="border-white/30 mb-3" />
               <ul className="text-base text-white space-y-2 mb-5">
                 {[
@@ -136,10 +137,11 @@ export default async function HomePage() {
 
             {/* Right – providers */}
             <div className="-mx-4 px-8 py-8 -mb-10 border-t border-white sm:mx-0 sm:px-0 sm:py-0 sm:mb-0 sm:border-t-0" style={{ backgroundColor: "#D07AB5" }}>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2.5">
+              <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2.5">
                 <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 Szolgáltatóknak
               </h2>
+              <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes profil</p>
               <hr className="border-white/30 mb-3" />
               <ul className="text-base text-white space-y-2 mb-5">
                 {[

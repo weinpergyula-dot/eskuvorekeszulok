@@ -267,9 +267,9 @@ export function Navbar() {
   ];
 
   const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
-    ...(hasProvider ? [
-      { id: "provider",  label: "Szolgáltatói profil", Icon: Briefcase },
-      { id: "dashboard", label: "Dashboard",           Icon: LayoutDashboard },
+    { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
+    ...(hasProvider || profile?.role === "admin" ? [
+      { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek", Icon: Heart },
     { id: "chat",      label: "Chat",      Icon: MessageCircle },

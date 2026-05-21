@@ -454,6 +454,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     setRefreshing(true);
     if (active === "messages") setMessagesKey((k) => k + 1);
     if (active === "quotes") setQuotesKey((k) => k + 1);
+    if (active === "chat") window.dispatchEvent(new CustomEvent("chat-refresh"));
     setTimeout(() => setRefreshing(false), 600);
   };
 
@@ -520,9 +521,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   }, []);
 
   const mainMenuItems = MAIN_MENU_ITEMS.filter(
-    (item) =>
-      (item.id !== "provider"  || role === "provider") &&
-      (item.id !== "dashboard" || role === "provider")
+    (item) => item.id !== "dashboard" || role === "provider" || role === "admin"
   );
 
   // Shared nav item class helper
@@ -619,31 +618,31 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
               )}
             </div>
 
-            {/* Szolgáltatói profil + Dashboard (providers only) */}
-            {role === "provider" && (
-              <>
-                <a
-                  href="?tab=provider"
-                  onClick={(e) => { e.preventDefault(); switchTo("provider"); }}
-                  className={navItemClass("provider")}
-                >
-                  <Briefcase className="h-4 w-4 shrink-0" />
-                  <span>Szolgáltatói profil</span>
-                  {sidebarIndicator && (
-                    <span className="ml-auto shrink-0" title={sidebarIndicator.tooltip}>
-                      <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
-                    </span>
-                  )}
-                </a>
-                <a
-                  href="?tab=dashboard"
-                  onClick={(e) => { e.preventDefault(); switchTo("dashboard"); }}
-                  className={navItemClass("dashboard")}
-                >
-                  <LayoutDashboard className="h-4 w-4 shrink-0" />
-                  <span>Dashboard</span>
-                </a>
-              </>
+            {/* Szolgáltatói profil */}
+            <a
+              href="?tab=provider"
+              onClick={(e) => { e.preventDefault(); switchTo("provider"); }}
+              className={navItemClass("provider")}
+            >
+              <Briefcase className="h-4 w-4 shrink-0" />
+              <span>Szolgáltatói profil</span>
+              {sidebarIndicator && (
+                <span className="ml-auto shrink-0" title={sidebarIndicator.tooltip}>
+                  <span className={`inline-block w-2 h-2 rounded-full ${sidebarIndicator.color}`} />
+                </span>
+              )}
+            </a>
+
+            {/* Dashboard (provider + admin only) */}
+            {(role === "provider" || role === "admin") && (
+              <a
+                href="?tab=dashboard"
+                onClick={(e) => { e.preventDefault(); switchTo("dashboard"); }}
+                className={navItemClass("dashboard")}
+              >
+                <LayoutDashboard className="h-4 w-4 shrink-0" />
+                <span>Dashboard</span>
+              </a>
             )}
 
             {/* Kedvencek */}
@@ -691,7 +690,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
               <h2 className="text-xl font-semibold text-gray-900">
                 {SECTION_TITLES[active]}
               </h2>
-              {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
+              {(active === "messages" || (active === "quotes" && !quotesFormOpen) || (active === "chat" && !chatConversationOpen)) && (
                 <button
                   onClick={handleRefresh}
                   title="Frissítés"
@@ -729,6 +728,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 provider={provider}
                 isProviderActive={isProviderActive}
                 onActiveChange={setIsProviderActive}
+                registrationName={initialName}
               />
             </div>
           )}

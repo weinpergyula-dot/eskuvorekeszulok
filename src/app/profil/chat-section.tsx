@@ -825,6 +825,8 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   const [filterCounty, setFilterCounty]     = useState("");
   const [currentPage, setCurrentPage]       = useState(0);
   const [selectedView, setSelectedView]     = useState<SelectedView | null>(null);
+  const [convSearchQuery, setConvSearchQuery]       = useState("");
+  const [convFilterCategory, setConvFilterCategory] = useState("");
   const hasAutoOpened = useRef(false);
   const autoTabbed = useRef(false);
 
@@ -903,6 +905,13 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
       window.removeEventListener("messages-read", handler);
     };
   }, []);
+
+  // Reload all data when parent requests a chat refresh
+  useEffect(() => {
+    const handler = () => loadAll();
+    window.addEventListener("chat-refresh", handler);
+    return () => window.removeEventListener("chat-refresh", handler);
+  }, [loadAll]);
 
   const handleToggleFavorite = async (provider: ChatProvider) => {
     const res = await fetch("/api/favorites", {
@@ -1044,7 +1053,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
-          Szolgáltatók
+          Új chat indítása
         </button>
         <button
           onClick={() => setTab("conversations")}
@@ -1054,7 +1063,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
-          Beszélgetések
+          Aktív chatek
           {unreadConversations > 0 && (
             <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
               {unreadConversations > 9 ? "9+" : unreadConversations}
@@ -1152,22 +1161,70 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
           | { kind: "quote-visitor"; data: VisitorChat; lastAt: string }
           | { kind: "quote-provider"; data: ProviderRequest; lastAt: string };
 
-        const allItems: ConvItem[] = [
+        const allItemsRaw: ConvItem[] = [
           ...threads.map((t) => ({ kind: "thread" as const, data: t, lastAt: t.lastAt })),
           ...visitorQuoteChats.map((c) => ({ kind: "quote-visitor" as const, data: c, lastAt: c.last_at })),
           ...providerQuoteReqs.map((r) => ({ kind: "quote-provider" as const, data: r, lastAt: r.created_at })),
         ].sort((a, b) => b.lastAt.localeCompare(a.lastAt));
 
-        if (allItems.length === 0) {
+        const convAllCategories = [...new Set([
+          ...visitorQuoteChats.map((c) => c.category),
+          ...providerQuoteReqs.map((r) => r.category),
+        ])];
+
+        const allItems = allItemsRaw.filter((item) => {
+          const nameQ = convSearchQuery.trim().toLowerCase();
+          const catQ = convFilterCategory;
+          if (item.kind === "thread") {
+            if (nameQ && !item.data.otherName.toLowerCase().includes(nameQ)) return false;
+            if (catQ) return false; // threads have no category
+          } else if (item.kind === "quote-visitor") {
+            if (nameQ && !item.data.provider_full_name.toLowerCase().includes(nameQ)) return false;
+            if (catQ && item.data.category !== catQ) return false;
+          } else {
+            if (nameQ && !item.data.visitor_name.toLowerCase().includes(nameQ)) return false;
+            if (catQ && item.data.category !== catQ) return false;
+          }
+          return true;
+        });
+
+        if (allItemsRaw.length === 0) {
           return (
             <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
               <MessageCircle className="h-10 w-10 mb-3 text-gray-200" strokeWidth={1} />
               <p className="text-sm">Még nincs aktív chat.</p>
-              <p className="text-xs mt-1">Indíts beszélgetést a Szolgáltatók fülről.</p>
+              <p className="text-xs mt-1">Indíts beszélgetést az Új chat indítása fülről.</p>
             </div>
           );
         }
         return (
+          <div className="space-y-3">
+            {/* Filters */}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={convSearchQuery}
+                  onChange={(e) => setConvSearchQuery(e.target.value)}
+                  placeholder="Keresés neve alapján…"
+                  className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
+                />
+              </div>
+              {convAllCategories.length > 0 && (
+                <div className="sm:w-64">
+                  <ChatSelect
+                    value={convFilterCategory}
+                    onChange={setConvFilterCategory}
+                    placeholder="Összes kategória"
+                    options={convAllCategories.map((cat) => ({
+                      value: cat,
+                      label: CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat,
+                    }))}
+                  />
+                </div>
+              )}
+            </div>
           <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
             {allItems.map((item) => {
               if (item.kind === "thread") {
@@ -1222,6 +1279,10 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 />
               );
             })}
+          </div>
+          {allItems.length === 0 && allItemsRaw.length > 0 && (
+            <p className="text-sm text-gray-400 text-center py-6">Nincs találat a szűrőkre.</p>
+          )}
           </div>
         );
       })()}

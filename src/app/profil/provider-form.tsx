@@ -18,17 +18,20 @@ interface Props {
   provider: Provider | null;
   isProviderActive: boolean;
   onActiveChange: (val: boolean) => void;
+  registrationName: string;
 }
 
 // ── Pill multi-select ────────────────────────────────────────────────────────
 function PillSelect<T extends string>({
   label,
+  required,
   options,
   selected,
   onChange,
   disabledValues,
 }: {
   label: string;
+  required?: boolean;
   options: { value: T; label: string }[];
   selected: T[];
   onChange: (next: T[]) => void;
@@ -43,7 +46,7 @@ function PillSelect<T extends string>({
   return (
     <div className="space-y-2">
       <div className="flex items-baseline justify-between">
-        <Label>{label}</Label>
+        <Label>{label}{required && <span className="text-[1.2em] font-bold align-middle ml-0.5">*</span>}</Label>
         {selected.length > 0 && (
           <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
         )}
@@ -148,6 +151,7 @@ export function ProviderForm({
   provider,
   isProviderActive,
   onActiveChange,
+  registrationName,
 }: Props) {
   const router = useRouter();
   const supabase = createClient();
@@ -161,7 +165,12 @@ export function ProviderForm({
 
   // Pre-fill: pending_changes values take priority as "last submitted"
   const pc = provider?.pending_changes;
-  const [fullName,    setFullName]    = useState((pc?.full_name    as string) ?? provider?.full_name    ?? "");
+  const currentDisplayName = (pc?.full_name as string) ?? provider?.full_name ?? "";
+  const initialChoice: "own" | "business" =
+    !currentDisplayName || currentDisplayName === registrationName ? "own" : "business";
+  const [displayNameChoice, setDisplayNameChoice] = useState<"own" | "business">(initialChoice);
+  const [businessName, setBusinessName] = useState(initialChoice === "business" ? currentDisplayName : "");
+  const fullName = displayNameChoice === "own" ? registrationName : businessName;
   const [phone,       setPhone]       = useState((pc?.phone        as string) ?? provider?.phone        ?? "");
   const [counties,    setCounties]    = useState<string[]>(provider?.counties ?? []);
   const [categories,  setCategories]  = useState<ServiceCategory[]>((provider?.categories as ServiceCategory[]) ?? []);
@@ -428,12 +437,46 @@ export function ProviderForm({
                 />
               </div>
 
-              <FloatingInput
-                id="pf-name"
-                label="Teljes név"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
+              {/* Display name */}
+              <div className="space-y-2">
+                <p className="text-base text-gray-800">
+                  Milyen névvel jelenj meg a profilkártyádon?<span className="text-[1.2em] font-bold align-middle ml-0.5">*</span>
+                </p>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="pf-displayNameChoice"
+                      value="own"
+                      checked={displayNameChoice === "own"}
+                      onChange={() => setDisplayNameChoice("own")}
+                      className="h-4 w-4 accent-[#84AAA6]"
+                    />
+                    <span className="text-base text-gray-700">
+                      Saját nevem{registrationName ? <span className="ml-1 text-gray-500">({registrationName})</span> : null}
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="pf-displayNameChoice"
+                      value="business"
+                      checked={displayNameChoice === "business"}
+                      onChange={() => setDisplayNameChoice("business")}
+                      className="h-4 w-4 accent-[#84AAA6]"
+                    />
+                    <span className="text-base text-gray-700">Vállalkozásom neve</span>
+                  </label>
+                </div>
+                {displayNameChoice === "business" && (
+                  <FloatingInput
+                    id="pf-businessName"
+                    label="Vállalkozás neve"
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                  />
+                )}
+              </div>
 
               <div className="space-y-1">
                 <p className="text-base text-gray-800">Telefonszám<span className="text-[1.2em] font-bold align-middle ml-0.5">*</span></p>
@@ -442,6 +485,7 @@ export function ProviderForm({
 
               <PillSelect
                 label="Megye"
+                required
                 options={countyOptions}
                 selected={counties}
                 disabledValues={
@@ -461,6 +505,7 @@ export function ProviderForm({
               />
               <PillSelect
                 label="Kategória"
+                required
                 options={categoryOptions}
                 selected={categories}
                 onChange={setCategories}
@@ -534,6 +579,10 @@ export function ProviderForm({
                 </Button>
                 <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryChange} />
               </div>
+
+              <p className="text-sm text-gray-500">
+                <span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.
+              </p>
 
               <div className="flex gap-3 pt-2 flex-wrap">
                 <Button type="submit" disabled={saving}>
