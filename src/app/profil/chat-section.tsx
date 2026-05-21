@@ -482,6 +482,7 @@ function ChatView({
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  const markedAsReadRef = useRef(new Set<string>());
   const hasSystemMessage = messages.some((m) => !m.is_own && isSystemMsg(m.body));
   const initials = provider.full_name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
@@ -521,47 +522,47 @@ function ChatView({
     };
   }, []);
 
-  // Mark unread on mount
+  // Mark unread — runs whenever messages updates so it catches messages loaded after mount
   useEffect(() => {
-    const unread = initialMessages.filter((m) => !m.read && !m.is_own);
-    if (unread.length > 0) {
-      Promise.all(unread.map((m) =>
-        fetch(`/api/messages/${m.id}/read`, { method: "PATCH" })
-      )).then(() => {
-        window.dispatchEvent(new CustomEvent("messages-read"));
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const unread = messages.filter((m) => !m.read && !m.is_own && !markedAsReadRef.current.has(m.id));
+    if (unread.length === 0) return;
+    unread.forEach((m) => markedAsReadRef.current.add(m.id));
+    Promise.all(unread.map((m) =>
+      fetch(`/api/messages/${m.id}/read`, { method: "PATCH" })
+    )).then(() => {
+      window.dispatchEvent(new CustomEvent("messages-read"));
+    });
+  }, [messages]);
 
-  // Realtime subscription
+  // Realtime subscription — INSERT for incoming messages, UPDATE for read receipts
   useEffect(() => {
     const supabase = createClient();
     if (!supabase) return;
+    const reload = () => {
+      fetch("/api/messages")
+        .then((r) => r.json())
+        .then((all: ChatMessage[]) => {
+          const filtered = all
+            .filter((m) => !(m.is_own && isSystemMsg(m.body)))
+            .filter((m) => (m.is_own ? m.recipient_id : m.sender_id) === provider.user_id)
+            .sort((a, b) => a.created_at.localeCompare(b.created_at));
+          setMessages(filtered);
+        })
+        .catch(() => {});
+    };
     const channel = supabase
       .channel(`chat-view-${provider.user_id}-${userId}`)
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         "postgres_changes" as any,
         { event: "INSERT", schema: "public", table: "messages", filter: `recipient_id=eq.${userId}` },
-        () => {
-          fetch("/api/messages")
-            .then((r) => r.json())
-            .then((all: ChatMessage[]) => {
-              const filtered = all
-                .filter((m) => !(m.is_own && isSystemMsg(m.body)))
-                .filter((m) => (m.is_own ? m.recipient_id : m.sender_id) === provider.user_id)
-                .sort((a, b) => a.created_at.localeCompare(b.created_at));
-              setMessages(filtered);
-              const unread = filtered.filter((m) => !m.read && !m.is_own);
-              if (unread.length > 0) {
-                Promise.all(unread.map((m) =>
-                  fetch(`/api/messages/${m.id}/read`, { method: "PATCH" })
-                )).then(() => window.dispatchEvent(new CustomEvent("messages-read")));
-              }
-            })
-            .catch(() => {});
-        }
+        reload
+      )
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "UPDATE", schema: "public", table: "messages", filter: `sender_id=eq.${userId}` },
+        reload
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
