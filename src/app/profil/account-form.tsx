@@ -145,6 +145,8 @@ export function AccountInfoForm({ userId, initialName, email }: AccountInfoProps
 export function PasswordForm() {
   const supabase = createClient();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [hasEmailIdentity, setHasEmailIdentity] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -154,7 +156,11 @@ export function PasswordForm() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));
+    supabase.auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email ?? null);
+      setHasEmailIdentity(data.user?.identities?.some((i) => i.provider === "email") ?? true);
+      setLoadingUser(false);
+    });
   }, [supabase]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -162,23 +168,25 @@ export function PasswordForm() {
     setError(null);
     setSuccess(false);
 
-    if (!currentPassword) { setError("Add meg a jelenlegi jelszavadat."); return; }
+    if (hasEmailIdentity && !currentPassword) { setError("Add meg a jelenlegi jelszavadat."); return; }
     if (!newPassword) { setError("Add meg az új jelszavadat."); return; }
     if (newPassword !== confirmPassword) { setError("A két jelszó nem egyezik."); return; }
     if (newPassword.length < 6) { setError("A jelszónak legalább 6 karakter hosszúnak kell lennie."); return; }
-    if (!userEmail) { setError("Hiba történt. Kérjük, jelentkezz be újra."); return; }
 
     setSaving(true);
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: userEmail,
-      password: currentPassword,
-    });
-
-    if (signInError) {
-      setError("A jelenlegi jelszó helytelen.");
-      setSaving(false);
-      return;
+    // Google-only users have no current password — skip re-auth, updateUser directly
+    if (hasEmailIdentity) {
+      if (!userEmail) { setError("Hiba történt. Kérjük, jelentkezz be újra."); setSaving(false); return; }
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: userEmail,
+        password: currentPassword,
+      });
+      if (signInError) {
+        setError("A jelenlegi jelszó helytelen.");
+        setSaving(false);
+        return;
+      }
     }
 
     const { error: err } = await supabase.auth.updateUser({ password: newPassword });
@@ -194,19 +202,28 @@ export function PasswordForm() {
     setSaving(false);
   };
 
+  if (loadingUser) return null;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-      <FloatingInput
-        id="currentPassword"
-        label="Jelenlegi jelszó"
-        type="password"
-        value={currentPassword}
-        onChange={(e) => setCurrentPassword(e.target.value)}
-        required
-      />
+      {!hasEmailIdentity && (
+        <div className="px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-base">
+          Google-fiókkal regisztráltál, ezért nincs jelszavad. Állíts be egyet, hogy e-mail-címmel is be tudj jelentkezni.
+        </div>
+      )}
+      {hasEmailIdentity && (
+        <FloatingInput
+          id="currentPassword"
+          label="Jelenlegi jelszó"
+          type="password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+          required
+        />
+      )}
       <FloatingInput
         id="newPassword"
-        label="Új jelszó"
+        label={hasEmailIdentity ? "Új jelszó" : "Jelszó"}
         type="password"
         value={newPassword}
         onChange={(e) => setNewPassword(e.target.value)}
@@ -238,10 +255,12 @@ export function PasswordForm() {
         <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">{error}</p>
       )}
       {success && (
-        <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">✓ Jelszó sikeresen megváltoztatva.</p>
+        <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+          ✓ {hasEmailIdentity ? "Jelszó sikeresen megváltoztatva." : "Jelszó sikeresen beállítva."}
+        </p>
       )}
       <Button type="submit" variant="outline" disabled={saving}>
-        {saving ? "Mentés..." : "Jelszó módosítása"}
+        {saving ? "Mentés..." : hasEmailIdentity ? "Jelszó módosítása" : "Jelszó beállítása"}
       </Button>
     </form>
   );

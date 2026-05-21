@@ -10,6 +10,7 @@ import { CheckCircle, UserRound } from "lucide-react";
 function RegisterSuccessContent() {
   const searchParams = useSearchParams();
   const isVisitor = searchParams.get("visitor") === "true";
+  const isOAuth = searchParams.get("oauth") === "true";
 
   return (
     <div>
@@ -20,24 +21,57 @@ function RegisterSuccessContent() {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Köszönjük a regisztrációt!
           </h1>
-          <p className="text-gray-900 mb-4 text-lg leading-relaxed">
-            Elküldtük a megerősítő levelet a regisztráció során megadott e-mail-címre. Kérjük, nyisd meg, és kattints a levélben található linkre a fiókod aktiválásához.
-          </p>
-          <p className="text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm mb-4 text-center">
-            Ha nem találod a levelet a beérkező üzenetek között, <strong>ellenőrizd a SPAM / Levélszemét mappát</strong> is.
-          </p>
-          {isVisitor ? (
-            <p className="text-gray-500 mb-8 text-base leading-relaxed">
-              Az e-mail-cím igazolása után bejelentkezhetsz, és elkezdheted böngészni a szolgáltatókat, kedvenceket menteni, és ajánlatkéréseket küldeni egyszerre több szakembernek.
-            </p>
+
+          {isOAuth ? (
+            <>
+              {isVisitor ? (
+                <>
+                  <p className="text-gray-900 mb-4 text-lg leading-relaxed">
+                    Fiókodat Google-lal erősítettük meg – azonnal használhatod.
+                  </p>
+                  <p className="text-gray-500 mb-8 text-base leading-relaxed">
+                    Böngészd a szolgáltatókat, ments kedvenceket, és küldj ajánlatkérést egyszerre több szakembernek.
+                  </p>
+                  <Link href="/">
+                    <Button>Böngészés megkezdése</Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="text-gray-900 mb-4 text-lg leading-relaxed">
+                    Fiókodat Google-lal erősítettük meg. Szolgáltatói profilod adminisztrátori jóváhagyásra kerül.
+                  </p>
+                  <p className="text-gray-500 mb-8 text-base leading-relaxed">
+                    Jóváhagyást követően profilod megjelenik a nyilvános oldalon, és elkezdheted fogadni az ajánlatkéréseket.
+                  </p>
+                  <Link href="/">
+                    <Button>Vissza a főoldalra</Button>
+                  </Link>
+                </>
+              )}
+            </>
           ) : (
-            <p className="text-gray-500 mb-8 text-base leading-relaxed">
-              Az e-mail-cím igazolása után szolgáltatói profilod adminisztrátori jóváhagyásra kerül, és jóváhagyást követően jelenik meg a nyilvános oldalon.
-            </p>
+            <>
+              <p className="text-gray-900 mb-4 text-lg leading-relaxed">
+                Elküldtük a megerősítő levelet a regisztráció során megadott e-mail-címre. Kérjük, nyisd meg, és kattints a levélben található linkre a fiókod aktiválásához.
+              </p>
+              <p className="text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm mb-4 text-center">
+                Ha nem találod a levelet a beérkező üzenetek között, <strong>ellenőrizd a SPAM / Levélszemét mappát</strong> is.
+              </p>
+              {isVisitor ? (
+                <p className="text-gray-500 mb-8 text-base leading-relaxed">
+                  Az e-mail-cím igazolása után bejelentkezhetsz, és elkezdheted böngészni a szolgáltatókat, kedvenceket menteni, és ajánlatkéréseket küldeni egyszerre több szakembernek.
+                </p>
+              ) : (
+                <p className="text-gray-500 mb-8 text-base leading-relaxed">
+                  Az e-mail-cím igazolása után szolgáltatói profilod adminisztrátori jóváhagyásra kerül, és jóváhagyást követően jelenik meg a nyilvános oldalon.
+                </p>
+              )}
+              <Link href={isVisitor ? "/auth/login" : "/"}>
+                <Button>{isVisitor ? "Bejelentkezés" : "Vissza a főoldalra"}</Button>
+              </Link>
+            </>
           )}
-          <Link href={isVisitor ? "/auth/login" : "/"}>
-            <Button>{isVisitor ? "Bejelentkezés" : "Vissza a főoldalra"}</Button>
-          </Link>
         </div>
       </div>
     </div>

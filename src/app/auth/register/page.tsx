@@ -373,7 +373,7 @@ function RegisterContent() {
             }
           }
         }
-        router.push(role === "provider" ? "/auth/register/success?provider=true" : "/auth/register/success?visitor=true");
+        router.push(role === "provider" ? "/auth/register/success?provider=true&oauth=true" : "/auth/register/success?visitor=true&oauth=true");
         return;
       }
 
