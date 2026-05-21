@@ -115,10 +115,12 @@ export async function GET() {
 
     const [providerRequests, visitorChats] = await Promise.all([
       Promise.all((recipients ?? []).map(async (rec) => {
-        const [{ data: qr }, { data: unreadMsgs }] = await Promise.all([
+        const [{ data: qr }, { data: unreadMsgs }, { data: lastMsgRows }] = await Promise.all([
           admin.from("quote_requests").select("subject, category, counties, message, created_at, visitor_id").eq("id", rec.quote_request_id).single(),
           admin.from("quote_messages").select("id").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).neq("sender_id", user.id).eq("read", false),
+          admin.from("quote_messages").select("id, sender_id, body, created_at").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).order("created_at", { ascending: false }).limit(1),
         ]);
+        const lastMsg = lastMsgRows?.[0] ?? null;
         const { data: visitorProfile } = await admin.from("profiles").select("full_name, avatar_url").eq("user_id", qr?.visitor_id ?? "").single();
         return {
           recipient_id: rec.id,
@@ -133,6 +135,9 @@ export async function GET() {
           visitor_name: visitorProfile?.full_name || "Ismeretlen látogató",
           visitor_avatar_url: visitorProfile?.avatar_url ?? null,
           unread_reply_count: unreadMsgs?.length ?? 0,
+          last_message_at: lastMsg?.created_at ?? null,
+          last_message_body: lastMsg?.body ?? null,
+          last_message_sender_id: lastMsg?.sender_id ?? null,
         };
       })),
       fetchVisitorChats(admin, user.id),

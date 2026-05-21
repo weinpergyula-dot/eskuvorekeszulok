@@ -410,6 +410,8 @@ function QuoteConvRow({
   categoryLabel,
   lastAt,
   unread,
+  lastMsg,
+  lastMsgIsOwn,
   onSelect,
 }: {
   name: string;
@@ -418,9 +420,13 @@ function QuoteConvRow({
   categoryLabel: string;
   lastAt: string;
   unread: number;
+  lastMsg?: string | null;
+  lastMsgIsOwn?: boolean;
   onSelect: () => void;
 }) {
   const initials = name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  const preview = lastMsg ?? subject;
+  const previewIsOwn = lastMsg ? lastMsgIsOwn : false;
   return (
     <button
       onClick={onSelect}
@@ -444,7 +450,9 @@ function QuoteConvRow({
             </span>
             <p className="text-xs text-gray-400 truncate">{categoryLabel}</p>
           </div>
-          <p className={`text-xs truncate ${unread > 0 ? "font-semibold text-gray-700" : "text-gray-500"}`}>{subject}</p>
+          <p className={`text-xs truncate ${unread > 0 ? "font-semibold text-gray-700" : "text-gray-500"}`}>
+            {previewIsOwn ? "Te: " : ""}{isSystemMsg(preview) ? systemText(preview) : preview}
+          </p>
         </div>
         {unread > 0 && (
           <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
@@ -1168,7 +1176,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
         const allItemsRaw: ConvItem[] = [
           ...threads.map((t) => ({ kind: "thread" as const, data: t, lastAt: t.lastAt })),
           ...visitorQuoteChats.map((c) => ({ kind: "quote-visitor" as const, data: c, lastAt: c.last_at })),
-          ...providerQuoteReqs.map((r) => ({ kind: "quote-provider" as const, data: r, lastAt: r.created_at })),
+          ...providerQuoteReqs.map((r) => ({ kind: "quote-provider" as const, data: r, lastAt: r.last_message_at ?? r.created_at })),
         ].sort((a, b) => b.lastAt.localeCompare(a.lastAt));
 
         const convAllCategories = [...new Set([
@@ -1242,6 +1250,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
               }
               if (item.kind === "quote-visitor") {
                 const c = item.data;
+                const lastMsg = c.messages[c.messages.length - 1];
                 return (
                   <QuoteConvRow
                     key={`qv-${c.request_id}-${c.provider_id}`}
@@ -1251,6 +1260,8 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                     categoryLabel={CATEGORY_LABELS[c.category as keyof typeof CATEGORY_LABELS] ?? c.category}
                     lastAt={c.last_at}
                     unread={c.unread_count}
+                    lastMsg={lastMsg?.body}
+                    lastMsgIsOwn={lastMsg?.sender_id === userId}
                     onSelect={() => setSelectedView({ kind: "quote-visitor", chat: c })}
                   />
                 );
@@ -1265,8 +1276,10 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                   avatarUrl={r.visitor_avatar_url}
                   subject={r.subject}
                   categoryLabel={CATEGORY_LABELS[r.category as keyof typeof CATEGORY_LABELS] ?? r.category}
-                  lastAt={r.created_at}
+                  lastAt={r.last_message_at ?? r.created_at}
                   unread={unread}
+                  lastMsg={r.last_message_body}
+                  lastMsgIsOwn={r.last_message_sender_id === userId}
                   onSelect={async () => {
                     if (!r.read) {
                       await fetch(`/api/quote-requests/${r.quote_request_id}/read`, {
