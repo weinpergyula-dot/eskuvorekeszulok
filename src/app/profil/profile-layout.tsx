@@ -34,7 +34,7 @@ const SECTION_TITLES: Record<Section, string> = {
   provider:        "Szolgáltatói profil",
   dashboard:       "Dashboard",
   favorites:       "Kedvencek",
-  quotes:          "Ajánlatkérések",
+  quotes:          "Ajánlatot kérek",
   messages:        "Üzenetek",
   chat:            "Chat",
 };
@@ -228,7 +228,7 @@ function MobileMenuDropdown({
   const isAccountSettings = ACCOUNT_SETTINGS_SECTIONS.includes(active);
   const activeAccountItem = isAccountSettings ? ACCOUNT_SETTINGS_ITEMS.find((i) => i.id === active) : undefined;
   const activeItem = active === "quotes"
-    ? { id: "quotes" as Section, label: "Ajánlatkérések", icon: <FileText className="h-4 w-4" /> }
+    ? { id: "quotes" as Section, label: "Ajánlatot kérek", icon: <FileText className="h-4 w-4" /> }
     : active === "admin"
     ? { id: "admin" as Section, label: "Admin", icon: <ShieldCheck className="h-4 w-4" /> }
     : activeAccountItem
@@ -253,14 +253,9 @@ function MobileMenuDropdown({
           <span>{activeItem?.label}</span>
         </span>
         <span className="flex items-center gap-2">
-          {active === "chat" && unreadCount > 0 && (
+          {active === "chat" && (unreadCount + unreadQuotesCount) > 0 && (
             <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-          {active === "quotes" && unreadQuotesCount > 0 && (
-            <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-              {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
+              {(unreadCount + unreadQuotesCount) > 9 ? "9+" : (unreadCount + unreadQuotesCount)}
             </span>
           )}
           {active === "admin" && adminPendingCount > 0 && (
@@ -286,12 +281,7 @@ function MobileMenuDropdown({
             )}
           >
             <FileText className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left">Ajánlatkérések</span>
-            {unreadQuotesCount > 0 && (
-              <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-                {unreadQuotesCount > 9 ? "9+" : unreadQuotesCount}
-              </span>
-            )}
+            <span className="flex-1 text-left">Ajánlatot kérek</span>
           </button>
 
           {/* Admin */}
@@ -365,9 +355,9 @@ function MobileMenuDropdown({
                 {item.icon}
                 <span>{item.label}</span>
               </span>
-              {item.id === "chat" && unreadCount > 0 && (
+              {item.id === "chat" && (unreadCount + unreadQuotesCount) > 0 && (
                 <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                  {unreadCount > 9 ? "9+" : unreadCount}
+                  {(unreadCount + unreadQuotesCount) > 9 ? "9+" : (unreadCount + unreadQuotesCount)}
                 </span>
               )}
               {item.id === "provider" && sidebarIndicator && (
@@ -390,6 +380,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   const [active, setActive] = useState<Section>("account");
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
+  const [chatConversationOpen, setChatConversationOpen] = useState(false);
   const [showApprovalDot, setShowApprovalDot] = useState(false);
   const [adminPending, setAdminPending] = useState(0);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(true);
@@ -517,11 +508,14 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     const onQuotesCount = (e: Event) => {
       setUnreadQuotes((e as CustomEvent<number>).detail);
     };
+    const onChatConvOpen = (e: Event) => setChatConversationOpen((e as CustomEvent<boolean>).detail);
     window.addEventListener("profile-section", onProfileSection);
     window.addEventListener("quotes-unread-count", onQuotesCount);
+    window.addEventListener("chat-conversation-open", onChatConvOpen);
     return () => {
       window.removeEventListener("profile-section", onProfileSection);
       window.removeEventListener("quotes-unread-count", onQuotesCount);
+      window.removeEventListener("chat-conversation-open", onChatConvOpen);
     };
   }, []);
 
@@ -567,12 +561,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
               >
                 <FileText className="h-4 w-4 shrink-0" />
-                <span>Ajánlatkérések</span>
-                {unreadQuotes > 0 && (
-                  <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
-                    {unreadQuotes > 9 ? "9+" : unreadQuotes}
-                  </span>
-                )}
+                <span>Ajánlatot kérek</span>
               </button>
             </div>
 
@@ -675,9 +664,9 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             >
               <MessageCircle className="h-4 w-4 shrink-0" />
               <span>Chat</span>
-              {unreadCount > 0 && (
+              {(unreadCount + unreadQuotes) > 0 && (
                 <span className="ml-auto shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#F06C6C] text-white text-xs font-bold leading-none">
-                  {unreadCount > 9 ? "9+" : unreadCount}
+                  {(unreadCount + unreadQuotes) > 9 ? "9+" : (unreadCount + unreadQuotes)}
                 </span>
               )}
             </a>
@@ -697,20 +686,22 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Content */}
         <div className="flex-1 min-w-0 sm:pl-8">
-          <div className="section-chat-header hidden sm:flex items-center gap-2.5 mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">
-              {SECTION_TITLES[active]}
-            </h2>
-            {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
-              <button
-                onClick={handleRefresh}
-                title="Frissítés"
-                className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
-              >
-                <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
-              </button>
-            )}
-          </div>
+          {!(active === "chat" && chatConversationOpen) && (
+            <div className="section-chat-header hidden sm:flex items-center gap-2.5 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {SECTION_TITLES[active]}
+              </h2>
+              {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
+                <button
+                  onClick={handleRefresh}
+                  title="Frissítés"
+                  className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
+                >
+                  <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+                </button>
+              )}
+            </div>
+          )}
 
           {active === "account" && (
             <AccountInfoForm userId={userId} initialName={initialName} email={email} role={role} />
@@ -815,7 +806,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "quotes" && (
             <div className="section-larger-text">
-              <QuoteRequestsSection key={quotesKey} isProvider={provider !== null} userId={userId} onUnreadChange={setUnreadQuotes} />
+              <QuoteRequestsSection key={quotesKey} onUnreadChange={setUnreadQuotes} />
             </div>
           )}
 
@@ -827,7 +818,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "chat" && (
             <div className="section-larger-text">
-              <ChatSection userId={userId} withProviderUserId={searchParams.get("with") ?? undefined} />
+              <ChatSection userId={userId} isProvider={provider !== null} withProviderUserId={searchParams.get("with") ?? undefined} />
             </div>
           )}
         </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2 } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText } from "lucide-react";
+import { QuoteChat, ProviderChatLoader, type VisitorChat, type ProviderRequest } from "./quote-requests-section";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -52,8 +53,14 @@ interface ChatThread {
 
 interface Props {
   userId: string;
+  isProvider?: boolean;
   withProviderUserId?: string;
 }
+
+type SelectedView =
+  | { kind: "chat"; provider: ChatProvider }
+  | { kind: "quote-visitor"; chat: VisitorChat }
+  | { kind: "quote-provider"; req: ProviderRequest };
 
 const PROVIDERS_PER_PAGE = 10;
 
@@ -393,6 +400,61 @@ function ConversationRow({
   );
 }
 
+// ── QuoteConvRow ──────────────────────────────────────────────────────────────
+
+function QuoteConvRow({
+  name,
+  avatarUrl,
+  subject,
+  categoryLabel,
+  lastAt,
+  unread,
+  onSelect,
+}: {
+  name: string;
+  avatarUrl: string | null | undefined;
+  subject: string;
+  categoryLabel: string;
+  lastAt: string;
+  unread: number;
+  onSelect: () => void;
+}) {
+  const initials = name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  return (
+    <button
+      onClick={onSelect}
+      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+    >
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
+          {avatarUrl
+            ? <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+            : initials}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-0.5">
+            <p className={`text-sm font-bold truncate ${unread > 0 ? "text-gray-900" : "text-gray-700"}`}>{name}</p>
+            <span className="text-xs text-gray-400 shrink-0">{formatShort(lastAt)}</span>
+          </div>
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-[#84AAA6] bg-[#84AAA6]/10 rounded px-1.5 py-0.5 shrink-0">
+              <FileText className="h-2.5 w-2.5" />
+              Ajánlatkérés
+            </span>
+            <p className="text-xs text-gray-400 truncate">{categoryLabel}</p>
+          </div>
+          <p className={`text-xs truncate ${unread > 0 ? "font-semibold text-gray-700" : "text-gray-500"}`}>{subject}</p>
+        </div>
+        {unread > 0 && (
+          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+            {unread > 9 ? "9+" : unread}
+          </span>
+        )}
+      </div>
+    </button>
+  );
+}
+
 // ── ChatView ──────────────────────────────────────────────────────────────────
 
 function ChatView({
@@ -433,11 +495,8 @@ function ChatView({
     }
   }, [messages]);
 
-  // Scroll top on desktop when chat opens
+  // Lock body scroll on mobile via chat-mode class; desktop is fixed-height so no page scroll needed
   useEffect(() => {
-    if (window.innerWidth >= 640) {
-      setTimeout(() => window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }), 0);
-    }
     document.body.classList.add("chat-mode");
     return () => { document.body.classList.remove("chat-mode"); };
   }, []);
@@ -758,30 +817,66 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   const [tab, setTab]                       = useState<Tab>("providers");
   const [providers, setProviders]           = useState<ChatProvider[]>([]);
   const [messages, setMessages]             = useState<ChatMessage[]>([]);
+  const [visitorQuoteChats, setVisitorQuoteChats] = useState<VisitorChat[]>([]);
+  const [providerQuoteReqs, setProviderQuoteReqs] = useState<ProviderRequest[]>([]);
   const [loading, setLoading]               = useState(true);
   const [searchQuery, setSearchQuery]       = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterCounty, setFilterCounty]     = useState("");
   const [currentPage, setCurrentPage]       = useState(0);
-  const [selectedProvider, setSelectedProvider] = useState<ChatProvider | null>(null);
+  const [selectedView, setSelectedView]     = useState<SelectedView | null>(null);
   const hasAutoOpened = useRef(false);
+  const autoTabbed = useRef(false);
 
   const providerUserIds = new Set(providers.map((p) => p.user_id));
   const threads = buildThreads(messages, providerUserIds);
-  const unreadConversations = threads.filter((t) => t.hasUnread).length;
+
+  const quoteUnread =
+    visitorQuoteChats.reduce((s, c) => s + c.unread_count, 0) +
+    providerQuoteReqs.filter((r) => !r.read).length +
+    providerQuoteReqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+  const unreadConversations = threads.filter((t) => t.hasUnread).length + quoteUnread;
 
   const loadAll = useCallback(() => {
     Promise.all([
       fetch("/api/chat/providers").then((r) => r.json()),
       fetch("/api/messages").then((r) => r.json()),
-    ]).then(([provs, msgs]) => {
+      fetch("/api/quote-requests").then((r) => r.json()),
+    ]).then(([provs, msgs, quoteData]) => {
       if (Array.isArray(provs)) setProviders(provs);
       if (Array.isArray(msgs)) setMessages(msgs);
+      if (quoteData && typeof quoteData === "object" && !Array.isArray(quoteData)) {
+        setProviderQuoteReqs((quoteData.providerRequests ?? []) as ProviderRequest[]);
+        setVisitorQuoteChats((quoteData.visitorChats ?? []) as VisitorChat[]);
+      } else if (Array.isArray(quoteData)) {
+        setVisitorQuoteChats(quoteData as VisitorChat[]);
+      }
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
 
   useEffect(() => { loadAll(); }, [loadAll]);
+
+  // Broadcast whether a conversation is open so the parent can show/hide the section title
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("chat-conversation-open", { detail: selectedView !== null }));
+  }, [selectedView]);
+
+  // Scroll to top on desktop when a conversation is opened
+  useEffect(() => {
+    if (selectedView !== null && window.innerWidth >= 640) {
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    }
+  }, [selectedView]);
+
+  // Default to Conversations tab on first load if any conversations exist
+  useEffect(() => {
+    if (loading || autoTabbed.current) return;
+    autoTabbed.current = true;
+    const hasConversations = threads.length > 0 || visitorQuoteChats.length > 0 || providerQuoteReqs.length > 0;
+    if (hasConversations) setTab("conversations");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   // Auto-open chat when navigated here with ?with=providerUserId — fires only once
   useEffect(() => {
@@ -789,7 +884,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
     const prov = providers.find((p) => p.user_id === withProviderUserId);
     if (prov || !loading) {
       hasAutoOpened.current = true;
-      if (prov) setSelectedProvider(prov);
+      if (prov) setSelectedView({ kind: "chat", provider: prov });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [withProviderUserId, providers, loading]);
@@ -826,12 +921,12 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   };
 
   const openChat = (provider: ChatProvider) => {
-    setSelectedProvider(provider);
+    setSelectedView({ kind: "chat", provider });
   };
 
   const openChatFromThread = (thread: ChatThread) => {
     const prov = providers.find((p) => p.user_id === thread.otherUserId);
-    setSelectedProvider(prov ?? {
+    setSelectedView({ kind: "chat", provider: prov ?? {
       id: "",
       user_id: thread.otherUserId,
       full_name: thread.otherName,
@@ -842,25 +937,76 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
       review_count: null,
       featured: false,
       is_favorite: false,
-    });
+    }});
   };
 
-  // ── Chat view ──
-  if (selectedProvider) {
-    const providerMessages = messages
-      .filter((m) => !(m.is_own && isSystemMsg(m.body)))
-      .filter((m) => (m.is_own ? m.recipient_id : m.sender_id) === selectedProvider.user_id)
-      .sort((a, b) => a.created_at.localeCompare(b.created_at));
+  // ── Selected view ──
+  if (selectedView) {
+    const goBack = () => { window.history.replaceState(null, "", "?tab=chat"); setSelectedView(null); loadAll(); };
 
-    return (
-      <ChatView
-        provider={selectedProvider}
-        userId={userId}
-        initialMessages={providerMessages}
-        onBack={() => { window.history.replaceState(null, "", "?tab=chat"); setSelectedProvider(null); loadAll(); }}
-        onMessagesUpdated={loadAll}
-      />
-    );
+    if (selectedView.kind === "chat") {
+      const { provider } = selectedView;
+      const providerMessages = messages
+        .filter((m) => !(m.is_own && isSystemMsg(m.body)))
+        .filter((m) => (m.is_own ? m.recipient_id : m.sender_id) === provider.user_id)
+        .sort((a, b) => a.created_at.localeCompare(b.created_at));
+      return (
+        <ChatView
+          provider={provider}
+          userId={userId}
+          initialMessages={providerMessages}
+          onBack={goBack}
+          onMessagesUpdated={loadAll}
+        />
+      );
+    }
+
+    if (selectedView.kind === "quote-visitor") {
+      const { chat } = selectedView;
+      return (
+        <QuoteChat
+          requestId={chat.request_id}
+          providerId={chat.provider_id}
+          subject={chat.subject}
+          otherName={chat.provider_full_name}
+          requestContext={{ category: chat.category, counties: chat.counties, message: chat.message }}
+          userId={userId}
+          initialMessages={chat.messages}
+          onBack={goBack}
+          onDeleted={() => {
+            setVisitorQuoteChats((prev) => prev.filter((c) => c.request_id !== chat.request_id));
+            setSelectedView(null);
+          }}
+          onUnreadMarked={(count) => {
+            setVisitorQuoteChats((prev) => prev.map((c) =>
+              c.request_id === chat.request_id && c.provider_id === chat.provider_id
+                ? { ...c, unread_count: Math.max(0, c.unread_count - count) }
+                : c
+            ));
+          }}
+        />
+      );
+    }
+
+    if (selectedView.kind === "quote-provider") {
+      const { req } = selectedView;
+      return (
+        <ProviderChatLoader
+          req={req}
+          userId={userId}
+          onBack={goBack}
+          onDeleted={() => {
+            setProviderQuoteReqs((prev) => prev.filter((r) => r.recipient_id !== req.recipient_id));
+            setSelectedView(null);
+          }}
+          onUnreadMarked={() => {
+            setProviderQuoteReqs((prev) => prev.map((r) =>
+              r.recipient_id === req.recipient_id ? { ...r, read: true, unread_reply_count: 0 } : r
+            ));
+          }}
+        />
+      );
+    }
   }
 
   if (loading) return (
@@ -932,7 +1078,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
               />
             </div>
-            <div className="sm:w-52">
+            <div className="sm:w-64">
               <ChatSelect
                 value={filterCategory}
                 onChange={(v) => { setFilterCategory(v); resetPage(); }}
@@ -943,7 +1089,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 }))}
               />
             </div>
-            <div className="sm:w-44">
+            <div className="sm:w-52">
               <ChatSelect
                 value={filterCounty}
                 onChange={(v) => { setFilterCounty(v); resetPage(); }}
@@ -999,27 +1145,86 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
       )}
 
       {/* ── Conversations tab ── */}
-      {tab === "conversations" && (
-        <>
-          {threads.length === 0 ? (
+      {tab === "conversations" && (() => {
+        // Build combined sorted list
+        type ConvItem =
+          | { kind: "thread"; data: ChatThread; lastAt: string }
+          | { kind: "quote-visitor"; data: VisitorChat; lastAt: string }
+          | { kind: "quote-provider"; data: ProviderRequest; lastAt: string };
+
+        const allItems: ConvItem[] = [
+          ...threads.map((t) => ({ kind: "thread" as const, data: t, lastAt: t.lastAt })),
+          ...visitorQuoteChats.map((c) => ({ kind: "quote-visitor" as const, data: c, lastAt: c.last_at })),
+          ...providerQuoteReqs.map((r) => ({ kind: "quote-provider" as const, data: r, lastAt: r.created_at })),
+        ].sort((a, b) => b.lastAt.localeCompare(a.lastAt));
+
+        if (allItems.length === 0) {
+          return (
             <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
               <MessageCircle className="h-10 w-10 mb-3 text-gray-200" strokeWidth={1} />
               <p className="text-sm">Még nincs aktív chat.</p>
               <p className="text-xs mt-1">Indíts beszélgetést a Szolgáltatók fülről.</p>
             </div>
-          ) : (
-            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-              {threads.map((t) => (
-                <ConversationRow
-                  key={t.otherUserId}
-                  thread={t}
-                  onSelect={() => openChatFromThread(t)}
+          );
+        }
+        return (
+          <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+            {allItems.map((item) => {
+              if (item.kind === "thread") {
+                return (
+                  <ConversationRow
+                    key={`t-${item.data.otherUserId}`}
+                    thread={item.data}
+                    onSelect={() => openChatFromThread(item.data)}
+                  />
+                );
+              }
+              if (item.kind === "quote-visitor") {
+                const c = item.data;
+                return (
+                  <QuoteConvRow
+                    key={`qv-${c.request_id}-${c.provider_id}`}
+                    name={c.provider_full_name}
+                    avatarUrl={c.provider_avatar_url}
+                    subject={c.subject}
+                    categoryLabel={CATEGORY_LABELS[c.category as keyof typeof CATEGORY_LABELS] ?? c.category}
+                    lastAt={c.last_at}
+                    unread={c.unread_count}
+                    onSelect={() => setSelectedView({ kind: "quote-visitor", chat: c })}
+                  />
+                );
+              }
+              // quote-provider
+              const r = item.data;
+              const unread = (r.read ? 0 : 1) + (r.unread_reply_count ?? 0);
+              return (
+                <QuoteConvRow
+                  key={`qp-${r.recipient_id}`}
+                  name={r.visitor_name}
+                  avatarUrl={r.visitor_avatar_url}
+                  subject={r.subject}
+                  categoryLabel={CATEGORY_LABELS[r.category as keyof typeof CATEGORY_LABELS] ?? r.category}
+                  lastAt={r.created_at}
+                  unread={unread}
+                  onSelect={async () => {
+                    if (!r.read) {
+                      await fetch(`/api/quote-requests/${r.quote_request_id}/read`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ type: "request" }),
+                      });
+                      setProviderQuoteReqs((prev) => prev.map((x) =>
+                        x.recipient_id === r.recipient_id ? { ...x, read: true } : x
+                      ));
+                    }
+                    setSelectedView({ kind: "quote-provider", req: r });
+                  }}
                 />
-              ))}
-            </div>
-          )}
-        </>
-      )}
+              );
+            })}
+          </div>
+        );
+      })()}
     </div>
   );
 }

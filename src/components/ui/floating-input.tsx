@@ -15,10 +15,11 @@ interface FloatingInputProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   value: string;
   accentColor?: string;
+  compact?: boolean;
 }
 
 const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
-  ({ label, id, value, className, onFocus, onBlur, type, accentColor = "#84AAA6", ...props }, ref) => {
+  ({ label, id, value, className, onFocus, onBlur, type, accentColor = "#84AAA6", compact = false, ...props }, ref) => {
     const [focused, setFocused] = useState(false);
     const [autofilled, setAutofilled] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -53,7 +54,8 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           }}
           onChange={handleChange}
           className={cn(
-            "w-full h-14 border rounded-xl px-4 text-base outline-none transition-colors bg-white",
+            "w-full border rounded-xl px-4 outline-none transition-colors bg-white",
+            compact ? "h-12 text-sm" : "h-14 text-base",
             isPassword && "pr-11",
             !focused && "border-gray-300",
             className
@@ -66,7 +68,9 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           htmlFor={id}
           className={cn(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white -translate-y-1/2",
-            floated ? `top-0 text-sm px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 text-base text-gray-400"
+            compact
+              ? floated ? `top-0 text-xs px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 text-sm text-gray-400"
+              : floated ? `top-0 text-sm px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 text-base text-gray-400"
           )}
           style={{ color: focused ? accentColor : undefined }}
         >
@@ -97,10 +101,11 @@ interface FloatingTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaEleme
   id: string;
   value: string;
   accentColor?: string;
+  compact?: boolean;
 }
 
 const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
-  ({ label, id, value, className, onFocus, onBlur, accentColor = "#84AAA6", ...props }, ref) => {
+  ({ label, id, value, className, onFocus, onBlur, accentColor = "#84AAA6", compact = false, ...props }, ref) => {
     const [focused, setFocused] = useState(false);
     const floated = focused || String(value).length > 0;
 
@@ -113,7 +118,8 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
           onFocus={(e) => { setFocused(true); onFocus?.(e); }}
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
           className={cn(
-            "w-full border rounded-xl px-4 pt-6 pb-2 text-base outline-none transition-colors bg-white resize-none",
+            "w-full border rounded-xl px-4 outline-none transition-colors bg-white resize-none",
+            compact ? "pt-5 pb-2 text-sm" : "pt-6 pb-2 text-base",
             !focused && "border-gray-300",
             className
           )}
@@ -125,7 +131,9 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
           htmlFor={id}
           className={cn(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white",
-            floated ? `-top-2.5 text-xs px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-4 text-base text-gray-400"
+            compact
+              ? floated ? `-top-2 text-[10px] px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-3.5 text-sm text-gray-400"
+              : floated ? `-top-2.5 text-xs px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-4 text-base text-gray-400"
           )}
           style={{ color: focused ? accentColor : undefined }}
         >

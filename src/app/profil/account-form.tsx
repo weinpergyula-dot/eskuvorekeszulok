@@ -1,12 +1,157 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import type { UserRole } from "@/lib/types";
 import type { UserIdentity } from "@supabase/supabase-js";
+
+// ── Avatar crop modal ─────────────────────────────────────────────────────────
+
+const PREVIEW_SIZE = 240;
+const CROP_OUTPUT  = 400;
+
+function AvatarCropModal({
+  src,
+  onConfirm,
+  onCancel,
+}: {
+  src: string;
+  onConfirm: (blob: Blob) => void;
+  onCancel: () => void;
+}) {
+  const [scale, setScale]       = useState(1);
+  const [minScale, setMinScale] = useState(1);
+  const [offset, setOffset]     = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const dragOrigin              = useRef({ mx: 0, my: 0, ox: 0, oy: 0 });
+  const canvasRef               = useRef<HTMLCanvasElement>(null);
+  const naturalSize             = useRef({ w: 1, h: 1 });
+
+  // Load image to determine initial cover-scale
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      naturalSize.current = { w: img.naturalWidth, h: img.naturalHeight };
+      // cover: both dimensions >= PREVIEW_SIZE when width = PREVIEW_SIZE * scale
+      const coverScale = Math.max(1, img.naturalWidth / img.naturalHeight);
+      setMinScale(coverScale);
+      setScale(coverScale);
+      setOffset({ x: 0, y: 0 });
+    };
+    img.src = src;
+  }, [src]);
+
+  // Escape key
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onCancel(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onCancel]);
+
+  const startDrag = useCallback((clientX: number, clientY: number) => {
+    setDragging(true);
+    dragOrigin.current = { mx: clientX, my: clientY, ox: offset.x, oy: offset.y };
+  }, [offset]);
+
+  const moveDrag = useCallback((clientX: number, clientY: number) => {
+    if (!dragging) return;
+    const dx = clientX - dragOrigin.current.mx;
+    const dy = clientY - dragOrigin.current.my;
+    setOffset({ x: dragOrigin.current.ox + dx, y: dragOrigin.current.oy + dy });
+  }, [dragging]);
+
+  const stopDrag = useCallback(() => setDragging(false), []);
+
+  const handleConfirm = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    canvas.width  = CROP_OUTPUT;
+    canvas.height = CROP_OUTPUT;
+
+    const { w: nw, h: nh } = naturalSize.current;
+    const displayedW = PREVIEW_SIZE * scale;
+    const displayedH = (nh / nw) * displayedW;
+
+    const imgLeft = PREVIEW_SIZE / 2 + offset.x - displayedW / 2;
+    const imgTop  = PREVIEW_SIZE / 2 + offset.y - displayedH / 2;
+
+    const ratioX = displayedW / nw;
+    const ratioY = displayedH / nh;
+
+    const srcX = -imgLeft / ratioX;
+    const srcY = -imgTop  / ratioY;
+    const srcW = PREVIEW_SIZE / ratioX;
+    const srcH = PREVIEW_SIZE / ratioY;
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, CROP_OUTPUT, CROP_OUTPUT);
+      canvas.toBlob((blob) => { if (blob) onConfirm(blob); }, "image/jpeg", 0.92);
+    };
+    img.src = src;
+  };
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm space-y-5 p-6">
+        <h3 className="text-base font-semibold text-gray-900">Profilkép beállítása</h3>
+
+        {/* Preview circle */}
+        <div
+          className="mx-auto rounded-full overflow-hidden bg-gray-100 select-none"
+          style={{
+            width: PREVIEW_SIZE, height: PREVIEW_SIZE,
+            cursor: dragging ? "grabbing" : "grab",
+            backgroundImage: `url(${src})`,
+            backgroundSize: `${PREVIEW_SIZE * scale}px`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: `calc(50% + ${offset.x}px) calc(50% + ${offset.y}px)`,
+            touchAction: "none",
+          }}
+          onMouseDown={(e) => startDrag(e.clientX, e.clientY)}
+          onMouseMove={(e) => moveDrag(e.clientX, e.clientY)}
+          onMouseUp={stopDrag}
+          onMouseLeave={stopDrag}
+          onTouchStart={(e) => { const t = e.touches[0]; startDrag(t.clientX, t.clientY); }}
+          onTouchMove={(e) => { e.preventDefault(); const t = e.touches[0]; moveDrag(t.clientX, t.clientY); }}
+          onTouchEnd={stopDrag}
+        />
+
+        {/* Zoom slider */}
+        <div className="flex items-center gap-3 px-1">
+          <svg className="h-4 w-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/>
+          </svg>
+          <input
+            type="range"
+            min={minScale}
+            max={minScale * 3}
+            step={0.01}
+            value={scale}
+            onChange={(e) => setScale(parseFloat(e.target.value))}
+            className="flex-1 accent-[#84AAA6]"
+          />
+          <svg className="h-5 w-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/>
+          </svg>
+        </div>
+        <p className="text-xs text-gray-400 text-center -mt-3">Húzd a képet a kör belsejében, csíkkal nagyítsd</p>
+
+        <div className="flex gap-3 justify-end">
+          <Button variant="outline" onClick={onCancel}>Mégse</Button>
+          <Button onClick={handleConfirm} className="bg-[#84AAA6] hover:bg-[#6B8E8A]">Alkalmaz</Button>
+        </div>
+      </div>
+      <canvas ref={canvasRef} className="hidden" />
+    </div>
+  );
+}
 
 function GoogleIcon({ size = 20 }: { size?: number }) {
   return (
@@ -41,8 +186,9 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
 
   // Avatar — shown for visitors and admins (providers manage it in Szolgáltatói profil)
   const showAvatar = role !== "provider";
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarPreview, setAvatarPreview]   = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [cropSrc, setCropSrc]               = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -51,21 +197,29 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
       .then(({ data }) => { if (data?.avatar_url) setAvatarPreview(data.avatar_url); });
   }, [userId, showAvatar]);
 
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !supabase) return;
-    setAvatarPreview(URL.createObjectURL(file));
+    if (!file) return;
+    // Reset input so same file can be picked again
+    e.target.value = "";
+    setCropSrc(URL.createObjectURL(file));
+  };
+
+  const handleCropConfirm = async (blob: Blob) => {
+    setCropSrc(null);
+    if (!supabase) return;
+    setAvatarPreview(URL.createObjectURL(blob));
     setAvatarUploading(true);
     try {
       const path = `${userId}/avatar`;
       const { error: uploadError } = await supabase.storage
-        .from("avatars").upload(path, file, { upsert: true });
+        .from("avatars").upload(path, blob, { upsert: true, contentType: "image/jpeg" });
       if (uploadError) throw uploadError;
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       const avatarUrl = `${urlData.publicUrl}?v=${Date.now()}`;
       await supabase.from("profiles").update({ avatar_url: avatarUrl }).eq("user_id", userId);
     } catch {
-      // preview already updated; upload failure is silent
+      // preview already shown; upload failure is silent
     } finally {
       setAvatarUploading(false);
     }
@@ -103,6 +257,14 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
   };
 
   return (
+    <>
+      {cropSrc && (
+        <AvatarCropModal
+          src={cropSrc}
+          onConfirm={handleCropConfirm}
+          onCancel={() => setCropSrc(null)}
+        />
+      )}
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
       {showAvatar && (
         <div className="flex items-center gap-4 pb-2">
@@ -156,10 +318,10 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
         <p className="text-base text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">{error}</p>
       )}
       {success && (
-        <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">✓ Név mentve.</p>
+        <p className="text-base text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">✓ Sikeresen mentve.</p>
       )}
       <Button type="submit" disabled={saving}>
-        {saving ? "Mentés..." : "Név mentése"}
+        {saving ? "Mentés..." : "Mentés"}
       </Button>
 
       <div className="pt-6 mt-6 border-t border-gray-100">
@@ -199,6 +361,7 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
         </div>
       )}
     </form>
+    </>
   );
 }
 
