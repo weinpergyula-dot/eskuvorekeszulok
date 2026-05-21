@@ -39,7 +39,7 @@ interface ChatMessage {
   subject: string;
   body: string;
   read: boolean;
-  read_at: string | null;
+  read_at?: string | null;
   created_at: string;
 }
 
