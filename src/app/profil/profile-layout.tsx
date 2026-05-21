@@ -728,6 +728,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 provider={provider}
                 isProviderActive={isProviderActive}
                 onActiveChange={setIsProviderActive}
+                registrationName={initialName}
               />
             </div>
           )}

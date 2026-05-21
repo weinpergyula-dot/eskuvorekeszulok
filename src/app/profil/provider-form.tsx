@@ -18,6 +18,7 @@ interface Props {
   provider: Provider | null;
   isProviderActive: boolean;
   onActiveChange: (val: boolean) => void;
+  registrationName: string;
 }
 
 // ── Pill multi-select ────────────────────────────────────────────────────────
@@ -148,6 +149,7 @@ export function ProviderForm({
   provider,
   isProviderActive,
   onActiveChange,
+  registrationName,
 }: Props) {
   const router = useRouter();
   const supabase = createClient();
@@ -161,7 +163,12 @@ export function ProviderForm({
 
   // Pre-fill: pending_changes values take priority as "last submitted"
   const pc = provider?.pending_changes;
-  const [fullName,    setFullName]    = useState((pc?.full_name    as string) ?? provider?.full_name    ?? "");
+  const currentDisplayName = (pc?.full_name as string) ?? provider?.full_name ?? "";
+  const initialChoice: "own" | "business" =
+    !currentDisplayName || currentDisplayName === registrationName ? "own" : "business";
+  const [displayNameChoice, setDisplayNameChoice] = useState<"own" | "business">(initialChoice);
+  const [businessName, setBusinessName] = useState(initialChoice === "business" ? currentDisplayName : "");
+  const fullName = displayNameChoice === "own" ? registrationName : businessName;
   const [phone,       setPhone]       = useState((pc?.phone        as string) ?? provider?.phone        ?? "");
   const [counties,    setCounties]    = useState<string[]>(provider?.counties ?? []);
   const [categories,  setCategories]  = useState<ServiceCategory[]>((provider?.categories as ServiceCategory[]) ?? []);
@@ -428,12 +435,46 @@ export function ProviderForm({
                 />
               </div>
 
-              <FloatingInput
-                id="pf-name"
-                label="Teljes név"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
+              {/* Display name */}
+              <div className="space-y-2">
+                <p className="text-base text-gray-800">
+                  Milyen névvel jelenj meg a profilkártyádon?
+                </p>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="pf-displayNameChoice"
+                      value="own"
+                      checked={displayNameChoice === "own"}
+                      onChange={() => setDisplayNameChoice("own")}
+                      className="h-4 w-4 accent-[#84AAA6]"
+                    />
+                    <span className="text-base text-gray-700">
+                      Saját nevem{registrationName ? <span className="ml-1 text-gray-500">({registrationName})</span> : null}
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="pf-displayNameChoice"
+                      value="business"
+                      checked={displayNameChoice === "business"}
+                      onChange={() => setDisplayNameChoice("business")}
+                      className="h-4 w-4 accent-[#84AAA6]"
+                    />
+                    <span className="text-base text-gray-700">Vállalkozásom neve</span>
+                  </label>
+                </div>
+                {displayNameChoice === "business" && (
+                  <FloatingInput
+                    id="pf-businessName"
+                    label="Vállalkozás neve"
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                  />
+                )}
+              </div>
 
               <div className="space-y-1">
                 <p className="text-base text-gray-800">Telefonszám<span className="text-[1.2em] font-bold align-middle ml-0.5">*</span></p>
