@@ -49,6 +49,9 @@ export interface ProviderRequest {
   visitor_name: string;
   visitor_avatar_url?: string | null;
   unread_reply_count: number;
+  last_message_at?: string | null;
+  last_message_body?: string | null;
+  last_message_sender_id?: string | null;
 }
 
 interface MatchingProvider { id: string; full_name: string; average_rating: number | null; }
@@ -407,8 +410,13 @@ export function QuoteChat({
           fetch(`/api/quote-requests/${requestId}`)
             .then((r) => r.json())
             .then((data) => {
-              if (!data.messages) return;
-              const sorted = [...data.messages].sort((a: QuoteMessage, b: QuoteMessage) =>
+              // Provider path: data.messages; Visitor path: data.providers[i].messages
+              const msgs: QuoteMessage[] | undefined =
+                data.messages ??
+                (data.providers as Array<{ id: string; messages: QuoteMessage[] }> | undefined)
+                  ?.find((p) => p.id === providerId)?.messages;
+              if (!msgs) return;
+              const sorted = [...msgs].sort((a: QuoteMessage, b: QuoteMessage) =>
                 a.created_at.localeCompare(b.created_at)
               );
               setMessages(sorted);
