@@ -122,7 +122,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="w-full h-14 border rounded-xl px-4 text-base outline-none bg-white flex items-center justify-between gap-2 transition-colors"
+        className="w-full h-12 border rounded-xl px-4 text-sm outline-none bg-white flex items-center justify-between gap-2 transition-colors"
         style={{ borderColor: open ? "#84AAA6" : "#D1D5DB" }}
       >
         <span style={{ color: selectedLabel ? "#111827" : "#9CA3AF" }}>
@@ -137,7 +137,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
               key={key}
               type="button"
               onClick={() => { onChange(key); setOpen(false); }}
-              className="w-full text-left px-4 py-2.5 text-base transition-colors cursor-pointer hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
+              className="w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
               style={{ color: value === key ? "#84AAA6" : "#111827" }}
             >
               {label}
@@ -232,16 +232,16 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
 
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
-      <h3 className="text-base font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
+      <h3 className="text-sm font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
       <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} />
       <CategorySelect value={category} onChange={setCategory} />
       <div>
-        <p className="text-sm text-gray-600 mb-2">Megye(k) <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
+        <p className="text-xs text-gray-600 mb-2">Megye(k) <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
           {geographicCounties.map(county => (
             <label key={county} className="flex items-center gap-1.5 cursor-pointer select-none">
               <input type="checkbox" checked={selectedCounties.includes(county)} onChange={() => toggleCounty(county)} className="rounded accent-[#84AAA6]" />
-              <span className="text-sm text-gray-700">
+              <span className="text-xs text-gray-700">
                 {county}{countyCountMap[county] != null && category && (
                   <span className="ml-1 opacity-60 font-normal">({countyCountMap[county]})</span>
                 )}
@@ -254,30 +254,30 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
       {matchingProviders !== null && (
         <div className="space-y-2">
           {matchingProviders.length === 0 ? (
-            <p className="text-sm text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
+            <p className="text-xs text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
           ) : (
             <div>
-              <p className="text-sm text-gray-600 mb-2">Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:</p>
+              <p className="text-xs text-gray-600 mb-2">Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:</p>
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
                 {matchingProviders.map(p => (
                   <label key={p.id} className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors">
                     <input type="checkbox" checked={checkedIds.has(p.id)} onChange={() => { setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; }); }} className="rounded accent-[#84AAA6] shrink-0" />
-                    <span className="flex-1 text-sm font-medium text-gray-900 truncate">{p.full_name}</span>
+                    <span className="flex-1 text-xs font-medium text-gray-900 truncate">{p.full_name}</span>
                     <StarRating rating={p.average_rating} />
                   </label>
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-1.5">{checkedIds.size} / {matchingProviders.length} szolgáltató kijelölve</p>
+              <p className="text-[10px] text-gray-400 mt-1.5">{checkedIds.size} / {matchingProviders.length} szolgáltató kijelölve</p>
             </div>
           )}
         </div>
       )}
-      {error && <div className="bg-[#F06C6C]/10 text-[#F06C6C] px-4 py-3 rounded-xl border border-[#F06C6C]/30">{error}</div>}
+      {error && <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-xs px-4 py-3 rounded-xl border border-[#F06C6C]/30">{error}</div>}
       <div className="flex gap-3">
         <Button type="submit" disabled={sending}><Send className="h-4 w-4 mr-2" />{sending ? "Küldés..." : "Elküld"}</Button>
         {onCancel && <Button type="button" variant="outline" onClick={onCancel}>Mégse</Button>}
       </div>
-      <p className="text-sm text-gray-500"><span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.</p>
+      <p className="text-xs text-gray-500"><span className="text-sm font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.</p>
     </form>
   );
 }

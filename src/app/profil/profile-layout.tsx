@@ -682,20 +682,22 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
         {/* Content */}
         <div className="flex-1 min-w-0 sm:pl-8">
-          <div className="section-chat-header hidden sm:flex items-center gap-2.5 mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">
-              {SECTION_TITLES[active]}
-            </h2>
-            {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
-              <button
-                onClick={handleRefresh}
-                title="Frissítés"
-                className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
-              >
-                <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
-              </button>
-            )}
-          </div>
+          {active !== "chat" && (
+            <div className="section-chat-header hidden sm:flex items-center gap-2.5 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {SECTION_TITLES[active]}
+              </h2>
+              {(active === "messages" || (active === "quotes" && !quotesFormOpen)) && (
+                <button
+                  onClick={handleRefresh}
+                  title="Frissítés"
+                  className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
+                >
+                  <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+                </button>
+              )}
+            </div>
+          )}
 
           {active === "account" && (
             <AccountInfoForm userId={userId} initialName={initialName} email={email} role={role} />

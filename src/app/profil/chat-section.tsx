@@ -495,11 +495,8 @@ function ChatView({
     }
   }, [messages]);
 
-  // Scroll top on desktop when chat opens
+  // Lock body scroll on mobile via chat-mode class; desktop is fixed-height so no page scroll needed
   useEffect(() => {
-    if (window.innerWidth >= 640) {
-      setTimeout(() => window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }), 0);
-    }
     document.body.classList.add("chat-mode");
     return () => { document.body.classList.remove("chat-mode"); };
   }, []);
@@ -829,6 +826,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   const [currentPage, setCurrentPage]       = useState(0);
   const [selectedView, setSelectedView]     = useState<SelectedView | null>(null);
   const hasAutoOpened = useRef(false);
+  const autoTabbed = useRef(false);
 
   const providerUserIds = new Set(providers.map((p) => p.user_id));
   const threads = buildThreads(messages, providerUserIds);
@@ -858,6 +856,15 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   }, []);
 
   useEffect(() => { loadAll(); }, [loadAll]);
+
+  // Default to Conversations tab on first load if any conversations exist
+  useEffect(() => {
+    if (loading || autoTabbed.current) return;
+    autoTabbed.current = true;
+    const hasConversations = threads.length > 0 || visitorQuoteChats.length > 0 || providerQuoteReqs.length > 0;
+    if (hasConversations) setTab("conversations");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   // Auto-open chat when navigated here with ?with=providerUserId — fires only once
   useEffect(() => {
