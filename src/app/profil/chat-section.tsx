@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText, SlidersHorizontal } from "lucide-react";
 import { QuoteChat, ProviderChatLoader, type VisitorChat, type ProviderRequest } from "./quote-requests-section";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -841,6 +841,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   const [selectedView, setSelectedView]     = useState<SelectedView | null>(null);
   const [convSearchQuery, setConvSearchQuery]       = useState("");
   const [convFilterCategory, setConvFilterCategory] = useState("");
+  const [filtersOpen, setFiltersOpen]               = useState(false);
   const hasAutoOpened = useRef(false);
   const autoTabbed = useRef(false);
 
@@ -1062,8 +1063,8 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
 
   return (
     <div className="space-y-3">
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200">
+      {/* Tabs + filter toggle */}
+      <div className="flex items-center border-b border-gray-200">
         <button
           onClick={() => setTab("providers")}
           className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
@@ -1089,43 +1090,69 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
             </span>
           )}
         </button>
+        {/* Filter toggle — jobb oldal */}
+        <div className="ml-auto pr-1 pb-px relative">
+          {(() => {
+            const hasActiveFilters = tab === "providers"
+              ? !!(searchQuery || filterCategory || filterCounty)
+              : !!(convSearchQuery || convFilterCategory);
+            return (
+              <button
+                onClick={() => setFiltersOpen((v) => !v)}
+                title={filtersOpen ? "Szűrők elrejtése" : "Szűrők megjelenítése"}
+                className={`relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                  filtersOpen
+                    ? "bg-[#84AAA6]/15 text-[#84AAA6]"
+                    : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                {hasActiveFilters && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#F06C6C]" />
+                )}
+              </button>
+            );
+          })()}
+        </div>
       </div>
 
       {/* ── Providers tab ── */}
       {tab === "providers" && (
         <div className="space-y-3">
-          {/* Search + dropdowns */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => { setSearchQuery(e.target.value); resetPage(); }}
-                placeholder="Keresés neve alapján…"
-                className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
-              />
+          {/* Search + dropdowns — only when filtersOpen */}
+          {filtersOpen && (
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => { setSearchQuery(e.target.value); resetPage(); }}
+                  placeholder="Keresés neve alapján…"
+                  className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
+                />
+              </div>
+              <div className="sm:w-64">
+                <ChatSelect
+                  value={filterCategory}
+                  onChange={(v) => { setFilterCategory(v); resetPage(); }}
+                  placeholder="Összes kategória"
+                  options={allCategories.map((cat) => ({
+                    value: cat,
+                    label: CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat,
+                  }))}
+                />
+              </div>
+              <div className="sm:w-52">
+                <ChatSelect
+                  value={filterCounty}
+                  onChange={(v) => { setFilterCounty(v); resetPage(); }}
+                  placeholder="Összes megye"
+                  options={allCounties.map((c) => ({ value: c, label: c }))}
+                />
+              </div>
             </div>
-            <div className="sm:w-64">
-              <ChatSelect
-                value={filterCategory}
-                onChange={(v) => { setFilterCategory(v); resetPage(); }}
-                placeholder="Összes kategória"
-                options={allCategories.map((cat) => ({
-                  value: cat,
-                  label: CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat,
-                }))}
-              />
-            </div>
-            <div className="sm:w-52">
-              <ChatSelect
-                value={filterCounty}
-                onChange={(v) => { setFilterCounty(v); resetPage(); }}
-                placeholder="Összes megye"
-                options={allCounties.map((c) => ({ value: c, label: c }))}
-              />
-            </div>
-          </div>
+          )}
 
           {/* List */}
           {filteredProviders.length === 0 ? (
@@ -1218,32 +1245,34 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
         }
         return (
           <div className="space-y-3">
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-                <input
-                  type="text"
-                  value={convSearchQuery}
-                  onChange={(e) => setConvSearchQuery(e.target.value)}
-                  placeholder="Keresés neve alapján…"
-                  className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
-                />
-              </div>
-              {convAllCategories.length > 0 && (
-                <div className="sm:w-64">
-                  <ChatSelect
-                    value={convFilterCategory}
-                    onChange={setConvFilterCategory}
-                    placeholder="Összes kategória"
-                    options={convAllCategories.map((cat) => ({
-                      value: cat,
-                      label: CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat,
-                    }))}
+            {/* Filters — only when filtersOpen */}
+            {filtersOpen && (
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={convSearchQuery}
+                    onChange={(e) => setConvSearchQuery(e.target.value)}
+                    placeholder="Keresés neve alapján…"
+                    className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
                   />
                 </div>
-              )}
-            </div>
+                {convAllCategories.length > 0 && (
+                  <div className="sm:w-64">
+                    <ChatSelect
+                      value={convFilterCategory}
+                      onChange={setConvFilterCategory}
+                      placeholder="Összes kategória"
+                      options={convAllCategories.map((cat) => ({
+                        value: cat,
+                        label: CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat,
+                      }))}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
             {allItems.map((item) => {
               if (item.kind === "thread") {
