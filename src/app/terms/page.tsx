@@ -21,8 +21,6 @@ export default function TermsPage() {
           <LegalTable
             headers={["Adat", "Érték"]}
             rows={[
-              ["Üzemeltető neve", "[ÜZEMELTETŐ NEVE]"],
-              ["Levelezési cím", "[ÜZEMELTETŐ LEVELEZÉSI CÍME]"],
               ["Email", "info@eskuvorekeszulok.hu"],
               ["Weboldal", "https://eskuvorekeszulok.hu"],
             ]}

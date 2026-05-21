@@ -79,7 +79,7 @@ function ConnectedAccountsContent() {
     const { error: linkError } = await supabase.auth.linkIdentity({
       provider: "google",
       options: {
-        redirectTo: `${origin}/auth/callback?intent=link`,
+        redirectTo: `${origin}/auth/link-callback`,
       },
     });
     if (linkError) {
