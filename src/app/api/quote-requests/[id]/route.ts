@@ -29,7 +29,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       const [{ data: prov }, { data: messages }] = await Promise.all([
         admin.from("providers").select("id, full_name, avatar_url, categories").eq("id", rec.provider_id).single(),
         admin.from("quote_messages")
-          .select("id, sender_id, body, read, created_at")
+          .select("id, sender_id, body, read, read_at, created_at")
           .eq("quote_request_id", id)
           .eq("provider_id", rec.provider_id)
           .order("created_at", { ascending: true }),

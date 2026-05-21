@@ -18,6 +18,7 @@ export interface QuoteMessage {
   sender_id: string;
   body: string;
   read: boolean;
+  read_at?: string | null;
   created_at: string;
 }
 
@@ -369,9 +370,11 @@ export function QuoteChat({
 
   const hasSystemMessage = messages.some((m) => isSystemMsg(m.body));
 
-  // Scroll to bottom on new messages
+  // Scroll to bottom on new messages (mobile only — desktop scroll is handled by selectedView effect)
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (window.innerWidth < 640) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   // Mark unread as read on mount
@@ -549,6 +552,9 @@ export function QuoteChat({
                   {msg.body}
                 </div>
                 <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
+                {msg.sender_id === userId && msg.read && msg.read_at && (
+                  <span className="text-[10px] text-[#84AAA6] px-1">Elolvasva: {formatDate(msg.read_at)}</span>
+                )}
               </div>
             </div>
           )

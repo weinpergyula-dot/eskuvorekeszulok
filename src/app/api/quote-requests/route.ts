@@ -31,7 +31,7 @@ async function fetchVisitorChats(admin: any, userId: string) {
       .in("quote_request_id", reqIds),
     admin
       .from("quote_messages")
-      .select("id, quote_request_id, provider_id, sender_id, body, read, created_at")
+      .select("id, quote_request_id, provider_id, sender_id, body, read, read_at, created_at")
       .in("quote_request_id", reqIds)
       .order("created_at", { ascending: true }),
   ]);
