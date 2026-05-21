@@ -189,11 +189,7 @@ export function PasswordForm() {
       }
     }
 
-    const { error: err } = await supabase.auth.updateUser({
-      password: newPassword,
-      // Mark that user has set a password so ConnectedAccountsSection can allow unlink
-      ...(!hasEmailIdentity ? { data: { has_password: true } } : {}),
-    });
+    const { error: err } = await supabase.auth.updateUser({ password: newPassword });
     if (err) {
       setError(err.message);
     } else {
