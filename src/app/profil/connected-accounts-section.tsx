@@ -49,12 +49,15 @@ function ConnectedAccountsContent() {
     }
   }, [searchParams]);
 
+  const [hasPassword, setHasPassword] = useState(false);
+
   useEffect(() => {
     const fetchIdentities = async () => {
       const supabase = createClient();
       if (!supabase) return;
       const { data: { user } } = await supabase.auth.getUser();
       setIdentities(user?.identities ?? []);
+      setHasPassword(user?.user_metadata?.has_password === true);
       setLoading(false);
     };
     fetchIdentities();
@@ -62,7 +65,7 @@ function ConnectedAccountsContent() {
 
   const googleIdentity = identities.find((i) => i.provider === "google");
   const hasEmailIdentity = identities.some((i) => i.provider === "email");
-  const canUnlink = identities.length > 1 || hasEmailIdentity;
+  const canUnlink = identities.length > 1 || hasEmailIdentity || hasPassword;
 
   const handleLinkGoogle = async () => {
     const supabase = createClient();
