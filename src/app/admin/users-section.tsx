@@ -470,8 +470,8 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   </div>
                 </div>
                 {u.providerViewCount != null && (
-                  <span className="flex items-center gap-1 text-xs text-gray-400 shrink-0">
-                    <Eye className="h-3.5 w-3.5" />
+                  <span className="flex items-center gap-1 text-sm text-gray-400 shrink-0">
+                    <Eye className="h-4 w-4" />
                     {u.providerViewCount}
                   </span>
                 )}
@@ -500,7 +500,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   <span>Regisztrált: {new Date(u.created_at).toLocaleDateString("hu-HU")}</span>
                 </div>
               </div>
-              <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex gap-2 flex-wrap items-center">
+              <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex gap-2 flex-wrap items-center justify-end">
                 {u.providerApprovalStatus === "approved" && u.providerId && (
                   <button
                     disabled={updating === u.user_id}
