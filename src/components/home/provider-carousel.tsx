@@ -135,9 +135,9 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
       <div className="flex items-center justify-center gap-8 mt-5">
         <button
           type="button"
-          onClick={() => durationIdx < DURATIONS.length - 1 && changeSpeed(durationIdx + 1)}
-          disabled={durationIdx >= DURATIONS.length - 1}
-          aria-label="Lassítás"
+          onClick={() => durationIdx > 0 && changeSpeed(durationIdx - 1)}
+          disabled={durationIdx <= 0}
+          aria-label="Gyorsítás"
           className="p-2 rounded-full text-[#84AAA6] disabled:opacity-25 active:bg-[#84AAA6]/10 transition-colors"
         >
           <Rewind className="h-5 w-5" strokeWidth={1.75} />
@@ -156,9 +156,9 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
 
         <button
           type="button"
-          onClick={() => durationIdx > 0 && changeSpeed(durationIdx - 1)}
-          disabled={durationIdx <= 0}
-          aria-label="Gyorsítás"
+          onClick={() => durationIdx < DURATIONS.length - 1 && changeSpeed(durationIdx + 1)}
+          disabled={durationIdx >= DURATIONS.length - 1}
+          aria-label="Lassítás"
           className="p-2 rounded-full text-[#84AAA6] disabled:opacity-25 active:bg-[#84AAA6]/10 transition-colors"
         >
           <FastForward className="h-5 w-5" strokeWidth={1.75} />
