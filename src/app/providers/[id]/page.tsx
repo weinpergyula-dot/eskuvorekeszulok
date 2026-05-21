@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: PageProps) {
       .select("full_name, categories, description, avatar_url")
       .eq("id", id)
       .eq("approval_status", "approved")
+      .or("active.is.null,active.eq.true")
       .single();
     if (!data) return { title: "Szolgáltató" };
     const firstCat = (data.categories as ServiceCategory[])?.[0];
@@ -58,7 +59,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   try {
     const supabase = await createClient();
     const [{ data, error }, { data: { user } }, { data: reviewRows }] = await Promise.all([
-      supabase.from("providers").select("*").eq("id", id).eq("approval_status", "approved").single(),
+      supabase.from("providers").select("*").eq("id", id).eq("approval_status", "approved").or("active.is.null,active.eq.true").single(),
       supabase.auth.getUser(),
       supabase.from("reviews").select("rating").eq("provider_id", id),
     ]);

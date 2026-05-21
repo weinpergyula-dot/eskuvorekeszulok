@@ -15,6 +15,7 @@ export async function GET() {
         .from("providers")
         .select("id, user_id, full_name, avatar_url, categories, counties, average_rating, review_count, featured")
         .eq("approval_status", "approved")
+        .or("active.is.null,active.eq.true")
         .order("featured", { ascending: false })
         .order("average_rating", { ascending: false, nullsFirst: false }),
       supabase

@@ -28,7 +28,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const { data } = await supabase
       .from("providers")
       .select("id, updated_at")
-      .eq("approval_status", "approved");
+      .eq("approval_status", "approved")
+      .or("active.is.null,active.eq.true");
     providerPages = (data ?? []).map((p) => ({
       url: `${BASE}/providers/${p.id}`,
       lastModified: new Date(p.updated_at ?? new Date()),

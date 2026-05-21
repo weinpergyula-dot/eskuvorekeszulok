@@ -47,6 +47,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       .select("*")
       .contains("categories", [category])
       .eq("approval_status", "approved")
+      .or("active.is.null,active.eq.true")
       .order("created_at", { ascending: false });
 
     if (error) console.error("providers query error:", error);

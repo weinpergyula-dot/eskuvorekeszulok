@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
       .from("providers")
       .select("id, user_id, full_name, counties")
       .eq("approval_status", "approved")
+      .or("active.is.null,active.eq.true")
       .contains("categories", [category]);
     const seen = new Set<string>();
     const unique = (data ?? []).filter((p) => {
@@ -35,6 +36,7 @@ export async function GET(request: NextRequest) {
     .from("providers")
     .select("id, user_id, full_name")
     .eq("approval_status", "approved")
+    .or("active.is.null,active.eq.true")
     .contains("categories", [category])
     .overlaps("counties", searchCounties);
 
