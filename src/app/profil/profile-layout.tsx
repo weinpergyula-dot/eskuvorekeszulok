@@ -253,9 +253,9 @@ function MobileMenuDropdown({
           <span>{activeItem?.label}</span>
         </span>
         <span className="flex items-center gap-2">
-          {active === "chat" && (unreadCount + unreadQuotes) > 0 && (
+          {active === "chat" && (unreadCount + unreadQuotesCount) > 0 && (
             <span className="min-w-[20px] h-5 px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-              {(unreadCount + unreadQuotes) > 9 ? "9+" : (unreadCount + unreadQuotes)}
+              {(unreadCount + unreadQuotesCount) > 9 ? "9+" : (unreadCount + unreadQuotesCount)}
             </span>
           )}
           {active === "admin" && adminPendingCount > 0 && (
