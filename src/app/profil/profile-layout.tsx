@@ -389,15 +389,11 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     const tab = searchParams.get("tab") as Section | null;
     if (tab && VALID_SECTIONS.includes(tab)) {
       setActive(tab);
+      if (ACCOUNT_SETTINGS_SECTIONS.includes(tab)) {
+        setAccountSettingsOpen(true);
+      }
     }
   }, [searchParams]);
-
-  // Auto-expand account settings group when a sub-section is active
-  useEffect(() => {
-    if (ACCOUNT_SETTINGS_SECTIONS.includes(active)) {
-      setAccountSettingsOpen(true);
-    }
-  }, [active]);
 
   useEffect(() => {
     const onMessagesCount = (e: Event) =>
