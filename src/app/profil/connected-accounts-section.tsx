@@ -55,9 +55,12 @@ function ConnectedAccountsContent() {
     const fetchIdentities = async () => {
       const supabase = createClient();
       if (!supabase) return;
-      const { data: { user } } = await supabase.auth.getUser();
+      const [{ data: { user } }, { data: hasPass }] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase.rpc("user_has_password"),
+      ]);
       setIdentities(user?.identities ?? []);
-      setHasPassword(user?.user_metadata?.has_password === true);
+      setHasPassword(hasPass === true);
       setLoading(false);
     };
     fetchIdentities();
