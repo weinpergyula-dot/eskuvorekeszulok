@@ -992,7 +992,9 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
           providerId={chat.provider_id}
           subject={chat.subject}
           otherName={chat.provider_full_name}
+          otherAvatarUrl={chat.provider_avatar_url}
           requestContext={{ category: chat.category, counties: chat.counties, message: chat.message }}
+          requestMsgIsOwn={true}
           userId={userId}
           initialMessages={chat.messages}
           onBack={goBack}
