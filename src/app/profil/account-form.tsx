@@ -291,7 +291,8 @@ export function LinkedAccountsSection() {
 
   useEffect(() => {
     if (!supabase) return;
-    supabase.auth.getUserIdentities().then(({ data }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (supabase.auth as any).getUserIdentities().then(({ data }: { data: { identities: UserIdentity[] } | null }) => {
       setIdentities(data?.identities ?? []);
       setLoading(false);
     });
@@ -303,7 +304,8 @@ export function LinkedAccountsSection() {
   const handleLink = async () => {
     if (!supabase) return;
     setLinking(true);
-    await supabase.auth.linkWithOAuth({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase.auth as any).linkWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
@@ -318,7 +320,8 @@ export function LinkedAccountsSection() {
     }
     setUnlinking(true);
     setError(null);
-    const { error: unlinkError } = await supabase.auth.unlinkIdentity(googleIdentity);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: unlinkError } = await (supabase.auth as any).unlinkIdentity(googleIdentity);
     if (unlinkError) {
       setError(unlinkError.message);
     } else {
