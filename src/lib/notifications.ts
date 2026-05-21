@@ -232,13 +232,20 @@ export async function notifyNewMessage(params: {
   senderId: string;
   subject: string;
   origin: string;
+  /** Ha a quote chatből hívják (látogató → szolgáltató irány), add meg az ajánlatkérés ID-t,
+   *  hogy az olvasottság-ellenőrzés a quote_messages táblában is meg tudjon futni. */
+  quoteRequestId?: string;
 }): Promise<void> {
   try {
     await scheduleNotification({
       type: "new_message",
       recipientId: params.recipientId,
       senderId: params.senderId,
-      payload: { subject: params.subject, origin: params.origin },
+      payload: {
+        subject: params.subject,
+        origin: params.origin,
+        ...(params.quoteRequestId ? { quoteRequestId: params.quoteRequestId } : {}),
+      },
     });
   } catch (err) {
     console.error("[notifyNewMessage] ütemezési hiba:", err);
@@ -322,7 +329,7 @@ async function sendDeferredNewMessage(n: {
   sender_id: string;
   payload: unknown;
 }): Promise<void> {
-  const payload = n.payload as { subject: string; origin: string };
+  const payload = n.payload as { subject: string; origin: string; quoteRequestId?: string };
   const admin = createAdminClient();
 
   // Van-e még olvasatlan üzenet ettől a feladótól ennek a fogadónak?
@@ -334,7 +341,20 @@ async function sendDeferredNewMessage(n: {
     .eq("read", false)
     .eq("deleted_for_recipient", false);
 
-  if ((count ?? 0) === 0) return; // Már elolvasta, nem kell email
+  if ((count ?? 0) === 0) {
+    // Ha quote chatből érkezett az értesítés, a quote_messages táblában is ellenőrzünk
+    if (payload.quoteRequestId) {
+      const { count: qmCount } = await admin
+        .from("quote_messages")
+        .select("*", { count: "exact", head: true })
+        .eq("quote_request_id", payload.quoteRequestId)
+        .eq("sender_id", n.sender_id)
+        .eq("read", false);
+      if ((qmCount ?? 0) === 0) return; // Már elolvasta, nem kell email
+    } else {
+      return; // Már elolvasta, nem kell email
+    }
+  }
 
   const prefs = await getPrefs(n.recipient_id);
   if (!prefs.notify_new_message) return;

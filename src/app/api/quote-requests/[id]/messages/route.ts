@@ -59,6 +59,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         senderId: user.id,
         subject: qr.subject,
         origin,
+        quoteRequestId: id,
       }).catch(() => {});
     }
   }
