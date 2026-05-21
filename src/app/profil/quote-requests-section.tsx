@@ -368,70 +368,96 @@ export function QuoteChat({
   const [sendError, setSendError]         = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
-  const bottomRef   = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const bottomRef     = useRef<HTMLDivElement>(null);
+  const textareaRef   = useRef<HTMLTextAreaElement>(null);
+  const containerRef  = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const markedAsReadRef = useRef(new Set<string>());
 
   const hasSystemMessage = messages.some((m) => isSystemMsg(m.body));
 
-  // Scroll to bottom on new messages (mobile only — desktop scroll is handled by selectedView effect)
+  // Lock body scroll on mobile
   useEffect(() => {
-    if (window.innerWidth < 640) {
+    document.body.classList.add("chat-mode");
+    return () => { document.body.classList.remove("chat-mode"); };
+  }, []);
+
+  // Mobile: resize container to match visual viewport so keyboard doesn't push header up
+  useEffect(() => {
+    if (window.innerWidth >= 640) return;
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => {
+      el.style.top    = `${vv.offsetTop}px`;
+      el.style.height = `${vv.height}px`;
+    };
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, []);
+
+  // Scroll to bottom — desktop scrolls the inner container, mobile uses scrollIntoView
+  useEffect(() => {
+    if (window.innerWidth >= 640) {
+      const el = scrollAreaRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    } else {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
-  // Mark unread as read on mount
+  // Mark unread as read — runs on messages change to avoid race condition with initialMessages
   useEffect(() => {
-    const unread = initialMessages.filter((m) => !m.read && m.sender_id !== userId);
-    if (unread.length > 0) {
-      fetch(`/api/quote-requests/${requestId}/read`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "messages", provider_id: providerId }),
-      }).then(() => {
-        onUnreadMarked(unread.length);
-        window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const unread = messages.filter((m) => !m.read && m.sender_id !== userId && !markedAsReadRef.current.has(m.id));
+    if (unread.length === 0) return;
+    unread.forEach((m) => markedAsReadRef.current.add(m.id));
+    fetch(`/api/quote-requests/${requestId}/read`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "messages", provider_id: providerId }),
+    }).then(() => {
+      onUnreadMarked(unread.length);
+      window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
+    }).catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
-  // Realtime: subscribe to new quote_messages and refresh via API
+  // Realtime: INSERT for new messages, UPDATE for read receipts (sender sees Elolvasva)
   useEffect(() => {
     const supabase = createClient();
     if (!supabase) return;
+    const reload = () => {
+      fetch(`/api/quote-requests/${requestId}`)
+        .then((r) => r.json())
+        .then((data) => {
+          const msgs: QuoteMessage[] | undefined =
+            data.messages ??
+            (data.providers as Array<{ id: string; messages: QuoteMessage[] }> | undefined)
+              ?.find((p) => p.id === providerId)?.messages;
+          if (!msgs) return;
+          setMessages([...msgs].sort((a, b) => a.created_at.localeCompare(b.created_at)));
+        })
+        .catch(() => {});
+    };
     const channel = supabase
       .channel(`quote-chat-${requestId}-${providerId}-${userId}`)
       .on(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         "postgres_changes" as any,
         { event: "INSERT", schema: "public", table: "quote_messages", filter: `quote_request_id=eq.${requestId}` },
-        () => {
-          fetch(`/api/quote-requests/${requestId}`)
-            .then((r) => r.json())
-            .then((data) => {
-              // Provider path: data.messages; Visitor path: data.providers[i].messages
-              const msgs: QuoteMessage[] | undefined =
-                data.messages ??
-                (data.providers as Array<{ id: string; messages: QuoteMessage[] }> | undefined)
-                  ?.find((p) => p.id === providerId)?.messages;
-              if (!msgs) return;
-              const sorted = [...msgs].sort((a: QuoteMessage, b: QuoteMessage) =>
-                a.created_at.localeCompare(b.created_at)
-              );
-              setMessages(sorted);
-              const unread = sorted.filter((m: QuoteMessage) => !m.read && m.sender_id !== userId);
-              if (unread.length > 0) {
-                fetch(`/api/quote-requests/${requestId}/read`, {
-                  method: "PATCH",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ type: "messages", provider_id: providerId }),
-                }).then(() => window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh")))
-                  .catch(() => {});
-              }
-            })
-            .catch(() => {});
-        }
+        reload
+      )
+      .on(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "postgres_changes" as any,
+        { event: "UPDATE", schema: "public", table: "quote_messages", filter: `quote_request_id=eq.${requestId}` },
+        reload
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -440,26 +466,36 @@ export function QuoteChat({
 
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!replyBody.trim()) return;
+    const body = replyBody.trim();
+    if (!body) return;
+
+    // Clear input and keep focus BEFORE the await so keyboard stays open on mobile
+    setReplyBody("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.focus();
+    }
+
+    // Optimistic message
+    setMessages((prev) => [...prev, {
+      id: crypto.randomUUID(), sender_id: userId,
+      body, read: true,
+      created_at: new Date().toISOString(),
+    }]);
+
     setSending(true);
     setSendError(null);
     try {
       const res = await fetch(`/api/quote-requests/${requestId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: replyBody.trim(), provider_id: providerId }),
+        body: JSON.stringify({ body, provider_id: providerId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
-      setMessages((prev) => [...prev, {
-        id: crypto.randomUUID(), sender_id: userId,
-        body: replyBody.trim(), read: true,
-        created_at: new Date().toISOString(),
-      }]);
-      setReplyBody("");
-      if (textareaRef.current) textareaRef.current.style.height = "auto";
     } catch (err: unknown) {
       setSendError(err instanceof Error ? err.message : "Hiba történt.");
+      setReplyBody(body); // restore on failure
     } finally {
       setSending(false);
     }
@@ -479,8 +515,15 @@ export function QuoteChat({
     onBack();
   };
 
+  // Only show read receipt on the last own sent message that has been read
+  let lastReadOwnId: string | null = null;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (m.sender_id === userId && m.read && m.read_at) { lastReadOwnId = m.id; break; }
+  }
+
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-white sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
+    <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white h-[100dvh] sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
       {/* Mobil: teal page header */}
       <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
         <button onClick={onBack} className="text-white cursor-pointer shrink-0">
@@ -537,7 +580,7 @@ export function QuoteChat({
       )}
 
       {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
         {messages.length === 0 && (
           <p className="text-sm text-gray-400 text-center py-8">Még nem volt üzenetváltás.</p>
         )}
@@ -560,7 +603,7 @@ export function QuoteChat({
                   {msg.body}
                 </div>
                 <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
-                {msg.sender_id === userId && msg.read && msg.read_at && (
+                {msg.id === lastReadOwnId && msg.read_at && (
                   <span className="text-[10px] text-[#84AAA6] px-1">Elolvasva: {formatDate(msg.read_at)}</span>
                 )}
               </div>

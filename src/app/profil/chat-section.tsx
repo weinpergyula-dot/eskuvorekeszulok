@@ -650,6 +650,13 @@ function ChatView({
     onBack();
   };
 
+  // Only show read receipt on the last own sent message that has been read
+  let lastReadOwnId: string | null = null;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (m.is_own && m.read && m.read_at) { lastReadOwnId = m.id; break; }
+  }
+
   return (
     <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white h-[100dvh] sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
 
@@ -775,7 +782,7 @@ function ChatView({
                   {msg.body}
                 </div>
                 <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
-                {msg.is_own && msg.read && msg.read_at && (
+                {msg.id === lastReadOwnId && msg.read_at && (
                   <span className="text-[10px] text-[#84AAA6] px-1">Elolvasva: {formatDate(msg.read_at)}</span>
                 )}
               </div>
