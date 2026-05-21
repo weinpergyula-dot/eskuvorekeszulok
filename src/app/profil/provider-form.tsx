@@ -438,7 +438,7 @@ export function ProviderForm({
               {/* Display name */}
               <div className="space-y-2">
                 <p className="text-base text-gray-800">
-                  Milyen névvel jelenj meg a profilkártyádon?
+                  Milyen névvel jelenj meg a profilkártyádon?<span className="text-[1.2em] font-bold align-middle ml-0.5 text-gray-400">*</span>
                 </p>
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-3 cursor-pointer">
