@@ -361,7 +361,8 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
         </div>
       )}
     </form>
-    </>;
+    </>
+  );
 }
 
 export function PasswordForm() {
