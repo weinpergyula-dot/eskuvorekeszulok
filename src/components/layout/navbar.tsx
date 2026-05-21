@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -44,6 +44,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
+  const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navCategoryCounts, setNavCategoryCounts] = useState<Record<string, number>>({});
@@ -258,17 +259,20 @@ export function Navbar() {
     }
   };
 
-  const profileItems: { id: string; label: string; Icon: React.ElementType }[] = [
-    ...(profile?.role === "admin" ? [{ id: "admin", label: "Admin", Icon: ShieldCheck }] : []),
-    { id: "account",   label: "Fiók adatok",          Icon: UserIcon },
-    { id: "password",  label: "Jelszó módosítás",      Icon: Lock },
+  const ACCOUNT_SETTINGS_ITEMS = [
+    { id: "account",         label: "Fiók adatok",       Icon: UserIcon },
+    { id: "password",        label: "Jelszó módosítás",  Icon: Lock },
+    { id: "linked-accounts", label: "Kapcsolt fiókok",   Icon: Link2 },
+    { id: "notifications",   label: "Értesítések",       Icon: Bell },
+  ];
+
+  const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
     ...(hasProvider ? [
       { id: "provider",  label: "Szolgáltatói profil", Icon: Briefcase },
       { id: "dashboard", label: "Dashboard",           Icon: LayoutDashboard },
     ] : []),
-    { id: "favorites",      label: "Kedvencek",    Icon: Heart },
-    { id: "chat",           label: "Chat",         Icon: MessageCircle },
-    { id: "notifications",  label: "Értesítések",  Icon: Bell },
+    { id: "favorites", label: "Kedvencek", Icon: Heart },
+    { id: "chat",      label: "Chat",      Icon: MessageCircle },
   ];
 
   // ── Shared dropdown panel renderer ──────────────────────────────────────────
@@ -289,7 +293,49 @@ export function Navbar() {
           )}
         </button>
       </div>
-      {profileItems.map(({ id, label, Icon }) => (
+
+      {/* Admin */}
+      {profile?.role === "admin" && (
+        <button
+          onClick={() => navTo("admin", closeAll)}
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
+        >
+          <ShieldCheck className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+          <span className="flex-1">Admin</span>
+          {pendingCount > 0 && (
+            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
+              {pendingCount > 99 ? "99+" : pendingCount}
+            </span>
+          )}
+        </button>
+      )}
+
+      {/* Fiók beállítások group */}
+      <button
+        onClick={() => setAccountSettingsOpen((v) => !v)}
+        className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
+      >
+        <Settings className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+        <span className="flex-1">Fiók beállítások</span>
+        <ChevronDown className={`h-3.5 w-3.5 text-gray-400 transition-transform ${accountSettingsOpen ? "rotate-180" : ""}`} />
+      </button>
+      {accountSettingsOpen && (
+        <div className="border-l-2 border-[#84AAA6]/30 ml-5 mb-1">
+          {ACCOUNT_SETTINGS_ITEMS.map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              onClick={() => navTo(id, closeAll)}
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
+            >
+              <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Szolgáltatói profil, Kedvencek, Chat */}
+      {providerItems.map(({ id, label, Icon }) => (
         <button
           key={id}
           onClick={() => navTo(id, closeAll)}
@@ -297,11 +343,6 @@ export function Navbar() {
         >
           <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
           <span className="flex-1">{label}</span>
-          {id === "admin" && pendingCount > 0 && (
-            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
-              {pendingCount > 99 ? "99+" : pendingCount}
-            </span>
-          )}
           {id === "chat" && unreadMessages > 0 && (
             <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center">
               {unreadMessages > 99 ? "99+" : unreadMessages}
@@ -316,6 +357,7 @@ export function Navbar() {
           )}
         </button>
       ))}
+
       <div className="border-t border-gray-100 mt-1 pt-1">
         <button
           onClick={() => { closeAll(); handleSignOut(); }}
@@ -406,7 +448,7 @@ export function Navbar() {
                 <Link href="/auth/register">
                   <Button className="text-base bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5]">Regisztráció</Button>
                 </Link>
-                <Link href={`/auth/login?next=${encodeURIComponent(pathname)}`}>
+                <Link href="/auth/login">
                   <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
                 </Link>
               </>
@@ -416,7 +458,7 @@ export function Navbar() {
           {/* Mobile: user icon + hamburger */}
           <div className="md:hidden flex items-center gap-1">
             {!user && (
-              <a href={`/auth/login?next=${encodeURIComponent(pathname)}`} className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+              <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
                 <UserIcon className="h-7 w-7" strokeWidth={2} />
               </a>
             )}
