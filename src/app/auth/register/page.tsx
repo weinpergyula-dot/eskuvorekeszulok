@@ -121,6 +121,7 @@ function RegisterContent() {
   const [role, setRole] = useState<"visitor" | "provider">("visitor");
   const [isUpgrade, setIsUpgrade] = useState(false);
   const [prefillMode, setPrefillMode] = useState(false);
+  const [prefillRoleSelect, setPrefillRoleSelect] = useState(false);
   const [oauthUserId, setOauthUserId] = useState<string | null>(null);
   const [googleAvatarUrl, setGoogleAvatarUrl] = useState<string | null>(null);
 
@@ -182,9 +183,6 @@ function RegisterContent() {
         if (!user) return;
         const savedRole = localStorage.getItem("oauth_register_role") as "visitor" | "provider" | null;
         localStorage.removeItem("oauth_register_role");
-        const userRole = savedRole ?? "visitor";
-        setRole(userRole);
-        setStep("basic");
         setPrefillMode(true);
         setOauthUserId(user.id);
         setFullName(user.user_metadata?.full_name ?? "");
@@ -192,6 +190,14 @@ function RegisterContent() {
         if (user.user_metadata?.avatar_url) {
           setGoogleAvatarUrl(user.user_metadata.avatar_url);
           setVisitorAvatarPreview(user.user_metadata.avatar_url);
+        }
+        if (savedRole) {
+          // Came from register page — role already chosen
+          setRole(savedRole);
+          setStep("basic");
+        } else {
+          // Came from login page — let user pick role first
+          setPrefillRoleSelect(true);
         }
         return;
       }
@@ -502,6 +508,57 @@ function RegisterContent() {
   }));
 
   const countyOptions = COUNTIES.map((c) => ({ value: c, label: c }));
+
+  // Prefill role selection (Google login → new user, no role in localStorage)
+  if (prefillRoleSelect) {
+    return (
+      <div>
+        <PageHeader icon={UserRound} title="Regisztráció" description="Google fiókod össze van kötve. Válaszd ki, milyen fiókot szeretnél létrehozni." bgColor="#84AAA6" />
+        <div className="flex items-center justify-center py-12 px-4">
+          <div className="w-full max-w-2xl">
+            <div className="flex items-center gap-3 px-4 py-3 bg-green-50 border border-green-200 rounded-xl mb-6">
+              <GoogleIcon size={20} />
+              <div>
+                <p className="text-sm font-semibold text-green-800">Google fiók összekapcsolva</p>
+                <p className="text-sm text-green-700">{email}</p>
+              </div>
+            </div>
+            <p className="text-gray-900 text-center mb-6" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button
+                onClick={() => { setRole("visitor"); setPrefillRoleSelect(false); setStep("basic"); }}
+                className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
+              >
+                <UserRound className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
+                <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Látogató</span>
+                <span className="text-sm text-gray-400 mb-4">Ingyenes fiók</span>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Böngészés 20 kategóriában</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékelések olvasása és írása</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Kedvencek mentése</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos ajánlatkérés</li>
+                </ul>
+              </button>
+              <button
+                onClick={() => { setRole("provider"); setPrefillRoleSelect(false); setStep("basic"); }}
+                className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
+              >
+                <Briefcase className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
+                <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Szolgáltató</span>
+                <span className="text-sm text-gray-400 mb-4">Ingyenes profil</span>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ingyenes szolgáltatói profil</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Képgaléria feltöltése</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkérések fogadása</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő</li>
+                </ul>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Step 1 – Role selection
   if (step === "role") {
