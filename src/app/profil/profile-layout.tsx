@@ -521,7 +521,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   }, []);
 
   const mainMenuItems = MAIN_MENU_ITEMS.filter(
-    (item) => item.id !== "dashboard" || role === "provider"
+    (item) => item.id !== "dashboard" || role === "provider" || role === "admin"
   );
 
   // Shared nav item class helper

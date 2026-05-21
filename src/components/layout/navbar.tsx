@@ -268,7 +268,7 @@ export function Navbar() {
 
   const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
     { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
-    ...(hasProvider ? [
+    ...(hasProvider || profile?.role === "admin" ? [
       { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek", Icon: Heart },
