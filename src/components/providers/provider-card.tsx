@@ -330,10 +330,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <button
             type="button"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setExpanded((v) => !v); }}
-            className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
+            className="flex items-center gap-1.5 text-sm font-semibold text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
           >
-            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            <span>Több infó</span>
+            {expanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+            <span>{expanded ? "Bezár" : "Több infó"}</span>
           </button>
         </div>
       )}
@@ -407,16 +407,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </button>
           )}
 
+          <button
+            type="button"
+            onClick={() => setGalleryOpen(false)}
+            className="absolute top-4 right-4 text-white/80 hover:text-white p-2 bg-black/30 hover:bg-black/60 rounded-full transition-colors"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={galleryUrls[galleryIndex]}
             alt={`Galéria ${galleryIndex + 1}`}
-            className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg select-none cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (didSwipe.current) { didSwipe.current = false; return; }
-              setGalleryOpen(false);
-            }}
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg select-none"
+            onClick={(e) => e.stopPropagation()}
           />
 
           {galleryIndex < galleryUrls.length - 1 && (
