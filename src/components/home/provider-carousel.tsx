@@ -5,9 +5,9 @@ import type { Provider } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { Pause, Play, Rewind, FastForward } from "lucide-react";
 
-// Available durations in seconds — index 2 is the default (35 s)
+// Available durations in seconds — index 1 is the default (45 s)
 const DURATIONS = [60, 45, 35, 22, 14];
-const DEFAULT_IDX = 2;
+const DEFAULT_IDX = 1;
 
 interface ProviderCarouselProps {
   providers: Provider[];
@@ -166,7 +166,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
           {doubled.map((provider, i) => (
             <div
               key={`${provider.id}-${i}`}
-              className="w-[calc(50vw-20px)] sm:w-[240px] flex-shrink-0"
+              className="w-[calc(50vw-20px)] sm:w-[280px] flex-shrink-0"
             >
               <ProviderCard provider={provider} nameFontSize="16px" inCarousel />
             </div>
