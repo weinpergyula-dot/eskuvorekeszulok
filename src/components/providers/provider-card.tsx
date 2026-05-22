@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -27,7 +28,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
-  const [countiesExpanded, setCountiesExpanded] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   // Swipe tracking for gallery lightbox
@@ -73,11 +73,15 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           )}
         </button>
 
-        {avatarOpen && provider.avatar_url && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 cursor-zoom-out" onClick={() => setAvatarOpen(false)}>
+        {avatarOpen && provider.avatar_url && createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 cursor-zoom-out" onClick={() => setAvatarOpen(false)}>
+            <button type="button" onClick={() => setAvatarOpen(false)} className="absolute top-4 right-4 text-white/80 hover:text-white p-2 bg-black/30 hover:bg-black/60 rounded-full transition-colors">
+              <X className="h-7 w-7" />
+            </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={provider.avatar_url} alt={provider.full_name} className="max-w-[90vw] max-h-[90vh] rounded-2xl object-contain shadow-2xl" />
-          </div>
+            <img src={provider.avatar_url} alt={provider.full_name} onClick={(e) => e.stopPropagation()} className="max-w-[90vw] max-h-[90vh] rounded-2xl object-contain shadow-2xl select-none" />
+          </div>,
+          document.body
         )}
 
         <div className="flex-1 min-w-0">
@@ -131,7 +135,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const showFeaturedBadge = !!provider.featured;
 
   return (
-    <div className={cn("relative h-full", showFeaturedBadge && "pt-3.5")}>
+    <div className={cn("relative h-full", !inCarousel && "pt-3.5")}>
       {showFeaturedBadge && (
         <span className="absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 bg-[#84AAA6] text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
           Kiemelt szolgáltató
@@ -256,21 +260,12 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               </div>
             )}
 
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1 mb-2">
+            <div className="flex items-center justify-center sm:justify-start gap-1 mb-2">
               <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
-              <span className="text-sm text-gray-900 text-center sm:text-left">
-                {countiesExpanded
-                  ? (provider.counties ?? []).join(", ")
-                  : (provider.counties ?? []).slice(0, 2).join(", ")}
-                {!countiesExpanded && (provider.counties ?? []).length > 2 && (
-                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountiesExpanded(true); }} className="text-[#84AAA6] hover:underline font-medium ml-1">
-                    és még {(provider.counties ?? []).length - 2} megye
-                  </button>
-                )}
-                {countiesExpanded && (provider.counties ?? []).length > 2 && (
-                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountiesExpanded(false); }} className="text-[#84AAA6] hover:underline font-medium ml-1">
-                    kevesebb
-                  </button>
+              <span className="text-sm text-gray-900">
+                {(provider.counties ?? [])[0] ?? ""}
+                {(provider.counties ?? []).length > 1 && (
+                  <span className="text-[#84AAA6] font-medium ml-1">+{(provider.counties ?? []).length - 1}</span>
                 )}
               </span>
             </div>
@@ -374,20 +369,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Footer */}
       {!inCarousel && !disableLink && (
-        <div className={cn("border-t border-gray-100 px-4 py-3 items-center justify-end sm:justify-between gap-2", expanded ? "flex" : "hidden sm:flex")}>
+        <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
           {/* Category badges — desktop only, left side */}
           {!hideCategories && (
             <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
               {(provider.categories ?? []).slice(0, 1).map((cat) => (
-                <Badge key={cat} variant="outline" className="text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+                <Badge key={cat} variant="outline" className="text-xs">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
               ))}
               {(provider.categories ?? []).length > 1 && (
-                <Badge variant="outline" className="text-sm">+{(provider.categories ?? []).length - 1}</Badge>
+                <Badge variant="outline" className="text-xs">+{(provider.categories ?? []).length - 1}</Badge>
               )}
             </div>
           )}
-          {/* Chat + Részletek grouped */}
-          <div className="flex items-center gap-2">
+          {/* Chat + Részletek grouped — always pushed to right */}
+          <div className="flex items-center gap-2 ml-auto">
             <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
               <MessageCircle className="h-3.5 w-3.5" />
               Chat indítása
@@ -400,7 +395,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       )}
 
       {/* ── Gallery lightbox — tap image or backdrop to close, swipe to navigate */}
-      {galleryOpen && hasGallery && (
+      {galleryOpen && hasGallery && createPortal(
         <div
           className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
           onClick={(e) => {
@@ -460,18 +455,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               {galleryIndex + 1} / {galleryUrls.length}
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Avatar lightbox */}
-      {!inCarousel && avatarOpen && provider.avatar_url && (
+      {!inCarousel && avatarOpen && provider.avatar_url && createPortal(
         <div className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center" onClick={() => setAvatarOpen(false)}>
-          <button type="button" onClick={() => setAvatarOpen(false)} className="absolute top-4 right-4 text-white/80 hover:text-white p-2">
+          <button type="button" onClick={() => setAvatarOpen(false)} className="absolute top-4 right-4 text-white/80 hover:text-white p-2 bg-black/30 hover:bg-black/60 rounded-full transition-colors">
             <X className="h-7 w-7" />
           </button>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={provider.avatar_url} alt={provider.full_name} onClick={(e) => e.stopPropagation()} className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl select-none" />
-        </div>
+        </div>,
+        document.body
       )}
     </div>
     </div>
