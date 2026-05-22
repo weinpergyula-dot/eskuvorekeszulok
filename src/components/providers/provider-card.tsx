@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -72,11 +73,15 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           )}
         </button>
 
-        {avatarOpen && provider.avatar_url && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 cursor-zoom-out" onClick={() => setAvatarOpen(false)}>
+        {avatarOpen && provider.avatar_url && createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 cursor-zoom-out" onClick={() => setAvatarOpen(false)}>
+            <button type="button" onClick={() => setAvatarOpen(false)} className="absolute top-4 right-4 text-white/80 hover:text-white p-2 bg-black/30 hover:bg-black/60 rounded-full transition-colors">
+              <X className="h-7 w-7" />
+            </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={provider.avatar_url} alt={provider.full_name} className="max-w-[90vw] max-h-[90vh] rounded-2xl object-contain shadow-2xl" />
-          </div>
+            <img src={provider.avatar_url} alt={provider.full_name} onClick={(e) => e.stopPropagation()} className="max-w-[90vw] max-h-[90vh] rounded-2xl object-contain shadow-2xl select-none" />
+          </div>,
+          document.body
         )}
 
         <div className="flex-1 min-w-0">
@@ -364,7 +369,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Footer */}
       {!inCarousel && !disableLink && (
-        <div className={cn("border-t border-gray-100 px-4 py-3 items-center justify-end sm:justify-between gap-2", expanded ? "flex" : "hidden sm:flex")}>
+        <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
           {/* Category badges — desktop only, left side */}
           {!hideCategories && (
             <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
@@ -376,8 +381,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               )}
             </div>
           )}
-          {/* Chat + Részletek grouped */}
-          <div className="flex items-center gap-2">
+          {/* Chat + Részletek grouped — always pushed to right */}
+          <div className="flex items-center gap-2 ml-auto">
             <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
               <MessageCircle className="h-3.5 w-3.5" />
               Chat indítása
@@ -390,7 +395,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       )}
 
       {/* ── Gallery lightbox — tap image or backdrop to close, swipe to navigate */}
-      {galleryOpen && hasGallery && (
+      {galleryOpen && hasGallery && createPortal(
         <div
           className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
           onClick={(e) => {
@@ -450,18 +455,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               {galleryIndex + 1} / {galleryUrls.length}
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Avatar lightbox */}
-      {!inCarousel && avatarOpen && provider.avatar_url && (
+      {!inCarousel && avatarOpen && provider.avatar_url && createPortal(
         <div className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center" onClick={() => setAvatarOpen(false)}>
-          <button type="button" onClick={() => setAvatarOpen(false)} className="absolute top-4 right-4 text-white/80 hover:text-white p-2">
+          <button type="button" onClick={() => setAvatarOpen(false)} className="absolute top-4 right-4 text-white/80 hover:text-white p-2 bg-black/30 hover:bg-black/60 rounded-full transition-colors">
             <X className="h-7 w-7" />
           </button>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={provider.avatar_url} alt={provider.full_name} onClick={(e) => e.stopPropagation()} className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl select-none" />
-        </div>
+        </div>,
+        document.body
       )}
     </div>
     </div>

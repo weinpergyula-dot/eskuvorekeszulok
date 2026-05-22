@@ -140,7 +140,7 @@ export function CategoryContent({
                   <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
                 </button>
                 {sortOpen && (
-                  <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-20">
+                  <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-[200]">
                     {([
                       { value: "default",  label: "Alapértelmezett" },
                       { value: "featured", label: "Kiemeltek alapján" },
