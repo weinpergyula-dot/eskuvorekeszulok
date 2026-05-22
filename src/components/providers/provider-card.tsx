@@ -118,13 +118,13 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <Star
           key={star}
           className={cn(
-            inCarousel ? "h-5 w-5" : "h-4 w-4",
+            inCarousel ? "h-4 w-4 sm:h-5 sm:w-5" : "h-4 w-4",
             star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200"
           )}
         />
       ))}
-      <span className="text-base font-semibold text-gray-900 ml-1">{rating > 0 ? rating.toFixed(1) : "–"}</span>
-      {reviewCount > 0 && <span className="text-base text-gray-900">({reviewCount})</span>}
+      <span className={cn(inCarousel ? "text-sm sm:text-base" : "text-base", "font-semibold text-gray-900 ml-1")}>{rating > 0 ? rating.toFixed(1) : "–"}</span>
+      {reviewCount > 0 && <span className={cn(inCarousel ? "text-sm sm:text-base" : "text-base", "text-gray-900")}>({reviewCount})</span>}
     </>
   );
 
@@ -156,8 +156,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
           {/* Name */}
           <h3
-            className="font-bold text-gray-900 text-center mb-2 line-clamp-2 leading-snug w-full group-hover:text-[#84AAA6] transition-colors"
-            style={{ fontSize: nameFontSize, height: `calc(2 * 1.35 * ${nameFontSize})`, overflow: "hidden" }}
+            className="font-bold text-gray-900 text-center mb-2 line-clamp-2 leading-snug w-full group-hover:text-[#84AAA6] transition-colors text-[18px] sm:text-[20px]"
+            style={{ height: "calc(2 * 1.35 * 20px)", overflow: "hidden" }}
           >
             {provider.full_name}
           </h3>
@@ -165,17 +165,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {!hideCategories && (
             <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
               {(provider.categories ?? []).slice(0, 1).map((cat) => (
-                <Badge key={cat} variant="outline" className="text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+                <Badge key={cat} variant="outline" className="text-xs sm:text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
               ))}
               {(provider.categories ?? []).length > 1 && (
-                <Badge variant="outline" className="text-sm">+{(provider.categories ?? []).length - 1}</Badge>
+                <Badge variant="outline" className="text-xs sm:text-sm">+{(provider.categories ?? []).length - 1}</Badge>
               )}
             </div>
           )}
 
           <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
             <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
-            <span className="text-sm text-gray-900 text-center">
+            <span className="text-xs sm:text-sm text-gray-900 text-center">
               {(provider.counties ?? [])[0] ?? ""}
               {(provider.counties ?? []).length > 1 && ` +${(provider.counties ?? []).length - 1}`}
             </span>
@@ -330,10 +330,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <button
             type="button"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setExpanded((v) => !v); }}
-            className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
+            className="flex items-center gap-1.5 text-sm font-semibold text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
           >
-            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            <span>Több infó</span>
+            {expanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+            <span>{expanded ? "Bezár" : "Több infó"}</span>
           </button>
         </div>
       )}
@@ -407,16 +407,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </button>
           )}
 
+          <button
+            type="button"
+            onClick={() => setGalleryOpen(false)}
+            className="absolute top-4 right-4 text-white/80 hover:text-white p-2 bg-black/30 hover:bg-black/60 rounded-full transition-colors"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={galleryUrls[galleryIndex]}
             alt={`Galéria ${galleryIndex + 1}`}
-            className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg select-none cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (didSwipe.current) { didSwipe.current = false; return; }
-              setGalleryOpen(false);
-            }}
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg select-none"
+            onClick={(e) => e.stopPropagation()}
           />
 
           {galleryIndex < galleryUrls.length - 1 && (
