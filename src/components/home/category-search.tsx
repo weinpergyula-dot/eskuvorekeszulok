@@ -76,7 +76,7 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
                 key={category}
                 href={`/services/${category}`}
                 className={cn(
-                  "relative flex flex-col items-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#84AAA6] hover:shadow-md transition-all group",
+                  "relative flex flex-col items-center justify-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#84AAA6] hover:shadow-md transition-all group",
                   // On mobile: hide items beyond MOBILE_VISIBLE unless expanded or searching
                   !isSearching && !showAll && idx >= MOBILE_VISIBLE && "hidden sm:flex"
                 )}
@@ -87,7 +87,7 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
                 </span>
 
                 {(() => { const Icon = CATEGORY_LUCIDE_ICONS[category]; return <Icon className="h-9 w-9 mb-3 text-[#84AAA6]" strokeWidth={1.5} />; })()}
-                <h3 className="font-semibold text-gray-900 leading-tight group-hover:text-[#84AAA6] transition-colors text-[20px] sm:text-[22px] line-clamp-2 sm:line-clamp-none" style={{ minHeight: "calc(2 * 1.25 * 20px)" }}>
+                <h3 className="font-semibold text-gray-900 leading-tight group-hover:text-[#84AAA6] transition-colors text-[18px] sm:text-[20px] line-clamp-2 sm:line-clamp-none" style={{ minHeight: "calc(2 * 1.25 * 18px)" }}>
                   {CATEGORY_LABELS[category]}
                 </h3>
               </Link>
