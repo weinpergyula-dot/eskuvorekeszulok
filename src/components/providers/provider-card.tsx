@@ -289,7 +289,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── Gallery strip — slowly scrolling right→left (non-carousel only) */}
       {hasGallery && !inCarousel && (
-        <div className="overflow-hidden" style={{ height: "84px", backgroundColor: "#E8F2F1" }}>
+        <div className="overflow-hidden border-t border-b border-gray-200" style={{ height: "84px", backgroundColor: "white" }}>
           {galleryUrls.length === 1 ? (
             <button
               type="button"
@@ -311,7 +311,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                 <button
                   key={i}
                   type="button"
-                  className="h-[84px] flex-shrink-0 overflow-hidden focus:outline-none p-[5px]"
+                  className="h-[84px] flex-shrink-0 overflow-hidden focus:outline-none px-[2.5px] py-[5px]"
                   style={{ aspectRatio: "4/3" }}
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
@@ -371,16 +371,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             <MessageCircle className="h-3.5 w-3.5" />
             Chat indítása
           </a>
-          {hasGallery && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setGalleryIndex(0); setGalleryOpen(true); }}
-              className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap"
-            >
-              <Images className="h-3.5 w-3.5" />
-              Galéria
-            </button>
-          )}
           <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className="ml-auto flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
             Részletek
           </a>
