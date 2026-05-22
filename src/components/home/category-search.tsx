@@ -47,7 +47,7 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
     ? ALL_CATEGORIES.filter((cat) =>
         CATEGORY_LABELS[cat].toLowerCase().includes(query.toLowerCase())
       )
-    : [...ALL_CATEGORIES].sort((a, b) => (counts[b] ?? 0) - (counts[a] ?? 0));
+    : ALL_CATEGORIES;
 
   // When searching, always show everything; otherwise respect showAll on mobile
   const isSearching = query.trim().length > 0;
