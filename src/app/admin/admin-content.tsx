@@ -59,14 +59,37 @@ interface Props {
   preRegistrations: PreRegistration[];
 }
 
-export function AdminContent({ totalUsers, totalApproved, totalVisitors, pendingProviders, pendingChanges, providerStatuses, contactMessages: initialContactMessages, preRegistrations: initialPreRegistrations }: Props) {
+export function AdminContent({ totalUsers, totalApproved, totalVisitors, pendingProviders: initialPendingProviders, pendingChanges: initialPendingChanges, providerStatuses, contactMessages: initialContactMessages, preRegistrations: initialPreRegistrations }: Props) {
   const router = useRouter();
+
+  const [pendingProvidersState, setPendingProvidersState] = useState<Provider[]>(initialPendingProviders);
+  const [pendingChangesState, setPendingChangesState] = useState<Provider[]>(initialPendingChanges);
+
+  // Sync from server props when router.refresh() updates them
+  useEffect(() => { setPendingProvidersState(initialPendingProviders); }, [initialPendingProviders]);
+  useEffect(() => { setPendingChangesState(initialPendingChanges); }, [initialPendingChanges]);
+
+  // Poll /api/admin/pending every 10s for live updates
+  useEffect(() => {
+    const fetchPending = async () => {
+      try {
+        const res = await fetch("/api/admin/pending");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.pendingProviders)) setPendingProvidersState(data.pendingProviders);
+          if (Array.isArray(data.pendingChanges)) setPendingChangesState(data.pendingChanges);
+        }
+      } catch { /* ignore */ }
+    };
+    const interval = setInterval(fetchPending, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Merge first-submissions + edits into one unified list
   type PendingItem = Provider & { kind: "registration" | "edit" };
   const allPending: PendingItem[] = [
-    ...pendingProviders.map((p) => ({ ...p, kind: "registration" as const })),
-    ...pendingChanges.map((p) => ({ ...p, kind: "edit" as const })),
+    ...pendingProvidersState.map((p) => ({ ...p, kind: "registration" as const })),
+    ...pendingChangesState.map((p) => ({ ...p, kind: "edit" as const })),
   ];
   const totalPending = allPending.length;
 
