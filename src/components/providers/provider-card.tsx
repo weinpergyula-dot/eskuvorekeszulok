@@ -186,14 +186,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {/* Categories */}
         {!hideCategories && (
           <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
-            {(provider.categories ?? []).slice(0, 2).map((cat) => (
+            {(provider.categories ?? []).slice(0, 1).map((cat) => (
               <Badge key={cat} variant="outline" className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base")}>
                 {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
               </Badge>
             ))}
-            {(provider.categories ?? []).length > 2 && (
+            {(provider.categories ?? []).length > 1 && (
               <Badge variant="outline" className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base")}>
-                +{(provider.categories ?? []).length - 2}
+                +{(provider.categories ?? []).length - 1}
               </Badge>
             )}
           </div>
