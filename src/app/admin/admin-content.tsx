@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle } from "lucide-react";
+import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle, Send, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
@@ -74,6 +74,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   const unreadContact = contactMessages.filter((m) => !m.read).length;
 
   const [preRegistrations, setPreRegistrations] = useState<PreRegistration[]>(initialPreRegistrations);
+  const [resendingIds, setResendingIds] = useState<Record<string, "loading" | "done" | "error">>({});
 
   // Sync preRegistrations when server props update (router.refresh)
   useEffect(() => {
@@ -293,16 +294,48 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                           </span>
                         </p>
                       </div>
-                      <button
-                        onClick={async () => {
-                          const res = await fetch(`/api/admin/users/${pr.id}`, { method: "DELETE" });
-                          if (res.ok) setPreRegistrations((prev) => prev.filter((p) => p.id !== pr.id));
-                        }}
-                        className="text-sm text-[#F06C6C] hover:text-[#d94f4f] flex items-center gap-1 shrink-0"
-                      >
-                        <Trash2 className="h-4 w-4" strokeWidth={1.5} />
-                        Törlés
-                      </button>
+                      <div className="flex items-center gap-3 shrink-0">
+                        <button
+                          onClick={async () => {
+                            setResendingIds((prev) => ({ ...prev, [pr.id]: "loading" }));
+                            try {
+                              const res = await fetch("/api/admin/pre-registrations/resend", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ email: pr.email, name: pr.full_name }),
+                              });
+                              setResendingIds((prev) => ({ ...prev, [pr.id]: res.ok ? "done" : "error" }));
+                              setTimeout(() => setResendingIds((prev) => { const n = { ...prev }; delete n[pr.id]; return n; }), 3000);
+                            } catch {
+                              setResendingIds((prev) => ({ ...prev, [pr.id]: "error" }));
+                              setTimeout(() => setResendingIds((prev) => { const n = { ...prev }; delete n[pr.id]; return n; }), 3000);
+                            }
+                          }}
+                          disabled={resendingIds[pr.id] === "loading"}
+                          className={`text-sm flex items-center gap-1 transition-colors ${
+                            resendingIds[pr.id] === "done" ? "text-green-600" :
+                            resendingIds[pr.id] === "error" ? "text-[#F06C6C]" :
+                            "text-[#84AAA6] hover:text-[#6B8E8A]"
+                          }`}
+                        >
+                          {resendingIds[pr.id] === "done" ? <Check className="h-4 w-4" strokeWidth={2} /> :
+                           resendingIds[pr.id] === "error" ? <Send className="h-4 w-4" strokeWidth={1.5} /> :
+                           <Send className="h-4 w-4" strokeWidth={1.5} />}
+                          {resendingIds[pr.id] === "done" ? "Elküldve" :
+                           resendingIds[pr.id] === "error" ? "Hiba" :
+                           resendingIds[pr.id] === "loading" ? "Küldés..." : "Email újraküldés"}
+                        </button>
+                        <button
+                          onClick={async () => {
+                            const res = await fetch(`/api/admin/users/${pr.id}`, { method: "DELETE" });
+                            if (res.ok) setPreRegistrations((prev) => prev.filter((p) => p.id !== pr.id));
+                          }}
+                          className="text-sm text-[#F06C6C] hover:text-[#d94f4f] flex items-center gap-1"
+                        >
+                          <Trash2 className="h-4 w-4" strokeWidth={1.5} />
+                          Törlés
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
