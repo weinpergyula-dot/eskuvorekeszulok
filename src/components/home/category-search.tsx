@@ -82,7 +82,7 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
                 )}
               >
                 {/* Provider count badge – top right */}
-                <span className="absolute top-2 right-2 min-w-[22px] h-[22px] flex items-center justify-center rounded-full bg-[#84AAA6] text-white text-xs font-semibold px-1.5 leading-none">
+                <span className="absolute top-2 right-2 min-w-[22px] h-[22px] flex items-center justify-center rounded-full border border-[#84AAA6] text-[#84AAA6] bg-transparent text-xs font-semibold px-1.5 leading-none">
                   {counts[category] ?? 0}
                 </span>
 
