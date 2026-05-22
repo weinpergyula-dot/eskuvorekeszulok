@@ -16,8 +16,9 @@ export async function Footer() {
   } catch { /* non-critical */ }
 
   const footerCategories = (Object.keys(CATEGORY_LABELS) as ServiceCategory[])
+    .filter((key) => (counts[key] ?? 0) > 0)
     .sort((a, b) => (counts[b] ?? 0) - (counts[a] ?? 0))
-    .slice(0, 4)
+    .slice(0, 5)
     .map((key) => ({ href: `/services/${key}`, key, label: CATEGORY_LABELS[key] }));
   return (
     <footer className="bg-gray-50 border-t border-gray-200 mt-auto">
