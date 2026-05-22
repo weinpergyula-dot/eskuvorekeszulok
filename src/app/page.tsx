@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Users, Briefcase, Check } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
 import { ProviderCarousel } from "@/components/home/provider-carousel";
+import { DesktopProviderGrid } from "@/components/home/desktop-provider-grid";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
@@ -100,7 +101,7 @@ export default async function HomePage() {
       </section>
 
       {/* Services header – two-column */}
-      <div className="w-full relative border-t border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
+      <div className="w-full relative" style={{ backgroundColor: "#84AAA6" }}>
         {/* Pink bleed: center → right edge, desktop only */}
         <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -163,11 +164,16 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Featured providers carousel */}
-      <ProviderCarousel providers={carouselProviders} />
+      {/* Featured providers – carousel on mobile, rotating grid on desktop */}
+      <div className="lg:hidden">
+        <ProviderCarousel providers={carouselProviders} />
+      </div>
+      <div className="hidden lg:block">
+        <DesktopProviderGrid providers={carouselProviders} />
+      </div>
 
       {/* Services section */}
-      <section id="kategoriak" className="bg-white scroll-mt-20">
+      <section id="kategoriak" className="bg-white border-t border-gray-200 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-10 sm:pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Kategóriák</h2>
           <CategorySearch counts={categoryCounts} />
