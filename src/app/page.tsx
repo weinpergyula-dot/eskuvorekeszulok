@@ -167,8 +167,10 @@ export default async function HomePage() {
       <ProviderCarousel providers={carouselProviders} />
 
       {/* Services section */}
-      <section id="kategoriak" className="bg-[#84AAA6] scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-10 sm:pb-16">
+      <section id="kategoriak" className="relative bg-white scroll-mt-20">
+        {/* Teal background — covers title + top half of search/cards */}
+        <div className="absolute inset-x-0 top-0 h-48 sm:h-44 bg-[#84AAA6]" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-10 sm:pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Kategóriák</h2>
           <CategorySearch counts={categoryCounts} />
         </div>
