@@ -63,12 +63,18 @@ export async function sendConfirmationEmailAction(
 
     const confirmLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=magiclink`;
 
-    await sendEmail({
+    const result = await sendEmail({
       to: email,
       subject: "Regisztráció megerősítése",
       template: React.createElement(ConfirmEmail, { confirmLink, name }),
     });
 
+    if (!result.ok && !result.skipped) {
+      console.error("[sendConfirmationEmail] sendEmail hiba:", result.error);
+      return { error: "Hiba történt az email küldésekor." };
+    }
+
+    console.log(`[sendConfirmationEmail] email elküldve: ${email} (skipped=${result.skipped ?? false})`);
     return { error: null };
   } catch (err) {
     console.error("[sendConfirmationEmail] hiba:", err);
