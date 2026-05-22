@@ -204,11 +204,16 @@ export function Navbar() {
   const refreshAdminCount = (sb: typeof supabase) => {
     if (!sb) return;
     Promise.all([
-      sb.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
+      sb.from("providers").select("user_id").eq("approval_status", "pending"),
       sb.from("providers").select("*", { count: "exact", head: true }).not("pending_changes", "is", null),
       sb.from("contact_messages").select("*", { count: "exact", head: true }).eq("read", false),
-    ]).then(([{ count: newRegs }, { count: edits }, { count: contactUnread }]) => {
-      setPendingCount((newRegs ?? 0) + (edits ?? 0) + (contactUnread ?? 0));
+      fetch("/api/admin/pre-registrations").then((r) => r.json()).catch(() => []),
+    ]).then(([{ data: pendingProviders }, { count: edits }, { count: contactUnread }, preRegs]) => {
+      // Kizárjuk azokat a pending providereket akiknek még nincs megerősített emailcíme
+      // (ők már szerepelnek a preRegs-ben, ne legyenek duplán számolva)
+      const preRegUserIds = new Set((Array.isArray(preRegs) ? preRegs : []).map((p: { id: string }) => p.id));
+      const confirmedPending = (pendingProviders ?? []).filter((p: { user_id: string }) => !preRegUserIds.has(p.user_id)).length;
+      setPendingCount(confirmedPending + (edits ?? 0) + (contactUnread ?? 0) + (Array.isArray(preRegs) ? preRegs.length : 0));
     });
   };
 
@@ -282,8 +287,10 @@ export function Navbar() {
   ];
 
   const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
-    { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
-    ...((hasProvider && providerIsActive) || profile?.role === "admin" ? [
+    ...(profile?.role === "provider" ? [
+      { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
+    ] : []),
+    ...(hasProvider && providerIsActive ? [
       { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek", Icon: Heart },
@@ -402,7 +409,13 @@ export function Navbar() {
                 {servicesOpen && (
                   <div className="absolute top-full left-0 pt-2 w-64 z-50">
                     <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
-                      {mainCategories.map((cat) => (
+                      {(Object.keys(navCategoryCounts).length > 0
+                        ? (Object.keys(CATEGORY_LABELS) as (typeof mainCategories[number])[])
+                            .filter((cat) => (navCategoryCounts[cat] ?? 0) > 0)
+                            .sort((a, b) => (navCategoryCounts[b] ?? 0) - (navCategoryCounts[a] ?? 0))
+                            .slice(0, 8)
+                        : mainCategories
+                      ).map((cat) => (
                         <Link key={cat} href={`/services/${cat}`} className="flex items-center justify-between px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]">
                           <span>{CATEGORY_LABELS[cat]}</span>
                           {navCategoryCounts[cat] != null && (

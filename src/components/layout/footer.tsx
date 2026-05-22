@@ -1,13 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
-
-const footerCategories = [
-  { href: "/services/fotosok-videosok", key: "fotosok-videosok", label: "Fotósok, Videósok" },
-  { href: "/services/elo-zene-dj",      key: "elo-zene-dj",      label: "Élőzene, DJ" },
-  { href: "/services/smink",            key: "smink",             label: "Smink" },
-  { href: "/services/helyszin",         key: "helyszin",          label: "Helyszínek" },
-];
+import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 
 export async function Footer() {
   let counts: Record<string, number> = {};
@@ -20,6 +14,12 @@ export async function Footer() {
       }
     }
   } catch { /* non-critical */ }
+
+  const footerCategories = (Object.keys(CATEGORY_LABELS) as ServiceCategory[])
+    .filter((key) => (counts[key] ?? 0) > 0)
+    .sort((a, b) => (counts[b] ?? 0) - (counts[a] ?? 0))
+    .slice(0, 5)
+    .map((key) => ({ href: `/services/${key}`, key, label: CATEGORY_LABELS[key] }));
   return (
     <footer className="bg-gray-50 border-t border-gray-200 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 footer-inner">

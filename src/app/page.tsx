@@ -163,7 +163,7 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Featured providers carousel – mobile only */}
+      {/* Featured providers carousel */}
       <ProviderCarousel providers={carouselProviders} />
 
       {/* Services section */}
