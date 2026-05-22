@@ -207,8 +207,9 @@ export function Navbar() {
       sb.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
       sb.from("providers").select("*", { count: "exact", head: true }).not("pending_changes", "is", null),
       sb.from("contact_messages").select("*", { count: "exact", head: true }).eq("read", false),
-    ]).then(([{ count: newRegs }, { count: edits }, { count: contactUnread }]) => {
-      setPendingCount((newRegs ?? 0) + (edits ?? 0) + (contactUnread ?? 0));
+      fetch("/api/admin/pre-registrations").then((r) => r.json()).catch(() => []),
+    ]).then(([{ count: newRegs }, { count: edits }, { count: contactUnread }, preRegs]) => {
+      setPendingCount((newRegs ?? 0) + (edits ?? 0) + (contactUnread ?? 0) + (Array.isArray(preRegs) ? preRegs.length : 0));
     });
   };
 
