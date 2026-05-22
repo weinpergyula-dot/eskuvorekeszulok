@@ -7,7 +7,7 @@ import { Pause, Play, Rewind, FastForward } from "lucide-react";
 
 // Available durations in seconds — index 1 is the default (45 s)
 const DURATIONS = [60, 45, 35, 22, 14];
-const DEFAULT_IDX = 1;
+const DEFAULT_IDX = 0;
 
 interface ProviderCarouselProps {
   providers: Provider[];
