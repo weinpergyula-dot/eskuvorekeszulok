@@ -204,12 +204,16 @@ export function Navbar() {
   const refreshAdminCount = (sb: typeof supabase) => {
     if (!sb) return;
     Promise.all([
-      sb.from("providers").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
+      sb.from("providers").select("user_id").eq("approval_status", "pending"),
       sb.from("providers").select("*", { count: "exact", head: true }).not("pending_changes", "is", null),
       sb.from("contact_messages").select("*", { count: "exact", head: true }).eq("read", false),
       fetch("/api/admin/pre-registrations").then((r) => r.json()).catch(() => []),
-    ]).then(([{ count: newRegs }, { count: edits }, { count: contactUnread }, preRegs]) => {
-      setPendingCount((newRegs ?? 0) + (edits ?? 0) + (contactUnread ?? 0) + (Array.isArray(preRegs) ? preRegs.length : 0));
+    ]).then(([{ data: pendingProviders }, { count: edits }, { count: contactUnread }, preRegs]) => {
+      // Kizárjuk azokat a pending providereket akiknek még nincs megerősített emailcíme
+      // (ők már szerepelnek a preRegs-ben, ne legyenek duplán számolva)
+      const preRegUserIds = new Set((Array.isArray(preRegs) ? preRegs : []).map((p: { id: string }) => p.id));
+      const confirmedPending = (pendingProviders ?? []).filter((p: { user_id: string }) => !preRegUserIds.has(p.user_id)).length;
+      setPendingCount(confirmedPending + (edits ?? 0) + (contactUnread ?? 0) + (Array.isArray(preRegs) ? preRegs.length : 0));
     });
   };
 
