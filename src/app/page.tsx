@@ -167,7 +167,7 @@ export default async function HomePage() {
       <ProviderCarousel providers={carouselProviders} />
 
       {/* Services section */}
-      <section id="kategoriak" className="bg-gradient-to-b from-gray-100 to-white scroll-mt-20">
+      <section id="kategoriak" className="bg-gradient-to-b from-[#F0F6F5] to-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-10 sm:pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Kategóriák</h2>
           <CategorySearch counts={categoryCounts} />
