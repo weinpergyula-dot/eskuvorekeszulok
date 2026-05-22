@@ -14,10 +14,7 @@ interface ProviderCarouselProps {
 }
 
 export function ProviderCarousel({ providers }: ProviderCarouselProps) {
-  if (providers.length === 0) return null;
-
-  const doubled = [...providers, ...providers];
-
+  // All hooks must come before any conditional return (Rules of Hooks)
   const trackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const mouseStartX = useRef<number | null>(null);
@@ -28,6 +25,10 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
   const [dragging, setDragging] = useState(false);
   const pausedRef = useRef(false);
   const durationIdxRef = useRef(DEFAULT_IDX);
+
+  if (providers.length === 0) return null;
+
+  const doubled = [...providers, ...providers];
 
   const getComputedX = (): number => {
     if (!trackRef.current) return 0;
