@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -28,10 +28,25 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
   const [countiesExpanded, setCountiesExpanded] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
-  const hasGallery = (provider.gallery_urls ?? []).length > 0;
+  const galleryUrls = provider.gallery_urls ?? [];
+  const hasGallery = galleryUrls.length > 0;
+
+  // Keyboard navigation for gallery lightbox
+  useEffect(() => {
+    if (!galleryOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") setGalleryIndex((i) => Math.max(0, i - 1));
+      if (e.key === "ArrowRight") setGalleryIndex((i) => Math.min(galleryUrls.length - 1, i + 1));
+      if (e.key === "Escape") setGalleryOpen(false);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [galleryOpen, galleryUrls.length]);
 
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
@@ -113,6 +128,35 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
       )}
     >
+      {/* Cover image — first gallery photo */}
+      {hasGallery && (
+        <button
+          type="button"
+          className="relative w-full overflow-hidden flex-shrink-0 group/cover focus:outline-none"
+          style={{ height: inCarousel ? "190px" : "160px" }}
+          onClick={() => { setGalleryIndex(0); setGalleryOpen(true); }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={galleryUrls[0]}
+            alt="Galéria"
+            className="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-black/0 group-hover/cover:bg-black/20 transition-colors duration-300" />
+          {galleryUrls.length > 1 && (
+            <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
+              <Images className="h-3 w-3" />
+              {galleryUrls.length}
+            </div>
+          )}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/cover:opacity-100 transition-opacity duration-300">
+            <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 border border-white/40">
+              <Images className="h-5 w-5 text-white" />
+            </div>
+          </div>
+        </button>
+      )}
+
       {/* Header */}
       <div className={cn("relative flex flex-col items-center", inCarousel ? "pt-8 px-7 pb-6" : "pt-6 px-5 pb-4")} style={{ backgroundColor: "#F0F6F5" }}>
         {/* Top-left: edit (owner) or favorite — hidden in carousel */}
@@ -380,6 +424,54 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </a>
         </div>
       )}
+      {/* Gallery lightbox */}
+      {galleryOpen && hasGallery && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
+          onClick={() => setGalleryOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setGalleryOpen(false)}
+            className="absolute top-4 right-4 text-white/80 hover:text-white p-2"
+          >
+            <X className="h-7 w-7" />
+          </button>
+
+          {galleryIndex > 0 && (
+            <button
+              type="button"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-3 bg-black/30 hover:bg-black/60 rounded-full transition-colors"
+              onClick={(e) => { e.stopPropagation(); setGalleryIndex((i) => i - 1); }}
+            >
+              <ChevronLeft className="h-7 w-7" />
+            </button>
+          )}
+
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={galleryUrls[galleryIndex]}
+            alt={`Galéria ${galleryIndex + 1}`}
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg select-none"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          {galleryIndex < galleryUrls.length - 1 && (
+            <button
+              type="button"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-3 bg-black/30 hover:bg-black/60 rounded-full transition-colors"
+              onClick={(e) => { e.stopPropagation(); setGalleryIndex((i) => i + 1); }}
+            >
+              <ChevronRight className="h-7 w-7" />
+            </button>
+          )}
+
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/80 text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full">
+            {galleryIndex + 1} / {galleryUrls.length}
+          </div>
+        </div>
+      )}
+
       {/* Avatar lightbox — only outside carousel mode */}
       {!inCarousel && avatarOpen && provider.avatar_url && (
         <div
