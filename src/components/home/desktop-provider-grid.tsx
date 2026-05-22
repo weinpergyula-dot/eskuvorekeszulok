@@ -10,7 +10,9 @@ interface DesktopProviderGridProps {
 }
 
 const CARDS_COUNT = 3;
-const INTERVAL_MS = 5000;
+const INTERVAL_MS = 8000;
+const FADE_MS = 450;
+const STAGGER_MS = 90;
 
 function randomSubset(arr: Provider[], n: number): Provider[] {
   const copy = [...arr];
@@ -41,7 +43,7 @@ export function DesktopProviderGrid({ providers }: DesktopProviderGridProps) {
     setTimeout(() => {
       setCards(randomSubset(providers, CARDS_COUNT));
       setVisible(true);
-    }, 250);
+    }, FADE_MS);
   }, [providers]);
 
   useEffect(() => {
@@ -66,17 +68,24 @@ export function DesktopProviderGrid({ providers }: DesktopProviderGridProps) {
           Kiemelt szolgáltatók
         </h2>
 
-        {/* Cards — fade on change */}
-        <div
-          className="grid grid-cols-3 gap-4 transition-opacity duration-300"
-          style={{ opacity: visible ? 1 : 0 }}
-        >
-          {cards.map((provider) => (
-            <ProviderCard key={provider.id} provider={provider} />
+        {/* Cards — staggered fade + slide on change */}
+        <div className="grid grid-cols-3 gap-4">
+          {cards.map((provider, idx) => (
+            <div
+              key={idx}
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(14px)",
+                transition: `opacity ${FADE_MS}ms ease-in-out ${visible ? idx * STAGGER_MS : 0}ms, transform ${FADE_MS}ms ease-in-out ${visible ? idx * STAGGER_MS : 0}ms`,
+              }}
+            >
+              <ProviderCard key={provider.id} provider={provider} />
+            </div>
           ))}
         </div>
 
         {/* Controls */}
+
         <div className="flex items-center justify-center gap-6 mt-5">
           <button
             type="button"

@@ -128,7 +128,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     </>
   );
 
-  const showFeaturedBadge = provider.featured && !inCarousel;
+  const showFeaturedBadge = !!provider.featured;
 
   return (
     <div className={cn("relative h-full", showFeaturedBadge && "pt-3.5")}>
@@ -246,7 +246,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </h3>
 
             {!hideCategories && (
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mb-1.5">
+              <div className="sm:hidden flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
                 {(provider.categories ?? []).slice(0, 1).map((cat) => (
                   <Badge key={cat} variant="outline" className="text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
                 ))}
@@ -374,14 +374,28 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Footer */}
       {!inCarousel && !disableLink && (
-        <div className={cn("border-t border-gray-100 px-4 py-3 items-center justify-between gap-2", expanded ? "flex" : "hidden sm:flex")}>
-          <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
-            <MessageCircle className="h-3.5 w-3.5" />
-            Chat indítása
-          </a>
-          <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className="ml-auto flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
-            Részletek
-          </a>
+        <div className={cn("border-t border-gray-100 px-4 py-3 items-center justify-end sm:justify-between gap-2", expanded ? "flex" : "hidden sm:flex")}>
+          {/* Category badges — desktop only, left side */}
+          {!hideCategories && (
+            <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
+              {(provider.categories ?? []).slice(0, 1).map((cat) => (
+                <Badge key={cat} variant="outline" className="text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+              ))}
+              {(provider.categories ?? []).length > 1 && (
+                <Badge variant="outline" className="text-sm">+{(provider.categories ?? []).length - 1}</Badge>
+              )}
+            </div>
+          )}
+          {/* Chat + Részletek grouped */}
+          <div className="flex items-center gap-2">
+            <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
+              <MessageCircle className="h-3.5 w-3.5" />
+              Chat indítása
+            </a>
+            <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
+              Részletek
+            </a>
+          </div>
         </div>
       )}
 
