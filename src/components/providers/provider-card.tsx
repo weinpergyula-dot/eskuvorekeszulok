@@ -135,7 +135,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const showFeaturedBadge = !!provider.featured;
 
   return (
-    <div className={cn("relative h-full", !inCarousel && "pt-3.5")}>
+    <div className={cn("relative h-full", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
       {showFeaturedBadge && (
         <span className="absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 bg-[#84AAA6] text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
           Kiemelt szolgáltató
