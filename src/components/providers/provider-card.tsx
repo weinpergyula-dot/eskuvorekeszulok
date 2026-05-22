@@ -128,7 +128,15 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     </>
   );
 
+  const showFeaturedBadge = provider.featured && !inCarousel;
+
   return (
+    <div className={cn("relative", showFeaturedBadge && "pt-3.5")}>
+      {showFeaturedBadge && (
+        <span className="absolute top-3.5 left-3 z-20 -translate-y-1/2 bg-[#84AAA6] text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
+          Kiemelt szolgáltató
+        </span>
+      )}
     <div
       className={cn(
         "bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden",
@@ -231,8 +239,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {/* Info column — mobile: centered; desktop: left-aligned, fills rest */}
           <div className="flex flex-col items-center sm:items-start justify-center pb-4 px-5 sm:py-5 sm:px-4 sm:pr-12 flex-1">
             <h3
-              className="font-bold text-gray-900 text-center sm:text-left mb-1.5 group-hover:text-[#84AAA6] transition-colors"
-              style={{ fontSize: nameFontSize }}
+              className="font-bold text-gray-900 text-center sm:text-left mb-1.5 group-hover:text-[#84AAA6] transition-colors text-[22px] sm:text-[20px]"
             >
               {provider.full_name}
             </h3>
@@ -240,17 +247,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             {!hideCategories && (
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mb-1.5">
                 {(provider.categories ?? []).slice(0, 1).map((cat) => (
-                  <Badge key={cat} variant="outline" className="text-sm sm:text-base">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+                  <Badge key={cat} variant="outline" className="text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
                 ))}
                 {(provider.categories ?? []).length > 1 && (
-                  <Badge variant="outline" className="text-sm sm:text-base">+{(provider.categories ?? []).length - 1}</Badge>
+                  <Badge variant="outline" className="text-sm">+{(provider.categories ?? []).length - 1}</Badge>
                 )}
               </div>
             )}
 
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1 mb-2">
               <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
-              <span className="text-sm sm:text-base text-gray-900 text-center sm:text-left">
+              <span className="text-sm text-gray-900 text-center sm:text-left">
                 {countiesExpanded
                   ? (provider.counties ?? []).join(", ")
                   : (provider.counties ?? []).slice(0, 2).join(", ")}
@@ -451,6 +458,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <img src={provider.avatar_url} alt={provider.full_name} onClick={(e) => e.stopPropagation()} className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl select-none" />
         </div>
       )}
+    </div>
     </div>
   );
 }
