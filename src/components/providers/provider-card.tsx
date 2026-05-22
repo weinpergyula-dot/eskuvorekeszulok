@@ -311,7 +311,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                 <button
                   key={i}
                   type="button"
-                  className="h-[84px] flex-shrink-0 overflow-hidden focus:outline-none p-[1px]"
+                  className="h-[84px] flex-shrink-0 overflow-hidden focus:outline-none p-[5px]"
                   style={{ aspectRatio: "4/3" }}
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
