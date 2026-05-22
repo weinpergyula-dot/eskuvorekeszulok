@@ -282,7 +282,9 @@ export function Navbar() {
   ];
 
   const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
-    { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
+    ...(profile?.role === "provider" ? [
+      { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
+    ] : []),
     ...((hasProvider && providerIsActive) || profile?.role === "admin" ? [
       { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
