@@ -20,11 +20,12 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
 
   const trackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
+  const mouseStartX = useRef<number | null>(null);
   const frozenX = useRef<number>(0);
 
   const [paused, setPaused] = useState(false);
   const [durationIdx, setDurationIdx] = useState(DEFAULT_IDX);
-  // Refs so touch/speed handlers always see the latest values without stale closure
+  const [dragging, setDragging] = useState(false);
   const pausedRef = useRef(false);
   const durationIdxRef = useRef(DEFAULT_IDX);
 
@@ -57,7 +58,6 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
     const newPaused = !pausedRef.current;
     pausedRef.current = newPaused;
     setPaused(newPaused);
-    // If animation is still CSS-driven (no inline style yet), switch to inline first
     if (!track.style.animation) {
       applyAnimation(DURATIONS[durationIdxRef.current], getProgress(), newPaused);
     } else {
@@ -73,6 +73,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
     applyAnimation(DURATIONS[newIdx], getProgress(), pausedRef.current);
   };
 
+  // ── Touch handlers (mobile) ──────────────────────────────────────────────
   const onTouchStart = (e: React.TouchEvent) => {
     const track = trackRef.current;
     if (!track) return;
@@ -103,17 +104,59 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
     touchStartX.current = null;
   };
 
+  // ── Mouse handlers (desktop) ─────────────────────────────────────────────
+  const onMouseDown = (e: React.MouseEvent) => {
+    const track = trackRef.current;
+    if (!track) return;
+    e.preventDefault();
+    mouseStartX.current = e.clientX;
+    frozenX.current = getComputedX();
+    track.style.animation = "none";
+    track.style.transform = `translateX(${frozenX.current}px)`;
+    setDragging(true);
+  };
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    const track = trackRef.current;
+    if (mouseStartX.current === null || !track) return;
+    const dx = e.clientX - mouseStartX.current;
+    track.style.transform = `translateX(${frozenX.current + dx}px)`;
+  };
+
+  const onMouseUp = (e: React.MouseEvent) => {
+    const track = trackRef.current;
+    if (!track || mouseStartX.current === null) return;
+    const dx = e.clientX - mouseStartX.current;
+    const endX = frozenX.current + dx;
+    const halfWidth = track.scrollWidth / 2;
+    let nx = endX % halfWidth;
+    if (nx > 0) nx -= halfWidth;
+    const progress = nx / -halfWidth;
+    track.style.transform = "";
+    applyAnimation(DURATIONS[durationIdxRef.current], progress, pausedRef.current);
+    mouseStartX.current = null;
+    setDragging(false);
+  };
+
+  const onMouseLeave = (e: React.MouseEvent) => {
+    if (mouseStartX.current !== null) onMouseUp(e);
+  };
+
   return (
-    <section className="sm:hidden bg-white pt-10 pb-6 overflow-hidden">
-      <div className="px-4 mb-6">
+    <section className="bg-white pt-10 pb-6 overflow-hidden">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-6">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Kiemelt szolgáltatók</h2>
       </div>
 
       <div
-        className="overflow-hidden"
+        className={dragging ? "overflow-hidden cursor-grabbing select-none" : "overflow-hidden cursor-grab"}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseLeave}
       >
         <div
           ref={trackRef}
@@ -123,7 +166,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
           {doubled.map((provider, i) => (
             <div
               key={`${provider.id}-${i}`}
-              style={{ width: "calc(50vw - 20px)", flexShrink: 0 }}
+              className="w-[calc(50vw-20px)] sm:w-[240px] flex-shrink-0"
             >
               <ProviderCard provider={provider} nameFontSize="16px" inCarousel />
             </div>
