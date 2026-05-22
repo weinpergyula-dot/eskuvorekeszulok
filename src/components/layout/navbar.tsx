@@ -409,7 +409,7 @@ export function Navbar() {
                 {servicesOpen && (
                   <div className="absolute top-full left-0 pt-2 w-64 z-50">
                     <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
-                      {mainCategories.map((cat) => (
+                      {[...mainCategories].sort((a, b) => (navCategoryCounts[b] ?? 0) - (navCategoryCounts[a] ?? 0)).map((cat) => (
                         <Link key={cat} href={`/services/${cat}`} className="flex items-center justify-between px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]">
                           <span>{CATEGORY_LABELS[cat]}</span>
                           {navCategoryCounts[cat] != null && (
