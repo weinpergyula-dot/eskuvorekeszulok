@@ -114,7 +114,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       )}
     >
       {/* Header */}
-      <div className="relative flex flex-col items-center pt-6 px-5 pb-4" style={{ backgroundColor: "#F0F6F5" }}>
+      <div className={cn("relative flex flex-col items-center", inCarousel ? "pt-8 px-7 pb-6" : "pt-6 px-5 pb-4")} style={{ backgroundColor: "#F0F6F5" }}>
         {/* Top-left: edit (owner) or favorite — hidden in carousel */}
         {!inCarousel && !disableLink && (
           <div className="absolute top-2 left-2" onClick={(e) => e.stopPropagation()}>
@@ -141,7 +141,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {/* Avatar */}
         <div
           className={cn(
-            "w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 bg-gray-100 flex items-center justify-center shrink-0",
+            "rounded-full overflow-hidden border-4 border-white shadow-md mb-4 bg-gray-100 flex items-center justify-center shrink-0",
+            inCarousel ? "w-32 h-32" : "w-24 h-24",
             provider.avatar_url && "cursor-zoom-in"
           )}
           onClick={(e) => {
@@ -163,7 +164,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-2xl font-bold text-gray-900">
+            <span className={cn(inCarousel ? "text-4xl" : "text-2xl", "font-bold text-gray-900")}>
               {provider.full_name.charAt(0)}
             </span>
           )}
@@ -187,12 +188,12 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {!hideCategories && (
           <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
             {(provider.categories ?? []).slice(0, 1).map((cat) => (
-              <Badge key={cat} variant="outline" className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base")}>
+              <Badge key={cat} variant="outline" className={cn(inCarousel ? "text-sm" : "text-sm sm:text-base")}>
                 {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
               </Badge>
             ))}
             {(provider.categories ?? []).length > 1 && (
-              <Badge variant="outline" className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base")}>
+              <Badge variant="outline" className={cn(inCarousel ? "text-sm" : "text-sm sm:text-base")}>
                 +{(provider.categories ?? []).length - 1}
               </Badge>
             )}
@@ -202,7 +203,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         {/* Counties */}
         <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
           <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
-          <span className={cn(inCarousel ? "text-xs" : "text-sm sm:text-base", "text-gray-900 text-center")}>
+          <span className={cn(inCarousel ? "text-sm" : "text-sm sm:text-base", "text-gray-900 text-center")}>
             {inCarousel ? (
               <>
                 {(provider.counties ?? [])[0] ?? ""}
@@ -242,18 +243,18 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                 <Star
                   key={star}
                   className={cn(
-                    "h-4 w-4",
+                    inCarousel ? "h-5 w-5" : "h-4 w-4",
                     star <= Math.round(rating)
                       ? "fill-amber-400 text-amber-400"
                       : "fill-gray-200 text-gray-200"
                   )}
                 />
               ))}
-              <span className={cn(inCarousel ? "text-sm" : "text-base", "font-semibold text-gray-900 ml-1")}>
+              <span className="text-base font-semibold text-gray-900 ml-1">
                 {rating > 0 ? rating.toFixed(1) : "–"}
               </span>
               {reviewCount > 0 && (
-                <span className={cn(inCarousel ? "text-sm" : "text-base", "text-gray-900")}>({reviewCount})</span>
+                <span className="text-base text-gray-900">({reviewCount})</span>
               )}
             </>
           );

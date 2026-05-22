@@ -167,9 +167,9 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
           {doubled.map((provider, i) => (
             <div
               key={`${provider.id}-${i}`}
-              className="w-[calc(50vw-20px)] sm:w-[320px] flex-shrink-0"
+              className="w-[calc(50vw-20px)] sm:w-[400px] flex-shrink-0"
             >
-              <ProviderCard provider={provider} nameFontSize="16px" inCarousel />
+              <ProviderCard provider={provider} nameFontSize="20px" inCarousel />
             </div>
           ))}
         </div>
