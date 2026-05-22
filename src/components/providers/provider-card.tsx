@@ -131,15 +131,16 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const showFeaturedBadge = provider.featured && !inCarousel;
 
   return (
-    <div className={cn("relative", showFeaturedBadge && "pt-3.5")}>
+    <div className={cn("relative h-full", showFeaturedBadge && "pt-3.5")}>
       {showFeaturedBadge && (
-        <span className="absolute top-3.5 left-3 z-20 -translate-y-1/2 bg-[#84AAA6] text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
+        <span className="absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 bg-[#84AAA6] text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
           Kiemelt szolgáltató
         </span>
       )}
     <div
       className={cn(
-        "bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden",
+        "bg-[#FCFCFC] rounded-xl border shadow-sm flex flex-col overflow-hidden h-full",
+        showFeaturedBadge ? "border-[#84AAA6]" : "border-gray-200",
         !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
       )}
     >
