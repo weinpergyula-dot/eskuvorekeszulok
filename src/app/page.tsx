@@ -100,7 +100,7 @@ export default async function HomePage() {
       </section>
 
       {/* Services header – two-column */}
-      <div className="w-full relative border-t border-b border-white/20" style={{ backgroundColor: "#84AAA6" }}>
+      <div className="w-full relative" style={{ backgroundColor: "#84AAA6" }}>
         {/* Pink bleed: center → right edge, desktop only */}
         <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -167,11 +167,9 @@ export default async function HomePage() {
       <ProviderCarousel providers={carouselProviders} />
 
       {/* Services section */}
-      <section id="kategoriak" className="relative bg-white scroll-mt-20">
-        {/* Teal background — covers title + top half of search/cards */}
-        <div className="absolute inset-x-0 top-0 h-48 sm:h-44 bg-[#84AAA6]" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-10 sm:pb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Kategóriák</h2>
+      <section id="kategoriak" className="bg-gradient-to-b from-gray-100 to-white scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-10 sm:pb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Kategóriák</h2>
           <CategorySearch counts={categoryCounts} />
         </div>
       </section>
