@@ -285,7 +285,7 @@ export function Navbar() {
     ...(profile?.role === "provider" ? [
       { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
     ] : []),
-    ...((hasProvider && providerIsActive) || profile?.role === "admin" ? [
+    ...(hasProvider && providerIsActive ? [
       { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek", Icon: Heart },
