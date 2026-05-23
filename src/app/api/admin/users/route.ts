@@ -37,7 +37,7 @@ export async function GET() {
         providerId: prov?.id ?? null,
         providerApprovalStatus: prov?.approval_status ?? null,
         providerHasPendingChanges: !!prov?.pending_changes,
-        providerFeatured: (prov?.featured as "silver" | "gold" | null) ?? null,
+        providerFeatured: (prov?.featured as "teal" | "silver" | "gold" | null) ?? null,
       };
     });
 

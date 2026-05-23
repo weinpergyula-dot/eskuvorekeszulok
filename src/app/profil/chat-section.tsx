@@ -19,7 +19,7 @@ interface ChatProvider {
   counties: string[];
   average_rating: number | null;
   review_count: number | null;
-  featured: "silver" | "gold" | null | boolean;
+  featured: "teal" | "silver" | "gold" | null | boolean;
   is_favorite: boolean;
 }
 
@@ -271,7 +271,7 @@ function ProviderRow({
     .join(", ");
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/60 transition-colors${provider.featured === "gold" ? " border-l-2 border-l-amber-400" : provider.featured === "silver" ? " border-l-2 border-l-slate-400" : ""}`}>
+    <div className={`flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/60 transition-colors${provider.featured === "gold" ? " border-l-2 border-l-amber-400" : provider.featured === "silver" ? " border-l-2 border-l-slate-400" : provider.featured === "teal" ? " border-l-2 border-l-[#84AAA6]" : ""}`}>
       {/* Avatar */}
       <a href={`/providers/${provider.id}`} className="shrink-0">
         <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600">
@@ -293,7 +293,7 @@ function ProviderRow({
         <div className="flex items-center gap-1.5 flex-wrap">
           <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 truncate hover:text-[#84AAA6] transition-colors">{provider.full_name}</a>
           {provider.featured && (
-            <span className={`text-[10px] font-medium rounded-full px-1.5 py-0.5 shrink-0 border${provider.featured === "silver" ? " text-slate-600 bg-slate-50 border-slate-200" : " text-amber-600 bg-amber-50 border-amber-200"}`}>
+            <span className={`text-[10px] font-medium rounded-full px-1.5 py-0.5 shrink-0 border${provider.featured === "silver" ? " text-slate-600 bg-slate-50 border-slate-200" : provider.featured === "teal" ? " text-[#5C8480] bg-[#84AAA6]/10 border-[#84AAA6]/40" : " text-amber-600 bg-amber-50 border-amber-200"}`}>
               Kiemelt
             </span>
           )}

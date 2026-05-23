@@ -23,7 +23,7 @@ interface UserProfile {
   providerApprovalStatus?: string | null;
   providerHasPendingChanges?: boolean;
   providerId?: string | null;
-  providerFeatured?: "silver" | "gold" | null;
+  providerFeatured?: "teal" | "silver" | "gold" | null;
 }
 
 interface ProviderStatus {
@@ -176,12 +176,12 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
     setUpdating(null);
   };
 
-  const setFeaturedTier = async (u: UserProfile, tier: "silver" | "gold") => {
+  const setFeaturedTier = async (u: UserProfile, tier: "teal" | "silver" | "gold") => {
     if (!u.providerId) return;
     setUpdating(u.user_id);
     setError(null);
     // clicking the active tier removes it; clicking the other switches to it
-    const newTier: "silver" | "gold" | null = u.providerFeatured === tier ? null : tier;
+    const newTier: "teal" | "silver" | "gold" | null = u.providerFeatured === tier ? null : tier;
     const res = await fetch("/api/admin/users", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -418,6 +418,19 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                           >
                             <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "silver" ? "currentColor" : "none"} />
                           </button>
+                          {/* Teal star */}
+                          <button
+                            disabled={updating === u.user_id}
+                            onClick={() => setFeaturedTier(u, "teal")}
+                            title={u.providerFeatured === "teal" ? "Türkiz – kattints az eltávolításhoz" : "Türkiz kiemelés"}
+                            className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                              u.providerFeatured === "teal"
+                                ? "bg-[#84AAA6] border-[#84AAA6] text-white hover:bg-[#6B8E8A]"
+                                : "bg-white border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                            }`}
+                          >
+                            <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "teal" ? "currentColor" : "none"} />
+                          </button>
                           {/* Gold star */}
                           <button
                             disabled={updating === u.user_id}
@@ -533,6 +546,19 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                       }`}
                     >
                       <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "silver" ? "currentColor" : "none"} />
+                    </button>
+                    {/* Teal star */}
+                    <button
+                      disabled={updating === u.user_id}
+                      onClick={() => setFeaturedTier(u, "teal")}
+                      title={u.providerFeatured === "teal" ? "Türkiz – kattints az eltávolításhoz" : "Türkiz kiemelés"}
+                      className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                        u.providerFeatured === "teal"
+                          ? "bg-[#84AAA6] border-[#84AAA6] text-white"
+                          : "bg-white border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                      }`}
+                    >
+                      <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "teal" ? "currentColor" : "none"} />
                     </button>
                     {/* Gold star */}
                     <button
