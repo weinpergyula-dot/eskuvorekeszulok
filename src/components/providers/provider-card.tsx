@@ -133,15 +133,18 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   );
 
   const showFeaturedBadge = !!provider.featured;
+  const headerBg = provider.featured === "gold" ? "#FFFBEB" : provider.featured === "silver" ? "#F8FAFC" : "#F0F6F5";
 
   return (
     <div className={cn("relative h-full", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
       {showFeaturedBadge && (
         <span className={cn(
-          "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap",
-          provider.featured === "gold" ? "bg-amber-500" : "bg-slate-400"
+          "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
+          provider.featured === "gold"
+            ? "bg-amber-50 text-amber-700 border-amber-300"
+            : "bg-slate-100 text-slate-600 border-slate-300"
         )}>
-          {provider.featured === "gold" ? "Arany szolgáltató" : "Ezüst szolgáltató"}
+          Kiemelt szolgáltató
         </span>
       )}
     <div
@@ -153,7 +156,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     >
       {/* ── CAROUSEL mode: stacked centered header ─────────────────────── */}
       {inCarousel && (
-        <div className="relative flex flex-col items-center pt-8 px-7 pb-6" style={{ backgroundColor: "#F0F6F5" }}>
+        <div className="relative flex flex-col items-center pt-8 px-7 pb-6" style={{ backgroundColor: headerBg }}>
           {/* Avatar */}
           <div
             className={cn(
@@ -203,7 +206,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── REGULAR card: desktop side-by-side, mobile stacked ─────────── */}
       {!inCarousel && (
-        <div className="relative flex flex-col sm:flex-row" style={{ backgroundColor: "#F0F6F5" }}>
+        <div className="relative flex flex-col sm:flex-row" style={{ backgroundColor: headerBg }}>
           {/* Absolute action buttons */}
           {!disableLink && (
             <div className="absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
