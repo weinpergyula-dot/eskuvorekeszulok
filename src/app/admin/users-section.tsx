@@ -23,7 +23,7 @@ interface UserProfile {
   providerApprovalStatus?: string | null;
   providerHasPendingChanges?: boolean;
   providerId?: string | null;
-  providerFeatured?: boolean;
+  providerFeatured?: "teal" | "silver" | "gold" | null;
 }
 
 interface ProviderStatus {
@@ -176,14 +176,16 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
     setUpdating(null);
   };
 
-  const toggleFeatured = async (u: UserProfile) => {
+  const setFeaturedTier = async (u: UserProfile, tier: "teal" | "silver" | "gold") => {
     if (!u.providerId) return;
     setUpdating(u.user_id);
     setError(null);
+    // clicking the active tier removes it; clicking the other switches to it
+    const newTier: "teal" | "silver" | "gold" | null = u.providerFeatured === tier ? null : tier;
     const res = await fetch("/api/admin/users", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ toggleFeatured: true, providerId: u.providerId }),
+      body: JSON.stringify({ setFeaturedTier: newTier, providerId: u.providerId }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -402,18 +404,47 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-2 justify-end">
                       {u.providerApprovalStatus === "approved" && u.providerId && (
-                        <button
-                          disabled={updating === u.user_id}
-                          onClick={() => toggleFeatured(u)}
-                          title={u.providerFeatured ? "Kiemelt – kattints az eltávolításhoz" : "Kiemelés a főoldalra"}
-                          className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
-                            u.providerFeatured
-                              ? "bg-amber-400 border-amber-400 text-white hover:bg-amber-500"
-                              : "bg-white border-gray-200 text-gray-400 hover:border-amber-400 hover:text-amber-400"
-                          }`}
-                        >
-                          <Star className="h-3.5 w-3.5" fill={u.providerFeatured ? "currentColor" : "none"} />
-                        </button>
+                        <>
+                          {/* Silver star */}
+                          <button
+                            disabled={updating === u.user_id}
+                            onClick={() => setFeaturedTier(u, "silver")}
+                            title={u.providerFeatured === "silver" ? "Ezüst – kattints az eltávolításhoz" : "Ezüst kiemelés"}
+                            className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                              u.providerFeatured === "silver"
+                                ? "bg-slate-400 border-slate-400 text-white hover:bg-slate-500"
+                                : "bg-white border-gray-200 text-gray-400 hover:border-slate-400 hover:text-slate-400"
+                            }`}
+                          >
+                            <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "silver" ? "currentColor" : "none"} />
+                          </button>
+                          {/* Teal star */}
+                          <button
+                            disabled={updating === u.user_id}
+                            onClick={() => setFeaturedTier(u, "teal")}
+                            title={u.providerFeatured === "teal" ? "Türkiz – kattints az eltávolításhoz" : "Türkiz kiemelés"}
+                            className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                              u.providerFeatured === "teal"
+                                ? "bg-[#84AAA6] border-[#84AAA6] text-white hover:bg-[#6B8E8A]"
+                                : "bg-white border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                            }`}
+                          >
+                            <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "teal" ? "currentColor" : "none"} />
+                          </button>
+                          {/* Gold star */}
+                          <button
+                            disabled={updating === u.user_id}
+                            onClick={() => setFeaturedTier(u, "gold")}
+                            title={u.providerFeatured === "gold" ? "Arany – kattints az eltávolításhoz" : "Arany kiemelés"}
+                            className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                              u.providerFeatured === "gold"
+                                ? "bg-amber-500 border-amber-400 text-white hover:bg-amber-600"
+                                : "bg-white border-gray-200 text-gray-400 hover:border-amber-400 hover:text-amber-400"
+                            }`}
+                          >
+                            <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "gold" ? "currentColor" : "none"} />
+                          </button>
+                        </>
                       )}
                       {u.role !== "admin" ? (
                         <Button size="sm" variant="outline" disabled={updating === u.user_id}
@@ -502,18 +533,47 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
               </div>
               <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex gap-2 flex-wrap items-center justify-end">
                 {u.providerApprovalStatus === "approved" && u.providerId && (
-                  <button
-                    disabled={updating === u.user_id}
-                    onClick={() => toggleFeatured(u)}
-                    title={u.providerFeatured ? "Kiemelt – kattints az eltávolításhoz" : "Kiemelés a főoldalra"}
-                    className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
-                      u.providerFeatured
-                        ? "bg-amber-400 border-amber-400 text-white"
-                        : "bg-white border-gray-200 text-gray-400 hover:border-amber-400 hover:text-amber-400"
-                    }`}
-                  >
-                    <Star className="h-3.5 w-3.5" fill={u.providerFeatured ? "currentColor" : "none"} />
-                  </button>
+                  <>
+                    {/* Silver star */}
+                    <button
+                      disabled={updating === u.user_id}
+                      onClick={() => setFeaturedTier(u, "silver")}
+                      title={u.providerFeatured === "silver" ? "Ezüst – kattints az eltávolításhoz" : "Ezüst kiemelés"}
+                      className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                        u.providerFeatured === "silver"
+                          ? "bg-slate-400 border-slate-400 text-white"
+                          : "bg-white border-gray-200 text-gray-400 hover:border-slate-400 hover:text-slate-400"
+                      }`}
+                    >
+                      <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "silver" ? "currentColor" : "none"} />
+                    </button>
+                    {/* Teal star */}
+                    <button
+                      disabled={updating === u.user_id}
+                      onClick={() => setFeaturedTier(u, "teal")}
+                      title={u.providerFeatured === "teal" ? "Türkiz – kattints az eltávolításhoz" : "Türkiz kiemelés"}
+                      className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                        u.providerFeatured === "teal"
+                          ? "bg-[#84AAA6] border-[#84AAA6] text-white"
+                          : "bg-white border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                      }`}
+                    >
+                      <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "teal" ? "currentColor" : "none"} />
+                    </button>
+                    {/* Gold star */}
+                    <button
+                      disabled={updating === u.user_id}
+                      onClick={() => setFeaturedTier(u, "gold")}
+                      title={u.providerFeatured === "gold" ? "Arany – kattints az eltávolításhoz" : "Arany kiemelés"}
+                      className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
+                        u.providerFeatured === "gold"
+                          ? "bg-amber-500 border-amber-400 text-white"
+                          : "bg-white border-gray-200 text-gray-400 hover:border-amber-400 hover:text-amber-400"
+                      }`}
+                    >
+                      <Star className="h-3.5 w-3.5" fill={u.providerFeatured === "gold" ? "currentColor" : "none"} />
+                    </button>
+                  </>
                 )}
                 {u.role !== "admin" ? (
                   <Button size="sm" variant="outline" disabled={updating === u.user_id}

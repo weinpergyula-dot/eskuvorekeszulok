@@ -70,7 +70,7 @@ export function CategoryContent({
     ? shuffled
     : [...providers].sort((a, b) =>
         sortBy === "featured"
-          ? (b.featured === true ? 1 : 0) - (a.featured === true ? 1 : 0)
+          ? (b.featured === "gold" ? 3 : b.featured === "teal" ? 2 : b.featured === "silver" ? 1 : 0) - (a.featured === "gold" ? 3 : a.featured === "teal" ? 2 : a.featured === "silver" ? 1 : 0)
           : sortBy === "rating"
           ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
           : sortBy === "reviews"

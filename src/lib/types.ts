@@ -57,7 +57,7 @@ export interface Provider {
   average_rating?: number;
   review_count?: number;
   view_count?: number;
-  featured?: boolean;
+  featured?: "teal" | "silver" | "gold" | null;
 }
 
 export interface ProviderUpdatePayload {

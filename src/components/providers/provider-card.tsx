@@ -52,10 +52,18 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     return () => window.removeEventListener("keydown", handleKey);
   }, [galleryOpen, galleryUrls.length]);
 
+  const tc = provider.featured === "gold"
+    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-400", hoverBgFill: "hover:bg-amber-500", buttonText: "text-amber-950", borderBase: "border-amber-200", borderHover: "hover:border-amber-400", badgeClass: "border-amber-300 text-amber-700 bg-amber-50", featuredBadgeClass: "bg-amber-50 text-amber-700 border-amber-300" }
+    : provider.featured === "silver"
+    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", buttonText: "text-white", borderBase: "border-slate-200", borderHover: "hover:border-slate-400", badgeClass: "border-slate-300 text-slate-500 bg-slate-50", featuredBadgeClass: "bg-slate-100 text-slate-600 border-slate-300" }
+    : provider.featured === "teal"
+    ? { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", buttonText: "text-white", borderBase: "border-[#84AAA6]/40", borderHover: "hover:border-[#84AAA6]", badgeClass: "border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10", featuredBadgeClass: "bg-[#84AAA6]/10 text-[#5C8480] border-[#84AAA6]/40" }
+    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", buttonText: "text-white", borderBase: "border-gray-200", borderHover: "hover:border-[#84AAA6]", badgeClass: "", featuredBadgeClass: "" };
+
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
     return (
-      <div className="flex items-center gap-3 bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all px-4 py-3">
+      <div className={cn("flex items-center gap-3 bg-[#FCFCFC] rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", tc.borderBase, tc.borderHover)}>
         {/* Avatar */}
         <button
           type="button"
@@ -87,7 +95,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className="flex-1 min-w-0">
           <div className="font-bold text-gray-900 truncate" style={{ fontSize: "16px" }}>{provider.full_name}</div>
           <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
-            <MapPin className="h-3 w-3 text-[#84AAA6] shrink-0" />
+            <MapPin className={`h-3 w-3 ${tc.text} shrink-0`} />
             <span className="truncate">
               {(provider.counties ?? []).slice(0, 2).join(", ")}
               {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
@@ -103,11 +111,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <a href={`/profil?tab=chat&with=${provider.user_id}`} className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
+          <a href={`/profil?tab=chat&with=${provider.user_id}`} className={`hidden sm:flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
             <MessageCircle className="h-3.5 w-3.5" />
             Chat indítása
           </a>
-          <a href={`/providers/${provider.id}`} className="flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
+          <a href={`/providers/${provider.id}`} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
             Részletek
           </a>
         </div>
@@ -133,24 +141,28 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   );
 
   const showFeaturedBadge = !!provider.featured;
+  const headerBg = provider.featured === "gold" ? "#FFFBEB" : provider.featured === "silver" ? "#F8FAFC" : provider.featured === "teal" ? "#EDF4F3" : "#F0F6F5";
 
   return (
     <div className={cn("relative h-full", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
       {showFeaturedBadge && (
-        <span className="absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 bg-[#84AAA6] text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
+        <span className={cn(
+          "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
+          tc.featuredBadgeClass
+        )}>
           Kiemelt szolgáltató
         </span>
       )}
     <div
       className={cn(
         "bg-[#FCFCFC] rounded-xl border shadow-sm flex flex-col overflow-hidden h-full",
-        showFeaturedBadge ? "border-[#84AAA6]" : "border-gray-200",
-        !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
+        tc.borderBase,
+        !disableLink && `${tc.borderHover} hover:shadow-md transition-all group`
       )}
     >
       {/* ── CAROUSEL mode: stacked centered header ─────────────────────── */}
       {inCarousel && (
-        <div className="relative flex flex-col items-center pt-8 px-7 pb-6" style={{ backgroundColor: "#F0F6F5" }}>
+        <div className="relative flex flex-col items-center pt-8 px-7 pb-6" style={{ backgroundColor: headerBg }}>
           {/* Avatar */}
           <div
             className={cn(
@@ -178,16 +190,16 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {!hideCategories && (
             <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
               {(provider.categories ?? []).slice(0, 1).map((cat) => (
-                <Badge key={cat} variant="outline" className="text-xs sm:text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+                <Badge key={cat} variant="outline" className={cn("text-[10px] sm:text-sm", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
               ))}
               {(provider.categories ?? []).length > 1 && (
-                <Badge variant="outline" className="text-xs sm:text-sm">+{(provider.categories ?? []).length - 1}</Badge>
+                <Badge variant="outline" className={cn("text-[10px] sm:text-sm", tc.badgeClass)}>+{(provider.categories ?? []).length - 1}</Badge>
               )}
             </div>
           )}
 
           <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
-            <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
+            <MapPin className={`h-3.5 w-3.5 shrink-0 ${tc.text}`} />
             <span className="text-xs sm:text-sm text-gray-900 text-center">
               {(provider.counties ?? [])[0] ?? ""}
               {(provider.counties ?? []).length > 1 && ` +${(provider.counties ?? []).length - 1}`}
@@ -200,12 +212,12 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── REGULAR card: desktop side-by-side, mobile stacked ─────────── */}
       {!inCarousel && (
-        <div className="relative flex flex-col sm:flex-row" style={{ backgroundColor: "#F0F6F5" }}>
+        <div className="relative flex flex-col sm:flex-row" style={{ backgroundColor: headerBg }}>
           {/* Absolute action buttons */}
           {!disableLink && (
             <div className="absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
               {isOwner ? (
-                <a href="/profil?tab=provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
+                <a href="/profil?tab=provider" className={`flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 ${tc.text} ${tc.textHover}`}>
                   <Pencil className="h-4 w-4" />
                 </a>
               ) : (
@@ -244,7 +256,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {/* Info column — mobile: centered; desktop: left-aligned, fills rest */}
           <div className="flex flex-col items-center sm:items-start justify-center pb-4 px-5 sm:py-5 sm:px-4 sm:pr-12 flex-1">
             <h3
-              className="font-bold text-gray-900 text-center sm:text-left mb-1.5 group-hover:text-[#84AAA6] transition-colors text-[22px] sm:text-[20px]"
+              className={`font-bold text-gray-900 text-center sm:text-left mb-1.5 transition-colors text-[22px] sm:text-[20px] ${tc.groupHover}`}
             >
               {provider.full_name}
             </h3>
@@ -261,11 +273,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             )}
 
             <div className="flex items-center justify-center sm:justify-start gap-1 mb-2">
-              <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
+              <MapPin className={`h-3.5 w-3.5 shrink-0 ${tc.text}`} />
               <span className="text-sm text-gray-900">
                 {(provider.counties ?? [])[0] ?? ""}
                 {(provider.counties ?? []).length > 1 && (
-                  <span className="text-[#84AAA6] font-medium ml-1">+{(provider.counties ?? []).length - 1}</span>
+                  <span className={`${tc.text} font-medium ml-1`}>+{(provider.counties ?? []).length - 1}</span>
                 )}
               </span>
             </div>
@@ -333,7 +345,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <button
             type="button"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setExpanded((v) => !v); }}
-            className="flex items-center gap-1.5 text-sm font-semibold text-[#84AAA6] hover:text-[#6B8E8A] transition-colors"
+            className={`flex items-center gap-1.5 text-sm font-semibold ${tc.text} ${tc.textHover} transition-colors`}
           >
             {expanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
             <span>{expanded ? "Bezár" : "Több infó"}</span>
@@ -344,20 +356,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Contact info */}
       {!inCarousel && (
         <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
-          <ContactRow icon={<Phone className="h-4 w-4 text-[#84AAA6]" />} value={provider.phone} />
-          <ContactRow icon={<Mail className="h-4 w-4 text-[#84AAA6]" />} value={provider.email} />
+          <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} />
+          <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} />
           {provider.website && (
-            <ContactRow icon={<Globe className="h-4 w-4 text-[#84AAA6]" />} value={provider.website} isLink={!disableLink} />
+            <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} />
           )}
           {provider.description && (
             <div className="flex gap-2.5">
-              <MessageCircle className="h-4 w-4 text-[#84AAA6] shrink-0 mt-0.5" />
+              <MessageCircle className={`h-4 w-4 ${tc.text} shrink-0 mt-0.5`} />
               <p className="text-base text-gray-900 leading-relaxed">
                 {!descExpanded && provider.description.length > 200
                   ? provider.description.slice(0, 200) + "…"
                   : provider.description}
                 {provider.description.length > 200 && (
-                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDescExpanded(v => !v); }} className="text-[#84AAA6] hover:underline font-medium ml-1 text-sm">
+                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDescExpanded(v => !v); }} className={`${tc.text} hover:underline font-medium ml-1 text-sm`}>
                     {descExpanded ? "kevesebb" : "több..."}
                   </button>
                 )}
@@ -374,20 +386,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {!hideCategories && (
             <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
               {(provider.categories ?? []).slice(0, 1).map((cat) => (
-                <Badge key={cat} variant="outline" className="text-xs">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+                <Badge key={cat} variant="outline" className={cn("text-xs", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
               ))}
               {(provider.categories ?? []).length > 1 && (
-                <Badge variant="outline" className="text-xs">+{(provider.categories ?? []).length - 1}</Badge>
+                <Badge variant="outline" className={cn("text-xs", tc.badgeClass)}>+{(provider.categories ?? []).length - 1}</Badge>
               )}
             </div>
           )}
           {/* Chat + Részletek grouped — always pushed to right */}
           <div className="flex items-center gap-2 ml-auto">
-            <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-sm font-medium text-[#84AAA6] border border-[#84AAA6]/50 bg-[#84AAA6]/10 hover:bg-[#84AAA6]/20 transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
+            <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               <MessageCircle className="h-3.5 w-3.5" />
               Chat indítása
             </a>
-            <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-sm font-medium text-white bg-[#84AAA6] hover:bg-[#6B8E8A] transition-colors px-3 py-1.5 rounded-full whitespace-nowrap">
+            <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               Részletek
             </a>
           </div>
@@ -479,16 +491,18 @@ function ContactRow({
   icon,
   value,
   isLink = false,
+  linkColor = "text-[#84AAA6]",
 }: {
   icon: React.ReactNode;
   value: string;
   isLink?: boolean;
+  linkColor?: string;
 }) {
   return (
     <div className="flex items-start gap-2.5">
       <span className="shrink-0 mt-0.5">{icon}</span>
       {isLink ? (
-        <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noopener noreferrer" className="text-base text-[#84AAA6] hover:underline break-all">
+        <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noopener noreferrer" className={`text-base ${linkColor} hover:underline break-all`}>
           {value}
         </a>
       ) : (
