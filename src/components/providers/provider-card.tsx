@@ -53,10 +53,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   }, [galleryOpen, galleryUrls.length]);
 
   const tc = provider.featured === "gold"
-    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-600", hoverBgFill: "hover:bg-amber-700", borderBase: "border-amber-200", borderHover: "hover:border-amber-400", badgeClass: "border-amber-300 text-amber-700 bg-amber-50" }
+    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-400", hoverBgFill: "hover:bg-amber-500", buttonText: "text-amber-950", borderBase: "border-amber-200", borderHover: "hover:border-amber-400", badgeClass: "border-amber-300 text-amber-700 bg-amber-50" }
     : provider.featured === "silver"
-    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", borderBase: "border-slate-200", borderHover: "hover:border-slate-400", badgeClass: "border-slate-300 text-slate-500 bg-slate-50" }
-    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", borderBase: "border-gray-200", borderHover: "hover:border-[#84AAA6]", badgeClass: "" };
+    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", buttonText: "text-white", borderBase: "border-slate-200", borderHover: "hover:border-slate-400", badgeClass: "border-slate-300 text-slate-500 bg-slate-50" }
+    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", buttonText: "text-white", borderBase: "border-gray-200", borderHover: "hover:border-[#84AAA6]", badgeClass: "" };
 
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
@@ -93,7 +93,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className="flex-1 min-w-0">
           <div className="font-bold text-gray-900 truncate" style={{ fontSize: "16px" }}>{provider.full_name}</div>
           <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
-            <MapPin className="h-3 w-3 text-[#84AAA6] shrink-0" />
+            <MapPin className={`h-3 w-3 ${tc.text} shrink-0`} />
             <span className="truncate">
               {(provider.counties ?? []).slice(0, 2).join(", ")}
               {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
@@ -113,7 +113,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             <MessageCircle className="h-3.5 w-3.5" />
             Chat indítása
           </a>
-          <a href={`/providers/${provider.id}`} className={`flex items-center gap-1.5 text-sm font-medium text-white ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+          <a href={`/providers/${provider.id}`} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
             Részletek
           </a>
         </div>
@@ -190,10 +190,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {!hideCategories && (
             <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
               {(provider.categories ?? []).slice(0, 1).map((cat) => (
-                <Badge key={cat} variant="outline" className="text-[10px] sm:text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+                <Badge key={cat} variant="outline" className={cn("text-[10px] sm:text-sm", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
               ))}
               {(provider.categories ?? []).length > 1 && (
-                <Badge variant="outline" className="text-[10px] sm:text-sm">+{(provider.categories ?? []).length - 1}</Badge>
+                <Badge variant="outline" className={cn("text-[10px] sm:text-sm", tc.badgeClass)}>+{(provider.categories ?? []).length - 1}</Badge>
               )}
             </div>
           )}
@@ -399,7 +399,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               <MessageCircle className="h-3.5 w-3.5" />
               Chat indítása
             </a>
-            <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium text-white ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+            <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               Részletek
             </a>
           </div>
