@@ -118,10 +118,9 @@ export function Navbar() {
       if (payload?.new) {
         window.dispatchEvent(new CustomEvent("message-inserted", { detail: payload.new }));
       }
-      fetch("/api/messages")
+      fetch("/api/messages/unread-count")
         .then((r) => r.json())
-        .then((data: { read: boolean; is_own: boolean }[]) => {
-          const count = data.filter((m) => !m.read && !m.is_own).length;
+        .then(({ count }: { count: number }) => {
           setUnreadMessages(count);
           window.dispatchEvent(new CustomEvent("messages-unread-count", { detail: count }));
         })
@@ -185,9 +184,8 @@ export function Navbar() {
         }
         setProviderDot(null);
       });
-    fetch("/api/messages").then((r) => r.json())
-      .then((data: { read: boolean; is_own: boolean }[]) => {
-        const count = data.filter((m) => !m.read && !m.is_own).length;
+    fetch("/api/messages/unread-count").then((r) => r.json())
+      .then(({ count }: { count: number }) => {
         setUnreadMessages(count);
         window.dispatchEvent(new CustomEvent("messages-unread-count", { detail: count }));
       })
@@ -225,9 +223,8 @@ export function Navbar() {
 
   useEffect(() => {
     const onMessagesRead = () => {
-      fetch("/api/messages").then((r) => r.json())
-        .then((data: { read: boolean; is_own: boolean }[]) => {
-          const count = data.filter((m) => !m.read && !m.is_own).length;
+      fetch("/api/messages/unread-count").then((r) => r.json())
+        .then(({ count }: { count: number }) => {
           setUnreadMessages(count);
           window.dispatchEvent(new CustomEvent("messages-unread-count", { detail: count }));
         })
