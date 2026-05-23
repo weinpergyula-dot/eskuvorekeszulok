@@ -1,15 +1,15 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { MapPin, Star, Eye, User, Pencil } from "lucide-react";
+import { MapPin, Star, Eye, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
 import { PageHeader } from "@/components/layout/page-header";
 import { ProviderTabs } from "@/components/providers/provider-tabs";
-import { FavoriteButton } from "@/components/providers/favorite-button";
+import { ProviderUserActions } from "@/components/providers/provider-user-actions";
 import { ShareButton } from "@/components/providers/share-button";
 import { AvatarLightbox } from "@/components/providers/avatar-lightbox";
 
@@ -20,8 +20,8 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
   try {
-    const supabase = await createClient();
-    const { data } = await supabase
+    const admin = createAdminClient();
+    const { data } = await admin
       .from("providers")
       .select("full_name, categories, description, avatar_url")
       .eq("id", id)
@@ -54,14 +54,11 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   const { id } = await params;
 
   let provider: Provider | null = null;
-  let initialLiked = false;
-  let isOwner = false;
   try {
-    const supabase = await createClient();
-    const [{ data, error }, { data: { user } }, { data: reviewRows }] = await Promise.all([
-      supabase.from("providers").select("*").eq("id", id).eq("approval_status", "approved").or("active.is.null,active.eq.true").single(),
-      supabase.auth.getUser(),
-      supabase.from("reviews").select("rating").eq("provider_id", id),
+    const admin = createAdminClient();
+    const [{ data, error }, { data: reviewRows }] = await Promise.all([
+      admin.from("providers").select("*").eq("id", id).eq("approval_status", "approved").or("active.is.null,active.eq.true").single(),
+      admin.from("reviews").select("rating").eq("provider_id", id),
     ]);
     if (error || !data) notFound();
     const reviewCount = reviewRows?.length ?? 0;
@@ -69,16 +66,6 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       ? Math.round((reviewRows!.reduce((s, r) => s + r.rating, 0) / reviewCount) * 10) / 10
       : 0;
     provider = { ...data as Provider, review_count: reviewCount, average_rating: avgRating };
-    isOwner = !!user && user.id === provider.user_id;
-    if (user && !isOwner) {
-      const { data: fav } = await supabase
-        .from("favorites")
-        .select("provider_id")
-        .eq("user_id", user.id)
-        .eq("provider_id", id)
-        .maybeSingle();
-      initialLiked = !!fav;
-    }
   } catch {
     notFound();
   }
@@ -106,25 +93,12 @@ export default async function ProviderProfilePage({ params }: PageProps) {
         <div className="relative px-5 py-5 sm:px-8 sm:py-10 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center sm:items-start" style={{ backgroundColor: "#F0F6F5" }}>
           {/* Top-left: edit (owner) or favorite (others) – mobile only */}
           <div className="absolute top-3 left-3 sm:hidden">
-            {isOwner ? (
-              <a href="/profil?tab=provider" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]">
-                <Pencil className="h-4 w-4" />
-              </a>
-            ) : (
-              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} hideTextOnMobile />
-            )}
+            <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="mobile" />
           </div>
           {/* Top-right: share + edit (owner) or share + favorite (others) – desktop */}
           <div className="absolute top-3 right-3 hidden sm:flex items-center gap-2">
             <ShareButton title={provider.full_name} />
-            {isOwner ? (
-              <a href="/profil?tab=provider" className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#84AAA6]/10 transition-colors px-3 py-1.5">
-                <Pencil className="h-4 w-4 text-gray-400" />
-                <span className="text-sm text-gray-700">Profil szerkesztés</span>
-              </a>
-            ) : (
-              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} />
-            )}
+            <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="desktop" />
           </div>
           {/* Share – mobile only icon, top-right */}
           <div className="absolute top-3 right-3 sm:hidden">

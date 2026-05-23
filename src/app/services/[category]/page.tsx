@@ -1,6 +1,6 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { CATEGORY_LABELS, CATEGORY_SEO_DESCRIPTIONS, COUNTIES, type ServiceCategory } from "@/lib/types";
 import { CATEGORY_LUCIDE_ICONS } from "@/lib/category-icons";
 import { CategoryContent } from "@/components/providers/category-content";
@@ -39,7 +39,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   const countyCountMap: Record<string, number> = {};
 
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Fetch all approved providers for this category in one query
     const { data, error } = await supabase
