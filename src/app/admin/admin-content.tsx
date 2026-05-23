@@ -104,15 +104,16 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
     setPreRegistrations(initialPreRegistrations);
   }, [initialPreRegistrations]);
 
-  // Poll pre-registrations every 10s (auth.users has no real-time support)
+  // Poll pre-registrations every 5 min (auth.users has no real-time support)
   useEffect(() => {
     const fetchPreRegs = async () => {
+      if (document.visibilityState !== "visible") return;
       try {
         const res = await fetch("/api/admin/pre-registrations");
         if (res.ok) setPreRegistrations(await res.json());
       } catch { /* ignore */ }
     };
-    const interval = setInterval(fetchPreRegs, 10000);
+    const interval = setInterval(fetchPreRegs, 300000);
     return () => clearInterval(interval);
   }, []);
 
