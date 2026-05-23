@@ -53,10 +53,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   }, [galleryOpen, galleryUrls.length]);
 
   const tc = provider.featured === "gold"
-    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-500", hoverBgFill: "hover:bg-amber-600", borderBase: "border-amber-200", borderHover: "hover:border-amber-400" }
+    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-600", hoverBgFill: "hover:bg-amber-700", borderBase: "border-amber-200", borderHover: "hover:border-amber-400", badgeClass: "border-amber-300 text-amber-700 bg-amber-50" }
     : provider.featured === "silver"
-    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", borderBase: "border-slate-200", borderHover: "hover:border-slate-400" }
-    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", borderBase: "border-gray-200", borderHover: "hover:border-[#84AAA6]" };
+    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", borderBase: "border-slate-200", borderHover: "hover:border-slate-400", badgeClass: "border-slate-300 text-slate-500 bg-slate-50" }
+    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", borderBase: "border-gray-200", borderHover: "hover:border-[#84AAA6]", badgeClass: "" };
 
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
@@ -386,10 +386,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {!hideCategories && (
             <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
               {(provider.categories ?? []).slice(0, 1).map((cat) => (
-                <Badge key={cat} variant="outline" className="text-xs">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+                <Badge key={cat} variant="outline" className={cn("text-xs", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
               ))}
               {(provider.categories ?? []).length > 1 && (
-                <Badge variant="outline" className="text-xs">+{(provider.categories ?? []).length - 1}</Badge>
+                <Badge variant="outline" className={cn("text-xs", tc.badgeClass)}>+{(provider.categories ?? []).length - 1}</Badge>
               )}
             </div>
           )}
