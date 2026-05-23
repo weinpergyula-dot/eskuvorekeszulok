@@ -7,15 +7,17 @@ import { DesktopProviderGrid } from "@/components/home/desktop-provider-grid";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
+
+export const revalidate = 60;
 
 export default async function HomePage() {
   // Fetch approved providers: category counts + carousel picks in one query
   let carouselProviders: Provider[] = [];
   let categoryCounts: Record<string, number> = {};
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const { data } = await supabase
       .from("providers")
       .select("*")
