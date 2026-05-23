@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   CATEGORY_LABELS,
+  CATEGORY_SYNONYMS,
   type ServiceCategory,
 } from "@/lib/types";
 import { CATEGORY_LUCIDE_ICONS } from "@/lib/category-icons";
@@ -44,9 +45,13 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
   const [showAll, setShowAll] = useState(false);
 
   const filtered = query.trim()
-    ? ALL_CATEGORIES.filter((cat) =>
-        CATEGORY_LABELS[cat].toLowerCase().includes(query.toLowerCase())
-      )
+    ? ALL_CATEGORIES.filter((cat) => {
+        const q = query.toLowerCase();
+        return (
+          CATEGORY_LABELS[cat].toLowerCase().includes(q) ||
+          CATEGORY_SYNONYMS[cat].some((s) => s.includes(q))
+        );
+      })
     : [...ALL_CATEGORIES].sort((a, b) => (counts[b] ?? 0) - (counts[a] ?? 0));
 
   // When searching, always show everything; otherwise respect showAll on mobile

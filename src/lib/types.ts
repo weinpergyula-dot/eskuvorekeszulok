@@ -111,7 +111,7 @@ export type County = (typeof COUNTIES)[number];
 export const CATEGORY_LABELS: Record<ServiceCategory, string> = {
   "fotosok-videosok": "Fotósok, Videósok",
   "elo-zene-dj": "Élőzene, DJ",
-  vofely: "Vőfélyek",
+  vofely: "Vőfélyek, Ceremóniamesterek",
   "torta-sutemeny": "Torták, Sütemények",
   "menyasszonyi-ruha": "Menyasszonyi ruhák",
   "oltonya-szmoking": "Öltönyök, Szmoking",
@@ -160,7 +160,7 @@ export const CATEGORY_SEO_DESCRIPTIONS: Record<ServiceCategory, string> = {
   "elo-zene-dj":
     "Élőzene vagy DJ – a tökéletes hangulat a legjobb zenén múlik. Esküvői zenekarok, szólisták és DJ-k széles választékából találhatod meg azt, aki igazán táncra perdíti a vendégeket. Nézz körül kínálatunkban, és foglald le a nagy nap hangulatfelelősét!",
   vofely:
-    "A vőfély a lakodalom lelke: ő vezeti végig a ceremóniát, tartja a hangulatot és gondoskodik arról, hogy minden a tervek szerint menjen. Tapasztalt vőfélyeink Magyarország-szerte vállalnak esküvőket – keresd meg azt, aki a legjobban illik az elképzeléseitekhez.",
+    "A vőfély és a ceremóniamester a lakodalom lelke: ő vezeti végig a ceremóniát, tartja a hangulatot és gondoskodik arról, hogy minden a tervek szerint menjen. Tapasztalt vőfélyeink és ceremóniamestereink Magyarország-szerte vállalnak esküvőket – keresd meg azt, aki a legjobban illik az elképzeléseitekhez.",
   "torta-sutemeny":
     "Az esküvői torta nemcsak finomság, hanem az ünnep egyik legszebb dísze is. Egyedi tervezésű, kézzel készített esküvői torták és sütemények széles kínálatából választhatsz: romantikustól a modernig, kis csapatnak és nagy lagzira egyaránt. Találd meg az álomcukrászodat nálunk!",
   "menyasszonyi-ruha":
@@ -197,10 +197,33 @@ export const CATEGORY_SEO_DESCRIPTIONS: Record<ServiceCategory, string> = {
     "Az esküvői virágdekoráció varázsolja igazán romantikussá a ceremóniát és a fogadást. Esküvői virágkötőink menyasszonyi csokrok, asztaldíszek és helyszíndekoráció terén egyaránt segítenek megvalósítani az elképzelt hangulatot. Keresd meg a te virágkötődet nálunk!",
 };
 
+export const CATEGORY_SYNONYMS: Record<ServiceCategory, string[]> = {
+  "fotosok-videosok": ["fotográfus", "fényképész", "kameraman", "filmes", "videográfus", "fotó", "videó"],
+  "elo-zene-dj": ["zenekar", "együttes", "zenész", "disco", "lemezlovas", "koncert", "band"],
+  vofely: ["ceremóniamester", "mc", "műsorvezető", "konferanszié", "vőfej"],
+  "torta-sutemeny": ["cukrász", "süti", "tortakészítő", "cukrászda", "édességek", "desszert"],
+  "menyasszonyi-ruha": ["esküvői ruha", "ruhaszalon", "menyasszonyi szalon", "bridal", "menyasszony ruha"],
+  "oltonya-szmoking": ["öltöny", "vőlegény ruha", "zakó", "formal", "smokingruha", "szalon"],
+  "dekor-kellek": ["dekoráció", "díszítés", "dekoratőr", "esküvői díszítés", "kellék", "dekor"],
+  smink: ["sminkművész", "make-up", "make up artist", "mua", "arcfestés", "sminkes"],
+  "fodrasz-borbely": ["fodrász", "hajstylista", "frizura", "hajvágás", "stylist", "hajdísz"],
+  kormos: ["köröm", "műköröm", "géllakk", "nail art", "körömstúdió", "körömépítés"],
+  "koszonto-ajandek": ["ajándék", "köszöntő", "gravirozott", "személyre szabott", "emléktárgy", "nászajándék"],
+  "pedikur-manikur": ["lábápolás", "kézápolás", "pedikűr", "manikűr", "körömápolás"],
+  kozmetika: ["kozmetikus", "bőrápolás", "arctisztítás", "facial", "szépségszalon", "arckezelés"],
+  ekszer: ["gyűrű", "jegygyűrű", "ékszerész", "nyaklánc", "karkötő", "ékszerbolt"],
+  meghivo: ["meghívó", "nyomtatás", "grafikus", "ültetési terv", "esküvői nyomtatvány"],
+  "auto-hinto": ["limuzin", "esküvői autó", "vintage autó", "autókölcsönző", "hintó", "bérautó"],
+  tanckoktatas: ["tánc", "koreográfia", "nyitótánc", "valcer", "keringő", "tánciskola", "táncóra"],
+  catering: ["étel", "büfé", "menü", "étkezés", "szakács", "főzés", "étterem"],
+  helyszin: ["kastély", "borászat", "rendezvényterem", "étterem", "kert", "terem", "szalon"],
+  virag: ["virágkötő", "csokor", "menyasszonyi csokor", "asztaldísz", "flórista", "virágbolt", "bokréta"],
+};
+
 export const CATEGORY_DESCRIPTIONS: Record<ServiceCategory, string> = {
   "fotosok-videosok": "Örök emlékek minden pillanatból.",
   "elo-zene-dj": "A jó zene mindenkit táncra perdít.",
-  vofely: "Tökéletes nap, profi kézben.",
+  vofely: "Tökéletes nap, profi kezekben.",
   "torta-sutemeny": "Ettől lesz igazán édes a napotok.",
   "menyasszonyi-ruha": "Az álomruha, ami csak rád vár.",
   "oltonya-szmoking": "Az elegancia döntés kérdése.",
