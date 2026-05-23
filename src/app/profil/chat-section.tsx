@@ -19,7 +19,7 @@ interface ChatProvider {
   counties: string[];
   average_rating: number | null;
   review_count: number | null;
-  featured: boolean;
+  featured: "silver" | "gold" | null | boolean;
   is_favorite: boolean;
 }
 
