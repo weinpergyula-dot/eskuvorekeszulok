@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/page-header";
 import { CategorySearch } from "@/components/home/category-search";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Esküvői szolgáltatók kategóriái",
@@ -12,7 +14,7 @@ export const metadata: Metadata = {
 export default async function ServicesPage() {
   let categoryCounts: Record<string, number> = {};
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const { data } = await supabase
       .from("providers")
       .select("categories")

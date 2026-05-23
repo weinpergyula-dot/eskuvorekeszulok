@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { CATEGORY_LABELS } from "@/lib/types";
 
 const BASE = "https://eskuvorekeszulok.hu";
@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   let providerPages: MetadataRoute.Sitemap = [];
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const { data } = await supabase
       .from("providers")
       .select("id, updated_at")
