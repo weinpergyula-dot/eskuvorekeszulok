@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2 } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -478,8 +478,11 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile: user icon + hamburger */}
+          {/* Mobile: categories icon + user icon + hamburger */}
           <div className="md:hidden flex items-center gap-1">
+            <Link href="/services" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+              <LayoutGrid className="h-6 w-6" strokeWidth={2} />
+            </Link>
             {!user && (
               <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
                 <UserIcon className="h-7 w-7" strokeWidth={2} />
