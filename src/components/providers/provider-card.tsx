@@ -53,15 +53,15 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   }, [galleryOpen, galleryUrls.length]);
 
   const tc = provider.featured === "gold"
-    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-500", hoverBgFill: "hover:bg-amber-600" }
+    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-500", hoverBgFill: "hover:bg-amber-600", borderBase: "border-amber-200", borderHover: "hover:border-amber-400" }
     : provider.featured === "silver"
-    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600" }
-    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]" };
+    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", borderBase: "border-slate-200", borderHover: "hover:border-slate-400" }
+    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", borderBase: "border-gray-200", borderHover: "hover:border-[#84AAA6]" };
 
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
     return (
-      <div className="flex items-center gap-3 bg-[#FCFCFC] rounded-xl border border-gray-200 shadow-sm hover:border-[#84AAA6] hover:shadow-md transition-all px-4 py-3">
+      <div className={cn("flex items-center gap-3 bg-[#FCFCFC] rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", tc.borderBase, tc.borderHover)}>
         {/* Avatar */}
         <button
           type="button"
@@ -156,8 +156,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     <div
       className={cn(
         "bg-[#FCFCFC] rounded-xl border shadow-sm flex flex-col overflow-hidden h-full",
-        provider.featured === "gold" ? "border-amber-400" : provider.featured === "silver" ? "border-slate-400" : "border-gray-200",
-        !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
+        tc.borderBase,
+        !disableLink && `${tc.borderHover} hover:shadow-md transition-all group`
       )}
     >
       {/* ── CAROUSEL mode: stacked centered header ─────────────────────── */}
