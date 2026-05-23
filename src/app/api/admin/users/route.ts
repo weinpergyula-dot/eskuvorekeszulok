@@ -37,7 +37,7 @@ export async function GET() {
         providerId: prov?.id ?? null,
         providerApprovalStatus: prov?.approval_status ?? null,
         providerHasPendingChanges: !!prov?.pending_changes,
-        providerFeatured: prov?.featured ?? false,
+        providerFeatured: (prov?.featured as "silver" | "gold" | null) ?? null,
       };
     });
 
@@ -61,14 +61,14 @@ export async function PATCH(request: Request) {
     if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await request.json();
-    const { userId, role, toggleFeatured, providerId } = body;
+    const { userId, role, setFeaturedTier, providerId } = body;
 
-    // Toggle featured on a provider
-    if (toggleFeatured && providerId) {
-      const { data: prov } = await supabase.from("providers").select("featured").eq("id", providerId).single();
-      const { error } = await supabase.from("providers").update({ featured: !prov?.featured }).eq("id", providerId);
+    // Set featured tier on a provider (null | "silver" | "gold")
+    if (setFeaturedTier !== undefined && providerId) {
+      const tier = setFeaturedTier as "silver" | "gold" | null;
+      const { error } = await supabase.from("providers").update({ featured: tier }).eq("id", providerId);
       if (error) { await logError("api/admin/users PATCH featured", error.message); return NextResponse.json({ error: error.message }, { status: 500 }); }
-      return NextResponse.json({ ok: true, featured: !prov?.featured });
+      return NextResponse.json({ ok: true, featured: tier });
     }
 
     if (!userId || !["visitor", "provider", "admin"].includes(role)) {

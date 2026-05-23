@@ -137,14 +137,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   return (
     <div className={cn("relative h-full", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
       {showFeaturedBadge && (
-        <span className="absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 bg-[#84AAA6] text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
-          Kiemelt szolgáltató
+        <span className={cn(
+          "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap",
+          provider.featured === "gold" ? "bg-amber-500" : "bg-slate-400"
+        )}>
+          {provider.featured === "gold" ? "Arany szolgáltató" : "Ezüst szolgáltató"}
         </span>
       )}
     <div
       className={cn(
         "bg-[#FCFCFC] rounded-xl border shadow-sm flex flex-col overflow-hidden h-full",
-        showFeaturedBadge ? "border-[#84AAA6]" : "border-gray-200",
+        provider.featured === "gold" ? "border-amber-400" : provider.featured === "silver" ? "border-slate-400" : "border-gray-200",
         !disableLink && "hover:border-[#84AAA6] hover:shadow-md transition-all group"
       )}
     >
