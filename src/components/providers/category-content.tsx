@@ -95,7 +95,7 @@ export function CategoryContent({
       </div>
 
       {/* ── Fő elrendezés: sidebar bal + tartalom jobb ────────────────────── */}
-      <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+      <div className="flex flex-col lg:flex-row gap-8">
 
         {/* Sidebar – csak desktopon, bal oldalt, sticky */}
         <aside className="hidden lg:block lg:w-64 shrink-0">
