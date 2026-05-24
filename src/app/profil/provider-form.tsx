@@ -153,7 +153,7 @@ function ProfileView({
             </div>
             <div className="relative">
               {!isProviderActive && <InactiveBadge />}
-              <ProviderCard provider={provider} />
+              <ProviderCard provider={provider} disableLink={!isProviderActive} />
             </div>
           </div>
           <div className="space-y-2">
@@ -171,7 +171,7 @@ function ProfileView({
           </div>
           <div className="relative">
             {!isProviderActive && <InactiveBadge />}
-            <ProviderCard provider={provider} />
+            <ProviderCard provider={provider} disableLink={!isProviderActive} />
           </div>
         </div>
       )}
