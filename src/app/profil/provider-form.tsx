@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { Clock, Pencil, X, ImagePlus, FileText, ExternalLink } from "lucide-react";
+import { Clock, Pencil, X, XCircle, ImagePlus, FileText, ExternalLink } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
