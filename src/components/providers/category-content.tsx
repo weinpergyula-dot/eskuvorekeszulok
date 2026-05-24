@@ -181,7 +181,7 @@ export function CategoryContent({
                 <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                 Kiemelt szolgáltatók
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {featuredProviders.map((provider) => (
                   <ProviderCard
                     key={provider.id}
@@ -203,7 +203,7 @@ export function CategoryContent({
 
           {/* ── Főlista ───────────────────────────────────────────────────── */}
           {filteredProviders.length > 0 ? (
-            <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"}>
+            <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5"}>
               {filteredProviders.map((provider) => (
                 <ProviderCard key={provider.id} provider={provider} hideCategories isOwner={!!currentUserId && currentUserId === provider.user_id} listView={viewMode === "list"} />
               ))}

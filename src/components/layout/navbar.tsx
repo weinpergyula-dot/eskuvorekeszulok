@@ -273,7 +273,7 @@ export function Navbar() {
   ];
 
   const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
-    ...(profile?.role === "provider" ? [
+    ...(hasProvider ? [
       { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
     ] : []),
     ...(hasProvider && providerIsActive ? [
