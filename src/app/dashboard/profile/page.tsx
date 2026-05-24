@@ -13,7 +13,7 @@ import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 import { ImagePlus, X } from "lucide-react";
-import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/image-utils";
+import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils";
 
 function PillSelect<T extends string>({
   label,
@@ -287,7 +287,7 @@ export default function EditProfilePage() {
           <input
             ref={avatarInputRef}
             type="file"
-            accept="image/*"
+            accept={ALLOWED_IMAGE_ACCEPT}
             className="hidden"
             onChange={handleAvatarChange}
           />
@@ -400,7 +400,7 @@ export default function EditProfilePage() {
           <input
             ref={galleryInputRef}
             type="file"
-            accept="image/*"
+            accept={ALLOWED_IMAGE_ACCEPT}
             multiple
             className="hidden"
             onChange={async (e) => {
