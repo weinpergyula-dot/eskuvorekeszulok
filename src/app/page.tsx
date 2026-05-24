@@ -2,48 +2,27 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Users, Briefcase, Check } from "lucide-react";
 import { CategorySearch } from "@/components/home/category-search";
-import { ProviderCarousel } from "@/components/home/provider-carousel";
-import { DesktopProviderGrid } from "@/components/home/desktop-provider-grid";
-import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { Provider } from "@/lib/types";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  // Fetch approved providers: category counts + carousel picks in one query
-  let carouselProviders: Provider[] = [];
   let categoryCounts: Record<string, number> = {};
   try {
     const supabase = createAdminClient();
     const { data } = await supabase
       .from("providers")
-      .select("*")
+      .select("categories")
       .eq("approval_status", "approved")
-      .or("active.is.null,active.eq.true")
-      .limit(200);
+      .or("active.is.null,active.eq.true");
 
-    if (data && data.length > 0) {
-      // Count per category
+    if (data) {
       for (const p of data) {
         for (const cat of (p.categories ?? []) as string[]) {
           categoryCounts[cat] = (categoryCounts[cat] ?? 0) + 1;
         }
-      }
-
-      // Featured providers first; fall back to shuffled if none
-      const featured = (data as Provider[]).filter((p) => p.featured);
-      if (featured.length > 0) {
-        carouselProviders = featured;
-      } else {
-        const arr = [...data] as Provider[];
-        for (let i = arr.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        carouselProviders = arr.slice(0, 6);
       }
     }
   } catch {
@@ -51,14 +30,11 @@ export default async function HomePage() {
   }
   return (
     <>
-      {/* Mobile hero slideshow */}
-      <div className="sm:hidden">
-        <MobileHeroSlideshow />
-        <div className="px-5 py-4 text-center">
-          <p className="text-base text-gray-900 leading-relaxed">
-            Itt megtalálsz mindent egy helyen a nagy napodra!
-          </p>
-        </div>
+      {/* Hero – mobile */}
+      <div className="sm:hidden px-5 py-4 text-center">
+        <p className="text-base text-gray-900 leading-relaxed">
+          Itt megtalálsz mindent egy helyen a nagy napodra!
+        </p>
       </div>
 
       {/* Hero – desktop only */}
@@ -164,14 +140,6 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Featured providers – carousel on mobile, rotating grid on desktop */}
-      <div className="lg:hidden">
-        <ProviderCarousel providers={carouselProviders} />
-      </div>
-      <div className="hidden lg:block">
-        <DesktopProviderGrid providers={carouselProviders} />
       </div>
 
       {/* Services section */}

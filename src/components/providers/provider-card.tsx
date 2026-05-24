@@ -33,12 +33,27 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   // Swipe tracking for gallery lightbox
   const swipeStartX = useRef<number | null>(null);
   const didSwipe = useRef(false);
+  // Gallery strip scroll ref for nudge hint
+  const galleryStripRef = useRef<HTMLDivElement>(null);
 
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
   const galleryUrls = provider.gallery_urls ?? [];
   const hasGallery = galleryUrls.length > 0;
+
+  // Nudge the gallery strip once on mount to hint it's scrollable
+  useEffect(() => {
+    const el = galleryStripRef.current;
+    if (!el || galleryUrls.length <= 1) return;
+    let t2: ReturnType<typeof setTimeout>;
+    const t1 = setTimeout(() => {
+      el.scrollTo({ left: 36, behavior: "smooth" });
+      t2 = setTimeout(() => el.scrollTo({ left: 0, behavior: "smooth" }), 700);
+    }, 1000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Keyboard navigation for gallery lightbox
   useEffect(() => {
@@ -302,39 +317,37 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
       )}
 
-      {/* ── Gallery strip — slowly scrolling right→left (non-carousel only) */}
+      {/* ── Gallery strip — manually scrollable, peek + nudge hint */}
       {hasGallery && !inCarousel && (
-        <div className="overflow-hidden border-t border-b border-gray-200" style={{ height: "84px", backgroundColor: "white" }}>
-          {galleryUrls.length === 1 ? (
-            <button
-              type="button"
-              className="w-full h-full overflow-hidden focus:outline-none"
-              onClick={() => { setGalleryIndex(0); setGalleryOpen(true); }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={galleryUrls[0]} alt="Galéria" className="w-full h-full object-cover" draggable={false} />
-            </button>
-          ) : (
-            <div
-              className="flex"
-              style={{
-                width: "max-content",
-                animation: `carousel-scroll ${galleryUrls.length * 5 + 10}s linear infinite`,
-              }}
-            >
-              {[...galleryUrls, ...galleryUrls].map((url, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className="h-[84px] flex-shrink-0 overflow-hidden focus:outline-none px-[2.5px] py-[5px]"
-                  style={{ aspectRatio: "4/3" }}
-                  onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="w-full h-full object-cover" draggable={false} />
-                </button>
-              ))}
-            </div>
+        <div className="relative border-t border-b border-gray-200 bg-white" style={{ height: "84px" }}>
+          <div
+            ref={galleryStripRef}
+            className="flex h-full overflow-x-auto scrollbar-none"
+            style={{ scrollSnapType: "x mandatory" }}
+            role="region"
+            aria-label="Galéria képek"
+          >
+            {galleryUrls.map((url, i) => (
+              <button
+                key={i}
+                type="button"
+                className="h-full flex-shrink-0 overflow-hidden focus-visible:outline-2 focus-visible:outline-[#84AAA6]"
+                style={{
+                  width: galleryUrls.length === 1 ? "100%" : "80%",
+                  scrollSnapAlign: "start",
+                  aspectRatio: galleryUrls.length === 1 ? undefined : undefined,
+                }}
+                onClick={(e) => { e.stopPropagation(); setGalleryIndex(i); setGalleryOpen(true); }}
+                aria-label={`Galéria kép ${i + 1} / ${galleryUrls.length}`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="w-full h-full object-cover" draggable={false} />
+              </button>
+            ))}
+          </div>
+          {/* Right-edge fade gradient — subtle peek indicator */}
+          {galleryUrls.length > 1 && (
+            <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white/70 to-transparent pointer-events-none" />
           )}
         </div>
       )}

@@ -93,11 +93,19 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       statsMap[r.provider_id].sum += r.rating;
     }
 
-    providers = raw.map((p) => {
+    const withStats = raw.map((p) => {
       const s = statsMap[p.id];
       return s
         ? { ...p, review_count: s.count, average_rating: Math.round((s.sum / s.count) * 10) / 10 }
         : { ...p, review_count: 0, average_rating: 0 };
+    });
+
+    // Featured providers first (gold → silver → teal), then the rest
+    const featuredRank: Record<string, number> = { gold: 0, silver: 1, teal: 2 };
+    providers = withStats.sort((a, b) => {
+      const ra = a.featured ? (featuredRank[a.featured] ?? 3) : 3;
+      const rb = b.featured ? (featuredRank[b.featured] ?? 3) : 3;
+      return ra - rb;
     });
   } catch (e) {
     console.error("Supabase error:", e);
