@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import type { UserRole } from "@/lib/types";
 import type { UserIdentity } from "@supabase/supabase-js";
-import { MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/image-utils";
+import { MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils";
 
 // ── Avatar crop modal ─────────────────────────────────────────────────────────
 
@@ -204,6 +204,10 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
     if (!file) return;
     e.target.value = "";
     setAvatarSizeError(null);
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setAvatarSizeError("Nem támogatott formátum. Kérjük JPEG, PNG vagy WebP képet tölts fel.");
+      return;
+    }
     if (file.size > MAX_UPLOAD_BYTES) {
       setAvatarSizeError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
       return;
@@ -312,7 +316,7 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
               <p className="text-xs text-[#F06C6C] mt-0.5">{avatarSizeError}</p>
             )}
           </div>
-          <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+          <input ref={avatarInputRef} type="file" accept={ALLOWED_IMAGE_ACCEPT} className="hidden" onChange={handleAvatarChange} />
         </div>
       )}
 
