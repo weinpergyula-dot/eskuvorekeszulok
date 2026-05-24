@@ -469,8 +469,8 @@ export function ProviderForm({
         )}
       </div>
 
-      {/* ── Content (always visible; toggle only controls public visibility) ── */}
-      <>
+      {/* ── Content only shown when provider mode is active ─────────────── */}
+      {isProviderActive && <>
         {/* VIEW MODE */}
         {provider && !editing && (
           <ProfileView provider={provider} isProviderActive={isProviderActive} onEdit={() => setEditing(true)} />
@@ -768,7 +768,7 @@ export function ProviderForm({
               </div>
             </form>
           )}
-        </>
+        </>}
     </div>
   );
 }
