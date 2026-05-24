@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid, CircleUser, Check, UserCheck } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid, CircleUser, Check } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -454,7 +454,14 @@ export function Navbar() {
                 }}
               >
                 <button className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-                  <UserCheck className="h-6 w-6" strokeWidth={2} />
+                  {navAvatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={navAvatarUrl} alt="" className="w-6 h-6 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
+                      <Check className="h-3 w-3 text-[#84AAA6]" strokeWidth={2.5} />
+                    </div>
+                  )}
                   {badgeCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
                       {badgeCount > 99 ? "99+" : badgeCount}

@@ -10,6 +10,7 @@ import React from "react";
 const VALID_KEYS = [
   "full_name", "phone", "counties", "categories",
   "description", "detailed_description", "website", "avatar_url", "gallery_urls",
+  "pricing_pdf_url", "pricing_text",
 ];
 
 async function notifyProvider(
