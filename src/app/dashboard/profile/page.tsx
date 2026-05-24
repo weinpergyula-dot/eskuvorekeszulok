@@ -13,6 +13,7 @@ import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 import { ImagePlus, X } from "lucide-react";
+import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/image-utils";
 
 function PillSelect<T extends string>({
   label,
@@ -75,6 +76,7 @@ export default function EditProfilePage() {
   const [provider, setProvider] = useState<Provider | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -123,11 +125,18 @@ export default function EditProfilePage() {
     load();
   }, []);
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    e.target.value = "";
+    setImageError(null);
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setImageError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
+      return;
+    }
+    const compressed = await compressImage(file);
+    setAvatarFile(compressed);
+    setAvatarPreview(URL.createObjectURL(compressed));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -238,9 +247,18 @@ export default function EditProfilePage() {
           </div>
         )}
 
+        {imageError && (
+          <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+            {imageError}
+          </div>
+        )}
+
         {/* Avatar */}
         <div className="space-y-1.5">
-          <Label>Profilkép</Label>
+          <div className="flex items-baseline justify-between">
+            <Label>Profilkép</Label>
+            <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB</span>
+          </div>
           <div className="flex items-center gap-4">
             <div
               className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
@@ -374,11 +392,10 @@ export default function EditProfilePage() {
               <ImagePlus className="h-4 w-4" />
               Képek hozzáadása
             </button>
-            {(existingGalleryUrls.length + galleryFiles.length) > 0 && (
-              <span className="text-sm text-gray-500">
-                {existingGalleryUrls.length + galleryFiles.length} / 10
-              </span>
-            )}
+            {(existingGalleryUrls.length + galleryFiles.length) > 0
+              ? <span className="text-sm text-gray-500">{existingGalleryUrls.length + galleryFiles.length} / 10</span>
+              : <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB / kép</span>
+            }
           </div>
           <input
             ref={galleryInputRef}
@@ -386,12 +403,19 @@ export default function EditProfilePage() {
             accept="image/*"
             multiple
             className="hidden"
-            onChange={(e) => {
+            onChange={async (e) => {
               const newFiles = Array.from(e.target.files ?? []);
-              setGalleryFiles((prev) =>
-                [...prev, ...newFiles].slice(0, 10 - existingGalleryUrls.length)
-              );
               e.target.value = "";
+              setImageError(null);
+              const oversized = newFiles.find((f) => f.size > MAX_UPLOAD_BYTES);
+              if (oversized) {
+                setImageError(`Egy vagy több kép meghaladja a ${MAX_UPLOAD_MB} MB-os limitet.`);
+                return;
+              }
+              const compressed = await Promise.all(newFiles.map((f) => compressImage(f)));
+              setGalleryFiles((prev) =>
+                [...prev, ...compressed].slice(0, 10 - existingGalleryUrls.length)
+              );
             }}
           />
 

@@ -6,6 +6,7 @@ import { ArrowLeft, Send, Trash2, Star, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+import { optimizedImageUrl } from "@/lib/image-utils";
 
 const SYSTEM_PREFIX = "__SYSTEM__:";
 const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
@@ -314,7 +315,7 @@ function QuoteListItem({
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
           {avatarUrl
-            ? <img src={avatarUrl} alt={recipientName} className="w-full h-full object-cover" />
+            ? <img src={optimizedImageUrl(avatarUrl, 160)} alt={recipientName} className="w-full h-full object-cover" />
             : initials}
         </div>
         <div className="flex-1 min-w-0">

@@ -13,6 +13,7 @@ import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { UserRound, Briefcase, ImagePlus, X, CheckCircle2, Link2Off } from "lucide-react";
+import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/image-utils";
 
 function GoogleIcon({ size = 18 }: { size?: number }) {
   return (
@@ -127,6 +128,7 @@ function RegisterContent() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [emailChecking, setEmailChecking] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
@@ -248,17 +250,31 @@ function RegisterContent() {
     }
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    e.target.value = "";
+    setImageError(null);
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setImageError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
+      return;
+    }
+    const compressed = await compressImage(file);
+    setAvatarFile(compressed);
+    setAvatarPreview(URL.createObjectURL(compressed));
   };
 
-  const handleGalleryAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryAdd = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = Array.from(e.target.files ?? []);
-    setGalleryFiles((prev) => [...prev, ...newFiles].slice(0, 10));
     e.target.value = "";
+    setImageError(null);
+    const oversized = newFiles.find((f) => f.size > MAX_UPLOAD_BYTES);
+    if (oversized) {
+      setImageError(`Egy vagy több kép meghaladja a ${MAX_UPLOAD_MB} MB-os limitet.`);
+      return;
+    }
+    const compressed = await Promise.all(newFiles.map((f) => compressImage(f)));
+    setGalleryFiles((prev) => [...prev, ...compressed].slice(0, 10));
   };
 
   const removeGalleryFile = (index: number) => {
@@ -271,11 +287,18 @@ function RegisterContent() {
     if (avatarInputRef.current) avatarInputRef.current.value = "";
   };
 
-  const handleVisitorAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVisitorAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setVisitorAvatarFile(file);
-    setVisitorAvatarPreview(URL.createObjectURL(file));
+    e.target.value = "";
+    setImageError(null);
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setImageError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
+      return;
+    }
+    const compressed = await compressImage(file);
+    setVisitorAvatarFile(compressed);
+    setVisitorAvatarPreview(URL.createObjectURL(compressed));
   };
 
   const removeVisitorAvatar = () => {
@@ -792,6 +815,7 @@ function RegisterContent() {
                   </div>
                 </div>
                 <input ref={visitorAvatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleVisitorAvatarChange} />
+                <p className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB</p>
               </div>
             )}
 
@@ -816,6 +840,11 @@ function RegisterContent() {
               </span>
             </label>
 
+            {imageError && (
+              <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+                {imageError}
+              </div>
+            )}
             {error && (
               <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
                 {error}
@@ -925,6 +954,7 @@ function RegisterContent() {
                   className="hidden"
                   onChange={handleAvatarChange}
                 />
+                <p className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB</p>
               </div>
 
               {/* Display name */}
@@ -1052,7 +1082,7 @@ function RegisterContent() {
               {/* Gallery */}
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Tölts fel képeket a munkáidról. (opcionális, max 10 db)</p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                   <button
                     type="button"
                     onClick={() => galleryInputRef.current?.click()}
@@ -1062,9 +1092,10 @@ function RegisterContent() {
                     <ImagePlus className="h-4 w-4" />
                     Képek hozzáadása
                   </button>
-                  {galleryFiles.length > 0 && (
-                    <span className="text-sm text-gray-500">{galleryFiles.length} / 10</span>
-                  )}
+                  {galleryFiles.length > 0
+                    ? <span className="text-sm text-gray-500">{galleryFiles.length} / 10</span>
+                    : <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB / kép</span>
+                  }
                 </div>
                 <input
                   ref={galleryInputRef}
@@ -1095,6 +1126,11 @@ function RegisterContent() {
           </div>
 
           <div className="mt-8 space-y-4">
+            {imageError && (
+              <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+                {imageError}
+              </div>
+            )}
             {error && (
               <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
                 {error}
