@@ -33,7 +33,7 @@ export default async function ProfilPage() {
   // explicitly from the base table and merge.
   const { data: providerBase } = await supabase
     .from("providers")
-    .select("detailed_description, gallery_urls, pending_changes")
+    .select("detailed_description, gallery_urls, pending_changes, pricing_pdf_url, pricing_text")
     .eq("user_id", user.id)
     .single();
 
@@ -43,6 +43,8 @@ export default async function ProfilPage() {
         detailed_description: providerBase?.detailed_description ?? null,
         gallery_urls: (providerBase?.gallery_urls as string[]) ?? [],
         pending_changes: providerBase?.pending_changes ?? providerStats.pending_changes ?? null,
+        pricing_pdf_url: providerBase?.pricing_pdf_url ?? null,
+        pricing_text: providerBase?.pricing_text ?? null,
       }
     : null;
 

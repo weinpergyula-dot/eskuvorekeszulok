@@ -64,7 +64,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
     { id: "about",   label: "Bemutatkozás" },
     ...(hasGallery ? [{ id: "gallery" as Tab, label: "Galéria", desktopOnly: true }] : []),
     ...(hasPricing ? [{ id: "pricing" as Tab, label: "Árak" }] : []),
-    { id: "message", label: "Chat indítása" },
+    { id: "message", label: "Chat" },
     { id: "reviews", label: reviewCount > 0 ? `Értékelések (${reviewCount})` : "Értékelések" },
   ];
 
