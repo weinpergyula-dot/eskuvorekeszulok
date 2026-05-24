@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, SearchX, ChevronDown, LayoutGrid, List } from "lucide-react";
+import { Search, SearchX, ChevronDown, LayoutGrid, List, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CountyFilter } from "./county-filter";
 import { ProviderCard } from "./provider-card";
 import type { Provider } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 
-type SortOption = "default" | "featured" | "rating" | "reviews" | "views";
+type SortOption = "default" | "rating" | "reviews" | "views";
 
 interface CategoryContentProps {
   providers: Provider[];
@@ -49,7 +49,18 @@ export function CategoryContent({
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
   }, []);
 
-  const shuffled = useMemo(() => [...providers].sort(() => Math.random() - 0.5), [providers]);
+  // Featured providers (gold > teal > silver), shown above the main list
+  const featuredProviders = useMemo(() =>
+    [...providers.filter((p) => p.featured)].sort((a, b) =>
+      (b.featured === "gold" ? 3 : b.featured === "teal" ? 2 : b.featured === "silver" ? 1 : 0) -
+      (a.featured === "gold" ? 3 : a.featured === "teal" ? 2 : a.featured === "silver" ? 1 : 0)
+    ),
+  [providers]);
+
+  // Regular (non-featured) providers for the main list
+  const regularProviders = useMemo(() => providers.filter((p) => !p.featured), [providers]);
+
+  const shuffled = useMemo(() => [...regularProviders].sort(() => Math.random() - 0.5), [regularProviders]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -68,10 +79,8 @@ export function CategoryContent({
 
   const filteredProviders = sortBy === "default"
     ? shuffled
-    : [...providers].sort((a, b) =>
-        sortBy === "featured"
-          ? (b.featured === "gold" ? 3 : b.featured === "teal" ? 2 : b.featured === "silver" ? 1 : 0) - (a.featured === "gold" ? 3 : a.featured === "teal" ? 2 : a.featured === "silver" ? 1 : 0)
-          : sortBy === "rating"
+    : [...regularProviders].sort((a, b) =>
+        sortBy === "rating"
           ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
           : sortBy === "reviews"
           ? (b.review_count ?? 0) - (a.review_count ?? 0)
@@ -79,6 +88,28 @@ export function CategoryContent({
       );
 
   return (
+    <div>
+      {/* ── Kiemelt szolgáltatók szekció ──────────────────────────────────── */}
+      {featuredProviders.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            Kiemelt szolgáltatók
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {featuredProviders.map((provider) => (
+              <ProviderCard
+                key={provider.id}
+                provider={provider}
+                hideCategories
+                isOwner={!!currentUserId && currentUserId === provider.user_id}
+              />
+            ))}
+          </div>
+          <div className="mt-8 border-t border-gray-200" />
+        </section>
+      )}
+
     <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
       {/* Sidebar */}
       <aside className="lg:w-64 shrink-0 w-full">
@@ -136,17 +167,16 @@ export function CategoryContent({
                   onClick={() => setSortOpen((o) => !o)}
                   className="flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                 >
-                  {sortBy === "default" ? "Alapértelmezett" : sortBy === "featured" ? "Kiemeltek alapján" : sortBy === "rating" ? "Értékelés alapján" : sortBy === "reviews" ? "Értékelések száma alapján" : "Látogatottság alapján"}
+                  {sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : sortBy === "reviews" ? "Értékelések száma alapján" : "Látogatottság alapján"}
                   <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
                 </button>
                 {sortOpen && (
                   <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-[200]">
                     {([
-                      { value: "default",  label: "Alapértelmezett" },
-                      { value: "featured", label: "Kiemeltek alapján" },
-                      { value: "rating",   label: "Értékelés alapján" },
-                      { value: "reviews",  label: "Értékelések száma alapján" },
-                      { value: "views",    label: "Látogatottság alapján" },
+                      { value: "default", label: "Alapértelmezett" },
+                      { value: "rating",  label: "Értékelés alapján" },
+                      { value: "reviews", label: "Értékelések száma alapján" },
+                      { value: "views",   label: "Látogatottság alapján" },
                     ] as { value: SortOption; label: string }[]).map((opt) => (
                       <button
                         key={opt.value}
@@ -171,7 +201,7 @@ export function CategoryContent({
               ))}
             </div>
           </>
-        ) : (
+        ) : featuredProviders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
@@ -181,8 +211,9 @@ export function CategoryContent({
                 : `Egyelőre nincs elérhető ${label.toLowerCase()} szolgáltató.`}
             </p>
           </div>
-        )}
+        ) : null}
       </div>
+    </div>
     </div>
   );
 }
