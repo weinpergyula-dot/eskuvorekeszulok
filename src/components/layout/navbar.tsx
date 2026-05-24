@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid, CircleUser, Check, UserCheck } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
-import { storageImageUrl } from "@/lib/image-utils";
+import { optimizedImageUrl } from "@/lib/image-utils";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 
@@ -481,7 +481,7 @@ export function Navbar() {
                 >
                   {navAvatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={storageImageUrl(navAvatarUrl, 56)} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
+                    <img src={optimizedImageUrl(navAvatarUrl, 56)} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
                   ) : (
                     <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
                       <Check className="h-3.5 w-3.5 text-[#84AAA6]" strokeWidth={2.5} />
