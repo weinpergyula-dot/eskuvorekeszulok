@@ -557,7 +557,7 @@ function ProviderRow({ provider, type }: { provider: Provider; type: "registrati
           <div className="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center shrink-0">
             {(changes?.avatar_url ?? header.avatar_url) ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={String(changes?.avatar_url ?? header.avatar_url)} alt="" className="w-full h-full object-cover" />
+              <img src={String(changes?.avatar_url ?? header.avatar_url ?? "")} alt="" className="w-full h-full object-cover" />
             ) : (
               <span className="text-xl font-bold text-gray-900">
                 {String(header.full_name ?? "?").charAt(0)}

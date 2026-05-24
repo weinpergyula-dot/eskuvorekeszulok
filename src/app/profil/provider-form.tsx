@@ -11,6 +11,7 @@ import { Clock, Pencil, X, XCircle, ImagePlus, FileText, ExternalLink } from "lu
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
+import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils";
 
 interface Props {
   userId: string;
@@ -77,12 +78,25 @@ function PillSelect<T extends string>({
   );
 }
 
+// ── Inactive overlay on the card when provider mode is off ───────────────────
+function InactiveBadge() {
+  return (
+    <div className="absolute inset-0 z-10 flex items-start justify-center pt-3 pointer-events-none rounded-xl overflow-hidden">
+      <span className="bg-gray-900/70 text-white text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur-sm whitespace-nowrap">
+        Nem aktív – nem jelenik meg a listában
+      </span>
+    </div>
+  );
+}
+
 // ── Profile view mode ────────────────────────────────────────────────────────
 function ProfileView({
   provider,
+  isProviderActive,
   onEdit,
 }: {
   provider: Provider;
+  isProviderActive: boolean;
   onEdit: () => void;
 }) {
   const pc = provider.pending_changes as Record<string, unknown> | null | undefined;
@@ -102,26 +116,45 @@ function ProfileView({
     detailed_description: (pc?.detailed_description as string) ?? provider.detailed_description,
   };
 
+  const editButton = (
+    <Button variant="outline" size="sm" onClick={onEdit} className="flex items-center gap-1.5 shrink-0">
+      <Pencil className="h-3.5 w-3.5" />
+      Szerkesztés
+    </Button>
+  );
+
   return (
     <div className="space-y-4">
       {isFirstSubmission ? (
         <div className="space-y-2 max-w-sm">
-          {isRejected ? (
-            <p className="text-xs font-semibold uppercase tracking-wide text-red-600 flex items-center gap-1.5">
-              <XCircle className="h-3.5 w-3.5" /> Elutasítva – profilod nem jelenik meg
-            </p>
-          ) : (
-            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
-            </p>
-          )}
-          <ProviderCard provider={provider} />
+          <div className="flex items-center justify-between gap-3">
+            {isRejected ? (
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600 flex items-center gap-1.5">
+                <XCircle className="h-3.5 w-3.5" /> Elutasítva – profilod nem jelenik meg
+              </p>
+            ) : (
+              <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
+              </p>
+            )}
+            {editButton}
+          </div>
+          <div className="relative">
+            {!isProviderActive && <InactiveBadge />}
+            <ProviderCard provider={provider} disableLink />
+          </div>
         </div>
       ) : hasPendingUpdate ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Élő előnézet</p>
-            <ProviderCard provider={provider} />
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Élő előnézet</p>
+              {editButton}
+            </div>
+            <div className="relative">
+              {!isProviderActive && <InactiveBadge />}
+              <ProviderCard provider={provider} disableLink={!isProviderActive} />
+            </div>
           </div>
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
@@ -131,15 +164,17 @@ function ProfileView({
           </div>
         </div>
       ) : (
-        <div className="max-w-sm">
-          <ProviderCard provider={provider} />
+        <div className="space-y-2 max-w-sm">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Profilkártya előnézet</p>
+            {editButton}
+          </div>
+          <div className="relative">
+            {!isProviderActive && <InactiveBadge />}
+            <ProviderCard provider={provider} disableLink={!isProviderActive} />
+          </div>
         </div>
       )}
-
-      <Button variant="outline" onClick={onEdit} className="flex items-center gap-2">
-        <Pencil className="h-4 w-4" />
-        Szerkesztés
-      </Button>
     </div>
   );
 }
@@ -191,6 +226,8 @@ export function ProviderForm({
 
   const [saving, setSaving] = useState(false);
   const [error,  setError]  = useState<string | null>(null);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [galleryError, setGalleryError] = useState<string | null>(null);
 
   const handleToggle = async () => {
     const newVal = !isProviderActive;
@@ -198,9 +235,10 @@ export function ProviderForm({
     if (provider) {
       setToggling(true); setToggleError(null);
       try {
-        const { error: updateError } = await supabase
-          .from("providers").update({ active: newVal }).eq("user_id", userId);
+        const { error: updateError, count } = await supabase
+          .from("providers").update({ active: newVal }, { count: "exact" }).eq("user_id", userId);
         if (updateError) throw updateError;
+        if (count === 0) throw new Error("A módosítás nem mentődött el. Ellenőrizd a jogosultságokat.");
         onActiveChange(newVal);
       } catch (err: unknown) {
         setToggleError(
@@ -215,23 +253,49 @@ export function ProviderForm({
     onActiveChange(newVal);
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    e.target.value = "";
+    setAvatarError(null);
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setAvatarError("Nem támogatott formátum. Kérjük JPEG, PNG vagy WebP képet tölts fel.");
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setAvatarError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
+      return;
+    }
+    const compressed = await compressImage(file);
+    setAvatarFile(compressed);
+    setAvatarPreview(URL.createObjectURL(compressed));
   };
 
-  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
+    e.target.value = "";
+    setGalleryError(null);
+    const badFormat = files.find((f) => !ALLOWED_IMAGE_TYPES.includes(f.type));
+    if (badFormat) {
+      setGalleryError("Nem támogatott formátum. Csak JPEG, PNG vagy WebP képek tölthetők fel.");
+      return;
+    }
+    const oversized = files.find((f) => f.size > MAX_UPLOAD_BYTES);
+    if (oversized) {
+      setGalleryError(`Egy vagy több kép meghaladja a ${MAX_UPLOAD_MB} MB-os limitet.`);
+      return;
+    }
+    const compressed = await Promise.all(files.map((f) => compressImage(f)));
     setGalleryFiles((prev) => {
-      const combined = [...prev, ...files];
+      const combined = [...prev, ...compressed];
       const allowed = combined.slice(0, Math.max(0, 10 - galleryUrls.length));
-      setGalleryPreviews((prevP) => [...prevP, ...allowed.slice(prev.length).map((f) => URL.createObjectURL(f))]);
+      setGalleryPreviews((prevP) => [
+        ...prevP,
+        ...allowed.slice(prev.length).map((f) => URL.createObjectURL(f)),
+      ]);
       return allowed;
     });
-    e.target.value = "";
   };
 
   const removeGalleryUrl = (url: string) => setGalleryUrls((prev) => prev.filter((u) => u !== url));
@@ -262,7 +326,8 @@ export function ProviderForm({
       // Upload new gallery images directly (no approval flow)
       const newGalleryUrls: string[] = [];
       for (const file of galleryFiles) {
-        const path = `${userId}/gallery/${Date.now()}-${file.name}`;
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `${userId}/gallery/${Date.now()}-${safeName}`;
         const { error: uploadError } = await supabase.storage
           .from("avatars").upload(path, file, { upsert: false });
         if (uploadError) throw uploadError;
@@ -404,23 +469,16 @@ export function ProviderForm({
         )}
       </div>
 
-      {/* ── Content (only when active or no provider yet) ────────────────── */}
-      {isProviderActive && (
-        <>
-          {/* VIEW MODE */}
-          {provider && !editing && (
-            <ProfileView provider={provider} onEdit={() => setEditing(true)} />
-          )}
+      {/* ── Content (always visible; toggle only controls public visibility) ── */}
+      <>
+        {/* VIEW MODE */}
+        {provider && !editing && (
+          <ProfileView provider={provider} isProviderActive={isProviderActive} onEdit={() => setEditing(true)} />
+        )}
 
-          {/* EDIT MODE */}
-          {(!provider || editing) && (
+        {/* EDIT MODE */}
+        {(!provider || editing) && (
             <form onSubmit={handleSubmit} className="space-y-5">
-              {error && (
-                <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
-                  {error}
-                </div>
-              )}
-
               {/* Approval info */}
               {provider && (
                 <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
@@ -447,22 +505,30 @@ export function ProviderForm({
                       <span className="text-3xl">📷</span>
                     )}
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => avatarInputRef.current?.click()}
-                  >
-                    Kép {avatarPreview ? "módosítása" : "feltöltése"}
-                  </Button>
+                  <div className="flex flex-col gap-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => avatarInputRef.current?.click()}
+                    >
+                      Kép {avatarPreview ? "módosítása" : "feltöltése"}
+                    </Button>
+                    <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB · JPEG, PNG, WebP</span>
+                  </div>
                 </div>
                 <input
                   ref={avatarInputRef}
                   type="file"
-                  accept="image/*"
+                  accept={ALLOWED_IMAGE_ACCEPT}
                   className="hidden"
                   onChange={handleAvatarChange}
                 />
+                {avatarError && (
+                  <p className="text-sm text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
+                    {avatarError}
+                  </p>
+                )}
               </div>
 
               {/* Display name */}
@@ -601,11 +667,19 @@ export function ProviderForm({
                     ))}
                   </div>
                 )}
-                <Button type="button" variant="outline" size="sm" onClick={() => galleryInputRef.current?.click()} className="flex items-center gap-2">
-                  <ImagePlus className="h-4 w-4" />
-                  Képek hozzáadása
-                </Button>
-                <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryChange} />
+                <div className="flex items-center gap-3">
+                  <Button type="button" variant="outline" size="sm" onClick={() => galleryInputRef.current?.click()} className="flex items-center gap-2">
+                    <ImagePlus className="h-4 w-4" />
+                    Képek hozzáadása
+                  </Button>
+                  <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB / kép · JPEG, PNG, WebP</span>
+                </div>
+                <input ref={galleryInputRef} type="file" accept={ALLOWED_IMAGE_ACCEPT} multiple className="hidden" onChange={handleGalleryChange} />
+                {galleryError && (
+                  <p className="text-sm text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
+                    {galleryError}
+                  </p>
+                )}
               </div>
 
               {/* Pricing section */}
@@ -668,6 +742,12 @@ export function ProviderForm({
                 <span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.
               </p>
 
+              {error && (
+                <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+                  {error}
+                </div>
+              )}
+
               <div className="flex gap-3 pt-2 flex-wrap">
                 <Button type="submit" disabled={saving}>
                   {saving
@@ -689,7 +769,6 @@ export function ProviderForm({
             </form>
           )}
         </>
-      )}
     </div>
   );
 }

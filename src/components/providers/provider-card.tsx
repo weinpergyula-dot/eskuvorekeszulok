@@ -75,7 +75,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         >
           {provider.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+            <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
           ) : (
             <span className="text-lg font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
           )}
@@ -173,7 +173,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           >
             {provider.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+              <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
             ) : (
               <span className="text-4xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
             )}
@@ -246,7 +246,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             >
               {provider.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+                <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-2xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
               )}

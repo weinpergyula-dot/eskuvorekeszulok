@@ -22,21 +22,6 @@ const mainCategories = [
   "helyszin",
 ] as const;
 
-// Parses the /api/quote-requests response (either array or {providerRequests,visitorChats})
-// and returns the total unread count. Defined here so both useEffects can use it.
-function parseQuoteUnread(data: unknown): number {
-  if (data && typeof data === "object" && !Array.isArray(data)) {
-    const d = data as { providerRequests?: { read: boolean; unread_reply_count?: number }[]; visitorChats?: { unread_count: number }[] };
-    return (
-      (d.providerRequests ?? []).reduce((s, r) => s + (r.read ? 0 : 1) + (r.unread_reply_count ?? 0), 0) +
-      (d.visitorChats ?? []).reduce((s, c) => s + c.unread_count, 0)
-    );
-  }
-  if (Array.isArray(data)) {
-    return (data as { unread_count: number }[]).reduce((s, c) => s + c.unread_count, 0);
-  }
-  return 0;
-}
 
 function NavBadge({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -133,12 +118,12 @@ export function Navbar() {
       if (payload?.new) {
         window.dispatchEvent(new CustomEvent("quote-message-inserted", { detail: payload.new }));
       }
-      fetch("/api/quote-requests")
+      fetch("/api/quote-requests/unread-count")
         .then((r) => r.json())
-        .then((data: unknown) => {
-          const unread = parseQuoteUnread(data);
-          setUnreadQuotes(unread);
-          window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
+        .then(({ count }: { count: number }) => {
+          setUnreadQuotes(count);
+          window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
+          // Trigger chat-section to reload its full conversation list
           window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
         })
         .catch(() => {});
@@ -195,11 +180,10 @@ export function Navbar() {
         window.dispatchEvent(new CustomEvent("messages-unread-count", { detail: count }));
       })
       .catch(() => {});
-    fetch("/api/quote-requests").then((r) => r.json())
-      .then((data: unknown) => {
-        const unread = parseQuoteUnread(data);
-        setUnreadQuotes(unread);
-        window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
+    fetch("/api/quote-requests/unread-count").then((r) => r.json())
+      .then(({ count }: { count: number }) => {
+        setUnreadQuotes(count);
+        window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
       })
       .catch(() => {});
   }, [user]);
@@ -503,7 +487,7 @@ export function Navbar() {
                 >
                   {navAvatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={navAvatarUrl} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
+                    <img src={navAvatarUrl ?? ""} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
                   ) : (
                     <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
                       <Check className="h-3.5 w-3.5 text-[#84AAA6]" strokeWidth={2.5} />
