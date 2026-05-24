@@ -1,6 +1,9 @@
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB
 export const MAX_UPLOAD_MB = 5;
 
+export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+export const ALLOWED_IMAGE_ACCEPT = ALLOWED_IMAGE_TYPES.join(",");
+
 const JPEG_QUALITY = 0.85;
 
 /**

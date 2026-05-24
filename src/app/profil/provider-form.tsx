@@ -11,7 +11,7 @@ import { Clock, Pencil, X, XCircle, ImagePlus, FileText, ExternalLink } from "lu
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
-import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/image-utils";
+import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils";
 
 interface Props {
   userId: string;
@@ -226,7 +226,8 @@ export function ProviderForm({
 
   const [saving, setSaving] = useState(false);
   const [error,  setError]  = useState<string | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [galleryError, setGalleryError] = useState<string | null>(null);
 
   const handleToggle = async () => {
     const newVal = !isProviderActive;
@@ -255,9 +256,13 @@ export function ProviderForm({
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = "";
-    setUploadError(null);
+    setAvatarError(null);
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setAvatarError("Nem támogatott formátum. Kérjük JPEG, PNG vagy WebP képet tölts fel.");
+      return;
+    }
     if (file.size > MAX_UPLOAD_BYTES) {
-      setUploadError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
+      setAvatarError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
       return;
     }
     const compressed = await compressImage(file);
@@ -269,10 +274,15 @@ export function ProviderForm({
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
     e.target.value = "";
-    setUploadError(null);
+    setGalleryError(null);
+    const badFormat = files.find((f) => !ALLOWED_IMAGE_TYPES.includes(f.type));
+    if (badFormat) {
+      setGalleryError("Nem támogatott formátum. Csak JPEG, PNG vagy WebP képek tölthetők fel.");
+      return;
+    }
     const oversized = files.find((f) => f.size > MAX_UPLOAD_BYTES);
     if (oversized) {
-      setUploadError(`Egy vagy több kép meghaladja a ${MAX_UPLOAD_MB} MB-os limitet.`);
+      setGalleryError(`Egy vagy több kép meghaladja a ${MAX_UPLOAD_MB} MB-os limitet.`);
       return;
     }
     const compressed = await Promise.all(files.map((f) => compressImage(f)));
@@ -315,7 +325,8 @@ export function ProviderForm({
       // Upload new gallery images directly (no approval flow)
       const newGalleryUrls: string[] = [];
       for (const file of galleryFiles) {
-        const path = `${userId}/gallery/${Date.now()}-${file.name}`;
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `${userId}/gallery/${Date.now()}-${safeName}`;
         const { error: uploadError } = await supabase.storage
           .from("avatars").upload(path, file, { upsert: false });
         if (uploadError) throw uploadError;
@@ -467,12 +478,6 @@ export function ProviderForm({
         {/* EDIT MODE */}
         {(!provider || editing) && (
             <form onSubmit={handleSubmit} className="space-y-5">
-              {error && (
-                <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
-                  {error}
-                </div>
-              )}
-
               {/* Approval info */}
               {provider && (
                 <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
@@ -486,10 +491,7 @@ export function ProviderForm({
 
               {/* Avatar */}
               <div className="space-y-1.5">
-                <div className="flex items-baseline justify-between">
-                  <Label>Profilkép</Label>
-                  <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB</span>
-                </div>
+                <Label>Profilkép</Label>
                 <div className="flex items-center gap-4">
                   <div
                     className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
@@ -502,22 +504,30 @@ export function ProviderForm({
                       <span className="text-3xl">📷</span>
                     )}
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => avatarInputRef.current?.click()}
-                  >
-                    Kép {avatarPreview ? "módosítása" : "feltöltése"}
-                  </Button>
+                  <div className="flex flex-col gap-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => avatarInputRef.current?.click()}
+                    >
+                      Kép {avatarPreview ? "módosítása" : "feltöltése"}
+                    </Button>
+                    <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB · JPEG, PNG, WebP</span>
+                  </div>
                 </div>
                 <input
                   ref={avatarInputRef}
                   type="file"
-                  accept="image/*"
+                  accept={ALLOWED_IMAGE_ACCEPT}
                   className="hidden"
                   onChange={handleAvatarChange}
                 />
+                {avatarError && (
+                  <p className="text-sm text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
+                    {avatarError}
+                  </p>
+                )}
               </div>
 
               {/* Display name */}
@@ -620,13 +630,6 @@ export function ProviderForm({
                 onChange={(e) => setWebsite(e.target.value)}
               />
 
-              {/* Upload error */}
-              {uploadError && (
-                <p className="text-sm text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
-                  {uploadError}
-                </p>
-              )}
-
               {/* Gallery */}
               <div className="space-y-2">
                 <div className="flex items-baseline justify-between">
@@ -668,9 +671,14 @@ export function ProviderForm({
                     <ImagePlus className="h-4 w-4" />
                     Képek hozzáadása
                   </Button>
-                  <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB / kép</span>
+                  <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB / kép · JPEG, PNG, WebP</span>
                 </div>
-                <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryChange} />
+                <input ref={galleryInputRef} type="file" accept={ALLOWED_IMAGE_ACCEPT} multiple className="hidden" onChange={handleGalleryChange} />
+                {galleryError && (
+                  <p className="text-sm text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
+                    {galleryError}
+                  </p>
+                )}
               </div>
 
               {/* Pricing section */}
@@ -732,6 +740,12 @@ export function ProviderForm({
               <p className="text-sm text-gray-500">
                 <span className="text-base font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.
               </p>
+
+              {error && (
+                <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+                  {error}
+                </div>
+              )}
 
               <div className="flex gap-3 pt-2 flex-wrap">
                 <Button type="submit" disabled={saving}>

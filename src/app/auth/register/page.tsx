@@ -13,7 +13,7 @@ import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { UserRound, Briefcase, ImagePlus, X, CheckCircle2, Link2Off } from "lucide-react";
-import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/image-utils";
+import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils"
 
 function GoogleIcon({ size = 18 }: { size?: number }) {
   return (
@@ -814,7 +814,7 @@ function RegisterContent() {
                     )}
                   </div>
                 </div>
-                <input ref={visitorAvatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleVisitorAvatarChange} />
+                <input ref={visitorAvatarInputRef} type="file" accept={ALLOWED_IMAGE_ACCEPT} className="hidden" onChange={handleVisitorAvatarChange} />
                 <p className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB</p>
               </div>
             )}
@@ -950,7 +950,7 @@ function RegisterContent() {
                 <input
                   ref={avatarInputRef}
                   type="file"
-                  accept="image/*"
+                  accept={ALLOWED_IMAGE_ACCEPT}
                   className="hidden"
                   onChange={handleAvatarChange}
                 />
@@ -1100,7 +1100,7 @@ function RegisterContent() {
                 <input
                   ref={galleryInputRef}
                   type="file"
-                  accept="image/*"
+                  accept={ALLOWED_IMAGE_ACCEPT}
                   multiple
                   className="hidden"
                   onChange={handleGalleryAdd}
