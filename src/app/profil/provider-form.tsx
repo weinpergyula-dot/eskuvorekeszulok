@@ -77,12 +77,25 @@ function PillSelect<T extends string>({
   );
 }
 
+// ── Inactive overlay on the card when provider mode is off ───────────────────
+function InactiveBadge() {
+  return (
+    <div className="absolute inset-0 z-10 flex items-start justify-center pt-3 pointer-events-none rounded-xl overflow-hidden">
+      <span className="bg-gray-900/70 text-white text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur-sm whitespace-nowrap">
+        Nem aktív – nem jelenik meg a listában
+      </span>
+    </div>
+  );
+}
+
 // ── Profile view mode ────────────────────────────────────────────────────────
 function ProfileView({
   provider,
+  isProviderActive,
   onEdit,
 }: {
   provider: Provider;
+  isProviderActive: boolean;
   onEdit: () => void;
 }) {
   const pc = provider.pending_changes as Record<string, unknown> | null | undefined;
@@ -102,26 +115,45 @@ function ProfileView({
     detailed_description: (pc?.detailed_description as string) ?? provider.detailed_description,
   };
 
+  const editButton = (
+    <Button variant="outline" size="sm" onClick={onEdit} className="flex items-center gap-1.5 shrink-0">
+      <Pencil className="h-3.5 w-3.5" />
+      Szerkesztés
+    </Button>
+  );
+
   return (
     <div className="space-y-4">
       {isFirstSubmission ? (
         <div className="space-y-2 max-w-sm">
-          {isRejected ? (
-            <p className="text-xs font-semibold uppercase tracking-wide text-red-600 flex items-center gap-1.5">
-              <XCircle className="h-3.5 w-3.5" /> Elutasítva – profilod nem jelenik meg
-            </p>
-          ) : (
-            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
-            </p>
-          )}
-          <ProviderCard provider={provider} />
+          <div className="flex items-center justify-between gap-3">
+            {isRejected ? (
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600 flex items-center gap-1.5">
+                <XCircle className="h-3.5 w-3.5" /> Elutasítva – profilod nem jelenik meg
+              </p>
+            ) : (
+              <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" /> Beküldött adatok – jóváhagyásra vár
+              </p>
+            )}
+            {editButton}
+          </div>
+          <div className="relative">
+            {!isProviderActive && <InactiveBadge />}
+            <ProviderCard provider={provider} />
+          </div>
         </div>
       ) : hasPendingUpdate ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Élő előnézet</p>
-            <ProviderCard provider={provider} />
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Élő előnézet</p>
+              {editButton}
+            </div>
+            <div className="relative">
+              {!isProviderActive && <InactiveBadge />}
+              <ProviderCard provider={provider} />
+            </div>
           </div>
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
@@ -131,15 +163,17 @@ function ProfileView({
           </div>
         </div>
       ) : (
-        <div className="max-w-sm">
-          <ProviderCard provider={provider} />
+        <div className="space-y-2 max-w-sm">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Profilkártya előnézet</p>
+            {editButton}
+          </div>
+          <div className="relative">
+            {!isProviderActive && <InactiveBadge />}
+            <ProviderCard provider={provider} />
+          </div>
         </div>
       )}
-
-      <Button variant="outline" onClick={onEdit} className="flex items-center gap-2">
-        <Pencil className="h-4 w-4" />
-        Szerkesztés
-      </Button>
     </div>
   );
 }
@@ -404,16 +438,15 @@ export function ProviderForm({
         )}
       </div>
 
-      {/* ── Content (only when active or no provider yet) ────────────────── */}
-      {isProviderActive && (
-        <>
-          {/* VIEW MODE */}
-          {provider && !editing && (
-            <ProfileView provider={provider} onEdit={() => setEditing(true)} />
-          )}
+      {/* ── Content (always visible; toggle only controls public visibility) ── */}
+      <>
+        {/* VIEW MODE */}
+        {provider && !editing && (
+          <ProfileView provider={provider} isProviderActive={isProviderActive} onEdit={() => setEditing(true)} />
+        )}
 
-          {/* EDIT MODE */}
-          {(!provider || editing) && (
+        {/* EDIT MODE */}
+        {(!provider || editing) && (
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
                 <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-sm px-4 py-3 rounded-xl border border-[#F06C6C]/30">
@@ -689,7 +722,6 @@ export function ProviderForm({
             </form>
           )}
         </>
-      )}
     </div>
   );
 }
