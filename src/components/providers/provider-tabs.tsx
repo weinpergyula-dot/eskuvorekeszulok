@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Phone, Mail, Globe, MessageCircle } from "lucide-react";
+import { Phone, Mail, Globe, MessageCircle, FileText } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
 import type { Provider } from "@/lib/types";
 
-type Tab = "about" | "gallery" | "message" | "reviews";
+type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
 
 function ContactItem({
   icon,
@@ -41,6 +41,8 @@ const HASH_TO_TAB: Record<string, Tab> = {
   messages: "message",
   reviews: "reviews",
   about: "about",
+  pricing: "pricing",
+  arak: "pricing",
 };
 
 export function ProviderTabs({ provider }: { provider: Provider }) {
@@ -56,10 +58,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
     if (tab) setActive(tab);
   }, []);
 
+  const hasPricing = !!(provider.pricing_pdf_url || provider.pricing_text);
+
   const tabs: { id: Tab; label: string; desktopOnly?: boolean }[] = [
     { id: "about",   label: "Bemutatkozás" },
     ...(hasGallery ? [{ id: "gallery" as Tab, label: "Galéria", desktopOnly: true }] : []),
-    { id: "message", label: "Chat indítása" },
+    ...(hasPricing ? [{ id: "pricing" as Tab, label: "Árak" }] : []),
+    { id: "message", label: "Chat" },
     { id: "reviews", label: reviewCount > 0 ? `Értékelések (${reviewCount})` : "Értékelések" },
   ];
 
@@ -174,6 +179,49 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
       {/* Értékelések tab */}
       {active === "reviews" && (
         <ReviewSection providerId={provider.id} providerUserId={provider.user_id} />
+      )}
+
+      {/* Árak tab */}
+      {active === "pricing" && (
+        <div className="space-y-6">
+          {provider.pricing_text && (
+            <div className="prose prose-gray max-w-none">
+              <p className="text-gray-900 leading-relaxed whitespace-pre-line">{provider.pricing_text}</p>
+            </div>
+          )}
+          {provider.pricing_pdf_url && (
+            <div className="space-y-3">
+              {/* Desktop: embedded PDF */}
+              <div className="hidden sm:block w-full rounded-xl border border-gray-200 overflow-hidden" style={{ height: "80vh" }}>
+                <embed
+                  src={provider.pricing_pdf_url}
+                  type="application/pdf"
+                  className="w-full h-full"
+                />
+              </div>
+              {/* Mobile: download link fallback */}
+              <div className="sm:hidden flex flex-col items-center justify-center py-12 gap-4 text-center">
+                <FileText className="h-12 w-12 text-[#84AAA6]" strokeWidth={1} />
+                <div>
+                  <p className="text-base font-semibold text-gray-900 mb-1">Árlista PDF</p>
+                  <p className="text-sm text-gray-500">Nyisd meg a PDF-et az árlistáért.</p>
+                </div>
+                <a
+                  href={provider.pricing_pdf_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
+                >
+                  <FileText className="h-4 w-4" strokeWidth={1.5} />
+                  PDF megnyitása
+                </a>
+              </div>
+            </div>
+          )}
+          {!provider.pricing_text && !provider.pricing_pdf_url && (
+            <p className="text-gray-400 text-base italic">Nincs árlista feltöltve.</p>
+          )}
+        </div>
       )}
     </div>
   );

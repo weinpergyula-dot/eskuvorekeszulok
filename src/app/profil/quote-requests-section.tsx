@@ -314,7 +314,7 @@ function QuoteListItem({
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
           {avatarUrl
-            ? <img src={avatarUrl} alt={recipientName} className="w-full h-full object-cover" />
+            ? <img src={avatarUrl ?? ""} alt={recipientName} className="w-full h-full object-cover" />
             : initials}
         </div>
         <div className="flex-1 min-w-0">

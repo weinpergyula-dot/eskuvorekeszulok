@@ -28,6 +28,8 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
+  const [catExpanded, setCatExpanded] = useState(false);
+  const [countyExpanded, setCountyExpanded] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   // Swipe tracking for gallery lightbox
@@ -75,7 +77,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         >
           {provider.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+            <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
           ) : (
             <span className="text-lg font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
           )}
@@ -173,7 +175,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           >
             {provider.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+              <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
             ) : (
               <span className="text-4xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
             )}
@@ -189,11 +191,13 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
           {!hideCategories && (
             <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
-              {(provider.categories ?? []).slice(0, 1).map((cat) => (
-                <Badge key={cat} variant="outline" className={cn("text-[10px] sm:text-sm", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+              {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
+                <Badge key={cat} variant="outline" className={cn("text-[9px] sm:text-[13px]", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
               ))}
-              {(provider.categories ?? []).length > 1 && (
-                <Badge variant="outline" className={cn("text-[10px] sm:text-sm", tc.badgeClass)}>+{(provider.categories ?? []).length - 1}</Badge>
+              {(provider.categories ?? []).length > 1 && !catExpanded && (
+                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className={cn("text-[9px] sm:text-[13px] font-medium underline underline-offset-2", tc.text)}>
+                  +{(provider.categories ?? []).length - 1} több
+                </button>
               )}
             </div>
           )}
@@ -201,9 +205,13 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <div className="flex flex-wrap items-center justify-center gap-1 mb-2">
             <MapPin className={`h-3.5 w-3.5 shrink-0 ${tc.text}`} />
             <span className="text-xs sm:text-sm text-gray-900 text-center">
-              {(provider.counties ?? [])[0] ?? ""}
-              {(provider.counties ?? []).length > 1 && ` +${(provider.counties ?? []).length - 1}`}
+              {countyExpanded ? (provider.counties ?? []).join(", ") : ((provider.counties ?? [])[0] ?? "")}
             </span>
+            {(provider.counties ?? []).length > 1 && !countyExpanded && (
+              <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-xs sm:text-sm font-medium underline underline-offset-2", tc.text)}>
+                +{(provider.counties ?? []).length - 1} több
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-1.5">{ratingContent}</div>
@@ -246,7 +254,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             >
               {provider.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+                <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-2xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
               )}
@@ -263,23 +271,27 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
             {!hideCategories && (
               <div className="sm:hidden flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
-                {(provider.categories ?? []).slice(0, 1).map((cat) => (
+                {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
                   <Badge key={cat} variant="outline" className="text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
                 ))}
-                {(provider.categories ?? []).length > 1 && (
-                  <Badge variant="outline" className="text-sm">+{(provider.categories ?? []).length - 1}</Badge>
+                {(provider.categories ?? []).length > 1 && !catExpanded && (
+                  <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className="text-sm font-medium underline underline-offset-2 text-[#84AAA6]">
+                    +{(provider.categories ?? []).length - 1} több
+                  </button>
                 )}
               </div>
             )}
 
-            <div className="flex items-center justify-center sm:justify-start gap-1 mb-2">
+            <div className="flex items-center justify-center sm:justify-start gap-1 mb-2 flex-wrap">
               <MapPin className={`h-3.5 w-3.5 shrink-0 ${tc.text}`} />
               <span className="text-sm text-gray-900">
-                {(provider.counties ?? [])[0] ?? ""}
-                {(provider.counties ?? []).length > 1 && (
-                  <span className={`${tc.text} font-medium ml-1`}>+{(provider.counties ?? []).length - 1}</span>
-                )}
+                {countyExpanded ? (provider.counties ?? []).join(", ") : ((provider.counties ?? [])[0] ?? "")}
               </span>
+              {(provider.counties ?? []).length > 1 && !countyExpanded && (
+                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
+                  +{(provider.counties ?? []).length - 1} több
+                </button>
+              )}
             </div>
 
             {!disableLink ? (
@@ -385,11 +397,13 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {/* Category badges — desktop only, left side */}
           {!hideCategories && (
             <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
-              {(provider.categories ?? []).slice(0, 1).map((cat) => (
+              {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
                 <Badge key={cat} variant="outline" className={cn("text-xs", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
               ))}
-              {(provider.categories ?? []).length > 1 && (
-                <Badge variant="outline" className={cn("text-xs", tc.badgeClass)}>+{(provider.categories ?? []).length - 1}</Badge>
+              {(provider.categories ?? []).length > 1 && !catExpanded && (
+                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className={cn("text-xs font-medium underline underline-offset-2", tc.text)}>
+                  +{(provider.categories ?? []).length - 1} több
+                </button>
               )}
             </div>
           )}

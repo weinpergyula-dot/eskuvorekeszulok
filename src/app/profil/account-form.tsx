@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import type { UserRole } from "@/lib/types";
 import type { UserIdentity } from "@supabase/supabase-js";
+import { MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils";
 
 // ── Avatar crop modal ─────────────────────────────────────────────────────────
 
@@ -188,6 +189,7 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
   const showAvatar = role !== "provider";
   const [avatarPreview, setAvatarPreview]   = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarSizeError, setAvatarSizeError] = useState<string | null>(null);
   const [cropSrc, setCropSrc]               = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -200,8 +202,16 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    // Reset input so same file can be picked again
     e.target.value = "";
+    setAvatarSizeError(null);
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setAvatarSizeError("Nem támogatott formátum. Kérjük JPEG, PNG vagy WebP képet tölts fel.");
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setAvatarSizeError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
+      return;
+    }
     setCropSrc(URL.createObjectURL(file));
   };
 
@@ -301,8 +311,12 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
             >
               Módosítás
             </button>
+            <p className="text-xs text-gray-400 mt-0.5">max {MAX_UPLOAD_MB} MB</p>
+            {avatarSizeError && (
+              <p className="text-xs text-[#F06C6C] mt-0.5">{avatarSizeError}</p>
+            )}
           </div>
-          <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+          <input ref={avatarInputRef} type="file" accept={ALLOWED_IMAGE_ACCEPT} className="hidden" onChange={handleAvatarChange} />
         </div>
       )}
 

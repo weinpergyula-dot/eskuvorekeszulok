@@ -58,6 +58,8 @@ export interface Provider {
   review_count?: number;
   view_count?: number;
   featured?: "teal" | "silver" | "gold" | null;
+  pricing_pdf_url?: string | null;
+  pricing_text?: string | null;
 }
 
 export interface ProviderUpdatePayload {
@@ -70,6 +72,8 @@ export interface ProviderUpdatePayload {
   website?: string;
   avatar_url?: string;
   gallery_urls?: string[];
+  pricing_pdf_url?: string | null;
+  pricing_text?: string | null;
 }
 
 export interface Review {

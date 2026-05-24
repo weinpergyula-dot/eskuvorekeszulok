@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid, CircleUser, Check } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -22,21 +22,6 @@ const mainCategories = [
   "helyszin",
 ] as const;
 
-// Parses the /api/quote-requests response (either array or {providerRequests,visitorChats})
-// and returns the total unread count. Defined here so both useEffects can use it.
-function parseQuoteUnread(data: unknown): number {
-  if (data && typeof data === "object" && !Array.isArray(data)) {
-    const d = data as { providerRequests?: { read: boolean; unread_reply_count?: number }[]; visitorChats?: { unread_count: number }[] };
-    return (
-      (d.providerRequests ?? []).reduce((s, r) => s + (r.read ? 0 : 1) + (r.unread_reply_count ?? 0), 0) +
-      (d.visitorChats ?? []).reduce((s, c) => s + c.unread_count, 0)
-    );
-  }
-  if (Array.isArray(data)) {
-    return (data as { unread_count: number }[]).reduce((s, c) => s + c.unread_count, 0);
-  }
-  return 0;
-}
 
 function NavBadge({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -65,6 +50,7 @@ export function Navbar() {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navCategoryCounts, setNavCategoryCounts] = useState<Record<string, number>>({});
+  const [navAvatarUrl, setNavAvatarUrl] = useState<string | null>(null);
   const categoryCountsFetched = useRef(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
@@ -132,12 +118,12 @@ export function Navbar() {
       if (payload?.new) {
         window.dispatchEvent(new CustomEvent("quote-message-inserted", { detail: payload.new }));
       }
-      fetch("/api/quote-requests")
+      fetch("/api/quote-requests/unread-count")
         .then((r) => r.json())
-        .then((data: unknown) => {
-          const unread = parseQuoteUnread(data);
-          setUnreadQuotes(unread);
-          window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
+        .then(({ count }: { count: number }) => {
+          setUnreadQuotes(count);
+          window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
+          // Trigger chat-section to reload its full conversation list
           window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
         })
         .catch(() => {});
@@ -168,14 +154,18 @@ export function Navbar() {
   }, [user]);
 
   useEffect(() => {
-    if (!supabase || !user) { setProfile(null); setProviderDot(null); setHasProvider(false); setUnreadMessages(0); return; }
+    if (!supabase || !user) { setProfile(null); setProviderDot(null); setHasProvider(false); setUnreadMessages(0); setNavAvatarUrl(null); return; }
     supabase.from("profiles").select("*").eq("user_id", user.id).single()
-      .then(({ data }) => setProfile(data));
-    supabase.from("providers").select("approval_status, pending_changes, active").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => {
+        setProfile(data);
+        if (data?.avatar_url) setNavAvatarUrl(data.avatar_url);
+      });
+    supabase.from("providers").select("approval_status, pending_changes, active, avatar_url").eq("user_id", user.id).maybeSingle()
       .then(({ data: p }) => {
         if (!p) { setProviderDot(null); setHasProvider(false); setProviderIsActive(true); return; }
         setHasProvider(true);
         setProviderIsActive(p.active !== false);
+        if (p.avatar_url) setNavAvatarUrl(p.avatar_url as string);
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
         if (p.approval_status === "approved") {
@@ -190,11 +180,10 @@ export function Navbar() {
         window.dispatchEvent(new CustomEvent("messages-unread-count", { detail: count }));
       })
       .catch(() => {});
-    fetch("/api/quote-requests").then((r) => r.json())
-      .then((data: unknown) => {
-        const unread = parseQuoteUnread(data);
-        setUnreadQuotes(unread);
-        window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: unread }));
+    fetch("/api/quote-requests/unread-count").then((r) => r.json())
+      .then(({ count }: { count: number }) => {
+        setUnreadQuotes(count);
+        window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
       })
       .catch(() => {});
   }, [user]);
@@ -284,7 +273,7 @@ export function Navbar() {
   ];
 
   const providerItems: { id: string; label: string; Icon: React.ElementType }[] = [
-    ...(profile?.role === "provider" ? [
+    ...(hasProvider ? [
       { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
     ] : []),
     ...(hasProvider && providerIsActive ? [
@@ -449,7 +438,14 @@ export function Navbar() {
                 }}
               >
                 <button className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-                  <UserCheck className="h-6 w-6" strokeWidth={2} />
+                  {navAvatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={navAvatarUrl} alt="" className="w-6 h-6 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
+                      <Check className="h-3 w-3 text-[#84AAA6]" strokeWidth={2.5} />
+                    </div>
+                  )}
                   {badgeCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
                       {badgeCount > 99 ? "99+" : badgeCount}
@@ -475,14 +471,11 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile: categories icon + user icon + hamburger */}
+          {/* Mobile: user icon + categories icon + hamburger */}
           <div className="md:hidden flex items-center gap-1">
-            <Link href="/services" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-              <LayoutGrid className="h-6 w-6" strokeWidth={2} />
-            </Link>
             {!user && (
               <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-                <UserIcon className="h-7 w-7" strokeWidth={2} />
+                <CircleUser className="h-7 w-7" strokeWidth={1.75} />
               </a>
             )}
 
@@ -492,7 +485,14 @@ export function Navbar() {
                   onClick={() => { setUserDropdownOpen(!userDropdownOpen); setMobileOpen(false); }}
                   className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
                 >
-                  <UserCheck className="h-7 w-7" strokeWidth={2} />
+                  {navAvatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={navAvatarUrl ?? ""} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
+                      <Check className="h-3.5 w-3.5 text-[#84AAA6]" strokeWidth={2.5} />
+                    </div>
+                  )}
                   {badgeCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
                       {badgeCount > 99 ? "99+" : badgeCount}
@@ -507,6 +507,10 @@ export function Navbar() {
                 )}
               </div>
             )}
+
+            <Link href="/services" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+              <LayoutGrid className="h-6 w-6" strokeWidth={2} />
+            </Link>
 
             <button
               className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
