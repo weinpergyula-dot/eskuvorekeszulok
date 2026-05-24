@@ -141,7 +141,7 @@ function ProfileView({
           </div>
           <div className="relative">
             {!isProviderActive && <InactiveBadge />}
-            <ProviderCard provider={provider} />
+            <ProviderCard provider={provider} disableLink />
           </div>
         </div>
       ) : hasPendingUpdate ? (
