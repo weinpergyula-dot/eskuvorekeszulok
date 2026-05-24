@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, UserCheck, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid, CircleUser, Check, UserCheck } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -65,6 +65,7 @@ export function Navbar() {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navCategoryCounts, setNavCategoryCounts] = useState<Record<string, number>>({});
+  const [navAvatarUrl, setNavAvatarUrl] = useState<string | null>(null);
   const categoryCountsFetched = useRef(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
@@ -168,14 +169,18 @@ export function Navbar() {
   }, [user]);
 
   useEffect(() => {
-    if (!supabase || !user) { setProfile(null); setProviderDot(null); setHasProvider(false); setUnreadMessages(0); return; }
+    if (!supabase || !user) { setProfile(null); setProviderDot(null); setHasProvider(false); setUnreadMessages(0); setNavAvatarUrl(null); return; }
     supabase.from("profiles").select("*").eq("user_id", user.id).single()
-      .then(({ data }) => setProfile(data));
-    supabase.from("providers").select("approval_status, pending_changes, active").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => {
+        setProfile(data);
+        if (data?.avatar_url) setNavAvatarUrl(data.avatar_url);
+      });
+    supabase.from("providers").select("approval_status, pending_changes, active, avatar_url").eq("user_id", user.id).maybeSingle()
       .then(({ data: p }) => {
         if (!p) { setProviderDot(null); setHasProvider(false); setProviderIsActive(true); return; }
         setHasProvider(true);
         setProviderIsActive(p.active !== false);
+        if (p.avatar_url) setNavAvatarUrl(p.avatar_url as string);
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
         if (p.approval_status === "approved") {
@@ -475,14 +480,11 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile: categories icon + user icon + hamburger */}
+          {/* Mobile: user icon + categories icon + hamburger */}
           <div className="md:hidden flex items-center gap-1">
-            <Link href="/services" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-              <LayoutGrid className="h-6 w-6" strokeWidth={2} />
-            </Link>
             {!user && (
               <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-                <UserIcon className="h-7 w-7" strokeWidth={2} />
+                <CircleUser className="h-7 w-7" strokeWidth={1.75} />
               </a>
             )}
 
@@ -492,7 +494,14 @@ export function Navbar() {
                   onClick={() => { setUserDropdownOpen(!userDropdownOpen); setMobileOpen(false); }}
                   className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
                 >
-                  <UserCheck className="h-7 w-7" strokeWidth={2} />
+                  {navAvatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={navAvatarUrl} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
+                      <Check className="h-3.5 w-3.5 text-[#84AAA6]" strokeWidth={2.5} />
+                    </div>
+                  )}
                   {badgeCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[11px] font-bold flex items-center justify-center leading-none">
                       {badgeCount > 99 ? "99+" : badgeCount}
@@ -507,6 +516,10 @@ export function Navbar() {
                 )}
               </div>
             )}
+
+            <Link href="/services" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+              <LayoutGrid className="h-6 w-6" strokeWidth={2} />
+            </Link>
 
             <button
               className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"

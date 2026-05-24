@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { Clock, Pencil, X, ImagePlus, XCircle } from "lucide-react";
+import { Clock, Pencil, X, ImagePlus, FileText, ExternalLink } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
@@ -183,6 +183,12 @@ export function ProviderForm({
   const [galleryFiles,  setGalleryFiles]  = useState<File[]>([]);
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
+  // Pricing
+  const [pricingText, setPricingText] = useState<string>((pc?.pricing_text as string) ?? provider?.pricing_text ?? "");
+  const [pricingPdfFile, setPricingPdfFile] = useState<File | null>(null);
+  const [pricingPdfUrl,  setPricingPdfUrl]  = useState<string | null>((pc?.pricing_pdf_url as string) ?? provider?.pricing_pdf_url ?? null);
+  const pricingPdfInputRef = useRef<HTMLInputElement>(null);
+
   const [saving, setSaving] = useState(false);
   const [error,  setError]  = useState<string | null>(null);
 
@@ -265,6 +271,17 @@ export function ProviderForm({
       }
       const allGalleryUrls = [...galleryUrls, ...newGalleryUrls];
 
+      // Upload pricing PDF if a new file was selected
+      let finalPricingPdfUrl = pricingPdfUrl;
+      if (pricingPdfFile) {
+        const path = `${userId}/pricing/pricing.pdf`;
+        const { error: pdfUploadError } = await supabase.storage
+          .from("avatars").upload(path, pricingPdfFile, { upsert: true, contentType: "application/pdf" });
+        if (pdfUploadError) throw pdfUploadError;
+        const { data: pdfUrlData } = supabase.storage.from("avatars").getPublicUrl(path);
+        finalPricingPdfUrl = `${pdfUrlData.publicUrl}?v=${Date.now()}`;
+      }
+
       if (role === "visitor" || !provider) {
         // New provider: everything goes through approval
         const { error: insertError } = await supabase.from("providers").insert({
@@ -273,6 +290,8 @@ export function ProviderForm({
           detailed_description: detailedDescription || null,
           website: website || null, avatar_url: avatarUrl || null,
           gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
+          pricing_pdf_url: finalPricingPdfUrl || null,
+          pricing_text: pricingText || null,
           approval_status: "pending",
         });
         if (insertError) throw insertError;
@@ -288,6 +307,8 @@ export function ProviderForm({
           detailed_description: detailedDescription || null,
           website: website || null, avatar_url: avatarUrl || null,
           gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
+          pricing_pdf_url: finalPricingPdfUrl || null,
+          pricing_text: pricingText || null,
           approval_status: "pending",
           pending_changes: null,
         }).eq("user_id", userId);
@@ -302,20 +323,25 @@ export function ProviderForm({
 
         // Only create a pending review if approval-required fields actually changed
         const existingPc = provider?.pending_changes as Record<string, unknown> | null | undefined;
-        const baseFullName   = String(existingPc?.full_name          ?? provider?.full_name          ?? "");
-        const baseDesc       = String(existingPc?.description         ?? provider?.description        ?? "");
-        const baseDetailDesc = String(existingPc?.detailed_description ?? provider?.detailed_description ?? "") || null;
-        const baseWebsite    = String(existingPc?.website             ?? provider?.website            ?? "") || null;
-        const baseAvatar     = String(existingPc?.avatar_url          ?? provider?.avatar_url         ?? "") || null;
+        const baseFullName    = String(existingPc?.full_name           ?? provider?.full_name          ?? "");
+        const baseDesc        = String(existingPc?.description          ?? provider?.description        ?? "");
+        const baseDetailDesc  = String(existingPc?.detailed_description ?? provider?.detailed_description ?? "") || null;
+        const baseWebsite     = String(existingPc?.website              ?? provider?.website            ?? "") || null;
+        const baseAvatar      = String(existingPc?.avatar_url           ?? provider?.avatar_url         ?? "") || null;
+        const basePricingText = String(existingPc?.pricing_text         ?? provider?.pricing_text       ?? "") || null;
+        const basePricingPdf  = String(existingPc?.pricing_pdf_url      ?? provider?.pricing_pdf_url    ?? "") || null;
 
         const approvalFieldsChanged =
           avatarFile !== null ||
+          pricingPdfFile !== null ||
           galleryFiles.length > 0 ||
-          fullName              !== baseFullName   ||
-          description           !== baseDesc       ||
+          fullName                    !== baseFullName    ||
+          description                 !== baseDesc        ||
           (detailedDescription || null) !== baseDetailDesc ||
-          (website || null)     !== baseWebsite    ||
-          (avatarUrl || null)   !== baseAvatar;
+          (website || null)           !== baseWebsite     ||
+          (avatarUrl || null)         !== baseAvatar      ||
+          (pricingText || null)       !== basePricingText ||
+          (finalPricingPdfUrl || null) !== basePricingPdf;
 
         if (approvalFieldsChanged) {
           const { error: updateError } = await supabase.from("providers").update({
@@ -324,6 +350,8 @@ export function ProviderForm({
               detailed_description: detailedDescription || null,
               website: website || null, avatar_url: avatarUrl || null,
               gallery_urls: allGalleryUrls.length ? allGalleryUrls : null,
+              pricing_pdf_url: finalPricingPdfUrl || null,
+              pricing_text: pricingText || null,
             },
           }).eq("user_id", userId);
           if (updateError) throw updateError;
@@ -399,7 +427,7 @@ export function ProviderForm({
                   <Clock className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
                   <p className="text-sm text-amber-800">
                     A <strong>kategória</strong>, <strong>megye</strong> és <strong>telefonszám</strong> módosítások azonnal érvénybe lépnek.
-                    A többi mező (név, bemutatkozás, weboldal, kép) adminisztrátori jóváhagyás után jelenik meg.
+                    A többi mező (név, bemutatkozás, weboldal, kép, árak) adminisztrátori jóváhagyás után jelenik meg.
                   </p>
                 </div>
               )}
@@ -578,6 +606,62 @@ export function ProviderForm({
                   Képek hozzáadása
                 </Button>
                 <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryChange} />
+              </div>
+
+              {/* Pricing section */}
+              <div className="space-y-3 border border-gray-200 rounded-xl p-4 bg-gray-50">
+                <div>
+                  <Label className="text-base font-semibold text-gray-900">Árak</Label>
+                  <p className="text-sm text-gray-500 mt-0.5">Tájékoztasd a leendő párokat a várható költségekről.</p>
+                </div>
+                <FloatingTextarea
+                  id="pf-pricing-text"
+                  label="Szöveges árinformáció (opcionális)"
+                  value={pricingText}
+                  onChange={(e) => setPricingText(e.target.value)}
+                  rows={4}
+                />
+                <div className="space-y-2">
+                  <Label>Árlista PDF (opcionális)</Label>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => pricingPdfInputRef.current?.click()}
+                      className="flex items-center gap-2"
+                    >
+                      <FileText className="h-4 w-4" />
+                      {pricingPdfFile ? "PDF módosítása" : pricingPdfUrl ? "PDF csere" : "PDF feltöltése"}
+                    </Button>
+                    {pricingPdfFile && (
+                      <span className="text-sm text-[#84AAA6] flex items-center gap-1">
+                        <FileText className="h-3.5 w-3.5" />
+                        {pricingPdfFile.name}
+                        <button type="button" onClick={() => setPricingPdfFile(null)} className="text-gray-400 hover:text-[#F06C6C] ml-1">✕</button>
+                      </span>
+                    )}
+                    {!pricingPdfFile && pricingPdfUrl && (
+                      <span className="flex items-center gap-2 text-sm text-gray-600">
+                        <a href={pricingPdfUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[#84AAA6] hover:underline">
+                          <ExternalLink className="h-3.5 w-3.5" /> Meglévő PDF megtekintése
+                        </a>
+                        <button type="button" onClick={() => setPricingPdfUrl(null)} className="text-gray-400 hover:text-[#F06C6C]">✕</button>
+                      </span>
+                    )}
+                  </div>
+                  <input
+                    ref={pricingPdfInputRef}
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) setPricingPdfFile(file);
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
               </div>
 
               <p className="text-sm text-gray-500">

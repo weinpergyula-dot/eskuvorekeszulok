@@ -465,6 +465,8 @@ const FIELD_LABELS: Record<string, string> = {
   avatar_url:           "Profilkép",
   counties:             "Megyék",
   categories:           "Kategóriák",
+  pricing_text:         "Árak szöveg",
+  pricing_pdf_url:      "Árlista PDF",
 };
 
 function DiffValue({ value, field }: { value: unknown; field?: string }) {
@@ -477,6 +479,13 @@ function DiffValue({ value, field }: { value: unknown; field?: string }) {
     return <span className="text-sm">{labels.join(", ") || "–"}</span>;
   }
   const str = String(value);
+  if (field === "pricing_pdf_url" && str.startsWith("http")) {
+    return (
+      <a href={str} target="_blank" rel="noopener noreferrer" className="text-sm text-[#84AAA6] underline hover:text-[#6B8E8A]">
+        PDF megtekintése
+      </a>
+    );
+  }
   if (str.startsWith("http") && (str.includes("/avatar") || str.includes("supabase"))) {
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={str} alt="" className="w-10 h-10 rounded-full object-cover border border-gray-200 inline-block" />;
