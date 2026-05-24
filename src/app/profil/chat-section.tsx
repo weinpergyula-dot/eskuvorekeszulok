@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { storageImageUrl } from "@/lib/image-utils";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -279,7 +280,7 @@ function ProviderRow({
           {provider.avatar_url && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={provider.avatar_url}
+              src={storageImageUrl(provider.avatar_url, 160)}
               alt={provider.full_name}
               className="absolute inset-0 w-full h-full object-cover"
               onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
@@ -426,7 +427,7 @@ function QuoteConvRow({
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
           {avatarUrl
-            ? <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+            ? <img src={storageImageUrl(avatarUrl, 160)} alt={name} className="w-full h-full object-cover" />
             : initials}
         </div>
         <div className="flex-1 min-w-0">
@@ -667,7 +668,7 @@ function ChatView({
         </button>
         <div className="w-8 h-8 rounded-full overflow-hidden bg-white/30 flex items-center justify-center text-xs font-semibold text-white shrink-0">
           {provider.avatar_url
-            ? <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+            ? <img src={storageImageUrl(provider.avatar_url, 160)} alt={provider.full_name} className="w-full h-full object-cover" />
             : initials}
         </div>
         <p className="flex-1 min-w-0 text-sm font-semibold text-white truncate">{provider.full_name}</p>
@@ -696,7 +697,7 @@ function ChatView({
         <div className="h-4 w-px bg-gray-200 shrink-0" />
         <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600 shrink-0">
           {provider.avatar_url
-            ? <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+            ? <img src={storageImageUrl(provider.avatar_url, 160)} alt={provider.full_name} className="w-full h-full object-cover" />
             : initials}
         </div>
         <div className="flex-1 min-w-0">

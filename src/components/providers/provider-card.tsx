@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
+import { storageImageUrl } from "@/lib/image-utils";
 
 interface ProviderCardProps {
   provider: Provider;
@@ -75,7 +76,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         >
           {provider.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+            <img src={storageImageUrl(provider.avatar_url, 128)} alt={provider.full_name} className="w-full h-full object-cover" />
           ) : (
             <span className="text-lg font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
           )}
@@ -173,7 +174,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           >
             {provider.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+              <img src={storageImageUrl(provider.avatar_url, 256)} alt={provider.full_name} className="w-full h-full object-cover" />
             ) : (
               <span className="text-4xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
             )}
@@ -246,7 +247,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             >
               {provider.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+                <img src={storageImageUrl(provider.avatar_url, 192)} alt={provider.full_name} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-2xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
               )}
@@ -312,7 +313,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               onClick={() => { setGalleryIndex(0); setGalleryOpen(true); }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={galleryUrls[0]} alt="Galéria" className="w-full h-full object-cover" draggable={false} />
+              <img src={storageImageUrl(galleryUrls[0], 224)} alt="Galéria" className="w-full h-full object-cover" draggable={false} />
             </button>
           ) : (
             <div
@@ -331,7 +332,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="w-full h-full object-cover" draggable={false} />
+                  <img src={storageImageUrl(url, 224)} alt="" className="w-full h-full object-cover" draggable={false} />
                 </button>
               ))}
             </div>

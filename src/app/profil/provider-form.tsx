@@ -11,6 +11,7 @@ import { Clock, Pencil, X, XCircle, ImagePlus, FileText, ExternalLink } from "lu
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
 import { ProviderCard } from "@/components/providers/provider-card";
+import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/image-utils";
 
 interface Props {
   userId: string;
@@ -225,6 +226,7 @@ export function ProviderForm({
 
   const [saving, setSaving] = useState(false);
   const [error,  setError]  = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleToggle = async () => {
     const newVal = !isProviderActive;
@@ -249,23 +251,40 @@ export function ProviderForm({
     onActiveChange(newVal);
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    e.target.value = "";
+    setUploadError(null);
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setUploadError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
+      return;
+    }
+    const compressed = await compressImage(file);
+    setAvatarFile(compressed);
+    setAvatarPreview(URL.createObjectURL(compressed));
   };
 
-  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
+    e.target.value = "";
+    setUploadError(null);
+    const oversized = files.find((f) => f.size > MAX_UPLOAD_BYTES);
+    if (oversized) {
+      setUploadError(`Egy vagy több kép meghaladja a ${MAX_UPLOAD_MB} MB-os limitet.`);
+      return;
+    }
+    const compressed = await Promise.all(files.map((f) => compressImage(f)));
     setGalleryFiles((prev) => {
-      const combined = [...prev, ...files];
+      const combined = [...prev, ...compressed];
       const allowed = combined.slice(0, Math.max(0, 10 - galleryUrls.length));
-      setGalleryPreviews((prevP) => [...prevP, ...allowed.slice(prev.length).map((f) => URL.createObjectURL(f))]);
+      setGalleryPreviews((prevP) => [
+        ...prevP,
+        ...allowed.slice(prev.length).map((f) => URL.createObjectURL(f)),
+      ]);
       return allowed;
     });
-    e.target.value = "";
   };
 
   const removeGalleryUrl = (url: string) => setGalleryUrls((prev) => prev.filter((u) => u !== url));
@@ -467,7 +486,10 @@ export function ProviderForm({
 
               {/* Avatar */}
               <div className="space-y-1.5">
-                <Label>Profilkép</Label>
+                <div className="flex items-baseline justify-between">
+                  <Label>Profilkép</Label>
+                  <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB</span>
+                </div>
                 <div className="flex items-center gap-4">
                   <div
                     className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
@@ -598,6 +620,13 @@ export function ProviderForm({
                 onChange={(e) => setWebsite(e.target.value)}
               />
 
+              {/* Upload error */}
+              {uploadError && (
+                <p className="text-sm text-[#F06C6C] bg-[#F06C6C]/10 border border-[#F06C6C]/30 rounded-lg px-3 py-2">
+                  {uploadError}
+                </p>
+              )}
+
               {/* Gallery */}
               <div className="space-y-2">
                 <div className="flex items-baseline justify-between">
@@ -634,10 +663,13 @@ export function ProviderForm({
                     ))}
                   </div>
                 )}
-                <Button type="button" variant="outline" size="sm" onClick={() => galleryInputRef.current?.click()} className="flex items-center gap-2">
-                  <ImagePlus className="h-4 w-4" />
-                  Képek hozzáadása
-                </Button>
+                <div className="flex items-center gap-3">
+                  <Button type="button" variant="outline" size="sm" onClick={() => galleryInputRef.current?.click()} className="flex items-center gap-2">
+                    <ImagePlus className="h-4 w-4" />
+                    Képek hozzáadása
+                  </Button>
+                  <span className="text-xs text-gray-400">max {MAX_UPLOAD_MB} MB / kép</span>
+                </div>
                 <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryChange} />
               </div>
 

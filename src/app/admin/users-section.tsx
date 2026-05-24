@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Phone, Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
+import { storageImageUrl } from "@/lib/image-utils";
 
 interface UserProfile {
   id: string;
@@ -366,7 +367,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                       <div className="w-7 h-7 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
                         {u.avatar_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
+                          <img src={storageImageUrl(u.avatar_url, 160)} alt="" className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-[10px] font-semibold text-[#84AAA6]">
                             {(u.full_name || u.email || "?").split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("")}
@@ -481,7 +482,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   <div className="w-9 h-9 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
                     {u.avatar_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
+                      <img src={storageImageUrl(u.avatar_url, 160)} alt="" className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-xs font-semibold text-[#84AAA6]">
                         {(u.full_name || u.email || "?").split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("")}
