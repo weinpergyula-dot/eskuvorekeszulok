@@ -564,7 +564,8 @@ function RegisterContent() {
                   <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Böngészés 20 kategóriában</li>
                   <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékelések olvasása és írása</li>
                   <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Kedvencek mentése</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos ajánlatkérés</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos ajánlatkérés küldése több szolgáltatónak egyszerre</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő a szolgáltatókkal</li>
                 </ul>
                 <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
                   Regisztrálok
@@ -580,8 +581,8 @@ function RegisterContent() {
                 <ul className="space-y-2 text-sm text-gray-700 flex-1">
                   <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ingyenes szolgáltatói profil</li>
                   <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Képgaléria feltöltése</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkérések fogadása</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkérések fogadása érdeklődő pároktól</li>
+                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő az érdeklődőkkel</li>
                 </ul>
                 <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
                   Regisztrálok
@@ -616,6 +617,7 @@ function RegisterContent() {
                 <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékelések olvasása és írása</li>
                 <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Kedvencek mentése</li>
                 <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos ajánlatkérés küldése több szolgáltatónak egyszerre</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő a szolgáltatókkal</li>
               </ul>
               <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
                 Regisztrálok
@@ -631,7 +633,7 @@ function RegisterContent() {
               <ul className="space-y-2 text-sm text-gray-700 flex-1">
                 <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ingyenes szolgáltatói profil létrehozása</li>
                 <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Képgaléria feltöltése</li>
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkérések fogadása érdeklődő páraktól</li>
+                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkérések fogadása érdeklődő pároktól</li>
                 <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Belső üzenetküldő az érdeklődőkkel</li>
               </ul>
               <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
