@@ -435,6 +435,7 @@ function RegisterContent() {
           avatar_url: avatarUrl || null,
           gallery_urls: galleryUrls,
           approval_status: "pending",
+          featured: null,
         });
         if (providerError) throw providerError;
 

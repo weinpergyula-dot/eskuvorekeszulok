@@ -128,6 +128,7 @@ export async function createProviderProfileAction(
       user_id: userId,
       ...providerData,
       approval_status: "pending",
+      featured: null,
     });
 
     if (providerError) return { error: providerError.message };

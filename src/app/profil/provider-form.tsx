@@ -358,6 +358,7 @@ export function ProviderForm({
           pricing_pdf_url: finalPricingPdfUrl || null,
           pricing_text: pricingText || null,
           approval_status: "pending",
+          featured: null,
         });
         if (insertError) throw insertError;
         if (role === "visitor") {
