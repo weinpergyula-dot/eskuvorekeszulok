@@ -261,7 +261,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
           {/* Info: name, counties, stars */}
           <div className="flex-1 min-w-0 pr-14">
-            <h3 className={`font-bold text-gray-900 truncate text-base leading-snug transition-colors ${tc.groupHover}`}>
+            <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
               {provider.full_name}
             </h3>
             <div className="flex items-center gap-1 mt-0.5 flex-wrap">
