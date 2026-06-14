@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Eye, MessageCircle, Star, MapPin, Pencil, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -25,7 +25,9 @@ interface ProviderCardProps {
 }
 
 export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px", inCarousel = false, listView = false }: ProviderCardProps) {
+  const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
   const [catExpanded, setCatExpanded] = useState(false);
   const [countyExpanded, setCountyExpanded] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -38,6 +40,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
   const galleryUrls = provider.gallery_urls ?? [];
+  const hasGallery = galleryUrls.length > 0;
 
   // Keyboard navigation for gallery lightbox
   useEffect(() => {
@@ -215,115 +218,210 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
       )}
 
-      {/* ── REGULAR card: compact horizontal layout ──────────────────────── */}
+      {/* ── REGULAR card: desktop side-by-side, mobile stacked ─────────── */}
       {!inCarousel && (
-        <>
-          <div className="relative flex items-center gap-3 px-4 py-3" style={{ backgroundColor: headerBg }}>
-            {/* Avatar with favorite/edit overlay */}
-            <div className="relative shrink-0">
-              {!disableLink && (
-                <div className="absolute -top-1 -left-1 z-10" onClick={(e) => e.stopPropagation()}>
-                  {isOwner ? (
-                    <a href="/profil?tab=provider" className={`flex items-center justify-center w-6 h-6 rounded-full bg-white/90 border border-gray-200 shadow-sm ${tc.text} ${tc.textHover}`}>
-                      <Pencil className="h-3 w-3" />
-                    </a>
-                  ) : (
-                    <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile iconOnly />
-                  )}
-                </div>
-              )}
-              <div
-                className={cn(
-                  "w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center",
-                  provider.avatar_url && "cursor-zoom-in"
-                )}
-                onClick={(e) => {
-                  e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation();
-                  if (provider.avatar_url) setAvatarOpen(true);
-                }}
-              >
-                {provider.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
-                )}
-              </div>
-            </div>
-
-            {/* Info: name, counties, stars */}
-            <div className="flex-1 min-w-0">
-              <h3 className={`font-bold text-gray-900 truncate text-base leading-snug transition-colors ${tc.groupHover}`}>
-                {provider.full_name}
-              </h3>
-              <div className="flex items-center gap-1 mt-0.5 flex-wrap">
-                <MapPin className={`h-3.5 w-3.5 shrink-0 ${tc.text}`} />
-                <span className="text-sm text-gray-900 truncate">
-                  {countyExpanded ? (provider.counties ?? []).join(", ") : ((provider.counties ?? [])[0] ?? "")}
-                </span>
-                {(provider.counties ?? []).length > 1 && !countyExpanded && (
-                  <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
-                    +{(provider.counties ?? []).length - 1} több
-                  </button>
-                )}
-              </div>
-              <div className="flex items-center gap-1 mt-0.5">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className={cn("h-3.5 w-3.5", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200")} />
-                ))}
-                <span className="text-sm font-semibold text-gray-900 ml-0.5">{rating > 0 ? rating.toFixed(1) : "–"}</span>
-                {reviewCount > 0 && <span className="text-sm text-gray-500">({reviewCount})</span>}
-              </div>
-              {showStatus && (
-                <Badge
-                  variant={provider.approval_status === "approved" ? "approved" : provider.approval_status === "rejected" ? "rejected" : "pending"}
-                  className="mt-1.5 text-xs"
-                >
-                  {provider.approval_status === "approved" ? "Jóváhagyva" : provider.approval_status === "rejected" ? "Elutasítva" : "Jóváhagyásra vár"}
-                </Badge>
+        <div className="relative flex flex-col sm:flex-row" style={{ backgroundColor: headerBg }}>
+          {/* Absolute action buttons */}
+          {!disableLink && (
+            <div className="absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
+              {isOwner ? (
+                <a href="/profil?tab=provider" className={`flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 ${tc.text} ${tc.textHover}`}>
+                  <Pencil className="h-4 w-4" />
+                </a>
+              ) : (
+                <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile iconOnly />
               )}
             </div>
+          )}
+          <div className="absolute top-2 right-2 z-10">
+            <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
+              <Eye className="h-3.5 w-3.5" />
+              {viewCount}
+            </span>
+          </div>
 
-            {/* Eye count */}
-            <div className="shrink-0 self-start pt-0.5">
-              <span className="flex items-center gap-1 text-xs text-gray-400">
-                <Eye className="h-3.5 w-3.5" />
-                {viewCount}
-              </span>
+          {/* Avatar column — mobile: centered top; desktop: left column */}
+          <div className="flex flex-col items-center justify-center pt-11 pb-3 sm:pt-12 sm:pb-5 sm:pl-10 sm:pr-5 sm:border-r sm:border-white/40">
+            <div
+              className={cn(
+                "w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center shrink-0",
+                provider.avatar_url && !inCarousel && "cursor-zoom-in"
+              )}
+              onClick={(e) => {
+                e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation();
+                if (provider.avatar_url) setAvatarOpen(true);
+              }}
+            >
+              {provider.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-2xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
+              )}
             </div>
           </div>
 
-          {/* Footer: categories + Chat + Részletek */}
-          {!disableLink && (
-            <div className="border-t border-gray-100 px-4 py-2.5 flex items-center gap-2">
-              {!hideCategories && (
-                <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
-                  {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
-                    <Badge key={cat} variant="outline" className={cn("text-xs", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
-                  ))}
-                  {(provider.categories ?? []).length > 1 && !catExpanded && (
-                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className={cn("text-xs font-medium underline underline-offset-2", tc.text)}>
-                      +{(provider.categories ?? []).length - 1} több
-                    </button>
-                  )}
-                </div>
-              )}
-              <div className="flex items-center gap-2 ml-auto shrink-0">
-                <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`hidden sm:flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  Chat
-                </a>
-                <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
-                  Részletek
-                </a>
+          {/* Info column — mobile: centered; desktop: left-aligned, fills rest */}
+          <div className="flex flex-col items-center sm:items-start justify-center pb-4 px-5 sm:py-5 sm:px-4 sm:pr-12 flex-1">
+            <h3
+              className={`font-bold text-gray-900 text-center sm:text-left mb-1.5 transition-colors text-[22px] sm:text-[20px] ${tc.groupHover}`}
+            >
+              {provider.full_name}
+            </h3>
+
+            {!hideCategories && (
+              <div className="sm:hidden flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
+                {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
+                  <Badge key={cat} variant="outline" className="text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+                ))}
+                {(provider.categories ?? []).length > 1 && !catExpanded && (
+                  <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className="text-sm font-medium underline underline-offset-2 text-[#84AAA6]">
+                    +{(provider.categories ?? []).length - 1} több
+                  </button>
+                )}
               </div>
+            )}
+
+            <div className="flex items-center justify-center sm:justify-start gap-1 mb-2 flex-wrap">
+              <MapPin className={`h-3.5 w-3.5 shrink-0 ${tc.text}`} />
+              <span className="text-sm text-gray-900">
+                {countyExpanded ? (provider.counties ?? []).join(", ") : ((provider.counties ?? [])[0] ?? "")}
+              </span>
+              {(provider.counties ?? []).length > 1 && !countyExpanded && (
+                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
+                  +{(provider.counties ?? []).length - 1} több
+                </button>
+              )}
+            </div>
+
+            {!disableLink ? (
+              <a href={`/providers/${provider.id}#reviews`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 hover:opacity-70 transition-opacity">
+                {ratingContent}
+              </a>
+            ) : (
+              <div className="flex items-center gap-1.5">{ratingContent}</div>
+            )}
+
+            {showStatus && (
+              <Badge
+                variant={provider.approval_status === "approved" ? "approved" : provider.approval_status === "rejected" ? "rejected" : "pending"}
+                className="mt-2 text-base"
+              >
+                {provider.approval_status === "approved" ? "Jóváhagyva" : provider.approval_status === "rejected" ? "Elutasítva" : "Jóváhagyásra vár"}
+              </Badge>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── Gallery strip — slowly scrolling right→left (non-carousel only) */}
+      {hasGallery && !inCarousel && (
+        <div className="overflow-hidden border-t border-b border-gray-200" style={{ height: "84px", backgroundColor: "white" }}>
+          {galleryUrls.length === 1 ? (
+            <button
+              type="button"
+              className="w-full h-full overflow-hidden focus:outline-none"
+              onClick={() => { setGalleryIndex(0); setGalleryOpen(true); }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={galleryUrls[0]} alt="Galéria" className="w-full h-full object-cover" draggable={false} />
+            </button>
+          ) : (
+            <div
+              className="flex"
+              style={{
+                width: "max-content",
+                animation: `carousel-scroll ${galleryUrls.length * 5 + 10}s linear infinite`,
+              }}
+            >
+              {[...galleryUrls, ...galleryUrls].map((url, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className="h-[84px] flex-shrink-0 overflow-hidden focus:outline-none px-[2.5px] py-[5px]"
+                  style={{ aspectRatio: "4/3" }}
+                  onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt="" className="w-full h-full object-cover" draggable={false} />
+                </button>
+              ))}
             </div>
           )}
-        </>
+        </div>
+      )}
+
+      {/* Mobile expand/collapse row */}
+      {!inCarousel && (
+        <div className="sm:hidden flex items-center justify-center py-2.5 bg-white border-b border-gray-100">
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setExpanded((v) => !v); }}
+            className={`flex items-center gap-1.5 text-sm font-semibold ${tc.text} ${tc.textHover} transition-colors`}
+          >
+            {expanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+            <span>{expanded ? "Bezár" : "Több infó"}</span>
+          </button>
+        </div>
+      )}
+
+      {/* Contact info */}
+      {!inCarousel && (
+        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
+          <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} />
+          <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} />
+          {provider.website && (
+            <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} />
+          )}
+          {provider.description && (
+            <div className="flex gap-2.5">
+              <MessageCircle className={`h-4 w-4 ${tc.text} shrink-0 mt-0.5`} />
+              <p className="text-base text-gray-900 leading-relaxed">
+                {!descExpanded && provider.description.length > 200
+                  ? provider.description.slice(0, 200) + "…"
+                  : provider.description}
+                {provider.description.length > 200 && (
+                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDescExpanded(v => !v); }} className={`${tc.text} hover:underline font-medium ml-1 text-sm`}>
+                    {descExpanded ? "kevesebb" : "több..."}
+                  </button>
+                )}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Footer */}
+      {!inCarousel && !disableLink && (
+        <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
+          {/* Category badges — desktop only, left side */}
+          {!hideCategories && (
+            <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
+              {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
+                <Badge key={cat} variant="outline" className={cn("text-xs", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
+              ))}
+              {(provider.categories ?? []).length > 1 && !catExpanded && (
+                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className={cn("text-xs font-medium underline underline-offset-2", tc.text)}>
+                  +{(provider.categories ?? []).length - 1} több
+                </button>
+              )}
+            </div>
+          )}
+          {/* Chat + Részletek grouped — always pushed to right */}
+          <div className="flex items-center gap-2 ml-auto">
+            <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+              <MessageCircle className="h-3.5 w-3.5" />
+              Chat indítása
+            </a>
+            <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+              Részletek
+            </a>
+          </div>
+        </div>
       )}
 
       {/* ── Gallery lightbox — tap image or backdrop to close, swipe to navigate */}
-      {galleryOpen && galleryUrls.length > 0 && createPortal(
+      {galleryOpen && hasGallery && createPortal(
         <div
           className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
           onClick={(e) => {
