@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -304,25 +304,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                   <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile iconOnly />
                 )}
               </div>
-            )}
-            {/* Megosztás gomb – csak mobilon */}
-            {!disableLink && (
-              <button
-                type="button"
-                className="sm:hidden flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-gray-600 hover:text-[#84AAA6] transition-colors cursor-pointer"
-                aria-label="Megosztás"
-                onClick={(e) => {
-                  e.preventDefault(); e.stopPropagation();
-                  const url = `${window.location.origin}/providers/${provider.id}`;
-                  if (navigator.share) {
-                    navigator.share({ title: provider.full_name, url }).catch(() => {});
-                  } else {
-                    navigator.clipboard.writeText(url).catch(() => {});
-                  }
-                }}
-              >
-                <Share2 className="h-4 w-4" />
-              </button>
             )}
           </div>
         </div>
