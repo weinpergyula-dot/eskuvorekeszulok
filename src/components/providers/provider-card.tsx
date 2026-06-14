@@ -264,16 +264,18 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
               {provider.full_name}
             </h3>
-            <div className="flex items-center gap-1 mt-0.5 flex-wrap">
-              <MapPin className={`h-3.5 w-3.5 shrink-0 ${tc.text}`} />
-              <span className="text-sm text-gray-900 truncate">
-                {countyExpanded ? (provider.counties ?? []).join(", ") : ((provider.counties ?? [])[0] ?? "")}
+            <div className="flex items-start gap-1 mt-0.5">
+              <MapPin className={`h-3.5 w-3.5 shrink-0 mt-[2px] ${tc.text}`} />
+              <span className="text-sm text-gray-900 leading-snug">
+                {countyExpanded
+                  ? (provider.counties ?? []).join(", ")
+                  : (provider.counties ?? [])[0] ?? ""}
+                {(provider.counties ?? []).length > 1 && !countyExpanded && (
+                  <> <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
+                    +{(provider.counties ?? []).length - 1}
+                  </button></>
+                )}
               </span>
-              {(provider.counties ?? []).length > 1 && !countyExpanded && (
-                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
-                  +{(provider.counties ?? []).length - 1} több
-                </button>
-              )}
             </div>
             {!disableLink ? (
               <a href={`/providers/${provider.id}#reviews`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 mt-0.5 hover:opacity-70 transition-opacity">
