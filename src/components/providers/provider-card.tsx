@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -220,10 +220,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── REGULAR card: compact horizontal header ──────────────────────── */}
       {!inCarousel && (
-        <div className="relative flex items-center gap-3 px-4 pt-10 pb-3" style={{ backgroundColor: headerBg }}>
-          {/* Absolute action buttons */}
+        <div className="relative flex items-start gap-3 px-4 pt-3 pb-3 sm:pt-10" style={{ backgroundColor: headerBg }}>
+          {/* Fav/edit gomb – desktopon bal felső sarokba (absolute), mobilon a jobb oszlopban van */}
           {!disableLink && (
-            <div className="absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
+            <div className="hidden sm:block absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
               {isOwner ? (
                 <a href="/profil?tab=provider" className={`flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 ${tc.text} ${tc.textHover}`}>
                   <Pencil className="h-4 w-4" />
@@ -233,17 +233,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               )}
             </div>
           )}
-          <div className="absolute top-2 right-2 z-10">
-            <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80">
-              <Eye className="h-3.5 w-3.5" />
-              {viewCount}
-            </span>
-          </div>
 
           {/* Avatar */}
           <div
             className={cn(
-              "w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0 ml-1",
+              "w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0 ml-1 sm:ml-6",
               provider.avatar_url && "cursor-zoom-in"
             )}
             onClick={(e) => {
@@ -260,7 +254,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </div>
 
           {/* Info: name, counties, stars */}
-          <div className="flex-1 min-w-0 pr-14">
+          <div className="flex-1 min-w-0">
             <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
               {provider.full_name}
             </h3>
@@ -289,6 +283,46 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               >
                 {provider.approval_status === "approved" ? "Jóváhagyva" : provider.approval_status === "rejected" ? "Elutasítva" : "Jóváhagyásra vár"}
               </Badge>
+            )}
+          </div>
+
+          {/* Jobb oldali ikon oszlop */}
+          <div className="shrink-0 flex flex-col items-center gap-2">
+            {/* Látogatószám – mindig látható */}
+            <span className="flex items-center gap-1 text-sm text-gray-700 px-2.5 py-1.5 rounded-full border border-gray-200 bg-white/80 whitespace-nowrap">
+              <Eye className="h-3.5 w-3.5" />
+              {viewCount}
+            </span>
+            {/* Kedvencek gomb – csak mobilon */}
+            {!disableLink && (
+              <div className="sm:hidden" onClick={(e) => e.stopPropagation()}>
+                {isOwner ? (
+                  <a href="/profil?tab=provider" className={`flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 ${tc.text} ${tc.textHover}`}>
+                    <Pencil className="h-4 w-4" />
+                  </a>
+                ) : (
+                  <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} hideTextOnMobile iconOnly />
+                )}
+              </div>
+            )}
+            {/* Megosztás gomb – csak mobilon */}
+            {!disableLink && (
+              <button
+                type="button"
+                className="sm:hidden flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-gray-600 hover:text-[#84AAA6] transition-colors cursor-pointer"
+                aria-label="Megosztás"
+                onClick={(e) => {
+                  e.preventDefault(); e.stopPropagation();
+                  const url = `${window.location.origin}/providers/${provider.id}`;
+                  if (navigator.share) {
+                    navigator.share({ title: provider.full_name, url }).catch(() => {});
+                  } else {
+                    navigator.clipboard.writeText(url).catch(() => {});
+                  }
+                }}
+              >
+                <Share2 className="h-4 w-4" />
+              </button>
             )}
           </div>
         </div>
