@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2 } from "lucide-react";
+import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2 } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
 
 interface UserProfile {
@@ -432,7 +432,6 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                 <th className={`${thClass} ${sortKey === "email" ? thActive : ""}`} onClick={() => handleSort("email")}>
                   E-mail <SortIcon col="email" sortKey={sortKey} dir={sortDir} />
                 </th>
-                <th className={`${thClass} cursor-default hover:bg-gray-50`}>Telefon</th>
                 <th className={`${thClass} cursor-default hover:bg-gray-50`}>Kategóriák</th>
                 <th className={`${thClass} ${sortKey === "created_at" ? thActive : ""}`} onClick={() => handleSort("created_at")}>
                   Regisztrált <SortIcon col="created_at" sortKey={sortKey} dir={sortDir} />
@@ -472,7 +471,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                     <Badge variant={ROLE_BADGE[u.role]} className="text-xs">{ROLE_LABELS[u.role]}</Badge>
                   </td>
                   <td className="px-4 py-2.5 text-gray-600 max-w-[180px] truncate">{u.email}</td>
-                  <td className="px-4 py-2.5 text-gray-600 whitespace-nowrap">{u.phone || "–"}</td>
+
                   <td className="px-4 py-2.5 text-gray-600 max-w-[200px]">
                     <span className="line-clamp-2 leading-snug">
                       {(u.providerCategories ?? []).length > 0
@@ -599,12 +598,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   <Mail className="h-3.5 w-3.5 text-gray-400 shrink-0" />
                   <span className="truncate">{u.email}</span>
                 </div>
-                {u.phone && (
-                  <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                    <Phone className="h-3.5 w-3.5 text-gray-400 shrink-0" />
-                    <span>{u.phone}</span>
-                  </div>
-                )}
+
                 {(u.providerCategories ?? []).length > 0 && (
                   <div className="flex items-start gap-1.5 text-xs text-gray-600">
                     <Tag className="h-3.5 w-3.5 text-gray-400 shrink-0 mt-0.5" />
