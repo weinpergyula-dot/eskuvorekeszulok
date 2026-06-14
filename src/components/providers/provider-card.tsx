@@ -96,11 +96,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
         <div className="flex-1 min-w-0">
           <div className="font-bold text-gray-900 truncate" style={{ fontSize: "16px" }}>{provider.full_name}</div>
-          <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
-            <MapPin className={`h-3 w-3 ${tc.text} shrink-0`} />
-            <span className="truncate">
-              {(provider.counties ?? []).slice(0, 2).join(", ")}
-              {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
+          <div className="flex items-start gap-1 mt-0.5">
+            <MapPin className={`h-3 w-3 ${tc.text} shrink-0 mt-[2px]`} />
+            <span className="text-sm text-gray-500 leading-snug">
+              {countyExpanded
+                ? (provider.counties ?? []).join(", ")
+                : (provider.counties ?? [])[0] ?? ""}
+              {(provider.counties ?? []).length > 1 && !countyExpanded && (
+                <> <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
+                  +{(provider.counties ?? []).length - 1}
+                </button></>
+              )}
             </span>
           </div>
           <div className="flex items-center gap-1 mt-0.5">
