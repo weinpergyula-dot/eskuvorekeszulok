@@ -9,6 +9,18 @@ import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
 
+/**
+ * Supabase Storage image transform URL for thumbnails.
+ * Falls back to the original URL if it's not a Supabase storage URL.
+ */
+function thumbUrl(url: string, width = 150, quality = 60): string {
+  if (!url.includes("/storage/v1/object/public/")) return url;
+  return (
+    url.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") +
+    `?width=${width}&quality=${quality}&resize=cover`
+  );
+}
+
 interface ProviderCardProps {
   provider: Provider;
   showStatus?: boolean;
@@ -312,7 +324,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               onClick={() => { setGalleryIndex(0); setGalleryOpen(true); }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={galleryUrls[0]} alt="Galéria" className="w-full h-full object-cover" draggable={false} />
+              <img src={thumbUrl(galleryUrls[0])} alt="Galéria" className="w-full h-full object-cover" draggable={false} loading="lazy" />
             </button>
           ) : (
             <div
@@ -331,7 +343,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="w-full h-full object-cover" draggable={false} />
+                  <img src={thumbUrl(url)} alt="" className="w-full h-full object-cover" draggable={false} loading="lazy" />
                 </button>
               ))}
             </div>
