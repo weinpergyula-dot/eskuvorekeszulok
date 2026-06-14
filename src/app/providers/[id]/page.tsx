@@ -91,13 +91,6 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Hero section */}
         <div className="relative" style={{ backgroundColor: "#F0F6F5" }}>
-          {/* Action buttons — mobile */}
-          <div className="absolute top-3 left-3 sm:hidden">
-            <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="mobile" />
-          </div>
-          <div className="absolute top-3 right-3 sm:hidden">
-            <ShareButton title={provider.full_name} iconOnly />
-          </div>
           {/* Action buttons — desktop */}
           <div className="absolute top-3 right-3 hidden sm:flex items-center gap-2">
             <ShareButton title={provider.full_name} />
@@ -105,9 +98,18 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           </div>
 
           {/* ── Mobile: kompakt vízszintes fejléc ── */}
-          <div className="sm:hidden px-4 pt-10 pb-4">
+          <div className="sm:hidden relative px-4 pt-10 pb-4">
+            {/* Gombok belül, ugyanúgy mint a csempe nézetben */}
+            <div className="absolute top-2 left-2 z-10">
+              <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="mobile" />
+            </div>
+            <div className="absolute top-2 right-2 z-10">
+              <ShareButton title={provider.full_name} iconOnly />
+            </div>
             <div className="flex items-center gap-3">
-              <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-16 h-16" />
+              <div className="ml-1">
+                <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-16 h-16" />
+              </div>
               <div className="flex-1 min-w-0 pr-10">
                 <h1 className="font-bold text-gray-900 text-[18px] leading-snug truncate">
                   {provider.full_name}
