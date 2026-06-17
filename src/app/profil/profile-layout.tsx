@@ -718,6 +718,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             <div className="space-y-5">
               {provider ? (
                 <StatusCard provider={provider} isProviderActive={isProviderActive} />
+              ) : role === "visitor" ? (
+                <p className="text-base text-gray-700">
+                  Ha szeretnél szolgáltatóként is regisztrálni, akkor azt ebben a menüpontban teheted meg.
+                </p>
               ) : (
                 <p className="text-base text-gray-700">
                   Töltsd ki az adatlapot és aktiváld a szolgáltatói profilodat.
