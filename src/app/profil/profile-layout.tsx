@@ -34,7 +34,7 @@ const SECTION_TITLES: Record<Section, string> = {
   provider:        "Szolgáltatói profil",
   dashboard:       "Dashboard",
   favorites:       "Kedvencek",
-  quotes:          "Ajánlatot kérek",
+  quotes:          "Ajánlatkérés",
   messages:        "Üzenetek",
   chat:            "Chat",
 };
@@ -228,7 +228,7 @@ function MobileMenuDropdown({
   const isAccountSettings = ACCOUNT_SETTINGS_SECTIONS.includes(active);
   const activeAccountItem = isAccountSettings ? ACCOUNT_SETTINGS_ITEMS.find((i) => i.id === active) : undefined;
   const activeItem = active === "quotes"
-    ? { id: "quotes" as Section, label: "Ajánlatot kérek", icon: <FileText className="h-4 w-4" /> }
+    ? { id: "quotes" as Section, label: "Ajánlatkérés", icon: <FileText className="h-4 w-4" /> }
     : active === "admin"
     ? { id: "admin" as Section, label: "Admin", icon: <ShieldCheck className="h-4 w-4" /> }
     : activeAccountItem
@@ -281,7 +281,7 @@ function MobileMenuDropdown({
             )}
           >
             <FileText className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left">Ajánlatot kérek</span>
+            <span className="flex-1 text-left">Ajánlatkérés</span>
           </button>
 
           {/* Admin */}
@@ -556,7 +556,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
               >
                 <FileText className="h-4 w-4 shrink-0" />
-                <span>Ajánlatot kérek</span>
+                <span>Ajánlatkérés</span>
               </button>
             </div>
 

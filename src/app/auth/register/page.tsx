@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { UserRound, Briefcase, ImagePlus, X, CheckCircle2, Link2Off } from "lucide-react";
+import { UserRound, Briefcase, ImagePlus, X, CheckCircle2, Link2Off, ArrowLeft, FileText } from "lucide-react";
 import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils"
 
 function GoogleIcon({ size = 18 }: { size?: number }) {
@@ -153,6 +153,11 @@ function RegisterContent() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+
+  // Pricing fields (provider only)
+  const [pricingText, setPricingText] = useState("");
+  const [pricingPdfFile, setPricingPdfFile] = useState<File | null>(null);
+  const pricingPdfInputRef = useRef<HTMLInputElement>(null);
 
   // Visitor avatar (basic step)
   const [visitorAvatarFile, setVisitorAvatarFile] = useState<File | null>(null);
@@ -375,10 +380,12 @@ function RegisterContent() {
         if (role === "provider") {
           let avatarUrl = "";
           const galleryUrls: string[] = [];
+          let pricingPdfUrl: string | null = null;
           if (avatarFile) avatarUrl = await uploadFile(avatarFile, "avatars", `${oauthUserId}/avatar`);
           for (let i = 0; i < galleryFiles.length; i++) {
             galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${oauthUserId}/gallery-${i}`));
           }
+          if (pricingPdfFile) pricingPdfUrl = await uploadFile(pricingPdfFile, "avatars", `${oauthUserId}/pricing/pricing.pdf`);
           const { error: providerError } = await createProviderProfileAction(oauthUserId, {
             full_name: providerDisplayName,
             email,
@@ -390,6 +397,8 @@ function RegisterContent() {
             website: website || null,
             avatar_url: avatarUrl || null,
             gallery_urls: galleryUrls,
+            pricing_text: pricingText || null,
+            pricing_pdf_url: pricingPdfUrl,
           });
           if (providerError) throw new Error(providerError);
           // createProviderProfileAction handles TOS; also update role + metadata
@@ -417,10 +426,12 @@ function RegisterContent() {
 
         let avatarUrl = "";
         const galleryUrls: string[] = [];
+        let upgradePricingPdfUrl: string | null = null;
         if (avatarFile) avatarUrl = await uploadFile(avatarFile, "avatars", `${currentUser.id}/avatar`);
         for (let i = 0; i < galleryFiles.length; i++) {
           galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${currentUser.id}/gallery-${i}`));
         }
+        if (pricingPdfFile) upgradePricingPdfUrl = await uploadFile(pricingPdfFile, "avatars", `${currentUser.id}/pricing/pricing.pdf`);
 
         const { error: providerError } = await supabase.from("providers").insert({
           user_id: currentUser.id,
@@ -434,6 +445,8 @@ function RegisterContent() {
           website: website || null,
           avatar_url: avatarUrl || null,
           gallery_urls: galleryUrls,
+          pricing_text: pricingText || null,
+          pricing_pdf_url: upgradePricingPdfUrl,
           approval_status: "pending",
           featured: null,
         });
@@ -461,12 +474,16 @@ function RegisterContent() {
         try {
           let avatarUrl = "";
           const galleryUrls: string[] = [];
+          let newPricingPdfUrl: string | null = null;
 
           if (avatarFile) {
             avatarUrl = await uploadFile(avatarFile, "avatars", `${newUserId}/avatar`);
           }
           for (let i = 0; i < galleryFiles.length; i++) {
             galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${newUserId}/gallery-${i}`));
+          }
+          if (pricingPdfFile) {
+            newPricingPdfUrl = await uploadFile(pricingPdfFile, "avatars", `${newUserId}/pricing/pricing.pdf`);
           }
 
           const { error: providerError } = await createProviderProfileAction(newUserId, {
@@ -480,6 +497,8 @@ function RegisterContent() {
             website: website || null,
             avatar_url: avatarUrl || null,
             gallery_urls: galleryUrls,
+            pricing_text: pricingText || null,
+            pricing_pdf_url: newPricingPdfUrl,
           });
           if (providerError) throw new Error(providerError);
 
@@ -883,16 +902,22 @@ function RegisterContent() {
   return (
     <div>
       <PageHeader icon={UserRound} title="Regisztráció – Szolgáltatói profil" description="Töltsd ki a nyilvános profilodat – ez jelenik majd meg az oldalon az érdeklődő pároknak." bgColor="#84AAA6" />
+      {!isUpgrade && (
+        <div className="w-full bg-white border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <button
+              onClick={() => setStep("basic")}
+              className="inline-flex items-center gap-1.5 text-[15px] font-medium transition-colors"
+              style={{ color: "#84AAA6" }}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Vissza
+            </button>
+          </div>
+        </div>
+      )}
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
-        {!isUpgrade && (
-          <button
-            onClick={() => setStep("basic")}
-            className="text-lg text-gray-900 hover:text-[#84AAA6] mb-4 flex items-center gap-1"
-          >
-            ← Vissza
-          </button>
-        )}
         <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
         {isUpgrade && (
           <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-6">
@@ -1124,6 +1149,51 @@ function RegisterContent() {
                     ))}
                   </ul>
                 )}
+              </div>
+
+              {/* Pricing section */}
+              <div className="space-y-3 border border-gray-200 rounded-xl p-4 bg-gray-50">
+                <div>
+                  <p className="text-base font-semibold text-gray-900">Árak</p>
+                  <p className="text-sm text-gray-500 mt-0.5">Tájékoztasd a leendő párokat a várható költségekről.</p>
+                </div>
+                <FloatingTextarea
+                  accentColor="#84AAA6"
+                  id="reg-pricing-text"
+                  label="Szöveges árinformáció (opcionális)"
+                  value={pricingText}
+                  onChange={(e) => setPricingText(e.target.value)}
+                  rows={4}
+                />
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-700 font-medium">Árlista PDF (opcionális)</p>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={() => pricingPdfInputRef.current?.click()}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors"
+                    >
+                      <FileText className="h-4 w-4" />
+                      {pricingPdfFile ? "PDF módosítása" : "PDF feltöltése"}
+                    </button>
+                    {pricingPdfFile && (
+                      <span className="text-sm text-[#84AAA6] flex items-center gap-1">
+                        <FileText className="h-3.5 w-3.5" />
+                        {pricingPdfFile.name}
+                        <button type="button" onClick={() => setPricingPdfFile(null)} className="text-gray-400 hover:text-red-500 ml-1">
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </span>
+                    )}
+                  </div>
+                  <input
+                    ref={pricingPdfInputRef}
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    onChange={(e) => { const f = e.target.files?.[0]; if (f) setPricingPdfFile(f); e.target.value = ""; }}
+                  />
+                </div>
               </div>
             </div>
           </div>

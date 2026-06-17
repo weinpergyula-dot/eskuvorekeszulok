@@ -293,7 +293,7 @@ export function Navbar() {
           className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#84AAA6] font-semibold hover:bg-[#84AAA6]/10 text-left"
         >
           <FileText className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-          <span className="flex-1">Ajánlatot kérek</span>
+          <span className="flex-1">Ajánlatkérés</span>
         </button>
       </div>
 
