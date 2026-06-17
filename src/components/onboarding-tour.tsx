@@ -29,7 +29,7 @@ const VISITOR_STEPS: TourStep[] = [
     selector: '[data-tour="sidebar-favorites"]',
     side: "right",
     title: "Kedvencek",
-    description: "Mentsd el a tetszőleges szolgáltatókat, hogy később könnyen visszataláld őket, és szűrj rájuk az ajánlatkérésnél.",
+    description: "Mentsd el a tetszőleges szolgáltatókat, hogy később könnyen megtaláld őket, és szűrj rájuk az ajánlatkérésnél.",
   },
   {
     selector: '[data-tour="sidebar-chat"]',
@@ -154,14 +154,15 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       {/* Tooltip */}
       <div style={{ ...tooltipStyle(), zIndex: 9999 }}
         className="bg-white rounded-2xl shadow-2xl p-5">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#84AAA6" }}>
-            {stepIdx + 1} / {steps.length}
-          </span>
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs font-bold text-gray-900">Hasznos menüpontok</span>
           <button onClick={finish} className="text-gray-400 hover:text-gray-600 cursor-pointer">
             <X className="h-4 w-4" />
           </button>
         </div>
+        <span className="text-[11px] font-semibold uppercase tracking-wider block mb-3" style={{ color: "#84AAA6" }}>
+          {stepIdx + 1} / {steps.length}
+        </span>
         <h3 className="text-base font-bold text-gray-900 mb-2">{current.title}</h3>
         <p className="text-sm text-gray-600 leading-relaxed mb-5">{current.description}</p>
         <button

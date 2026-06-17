@@ -6,6 +6,7 @@ import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 export const revalidate = 60;
 
@@ -32,6 +33,7 @@ export default async function HomePage() {
   }
   return (
     <>
+      <ScrollToTop />
       {/* Mobile hero slideshow */}
       <div className="sm:hidden">
         <MobileHeroSlideshow />
