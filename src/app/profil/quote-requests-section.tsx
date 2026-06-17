@@ -168,6 +168,7 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
   const [message, setMessage] = useState("");
   const [matchingProviders, setMatchingProviders] = useState<MatchingProvider[] | null>(null);
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [countyCountMap, setCountyCountMap] = useState<Record<string, number>>({});
@@ -268,7 +269,33 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
             <p className="text-xs text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
           ) : (
             <div>
-              <p className="text-xs text-gray-600 mb-2">Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:</p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs text-gray-600">Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:</p>
+                {matchingProviders.some(p => p.is_favorite) && (
+                  <label className="flex items-center gap-1.5 cursor-pointer shrink-0 ml-3">
+                    <span className="text-xs text-gray-600 whitespace-nowrap flex items-center gap-1">
+                      <Heart className="h-3 w-3 fill-rose-400 stroke-rose-400" /> Csak kedvencek
+                    </span>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={favoritesOnly}
+                      onClick={() => {
+                        const next = !favoritesOnly;
+                        setFavoritesOnly(next);
+                        if (next) {
+                          setCheckedIds(new Set(matchingProviders.filter(p => p.is_favorite).map(p => p.id)));
+                        } else {
+                          setCheckedIds(new Set(matchingProviders.map(p => p.id)));
+                        }
+                      }}
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${favoritesOnly ? "bg-rose-400" : "bg-gray-200"}`}
+                    >
+                      <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${favoritesOnly ? "translate-x-[18px]" : "translate-x-[3px]"}`} />
+                    </button>
+                  </label>
+                )}
+              </div>
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
                 {matchingProviders.map(p => (
                   <label key={p.id} className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
@@ -281,11 +308,6 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
                         : <span className="text-xs font-bold text-gray-500">{p.full_name.charAt(0)}</span>}
                     </div>
                     <span className="flex-1 text-xs font-medium text-gray-900 truncate">{p.full_name}</span>
-                    {p.is_favorite && (
-                      <span title="Kedvenc" className="shrink-0">
-                        <Heart className="h-3.5 w-3.5 fill-rose-400 stroke-rose-400" />
-                      </span>
-                    )}
                     <StarRating rating={p.average_rating} />
                   </label>
                 ))}
