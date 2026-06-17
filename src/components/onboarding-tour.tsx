@@ -29,13 +29,13 @@ const VISITOR_STEPS: TourStep[] = [
     selector: '[data-tour="sidebar-favorites"]',
     side: "right",
     title: "Kedvencek",
-    description: "Mentsd el a tetszőleges szolgáltatókat, hogy később könnyen megtaláld őket, és szűrj rájuk az ajánlatkérésnél.",
+    description: "Mentsd el a neked tetsző szolgáltatókat, hogy később könnyen megtalálhasd őket.",
   },
   {
     selector: '[data-tour="sidebar-chat"]',
     side: "right",
     title: "Chat",
-    description: "Olvass és válaszolj a szolgáltatók üzeneteire közvetlenül ebből a menüből.",
+    description: "A szolgáltatókkal folytatott beszélgetéseket ebben a menüpontban találhatod.",
   },
 ];
 
