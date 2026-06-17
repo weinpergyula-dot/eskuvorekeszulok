@@ -290,7 +290,7 @@ export function Navbar() {
     ...(hasProvider ? [
       { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
     ] : []),
-    ...(hasProvider && providerIsActive ? [
+    ...(hasProvider ? [
       { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
     { id: "favorites", label: "Kedvencek", Icon: Heart },
