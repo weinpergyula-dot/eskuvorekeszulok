@@ -183,7 +183,7 @@ export function Navbar() {
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
         if (p.approval_status === "approved") {
-          setProviderDot(p.active !== false ? "green" : null);
+          setProviderDot("green");
           return;
         }
         setProviderDot(null);
@@ -369,10 +369,10 @@ export function Navbar() {
               {(unreadMessages + unreadQuotes) > 99 ? "99+" : (unreadMessages + unreadQuotes)}
             </span>
           )}
-          {id === "provider" && (providerIsActive || providerDot) && (
+          {id === "provider" && providerDot && (
             <span className={`w-2.5 h-2.5 rounded-full ${
-              providerIsActive ? "bg-green-500" :
               providerDot === "red" ? "bg-[#F06C6C]" :
+              providerDot === "green" ? "bg-green-500" :
               "bg-amber-400"
             }`} />
           )}

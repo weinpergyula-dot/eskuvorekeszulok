@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePathname, useRouter } from "next/navigation";
 import { X } from "lucide-react";
@@ -82,6 +82,8 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
   const [rect, setRect] = useState<Rect | null>(null);
   const [mounted, setMounted] = useState(false);
   const [shouldShow, setShouldShow] = useState(false);
+  const [opacity, setOpacity] = useState(1);
+  const isTransitioning = useRef(false);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -156,16 +158,36 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     return () => { clearTimeout(t); window.removeEventListener("resize", measureEl); };
   }, [visible, measureEl, pathname]);
 
+  // Fade in after the new rect is measured following a step transition
+  useEffect(() => {
+    if (rect && isTransitioning.current) {
+      isTransitioning.current = false;
+      setOpacity(1);
+    }
+  }, [rect]);
+
   const finish = () => {
-    localStorage.setItem(STORAGE_KEY(userId), "1");
-    setVisible(false);
-    window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+    setOpacity(0);
+    setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY(userId), "1");
+      setVisible(false);
+      window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+    }, 150);
   };
 
   const next = () => {
-    setRect(null); // clear spotlight during transition
-    if (stepIdx < steps.length - 1) setStepIdx(i => i + 1);
-    else finish();
+    isTransitioning.current = true;
+    setOpacity(0);
+    setTimeout(() => {
+      setRect(null);
+      if (stepIdx < steps.length - 1) {
+        setStepIdx(i => i + 1);
+      } else {
+        localStorage.setItem(STORAGE_KEY(userId), "1");
+        setVisible(false);
+        window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+      }
+    }, 150);
   };
 
   if (!mounted || !visible || !current) return null;
@@ -231,13 +253,15 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
           zIndex: 9997,
           pointerEvents: "none",
           outline: "2px solid rgba(255,255,255,0.25)",
+          opacity,
+          transition: "opacity 0.15s ease",
         }} />
       ) : (
-        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997 }} />
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997, opacity, transition: "opacity 0.15s ease" }} />
       )}
 
       {/* Tooltip card */}
-      <div style={{ ...tooltipStyle(), zIndex: 9999 }}
+      <div style={{ ...tooltipStyle(), zIndex: 9999, opacity, transition: "opacity 0.15s ease" }}
         className="bg-white rounded-2xl shadow-2xl p-5">
         <div className="flex items-start justify-between mb-1">
           <h2 className="text-base font-bold text-gray-900 flex-1 text-center">Hasznos menüpontok</h2>
