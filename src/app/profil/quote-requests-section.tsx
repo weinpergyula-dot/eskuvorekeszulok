@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, Send, Trash2, Star, Info } from "lucide-react";
+import { ArrowLeft, Send, Trash2, Star, Heart, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -206,7 +206,7 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
         setCheckedIds(new Set(providers.map(p => p.id)));
       })
       .catch(() => {});
-  }, [category, selectedCounties]);
+  }, [category, selectedCounties, userId]);
 
   const toggleCounty = (county: string) => {
     setSelectedCounties(prev =>
@@ -282,9 +282,7 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
                     </div>
                     <span className="flex-1 text-xs font-medium text-gray-900 truncate">{p.full_name}</span>
                     {p.is_favorite && (
-                      <span title="Kedvenc" className="text-rose-400 shrink-0">
-                        <Star className="h-3.5 w-3.5 fill-rose-400 stroke-rose-400" />
-                      </span>
+                      <Heart className="h-3.5 w-3.5 fill-rose-400 stroke-rose-400 shrink-0" title="Kedvenc" />
                     )}
                     <StarRating rating={p.average_rating} />
                   </label>
