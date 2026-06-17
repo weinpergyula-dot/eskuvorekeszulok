@@ -752,12 +752,9 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
 
   return (
     <div className="space-y-3">
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900">Ajánlatkérés</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Kérj egyéni vagy csoportos ajánlatot – válaszd ki a kategóriát és a területet, majd a feltételeknek megfelelő szolgáltatókat értékelés, név, profilkép és kedvencek alapján listázzuk. A pipával jelölheted ki, kiknek küldöd el az üzeneted.
-        </p>
-      </div>
+      <p className="text-sm text-gray-500">
+        Kérj egyéni vagy csoportos ajánlatot – válaszd ki a kategóriát és a területet, majd a feltételeknek megfelelő szolgáltatókat értékelés, név, profilkép és kedvencek alapján listázzuk. A pipával jelölheted ki, kiknek küldöd el az üzeneted.
+      </p>
       <SendForm onSent={() => setSent(true)} userId={userId} />
     </div>
   );
