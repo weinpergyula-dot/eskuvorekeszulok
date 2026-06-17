@@ -56,6 +56,7 @@ export function Navbar() {
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const desktopCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tourDropdownLockedRef = useRef(false);
 
   const openServices = () => {
     setServicesOpen(true);
@@ -66,9 +67,21 @@ export function Navbar() {
     }
   };
 
+  // Tour: open/close the mobile user-dropdown and prevent outside-click from closing it
+  useEffect(() => {
+    const openDropdown = () => { setUserDropdownOpen(true); tourDropdownLockedRef.current = true; };
+    const closeDropdown = () => { setUserDropdownOpen(false); tourDropdownLockedRef.current = false; };
+    window.addEventListener("tour-open-mobile-dropdown", openDropdown);
+    window.addEventListener("tour-close-mobile-dropdown", closeDropdown);
+    return () => {
+      window.removeEventListener("tour-open-mobile-dropdown", openDropdown);
+      window.removeEventListener("tour-close-mobile-dropdown", closeDropdown);
+    };
+  }, []);
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node))
+      if (!tourDropdownLockedRef.current && userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node))
         setUserDropdownOpen(false);
       if (desktopDropdownRef.current && !desktopDropdownRef.current.contains(e.target as Node))
         setDesktopDropdownOpen(false);
@@ -290,6 +303,7 @@ export function Navbar() {
       {/* Ajánlatkérés – highlighted at top */}
       <div className="border-b border-gray-100 mb-1 pb-1">
         <button
+          data-tour="dropdown-quotes"
           onClick={() => navTo("quotes", closeAll)}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#84AAA6] font-semibold hover:bg-[#84AAA6]/10 text-left"
         >
@@ -342,6 +356,7 @@ export function Navbar() {
       {providerItems.map(({ id, label, Icon }) => (
         <button
           key={id}
+          data-tour={`dropdown-${id}`}
           onClick={() => navTo(id, closeAll)}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
         >

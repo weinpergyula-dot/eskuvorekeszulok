@@ -8,7 +8,7 @@ import type { UserRole } from "@/lib/types";
 
 interface TourStep {
   selector: string;
-  mobileSelector?: string; // fallback selector on mobile (< 640px)
+  mobileSelector?: string; // targets an item in the navbar user-dropdown on mobile
   side: "bottom" | "right";
   title: string;
   description: string;
@@ -17,28 +17,28 @@ interface TourStep {
 const VISITOR_STEPS: TourStep[] = [
   {
     selector: '[data-tour="nav-categories"]',
-    // mobile: the LayoutGrid icon link also has this attr → picked by the visible-element scan
+    // mobile: the LayoutGrid icon also carries this attr — picked by visible-element scan
     side: "bottom",
     title: "Kategóriák",
     description: "Böngészd az esküvői szolgáltatókat kategóriánként – fotósok, virágkötők, zenészek és sok más. Szűrj megye szerint, és nézd meg az értékeléseket.",
   },
   {
     selector: '[data-tour="sidebar-quotes"]',
-    mobileSelector: '[data-tour="mobile-menu-btn"]',
+    mobileSelector: '[data-tour="dropdown-quotes"]',
     side: "right",
     title: "Ajánlatkérés",
     description: "Küldj egyéni vagy csoportos ajánlatkérést egyszerre több szolgáltatónak – egy kattintással, ingyenesen.",
   },
   {
     selector: '[data-tour="sidebar-favorites"]',
-    mobileSelector: '[data-tour="mobile-menu-btn"]',
+    mobileSelector: '[data-tour="dropdown-favorites"]',
     side: "right",
     title: "Kedvencek",
     description: "Mentsd el a neked tetsző szolgáltatókat, hogy később könnyen megtalálhasd őket.",
   },
   {
     selector: '[data-tour="sidebar-chat"]',
-    mobileSelector: '[data-tour="mobile-menu-btn"]',
+    mobileSelector: '[data-tour="dropdown-chat"]',
     side: "right",
     title: "Chat",
     description: "A szolgáltatókkal folytatott beszélgetéseket ebben a menüpontban találhatod.",
@@ -48,21 +48,21 @@ const VISITOR_STEPS: TourStep[] = [
 const PROVIDER_STEPS: TourStep[] = [
   {
     selector: '[data-tour="sidebar-provider"]',
-    mobileSelector: '[data-tour="mobile-menu-btn"]',
+    mobileSelector: '[data-tour="dropdown-provider"]',
     side: "right",
     title: "Szolgáltatói profil",
     description: "Töltsd ki és tartsd naprakészen a profilodat – ez jelenik meg az érdeklődő pároknak. Az adminisztrátor jóváhagyása után lesz látható.",
   },
   {
     selector: '[data-tour="sidebar-dashboard"]',
-    mobileSelector: '[data-tour="mobile-menu-btn"]',
+    mobileSelector: '[data-tour="dropdown-dashboard"]',
     side: "right",
     title: "Dashboard",
     description: "Kövesd nyomon a megtekintéseidet, értékeléseidet és profil státuszodat.",
   },
   {
     selector: '[data-tour="sidebar-chat"]',
-    mobileSelector: '[data-tour="mobile-menu-btn"]',
+    mobileSelector: '[data-tour="dropdown-chat"]',
     side: "right",
     title: "Chat",
     description: "Itt érnek el a párok üzenetei és az ajánlatkérések – válaszolj közvetlenül innen.",
@@ -89,7 +89,14 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
   const steps = role === "provider" ? PROVIDER_STEPS : VISITOR_STEPS;
   const current = steps[stepIdx];
 
-  // Start timer after mount (runs once)
+  // Lock body scroll while the tour is open — fixes iOS touch-event issues on position:fixed elements
+  useEffect(() => {
+    if (!visible) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [visible]);
+
   useEffect(() => {
     setMounted(true);
     if (localStorage.getItem(STORAGE_KEY(userId))) return;
@@ -97,19 +104,29 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     return () => clearTimeout(t);
   }, [userId]);
 
-  // Navigate to /profil when needed, then reveal the tour
+  // Desktop only: provider sidebar elements only exist on /profil
   useEffect(() => {
     if (!shouldShow) return;
-    // All provider steps live on the /profil sidebar.
-    // Visitor sidebar steps (step 1+) also live there.
-    const needsProfilePage = role === "provider" || stepIdx > 0;
-    if (needsProfilePage && pathname !== "/profil") {
+    const isMobileView = window.innerWidth < 640;
+    if (!isMobileView && role === "provider" && pathname !== "/profil") {
       router.push("/profil");
-      return; // effect re-fires when pathname changes
+      return; // re-fires when pathname becomes /profil
     }
     const t = setTimeout(() => setVisible(true), 200);
     return () => clearTimeout(t);
-  }, [shouldShow, role, stepIdx, pathname, router]);
+  }, [shouldShow, role, pathname, router]);
+
+  // Open / close the mobile navbar user-dropdown for steps that need it
+  useEffect(() => {
+    if (!visible || !current) return;
+    const isMobileView = window.innerWidth < 640;
+    if (!isMobileView) return;
+    if (current.mobileSelector) {
+      window.dispatchEvent(new CustomEvent("tour-open-mobile-dropdown"));
+    } else {
+      window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+    }
+  }, [visible, current]);
 
   // Pick the first matching element that is actually painted (non-zero rect)
   const measureEl = useCallback(() => {
@@ -131,23 +148,22 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
   }, [current]);
 
-  // Re-measure when visible, when step changes, or when pathname changes (after navigation)
+  // Re-measure after step/page changes; 80 ms lets the dropdown render first
   useEffect(() => {
     if (!visible) return;
-    const t = setTimeout(measureEl, 50); // small delay so new DOM settles
+    const t = setTimeout(measureEl, 80);
     window.addEventListener("resize", measureEl);
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener("resize", measureEl);
-    };
+    return () => { clearTimeout(t); window.removeEventListener("resize", measureEl); };
   }, [visible, measureEl, pathname]);
 
   const finish = () => {
     localStorage.setItem(STORAGE_KEY(userId), "1");
     setVisible(false);
+    window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
   };
 
   const next = () => {
+    setRect(null); // clear spotlight during transition
     if (stepIdx < steps.length - 1) setStepIdx(i => i + 1);
     else finish();
   };
@@ -162,7 +178,7 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       position: "fixed", top: "50%", left: "50%",
       transform: "translate(-50%,-50%)", width: "min(340px,90vw)",
     };
-    // On mobile always position below (never right, which could go off-screen)
+    // On mobile always position the tooltip below the highlighted element
     if (isMobile || current.side === "bottom") return {
       position: "fixed",
       top: rect.top + rect.height + PAD + GAP,
@@ -172,7 +188,7 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       )),
       width: Math.min(TOOLTIP_W, window.innerWidth - 24),
     };
-    // right
+    // right (desktop sidebar)
     return {
       position: "fixed",
       top: Math.max(12, rect.top + rect.height / 2 - 100),
@@ -183,7 +199,7 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
 
   return createPortal(
     <>
-      {/* Spotlight – works on both desktop and mobile */}
+      {/* Spotlight overlay */}
       {rect ? (
         <div style={{
           position: "fixed",
@@ -199,7 +215,7 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997 }} />
       )}
 
-      {/* Tooltip */}
+      {/* Tooltip card */}
       <div style={{ ...tooltipStyle(), zIndex: 9999 }}
         className="bg-white rounded-2xl shadow-2xl p-5">
         <div className="flex items-start justify-between mb-1">
