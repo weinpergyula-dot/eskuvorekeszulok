@@ -17,7 +17,7 @@ interface TourStep {
 const VISITOR_STEPS: TourStep[] = [
   {
     selector: '[data-tour="nav-categories"]',
-    // mobile: the LayoutGrid icon also carries this attr — picked by visible-element scan
+    // mobile: LayoutGrid icon in navbar also carries this attr, picked by visible-element scan
     side: "bottom",
     title: "Kategóriák",
     description: "Böngészd az esküvői szolgáltatókat kategóriánként – fotósok, virágkötők, zenészek és sok más. Szűrj megye szerint, és nézd meg az értékeléseket.",
@@ -89,14 +89,6 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
   const steps = role === "provider" ? PROVIDER_STEPS : VISITOR_STEPS;
   const current = steps[stepIdx];
 
-  // Lock body scroll while the tour is open — fixes iOS touch-event issues on position:fixed elements
-  useEffect(() => {
-    if (!visible) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
-  }, [visible]);
-
   useEffect(() => {
     setMounted(true);
     if (localStorage.getItem(STORAGE_KEY(userId))) return;
@@ -104,7 +96,7 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     return () => clearTimeout(t);
   }, [userId]);
 
-  // Desktop only: provider sidebar elements only exist on /profil
+  // Desktop only: all provider sidebar elements live on /profil
   useEffect(() => {
     if (!shouldShow) return;
     const isMobileView = window.innerWidth < 640;
@@ -174,26 +166,47 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
   const isLast = stepIdx === steps.length - 1;
 
   const tooltipStyle = (): React.CSSProperties => {
+    // Centered fallback (no element found)
     if (!rect) return {
       position: "fixed", top: "50%", left: "50%",
       transform: "translate(-50%,-50%)", width: "min(340px,90vw)",
     };
-    // On mobile always position the tooltip below the highlighted element
-    if (isMobile || current.side === "bottom") return {
+
+    if (isMobile) {
+      // For dropdown steps: position tooltip below the entire dropdown panel
+      let top = rect.top + rect.height + PAD + GAP;
+      if (current.mobileSelector) {
+        const panel = document.querySelector('[data-tour="dropdown-panel"]');
+        if (panel) top = panel.getBoundingClientRect().bottom + GAP;
+      }
+      return {
+        position: "fixed",
+        top,
+        left: 12,
+        right: 12,
+        // translate3d forces GPU compositing — fixes iOS touch-event hit-area misalignment
+        transform: "translate3d(0,0,0)",
+      };
+    }
+
+    if (current.side === "bottom") return {
       position: "fixed",
       top: rect.top + rect.height + PAD + GAP,
       left: Math.max(12, Math.min(
         rect.left + rect.width / 2 - TOOLTIP_W / 2,
         window.innerWidth - TOOLTIP_W - 12,
       )),
-      width: Math.min(TOOLTIP_W, window.innerWidth - 24),
+      width: TOOLTIP_W,
+      transform: "translate3d(0,0,0)",
     };
+
     // right (desktop sidebar)
     return {
       position: "fixed",
       top: Math.max(12, rect.top + rect.height / 2 - 100),
       left: rect.left + rect.width + PAD + GAP,
       width: TOOLTIP_W,
+      transform: "translate3d(0,0,0)",
     };
   };
 

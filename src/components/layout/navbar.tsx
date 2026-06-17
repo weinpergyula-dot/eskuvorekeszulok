@@ -299,7 +299,7 @@ export function Navbar() {
 
   // ── Shared dropdown panel renderer ──────────────────────────────────────────
   const DropdownPanel = ({ closeAll }: { closeAll: () => void }) => (
-    <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+    <div data-tour="dropdown-panel" className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
       {/* Ajánlatkérés – highlighted at top */}
       <div className="border-b border-gray-100 mb-1 pb-1">
         <button
