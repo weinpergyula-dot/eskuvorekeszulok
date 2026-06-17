@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2 } from "lucide-react";
+import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2, RotateCcw, Check } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
 
 interface UserProfile {
@@ -24,6 +24,24 @@ interface UserProfile {
   providerHasPendingChanges?: boolean;
   providerId?: string | null;
   providerFeatured?: "teal" | "silver" | "gold" | null;
+}
+
+function OnboardingResetButton({ userId }: { userId: string }) {
+  const [done, setDone] = useState(false);
+  const reset = () => {
+    localStorage.removeItem(`onboarding_done_${userId}`);
+    setDone(true);
+    setTimeout(() => setDone(false), 1500);
+  };
+  return (
+    <button
+      onClick={reset}
+      title="Onboarding tour reset (localStorage törlés)"
+      className="h-7 w-7 flex items-center justify-center rounded border border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6] transition-colors cursor-pointer"
+    >
+      {done ? <Check className="h-3.5 w-3.5 text-green-500" /> : <RotateCcw className="h-3.5 w-3.5" />}
+    </button>
+  );
 }
 
 interface ProviderStatus {
@@ -546,6 +564,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                           Admin jog elvétele
                         </Button>
                       )}
+                      <OnboardingResetButton userId={u.user_id} />
                       <Button size="sm" variant="destructive" disabled={deleting === u.user_id}
                         onClick={() => setConfirmDelete(u)}
                         className="text-xs cursor-pointer h-7 px-2.5">
