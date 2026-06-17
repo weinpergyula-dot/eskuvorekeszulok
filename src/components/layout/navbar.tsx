@@ -367,10 +367,10 @@ export function Navbar() {
               {(unreadMessages + unreadQuotes) > 99 ? "99+" : (unreadMessages + unreadQuotes)}
             </span>
           )}
-          {id === "provider" && providerDot && (
+          {id === "provider" && (providerIsActive || providerDot) && (
             <span className={`w-2.5 h-2.5 rounded-full ${
+              providerIsActive ? "bg-green-500" :
               providerDot === "red" ? "bg-[#F06C6C]" :
-              providerDot === "green" ? "bg-green-500" :
               "bg-amber-400"
             }`} />
           )}
