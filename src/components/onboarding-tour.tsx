@@ -190,8 +190,8 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       return {
         position: "fixed",
         top,
-        left: 20,
-        right: 20,
+        left: 30,
+        right: 30,
         // translate3d forces GPU compositing — fixes iOS touch-event hit-area misalignment
         transform: "translate3d(0,0,0)",
       };
@@ -241,7 +241,11 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
         className="bg-white rounded-2xl shadow-2xl p-5">
         <div className="flex items-start justify-between mb-1">
           <h2 className="text-base font-bold text-gray-900 flex-1 text-center">Hasznos menüpontok</h2>
-          <button onClick={finish} className="text-gray-400 hover:text-gray-600 cursor-pointer shrink-0 ml-2 mt-0.5">
+          <button
+            onClick={finish}
+            onTouchEnd={(e) => { e.preventDefault(); finish(); }}
+            className="text-gray-400 hover:text-gray-600 cursor-pointer shrink-0 ml-2 mt-0.5"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -253,8 +257,9 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
         <p className="text-sm text-gray-600 leading-relaxed mb-5">{current.description}</p>
         <button
           onClick={next}
+          onTouchEnd={(e) => { e.preventDefault(); next(); }}
           className="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-colors cursor-pointer"
-          style={{ backgroundColor: "#84AAA6" }}
+          style={{ backgroundColor: "#84AAA6", touchAction: "manipulation" }}
         >
           {isLast ? "Kezdjük el! 🎉" : "Tovább →"}
         </button>
