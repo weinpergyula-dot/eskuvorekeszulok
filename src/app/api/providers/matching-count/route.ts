@@ -56,12 +56,10 @@ export async function GET(request: NextRequest) {
 
   // Fetch reviews for these providers and compute live average (same as listing page)
   const providerIds = unique.map((p) => p.id);
-  const [{ data: reviews }, { data: favRows }] = await Promise.all([
-    admin.from("reviews").select("provider_id, rating").in("provider_id", providerIds),
-    userId
-      ? admin.from("favorites").select("provider_id").eq("user_id", userId).in("provider_id", providerIds)
-      : Promise.resolve({ data: [] }),
-  ]);
+  const { data: reviews } = await admin
+    .from("reviews")
+    .select("provider_id, rating")
+    .in("provider_id", providerIds);
 
   const ratingMap = new Map<string, { sum: number; count: number }>();
   (reviews ?? []).forEach((r) => {
@@ -69,7 +67,15 @@ export async function GET(request: NextRequest) {
     ratingMap.set(r.provider_id, { sum: curr.sum + r.rating, count: curr.count + 1 });
   });
 
-  const favoriteSet = new Set((favRows ?? []).map((f: { provider_id: string }) => f.provider_id));
+  // Fetch all favorites for the user, filter in JS
+  let favoriteSet = new Set<string>();
+  if (userId) {
+    const { data: favRows } = await admin
+      .from("favorites")
+      .select("provider_id")
+      .eq("user_id", userId);
+    favoriteSet = new Set((favRows ?? []).map((f: { provider_id: string }) => f.provider_id));
+  }
 
   return NextResponse.json({
     providers: unique.map((p) => {
