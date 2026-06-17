@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { FloatingInput } from "@/components/ui/floating-input";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2 } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -266,12 +266,15 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
 
       <div className="space-y-4">
         {/* Search */}
-        <Input
-          placeholder="Keresés név vagy email alapján..."
-          value={search}
-          onChange={(e) => handleSearch(e.target.value)}
-          className="max-w-sm"
-        />
+        <div className="max-w-sm">
+          <FloatingInput
+            id="admin-search"
+            label="Keresés név vagy email alapján..."
+            value={search}
+            onChange={(e) => handleSearch(e.target.value)}
+            compact
+          />
+        </div>
 
         {/* Role / status filters */}
         <div className="flex flex-wrap gap-2">
