@@ -9,7 +9,6 @@ import { ProviderForm } from "./provider-form";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { MessagesSection } from "./messages-section";
 import { QuoteRequestsSection } from "./quote-requests-section";
-import { OnboardingTour } from "@/components/onboarding-tour";
 import { ChatSection } from "./chat-section";
 import { NotificationsSection } from "./notifications-section";
 import type { Provider, UserRole } from "@/lib/types";
@@ -529,7 +528,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {role !== "admin" && <OnboardingTour userId={userId} role={role} />}
+
       <div className="flex flex-col sm:flex-row gap-6 sm:gap-0">
 
         {/* Sidebar */}

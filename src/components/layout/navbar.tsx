@@ -10,6 +10,7 @@ import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboar
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
+import { OnboardingTour } from "@/components/onboarding-tour";
 
 const mainCategories = [
   "fotosok-videosok",
@@ -374,6 +375,7 @@ export function Navbar() {
   );
 
   return (
+  <>
     <nav className={`sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 relative ${scrolled ? "bg-white/80 backdrop-blur-md" : "bg-white"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -542,5 +544,9 @@ export function Navbar() {
         </div>
       )}
     </nav>
+    {user && profile && profile.role !== "admin" && (
+      <OnboardingTour userId={user.id} role={profile.role} />
+    )}
+  </>
   );
 }
