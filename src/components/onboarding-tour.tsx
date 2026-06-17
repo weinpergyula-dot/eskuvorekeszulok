@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { usePathname, useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import type { UserRole } from "@/lib/types";
 
 interface TourStep {
   selector: string;
+  mobileSelector?: string; // fallback selector on mobile (< 640px)
   side: "bottom" | "right";
   title: string;
   description: string;
@@ -15,24 +17,28 @@ interface TourStep {
 const VISITOR_STEPS: TourStep[] = [
   {
     selector: '[data-tour="nav-categories"]',
+    // mobile: the LayoutGrid icon link also has this attr → picked by the visible-element scan
     side: "bottom",
     title: "Kategóriák",
     description: "Böngészd az esküvői szolgáltatókat kategóriánként – fotósok, virágkötők, zenészek és sok más. Szűrj megye szerint, és nézd meg az értékeléseket.",
   },
   {
     selector: '[data-tour="sidebar-quotes"]',
+    mobileSelector: '[data-tour="mobile-menu-btn"]',
     side: "right",
     title: "Ajánlatkérés",
     description: "Küldj egyéni vagy csoportos ajánlatkérést egyszerre több szolgáltatónak – egy kattintással, ingyenesen.",
   },
   {
     selector: '[data-tour="sidebar-favorites"]',
+    mobileSelector: '[data-tour="mobile-menu-btn"]',
     side: "right",
     title: "Kedvencek",
     description: "Mentsd el a neked tetsző szolgáltatókat, hogy később könnyen megtalálhasd őket.",
   },
   {
     selector: '[data-tour="sidebar-chat"]',
+    mobileSelector: '[data-tour="mobile-menu-btn"]',
     side: "right",
     title: "Chat",
     description: "A szolgáltatókkal folytatott beszélgetéseket ebben a menüpontban találhatod.",
@@ -42,18 +48,21 @@ const VISITOR_STEPS: TourStep[] = [
 const PROVIDER_STEPS: TourStep[] = [
   {
     selector: '[data-tour="sidebar-provider"]',
+    mobileSelector: '[data-tour="mobile-menu-btn"]',
     side: "right",
     title: "Szolgáltatói profil",
     description: "Töltsd ki és tartsd naprakészen a profilodat – ez jelenik meg az érdeklődő pároknak. Az adminisztrátor jóváhagyása után lesz látható.",
   },
   {
     selector: '[data-tour="sidebar-dashboard"]',
+    mobileSelector: '[data-tour="mobile-menu-btn"]',
     side: "right",
     title: "Dashboard",
     description: "Kövesd nyomon a megtekintéseidet, értékeléseidet és profil státuszodat.",
   },
   {
     selector: '[data-tour="sidebar-chat"]',
+    mobileSelector: '[data-tour="mobile-menu-btn"]',
     side: "right",
     title: "Chat",
     description: "Itt érnek el a párok üzenetei és az ajánlatkérések – válaszolj közvetlenül innen.",
@@ -72,31 +81,66 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
   const [visible, setVisible] = useState(false);
   const [rect, setRect] = useState<Rect | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [shouldShow, setShouldShow] = useState(false);
+
+  const pathname = usePathname();
+  const router = useRouter();
 
   const steps = role === "provider" ? PROVIDER_STEPS : VISITOR_STEPS;
   const current = steps[stepIdx];
 
+  // Start timer after mount (runs once)
   useEffect(() => {
     setMounted(true);
     if (localStorage.getItem(STORAGE_KEY(userId))) return;
-    const t = setTimeout(() => setVisible(true), 700);
+    const t = setTimeout(() => setShouldShow(true), 700);
     return () => clearTimeout(t);
   }, [userId]);
 
+  // Navigate to /profil when needed, then reveal the tour
+  useEffect(() => {
+    if (!shouldShow) return;
+    // All provider steps live on the /profil sidebar.
+    // Visitor sidebar steps (step 1+) also live there.
+    const needsProfilePage = role === "provider" || stepIdx > 0;
+    if (needsProfilePage && pathname !== "/profil") {
+      router.push("/profil");
+      return; // effect re-fires when pathname changes
+    }
+    const t = setTimeout(() => setVisible(true), 200);
+    return () => clearTimeout(t);
+  }, [shouldShow, role, stepIdx, pathname, router]);
+
+  // Pick the first matching element that is actually painted (non-zero rect)
   const measureEl = useCallback(() => {
     if (!current) return;
-    const el = document.querySelector(current.selector);
+    const isMobileView = window.innerWidth < 640;
+    const selector =
+      isMobileView && current.mobileSelector
+        ? current.mobileSelector
+        : current.selector;
+
+    const candidates = document.querySelectorAll(selector);
+    let el: Element | null = null;
+    for (const candidate of candidates) {
+      const r = candidate.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) { el = candidate; break; }
+    }
     if (!el) { setRect(null); return; }
     const r = el.getBoundingClientRect();
     setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
   }, [current]);
 
+  // Re-measure when visible, when step changes, or when pathname changes (after navigation)
   useEffect(() => {
     if (!visible) return;
-    measureEl();
+    const t = setTimeout(measureEl, 50); // small delay so new DOM settles
     window.addEventListener("resize", measureEl);
-    return () => window.removeEventListener("resize", measureEl);
-  }, [visible, measureEl]);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", measureEl);
+    };
+  }, [visible, measureEl, pathname]);
 
   const finish = () => {
     localStorage.setItem(STORAGE_KEY(userId), "1");
@@ -114,15 +158,19 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
   const isLast = stepIdx === steps.length - 1;
 
   const tooltipStyle = (): React.CSSProperties => {
-    if (!rect || isMobile) return {
+    if (!rect) return {
       position: "fixed", top: "50%", left: "50%",
       transform: "translate(-50%,-50%)", width: "min(340px,90vw)",
     };
-    if (current.side === "bottom") return {
+    // On mobile always position below (never right, which could go off-screen)
+    if (isMobile || current.side === "bottom") return {
       position: "fixed",
       top: rect.top + rect.height + PAD + GAP,
-      left: Math.max(12, Math.min(rect.left + rect.width / 2 - TOOLTIP_W / 2, window.innerWidth - TOOLTIP_W - 12)),
-      width: TOOLTIP_W,
+      left: Math.max(12, Math.min(
+        rect.left + rect.width / 2 - TOOLTIP_W / 2,
+        window.innerWidth - TOOLTIP_W - 12,
+      )),
+      width: Math.min(TOOLTIP_W, window.innerWidth - 24),
     };
     // right
     return {
@@ -135,8 +183,8 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
 
   return createPortal(
     <>
-      {/* Dark backdrop or spotlight shadow */}
-      {rect && !isMobile ? (
+      {/* Spotlight – works on both desktop and mobile */}
+      {rect ? (
         <div style={{
           position: "fixed",
           top: rect.top - PAD, left: rect.left - PAD,

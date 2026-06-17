@@ -245,6 +245,7 @@ function MobileMenuDropdown({
   return (
     <div ref={ref} className="sm:hidden relative mb-4 z-20">
       <button
+        data-tour="mobile-menu-btn"
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-white border border-gray-200 rounded-xl text-base font-semibold text-gray-900 shadow-sm cursor-pointer"
       >

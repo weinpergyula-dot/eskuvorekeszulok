@@ -510,7 +510,7 @@ export function Navbar() {
               </div>
             )}
 
-            <Link href="/services" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+            <Link href="/services" data-tour="nav-categories" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
               <LayoutGrid className="h-6 w-6" strokeWidth={2} />
             </Link>
 
