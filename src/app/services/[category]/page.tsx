@@ -110,6 +110,8 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         title={label}
         backHref="/services"
         description={CATEGORY_SEO_DESCRIPTIONS[category as ServiceCategory]}
+        ctaLabel="Csoportos / Egyéni ajánlatkérés"
+        ctaHref="/profil?tab=quotes"
       />
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

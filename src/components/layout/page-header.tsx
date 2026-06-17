@@ -6,11 +6,13 @@ interface PageHeaderProps {
   backHref?: string;
   icon?: LucideIcon;
   bgColor?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
   /** @deprecated use backHref instead */
   breadcrumb?: { label: string; href: string }[];
 }
 
-export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6" }: PageHeaderProps) {
+export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref }: PageHeaderProps) {
   return (
     <>
       <div className="w-full border-b border-white/20" style={{ backgroundColor: bgColor }}>
@@ -24,6 +26,16 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
               <hr className="border-white/30 mt-5 mb-4" />
               <p className="text-base text-white leading-relaxed">{description}</p>
             </>
+          )}
+          {ctaLabel && ctaHref && (
+            <div className="flex justify-center mt-5">
+              <a
+                href={ctaHref}
+                className="inline-flex items-center px-5 py-2.5 rounded-full border-2 border-white/70 text-white text-sm font-medium hover:bg-white/15 transition-colors"
+              >
+                {ctaLabel}
+              </a>
+            </div>
           )}
         </div>
       </div>
