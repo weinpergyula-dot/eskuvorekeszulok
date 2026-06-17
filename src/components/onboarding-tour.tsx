@@ -170,9 +170,10 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     setOpacity(0);
     setTimeout(() => {
       localStorage.setItem(STORAGE_KEY(userId), "1");
+      setShouldShow(false);
       setVisible(false);
       window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
-    }, 150);
+    }, 350);
   };
 
   const next = () => {
@@ -184,10 +185,11 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
         setStepIdx(i => i + 1);
       } else {
         localStorage.setItem(STORAGE_KEY(userId), "1");
+        setShouldShow(false);
         setVisible(false);
         window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
       }
-    }, 150);
+    }, 350);
   };
 
   if (!mounted || !visible || !current) return null;
@@ -254,14 +256,14 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
           pointerEvents: "none",
           outline: "2px solid rgba(255,255,255,0.25)",
           opacity,
-          transition: "opacity 0.15s ease",
+          transition: "opacity 0.35s ease-in-out",
         }} />
       ) : (
-        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997, opacity, transition: "opacity 0.15s ease" }} />
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997, opacity, transition: "opacity 0.35s ease-in-out" }} />
       )}
 
       {/* Tooltip card */}
-      <div style={{ ...tooltipStyle(), zIndex: 9999, opacity, transition: "opacity 0.15s ease" }}
+      <div style={{ ...tooltipStyle(), zIndex: 9999, opacity, transition: "opacity 0.35s ease-in-out" }}
         className="bg-white rounded-2xl shadow-2xl p-5">
         <div className="flex items-start justify-between mb-1">
           <h2 className="text-base font-bold text-gray-900 flex-1 text-center">Hasznos menüpontok</h2>
