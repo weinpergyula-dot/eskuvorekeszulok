@@ -32,6 +32,7 @@ export function CategoryContent({
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [sortOpen, setSortOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +51,17 @@ export function CategoryContent({
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
+    supabase.auth.getUser().then(async ({ data }) => {
+      const userId = data.user?.id ?? null;
+      setCurrentUserId(userId);
+      if (userId) {
+        const { data: favRows } = await supabase
+          .from("favorites")
+          .select("provider_id")
+          .eq("user_id", userId);
+        setFavoriteIds(new Set((favRows ?? []).map((r: { provider_id: string }) => r.provider_id)));
+      }
+    });
   }, []);
 
   // Reset to page 1 when sort, county or page size changes
@@ -240,6 +251,7 @@ export function CategoryContent({
                     key={provider.id}
                     provider={provider}
                     hideCategories
+                    initialLiked={favoriteIds.has(provider.id)}
                     isOwner={!!currentUserId && currentUserId === provider.user_id}
                     listView={viewMode === "list"}
                   />
@@ -260,7 +272,7 @@ export function CategoryContent({
             <>
               <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5"}>
                 {pagedProviders.map((provider) => (
-                  <ProviderCard key={provider.id} provider={provider} hideCategories isOwner={!!currentUserId && currentUserId === provider.user_id} listView={viewMode === "list"} />
+                  <ProviderCard key={provider.id} provider={provider} hideCategories initialLiked={favoriteIds.has(provider.id)} isOwner={!!currentUserId && currentUserId === provider.user_id} listView={viewMode === "list"} />
                 ))}
               </div>
 
