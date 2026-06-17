@@ -34,7 +34,7 @@ const ALL_CATEGORIES: ServiceCategory[] = [
   "virag",
 ];
 
-const MOBILE_VISIBLE = 6;
+const MOBILE_VISIBLE = 10;
 
 interface CategorySearchProps {
   counts?: Record<string, number>;
