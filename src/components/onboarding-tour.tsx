@@ -1,0 +1,178 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
+import { X } from "lucide-react";
+import type { UserRole } from "@/lib/types";
+
+interface TourStep {
+  selector: string;
+  side: "bottom" | "right";
+  title: string;
+  description: string;
+}
+
+const VISITOR_STEPS: TourStep[] = [
+  {
+    selector: '[data-tour="nav-categories"]',
+    side: "bottom",
+    title: "Kategóriák",
+    description: "Böngészd az esküvői szolgáltatókat kategóriánként – fotósok, virágkötők, zenészek és sok más. Szűrj megye szerint, és nézd meg az értékeléseket.",
+  },
+  {
+    selector: '[data-tour="sidebar-quotes"]',
+    side: "right",
+    title: "Ajánlatkérés",
+    description: "Küldj egyéni vagy csoportos ajánlatkérést egyszerre több szolgáltatónak – egy kattintással, ingyenesen.",
+  },
+  {
+    selector: '[data-tour="sidebar-favorites"]',
+    side: "right",
+    title: "Kedvencek",
+    description: "Mentsd el a tetszőleges szolgáltatókat, hogy később könnyen visszataláld őket, és szűrj rájuk az ajánlatkérésnél.",
+  },
+  {
+    selector: '[data-tour="sidebar-chat"]',
+    side: "right",
+    title: "Chat",
+    description: "Olvass és válaszolj a szolgáltatók üzeneteire közvetlenül ebből a menüből.",
+  },
+];
+
+const PROVIDER_STEPS: TourStep[] = [
+  {
+    selector: '[data-tour="sidebar-provider"]',
+    side: "right",
+    title: "Szolgáltatói profil",
+    description: "Töltsd ki és tartsd naprakészen a profilodat – ez jelenik meg az érdeklődő pároknak. Az adminisztrátor jóváhagyása után lesz látható.",
+  },
+  {
+    selector: '[data-tour="sidebar-dashboard"]',
+    side: "right",
+    title: "Dashboard",
+    description: "Kövesd nyomon a megtekintéseidet, értékeléseidet és profil státuszodat.",
+  },
+  {
+    selector: '[data-tour="sidebar-chat"]',
+    side: "right",
+    title: "Chat",
+    description: "Itt érnek el a párok üzenetei és az ajánlatkérések – válaszolj közvetlenül innen.",
+  },
+];
+
+const STORAGE_KEY = (id: string) => `onboarding_done_${id}`;
+const GAP = 14;
+const PAD = 6;
+const TOOLTIP_W = 300;
+
+interface Rect { top: number; left: number; width: number; height: number }
+
+export function OnboardingTour({ userId, role }: { userId: string; role: UserRole }) {
+  const [stepIdx, setStepIdx] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [rect, setRect] = useState<Rect | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  const steps = role === "provider" ? PROVIDER_STEPS : VISITOR_STEPS;
+  const current = steps[stepIdx];
+
+  useEffect(() => {
+    setMounted(true);
+    if (localStorage.getItem(STORAGE_KEY(userId))) return;
+    const t = setTimeout(() => setVisible(true), 700);
+    return () => clearTimeout(t);
+  }, [userId]);
+
+  const measureEl = useCallback(() => {
+    if (!current) return;
+    const el = document.querySelector(current.selector);
+    if (!el) { setRect(null); return; }
+    const r = el.getBoundingClientRect();
+    setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+  }, [current]);
+
+  useEffect(() => {
+    if (!visible) return;
+    measureEl();
+    window.addEventListener("resize", measureEl);
+    return () => window.removeEventListener("resize", measureEl);
+  }, [visible, measureEl]);
+
+  const finish = () => {
+    localStorage.setItem(STORAGE_KEY(userId), "1");
+    setVisible(false);
+  };
+
+  const next = () => {
+    if (stepIdx < steps.length - 1) setStepIdx(i => i + 1);
+    else finish();
+  };
+
+  if (!mounted || !visible || !current) return null;
+
+  const isMobile = window.innerWidth < 640;
+  const isLast = stepIdx === steps.length - 1;
+
+  const tooltipStyle = (): React.CSSProperties => {
+    if (!rect || isMobile) return {
+      position: "fixed", top: "50%", left: "50%",
+      transform: "translate(-50%,-50%)", width: "min(340px,90vw)",
+    };
+    if (current.side === "bottom") return {
+      position: "fixed",
+      top: rect.top + rect.height + PAD + GAP,
+      left: Math.max(12, Math.min(rect.left + rect.width / 2 - TOOLTIP_W / 2, window.innerWidth - TOOLTIP_W - 12)),
+      width: TOOLTIP_W,
+    };
+    // right
+    return {
+      position: "fixed",
+      top: Math.max(12, rect.top + rect.height / 2 - 100),
+      left: rect.left + rect.width + PAD + GAP,
+      width: TOOLTIP_W,
+    };
+  };
+
+  return createPortal(
+    <>
+      {/* Dark backdrop or spotlight shadow */}
+      {rect && !isMobile ? (
+        <div style={{
+          position: "fixed",
+          top: rect.top - PAD, left: rect.left - PAD,
+          width: rect.width + PAD * 2, height: rect.height + PAD * 2,
+          borderRadius: 10,
+          boxShadow: "0 0 0 9999px rgba(0,0,0,0.65)",
+          zIndex: 9997,
+          pointerEvents: "none",
+          outline: "2px solid rgba(255,255,255,0.25)",
+        }} />
+      ) : (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997 }} />
+      )}
+
+      {/* Tooltip */}
+      <div style={{ ...tooltipStyle(), zIndex: 9999 }}
+        className="bg-white rounded-2xl shadow-2xl p-5">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#84AAA6" }}>
+            {stepIdx + 1} / {steps.length}
+          </span>
+          <button onClick={finish} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <h3 className="text-base font-bold text-gray-900 mb-2">{current.title}</h3>
+        <p className="text-sm text-gray-600 leading-relaxed mb-5">{current.description}</p>
+        <button
+          onClick={next}
+          className="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-colors cursor-pointer"
+          style={{ backgroundColor: "#84AAA6" }}
+        >
+          {isLast ? "Kezdjük el! 🎉" : "Tovább →"}
+        </button>
+      </div>
+    </>,
+    document.body
+  );
+}

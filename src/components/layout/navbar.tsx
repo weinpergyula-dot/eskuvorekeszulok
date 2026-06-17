@@ -389,7 +389,7 @@ export function Navbar() {
 
               {/* Kategóriák dropdown */}
               <div className="relative" onMouseEnter={openServices} onMouseLeave={() => setServicesOpen(false)}>
-                <button className="flex items-center gap-1 text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">
+                <button data-tour="nav-categories" className="flex items-center gap-1 text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">
                   Kategóriák <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 {servicesOpen && (
