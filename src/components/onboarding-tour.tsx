@@ -154,12 +154,13 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       {/* Tooltip */}
       <div style={{ ...tooltipStyle(), zIndex: 9999 }}
         className="bg-white rounded-2xl shadow-2xl p-5">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-bold text-gray-900">Hasznos menüpontok</span>
-          <button onClick={finish} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+        <div className="flex items-start justify-between mb-1">
+          <h2 className="text-base font-bold text-gray-900 flex-1 text-center">Hasznos menüpontok</h2>
+          <button onClick={finish} className="text-gray-400 hover:text-gray-600 cursor-pointer shrink-0 ml-2 mt-0.5">
             <X className="h-4 w-4" />
           </button>
         </div>
+        <hr className="border-gray-200 mb-3" />
         <span className="text-[11px] font-semibold uppercase tracking-wider block mb-3" style={{ color: "#84AAA6" }}>
           {stepIdx + 1} / {steps.length}
         </span>
