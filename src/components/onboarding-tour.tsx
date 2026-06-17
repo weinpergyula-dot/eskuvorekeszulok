@@ -108,7 +108,10 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     return () => clearTimeout(t);
   }, [shouldShow, role, pathname, router]);
 
-  // Open / close the mobile navbar user-dropdown for steps that need it
+  // Open / close the mobile navbar user-dropdown for steps that need it.
+  // For steps without a mobileSelector we briefly open then close the dropdown
+  // (hidden under the dark overlay) so iOS refreshes its touch hit-area tree —
+  // this fixes the "first step Tovább button doesn't respond" bug on iOS Safari.
   useEffect(() => {
     if (!visible || !current) return;
     const isMobileView = window.innerWidth < 640;
@@ -116,7 +119,12 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     if (current.mobileSelector) {
       window.dispatchEvent(new CustomEvent("tour-open-mobile-dropdown"));
     } else {
-      window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+      window.dispatchEvent(new CustomEvent("tour-open-mobile-dropdown"));
+      const t = setTimeout(
+        () => window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown")),
+        40, // close before measureEl fires at 80 ms
+      );
+      return () => clearTimeout(t);
     }
   }, [visible, current]);
 
@@ -182,8 +190,8 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       return {
         position: "fixed",
         top,
-        left: 12,
-        right: 12,
+        left: 20,
+        right: 20,
         // translate3d forces GPU compositing — fixes iOS touch-event hit-area misalignment
         transform: "translate3d(0,0,0)",
       };
