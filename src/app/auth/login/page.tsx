@@ -62,6 +62,7 @@ function LoginForm() {
       .eq("user_id", user?.id)
       .single();
 
+    window.scrollTo({ top: 0, behavior: "instant" });
     if (profile?.role === "admin") {
       router.push("/admin");
     } else if (profile?.role === "provider") {

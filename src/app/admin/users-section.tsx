@@ -678,6 +678,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                     </button>
                   </>
                 )}
+                <OnboardingResetButton userId={u.user_id} />
                 {u.role !== "admin" ? (
                   <Button size="sm" variant="outline" disabled={updating === u.user_id}
                     onClick={() => setRole(u.user_id, "admin")}
