@@ -282,7 +282,9 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
                     </div>
                     <span className="flex-1 text-xs font-medium text-gray-900 truncate">{p.full_name}</span>
                     {p.is_favorite && (
-                      <Heart className="h-3.5 w-3.5 fill-rose-400 stroke-rose-400 shrink-0" title="Kedvenc" />
+                      <span title="Kedvenc" className="shrink-0">
+                        <Heart className="h-3.5 w-3.5 fill-rose-400 stroke-rose-400" />
+                      </span>
                     )}
                     <StarRating rating={p.average_rating} />
                   </label>
