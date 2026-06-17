@@ -181,6 +181,11 @@ function RegisterContent() {
     counties.length > 0 &&
     categories.length > 0;
 
+  // Scroll to top when provider-details step loads
+  useEffect(() => {
+    if (step === "provider-details") window.scrollTo({ top: 0, behavior: "instant" });
+  }, [step]);
+
   useEffect(() => {
     const type = searchParams.get("type");
     const prefill = searchParams.get("prefill");
