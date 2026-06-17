@@ -770,8 +770,8 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500">
-        Kérj egyéni vagy csoportos ajánlatot – válaszd ki a kategóriát és a területet, majd a feltételeknek megfelelő szolgáltatókat értékelés, név, profilkép és kedvencek alapján listázzuk. A pipával jelölheted ki, kiknek küldöd el az üzeneted.
+      <p className="text-base text-gray-700">
+        Kategória és megyeválasztás után egyenként ki tudod választani, hogy kitől szeretnél árajánlatot kérni.
       </p>
       <SendForm onSent={() => setSent(true)} userId={userId} />
     </div>
