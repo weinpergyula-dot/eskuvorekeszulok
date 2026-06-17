@@ -293,7 +293,9 @@ export function Navbar() {
     ...(hasProvider ? [
       { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
-    { id: "favorites", label: "Kedvencek", Icon: Heart },
+    ...(!hasProvider ? [
+      { id: "favorites", label: "Kedvencek", Icon: Heart },
+    ] : []),
     { id: "chat",      label: "Chat",      Icon: MessageCircle },
   ];
 
