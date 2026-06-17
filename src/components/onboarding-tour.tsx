@@ -173,6 +173,10 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       setShouldShow(false);
       setVisible(false);
       window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+      // iOS fix: brief DOM mutation forces the browser to recalculate touch targets
+      const el = document.createElement("div");
+      document.body.appendChild(el);
+      document.body.removeChild(el);
     }, 350);
   };
 
@@ -188,6 +192,9 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
         setShouldShow(false);
         setVisible(false);
         window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+        const el = document.createElement("div");
+        document.body.appendChild(el);
+        document.body.removeChild(el);
       }
     }, 350);
   };
@@ -259,11 +266,11 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
           transition: "opacity 0.35s ease-in-out",
         }} />
       ) : (
-        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997, opacity, transition: "opacity 0.35s ease-in-out" }} />
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997, opacity, transition: "opacity 0.35s ease-in-out", pointerEvents: opacity < 1 ? "none" : "auto" }} />
       )}
 
       {/* Tooltip card */}
-      <div style={{ ...tooltipStyle(), zIndex: 9999, opacity, transition: "opacity 0.35s ease-in-out" }}
+      <div style={{ ...tooltipStyle(), zIndex: 9999, opacity, transition: "opacity 0.35s ease-in-out", pointerEvents: opacity < 1 ? "none" : "auto" }}
         className="bg-white rounded-2xl shadow-2xl p-5">
         <div className="flex items-start justify-between mb-1">
           <h2 className="text-base font-bold text-gray-900 flex-1 text-center">Hasznos menüpontok</h2>

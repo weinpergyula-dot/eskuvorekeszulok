@@ -235,11 +235,11 @@ export function ProviderForm({
     if (provider) {
       setToggling(true); setToggleError(null);
       try {
-        const { error: updateError, count } = await supabase
-          .from("providers").update({ active: newVal }, { count: "exact" }).eq("user_id", userId);
+        const { error: updateError } = await supabase
+          .from("providers").update({ active: newVal }).eq("user_id", userId);
         if (updateError) throw updateError;
-        if (count === 0) throw new Error("A módosítás nem mentődött el. Ellenőrizd a jogosultságokat.");
         onActiveChange(newVal);
+        window.dispatchEvent(new CustomEvent("provider-active-changed", { detail: newVal }));
       } catch (err: unknown) {
         setToggleError(
           err instanceof Error ? err.message

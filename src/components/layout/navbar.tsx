@@ -41,7 +41,7 @@ export function Navbar() {
   const [pendingCount, setPendingCount] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
-  const [providerDot, setProviderDot] = useState<"amber" | "red" | "green" | null>(null);
+  const [providerDot, setProviderDot] = useState<"amber" | "red" | "green" | "gray" | null>(null);
   const [hasProvider, setHasProvider] = useState(false);
   const [providerIsActive, setProviderIsActive] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -183,7 +183,7 @@ export function Navbar() {
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
         if (p.approval_status === "approved") {
-          setProviderDot("green");
+          setProviderDot(p.active !== false ? "green" : "gray");
           return;
         }
         setProviderDot(null);
@@ -234,11 +234,17 @@ export function Navbar() {
         .catch(() => {});
     };
     const onApprovalSeen = () => setProviderDot(null);
+    const onActiveChanged = (e: Event) => {
+      const active = (e as CustomEvent<boolean>).detail;
+      setProviderDot(active ? "green" : "gray");
+    };
     window.addEventListener("messages-read", onMessagesRead);
     window.addEventListener("provider-approval-seen", onApprovalSeen);
+    window.addEventListener("provider-active-changed", onActiveChanged);
     return () => {
       window.removeEventListener("messages-read", onMessagesRead);
       window.removeEventListener("provider-approval-seen", onApprovalSeen);
+      window.removeEventListener("provider-active-changed", onActiveChanged);
     };
   }, []);
 
@@ -373,6 +379,7 @@ export function Navbar() {
             <span className={`w-2.5 h-2.5 rounded-full ${
               providerDot === "red" ? "bg-[#F06C6C]" :
               providerDot === "green" ? "bg-green-500" :
+              providerDot === "gray" ? "bg-gray-400" :
               "bg-amber-400"
             }`} />
           )}
@@ -471,7 +478,7 @@ export function Navbar() {
                     </span>
                   )}
                   {showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : providerDot === "gray" ? "bg-gray-400" : "bg-amber-400"}`} />
                   )}
                 </button>
                 {desktopDropdownOpen && (
@@ -518,7 +525,7 @@ export function Navbar() {
                     </span>
                   )}
                   {showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : providerDot === "gray" ? "bg-gray-400" : "bg-amber-400"}`} />
                   )}
                 </button>
                 {userDropdownOpen && (
