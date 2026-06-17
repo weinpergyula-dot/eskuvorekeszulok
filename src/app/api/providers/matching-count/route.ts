@@ -70,14 +70,11 @@ export async function GET(request: NextRequest) {
   // Fetch all favorites for the user, filter in JS
   let favoriteSet = new Set<string>();
   if (userId) {
-    const { data: favRows, error: favError } = await admin
+    const { data: favRows } = await admin
       .from("favorites")
       .select("provider_id")
       .eq("user_id", userId);
-    console.log("[matching-count DEBUG] userId:", userId, "favRows:", favRows, "favError:", favError);
     favoriteSet = new Set((favRows ?? []).map((f: { provider_id: string }) => f.provider_id));
-    console.log("[matching-count DEBUG] favoriteSet:", [...favoriteSet]);
-    console.log("[matching-count DEBUG] providerIds:", unique.map(p => p.id));
   }
 
   return NextResponse.json({

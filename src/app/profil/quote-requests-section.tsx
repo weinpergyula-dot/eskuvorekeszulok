@@ -202,8 +202,6 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
     fetch(`/api/providers/matching-count?${params}`)
       .then(r => r.json())
       .then(d => {
-        console.log("[quote-requests DEBUG] userId param:", userId);
-        console.log("[quote-requests DEBUG] providers:", JSON.stringify((d.providers ?? []).map((p: MatchingProvider) => ({ id: p.id, name: p.full_name, is_favorite: p.is_favorite }))));
         const providers: MatchingProvider[] = d.providers ?? [];
         setMatchingProviders(providers);
         setCheckedIds(new Set(providers.map(p => p.id)));
