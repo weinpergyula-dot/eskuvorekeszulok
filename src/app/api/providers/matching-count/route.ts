@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
   const countiesParam = searchParams.get("counties");
+  const userId = searchParams.get("userId");
 
   if (!category) return NextResponse.json({ providers: [] });
 
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
   // Fetch matching providers
   const { data: rawProviders } = await admin
     .from("providers")
-    .select("id, user_id, full_name")
+    .select("id, user_id, full_name, avatar_url")
     .eq("approval_status", "approved")
     .or("active.is.null,active.eq.true")
     .contains("categories", [category])
@@ -55,16 +56,20 @@ export async function GET(request: NextRequest) {
 
   // Fetch reviews for these providers and compute live average (same as listing page)
   const providerIds = unique.map((p) => p.id);
-  const { data: reviews } = await admin
-    .from("reviews")
-    .select("provider_id, rating")
-    .in("provider_id", providerIds);
+  const [{ data: reviews }, { data: favRows }] = await Promise.all([
+    admin.from("reviews").select("provider_id, rating").in("provider_id", providerIds),
+    userId
+      ? admin.from("favorites").select("provider_id").eq("user_id", userId).in("provider_id", providerIds)
+      : Promise.resolve({ data: [] }),
+  ]);
 
   const ratingMap = new Map<string, { sum: number; count: number }>();
   (reviews ?? []).forEach((r) => {
     const curr = ratingMap.get(r.provider_id) ?? { sum: 0, count: 0 };
     ratingMap.set(r.provider_id, { sum: curr.sum + r.rating, count: curr.count + 1 });
   });
+
+  const favoriteSet = new Set((favRows ?? []).map((f: { provider_id: string }) => f.provider_id));
 
   return NextResponse.json({
     providers: unique.map((p) => {
@@ -74,6 +79,8 @@ export async function GET(request: NextRequest) {
         id: p.id,
         full_name: p.full_name ?? "Ismeretlen szolgáltató",
         average_rating: avg,
+        avatar_url: p.avatar_url ?? null,
+        is_favorite: favoriteSet.has(p.id),
       };
     }),
   });

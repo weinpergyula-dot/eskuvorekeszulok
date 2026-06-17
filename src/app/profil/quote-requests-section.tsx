@@ -54,7 +54,13 @@ export interface ProviderRequest {
   last_message_sender_id?: string | null;
 }
 
-interface MatchingProvider { id: string; full_name: string; average_rating: number | null; }
+interface MatchingProvider {
+  id: string;
+  full_name: string;
+  average_rating: number | null;
+  avatar_url?: string | null;
+  is_favorite?: boolean;
+}
 
 interface Props {
   isProvider: boolean;
@@ -155,7 +161,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (val: st
 
 // ── SendForm ──────────────────────────────────────────────────────────────────
 
-function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => void }) {
+function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?: () => void; userId?: string }) {
   const [subject, setSubject] = useState("");
   const [category, setCategory] = useState("");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
@@ -191,6 +197,7 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
   useEffect(() => {
     if (!category || selectedCounties.length === 0) { setMatchingProviders(null); setCheckedIds(new Set()); return; }
     const params = new URLSearchParams({ category, counties: selectedCounties.join(",") });
+    if (userId) params.set("userId", userId);
     fetch(`/api/providers/matching-count?${params}`)
       .then(r => r.json())
       .then(d => {
@@ -264,9 +271,21 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
               <p className="text-xs text-gray-600 mb-2">Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:</p>
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
                 {matchingProviders.map(p => (
-                  <label key={p.id} className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors">
+                  <label key={p.id} className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
                     <input type="checkbox" checked={checkedIds.has(p.id)} onChange={() => { setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; }); }} className="rounded accent-[#84AAA6] shrink-0" />
+                    {/* Avatar */}
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
+                      {p.avatar_url
+                        // eslint-disable-next-line @next/next/no-img-element
+                        ? <img src={p.avatar_url} alt={p.full_name} className="w-full h-full object-cover" />
+                        : <span className="text-xs font-bold text-gray-500">{p.full_name.charAt(0)}</span>}
+                    </div>
                     <span className="flex-1 text-xs font-medium text-gray-900 truncate">{p.full_name}</span>
+                    {p.is_favorite && (
+                      <span title="Kedvenc" className="text-rose-400 shrink-0">
+                        <Star className="h-3.5 w-3.5 fill-rose-400 stroke-rose-400" />
+                      </span>
+                    )}
                     <StarRating rating={p.average_rating} />
                   </label>
                 ))}
@@ -707,7 +726,7 @@ export function ProviderChatLoader({
 
 // ── Main section ──────────────────────────────────────────────────────────────
 
-export function QuoteRequestsSection({ onUnreadChange }: Pick<Props, "onUnreadChange">) {
+export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "onUnreadChange" | "userId">) {
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
@@ -731,5 +750,15 @@ export function QuoteRequestsSection({ onUnreadChange }: Pick<Props, "onUnreadCh
     );
   }
 
-  return <SendForm onSent={() => setSent(true)} />;
+  return (
+    <div className="space-y-3">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900">Ajánlatkérés</h2>
+        <p className="text-sm text-gray-500 mt-1">
+          Kérj egyéni vagy csoportos ajánlatot – válaszd ki a kategóriát és a területet, majd a feltételeknek megfelelő szolgáltatókat értékelés, név, profilkép és kedvencek alapján listázzuk. A pipával jelölheted ki, kiknek küldöd el az üzeneted.
+        </p>
+      </div>
+      <SendForm onSent={() => setSent(true)} userId={userId} />
+    </div>
+  );
 }

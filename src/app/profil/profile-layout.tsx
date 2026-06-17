@@ -802,7 +802,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "quotes" && (
             <div className="section-larger-text">
-              <QuoteRequestsSection key={quotesKey} onUnreadChange={setUnreadQuotes} />
+              <QuoteRequestsSection key={quotesKey} onUnreadChange={setUnreadQuotes} userId={userId} />
             </div>
           )}
 
