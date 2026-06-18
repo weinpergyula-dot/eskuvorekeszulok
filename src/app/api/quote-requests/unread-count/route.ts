@@ -31,23 +31,38 @@ export async function GET() {
   let total = 0;
 
   if (providerData) {
-    // Unread incoming quote requests (not yet opened by provider)
-    const { count: unreadRecipients } = await admin
+    // The provider's own (non-deleted) recipient rows. Deleted conversations are
+    // hidden from the chat list, so their unread messages must not feed the badge.
+    const { data: recipientRows } = await admin
       .from("quote_request_recipients")
-      .select("*", { count: "exact", head: true })
+      .select("quote_request_id, read")
       .eq("provider_user_id", user.id)
-      .eq("read", false)
       .eq("deleted_by_provider", false);
 
-    // Unread visitor reply messages for this provider
-    const { count: unreadReplies } = await admin
-      .from("quote_messages")
-      .select("*", { count: "exact", head: true })
-      .eq("provider_id", providerData.id)
-      .neq("sender_id", user.id)
-      .eq("read", false);
+    // Unread incoming quote requests (not yet opened by provider)
+    const unreadRecipients = (recipientRows ?? []).filter(
+      (r: { read: boolean }) => !r.read,
+    ).length;
 
-    total += (unreadRecipients ?? 0) + (unreadReplies ?? 0);
+    // Unread visitor reply messages, restricted to non-deleted conversations and
+    // excluding system notices (withdrawals etc.) which aren't real messages.
+    let unreadReplies = 0;
+    const activeReqIds = (recipientRows ?? []).map(
+      (r: { quote_request_id: string }) => r.quote_request_id,
+    );
+    if (activeReqIds.length > 0) {
+      const { count } = await admin
+        .from("quote_messages")
+        .select("*", { count: "exact", head: true })
+        .eq("provider_id", providerData.id)
+        .in("quote_request_id", activeReqIds)
+        .neq("sender_id", user.id)
+        .eq("read", false)
+        .not("body", "like", "__SYSTEM__:%");
+      unreadReplies = count ?? 0;
+    }
+
+    total += unreadRecipients + unreadReplies;
   }
 
   // Unread provider reply messages received as a visitor
@@ -64,7 +79,8 @@ export async function GET() {
       .select("*", { count: "exact", head: true })
       .in("quote_request_id", reqIds)
       .neq("sender_id", user.id)
-      .eq("read", false);
+      .eq("read", false)
+      .not("body", "like", "__SYSTEM__:%");
 
     total += unreadVisitor ?? 0;
   }
