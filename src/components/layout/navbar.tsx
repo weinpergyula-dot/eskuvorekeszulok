@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -408,8 +407,15 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo + Desktop nav */}
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center shrink-0">
-              <Image src="/logo.png" alt="Esküvőre Készülök" width={320} height={80} quality={100} className="h-10 w-auto" />
+            <Link href="/" className="logo-frame shrink-0" aria-label="Esküvőre Készülök – Kezdőlap">
+              <span className="logo-inner">
+                <span
+                  className="font-extrabold text-sm sm:text-lg leading-none whitespace-nowrap bg-gradient-to-r from-[#84AAA6] via-[#7E8CE0] to-[#C65EA5] bg-clip-text text-transparent"
+                  style={{ fontFamily: "var(--font-heading, \"BloomSpeakTitle\", Georgia, serif)" }}
+                >
+                  Esküvőre Készülök
+                </span>
+              </span>
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
