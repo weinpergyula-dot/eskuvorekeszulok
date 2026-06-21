@@ -74,10 +74,7 @@ function LoginForm() {
 
   return (
     <div className="w-full">
-      <p className="text-gray-900 text-center mb-2" style={{ fontSize: "22px" }}>Jelentkezz be a fiókodba!</p>
-      <p className="text-gray-600 text-center mb-8 text-base leading-relaxed">
-        A bejelentkezés ingyenes – látogatóként így értékelheted a szolgáltatókat, mentheted a kedvenceidet és küldhetsz ajánlatkérést, szolgáltatóként pedig kezelheted a saját profilodat.
-      </p>
+      <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Jelentkezz be a fiókodba!</p>
 
       <form
         onSubmit={handleSubmit}
@@ -148,7 +145,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div>
-      <PageHeader title="Bejelentkezés" icon={LogIn} description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a bejelentkezés." />
+      <PageHeader title="Bejelentkezés" icon={LogIn} description="Az oldalon bizonyos funkciók eléréséhez kérjük, jelentkezz be." />
       <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-lg bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           <Suspense>

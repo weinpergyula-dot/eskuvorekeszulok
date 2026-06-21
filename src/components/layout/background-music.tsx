@@ -6,15 +6,14 @@ import { Pause, Play, X, Music2 } from "lucide-react";
 const SRC = "/perfect.mp3";
 const VOLUME = 0.12; // halk háttérzene
 const KEY_DISMISSED = "bgmusic-dismissed";
-const KEY_PAUSED = "bgmusic-paused";
 const KEY_TIME = "bgmusic-time";
 
 /**
- * Folyamatos, halk háttérzene. A komponens a gyökér layoutban él, ezért
- * kliensoldali navigációnál (Link) nem mountolódik újra – a zene megszakítás
- * nélkül szól tovább. Teljes újratöltésnél a lejátszási pozíciót sessionStorage-ből
- * állítjuk vissza. A böngészők autoplay-szabálya miatt hang csak az első
- * felhasználói interakció után indulhat, ezért arra is feliratkozunk.
+ * Halk háttérzene, ami KIZÁRÓLAG a play gomb megnyomására indul – soha nem
+ * automatikusan. A komponens a gyökér layoutban él, ezért kliensoldali
+ * navigációnál (Link) nem mountolódik újra: ha egyszer elindították, a zene
+ * megszakítás nélkül szól tovább az oldalak között. Teljes újratöltésnél a
+ * lejátszási pozíciót sessionStorage-ből állítjuk vissza.
  */
 export function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -28,9 +27,10 @@ export function BackgroundMusic() {
     setDismissed(sessionStorage.getItem(KEY_DISMISSED) === "1");
   }, []);
 
-  // Indítás: megpróbáljuk automatikusan, ha az autoplay tiltott, az első
-  // interakciónál indítjuk. Az AbortController gondoskodik róla, hogy a
-  // figyelők leálljanak, ha a felhasználó közben kikapcsolja a zenét.
+  // A zene SOHA nem indul automatikusan – csak ha a felhasználó megnyomja a play
+  // gombot. Itt csak a hangerőt és a (teljes újratöltés utáni) lejátszási pozíciót
+  // állítjuk be; SPA-navigációnál a komponens nem mountolódik újra, így a zene
+  // megszakítás nélkül szól tovább, ha egyszer már elindították.
   useEffect(() => {
     if (!mounted || dismissed) return;
     const audio = audioRef.current;
@@ -41,25 +41,6 @@ export function BackgroundMusic() {
     if (savedTime > 0 && Number.isFinite(savedTime)) {
       try { audio.currentTime = savedTime; } catch { /* metadata még nincs kész */ }
     }
-
-    if (sessionStorage.getItem(KEY_PAUSED) === "1") return; // szándékosan szüneteltetve
-
-    const ac = new AbortController();
-    const start = () => {
-      if (sessionStorage.getItem(KEY_PAUSED) === "1") { ac.abort(); return; }
-      audio.play().catch(() => {});
-      ac.abort();
-    };
-
-    audio.play().catch(() => {
-      // Autoplay tiltva – indítás az első felhasználói interakciónál.
-      window.addEventListener("pointerdown", start, { signal: ac.signal });
-      window.addEventListener("keydown", start, { signal: ac.signal });
-      window.addEventListener("touchstart", start, { signal: ac.signal });
-      window.addEventListener("scroll", start, { signal: ac.signal });
-    });
-
-    return () => ac.abort();
   }, [mounted, dismissed]);
 
   // Lejátszási pozíció megőrzése a teljes újratöltéshez.
@@ -86,11 +67,9 @@ export function BackgroundMusic() {
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
-      sessionStorage.removeItem(KEY_PAUSED);
       audio.volume = VOLUME;
       audio.play().catch(() => {});
     } else {
-      sessionStorage.setItem(KEY_PAUSED, "1");
       audio.pause();
     }
   };
