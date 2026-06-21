@@ -120,7 +120,6 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
   const [message, setMessage] = useState("");
   const [matchingProviders, setMatchingProviders] = useState<MatchingProvider[] | null>(null);
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [countyCountMap, setCountyCountMap] = useState<Record<string, number>>({});
@@ -157,7 +156,8 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
       .then(d => {
         const providers: MatchingProvider[] = d.providers ?? [];
         setMatchingProviders(providers);
-        setCheckedIds(new Set(providers.map(p => p.id)));
+        // By default nobody is selected — the user picks the recipients explicitly.
+        setCheckedIds(new Set());
       })
       .catch(() => {});
   }, [category, selectedCounties, userId]);
@@ -197,8 +197,9 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
 
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
-      <h3 className="text-sm font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
-      <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} compact />
+      <h3 className="text-base font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
+      {/* text-base (16px) on mobile prevents iOS from zooming when the field is focused */}
+      <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} compact className="text-base sm:text-sm" />
 
       {/* Kategória – pill választó, mint a regisztrációnál (egyet választhatsz) */}
       <div>
@@ -250,36 +251,38 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
           })}
         </div>
       </div>
-      <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} compact />
+      <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} compact className="text-base sm:text-sm" />
       {matchingProviders !== null && (
         <div className="space-y-2">
           {matchingProviders.length === 0 ? (
             <p className="text-xs text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
           ) : (
             <div>
-              {matchingProviders.some(p => p.is_favorite) && (
-                <div className="flex items-center gap-1.5 mb-2">
-                  <Heart className="h-3 w-3 fill-rose-400 stroke-rose-400 shrink-0" />
-                  <span className="text-xs text-gray-600 whitespace-nowrap">Csak kedvenceknek</span>
+              <p className="text-xs text-gray-600 mb-2">Válaszd ki, hogy ki kapja meg tőled az ajánlatkérést.</p>
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                {(() => {
+                  const allSelected = checkedIds.size === matchingProviders.length;
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => setCheckedIds(allSelected ? new Set() : new Set(matchingProviders.map(p => p.id)))}
+                      className="text-xs font-medium px-3 py-1.5 rounded-full border border-[#84AAA6] text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer"
+                    >
+                      {allSelected ? "Kijelölés törlése" : "Összes kijelölése"}
+                    </button>
+                  );
+                })()}
+                {matchingProviders.some(p => p.is_favorite) && (
                   <button
                     type="button"
-                    role="switch"
-                    aria-checked={favoritesOnly}
-                    onClick={() => {
-                      const next = !favoritesOnly;
-                      setFavoritesOnly(next);
-                      if (next) {
-                        setCheckedIds(new Set(matchingProviders.filter(p => p.is_favorite).map(p => p.id)));
-                      } else {
-                        setCheckedIds(new Set(matchingProviders.map(p => p.id)));
-                      }
-                    }}
-                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${favoritesOnly ? "bg-rose-400" : "bg-gray-200"}`}
+                    onClick={() => setCheckedIds(new Set(matchingProviders.filter(p => p.is_favorite).map(p => p.id)))}
+                    className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full border border-rose-300 text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer"
                   >
-                    <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${favoritesOnly ? "translate-x-[18px]" : "translate-x-[3px]"}`} />
+                    <Heart className="h-3 w-3 fill-rose-400 stroke-rose-400" />
+                    Kedvencek kijelölése
                   </button>
-                </div>
-              )}
+                )}
+              </div>
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
                 {[...matchingProviders]
                   .sort((a, b) => (b.is_favorite ? 1 : 0) - (a.is_favorite ? 1 : 0))
