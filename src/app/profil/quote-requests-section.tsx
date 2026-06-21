@@ -133,7 +133,8 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
       .then(d => {
         const map: Record<string, number> = {};
         for (const c of geographicCounties) map[c] = 0;
-        for (const p of (d.providers ?? []) as Array<{ counties?: string[] }>) {
+        const providers = (d.providers ?? []) as Array<{ counties?: string[] }>;
+        for (const p of providers) {
           if (p.counties?.includes("Országosan")) {
             for (const c of geographicCounties) map[c]++;
           } else {
@@ -142,6 +143,8 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
             }
           }
         }
+        // "Országosan" kiválasztása az összes szolgáltatót jelenti a kategóriában.
+        map["Országosan"] = providers.length;
         setCountyCountMap(map);
       })
       .catch(() => {});
@@ -208,7 +211,7 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
 
       {/* Kategória – pill választó, mint a regisztrációnál (egyet választhatsz) */}
       <div>
-        <p className="text-xs text-gray-600 mb-2">Kategória <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
+        <p className="text-xs text-gray-600 mb-2">Válassz kategóriát! <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
         <div className="flex flex-wrap gap-2">
           {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
             const isSelected = category === key;
@@ -232,14 +235,14 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
 
       {/* Megye(k) – pill választó, mint a regisztrációnál, az Országosannal együtt */}
       <div>
-        <p className="text-xs text-gray-600 mb-2">Megye(k) <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
+        <p className="text-xs text-gray-600 mb-2">Jelöld ki a megyé(ke)t! <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
         <div className="flex flex-wrap gap-2">
           {COUNTIES.map(county => {
             const isSelected = selectedCounties.includes(county);
             const isDisabled =
               (selectedCounties.includes("Országosan") && county !== "Országosan") ||
               (!selectedCounties.includes("Országosan") && selectedCounties.length > 0 && county === "Országosan");
-            const count = county !== "Országosan" && category && countyCountMap[county] != null
+            const count = category && countyCountMap[county] != null
               ? countyCountMap[county]
               : null;
             return (
