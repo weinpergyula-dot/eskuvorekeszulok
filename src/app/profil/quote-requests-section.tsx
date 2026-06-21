@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, Send, Trash2, Star, Heart, Info } from "lucide-react";
+import { ArrowLeft, Send, Trash2, Star, Heart, Info, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -283,20 +283,40 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
                 {[...matchingProviders]
                   .sort((a, b) => (b.is_favorite ? 1 : 0) - (a.is_favorite ? 1 : 0))
-                  .map(p => (
-                  <label key={p.id} className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
-                    <input type="checkbox" checked={checkedIds.has(p.id)} onChange={() => { setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; }); }} className="rounded accent-[#84AAA6] shrink-0" />
-                    {/* Avatar */}
-                    <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
-                      {p.avatar_url
-                        // eslint-disable-next-line @next/next/no-img-element
-                        ? <img src={p.avatar_url} alt={p.full_name} className="w-full h-full object-cover" />
-                        : <span className="text-xs font-bold text-gray-500">{p.full_name.charAt(0)}</span>}
-                    </div>
-                    <span className="flex-1 text-xs font-medium text-gray-900 truncate">{p.full_name}</span>
-                    <StarRating rating={p.average_rating} />
-                  </label>
-                ))}
+                  .map(p => {
+                    const selected = checkedIds.has(p.id);
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; })}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors cursor-pointer ${selected ? "bg-[#84AAA6]/10" : "hover:bg-gray-50"}`}
+                      >
+                        {/* Avatar + kedvenc jelölés */}
+                        <div className="relative shrink-0">
+                          <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
+                            {p.avatar_url
+                              // eslint-disable-next-line @next/next/no-img-element
+                              ? <img src={p.avatar_url} alt={p.full_name} className="w-full h-full object-cover" />
+                              : <span className="text-xs font-bold text-gray-500">{p.full_name.charAt(0)}</span>}
+                          </div>
+                          {p.is_favorite && (
+                            <span className="absolute -bottom-0.5 -right-0.5 bg-white rounded-full p-0.5 shadow-sm">
+                              <Heart className="h-3 w-3 fill-rose-400 stroke-rose-400" />
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-semibold truncate ${selected ? "text-[#5C8480]" : "text-gray-900"}`}>{p.full_name}</p>
+                          <StarRating rating={p.average_rating} />
+                        </div>
+                        {/* Kijelölés jelző */}
+                        <span className={`flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors ${selected ? "bg-[#84AAA6] border-[#84AAA6]" : "border-gray-300 bg-white"}`}>
+                          {selected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+                        </span>
+                      </button>
+                    );
+                  })}
               </div>
               <p className="text-[10px] text-gray-400 mt-1.5">{checkedIds.size} / {matchingProviders.length} szolgáltató kijelölve</p>
             </div>
