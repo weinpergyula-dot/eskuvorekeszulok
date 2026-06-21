@@ -89,23 +89,23 @@ export function BackgroundMusic() {
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} src={SRC} loop preload="auto" />
 
-      <div className="fixed bottom-4 left-4 z-40 flex items-center gap-1 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm px-1.5 py-1 opacity-50 hover:opacity-100 transition-opacity">
-        <Music2 className="h-3.5 w-3.5 text-[#84AAA6] ml-1 shrink-0" strokeWidth={2} />
+      <div className="fixed bottom-5 left-5 z-40 flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm px-2.5 py-1.5 opacity-60 hover:opacity-100 transition-opacity">
+        <Music2 className="h-5 w-5 text-[#84AAA6] ml-0.5 shrink-0" strokeWidth={2} />
         <button
           onClick={toggle}
           aria-label={playing ? "Zene szüneteltetése" : "Zene lejátszása"}
           title={playing ? "Zene szüneteltetése" : "Zene lejátszása"}
-          className="p-1.5 rounded-full text-gray-600 hover:bg-gray-100 hover:text-[#84AAA6] transition-colors cursor-pointer"
+          className="p-2 rounded-full text-gray-600 hover:bg-gray-100 hover:text-[#84AAA6] transition-colors cursor-pointer"
         >
-          {playing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+          {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
         </button>
         <button
           onClick={close}
           aria-label="Zene kikapcsolása"
           title="Zene kikapcsolása"
-          className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-[#F06C6C] transition-colors cursor-pointer"
+          className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-[#F06C6C] transition-colors cursor-pointer"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-5 w-5" />
         </button>
       </div>
     </>

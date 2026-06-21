@@ -170,14 +170,18 @@ export async function POST(request: NextRequest) {
 
   if (qrError || !qr) { await logError("api/quote-requests POST", qrError?.message ?? "insert returned null", { user: user.id, subject, category }); return NextResponse.json({ error: "Hiba az ajánlatkérés létrehozásakor." }, { status: 500 }); }
 
-  const searchCounties = [...counties, "Országosan"];
-  const { data: allProviders } = await admin
+  // "Országosan" means every provider in the category, regardless of county.
+  const nationwide = Array.isArray(counties) && counties.includes("Országosan");
+  let providersQuery = admin
     .from("providers")
     .select("id, user_id")
     .eq("approval_status", "approved")
     .or("active.is.null,active.eq.true")
-    .contains("categories", [category])
-    .overlaps("counties", searchCounties);
+    .contains("categories", [category]);
+  if (!nationwide) {
+    providersQuery = providersQuery.overlaps("counties", [...counties, "Országosan"]);
+  }
+  const { data: allProviders } = await providersQuery;
 
   const seenUserIds = new Set<string>();
   const uniqueProviders = (allProviders ?? []).filter((p) => {

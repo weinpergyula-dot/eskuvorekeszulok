@@ -111,54 +111,6 @@ function StarRating({ rating }: { rating: number | null }) {
   );
 }
 
-// ── CategorySelect ────────────────────────────────────────────────────────────
-
-function CategorySelect({ value, onChange }: { value: string; onChange: (val: string) => void }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const selectedLabel = value ? CATEGORY_LABELS[value as keyof typeof CATEGORY_LABELS] : null;
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen(v => !v)}
-        className="w-full h-12 border rounded-xl px-4 text-sm outline-none bg-white flex items-center justify-between gap-2 transition-colors"
-        style={{ borderColor: open ? "#84AAA6" : "#D1D5DB" }}
-      >
-        <span style={{ color: selectedLabel ? "#111827" : "#9CA3AF" }}>
-          {selectedLabel ?? "Válassz kategóriát..."} <span className="text-[1.2em] font-bold leading-none align-middle">*</span>
-        </span>
-        <ArrowLeft className="h-4 w-4 shrink-0 -rotate-90 transition-transform" style={{ color: "#9CA3AF", transform: open ? "rotate(90deg)" : "rotate(-90deg)" }} />
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-30 max-h-60 overflow-y-auto">
-          {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => { onChange(key); setOpen(false); }}
-              className="w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
-              style={{ color: value === key ? "#84AAA6" : "#111827" }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── SendForm ──────────────────────────────────────────────────────────────────
 
 function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?: () => void; userId?: string }) {
@@ -210,9 +162,16 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
   }, [category, selectedCounties, userId]);
 
   const toggleCounty = (county: string) => {
-    setSelectedCounties(prev =>
-      prev.includes(county) ? prev.filter(c => c !== county) : [...prev, county]
-    );
+    setSelectedCounties(prev => {
+      // "Országosan" is mutually exclusive with specific counties (same as registration).
+      if (county === "Országosan") {
+        return prev.includes("Országosan") ? [] : ["Országosan"];
+      }
+      const withoutNationwide = prev.filter(c => c !== "Országosan");
+      return withoutNationwide.includes(county)
+        ? withoutNationwide.filter(c => c !== county)
+        : [...withoutNationwide, county];
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -246,20 +205,61 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
       <h3 className="text-sm font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
       <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} compact />
-      <CategorySelect value={category} onChange={setCategory} />
+
+      {/* Kategória – pill választó, mint a regisztrációnál (egyet választhatsz) */}
+      <div>
+        <p className="text-xs text-gray-600 mb-2">Kategória <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
+            const isSelected = category === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setCategory(isSelected ? "" : key)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
+                  isSelected
+                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Megye(k) – pill választó, mint a regisztrációnál, az Országosannal együtt */}
       <div>
         <p className="text-xs text-gray-600 mb-2">Megye(k) <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
-          {geographicCounties.map(county => (
-            <label key={county} className="flex items-center gap-1.5 cursor-pointer select-none">
-              <input type="checkbox" checked={selectedCounties.includes(county)} onChange={() => toggleCounty(county)} className="rounded accent-[#84AAA6]" />
-              <span className="text-xs text-gray-700">
-                {county}{countyCountMap[county] != null && category && (
-                  <span className="ml-1 opacity-60 font-normal">({countyCountMap[county]})</span>
-                )}
-              </span>
-            </label>
-          ))}
+        <div className="flex flex-wrap gap-2">
+          {COUNTIES.map(county => {
+            const isSelected = selectedCounties.includes(county);
+            const isDisabled =
+              (selectedCounties.includes("Országosan") && county !== "Országosan") ||
+              (!selectedCounties.includes("Országosan") && selectedCounties.length > 0 && county === "Országosan");
+            const count = county !== "Országosan" && category && countyCountMap[county] != null
+              ? countyCountMap[county]
+              : null;
+            return (
+              <button
+                key={county}
+                type="button"
+                disabled={isDisabled}
+                onClick={() => toggleCounty(county)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                  isDisabled
+                    ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
+                    : isSelected
+                      ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
+                      : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
+                }`}
+              >
+                {county}{count != null && <span className="ml-1 opacity-70 font-normal">({count})</span>}
+              </button>
+            );
+          })}
         </div>
       </div>
       <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} compact />
