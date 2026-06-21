@@ -67,10 +67,12 @@ export function Navbar() {
     }
   };
 
-  // Tour: open/close the mobile user-dropdown and prevent outside-click from closing it
+  // Tour: open/close the user-dropdown (mobile + desktop) and prevent outside-click
+  // from closing it. Both are toggled so the tour works in either layout; only the
+  // one visible at the current breakpoint actually renders.
   useEffect(() => {
-    const openDropdown = () => { setUserDropdownOpen(true); tourDropdownLockedRef.current = true; };
-    const closeDropdown = () => { setUserDropdownOpen(false); tourDropdownLockedRef.current = false; };
+    const openDropdown = () => { setUserDropdownOpen(true); setDesktopDropdownOpen(true); tourDropdownLockedRef.current = true; };
+    const closeDropdown = () => { setUserDropdownOpen(false); setDesktopDropdownOpen(false); tourDropdownLockedRef.current = false; };
     window.addEventListener("tour-open-mobile-dropdown", openDropdown);
     window.addEventListener("tour-close-mobile-dropdown", closeDropdown);
     return () => {
@@ -81,7 +83,8 @@ export function Navbar() {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (!tourDropdownLockedRef.current && userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node))
+      if (tourDropdownLockedRef.current) return; // tour holds the dropdown open
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node))
         setUserDropdownOpen(false);
       if (desktopDropdownRef.current && !desktopDropdownRef.current.contains(e.target as Node))
         setDesktopDropdownOpen(false);
@@ -460,7 +463,9 @@ export function Navbar() {
                   setDesktopDropdownOpen(true);
                 }}
                 onMouseLeave={() => {
-                  desktopCloseTimer.current = setTimeout(() => setDesktopDropdownOpen(false), 1000);
+                  desktopCloseTimer.current = setTimeout(() => {
+                    if (!tourDropdownLockedRef.current) setDesktopDropdownOpen(false);
+                  }, 1000);
                 }}
               >
                 <button className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">

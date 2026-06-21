@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import type { UserRole } from "@/lib/types";
 
@@ -86,7 +86,6 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
   const isTransitioning = useRef(false);
 
   const pathname = usePathname();
-  const router = useRouter();
 
   const steps = role === "provider" ? PROVIDER_STEPS : VISITOR_STEPS;
   const current = steps[stepIdx];
@@ -98,29 +97,26 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     return () => clearTimeout(t);
   }, [userId]);
 
-  // Desktop only: all provider sidebar elements live on /profil
+  // The whole tour now runs through the navbar user-dropdown (desktop + mobile),
+  // so there is no longer any need to navigate to /profil for the sidebar.
   useEffect(() => {
     if (!shouldShow) return;
-    const isMobileView = window.innerWidth < 640;
-    if (!isMobileView && role === "provider" && pathname !== "/profil") {
-      router.push("/profil");
-      return; // re-fires when pathname becomes /profil
-    }
     const t = setTimeout(() => setVisible(true), 200);
     return () => clearTimeout(t);
-  }, [shouldShow, role, pathname, router]);
+  }, [shouldShow]);
 
-  // Open / close the mobile navbar user-dropdown for steps that need it.
+  // Open / close the navbar user-dropdown for steps that target it.
   // For steps without a mobileSelector we briefly open then close the dropdown
   // (hidden under the dark overlay) so iOS refreshes its touch hit-area tree —
   // this fixes the "first step Tovább button doesn't respond" bug on iOS Safari.
   useEffect(() => {
     if (!visible || !current) return;
     const isMobileView = window.innerWidth < 640;
-    if (!isMobileView) return;
     if (current.mobileSelector) {
+      // Dropdown-anchored step — keep the dropdown open while the step is shown.
       window.dispatchEvent(new CustomEvent("tour-open-mobile-dropdown"));
-    } else {
+    } else if (isMobileView) {
+      // Non-dropdown step on mobile: brief open/close to refresh iOS hit-area.
       window.dispatchEvent(new CustomEvent("tour-open-mobile-dropdown"));
       const t = setTimeout(
         () => window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown")),
@@ -130,14 +126,12 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
     }
   }, [visible, current]);
 
-  // Pick the first matching element that is actually painted (non-zero rect)
+  // Pick the first matching element that is actually painted (non-zero rect).
+  // Prefer the dropdown selector whenever the step has one — the tour runs
+  // through the navbar user-dropdown on both desktop and mobile now.
   const measureEl = useCallback(() => {
     if (!current) return;
-    const isMobileView = window.innerWidth < 640;
-    const selector =
-      isMobileView && current.mobileSelector
-        ? current.mobileSelector
-        : current.selector;
+    const selector = current.mobileSelector ?? current.selector;
 
     const candidates = document.querySelectorAll(selector);
     let el: Element | null = null;
@@ -204,6 +198,17 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
   const isMobile = window.innerWidth < 640;
   const isLast = stepIdx === steps.length - 1;
 
+  // The currently painted dropdown panel (a hidden copy of it may also exist for
+  // the other breakpoint, so pick the one with a real rect).
+  const visiblePanelRect = (): DOMRect | null => {
+    const panels = document.querySelectorAll('[data-tour="dropdown-panel"]');
+    for (const p of panels) {
+      const r = p.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) return r;
+    }
+    return null;
+  };
+
   const tooltipStyle = (): React.CSSProperties => {
     // Centered fallback (no element found)
     if (!rect) return {
@@ -215,8 +220,8 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       // For dropdown steps: position tooltip below the entire dropdown panel
       let top = rect.top + rect.height + PAD + GAP;
       if (current.mobileSelector) {
-        const panel = document.querySelector('[data-tour="dropdown-panel"]');
-        if (panel) top = panel.getBoundingClientRect().bottom + GAP;
+        const pr = visiblePanelRect();
+        if (pr) top = pr.bottom + GAP;
       }
       return {
         position: "fixed",
@@ -224,6 +229,20 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
         left: 30,
         right: 30,
         // translate3d forces GPU compositing — fixes iOS touch-event hit-area misalignment
+        transform: "translate3d(0,0,0)",
+      };
+    }
+
+    // Desktop dropdown steps: the user-dropdown sits at the top-right, so anchor
+    // the tooltip to the LEFT of the panel (placing it to the right would overflow).
+    if (current.mobileSelector) {
+      const pr = visiblePanelRect();
+      const anchorLeft = pr ? pr.left : rect.left;
+      return {
+        position: "fixed",
+        top: Math.max(12, rect.top + rect.height / 2 - 100),
+        left: Math.max(12, anchorLeft - TOOLTIP_W - GAP),
+        width: TOOLTIP_W,
         transform: "translate3d(0,0,0)",
       };
     }
@@ -239,7 +258,7 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
       transform: "translate3d(0,0,0)",
     };
 
-    // right (desktop sidebar)
+    // right (fallback)
     return {
       position: "fixed",
       top: Math.max(12, rect.top + rect.height / 2 - 100),

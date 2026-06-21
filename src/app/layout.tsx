@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { TopLoader } from "@/components/layout/top-loader";
 import { CookieBanner } from "@/components/layout/cookie-banner";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { BackgroundMusic } from "@/components/layout/background-music";
 
 const SITE_NAME = "Esküvőre Készülök";
 const SITE_URL = "https://eskuvorekeszulok.hu";
@@ -109,6 +110,7 @@ gtag('config', '${GA_ID}');
         <main className="flex-1">{children}</main>
         <Footer />
         <CookieBanner />
+        <BackgroundMusic />
       </body>
     </html>
   );

@@ -74,7 +74,10 @@ function LoginForm() {
 
   return (
     <div className="w-full">
-      <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Jelentkezz be a fiókodba!</p>
+      <p className="text-gray-900 text-center mb-2" style={{ fontSize: "22px" }}>Jelentkezz be a fiókodba!</p>
+      <p className="text-gray-600 text-center mb-8 text-base leading-relaxed">
+        A bejelentkezés ingyenes – látogatóként így értékelheted a szolgáltatókat, mentheted a kedvenceidet és küldhetsz ajánlatkérést, szolgáltatóként pedig kezelheted a saját profilodat.
+      </p>
 
       <form
         onSubmit={handleSubmit}

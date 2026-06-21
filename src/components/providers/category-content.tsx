@@ -67,13 +67,24 @@ export function CategoryContent({
   // Reset to page 1 when sort, county or page size changes
   useEffect(() => { setCurrentPage(1); }, [sortBy, selected, pageSize]);
 
-  // Featured providers (gold > teal > silver)
-  const featuredProviders = useMemo(() =>
-    [...providers.filter((p) => p.featured)].sort((a, b) =>
-      (b.featured === "gold" ? 3 : b.featured === "teal" ? 2 : b.featured === "silver" ? 1 : 0) -
-      (a.featured === "gold" ? 3 : a.featured === "teal" ? 2 : a.featured === "silver" ? 1 : 0)
-    ),
-  [providers]);
+  // Featured providers — default order is by tier (gold > teal > silver), but the
+  // active sort (rating / reviews / views) applies within the featured block too.
+  const featuredProviders = useMemo(() => {
+    const featured = providers.filter((p) => p.featured);
+    if (sortBy === "default") {
+      return featured.sort((a, b) =>
+        (b.featured === "gold" ? 3 : b.featured === "teal" ? 2 : b.featured === "silver" ? 1 : 0) -
+        (a.featured === "gold" ? 3 : a.featured === "teal" ? 2 : a.featured === "silver" ? 1 : 0)
+      );
+    }
+    return featured.sort((a, b) =>
+      sortBy === "rating"
+        ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
+        : sortBy === "reviews"
+        ? (b.review_count ?? 0) - (a.review_count ?? 0)
+        : (b.view_count ?? 0) - (a.view_count ?? 0)
+    );
+  }, [providers, sortBy]);
 
   // Regular (non-featured) providers
   const regularProviders = useMemo(() => providers.filter((p) => !p.featured), [providers]);
@@ -179,7 +190,7 @@ export function CategoryContent({
               <div ref={pageSizeRef} className="relative">
                 <button
                   onClick={() => setPageSizeOpen((o) => !o)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   {pageSize} / oldal
                   <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
@@ -207,7 +218,7 @@ export function CategoryContent({
               <div ref={sortRef} className="relative">
                 <button
                   onClick={() => setSortOpen((o) => !o)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm sm:text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   {sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : sortBy === "reviews" ? "Értékelések száma alapján" : "Látogatottság alapján"}
                   <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
