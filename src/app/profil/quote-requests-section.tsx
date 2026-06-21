@@ -143,8 +143,6 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
             }
           }
         }
-        // "Országosan" kiválasztása az összes szolgáltatót jelenti a kategóriában.
-        map["Országosan"] = providers.length;
         setCountyCountMap(map);
       })
       .catch(() => {});
@@ -165,16 +163,9 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
   }, [category, selectedCounties, userId]);
 
   const toggleCounty = (county: string) => {
-    setSelectedCounties(prev => {
-      // "Országosan" is mutually exclusive with specific counties (same as registration).
-      if (county === "Országosan") {
-        return prev.includes("Országosan") ? [] : ["Országosan"];
-      }
-      const withoutNationwide = prev.filter(c => c !== "Országosan");
-      return withoutNationwide.includes(county)
-        ? withoutNationwide.filter(c => c !== county)
-        : [...withoutNationwide, county];
-    });
+    setSelectedCounties(prev =>
+      prev.includes(county) ? prev.filter(c => c !== county) : [...prev, county]
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -237,11 +228,8 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
       <div>
         <p className="text-xs text-gray-600 mb-2">Jelöld ki a megyé(ke)t! <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
         <div className="flex flex-wrap gap-2">
-          {COUNTIES.map(county => {
+          {geographicCounties.map(county => {
             const isSelected = selectedCounties.includes(county);
-            const isDisabled =
-              (selectedCounties.includes("Országosan") && county !== "Országosan") ||
-              (!selectedCounties.includes("Országosan") && selectedCounties.length > 0 && county === "Országosan");
             const count = category && countyCountMap[county] != null
               ? countyCountMap[county]
               : null;
@@ -249,14 +237,11 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
               <button
                 key={county}
                 type="button"
-                disabled={isDisabled}
                 onClick={() => toggleCounty(county)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  isDisabled
-                    ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
-                    : isSelected
-                      ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
-                      : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
+                  isSelected
+                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
                 }`}
               >
                 {county}{count != null && <span className="ml-1 opacity-70 font-normal">({count})</span>}
