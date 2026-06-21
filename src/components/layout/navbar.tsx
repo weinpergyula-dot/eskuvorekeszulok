@@ -410,10 +410,11 @@ export function Navbar() {
             <Link href="/" className="logo-frame shrink-0" aria-label="Esküvőre Készülök – Kezdőlap">
               <span className="logo-inner">
                 <span
-                  className="text-sm sm:text-lg leading-none whitespace-nowrap bg-gradient-to-r from-[#84AAA6] via-[#7E8CE0] to-[#C65EA5] bg-clip-text text-transparent"
+                  className="text-base sm:text-xl leading-none whitespace-nowrap"
                   style={{ fontFamily: "\"BloomSpeakTitle\", Georgia, serif", fontWeight: 950 }}
                 >
-                  Esküvőre Készülök
+                  <span style={{ color: "#84AAA6" }}>Esküvőre</span>{" "}
+                  <span style={{ color: "#6E6E6E" }}>Készülök</span>
                 </span>
               </span>
             </Link>

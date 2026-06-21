@@ -215,19 +215,19 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
 .logo-frame {
   position: relative;
   display: inline-flex;
-  border-radius: 14px;
-  padding: 2px;            /* gradient border thickness */
+  border-radius: 13px;
+  padding: 1px;            /* gradient border thickness */
   overflow: hidden;
 }
 .logo-frame::before {
   content: "";
   position: absolute;
   inset: -150%;            /* oversize so the rotating gradient always fills the frame */
-  /* Two light colours (teal + purple) that stay visible all around and just
-     rotate. Seamless because it starts and ends on the same colour. */
+  /* Two colours (teal + purple) that stay visible all around and just rotate.
+     Seamless because it starts and ends on the same colour. */
   background: conic-gradient(
     from 0deg,
-    #A7C7C3, #BDB2EE, #A7C7C3
+    #84AAA6, #8E7CD8, #84AAA6
   );
   animation: logo-frame-spin 5s linear infinite;
   z-index: 0;
