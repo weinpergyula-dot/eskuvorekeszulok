@@ -83,6 +83,7 @@ gtag('config', '${GA_ID}');
         <link rel="preload" href="/fonts/BloomSpeakTitle-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/BloomSpeakTitle-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/BloomSpeakTitle-ExtraBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/BloomSpeakTitle-UltraHeavy.otf" as="font" type="font/otf" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col antialiased">
         <script
