@@ -223,11 +223,11 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
   content: "";
   position: absolute;
   inset: -150%;            /* oversize so the rotating gradient always fills the frame */
-  /* Two colours (teal + purple) that stay visible all around and just rotate.
-     Seamless because it starts and ends on the same colour. */
+  /* Three colours (teal + pink + orange) that stay visible all around and
+     rotate. Seamless because it starts and ends on the same colour. */
   background: conic-gradient(
     from 0deg,
-    #84AAA6, #8E7CD8, #84AAA6
+    #6FA39E, #C65EA5, #F2913D, #6FA39E
   );
   animation: logo-frame-spin 5s linear infinite;
   z-index: 0;

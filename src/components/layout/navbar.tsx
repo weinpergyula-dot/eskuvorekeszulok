@@ -413,8 +413,8 @@ export function Navbar() {
                   className="text-base sm:text-xl leading-none whitespace-nowrap"
                   style={{ fontFamily: "\"BloomSpeakTitle\", Georgia, serif", fontWeight: 950 }}
                 >
-                  <span style={{ color: "#84AAA6" }}>Esküvőre</span>{" "}
-                  <span style={{ color: "#6E6E6E" }}>Készülök</span>
+                  <span style={{ color: "#84AAA6" }}>esküvőre</span>{" "}
+                  <span style={{ color: "#6E6E6E" }}>készülök</span>
                 </span>
               </span>
             </Link>
