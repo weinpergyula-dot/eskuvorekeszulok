@@ -281,7 +281,9 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
                 </div>
               )}
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
-                {matchingProviders.map(p => (
+                {[...matchingProviders]
+                  .sort((a, b) => (b.is_favorite ? 1 : 0) - (a.is_favorite ? 1 : 0))
+                  .map(p => (
                   <label key={p.id} className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
                     <input type="checkbox" checked={checkedIds.has(p.id)} onChange={() => { setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; }); }} className="rounded accent-[#84AAA6] shrink-0" />
                     {/* Avatar */}
