@@ -485,6 +485,7 @@ export function QuoteChat({
     }).then(() => {
       onUnreadMarked(unread.length);
       window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
+      window.dispatchEvent(new CustomEvent("quotes-read")); // navbar badge frissítése
     }).catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);

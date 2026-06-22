@@ -1360,6 +1360,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                       setProviderQuoteReqs((prev) => prev.map((x) =>
                         x.recipient_id === r.recipient_id ? { ...x, read: true } : x
                       ));
+                      window.dispatchEvent(new CustomEvent("quotes-read")); // navbar badge frissítése
                     }
                     setSelectedView({ kind: "quote-provider", req: r });
                   }}

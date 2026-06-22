@@ -259,16 +259,28 @@ export function Navbar() {
         })
         .catch(() => {});
     };
+    // Fires when a quote message/request is read (or a new one arrives) — refetch
+    // the quote count so the badge drops immediately once a chat is opened.
+    const onQuotesRead = () => {
+      fetch("/api/quote-requests/unread-count").then((r) => r.json())
+        .then(({ count }: { count: number }) => {
+          setUnreadQuotes(count);
+          window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
+        })
+        .catch(() => {});
+    };
     const onApprovalSeen = () => setProviderDot(null);
     const onActiveChanged = (e: Event) => {
       const active = (e as CustomEvent<boolean>).detail;
       setProviderDot(active ? "green" : "gray");
     };
     window.addEventListener("messages-read", onMessagesRead);
+    window.addEventListener("quotes-read", onQuotesRead);
     window.addEventListener("provider-approval-seen", onApprovalSeen);
     window.addEventListener("provider-active-changed", onActiveChanged);
     return () => {
       window.removeEventListener("messages-read", onMessagesRead);
+      window.removeEventListener("quotes-read", onQuotesRead);
       window.removeEventListener("provider-approval-seen", onApprovalSeen);
       window.removeEventListener("provider-active-changed", onActiveChanged);
     };
