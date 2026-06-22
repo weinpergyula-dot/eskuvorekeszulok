@@ -7,6 +7,7 @@ import { TopLoader } from "@/components/layout/top-loader";
 import { CookieBanner } from "@/components/layout/cookie-banner";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { BackgroundMusic } from "@/components/layout/background-music";
+import { FloatingActionButton } from "@/components/layout/floating-action-button";
 
 const SITE_NAME = "Esküvőre Készülök";
 const SITE_URL = "https://eskuvorekeszulok.hu";
@@ -83,7 +84,6 @@ gtag('config', '${GA_ID}');
         <link rel="preload" href="/fonts/BloomSpeakTitle-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/BloomSpeakTitle-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/BloomSpeakTitle-ExtraBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/BloomSpeakTitle-UltraHeavy.otf" as="font" type="font/otf" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col antialiased">
         <script
@@ -112,6 +112,7 @@ gtag('config', '${GA_ID}');
         <Footer />
         <CookieBanner />
         <BackgroundMusic />
+        <FloatingActionButton />
       </body>
     </html>
   );
