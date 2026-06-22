@@ -50,6 +50,8 @@ export function Navbar() {
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [shrink, setShrink] = useState(false);
+  const lastScrollY = useRef(0);
   const [navCategoryCounts, setNavCategoryCounts] = useState<Record<string, number>>({});
   const [navAvatarUrl, setNavAvatarUrl] = useState<string | null>(null);
   const categoryCountsFetched = useRef(false);
@@ -94,10 +96,25 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 10);
+      // Only shrink while scrolling DOWN; expand again on scroll up or near top.
+      if (y < 80) setShrink(false);
+      else if (y > lastScrollY.current + 4) setShrink(true);
+      else if (y < lastScrollY.current - 4) setShrink(false);
+      lastScrollY.current = y;
+    };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Publish the current navbar height so sticky elements (e.g. the category CTA)
+  // can pin flush beneath it whether it's full-size or shrunk.
+  useEffect(() => {
+    document.documentElement.style.setProperty("--nav-h", shrink ? "2.75rem" : "4rem");
+  }, [shrink]);
 
   const supabase = createClient();
 
@@ -405,11 +422,11 @@ export function Navbar() {
   <>
     <nav className={`sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 relative ${scrolled ? "bg-white/80 backdrop-blur-md" : "bg-white"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className={`flex items-center justify-between transition-all duration-300 ${shrink ? "h-11" : "h-16"}`}>
           {/* Logo + Desktop nav */}
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center shrink-0">
-              <Image src="/logo.png" alt="Esküvőre Készülök" width={320} height={80} quality={100} className="h-10 w-auto" />
+              <Image src="/logo.png" alt="Esküvőre Készülök" width={320} height={80} quality={100} className={`w-auto transition-all duration-300 ${shrink ? "h-7" : "h-10"}`} />
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
@@ -453,7 +470,7 @@ export function Navbar() {
           </div>
 
           {/* Desktop auth */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className={`hidden md:flex items-center gap-3 transition-transform duration-300 origin-right ${shrink ? "scale-90" : ""}`}>
             {user ? (
               <div
                 ref={desktopDropdownRef}
@@ -503,7 +520,7 @@ export function Navbar() {
           </div>
 
           {/* Mobile: user icon + categories icon + hamburger */}
-          <div className="md:hidden flex items-center gap-1">
+          <div className={`md:hidden flex items-center gap-1 transition-transform duration-300 origin-right ${shrink ? "scale-90" : ""}`}>
             {!user && (
               <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
                 <CircleUser className="h-7 w-7" strokeWidth={1.75} />

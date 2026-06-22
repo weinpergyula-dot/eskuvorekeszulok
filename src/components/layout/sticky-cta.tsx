@@ -23,7 +23,7 @@ export function StickyCta({
     const onScroll = () => {
       const el = ref.current;
       if (!el) return;
-      // top-16 (64px) a sticky pozíció — ennél vagy ez alatt már odatapadt.
+      // A navbar magasságánál (max 64px) vagy ez alatt már odatapadt.
       setStuck(el.getBoundingClientRect().top <= 65);
     };
     onScroll();
@@ -34,8 +34,8 @@ export function StickyCta({
   return (
     <div
       ref={ref}
-      className={`sticky top-16 z-40 w-full border-b border-white/20 transition-colors ${stuck ? "backdrop-blur-md" : ""}`}
-      style={{ backgroundColor: stuck ? `${bgColor}D9` : bgColor }}
+      className={`sticky z-40 w-full border-b border-white/20 transition-all duration-300 ${stuck ? "backdrop-blur-md" : ""}`}
+      style={{ top: "var(--nav-h, 4rem)", backgroundColor: stuck ? `${bgColor}D9` : bgColor }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-center">
         <a
