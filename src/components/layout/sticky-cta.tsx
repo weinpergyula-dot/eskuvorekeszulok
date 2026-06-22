@@ -26,8 +26,9 @@ export function StickyCta({
     const onScroll = () => {
       const el = ref.current;
       if (el) setStuck(el.getBoundingClientRect().top <= 65);
-      // Ugyanaz a logika, mint a navbarnál, hogy együtt zsugorodjanak.
+      // Csak mobilon (<md) zsugorodjon, a navbarral azonos logikával.
       const y = window.scrollY;
+      if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
       if (y < 80) setShrink(false);
       else if (y > lastScrollY.current + 4) setShrink(true);
       else if (y < lastScrollY.current - 4) setShrink(false);
@@ -35,7 +36,11 @@ export function StickyCta({
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   return (

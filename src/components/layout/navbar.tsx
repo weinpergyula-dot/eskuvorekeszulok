@@ -99,6 +99,8 @@ export function Navbar() {
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > 10);
+      // Shrink only on mobile (<md). On desktop the navbar keeps its full size.
+      if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
       // Only shrink while scrolling DOWN; expand again on scroll up or near top.
       if (y < 80) setShrink(false);
       else if (y > lastScrollY.current + 4) setShrink(true);
@@ -107,7 +109,11 @@ export function Navbar() {
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   // Publish the current navbar height so sticky elements (e.g. the category CTA)
