@@ -1,4 +1,5 @@
 import { ArrowLeft, type LucideIcon } from "lucide-react";
+import { StickyCta } from "./sticky-cta";
 
 interface PageHeaderProps {
   title: string;
@@ -31,18 +32,10 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
       </div>
 
       {/* CTA sora — a navbar alá tapad scrollozáskor (sticky); a gomb feletti és
-          alatti hely közel azonos, a fölötte lévő elválasztó nélkül. */}
+          alatti hely közel azonos, a fölötte lévő elválasztó nélkül. Scrollozáskor
+          a háttere minimálisan áttetszővé válik, mint a header. */}
       {ctaLabel && ctaHref && (
-        <div className="sticky top-16 z-40 w-full border-b border-white/20" style={{ backgroundColor: bgColor }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-center">
-            <a
-              href={ctaHref}
-              className="inline-flex items-center px-5 py-2 rounded-full border border-white/70 text-white text-sm font-medium hover:bg-white/15 transition-colors"
-            >
-              {ctaLabel}
-            </a>
-          </div>
-        </div>
+        <StickyCta label={ctaLabel} href={ctaHref} bgColor={bgColor} />
       )}
 
       {backHref && (

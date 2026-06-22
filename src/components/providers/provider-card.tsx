@@ -268,9 +268,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
           {/* Info: name, counties, stars */}
           <div className="flex-1 min-w-0 pr-14">
-            <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
-              {provider.full_name}
-            </h3>
+            {!disableLink ? (
+              <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className="block">
+                <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
+                  {provider.full_name}
+                </h3>
+              </a>
+            ) : (
+              <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
+                {provider.full_name}
+              </h3>
+            )}
             <div className="flex items-start gap-1 mt-0.5">
               <MapPin className={`h-3.5 w-3.5 shrink-0 mt-[2px] ${tc.text}`} />
               <span className="text-sm text-gray-900 leading-snug">
