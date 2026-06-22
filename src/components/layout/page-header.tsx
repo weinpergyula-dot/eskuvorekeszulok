@@ -15,8 +15,8 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref }: PageHeaderProps) {
   return (
     <>
-      <div className="w-full border-b border-white/20" style={{ backgroundColor: bgColor }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className={`w-full ${ctaLabel && ctaHref ? "" : "border-b border-white/20"}`} style={{ backgroundColor: bgColor }}>
+        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${ctaLabel && ctaHref ? "pt-8" : "py-8"}`}>
           <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
             {Icon && <Icon className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />}
             {title}
@@ -30,10 +30,11 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
         </div>
       </div>
 
-      {/* CTA sora — a navbar alá tapad scrollozáskor (sticky), minimális paddinggal */}
+      {/* CTA sora — a navbar alá tapad scrollozáskor (sticky); a gomb feletti és
+          alatti hely közel azonos, a fölötte lévő elválasztó nélkül. */}
       {ctaLabel && ctaHref && (
         <div className="sticky top-16 z-40 w-full border-b border-white/20" style={{ backgroundColor: bgColor }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex justify-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-center">
             <a
               href={ctaHref}
               className="inline-flex items-center px-5 py-2 rounded-full border border-white/70 text-white text-sm font-medium hover:bg-white/15 transition-colors"
