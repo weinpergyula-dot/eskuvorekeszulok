@@ -486,6 +486,13 @@ function ChatView({
   const hasSystemMessage = messages.some((m) => !m.is_own && isSystemMsg(m.body));
   const initials = provider.full_name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
+  // Two messages belong to the same visual group if same sender and sent within
+  // 5 minutes of each other (so consecutive bursts share one timestamp + avatar).
+  const inSameGroup = (a?: ChatMessage, b?: ChatMessage) =>
+    !!a && !!b && !isSystemMsg(a.body) && !isSystemMsg(b.body) &&
+    a.is_own === b.is_own &&
+    Math.abs(new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) <= 5 * 60 * 1000;
+
   // Scroll to bottom on new messages — on desktop scroll only the inner container
   useEffect(() => {
     if (window.innerWidth >= 640) {
@@ -758,7 +765,7 @@ function ChatView({
       )}
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 bg-gray-50">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
             <MessageCircle className="h-12 w-12 mb-3 text-gray-200" strokeWidth={1} />
@@ -769,7 +776,7 @@ function ChatView({
         {messages.map((msg, i) => {
           if (isSystemMsg(msg.body)) {
             return (
-              <div key={msg.id} className="flex justify-center">
+              <div key={msg.id} className={`flex justify-center ${i === 0 ? "" : "mt-4"}`}>
                 <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
                   <Info className="h-3 w-3 text-amber-500 shrink-0" />
                   <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
@@ -777,14 +784,19 @@ function ChatView({
               </div>
             );
           }
+          const prev = messages[i - 1];
           const next = messages[i + 1];
-          const nextIsIncoming = !!next && !isSystemMsg(next.body) && !next.is_own;
-          // Messenger-stílus: a kép csak az összefüggő blokk utolsó üzeneténél.
-          const showAvatar = !msg.is_own && !nextIsIncoming;
+          const isStart = !inSameGroup(prev, msg);
+          const isEnd = !inSameGroup(msg, next);
+          // Avatar a blokk elejére (csak bejövőnél); timestamp a blokk végére.
+          const showAvatar = !msg.is_own && isStart;
+          const corners = msg.is_own
+            ? `rounded-2xl ${!isStart ? "rounded-tr-sm" : ""} ${!isEnd ? "rounded-br-sm" : ""}`
+            : `rounded-2xl ${!isStart ? "rounded-tl-sm" : ""} ${!isEnd ? "rounded-bl-sm" : ""}`;
           return (
-            <div key={msg.id} className={`flex ${msg.is_own ? "justify-end" : "justify-start"}`}>
+            <div key={msg.id} className={`flex ${msg.is_own ? "justify-end" : "justify-start"} ${i === 0 ? "" : isStart ? "mt-4" : "mt-0.5"}`}>
               <div className={`flex flex-col gap-1 max-w-[80%] ${msg.is_own ? "items-end" : "items-start"}`}>
-                <div className="flex items-end gap-2">
+                <div className="flex items-start gap-2">
                   {!msg.is_own && (
                     <div className="w-7 h-7 shrink-0">
                       {showAvatar && (
@@ -798,13 +810,15 @@ function ChatView({
                   )}
                   <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
                     msg.is_own
-                      ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
-                      : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
+                      ? `bg-gray-200 text-gray-900 ${corners}`
+                      : `bg-white border border-gray-200 text-gray-900 ${corners}`
                   }`}>
                     {msg.body}
                   </div>
                 </div>
-                <span className={`text-[10px] text-gray-400 px-1 ${!msg.is_own ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
+                {isEnd && (
+                  <span className={`text-[10px] text-gray-400 px-1 ${!msg.is_own ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
+                )}
                 {msg.id === lastReadOwnId && msg.read_at && (
                   <span className={`text-[10px] text-[#84AAA6] px-1 ${!msg.is_own ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
                 )}

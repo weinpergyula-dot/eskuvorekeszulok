@@ -430,6 +430,13 @@ export function QuoteChat({
 
   const hasSystemMessage = messages.some((m) => isSystemMsg(m.body));
 
+  // Two messages belong to the same visual group if same sender and sent within
+  // 5 minutes of each other (so consecutive bursts share one timestamp + avatar).
+  const inSameGroup = (a?: QuoteMessage, b?: QuoteMessage) =>
+    !!a && !!b && !isSystemMsg(a.body) && !isSystemMsg(b.body) &&
+    a.sender_id === b.sender_id &&
+    Math.abs(new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) <= 5 * 60 * 1000;
+
   // Lock body scroll on mobile
   useEffect(() => {
     document.body.classList.add("chat-mode");
@@ -637,43 +644,36 @@ export function QuoteChat({
       </div>
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
-        {/* Original request message shown as first chat bubble */}
-        {requestContext?.message && (() => {
-          const firstMsg = messages[0];
-          const firstIsIncoming = !!firstMsg && !isSystemMsg(firstMsg.body) && firstMsg.sender_id !== userId;
-          const showAvatar = !requestMsgIsOwn && !firstIsIncoming;
-          return (
-            <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
-              <div className={`flex flex-col gap-1 max-w-[80%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
-                <div className="flex items-end gap-2">
-                  {!requestMsgIsOwn && (
-                    <div className="w-7 h-7 shrink-0">
-                      {showAvatar && (
-                        <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">
-                          {otherAvatarUrl
-                            ? <img src={otherAvatarUrl} alt={otherName} className="w-full h-full object-cover" />
-                            : otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
-                        </div>
-                      )}
+      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 bg-gray-50">
+        {/* Original request message shown as first chat bubble (standalone block) */}
+        {requestContext?.message && (
+          <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
+            <div className={`flex flex-col gap-1 max-w-[80%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
+              <div className="flex items-start gap-2">
+                {!requestMsgIsOwn && (
+                  <div className="w-7 h-7 shrink-0">
+                    <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">
+                      {otherAvatarUrl
+                        ? <img src={otherAvatarUrl} alt={otherName} className="w-full h-full object-cover" />
+                        : otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
                     </div>
-                  )}
-                  <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
-                    requestMsgIsOwn
-                      ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
-                      : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
-                  }`}>
-                    {requestContext.message}
                   </div>
+                )}
+                <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line rounded-2xl ${
+                  requestMsgIsOwn
+                    ? "bg-gray-200 text-gray-900"
+                    : "bg-white border border-gray-200 text-gray-900"
+                }`}>
+                  {requestContext.message}
                 </div>
               </div>
             </div>
-          );
-        })()}
+          </div>
+        )}
         {messages.map((msg, i) => {
           if (isSystemMsg(msg.body)) {
             return (
-              <div key={msg.id} className="flex justify-center">
+              <div key={msg.id} className={`flex justify-center ${i === 0 && !requestContext?.message ? "" : "mt-4"}`}>
                 <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
                   <Info className="h-3 w-3 text-amber-500 shrink-0" />
                   <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
@@ -682,14 +682,19 @@ export function QuoteChat({
             );
           }
           const isOwn = msg.sender_id === userId;
+          const prev = messages[i - 1];
           const next = messages[i + 1];
-          const nextIsIncoming = !!next && !isSystemMsg(next.body) && next.sender_id !== userId;
-          // Messenger-stílus: a kép csak az összefüggő blokk utolsó üzeneténél.
-          const showAvatar = !isOwn && !nextIsIncoming;
+          const isStart = !inSameGroup(prev, msg);
+          const isEnd = !inSameGroup(msg, next);
+          const showAvatar = !isOwn && isStart;
+          const corners = isOwn
+            ? `rounded-2xl ${!isStart ? "rounded-tr-sm" : ""} ${!isEnd ? "rounded-br-sm" : ""}`
+            : `rounded-2xl ${!isStart ? "rounded-tl-sm" : ""} ${!isEnd ? "rounded-bl-sm" : ""}`;
+          const firstInList = i === 0 && !requestContext?.message;
           return (
-            <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+            <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"} ${firstInList ? "" : isStart ? "mt-4" : "mt-0.5"}`}>
               <div className={`flex flex-col gap-1 max-w-[80%] ${isOwn ? "items-end" : "items-start"}`}>
-                <div className="flex items-end gap-2">
+                <div className="flex items-start gap-2">
                   {!isOwn && (
                     <div className="w-7 h-7 shrink-0">
                       {showAvatar && (
@@ -703,13 +708,15 @@ export function QuoteChat({
                   )}
                   <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
                     isOwn
-                      ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
-                      : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
+                      ? `bg-gray-200 text-gray-900 ${corners}`
+                      : `bg-white border border-gray-200 text-gray-900 ${corners}`
                   }`}>
                     {msg.body}
                   </div>
                 </div>
-                <span className={`text-[10px] text-gray-400 px-1 ${!isOwn ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
+                {isEnd && (
+                  <span className={`text-[10px] text-gray-400 px-1 ${!isOwn ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
+                )}
                 {msg.id === lastReadOwnId && msg.read_at && (
                   <span className={`text-[10px] text-[#84AAA6] px-1 ${!isOwn ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
                 )}
