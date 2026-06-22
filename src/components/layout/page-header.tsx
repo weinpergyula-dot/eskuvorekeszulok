@@ -27,18 +27,22 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
               <p className="text-base text-white leading-relaxed">{description}</p>
             </>
           )}
-          {ctaLabel && ctaHref && (
-            <div className="flex justify-center mt-5">
-              <a
-                href={ctaHref}
-                className="inline-flex items-center px-5 py-2.5 rounded-full border-2 border-white/70 text-white text-sm font-medium hover:bg-white/15 transition-colors"
-              >
-                {ctaLabel}
-              </a>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* CTA sora — a navbar alá tapad scrollozáskor (sticky), minimális paddinggal */}
+      {ctaLabel && ctaHref && (
+        <div className="sticky top-16 z-40 w-full border-b border-white/20" style={{ backgroundColor: bgColor }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex justify-center">
+            <a
+              href={ctaHref}
+              className="inline-flex items-center px-5 py-2 rounded-full border border-white/70 text-white text-sm font-medium hover:bg-white/15 transition-colors"
+            >
+              {ctaLabel}
+            </a>
+          </div>
+        </div>
+      )}
 
       {backHref && (
         <div className="w-full bg-white border-b border-gray-100">

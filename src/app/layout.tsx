@@ -7,7 +7,6 @@ import { TopLoader } from "@/components/layout/top-loader";
 import { CookieBanner } from "@/components/layout/cookie-banner";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { BackgroundMusic } from "@/components/layout/background-music";
-import { FloatingActionButton } from "@/components/layout/floating-action-button";
 
 const SITE_NAME = "Esküvőre Készülök";
 const SITE_URL = "https://eskuvorekeszulok.hu";
@@ -112,7 +111,6 @@ gtag('config', '${GA_ID}');
         <Footer />
         <CookieBanner />
         <BackgroundMusic />
-        <FloatingActionButton />
       </body>
     </html>
   );

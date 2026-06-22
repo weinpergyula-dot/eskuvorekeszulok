@@ -3,7 +3,7 @@ export const revalidate = 60;
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { MapPin, Star, Eye, User, FileText } from "lucide-react";
+import { MapPin, Star, Eye, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
@@ -12,7 +12,6 @@ import { ProviderTabs } from "@/components/providers/provider-tabs";
 import { ProviderUserActions } from "@/components/providers/provider-user-actions";
 import { ShareButton } from "@/components/providers/share-button";
 import { AvatarLightbox } from "@/components/providers/avatar-lightbox";
-import { FloatingActionLink } from "@/components/layout/floating-action-link";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -189,13 +188,6 @@ export default async function ProviderProfilePage({ params }: PageProps) {
         <ProviderTabs provider={provider} />
       </div>
       </div>
-
-      {/* Úszó gomb: közvetlenül a szolgáltató chatjére visz */}
-      <FloatingActionLink
-        href={`/profil?tab=chat&with=${provider.user_id}`}
-        label="Ajánlatkérés"
-        icon={FileText}
-      />
     </div>
   );
 }
