@@ -38,9 +38,12 @@ const MOBILE_VISIBLE = 10;
 
 interface CategorySearchProps {
   counts?: Record<string, number>;
+  /** Mobilon összecsukja a listát a "Még több..." gombbal (főoldal). A /services
+   *  kategória-oldalon false: ott a teljes lista látszik, gomb nélkül. */
+  collapseOnMobile?: boolean;
 }
 
-export function CategorySearch({ counts = {} }: CategorySearchProps) {
+export function CategorySearch({ counts = {}, collapseOnMobile = true }: CategorySearchProps) {
   const [query, setQuery] = useState("");
   const [showAll, setShowAll] = useState(false);
 
@@ -83,7 +86,7 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
                 className={cn(
                   "relative flex flex-col items-center justify-center text-center bg-[#FCFCFC] border border-gray-200 rounded-xl p-5 hover:border-[#84AAA6] hover:shadow-md transition-all group",
                   // On mobile: hide items beyond MOBILE_VISIBLE unless expanded or searching
-                  !isSearching && !showAll && idx >= MOBILE_VISIBLE && "hidden sm:flex"
+                  collapseOnMobile && !isSearching && !showAll && idx >= MOBILE_VISIBLE && "hidden sm:flex"
                 )}
               >
                 {/* Provider count badge – top right */}
@@ -100,7 +103,7 @@ export function CategorySearch({ counts = {} }: CategorySearchProps) {
           </div>
 
           {/* Mobile "show more" button */}
-          {!isSearching && !showAll && filtered.length > MOBILE_VISIBLE && (
+          {collapseOnMobile && !isSearching && !showAll && filtered.length > MOBILE_VISIBLE && (
             <div className="sm:hidden flex justify-center mt-5">
               <button
                 onClick={() => setShowAll(true)}
