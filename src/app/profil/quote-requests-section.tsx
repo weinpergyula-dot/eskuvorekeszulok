@@ -258,7 +258,7 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
             <p className="text-xs text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
           ) : (
             <div>
-              <p className="text-xs text-gray-600 mb-2">Válaszd ki, hogy ki kapja meg tőled az ajánlatkérést.</p>
+              <p className="text-xs text-gray-600 mb-2">Válaszd ki, hogy ki kapja meg az ajánlatkérést. <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
               <div className="flex flex-wrap items-center gap-2 mb-2">
                 {(() => {
                   const allSelected = checkedIds.size === matchingProviders.length;
@@ -639,45 +639,84 @@ export function QuoteChat({
       {/* Messages */}
       <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
         {/* Original request message shown as first chat bubble */}
-        {requestContext?.message && (
-          <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
-            <div className={`flex flex-col gap-1 max-w-[75%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
-              <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
-                requestMsgIsOwn
-                  ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
-                  : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
-              }`}>
-                {requestContext.message}
-              </div>
-            </div>
-          </div>
-        )}
-        {messages.map((msg) =>
-          isSystemMsg(msg.body) ? (
-            <div key={msg.id} className="flex justify-center">
-              <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
-                <Info className="h-3 w-3 text-amber-500 shrink-0" />
-                <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
-              </div>
-            </div>
-          ) : (
-            <div key={msg.id} className={`flex ${msg.sender_id === userId ? "justify-end" : "justify-start"}`}>
-              <div className={`flex flex-col gap-1 max-w-[75%] ${msg.sender_id === userId ? "items-end" : "items-start"}`}>
-                <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
-                  msg.sender_id === userId
-                    ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
-                    : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
-                }`}>
-                  {msg.body}
+        {requestContext?.message && (() => {
+          const firstMsg = messages[0];
+          const firstIsIncoming = !!firstMsg && !isSystemMsg(firstMsg.body) && firstMsg.sender_id !== userId;
+          const showAvatar = !requestMsgIsOwn && !firstIsIncoming;
+          return (
+            <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
+              <div className={`flex flex-col gap-1 max-w-[80%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
+                <div className="flex items-end gap-2">
+                  {!requestMsgIsOwn && (
+                    <div className="w-7 h-7 shrink-0">
+                      {showAvatar && (
+                        <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">
+                          {otherAvatarUrl
+                            ? <img src={otherAvatarUrl} alt={otherName} className="w-full h-full object-cover" />
+                            : otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
+                    requestMsgIsOwn
+                      ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
+                      : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
+                  }`}>
+                    {requestContext.message}
+                  </div>
                 </div>
-                <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
+              </div>
+            </div>
+          );
+        })()}
+        {messages.map((msg, i) => {
+          if (isSystemMsg(msg.body)) {
+            return (
+              <div key={msg.id} className="flex justify-center">
+                <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
+                  <Info className="h-3 w-3 text-amber-500 shrink-0" />
+                  <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
+                </div>
+              </div>
+            );
+          }
+          const isOwn = msg.sender_id === userId;
+          const next = messages[i + 1];
+          const nextIsIncoming = !!next && !isSystemMsg(next.body) && next.sender_id !== userId;
+          // Messenger-stílus: a kép csak az összefüggő blokk utolsó üzeneténél.
+          const showAvatar = !isOwn && !nextIsIncoming;
+          return (
+            <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+              <div className={`flex flex-col gap-1 max-w-[80%] ${isOwn ? "items-end" : "items-start"}`}>
+                <div className="flex items-end gap-2">
+                  {!isOwn && (
+                    <div className="w-7 h-7 shrink-0">
+                      {showAvatar && (
+                        <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">
+                          {otherAvatarUrl
+                            ? <img src={otherAvatarUrl} alt={otherName} className="w-full h-full object-cover" />
+                            : otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
+                    isOwn
+                      ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
+                      : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
+                  }`}>
+                    {msg.body}
+                  </div>
+                </div>
+                <span className={`text-[10px] text-gray-400 px-1 ${!isOwn ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
                 {msg.id === lastReadOwnId && msg.read_at && (
-                  <span className="text-[10px] text-[#84AAA6] px-1">Elolvasva: {formatDate(msg.read_at)}</span>
+                  <span className={`text-[10px] text-[#84AAA6] px-1 ${!isOwn ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
                 )}
               </div>
             </div>
-          )
-        )}
+          );
+        })}
         <div ref={bottomRef} />
       </div>
 
@@ -784,7 +823,7 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
   return (
     <div className="space-y-3">
       <p className="text-base text-gray-700">
-        Kategória és megyeválasztás után egyenként ki tudod választani, hogy kitől szeretnél árajánlatot kérni.
+        Kategória és megyeválasztás után egyenként ki tudod választani, hogy melyik szolgáltató kapja meg az ajánlatkérést.
       </p>
       <SendForm onSent={() => setSent(true)} userId={userId} />
     </div>

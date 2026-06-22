@@ -766,32 +766,52 @@ function ChatView({
             <p className="text-xs mt-1">Írd meg az első üzeneted {provider.full_name} részére.</p>
           </div>
         )}
-        {messages.map((msg) =>
-          isSystemMsg(msg.body) ? (
-            <div key={msg.id} className="flex justify-center">
-              <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
-                <Info className="h-3 w-3 text-amber-500 shrink-0" />
-                <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
-              </div>
-            </div>
-          ) : (
-            <div key={msg.id} className={`flex ${msg.is_own ? "justify-end" : "justify-start"}`}>
-              <div className={`flex flex-col gap-1 max-w-[75%] ${msg.is_own ? "items-end" : "items-start"}`}>
-                <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
-                  msg.is_own
-                    ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
-                    : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
-                }`}>
-                  {msg.body}
+        {messages.map((msg, i) => {
+          if (isSystemMsg(msg.body)) {
+            return (
+              <div key={msg.id} className="flex justify-center">
+                <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
+                  <Info className="h-3 w-3 text-amber-500 shrink-0" />
+                  <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
                 </div>
-                <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
+              </div>
+            );
+          }
+          const next = messages[i + 1];
+          const nextIsIncoming = !!next && !isSystemMsg(next.body) && !next.is_own;
+          // Messenger-stílus: a kép csak az összefüggő blokk utolsó üzeneténél.
+          const showAvatar = !msg.is_own && !nextIsIncoming;
+          return (
+            <div key={msg.id} className={`flex ${msg.is_own ? "justify-end" : "justify-start"}`}>
+              <div className={`flex flex-col gap-1 max-w-[80%] ${msg.is_own ? "items-end" : "items-start"}`}>
+                <div className="flex items-end gap-2">
+                  {!msg.is_own && (
+                    <div className="w-7 h-7 shrink-0">
+                      {showAvatar && (
+                        <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">
+                          {provider.avatar_url
+                            ? <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover" />
+                            : initials}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
+                    msg.is_own
+                      ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
+                      : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
+                  }`}>
+                    {msg.body}
+                  </div>
+                </div>
+                <span className={`text-[10px] text-gray-400 px-1 ${!msg.is_own ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
                 {msg.id === lastReadOwnId && msg.read_at && (
-                  <span className="text-[10px] text-[#84AAA6] px-1">Elolvasva: {formatDate(msg.read_at)}</span>
+                  <span className={`text-[10px] text-[#84AAA6] px-1 ${!msg.is_own ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
                 )}
               </div>
             </div>
-          )
-        )}
+          );
+        })}
         <div ref={bottomRef} />
       </div>
 
