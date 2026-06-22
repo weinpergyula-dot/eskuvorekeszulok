@@ -788,15 +788,15 @@ function ChatView({
           const next = messages[i + 1];
           const isStart = !inSameGroup(prev, msg);
           const isEnd = !inSameGroup(msg, next);
-          // Avatar a blokk elejére (csak bejövőnél); timestamp a blokk végére.
-          const showAvatar = !msg.is_own && isStart;
+          // Avatar a blokk legutolsó sorának aljára (csak bejövőnél); timestamp is a végére.
+          const showAvatar = !msg.is_own && isEnd;
           const corners = msg.is_own
             ? `rounded-2xl ${!isStart ? "rounded-tr-sm" : ""} ${!isEnd ? "rounded-br-sm" : ""}`
             : `rounded-2xl ${!isStart ? "rounded-tl-sm" : ""} ${!isEnd ? "rounded-bl-sm" : ""}`;
           return (
             <div key={msg.id} className={`flex ${msg.is_own ? "justify-end" : "justify-start"} ${i === 0 ? "" : isStart ? "mt-4" : "mt-0.5"}`}>
               <div className={`flex flex-col gap-1 max-w-[80%] ${msg.is_own ? "items-end" : "items-start"}`}>
-                <div className="flex items-start gap-2">
+                <div className="flex items-end gap-2">
                   {!msg.is_own && (
                     <div className="w-7 h-7 shrink-0">
                       {showAvatar && (
@@ -881,10 +881,10 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
 
   const threads = buildThreads(messages);
 
+  // One per conversation (chat window) that has anything unread — not per message.
   const quoteUnread =
-    visitorQuoteChats.reduce((s, c) => s + c.unread_count, 0) +
-    providerQuoteReqs.filter((r) => !r.read).length +
-    providerQuoteReqs.reduce((s, r) => s + (r.unread_reply_count ?? 0), 0);
+    visitorQuoteChats.filter((c) => c.unread_count > 0).length +
+    providerQuoteReqs.filter((r) => !r.read || (r.unread_reply_count ?? 0) > 0).length;
   const unreadConversations = threads.filter((t) => t.hasUnread).length + quoteUnread;
 
   const loadAll = useCallback(() => {

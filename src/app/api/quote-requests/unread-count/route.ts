@@ -9,8 +9,9 @@ export const dynamic = "force-dynamic";
  * Returns the total unread quote-request count for the current user.
  * Lightweight alternative to GET /api/quote-requests — used by the navbar badge.
  *
- * Unread = new incoming requests (read=false) + unread reply messages, for both
- * the provider and visitor roles of the current user.
+ * Counts CONVERSATIONS (chat windows) that have anything unread — one
+ * notification per chat window, not per message — for both the provider and
+ * visitor roles of the current user.
  */
 export async function GET() {
   const supabase = await createClient();
@@ -32,40 +33,44 @@ export async function GET() {
 
   if (providerData) {
     // The provider's own (non-deleted) recipient rows. Deleted conversations are
-    // hidden from the chat list, so their unread messages must not feed the badge.
+    // hidden from the chat list, so they must not feed the badge.
     const { data: recipientRows } = await admin
       .from("quote_request_recipients")
       .select("quote_request_id, read")
       .eq("provider_user_id", user.id)
       .eq("deleted_by_provider", false);
 
-    // Unread incoming quote requests (not yet opened by provider)
-    const unreadRecipients = (recipientRows ?? []).filter(
-      (r: { read: boolean }) => !r.read,
-    ).length;
-
-    // Unread visitor reply messages, restricted to non-deleted conversations and
-    // excluding system notices (withdrawals etc.) which aren't real messages.
-    let unreadReplies = 0;
     const activeReqIds = (recipientRows ?? []).map(
       (r: { quote_request_id: string }) => r.quote_request_id,
     );
+
+    // Conversations (quote_request_id) that have unread visitor messages,
+    // excluding system notices (withdrawals etc.) which aren't real messages.
+    const reqIdsWithUnread = new Set<string>();
     if (activeReqIds.length > 0) {
-      const { count } = await admin
+      const { data: unreadMsgs } = await admin
         .from("quote_messages")
-        .select("*", { count: "exact", head: true })
+        .select("quote_request_id")
         .eq("provider_id", providerData.id)
         .in("quote_request_id", activeReqIds)
         .neq("sender_id", user.id)
         .eq("read", false)
         .not("body", "like", "__SYSTEM__:%");
-      unreadReplies = count ?? 0;
+      for (const m of (unreadMsgs ?? []) as { quote_request_id: string }[]) {
+        reqIdsWithUnread.add(m.quote_request_id);
+      }
     }
 
-    total += unreadRecipients + unreadReplies;
+    // One per conversation that is either an unopened request or has unread messages.
+    const unreadConvs = new Set<string>();
+    for (const r of (recipientRows ?? []) as { quote_request_id: string; read: boolean }[]) {
+      if (!r.read || reqIdsWithUnread.has(r.quote_request_id)) unreadConvs.add(r.quote_request_id);
+    }
+    total += unreadConvs.size;
   }
 
-  // Unread provider reply messages received as a visitor
+  // As a visitor: conversations (quote_request_id + provider_id) with unread
+  // provider replies — one per chat window.
   const { data: visitorRequests } = await admin
     .from("quote_requests")
     .select("id")
@@ -74,15 +79,18 @@ export async function GET() {
 
   if (visitorRequests && visitorRequests.length > 0) {
     const reqIds = visitorRequests.map((r: { id: string }) => r.id);
-    const { count: unreadVisitor } = await admin
+    const { data: unreadMsgs } = await admin
       .from("quote_messages")
-      .select("*", { count: "exact", head: true })
+      .select("quote_request_id, provider_id")
       .in("quote_request_id", reqIds)
       .neq("sender_id", user.id)
       .eq("read", false)
       .not("body", "like", "__SYSTEM__:%");
 
-    total += unreadVisitor ?? 0;
+    const unreadConvs = new Set(
+      (unreadMsgs ?? []).map((m: { quote_request_id: string; provider_id: string }) => `${m.quote_request_id}__${m.provider_id}`),
+    );
+    total += unreadConvs.size;
   }
 
   return NextResponse.json({ count: total });

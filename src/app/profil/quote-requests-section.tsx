@@ -649,7 +649,7 @@ export function QuoteChat({
         {requestContext?.message && (
           <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
             <div className={`flex flex-col gap-1 max-w-[80%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
-              <div className="flex items-start gap-2">
+              <div className="flex items-end gap-2">
                 {!requestMsgIsOwn && (
                   <div className="w-7 h-7 shrink-0">
                     <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">
@@ -686,7 +686,7 @@ export function QuoteChat({
           const next = messages[i + 1];
           const isStart = !inSameGroup(prev, msg);
           const isEnd = !inSameGroup(msg, next);
-          const showAvatar = !isOwn && isStart;
+          const showAvatar = !isOwn && isEnd;
           const corners = isOwn
             ? `rounded-2xl ${!isStart ? "rounded-tr-sm" : ""} ${!isEnd ? "rounded-br-sm" : ""}`
             : `rounded-2xl ${!isStart ? "rounded-tl-sm" : ""} ${!isEnd ? "rounded-bl-sm" : ""}`;
@@ -694,7 +694,7 @@ export function QuoteChat({
           return (
             <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"} ${firstInList ? "" : isStart ? "mt-4" : "mt-0.5"}`}>
               <div className={`flex flex-col gap-1 max-w-[80%] ${isOwn ? "items-end" : "items-start"}`}>
-                <div className="flex items-start gap-2">
+                <div className="flex items-end gap-2">
                   {!isOwn && (
                     <div className="w-7 h-7 shrink-0">
                       {showAvatar && (
