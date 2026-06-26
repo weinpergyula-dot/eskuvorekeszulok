@@ -117,12 +117,13 @@ export default async function HomePage() {
               </h2>
               <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes fiók</p>
               <hr className="border-white/30 mb-3" />
+              <p className="text-base font-semibold text-white mb-2">Lehetőséged lesz...</p>
               <ul className="text-base text-white space-y-2 mb-5">
                 {[
-                  "Böngészd 20+ kategória kínálatát – fotóstól virágkötőig",
-                  "Olvass valódi értékeléseket más pároktól",
-                  "Jelöld kedvenceidet, térj vissza bármikor",
-                  "Küldj ajánlatkérést egyszerre több szolgáltatónak",
+                  "Kedvencnek jelölni szolgáltatókat",
+                  "Csoportos vagy egyéni ajánlatot kérni",
+                  "Chatelni a kiválasztott szakemberrel",
+                  "Értékelni, tapasztalatokat megosztani",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <Check className="h-4 w-4 mt-0.5 shrink-0 text-white/80" strokeWidth={2.5} />
@@ -149,12 +150,13 @@ export default async function HomePage() {
               </h2>
               <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes profil</p>
               <hr className="border-white/30 mb-3" />
+              <p className="text-base font-semibold text-white mb-2">Lehetőséged lesz...</p>
               <ul className="text-base text-white space-y-2 mb-5">
                 {[
-                  "Ingyenes profil képekkel, leírással és elérhetőséggel",
-                  "Fogadj ajánlatkérést közvetlenül érdeklődő pároktól",
-                  "Kezeld üzeneteidet és értékeléseidet egy helyen",
-                  "Jelenj meg aktívan kereső párok előtt",
+                  "Ingyenes szolgáltatói profilt létrehozni",
+                  "Ajánlatkéréseket fogadni a pároktól",
+                  "Chatelni az érdeklődő párokkal",
+                  "Értékeléseket kapni, válaszolni rájuk",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <Check className="h-4 w-4 mt-0.5 shrink-0 text-white/80" strokeWidth={2.5} />

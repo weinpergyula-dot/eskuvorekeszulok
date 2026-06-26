@@ -343,7 +343,7 @@ export function Navbar() {
 
   // ── Shared dropdown panel renderer ──────────────────────────────────────────
   const DropdownPanel = ({ closeAll }: { closeAll: () => void }) => (
-    <div data-tour="dropdown-panel" className="absolute right-0 top-full mt-1 w-52 bg-white/90 backdrop-blur-md border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+    <div data-tour="dropdown-panel" className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
       {/* Ajánlatkérés – highlighted at top */}
       <div className="border-b border-gray-100 mb-1 pb-1">
         <button
@@ -588,7 +588,7 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden absolute right-4 top-[calc(100%+4px)] w-48 bg-white/90 backdrop-blur-md border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+        <div className="md:hidden absolute right-4 top-[calc(100%+4px)] w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
           <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kezdőlap</Link>
           <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Információk</Link>
           <Link href="/services" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kategóriák</Link>
