@@ -87,21 +87,8 @@ export default async function HomePage() {
       <div className="w-full relative" style={{ backgroundColor: "#84AAA6" }}>
         {/* Pink bleed: center → right edge, desktop only */}
         <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
-        {/* Teal sáv a kérdéssel — csak mobilon, fehér elválasztóval, foltos
-            sötétebb/világosabb teal háttérrel */}
-        <div
-          className="sm:hidden relative z-10 border-b border-white"
-          style={{
-            backgroundColor: "#5C8480",
-            backgroundImage: [
-              "radial-gradient(60% 85% at 12% 20%, #6E948F 0%, transparent 60%)",
-              "radial-gradient(55% 75% at 82% 28%, #4F7B76 0%, transparent 60%)",
-              "radial-gradient(60% 80% at 62% 88%, #739893 0%, transparent 55%)",
-              "radial-gradient(50% 70% at 28% 92%, #527E79 0%, transparent 60%)",
-              "radial-gradient(45% 65% at 96% 72%, #6B918C 0%, transparent 55%)",
-            ].join(", "),
-          }}
-        >
+        {/* Sötétebb teal sáv a kérdéssel — csak mobilon, fehér elválasztóval */}
+        <div className="sm:hidden relative z-10 border-b border-white" style={{ backgroundColor: "#5C8480" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7">
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center">Miért regisztrálj...?</h2>
           </div>
