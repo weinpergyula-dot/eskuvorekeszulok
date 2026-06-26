@@ -113,7 +113,7 @@ export default async function HomePage() {
               <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2.5">
                 <Users className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 <span className="sm:hidden">Látogatónak</span>
-                <span className="hidden sm:inline">Látogatóknak</span>
+                <span className="hidden sm:inline">Regisztrálj látogatónak</span>
               </h2>
               <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes fiók</p>
               <hr className="border-white/30 mb-3" />
@@ -146,7 +146,7 @@ export default async function HomePage() {
               <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2.5">
                 <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
                 <span className="sm:hidden">Szolgáltatónak</span>
-                <span className="hidden sm:inline">Szolgáltatóknak</span>
+                <span className="hidden sm:inline">Regisztrálj szolgáltatónak</span>
               </h2>
               <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes profil</p>
               <hr className="border-white/30 mb-3" />
