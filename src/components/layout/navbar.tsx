@@ -49,7 +49,6 @@ export function Navbar() {
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [shrink, setShrink] = useState(false);
   const lastScrollY = useRef(0);
   const [navCategoryCounts, setNavCategoryCounts] = useState<Record<string, number>>({});
@@ -98,7 +97,6 @@ export function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
-      setScrolled(y > 10);
       // Shrink only on mobile (<md). On desktop the navbar keeps its full size.
       if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
       // Only shrink while scrolling DOWN; expand again on scroll up or near top.
@@ -438,7 +436,7 @@ export function Navbar() {
 
   return (
   <>
-    <nav className={`sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 relative ${scrolled ? "bg-white/80 backdrop-blur-xl" : "bg-white"}`}>
+    <nav className="sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 relative bg-white/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex items-center justify-between transition-all duration-300 ${shrink ? "h-11" : "h-16"}`}>
           {/* Logo + Desktop nav */}

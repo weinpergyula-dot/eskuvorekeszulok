@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * A kategória-oldal "Csoportos / Egyéni ajánlatkérés" sora. A navbar alá tapad
- * (sticky). Amikor odatapad, a háttere az Instagram alsó sávjához hasonló matt
- * üveg (frosted glass) hatást kap: ~80% fedettség + erős backdrop-blur. Lefelé
- * scrollozáskor — a headerrel együtt — kicsit össze is zsugorodik.
+ * (sticky), és a háttere mindig az Instagram alsó sávjához hasonló matt üveg
+ * (frosted glass): ~80% fedettség + erős backdrop-blur — függetlenül attól, hogy
+ * fent vagyunk-e. Lefelé scrollozáskor — a headerrel együtt — kicsit zsugorodik.
  */
 export function StickyCta({
   label,
@@ -17,15 +17,11 @@ export function StickyCta({
   href: string;
   bgColor: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [stuck, setStuck] = useState(false);
   const [shrink, setShrink] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
-      const el = ref.current;
-      if (el) setStuck(el.getBoundingClientRect().top <= 65);
       // Csak mobilon (<md) zsugorodjon, a navbarral azonos logikával.
       const y = window.scrollY;
       if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
@@ -45,9 +41,8 @@ export function StickyCta({
 
   return (
     <div
-      ref={ref}
-      className={`sticky z-40 w-full border-b border-white/20 transition-all duration-300 ${stuck ? "backdrop-blur-xl" : ""}`}
-      style={{ top: "var(--nav-h, 4rem)", backgroundColor: stuck ? `${bgColor}CC` : bgColor }}
+      className="sticky z-40 w-full border-b border-white/20 transition-all duration-300 backdrop-blur-xl"
+      style={{ top: "var(--nav-h, 4rem)", backgroundColor: `${bgColor}CC` }}
     >
       <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center transition-all duration-300 ${shrink ? "py-1.5" : "py-3"}`}>
         <a

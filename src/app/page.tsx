@@ -87,8 +87,13 @@ export default async function HomePage() {
       <div className="w-full relative" style={{ backgroundColor: "#84AAA6" }}>
         {/* Pink bleed: center → right edge, desktop only */}
         <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
+        {/* Sötétebb teal sáv a kérdéssel — egyenlő paddinggal fent és lent */}
+        <div className="relative z-10 border-b border-white/20" style={{ backgroundColor: "#5C8480" }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-white text-center">Miért regisztrálj...?</h2>
+          </div>
+        </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">Miért regisztrálj...?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
             {/* Left – visitors */}
             <div>
