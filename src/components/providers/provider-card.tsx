@@ -227,7 +227,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── REGULAR card: compact horizontal header ──────────────────────── */}
       {!inCarousel && (
-        <div className="relative flex items-center gap-3 px-4 pt-10 pb-3" style={{ backgroundColor: headerBg }}>
+        <div className="relative flex items-center gap-3 px-4 pt-12 pb-5" style={{ backgroundColor: headerBg }}>
           {/* Absolute action buttons */}
           {!disableLink && (
             <div className="absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
