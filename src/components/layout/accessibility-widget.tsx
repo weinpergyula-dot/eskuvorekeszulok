@@ -76,7 +76,7 @@ export function AccessibilityWidget() {
   return (
     <div ref={ref} className="fixed bottom-5 right-5 z-40">
       {open && (
-        <div className="absolute bottom-full right-0 mb-3 w-64 rounded-2xl border border-gray-200 bg-white shadow-xl p-4">
+        <div className="absolute bottom-full right-0 mb-3 w-64 rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-md shadow-xl p-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-1.5">
               <PersonStanding className="h-4 w-4 text-[#84AAA6]" />
