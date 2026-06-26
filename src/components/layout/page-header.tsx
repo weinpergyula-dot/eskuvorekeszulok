@@ -17,7 +17,7 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
   return (
     <>
       <div className={`w-full ${ctaLabel && ctaHref ? "" : "border-b border-white/20"}`} style={{ backgroundColor: bgColor }}>
-        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${ctaLabel && ctaHref ? "pt-8 sm:pb-6" : "py-8"}`}>
+        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${ctaLabel && ctaHref ? "pt-8 pb-6" : "py-8"}`}>
           <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
             {Icon && <Icon className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />}
             {title}

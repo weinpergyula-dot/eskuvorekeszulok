@@ -84,11 +84,11 @@ export default async function HomePage() {
       </section>
 
       {/* Services header – two-column */}
-      <div className="w-full relative" style={{ backgroundColor: "#84AAA6" }}>
+      <div className="w-full relative" style={{ backgroundColor: "#9DBBB8" }}>
         {/* Pink bleed: center → right edge, desktop only */}
         <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
-        {/* Sötétebb teal sáv a kérdéssel — csak mobilon, fehér elválasztóval */}
-        <div className="sm:hidden relative z-10 border-b border-white" style={{ backgroundColor: "#5C8480" }}>
+        {/* Teal sáv a kérdéssel — csak mobilon, fehér elválasztóval */}
+        <div className="sm:hidden relative z-10 border-b border-white" style={{ backgroundColor: "#84AAA6" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7">
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center">Miért regisztrálj...?</h2>
           </div>
