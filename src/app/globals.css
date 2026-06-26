@@ -212,13 +212,23 @@ input:-webkit-autofill { animation-name: autofill-start; animation-duration: 0.0
 input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-duration: 0.001s; }
 
 /* ── Akadálymentesítés: nagy kontraszt + link aláhúzás ─ */
-/* A halvány szürke szövegeket sötétebbre váltjuk a jobb olvashatóságért. */
-html.a11y-contrast .text-gray-400 { color: #4b5563 !important; }
-html.a11y-contrast .text-gray-500 { color: #374151 !important; }
-html.a11y-contrast .text-gray-600 { color: #1f2937 !important; }
-html.a11y-contrast .text-gray-700 { color: #111827 !important; }
+/* Minden halvány szürke szöveget feketére váltunk, a kereteket sötétítjük —
+   jól látható, erős kontrasztért. */
+html.a11y-contrast body { color: #000000; }
+html.a11y-contrast .text-gray-300,
+html.a11y-contrast .text-gray-400,
+html.a11y-contrast .text-gray-500,
+html.a11y-contrast .text-gray-600,
+html.a11y-contrast .text-gray-700,
+html.a11y-contrast .text-gray-800,
+html.a11y-contrast .text-gray-900 { color: #000000 !important; }
+html.a11y-contrast .text-white\/60,
+html.a11y-contrast .text-white\/70,
 html.a11y-contrast .text-white\/80,
-html.a11y-contrast .text-white\/70 { color: #ffffff !important; }
+html.a11y-contrast .text-white\/90 { color: #ffffff !important; }
+html.a11y-contrast .border-gray-100,
+html.a11y-contrast .border-gray-200,
+html.a11y-contrast .border-gray-300 { border-color: #4b5563 !important; }
 html.a11y-underline a { text-decoration: underline !important; }
 
 /* ── Provider carousel ──────────────────────────────── */

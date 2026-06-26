@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Accessibility, Plus, Minus, Contrast, Underline, RotateCcw, X } from "lucide-react";
+import { PersonStanding, Plus, Minus, Contrast, Underline, RotateCcw, X } from "lucide-react";
 
 const KEY = "a11y-settings";
 const MIN = 80;
@@ -79,7 +79,7 @@ export function AccessibilityWidget() {
         <div className="absolute bottom-full right-0 mb-3 w-64 rounded-2xl border border-gray-200 bg-white shadow-xl p-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-1.5">
-              <Accessibility className="h-4 w-4 text-[#84AAA6]" />
+              <PersonStanding className="h-4 w-4 text-[#84AAA6]" />
               Akadálymentesítés
             </h2>
             <button onClick={() => setOpen(false)} aria-label="Bezárás" className="text-gray-400 hover:text-gray-600 cursor-pointer">
@@ -144,7 +144,7 @@ export function AccessibilityWidget() {
         aria-expanded={open}
         className="flex items-center justify-center w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm text-[#84AAA6] opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
       >
-        <Accessibility className="h-5 w-5" strokeWidth={2} />
+        <PersonStanding className="h-6 w-6" strokeWidth={2} />
       </button>
     </div>
   );
