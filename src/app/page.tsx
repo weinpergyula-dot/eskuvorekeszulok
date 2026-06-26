@@ -87,8 +87,8 @@ export default async function HomePage() {
       <div className="w-full relative" style={{ backgroundColor: "#84AAA6" }}>
         {/* Pink bleed: center → right edge, desktop only */}
         <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
-        {/* Sötétebb teal sáv a kérdéssel — egyenlő paddinggal fent és lent */}
-        <div className="relative z-10 border-b border-white/20" style={{ backgroundColor: "#5C8480" }}>
+        {/* Sötétebb teal sáv a kérdéssel — csak mobilon, fehér elválasztóval */}
+        <div className="sm:hidden relative z-10 border-b border-white" style={{ backgroundColor: "#5C8480" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center">Miért regisztrálj...?</h2>
           </div>
@@ -99,7 +99,8 @@ export default async function HomePage() {
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2.5">
                 <Users className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
-                Látogatóknak
+                <span className="sm:hidden">Látogatónak</span>
+                <span className="hidden sm:inline">Látogatóknak</span>
               </h2>
               <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes fiók</p>
               <hr className="border-white/30 mb-3" />
@@ -130,7 +131,8 @@ export default async function HomePage() {
             <div className="-mx-4 px-8 py-8 -mb-10 border-t border-white sm:mx-0 sm:px-0 sm:py-0 sm:mb-0 sm:border-t-0" style={{ backgroundColor: "#D07AB5" }}>
               <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2.5">
                 <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
-                Szolgáltatóknak
+                <span className="sm:hidden">Szolgáltatónak</span>
+                <span className="hidden sm:inline">Szolgáltatóknak</span>
               </h2>
               <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes profil</p>
               <hr className="border-white/30 mb-3" />
