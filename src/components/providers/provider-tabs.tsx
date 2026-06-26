@@ -186,7 +186,8 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
         <div className="space-y-6">
           {provider.pricing_text && (
             <div className="prose prose-gray max-w-none">
-              <p className="text-gray-900 leading-relaxed whitespace-pre-line">{provider.pricing_text}</p>
+              {/* mobilon 4px-el kisebb betűméret (17px -> 13px), desktopon változatlan */}
+              <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[13px] sm:text-[17px]">{provider.pricing_text}</p>
             </div>
           )}
           {provider.pricing_pdf_url && (
