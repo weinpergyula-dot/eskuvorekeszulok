@@ -94,11 +94,11 @@ export default async function HomePage() {
           style={{
             backgroundColor: "#5C8480",
             backgroundImage: [
-              "radial-gradient(60% 85% at 12% 20%, #84AAA6 0%, transparent 60%)",
-              "radial-gradient(55% 75% at 82% 28%, #3E6661 0%, transparent 60%)",
-              "radial-gradient(60% 80% at 62% 88%, #8FB4AF 0%, transparent 55%)",
-              "radial-gradient(50% 70% at 28% 92%, #46706B 0%, transparent 60%)",
-              "radial-gradient(45% 65% at 96% 72%, #6FA39E 0%, transparent 55%)",
+              "radial-gradient(60% 85% at 12% 20%, #6E948F 0%, transparent 60%)",
+              "radial-gradient(55% 75% at 82% 28%, #4F7B76 0%, transparent 60%)",
+              "radial-gradient(60% 80% at 62% 88%, #739893 0%, transparent 55%)",
+              "radial-gradient(50% 70% at 28% 92%, #527E79 0%, transparent 60%)",
+              "radial-gradient(45% 65% at 96% 72%, #6B918C 0%, transparent 55%)",
             ].join(", "),
           }}
         >
