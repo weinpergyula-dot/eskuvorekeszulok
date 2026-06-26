@@ -211,6 +211,16 @@ input[type="password"] {
 input:-webkit-autofill { animation-name: autofill-start; animation-duration: 0.001s; }
 input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-duration: 0.001s; }
 
+/* ── Akadálymentesítés: nagy kontraszt + link aláhúzás ─ */
+/* A halvány szürke szövegeket sötétebbre váltjuk a jobb olvashatóságért. */
+html.a11y-contrast .text-gray-400 { color: #4b5563 !important; }
+html.a11y-contrast .text-gray-500 { color: #374151 !important; }
+html.a11y-contrast .text-gray-600 { color: #1f2937 !important; }
+html.a11y-contrast .text-gray-700 { color: #111827 !important; }
+html.a11y-contrast .text-white\/80,
+html.a11y-contrast .text-white\/70 { color: #ffffff !important; }
+html.a11y-underline a { text-decoration: underline !important; }
+
 /* ── Provider carousel ──────────────────────────────── */
 @keyframes carousel-scroll {
   0%   { transform: translateX(0); }
