@@ -162,7 +162,7 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #ECECEA;
   --foreground: #171717;
 }
 
@@ -171,7 +171,17 @@ body {
   color: var(--foreground);
   font-family: "BloomSpeakBody", Arial, sans-serif;
   font-size: 17px;
+  font-weight: 500; /* +100 az alap 400-hoz képest */
 }
+
+/* ── Globális: minden háttér kicsit sötétebb + minden betű +100 vastagabb ── */
+.bg-white    { background-color: #F4F4F2 !important; }
+.bg-gray-50  { background-color: #ECECEA !important; }
+.bg-gray-100 { background-color: #E4E4E2 !important; }
+.font-normal   { font-weight: 500 !important; }
+.font-medium   { font-weight: 600 !important; }
+.font-semibold { font-weight: 700 !important; }
+.font-bold     { font-weight: 800 !important; }
 
 h1, h2, h3, h4 {
   font-family: "BloomSpeakTitle", Georgia, serif;

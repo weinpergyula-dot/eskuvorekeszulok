@@ -19,7 +19,7 @@ export async function Footer() {
     .filter((key) => (counts[key] ?? 0) > 0)
     .sort((a, b) => (counts[b] ?? 0) - (counts[a] ?? 0))
     .slice(0, 5)
-    .map((key) => ({ href: `/services/${key}`, key, label: CATEGORY_LABELS[key] }));
+    .map((key) => ({ href: `/services?category=${key}`, key, label: CATEGORY_LABELS[key] }));
   return (
     <footer className="bg-gray-50 border-t border-gray-200 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 footer-inner">
@@ -62,7 +62,7 @@ export async function Footer() {
                 { href: "/auth/login", label: "Bejelentkezés" },
                 { href: "/auth/register", label: "Regisztráció" },
                 { href: "/informaciok", label: "Információk" },
-                { href: "/services", label: "Kategóriák" },
+                { href: "/services", label: "Szolgáltatók" },
                 { href: "/kapcsolat", label: "Kapcsolat" },
               ].map((item) => (
                 <li key={item.href}>

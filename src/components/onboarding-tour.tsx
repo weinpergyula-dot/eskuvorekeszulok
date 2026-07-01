@@ -19,8 +19,8 @@ const VISITOR_STEPS: TourStep[] = [
     selector: '[data-tour="nav-categories"]',
     // mobile: LayoutGrid icon in navbar also carries this attr, picked by visible-element scan
     side: "bottom",
-    title: "Kategóriák",
-    description: "Böngészd az esküvői szolgáltatókat kategóriánként – fotósok, virágkötők, zenészek és sok más. Szűrj megye szerint, és nézd meg az értékeléseket.",
+    title: "Szolgáltatók",
+    description: "Böngészd az esküvői szolgáltatókat egy helyen – szűrj kategória és megye szerint, és nézd meg az értékeléseket.",
   },
   {
     selector: '[data-tour="sidebar-quotes"]',

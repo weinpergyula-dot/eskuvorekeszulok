@@ -9,20 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid, CircleUser, Check } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
-import { CATEGORY_LABELS } from "@/lib/types";
 import { OnboardingTour } from "@/components/onboarding-tour";
-
-const mainCategories = [
-  "fotosok-videosok",
-  "elo-zene-dj",
-  "vofely",
-  "torta-sutemeny",
-  "menyasszonyi-ruha",
-  "smink",
-  "fodrasz-borbely",
-  "helyszin",
-] as const;
-
 
 function NavBadge({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -48,25 +35,13 @@ export function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
   const [shrink, setShrink] = useState(false);
   const lastScrollY = useRef(0);
-  const [navCategoryCounts, setNavCategoryCounts] = useState<Record<string, number>>({});
   const [navAvatarUrl, setNavAvatarUrl] = useState<string | null>(null);
-  const categoryCountsFetched = useRef(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const desktopCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tourDropdownLockedRef = useRef(false);
-
-  const openServices = () => {
-    setServicesOpen(true);
-    if (!categoryCountsFetched.current) {
-      categoryCountsFetched.current = true;
-      fetch("/api/providers/category-counts")
-        .then(r => r.json()).then(setNavCategoryCounts).catch(() => {});
-    }
-  };
 
   // Tour: open/close the user-dropdown (mobile + desktop) and prevent outside-click
   // from closing it. Both are toggled so the tour works in either layout; only the
@@ -449,37 +424,10 @@ export function Navbar() {
               <Link href="/" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kezdőlap</Link>
               <Link href="/informaciok" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Információk</Link>
 
-              {/* Kategóriák dropdown */}
-              <div className="relative" onMouseEnter={openServices} onMouseLeave={() => setServicesOpen(false)}>
-                <button data-tour="nav-categories" className="flex items-center gap-1 text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">
-                  Kategóriák <ChevronDown className="h-3.5 w-3.5" />
-                </button>
-                {servicesOpen && (
-                  <div className="absolute top-full left-0 pt-2 w-64 z-50">
-                    <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
-                      {(Object.keys(navCategoryCounts).length > 0
-                        ? (Object.keys(CATEGORY_LABELS) as (typeof mainCategories[number])[])
-                            .filter((cat) => (navCategoryCounts[cat] ?? 0) > 0)
-                            .sort((a, b) => (navCategoryCounts[b] ?? 0) - (navCategoryCounts[a] ?? 0))
-                            .slice(0, 8)
-                        : mainCategories
-                      ).map((cat) => (
-                        <Link key={cat} href={`/services/${cat}`} className="flex items-center justify-between px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]">
-                          <span>{CATEGORY_LABELS[cat]}</span>
-                          {navCategoryCounts[cat] != null && (
-                            <span className="text-sm text-gray-400 font-normal ml-2">({navCategoryCounts[cat]})</span>
-                          )}
-                        </Link>
-                      ))}
-                      <div className="border-t border-gray-100 mt-1 pt-1">
-                        <Link href="/services" className="block px-4 py-2 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10">
-                          Összes kategória →
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              {/* Szolgáltatók — a kategóriák a szolgáltatók oldalon szűrőként érhetők el */}
+              <Link href="/services" data-tour="nav-categories" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">
+                Szolgáltatók
+              </Link>
 
               <Link href="/kapcsolat" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kapcsolat</Link>
             </div>
@@ -591,7 +539,7 @@ export function Navbar() {
         <div className="md:hidden absolute right-4 top-[calc(100%+4px)] w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
           <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kezdőlap</Link>
           <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Információk</Link>
-          <Link href="/services" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kategóriák</Link>
+          <Link href="/services" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Szolgáltatók</Link>
           <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">

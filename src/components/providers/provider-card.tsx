@@ -117,6 +117,19 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             <span className="text-sm font-semibold text-gray-900 ml-0.5">{rating > 0 ? rating.toFixed(1) : "–"}</span>
             {reviewCount > 0 && <span className="text-sm text-gray-500">({reviewCount})</span>}
           </div>
+          {/* Kategória jelölés — az értékelés alatt */}
+          {!hideCategories && (provider.categories ?? []).length > 0 && (
+            <div className="flex flex-wrap items-center gap-1 mt-1">
+              {(provider.categories ?? []).slice(0, 2).map((cat) => (
+                <span key={cat} className="text-[10px] font-medium px-1.5 py-0.5 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10">
+                  {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                </span>
+              ))}
+              {(provider.categories ?? []).length > 2 && (
+                <span className={cn("text-[10px] font-medium", tc.text)}>+{(provider.categories ?? []).length - 2}</span>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -298,6 +311,19 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               </a>
             ) : (
               <div className="flex items-center gap-1 mt-0.5">{ratingContent}</div>
+            )}
+            {/* Kategória jelölés — az értékelés alatt */}
+            {!hideCategories && (provider.categories ?? []).length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                {(provider.categories ?? []).slice(0, 2).map((cat) => (
+                  <span key={cat} className="text-[11px] font-medium px-2 py-0.5 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10">
+                    {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                  </span>
+                ))}
+                {(provider.categories ?? []).length > 2 && (
+                  <span className={cn("text-[11px] font-medium", tc.text)}>+{(provider.categories ?? []).length - 2}</span>
+                )}
+              </div>
             )}
             {showStatus && (
               <Badge

@@ -1,35 +1,13 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Users, Briefcase, Check } from "lucide-react";
-import { CategorySearch } from "@/components/home/category-search";
+import { Users, Briefcase, Check, Search, Star, Send, UserRound } from "lucide-react";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
-import { createAdminClient } from "@/lib/supabase/admin";
 
 export const revalidate = 60;
 
-export default async function HomePage() {
-  let categoryCounts: Record<string, number> = {};
-  try {
-    const supabase = createAdminClient();
-    const { data } = await supabase
-      .from("providers")
-      .select("id, categories")
-      .eq("approval_status", "approved")
-      .or("active.is.null,active.eq.true")
-      .limit(200);
-
-    if (data) {
-      for (const p of data) {
-        for (const cat of (p.categories ?? []) as string[]) {
-          categoryCounts[cat] = (categoryCounts[cat] ?? 0) + 1;
-        }
-      }
-    }
-  } catch {
-    // non-critical, silently ignore
-  }
+export default function HomePage() {
   return (
     <>
       {/* Mobile hero slideshow */}
@@ -120,7 +98,7 @@ export default async function HomePage() {
                 ))}
               </ul>
               <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
-                <Link href="#kategoriak">
+                <Link href="/services">
                   <Button size="lg" className="bg-white text-[#84AAA6] hover:bg-white/90 px-6">
                     Megnézem a kínálatot
                   </Button>
@@ -158,11 +136,30 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Services section */}
-      <section id="kategoriak" className="bg-white border-t border-gray-200 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-10 sm:pb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Kategóriák</h2>
-          <CategorySearch counts={categoryCounts} />
+      {/* Fontos infók — az Információk oldal kiemelt pontjai */}
+      <section className="bg-white border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10 sm:pb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Jó, ha tudod</h2>
+          <p className="text-base text-gray-600 mb-6 max-w-3xl">
+            Az Esküvőre Készülök egy helyen gyűjti össze a megbízható esküvői szolgáltatókat, hogy a nagy napod szervezése egyszerűbb legyen.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {[
+              { Icon: Search, title: "20+ kategória, egy helyen", description: "Fotósoktól a helyszíneken át a kozmetikusokig – minden esküvői szakember egy oldalon, megyénként szűrhetően." },
+              { Icon: Star, title: "Valódi értékelések", description: "Más pároktól származó csillagos értékelések és vélemények segítenek a legjobb választásban." },
+              { Icon: Send, title: "Csoportos ajánlatkérés", description: "Egy üzenettel egyszerre több szolgáltatónak küldhetsz ajánlatkérést – ők közvetlenül az oldalon válaszolnak." },
+              { Icon: UserRound, title: "Ingyenes regisztráció", description: "A fiók létrehozása látogatóként és szolgáltatóként is teljesen ingyenes." },
+            ].map(({ Icon, title, description }) => (
+              <div key={title} className="bg-[#F0F6F5] border border-[#84AAA6]/20 rounded-2xl p-5">
+                <Icon className="h-6 w-6 text-[#84AAA6] mb-2.5" strokeWidth={1.75} />
+                <h3 className="font-semibold text-gray-900 mb-1">{title}</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">{description}</p>
+              </div>
+            ))}
+          </div>
+          <Link href="/informaciok" className="inline-flex items-center text-base font-medium text-[#84AAA6] hover:text-[#6B8E8A] hover:underline">
+            Tudj meg többet az oldalról →
+          </Link>
         </div>
       </section>
     </>
