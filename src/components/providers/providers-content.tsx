@@ -150,7 +150,7 @@ export function ProvidersContent({
     [categoryCounts],
   );
 
-  const geoCounties = useMemo(() => COUNTIES.filter((c) => c !== "Országosan"), []);
+  const geoCounties = useMemo(() => (COUNTIES as readonly string[]).filter((c) => c !== "Országosan"), []);
 
   // Providers matching the category filter (used for county counts + county filtering).
   const byCategory = useMemo(
