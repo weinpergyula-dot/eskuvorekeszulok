@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { SearchX, ChevronDown, LayoutGrid, List } from "lucide-react";
+import { Search, SearchX, ChevronDown, LayoutGrid, List, Star } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 
 type SortOption = "default" | "rating" | "reviews" | "views";
 
+const tier = (f: Provider["featured"]) => (f === "gold" ? 3 : f === "teal" ? 2 : f === "silver" ? 1 : 0);
+
 // ── Small dropdown ──────────────────────────────────────────────────────────
 function FilterSelect({
   value, onChange, options, placeholder, fullWidthMobile = false,
@@ -19,7 +21,6 @@ function FilterSelect({
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
   placeholder: string;
-  /** Mobilon oldaltól oldalig ér, desktopon marad kompakt. */
   fullWidthMobile?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -36,16 +37,16 @@ function FilterSelect({
         onClick={() => setOpen((o) => !o)}
         className={cn(
           "flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer",
-          fullWidthMobile && "w-full justify-between sm:w-auto sm:justify-start",
+          fullWidthMobile && "w-full justify-between",
         )}
       >
-        <span className={selected ? "text-[#84AAA6]" : ""}>{selected?.label ?? placeholder}</span>
+        <span className={cn("truncate", selected ? "text-[#84AAA6]" : "")}>{selected?.label ?? placeholder}</span>
         <ChevronDown className={cn("h-4 w-4 text-gray-400 shrink-0 transition-transform", open && "rotate-180")} />
       </button>
       {open && (
         <div className={cn(
           "absolute right-0 top-full mt-1 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30",
-          fullWidthMobile ? "left-0 sm:left-auto w-full sm:w-60" : "w-60",
+          fullWidthMobile ? "left-0 w-full" : "w-60",
         )}>
           <button
             onClick={() => { onChange(""); setOpen(false); }}
@@ -68,7 +69,59 @@ function FilterSelect({
   );
 }
 
-// ── Providers list with category + county + sort filters ────────────────────
+// ── Sort dropdown ───────────────────────────────────────────────────────────
+function SortDropdown({ sortBy, setSortBy }: { sortBy: SortOption; setSortBy: (s: SortOption) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  const label = sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : sortBy === "reviews" ? "Értékelések száma alapján" : "Látogatottság alapján";
+  return (
+    <div ref={ref} className="relative">
+      <button onClick={() => setOpen((o) => !o)} className="flex h-full items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
+        {label}
+        <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
+          {([
+            { value: "default", label: "Alapértelmezett" },
+            { value: "rating",  label: "Értékelés alapján" },
+            { value: "reviews", label: "Értékelések száma alapján" },
+            { value: "views",   label: "Látogatottság alapján" },
+          ] as { value: SortOption; label: string }[]).map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => { setSortBy(opt.value); setOpen(false); }}
+              className={`w-full text-left px-4 py-2.5 text-base transition-colors ${sortBy === opt.value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setViewMode: (v: "grid" | "list") => void }) {
+  // items-stretch on the parent makes these buttons match the sort button's height.
+  return (
+    <div className="flex items-stretch rounded-xl border border-gray-200 overflow-hidden">
+      <button onClick={() => setViewMode("grid")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "grid" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Csempés nézet">
+        <LayoutGrid className="h-4 w-4" />
+      </button>
+      <button onClick={() => setViewMode("list")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "list" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Listás nézet">
+        <List className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+// ── Providers list ──────────────────────────────────────────────────────────
 export function ProvidersContent({
   providers,
   categoryCounts,
@@ -82,12 +135,12 @@ export function ProvidersContent({
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [countyQuery, setCountyQuery] = useState("");
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
   }, []);
 
-  // Category options sorted by provider count (descending), with the count shown.
   const categoryOptions = useMemo(
     () =>
       (Object.keys(CATEGORY_LABELS) as ServiceCategory[])
@@ -97,97 +150,153 @@ export function ProvidersContent({
     [categoryCounts],
   );
 
-  const countyOptions = useMemo(
-    () => COUNTIES.filter((c) => c !== "Országosan").map((c) => ({ value: c, label: c })),
-    [],
+  const geoCounties = useMemo(() => COUNTIES.filter((c) => c !== "Országosan"), []);
+
+  // Providers matching the category filter (used for county counts + county filtering).
+  const byCategory = useMemo(
+    () => (category ? providers.filter((p) => (p.categories ?? []).includes(category as ServiceCategory)) : providers),
+    [providers, category],
   );
 
+  // County counts within the current category selection (Országosan counts everywhere).
+  const countyCounts = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const p of byCategory) {
+      const cos = (p.counties ?? []) as string[];
+      if (cos.includes("Országosan")) {
+        for (const c of geoCounties) m[c] = (m[c] ?? 0) + 1;
+      } else {
+        for (const c of cos) if (geoCounties.includes(c)) m[c] = (m[c] ?? 0) + 1;
+      }
+    }
+    return m;
+  }, [byCategory, geoCounties]);
+
+  const countyList = countyQuery.trim()
+    ? geoCounties.filter((c) => c.toLowerCase().includes(countyQuery.trim().toLowerCase()))
+    : geoCounties;
+
   const filtered = useMemo(() => {
-    let list = providers;
-    if (category) list = list.filter((p) => (p.categories ?? []).includes(category as ServiceCategory));
-    if (county) list = list.filter((p) => (p.counties ?? []).includes(county) || (p.counties ?? []).includes("Országosan"));
-    return list;
-  }, [providers, category, county]);
+    if (!county) return byCategory;
+    return byCategory.filter((p) => (p.counties ?? []).includes(county) || (p.counties ?? []).includes("Országosan"));
+  }, [byCategory, county]);
 
-  const shuffled = useMemo(() => [...filtered].sort(() => Math.random() - 0.5), [filtered]);
-
-  const sorted = sortBy === "default"
-    ? shuffled
-    : [...filtered].sort((a, b) =>
-        sortBy === "rating"
-          ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
-          : sortBy === "reviews"
-          ? (b.review_count ?? 0) - (a.review_count ?? 0)
-          : (b.view_count ?? 0) - (a.view_count ?? 0),
+  const featured = useMemo(() => filtered.filter((p) => p.featured).sort((a, b) => tier(b.featured) - tier(a.featured)), [filtered]);
+  const normal = useMemo(() => filtered.filter((p) => !p.featured), [filtered]);
+  const shuffledNormal = useMemo(() => [...normal].sort(() => Math.random() - 0.5), [normal]);
+  const sortedNormal = sortBy === "default"
+    ? shuffledNormal
+    : [...normal].sort((a, b) =>
+        sortBy === "rating" ? (b.average_rating ?? 0) - (a.average_rating ?? 0)
+        : sortBy === "reviews" ? (b.review_count ?? 0) - (a.review_count ?? 0)
+        : (b.view_count ?? 0) - (a.view_count ?? 0),
       );
 
-  const sortRef = useRef<HTMLDivElement>(null);
-  const [sortOpen, setSortOpen] = useState(false);
-  useEffect(() => {
-    const h = (e: MouseEvent) => { if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false); };
-    document.addEventListener("mousedown", h);
-    return () => document.removeEventListener("mousedown", h);
-  }, []);
+  const countyOptions = geoCounties.map((c) => ({ value: c, label: `${c} (${countyCounts[c] ?? 0})` }));
+  const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5";
 
   return (
-    <div>
-      {/* Filter row */}
-      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
-        <p className="text-lg text-gray-900">{sorted.length} szolgáltató</p>
-        {/* Mobilon: a kategória szűrő oldaltól oldalig, alatta a többi egy sorban */}
-        <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-          <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
-          <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" />
+    <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+      {/* Desktop county sidebar (left, full height) */}
+      <aside className="hidden lg:block lg:w-64 shrink-0">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 sticky top-24">
+          <h2 className="font-semibold text-gray-900 mb-3">Szűrés megye szerint</h2>
+          <div className="relative mb-3">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+            <input
+              type="text"
+              value={countyQuery}
+              onChange={(e) => setCountyQuery(e.target.value)}
+              placeholder="Megye keresése..."
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
+            />
+          </div>
+          <div className="space-y-0.5 max-h-[60vh] overflow-y-auto pr-1">
+            <button
+              onClick={() => setCounty("")}
+              className={cn("w-full flex items-center justify-between text-left px-3 py-1.5 rounded-lg text-base transition-colors", !county ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
+            >
+              Összes megye
+            </button>
+            {countyList.map((c) => (
+              <button
+                key={c}
+                onClick={() => setCounty(county === c ? "" : c)}
+                className={cn("w-full flex items-center justify-between text-left px-3 py-1.5 rounded-lg text-base transition-colors", county === c ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
+              >
+                <span className="truncate">{c}</span>
+                <span className={cn("text-sm shrink-0 ml-2", county === c ? "text-white/80" : "text-gray-400")}>({countyCounts[c] ?? 0})</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </aside>
 
-          <div className="flex rounded-lg border border-gray-200 overflow-hidden">
-            <button onClick={() => setViewMode("grid")} className={`p-1.5 transition-colors cursor-pointer ${viewMode === "grid" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Csempés nézet">
-              <LayoutGrid className="h-4 w-4" />
-            </button>
-            <button onClick={() => setViewMode("list")} className={`p-1.5 transition-colors cursor-pointer ${viewMode === "list" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Listás nézet">
-              <List className="h-4 w-4" />
-            </button>
+      {/* Main column */}
+      <div className="flex-1 min-w-0">
+        {/* ── Controls ── */}
+        <div className="mb-6">
+          {/* Desktop: count left, category + view + sort right */}
+          <div className="hidden lg:flex items-center justify-between gap-3">
+            <p className="text-lg text-gray-900">{filtered.length} szolgáltató</p>
+            <div className="flex items-stretch gap-2">
+              <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" />
+              <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+              <SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
+            </div>
           </div>
 
-          <div ref={sortRef} className="relative">
-            <button onClick={() => setSortOpen((o) => !o)} className="flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
-              {sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : sortBy === "reviews" ? "Értékelések száma alapján" : "Látogatottság alapján"}
-              <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
-            </button>
-            {sortOpen && (
-              <div className="absolute right-0 top-full mt-1 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
-                {([
-                  { value: "default", label: "Alapértelmezett" },
-                  { value: "rating",  label: "Értékelés alapján" },
-                  { value: "reviews", label: "Értékelések száma alapján" },
-                  { value: "views",   label: "Látogatottság alapján" },
-                ] as { value: SortOption; label: string }[]).map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => { setSortBy(opt.value); setSortOpen(false); }}
-                    className={`w-full text-left px-4 py-2.5 text-base transition-colors ${sortBy === opt.value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
-                  >
-                    {opt.label}
-                  </button>
+          {/* Mobile: count, category (full), county (full), then view + sort */}
+          <div className="lg:hidden space-y-2">
+            <p className="text-lg text-gray-900">{filtered.length} szolgáltató</p>
+            <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
+            <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
+            <div className="flex items-stretch gap-2">
+              <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+              <SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
+            </div>
+          </div>
+        </div>
+
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
+            <p className="text-gray-900 text-lg">A kiválasztott szűrőkre egyelőre nincs szolgáltató.</p>
+          </div>
+        ) : (
+          <>
+            {/* Featured on top */}
+            {featured.length > 0 && (
+              <section className="mb-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                  Kiemelt szolgáltatók
+                </h2>
+                <div className={gridCls}>
+                  {featured.map((p) => (
+                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {featured.length > 0 && sortedNormal.length > 0 && (
+              <div className="border-t border-gray-200 mt-2 mb-6">
+                <h2 className="text-lg font-semibold text-gray-900 mt-6">További szolgáltatók</h2>
+              </div>
+            )}
+
+            {sortedNormal.length > 0 && (
+              <div className={gridCls}>
+                {sortedNormal.map((p) => (
+                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
                 ))}
               </div>
             )}
-          </div>
-        </div>
+          </>
+        )}
       </div>
-
-      {sorted.length > 0 ? (
-        <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"}>
-          {sorted.map((provider) => (
-            <ProviderCard key={provider.id} provider={provider} isOwner={!!currentUserId && currentUserId === provider.user_id} listView={viewMode === "list"} />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
-          <p className="text-gray-900 text-lg">A kiválasztott szűrőkre egyelőre nincs szolgáltató.</p>
-        </div>
-      )}
     </div>
   );
 }
