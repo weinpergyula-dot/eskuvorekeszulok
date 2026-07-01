@@ -13,12 +13,14 @@ type SortOption = "default" | "rating" | "reviews" | "views";
 
 // ── Small dropdown ──────────────────────────────────────────────────────────
 function FilterSelect({
-  value, onChange, options, placeholder,
+  value, onChange, options, placeholder, fullWidthMobile = false,
 }: {
   value: string;
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
   placeholder: string;
+  /** Mobilon oldaltól oldalig ér, desktopon marad kompakt. */
+  fullWidthMobile?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -29,16 +31,22 @@ function FilterSelect({
   }, []);
   const selected = options.find((o) => o.value === value);
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className={cn("relative", fullWidthMobile && "w-full sm:w-auto")}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+        className={cn(
+          "flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer",
+          fullWidthMobile && "w-full justify-between sm:w-auto sm:justify-start",
+        )}
       >
         <span className={selected ? "text-[#84AAA6]" : ""}>{selected?.label ?? placeholder}</span>
         <ChevronDown className={cn("h-4 w-4 text-gray-400 shrink-0 transition-transform", open && "rotate-180")} />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-60 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
+        <div className={cn(
+          "absolute right-0 top-full mt-1 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30",
+          fullWidthMobile ? "left-0 sm:left-auto w-full sm:w-60" : "w-60",
+        )}>
           <button
             onClick={() => { onChange(""); setOpen(false); }}
             className={cn("w-full text-left px-4 py-2.5 text-base transition-colors", !value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
@@ -126,8 +134,9 @@ export function ProvidersContent({
       {/* Filter row */}
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <p className="text-lg text-gray-900">{sorted.length} szolgáltató</p>
-        <div className="flex items-center gap-2 flex-wrap">
-          <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" />
+        {/* Mobilon: a kategória szűrő oldaltól oldalig, alatta a többi egy sorban */}
+        <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+          <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
           <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" />
 
           <div className="flex rounded-lg border border-gray-200 overflow-hidden">
