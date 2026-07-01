@@ -422,13 +422,13 @@ export function Navbar() {
 
             <div className="hidden md:flex items-center gap-6">
               <Link href="/" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kezdőlap</Link>
-              <Link href="/informaciok" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Információk</Link>
 
               {/* Szolgáltatók — a kategóriák a szolgáltatók oldalon szűrőként érhetők el */}
               <Link href="/services" data-tour="nav-categories" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">
                 Szolgáltatók
               </Link>
 
+              <Link href="/informaciok" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Információk</Link>
               <Link href="/kapcsolat" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kapcsolat</Link>
             </div>
           </div>
@@ -538,8 +538,8 @@ export function Navbar() {
       {mobileOpen && (
         <div className="md:hidden absolute right-4 top-[calc(100%+4px)] w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
           <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kezdőlap</Link>
-          <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Információk</Link>
           <Link href="/services" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Szolgáltatók</Link>
+          <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Információk</Link>
           <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
