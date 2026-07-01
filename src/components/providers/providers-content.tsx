@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, SearchX, ChevronDown, LayoutGrid, List, Star } from "lucide-react";
+import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, Star } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
@@ -107,6 +107,37 @@ function SortDropdown({ sortBy, setSortBy }: { sortBy: SortOption; setSortBy: (s
   );
 }
 
+function PageSizeSelect({ pageSize, setPageSize }: { pageSize: number; setPageSize: (n: number) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  return (
+    <div ref={ref} className="relative">
+      <button onClick={() => setOpen((o) => !o)} className="flex h-full items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap">
+        {pageSize} / oldal
+        <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
+          {[20, 50, 100].map((n) => (
+            <button
+              key={n}
+              onClick={() => { setPageSize(n); setOpen(false); }}
+              className={`w-full text-left px-4 py-2.5 text-base transition-colors ${pageSize === n ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
+            >
+              {n} / oldal
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setViewMode: (v: "grid" | "list") => void }) {
   // items-stretch on the parent makes these buttons match the sort button's height.
   return (
@@ -136,10 +167,15 @@ export function ProvidersContent({
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [countyQuery, setCountyQuery] = useState("");
+  const [pageSize, setPageSize] = useState(20);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
   }, []);
+
+  // Reset to first page when the result set or page size changes.
+  useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize]);
 
   const categoryOptions = useMemo(
     () =>
@@ -193,7 +229,27 @@ export function ProvidersContent({
       );
 
   const countyOptions = geoCounties.map((c) => ({ value: c, label: `${c} (${countyCounts[c] ?? 0})` }));
-  const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5";
+  const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5";
+
+  // Pagination applies to the normal (non-featured) list; featured stay on top.
+  const totalPages = Math.max(1, Math.ceil(sortedNormal.length / pageSize));
+  const page = Math.min(currentPage, totalPages);
+  const pagedNormal = sortedNormal.slice((page - 1) * pageSize, page * pageSize);
+  const pageNumbers = ((): (number | "…")[] => {
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
+    const pages: (number | "…")[] = [1];
+    if (page > 3) pages.push("…");
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) pages.push(i);
+    if (page < totalPages - 2) pages.push("…");
+    pages.push(totalPages);
+    return pages;
+  })();
+
+  const pillCls = (active: boolean) =>
+    cn(
+      "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
+      active ? "bg-[#84AAA6] text-white border-[#84AAA6]" : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]",
+    );
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
@@ -234,26 +290,37 @@ export function ProvidersContent({
 
       {/* Main column */}
       <div className="flex-1 min-w-0">
+        {/* Desktop category filter — all categories visible & selectable (pills). */}
+        <div className="hidden lg:flex flex-wrap gap-2 mb-5">
+          <button onClick={() => setCategory("")} className={pillCls(!category)}>Összes kategória</button>
+          {categoryOptions.map((opt) => (
+            <button key={opt.value} onClick={() => setCategory(category === opt.value ? "" : opt.value)} className={pillCls(category === opt.value)}>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
         {/* ── Controls ── */}
         <div className="mb-6">
-          {/* Desktop: count left, category + view + sort right */}
+          {/* Desktop: count left, page size + view + sort right */}
           <div className="hidden lg:flex items-center justify-between gap-3">
             <p className="text-lg text-gray-900">{filtered.length} szolgáltató</p>
             <div className="flex items-stretch gap-2">
-              <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" />
+              <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
               <SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
             </div>
           </div>
 
-          {/* Mobile: count, category (full), county (full), then view + sort */}
+          {/* Mobile: count, category (full), county (full), then view + sort + page size */}
           <div className="lg:hidden space-y-2">
             <p className="text-lg text-gray-900">{filtered.length} szolgáltató</p>
             <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
             <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
-            <div className="flex items-stretch gap-2">
+            <div className="flex items-stretch gap-2 flex-wrap">
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
               <SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
+              <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
             </div>
           </div>
         </div>
@@ -288,11 +355,47 @@ export function ProvidersContent({
             )}
 
             {sortedNormal.length > 0 && (
-              <div className={gridCls}>
-                {sortedNormal.map((p) => (
-                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
-                ))}
-              </div>
+              <>
+                <div className={gridCls}>
+                  {pagedNormal.map((p) => (
+                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
+                  ))}
+                </div>
+
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-1 mt-8 flex-wrap">
+                    <button
+                      onClick={() => setCurrentPage(Math.max(1, page - 1))}
+                      disabled={page === 1}
+                      className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                      aria-label="Előző oldal"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    {pageNumbers.map((n, i) =>
+                      n === "…" ? (
+                        <span key={`e-${i}`} className="px-2 text-gray-400 select-none">…</span>
+                      ) : (
+                        <button
+                          key={n}
+                          onClick={() => setCurrentPage(n)}
+                          className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#84AAA6] border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
+                        >
+                          {n}
+                        </button>
+                      ),
+                    )}
+                    <button
+                      onClick={() => setCurrentPage(Math.min(totalPages, page + 1))}
+                      disabled={page === totalPages}
+                      className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                      aria-label="Következő oldal"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </>
         )}

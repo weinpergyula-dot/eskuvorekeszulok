@@ -417,19 +417,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Footer */}
       {!inCarousel && !disableLink && (
         <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
-          {/* Category badges — desktop only, left side */}
-          {!hideCategories && (
-            <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
-              {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
-                <Badge key={cat} variant="outline" className={cn("text-xs", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
-              ))}
-              {(provider.categories ?? []).length > 1 && !catExpanded && (
-                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className={cn("text-xs font-medium underline underline-offset-2", tc.text)}>
-                  +{(provider.categories ?? []).length - 1} több
-                </button>
-              )}
-            </div>
-          )}
           {/* Chat + Részletek grouped — always pushed to right */}
           <div className="flex items-center gap-2 ml-auto">
             <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
