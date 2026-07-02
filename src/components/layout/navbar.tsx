@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid, CircleUser, Check } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, CircleUser, Check } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { OnboardingTour } from "@/components/onboarding-tour";
@@ -513,10 +513,6 @@ export function Navbar() {
                 )}
               </div>
             )}
-
-            <Link href="/#szolgaltatok" data-tour="nav-categories" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-              <LayoutGrid className="h-6 w-6" strokeWidth={2} />
-            </Link>
 
             <button
               className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
