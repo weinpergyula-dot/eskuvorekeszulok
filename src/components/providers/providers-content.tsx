@@ -70,7 +70,7 @@ function FilterSelect({
 }
 
 // ── Sort dropdown ───────────────────────────────────────────────────────────
-function SortDropdown({ sortBy, setSortBy }: { sortBy: SortOption; setSortBy: (s: SortOption) => void }) {
+function SortDropdown({ sortBy, setSortBy, fill = false }: { sortBy: SortOption; setSortBy: (s: SortOption) => void; fill?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -80,9 +80,9 @@ function SortDropdown({ sortBy, setSortBy }: { sortBy: SortOption; setSortBy: (s
   }, []);
   const label = sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : sortBy === "reviews" ? "Értékelések száma alapján" : "Látogatottság alapján";
   return (
-    <div ref={ref} className="relative">
-      <button onClick={() => setOpen((o) => !o)} className="flex h-full items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
-        {label}
+    <div ref={ref} className={cn("relative", fill && "min-w-0")}>
+      <button onClick={() => setOpen((o) => !o)} className={cn("flex h-full items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer", fill && "w-full justify-between")}>
+        <span className={cn(fill && "truncate")}>{label}</span>
         <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
       </button>
       {open && (
@@ -123,7 +123,7 @@ function PageSizeSelect({ pageSize, setPageSize }: { pageSize: number; setPageSi
       </button>
       {open && (
         <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
-          {[20, 50, 100].map((n) => (
+          {[10, 50, 100].map((n) => (
             <button
               key={n}
               onClick={() => { setPageSize(n); setOpen(false); }}
@@ -167,7 +167,7 @@ export function ProvidersContent({
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [countyQuery, setCountyQuery] = useState("");
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -252,7 +252,9 @@ export function ProvidersContent({
     );
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+    <div>
+      <p className="text-base text-gray-700 mb-5">Válassz kategóriát és szűrj megyék szerint</p>
+      <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
       {/* Desktop county sidebar (left, full height) */}
       <aside className="hidden lg:block lg:w-64 shrink-0">
         <div className="bg-white border border-gray-200 rounded-xl p-5 sticky top-24">
@@ -267,7 +269,7 @@ export function ProvidersContent({
               className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
             />
           </div>
-          <div className="space-y-0.5 max-h-[60vh] overflow-y-auto pr-1">
+          <div className="space-y-0.5">
             <button
               onClick={() => setCounty("")}
               className={cn("w-full flex items-center justify-between text-left px-3 py-1.5 rounded-lg text-base transition-colors", !county ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
@@ -312,14 +314,13 @@ export function ProvidersContent({
             </div>
           </div>
 
-          {/* Mobile: count, category (full), county (full), then view + sort + page size */}
+          {/* Mobile: category (full), county (full), then view + sort + page size filling one row */}
           <div className="lg:hidden space-y-2">
-            <p className="text-lg text-gray-900">{filtered.length} szolgáltató</p>
             <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
             <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
-            <div className="flex items-stretch gap-2 flex-wrap">
+            <div className="grid grid-cols-[auto_1fr_auto] items-stretch gap-2">
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
-              <SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
+              <SortDropdown sortBy={sortBy} setSortBy={setSortBy} fill />
               <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
             </div>
           </div>
@@ -333,6 +334,8 @@ export function ProvidersContent({
           </div>
         ) : (
           <>
+            {/* Mobile: result count above the list */}
+            <p className="lg:hidden text-lg text-gray-900 mb-4">{filtered.length} szolgáltató</p>
             {/* Featured on top */}
             {featured.length > 0 && (
               <section className="mb-6">
@@ -399,6 +402,7 @@ export function ProvidersContent({
             )}
           </>
         )}
+      </div>
       </div>
     </div>
   );
