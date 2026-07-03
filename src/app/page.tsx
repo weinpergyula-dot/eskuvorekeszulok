@@ -6,6 +6,7 @@ import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 import { ProvidersContent } from "@/components/providers/providers-content";
+import { HomeProvidersCta } from "@/components/home/home-providers-cta";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
 
@@ -187,6 +188,9 @@ export default async function HomePage() {
           </Suspense>
         </div>
       </section>
+
+      {/* Úszó gomb: legördít a szolgáltatókhoz; a szekció elérésekor eltűnik */}
+      <HomeProvidersCta />
     </>
   );
 }
