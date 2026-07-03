@@ -231,10 +231,13 @@ export function ProvidersContent({
   const countyOptions = geoCounties.map((c) => ({ value: c, label: `${c} (${countyCounts[c] ?? 0})` }));
   const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5";
 
-  // Pagination applies to the normal (non-featured) list; featured stay on top.
-  const totalPages = Math.max(1, Math.ceil(sortedNormal.length / pageSize));
+  // Pagination counts featured + normal together; featured stay at the front.
+  const combined = [...featured, ...sortedNormal];
+  const totalPages = Math.max(1, Math.ceil(combined.length / pageSize));
   const page = Math.min(currentPage, totalPages);
-  const pagedNormal = sortedNormal.slice((page - 1) * pageSize, page * pageSize);
+  const pageItems = combined.slice((page - 1) * pageSize, page * pageSize);
+  const pageFeatured = pageItems.filter((p) => p.featured);
+  const pageNormal = pageItems.filter((p) => !p.featured);
   const pageNumbers = ((): (number | "…")[] => {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
     const pages: (number | "…")[] = [1];
@@ -336,37 +339,37 @@ export function ProvidersContent({
           <>
             {/* Mobile: result count above the list */}
             <p className="lg:hidden text-lg text-gray-900 mb-4">{filtered.length} szolgáltató</p>
-            {/* Featured on top */}
-            {featured.length > 0 && (
+            {/* Featured (on this page) on top */}
+            {pageFeatured.length > 0 && (
               <section className="mb-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                   Kiemelt szolgáltatók
                 </h2>
                 <div className={gridCls}>
-                  {featured.map((p) => (
+                  {pageFeatured.map((p) => (
                     <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
                   ))}
                 </div>
               </section>
             )}
 
-            {featured.length > 0 && sortedNormal.length > 0 && (
+            {pageFeatured.length > 0 && pageNormal.length > 0 && (
               <div className="border-t border-gray-200 mt-2 mb-6">
                 <h2 className="text-lg font-semibold text-gray-900 mt-6">További szolgáltatók</h2>
               </div>
             )}
 
-            {sortedNormal.length > 0 && (
-              <>
-                <div className={gridCls}>
-                  {pagedNormal.map((p) => (
-                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
-                  ))}
-                </div>
+            {pageNormal.length > 0 && (
+              <div className={gridCls}>
+                {pageNormal.map((p) => (
+                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
+                ))}
+              </div>
+            )}
 
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-1 mt-8 flex-wrap">
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-1 mt-8 flex-wrap">
                     <button
                       onClick={() => setCurrentPage(Math.max(1, page - 1))}
                       disabled={page === 1}
@@ -398,8 +401,6 @@ export function ProvidersContent({
                     </button>
                   </div>
                 )}
-              </>
-            )}
           </>
         )}
       </div>

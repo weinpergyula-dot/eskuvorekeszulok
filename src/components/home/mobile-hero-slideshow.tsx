@@ -17,7 +17,7 @@ export function MobileHeroSlideshow() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % IMAGES.length);
-    }, 4000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
@@ -50,6 +50,14 @@ export function MobileHeroSlideshow() {
           style={{ opacity: i === current ? 1 : 0 }}
         />
       ))}
+
+      {/* Floating CTA — leads down to the providers list */}
+      <a
+        href="#szolgaltatok"
+        className="absolute left-1/2 -translate-x-1/2 bottom-16 inline-flex items-center px-6 py-2.5 rounded-full border-2 border-white text-white font-semibold text-base bg-black/30 backdrop-blur-sm shadow-lg hover:bg-black/45 transition-colors whitespace-nowrap"
+      >
+        Megnézem a kínálatot
+      </a>
 
       {/* Dots */}
       <div className="absolute bottom-5 left-0 right-0 flex justify-center gap-2">

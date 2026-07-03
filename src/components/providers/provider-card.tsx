@@ -121,7 +121,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {!hideCategories && (provider.categories ?? []).length > 0 && (
             <div className="flex flex-wrap items-center gap-1 mt-1">
               {(provider.categories ?? []).slice(0, 2).map((cat) => (
-                <span key={cat} className="text-[10px] font-medium px-1.5 py-0.5 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10">
+                <span key={cat} className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-full border", tc.badgeClass || "border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10")}>
                   {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
                 </span>
               ))}
@@ -316,7 +316,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             {!hideCategories && (provider.categories ?? []).length > 0 && (
               <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                 {(provider.categories ?? []).slice(0, 2).map((cat) => (
-                  <span key={cat} className="text-[11px] font-medium px-2 py-0.5 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10">
+                  <span key={cat} className={cn("text-[11px] font-medium px-2 py-0.5 rounded-full border", tc.badgeClass || "border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10")}>
                     {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
                   </span>
                 ))}
