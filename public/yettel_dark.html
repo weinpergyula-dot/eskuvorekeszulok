@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yettel — Premium concept</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --lime:#C6F24E; --lime2:#DAFF6E; --lime3:#A4D82E;
+    --navy:#14245E; --ink:#080F28;
+    --hi:#F3F6FF; --mid:rgba(243,246,255,.60); --low:rgba(243,246,255,.38);
+    --glass:rgba(255,255,255,.055); --glass2:rgba(255,255,255,.09); --stroke:rgba(255,255,255,.10);
+    --red:#FF6B6B; --amber:#FFC24B;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:26px 12px;
+       font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+       background:
+         radial-gradient(120% 90% at 15% -10%, rgba(198,242,78,.16), transparent 55%),
+         radial-gradient(120% 90% at 100% 110%, rgba(43,86,255,.18), transparent 55%),
+         #05091C;}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+
+  .app{position:relative; width:390px; max-width:100%; height:842px; border-radius:44px; overflow:hidden;
+       background:linear-gradient(175deg,#0E1A44 0%,#0A1234 46%,#070E28 100%);
+       box-shadow:0 40px 90px -20px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.05), inset 0 1px 0 rgba(255,255,255,.06);
+       color:var(--hi);}
+  .glow{position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; z-index:0;}
+  .glow.a{width:320px;height:320px; top:-120px; right:-90px; background:radial-gradient(circle,rgba(198,242,78,.42),transparent 65%);}
+  .glow.b{width:260px;height:260px; top:120px; left:-120px; background:radial-gradient(circle,rgba(59,111,255,.40),transparent 65%);}
+  .glow.c{width:300px;height:300px; bottom:40px; right:-110px; background:radial-gradient(circle,rgba(198,242,78,.14),transparent 65%);}
+
+  .screen{position:absolute; inset:0; overflow-y:auto; padding:0 20px 122px; scrollbar-width:none; z-index:1;}
+  .screen::-webkit-scrollbar{display:none;}
+
+  .status{display:flex; align-items:center; justify-content:space-between; padding:16px 4px 4px; font-size:13px; font-weight:600;}
+  .status .right{display:flex; align-items:center; gap:7px;}
+
+  .top{display:flex; align-items:center; justify-content:space-between; padding:14px 2px 16px;}
+  .brand{font-family:'Sora'; font-size:25px; font-weight:800; color:var(--lime); letter-spacing:-.02em; text-shadow:0 0 22px rgba(198,242,78,.35);}
+  .top-actions{display:flex; align-items:center; gap:10px;}
+  .icon-btn{width:42px;height:42px;border-radius:14px; display:flex;align-items:center;justify-content:center;
+            background:var(--glass); border:1px solid var(--stroke); backdrop-filter:blur(8px); position:relative; cursor:pointer;}
+  .icon-btn i{font-size:20px;color:var(--hi);}
+  .dot{position:absolute; top:9px; right:10px; width:7px;height:7px;border-radius:50%;background:var(--lime); box-shadow:0 0 8px var(--lime);}
+  .avatar{width:44px;height:44px;border-radius:15px; display:flex;align-items:center;justify-content:center;
+          font-family:'Sora'; font-weight:700; font-size:15px; color:#0B1330;
+          background:linear-gradient(140deg,var(--lime2),var(--lime3)); box-shadow:0 8px 22px rgba(198,242,78,.34);}
+
+  /* quick actions (above dashboard) */
+  .quick{display:grid; grid-template-columns:repeat(4,1fr); gap:11px; margin:2px 0 18px;}
+  .qtile{display:flex; flex-direction:column; align-items:center; gap:9px; padding:15px 6px 12px; border-radius:20px;
+         background:var(--glass); border:1px solid var(--stroke); backdrop-filter:blur(8px); cursor:pointer; transition:transform .18s, background .18s;}
+  .qtile:hover{transform:translateY(-3px); background:var(--glass2);}
+  .qic{width:44px;height:44px;border-radius:14px; display:flex;align-items:center;justify-content:center;}
+  .qic i{font-size:30px; color:var(--lime);}
+  .qtile span{font-size:11px; color:var(--mid); font-weight:600;}
+
+  /* carousel */
+  .hcar{display:flex; gap:13px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:2px 0 8px;}
+  .hcar::-webkit-scrollbar{display:none;}
+  .pcard{flex:0 0 100%; scroll-snap-align:center;}
+  .hdots{display:flex; justify-content:center; gap:7px; margin-top:12px;}
+  .hdots span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.20); transition:all .25s;}
+  .hdots span.on{width:20px;background:var(--lime); box-shadow:0 0 10px rgba(198,242,78,.6);}
+
+  .hero{position:relative; border-radius:28px; padding:22px 22px 20px; overflow:hidden;
+        background:linear-gradient(155deg,#233472 0%,#182a63 42%,#0F1E4C 100%);
+        border:1px solid rgba(255,255,255,.12);
+        box-shadow:0 24px 50px -18px rgba(6,12,40,.9), inset 0 1px 0 rgba(255,255,255,.14);}
+  .hero .sheen{position:absolute; width:260px;height:260px; border-radius:50%; top:-150px; right:-70px;
+        background:radial-gradient(circle,rgba(198,242,78,.55),rgba(198,242,78,0) 62%); filter:blur(6px);}
+  .hero .grid{position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px); background-size:26px 26px; mask-image:radial-gradient(120% 90% at 100% 0%, #000, transparent 70%); opacity:.5;}
+  .hero-row{position:relative; display:flex; align-items:center; justify-content:space-between;}
+  .plan-tag{display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--lime); text-transform:uppercase;}
+  .plan-tag .pip{width:6px;height:6px;border-radius:50%;background:var(--lime); box-shadow:0 0 10px var(--lime);}
+  .g5{font-size:11px; font-weight:700; letter-spacing:.03em; padding:5px 11px; border-radius:9px; background:rgba(255,255,255,.10); border:1px solid var(--stroke);}
+  .num{position:relative; font-family:'Sora'; font-size:22px; font-weight:700; letter-spacing:.02em; margin:14px 0 2px;}
+  .plan-sub{position:relative; font-size:12px; color:var(--mid); margin:0 0 16px;}
+  .hero-bottom{position:relative; display:flex; align-items:center; gap:18px;}
+  .ring-wrap{position:relative; width:92px;height:92px; flex-shrink:0;}
+  .ring-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .ring-center b{font-family:'Sora'; font-size:19px; font-weight:700; line-height:1;}
+  .ring-center span{font-size:10px; color:var(--mid); margin-top:2px; letter-spacing:.05em;}
+  .stats{flex:1; display:flex; flex-direction:column; gap:13px;}
+  .stat .lab{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
+  .stat .lab .k{font-size:12px; color:var(--mid);}
+  .stat .lab .v{font-size:12px; font-weight:600;}
+  .stat .v .u{color:var(--low); font-weight:500;}
+  .track{height:6px; border-radius:6px; background:rgba(255,255,255,.10); overflow:hidden;}
+  .fill{height:100%; border-radius:6px; background:linear-gradient(90deg,var(--lime3),var(--lime2));}
+  .fill.amber{background:linear-gradient(90deg,#E39A25,#FFC24B);}
+  .fill.red{background:linear-gradient(90deg,#D64545,#FF6B6B);}
+  .fbtn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(140deg,var(--lime2),var(--lime3));color:#0B1330;border:none;font-family:'Manrope';font-weight:700;font-size:12px;padding:11px 16px;border-radius:999px;cursor:pointer;box-shadow:0 10px 22px -8px rgba(198,242,78,.6);}
+  .cactions{position:relative; display:flex; gap:9px; margin-top:16px;}
+  .cbtn{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:11px 8px; border-radius:14px;
+        background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.16); color:#fff; font-family:'Manrope'; font-weight:600; font-size:12px; cursor:pointer; transition:background .18s;}
+  .cbtn:hover{background:rgba(255,255,255,.15);}
+  .cbtn .c{width:19px;height:19px;border-radius:50%; border:1.5px solid var(--lime); display:flex;align-items:center;justify-content:center; flex-shrink:0;}
+  .cbtn .c i{font-size:11px; color:var(--lime);}
+
+  /* hero action buttons */
+  .hactions{display:flex; gap:10px; margin-top:14px;}
+  .hbtn{flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border-radius:16px;
+        background:var(--glass); border:1px solid var(--stroke); backdrop-filter:blur(8px); color:var(--hi);
+        font-family:'Manrope'; font-weight:600; font-size:12px; cursor:pointer; transition:background .18s, border-color .18s;}
+  .hbtn:hover{background:var(--glass2); border-color:rgba(198,242,78,.3);}
+  .hbtn .c{width:20px;height:20px;border-radius:50%; border:1.5px solid var(--lime); display:flex;align-items:center;justify-content:center;}
+  .hbtn .c i{font-size:12px; color:var(--lime);}
+
+  .sec{display:flex; align-items:baseline; justify-content:space-between; margin:26px 2px 12px;}
+  .sec h3{font-family:'Sora'; font-size:16px; font-weight:600; margin:0; letter-spacing:-.01em;}
+  .sec a{font-size:12px; color:var(--lime); font-weight:600; text-decoration:none; cursor:pointer;}
+
+  /* accordions */
+  .acc{margin-bottom:6px;}
+  .acc-head{display:flex; align-items:center; justify-content:space-between; padding:10px 2px 12px; cursor:pointer;}
+  .acc-head .at{font-family:'Sora'; font-size:15px; font-weight:600;}
+  .acc-head .at small{font-family:'Manrope'; color:var(--low); font-weight:600; font-size:13px; margin-left:6px;}
+  .achev{color:var(--mid); font-size:19px; transition:transform .25s;}
+
+  .sub{display:flex; align-items:center; gap:14px; padding:15px 16px; border-radius:22px; margin-bottom:11px;
+       background:var(--glass); border:1px solid var(--stroke); backdrop-filter:blur(8px); cursor:pointer; transition:transform .18s, background .18s, border-color .18s;}
+  .sub:hover{transform:translateY(-2px); background:var(--glass2); border-color:rgba(198,242,78,.28);}
+  .itile{width:48px;height:48px;border-radius:16px; display:flex;align-items:center;justify-content:center; flex-shrink:0;
+         background:linear-gradient(140deg,var(--lime2),var(--lime3)); box-shadow:0 8px 20px -6px rgba(198,242,78,.5);}
+  .itile.blue{background:linear-gradient(140deg,#5C7CFF,#2E46C8); box-shadow:0 8px 20px -6px rgba(59,90,255,.5);}
+  .itile.violet{background:linear-gradient(140deg,#B78CFF,#7A4BE0); box-shadow:0 8px 20px -6px rgba(150,90,255,.5);}
+  .itile.slate{background:linear-gradient(140deg,#8DA0C9,#5C6F9E); box-shadow:0 8px 20px -6px rgba(120,140,200,.45);}
+  .itile i{font-size:23px; color:#0B1330;}
+  .itile.blue i,.itile.violet i,.itile.slate i{color:#fff;}
+  .sub .meta{flex:1; min-width:0;}
+  .sub .meta .t{font-size:15px; font-weight:600; margin:0; letter-spacing:-.01em;}
+  .sub .meta .s{font-size:12px; color:var(--mid); margin:3px 0 0;}
+  .sub .chev{color:var(--low); font-size:20px;}
+
+  .addsvc{display:flex; align-items:center; justify-content:center; gap:9px; padding:13px; border-radius:18px; margin-bottom:4px; cursor:pointer;
+          border:1px dashed rgba(198,242,78,.4); background:rgba(198,242,78,.05); color:var(--lime); font-weight:600; font-size:13px;}
+  .addsvc .c{width:22px;height:22px;border-radius:50%; border:1.5px solid var(--lime); display:flex;align-items:center;justify-content:center;}
+  .addsvc .c i{font-size:14px; color:var(--lime);}
+
+  .promo{position:relative; overflow:hidden; margin-top:6px; border-radius:26px; padding:20px 20px;
+         background:linear-gradient(135deg,var(--lime2) 0%,var(--lime) 40%,var(--lime3) 100%);
+         box-shadow:0 22px 45px -16px rgba(164,216,46,.6);}
+  .promo .blob{position:absolute; width:170px;height:170px;border-radius:50%; right:-40px; bottom:-70px; background:rgba(11,19,48,.10);}
+  .promo .blob2{position:absolute; width:110px;height:110px;border-radius:50%; right:34px; top:-46px; background:rgba(255,255,255,.20);}
+  .promo h4{position:relative; font-family:'Sora'; font-size:18px; font-weight:700; color:#0B1330; margin:0 0 5px;}
+  .promo p{position:relative; font-size:12px; color:#20305F; margin:0 0 14px; line-height:1.45; max-width:74%;}
+  .promo .go{position:relative; display:inline-flex; align-items:center; gap:7px; background:#0C1740; color:#fff; border:none;
+             font-family:'Manrope'; font-weight:700; font-size:12px; padding:11px 18px; border-radius:999px; cursor:pointer; box-shadow:0 10px 24px -8px rgba(12,23,64,.8);}
+  .promo .pct{position:absolute; right:20px; top:50%; transform:translateY(-50%); font-family:'Sora'; font-weight:800; font-size:44px; color:#0B1330; opacity:.9;}
+  .promo .pct small{font-size:20px; vertical-align:top;}
+
+  .nav{position:absolute; left:16px; right:16px; bottom:16px; height:70px; border-radius:26px; display:flex; align-items:center; justify-content:space-around; z-index:5;
+       background:rgba(16,24,58,.72); border:1px solid var(--stroke); backdrop-filter:blur(22px);
+       box-shadow:0 20px 40px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.08);}
+  .nitem{display:flex; flex-direction:column; align-items:center; gap:5px; color:var(--low); font-size:10px; font-weight:600; cursor:pointer; flex:1;}
+  .nitem i{font-size:22px;}
+  .nitem.on{color:var(--lime);}
+  .nitem.on i{filter:drop-shadow(0 0 8px rgba(198,242,78,.6));}
+
+  /* detail */
+  .dhead{display:flex; align-items:center; justify-content:space-between; padding:16px 0 8px;}
+  .dhead .title{font-family:'Sora'; font-size:16px; font-weight:600;}
+  .planbar{display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:22px; margin-top:8px;
+           background:var(--glass); border:1px solid var(--stroke); backdrop-filter:blur(8px);}
+  .planbar .meta{flex:1; min-width:0;}
+  .planbar .meta .s{font-size:12px; color:var(--mid); margin:0;}
+  .planbar .meta .t{font-family:'Sora'; font-size:14px; font-weight:700; margin:2px 0 0; letter-spacing:.01em; white-space:nowrap;}
+  .edit{display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.08); color:var(--hi); border:1px solid var(--stroke);
+        font-family:'Manrope'; font-weight:600; font-size:11px; padding:8px 13px; border-radius:999px; cursor:pointer;}
+  .mlab{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--low); font-weight:700; margin:24px 4px 10px;}
+  .gcard{background:var(--glass); border:1px solid var(--stroke); border-radius:22px; overflow:hidden; backdrop-filter:blur(8px);}
+  .krow{display:flex; align-items:center; justify-content:space-between; padding:14px 16px;}
+  .krow + .krow, .lrow + .lrow, .krow + .lrow, .lrow + .krow{border-top:1px solid rgba(255,255,255,.06);}
+  .krow .k{font-size:13px; color:var(--hi);}
+  .krow .v{font-size:13px; color:var(--mid);}
+  .krow .v.strong{color:var(--hi); font-weight:700;}
+  .link{color:var(--lime); text-decoration:underline; text-underline-offset:3px; cursor:pointer; font-size:13px;}
+  .lrow{display:flex; align-items:center; gap:13px; padding:13px 16px; cursor:pointer;}
+  .sic{width:38px;height:38px;border-radius:12px; display:flex;align-items:center;justify-content:center; flex-shrink:0;
+       background:rgba(198,242,78,.13); border:1px solid rgba(198,242,78,.22);}
+  .sic i{font-size:18px; color:var(--lime);}
+  .lrow .n{flex:1; font-size:13px; color:var(--hi);}
+  .lrow .chev{color:var(--low); font-size:18px;}
+  .keret{padding:16px;}
+  .keret .stat{margin-bottom:13px;}
+  .guard{position:relative; overflow:hidden; margin-top:14px; display:flex; align-items:center; gap:13px; padding:15px 16px; border-radius:20px; cursor:pointer;
+         background:linear-gradient(135deg,rgba(198,242,78,.16),rgba(198,242,78,.05)); border:1px solid rgba(198,242,78,.34); box-shadow:0 14px 30px -14px rgba(198,242,78,.4);}
+  .guard .gi{width:40px;height:40px;border-radius:13px; display:flex;align-items:center;justify-content:center; flex-shrink:0; background:linear-gradient(140deg,var(--lime2),var(--lime3));}
+  .guard .gi i{font-size:20px; color:#0B1330;}
+  .guard .gt{flex:1;}
+  .guard .gt p{margin:0;}
+  .guard .gt .a{font-size:13px; font-weight:700; color:var(--lime);}
+  .guard .gt .b{font-size:11px; color:var(--mid); margin-top:2px;}
+  .guard .plus{width:26px;height:26px;border-radius:50%; border:1.5px solid var(--lime); display:flex;align-items:center;justify-content:center; flex-shrink:0;}
+  .guard .plus i{font-size:15px; color:var(--lime);}
+  .cancel{width:100%; margin-top:22px; display:flex; align-items:center; justify-content:center; gap:8px;
+          background:rgba(255,107,107,.08); color:#FF8A8A; border:1px solid rgba(255,107,107,.30);
+          font-family:'Manrope'; font-weight:600; font-size:13px; padding:13px; border-radius:16px; cursor:pointer;}
+
+  /* ===== WELCOME + LOGIN (dark) ===== */
+  .welcome{position:absolute; inset:0; overflow:hidden; z-index:3;}
+  .welcome .wbg{position:absolute; inset:-25%; z-index:0;
+    background:linear-gradient(130deg,#0A1330 0%,#14245E 24%,#1E3E7A 42%,#A4D82E 60%,#16305F 78%,#0A1330 100%);
+    background-size:220% 220%; animation:wshift 15s ease-in-out infinite;}
+  .welcome .wblob{position:absolute; border-radius:50%; filter:blur(52px); z-index:0; opacity:.55;}
+  .welcome .wblob.b1{width:280px;height:280px; top:-70px; right:-80px; background:radial-gradient(circle,rgba(198,242,78,.75),transparent 65%); animation:wfloat1 9s ease-in-out infinite;}
+  .welcome .wblob.b2{width:240px;height:240px; bottom:120px; left:-100px; background:radial-gradient(circle,rgba(70,120,255,.7),transparent 65%); animation:wfloat2 12s ease-in-out infinite;}
+  @keyframes wshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  @keyframes wfloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(-34px,44px)}}
+  @keyframes wfloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-34px)}}
+  .ydot{display:inline-block; width:.3em; height:.3em; margin-left:.06em; background:currentColor; vertical-align:baseline; border-radius:2px; transform-origin:center; animation:ybounce 4s ease-in-out infinite;}
+  @keyframes ybounce{
+    0%{transform:translateY(-1.2em) rotate(0deg); border-radius:2px; clip-path:none;}
+    12%{transform:translateY(0) rotate(200deg); border-radius:2px; clip-path:none;}
+    21%{transform:translateY(-.6em) rotate(320deg); border-radius:2px; clip-path:none;}
+    30%{transform:translateY(0) rotate(460deg); border-radius:1px; clip-path:polygon(50% 0,100% 100%,0 100%);}
+    37%{transform:translateY(-.32em) rotate(560deg); border-radius:1px; clip-path:polygon(50% 0,100% 100%,0 100%);}
+    44%{transform:translateY(0) rotate(700deg); border-radius:50%; clip-path:none;}
+    46%{transform:translateY(0) rotate(720deg); border-radius:50%; clip-path:none;}
+    96%{transform:translateY(0) rotate(720deg); border-radius:50%; clip-path:none;}
+    100%{transform:translateY(-1.2em) rotate(720deg); border-radius:2px; clip-path:none;}
+  }
+  .welcome .wframe{position:relative; z-index:1; height:100%; display:flex; flex-direction:column; padding:64px 26px 40px; color:#F3F6FF;}
+  .wtop{flex:0 0 auto;}
+  .wbrand{font-family:'Sora'; font-weight:800; font-size:34px; letter-spacing:-.02em; color:#FFFFFF; text-shadow:0 4px 24px rgba(0,0,0,.4);}
+  .wmid{flex:1 1 auto; display:flex; flex-direction:column; justify-content:center;}
+  .whead{font-family:'Sora'; font-weight:800; font-size:32px; line-height:1.15; letter-spacing:-.02em; margin:0 0 14px; text-shadow:0 4px 24px rgba(0,0,0,.4);}
+  .wsub{font-size:14px; line-height:1.55; color:rgba(243,246,255,.82); margin:0; max-width:88%; text-shadow:0 2px 14px rgba(0,0,0,.35);}
+  .wactions{flex:0 0 auto; display:flex; flex-direction:column; gap:12px;}
+  .wbtn{width:100%; border:none; border-radius:18px; font-family:'Manrope'; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;}
+  .wbtn.primary{padding:18px; font-size:16px; color:#0B1330; background:linear-gradient(135deg,#DAFF6E,#A4D82E); box-shadow:0 16px 34px -10px rgba(198,242,78,.6);}
+  .wbtn.ghost{padding:15px; font-size:13px; color:#F3F6FF; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.28); backdrop-filter:blur(6px);}
+  .wbtn.link{padding:8px; font-size:13px; color:rgba(243,246,255,.9); background:none;}
+  .loginscr{background:linear-gradient(180deg,#0E1A44 0%,#070E28 100%);}
+  .loginwrap{padding:14px 4px 0; display:flex; flex-direction:column;}
+  .loginwrap .wbrand{font-size:24px; color:var(--lime); margin-bottom:22px;}
+  .lhead{font-family:'Sora'; font-weight:700; font-size:22px; margin:0 0 6px; color:#F3F6FF;}
+  .lsub{font-size:13px; color:var(--mid); margin:0 0 22px;}
+  .lfield{display:flex; align-items:center; gap:11px; padding:0 15px; height:52px; border-radius:16px; margin-bottom:12px; background:var(--glass); border:1px solid var(--stroke);}
+  .lfield i{font-size:19px; color:var(--mid);}
+  .lfield input{flex:1; border:none; background:none; outline:none; font-family:'Manrope'; font-size:14px; color:#F3F6FF;}
+  .lfield input::placeholder{color:var(--low);}
+  .lforgot{align-self:flex-end; font-size:12px; color:var(--lime); font-weight:600; margin:2px 2px 20px; cursor:pointer;}
+  .ldiv{display:flex; align-items:center; gap:12px; margin:20px 0;}
+  .ldiv::before,.ldiv::after{content:''; flex:1; height:1px; background:var(--stroke);}
+  .ldiv span{font-size:12px; color:var(--low);}
+  .wbox{background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.26); border-radius:18px; overflow:hidden; backdrop-filter:blur(6px);}
+  .wboxbtn{width:100%; border:none; background:none; padding:15px; font-family:'Manrope'; font-weight:700; font-size:13px; color:#F3F6FF; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;}
+  .wboxbtn:active{background:rgba(255,255,255,.06);}
+  .wboxdiv{height:1px; background:rgba(255,255,255,.22);}
+  .rt{position:absolute; width:0; height:0; opacity:0; pointer-events:none;}
+  [data-screen]{display:none !important;}
+  #s-welcome:checked ~ [data-screen="welcome"],
+  #s-login:checked ~ [data-screen="login"],
+  #s-home:checked ~ [data-screen="home"],
+  #s-detail:checked ~ [data-screen="detail"],
+  #s-detail-net:checked ~ [data-screen="detail-net"],
+  #s-detail-tv:checked ~ [data-screen="detail-tv"],
+  #s-addservice:checked ~ [data-screen="add-service"]{display:block !important;}
+  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav{display:flex !important;}
+  .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="app" role="img" aria-label="Prémium Yettel app-koncepció sötét témában, lime akcenttel.">
+  <h2 class="sr-only">Prémium Yettel app-koncepció: előfizetéseim és szolgáltatás részletei.</h2>
+  <input class="rt" type="radio" name="nav" id="s-welcome" checked>
+  <input class="rt" type="radio" name="nav" id="s-login">
+  <input class="rt" type="radio" name="nav" id="s-home">
+  <input class="rt" type="radio" name="nav" id="s-detail">
+  <input class="rt" type="radio" name="nav" id="s-detail-net">
+  <input class="rt" type="radio" name="nav" id="s-detail-tv">
+  <input class="rt" type="radio" name="nav" id="s-addservice">
+  <div class="glow a"></div><div class="glow b"></div><div class="glow c"></div>
+
+  <!-- ============= WELCOME ============= -->
+  <div class="welcome" data-screen="welcome">
+    <div class="wbg"></div>
+    <div class="wblob b1"></div><div class="wblob b2"></div>
+    <div class="wframe">
+      <div class="wtop"><span class="wbrand">Yettel<span class="ydot"></span></span></div>
+      <div class="wmid">
+        <h1 class="whead">Minden szolgáltatásod<br>egy helyen.</h1>
+        <p class="wsub">Előfizetések, számlák és extrák — gyorsan és biztonságosan, egyetlen appban.</p>
+      </div>
+      <div class="wactions">
+        <label class="wbtn primary" for="s-login">Belépés</label>
+        <button class="wbtn ghost">Nincs még Yettel szolgáltatásod?</button>
+        <button class="wbtn link"><i class="ti ti-device-sim" style="font-size:18px"></i> SIM-kártya aktiválása</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= LOGIN ============= -->
+  <div class="screen loginscr" data-screen="login" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-welcome"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Belépés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="loginwrap">
+      <span class="wbrand">Yettel<span class="ydot"></span></span>
+      <h2 class="lhead">Lépj be a fiókodba</h2>
+      <p class="lsub">Add meg az adataid a folytatáshoz.</p>
+      <div style="background:#FBF3D5; border:1px solid #EFE0B0; border-radius:14px; padding:13px 14px; margin:0 0 18px; display:flex; gap:11px; align-items:flex-start;">
+        <i class="ti ti-alert-circle" style="font-size:20px; color:#C98A00; flex-shrink:0; margin-top:1px;"></i>
+        <div style="font-size:12px; line-height:1.55; color:#5A4A1C;">
+          <b style="color:#3A2E0E;">Frissítettük a Yettel fiókodat.</b><br>
+          Előfordulhat, hogy korábbi fiókodat töröltük, mert a szükséges adatmegerősítés nem történt meg.<br><br>
+          Kattints a <b style="color:#3A2E0E;">Regisztrálok</b> gombra, hozz létre egy új fiókot, hogy újra hozzáférhess a telefonszámaidhoz és folytathasd az ügyintézést.
+        </div>
+      </div>
+      <label class="lfield"><i class="ti ti-user"></i><input type="text" placeholder="Telefonszám vagy e-mail cím"></label>
+      <label class="lfield"><i class="ti ti-lock"></i><input type="password" placeholder="Jelszó"></label>
+      <div class="lforgot">Elfelejtett jelszó?</div>
+      <label class="wbtn primary" for="s-home">Belépés</label>
+      <div class="ldiv"><span>vagy</span></div>
+      <div class="wbox">
+        <label class="wboxbtn" for="s-home"><i class="ti ti-message-2" style="font-size:17px"></i> Belépés SMS-kóddal</label>
+        <div class="wboxdiv"></div>
+        <button class="wboxbtn">Regisztrálok</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= HOME ============= -->
+  <div class="screen" data-screen="home" style="display:none;">
+
+    <div class="status">
+      <span>9:41</span>
+      <span class="right"><i class="ti ti-signal-5g" style="font-size:16px"></i><i class="ti ti-wifi" style="font-size:15px"></i><i class="ti ti-battery-3" style="font-size:17px"></i></span>
+    </div>
+
+    <div class="top">
+      <span class="brand">Yettel.</span>
+      <div class="top-actions">
+        <div class="icon-btn"><i class="ti ti-bell"></i><span class="dot"></span></div>
+        <div class="avatar">GY</div>
+      </div>
+    </div>
+
+    <div class="quick">
+      <div class="qtile"><div class="qic"><i class="ti ti-ticket"></i></div><span>Kuponok</span></div>
+      <div class="qtile"><div class="qic"><i class="ti ti-parking"></i></div><span>Parkolás</span></div>
+      <div class="qtile"><div class="qic"><i class="ti ti-car"></i></div><span>Autópálya</span></div>
+      <div class="qtile"><div class="qic"><i class="ti ti-star"></i></div><span>Élménytér</span></div>
+    </div>
+
+    <div class="hcar">
+
+      <div class="hero pcard" data-open-detail>
+        <div class="sheen"></div><div class="grid"></div>
+        <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2024</span><span class="g5">Havidíjas</span></div>
+        <p class="num">+36 20 290 7430</p>
+        <p class="plan-sub">Megújul · 2026. 07. 31.</p>
+        <div class="hero-bottom">
+          <div class="ring-wrap">
+            <svg width="92" height="92" viewBox="0 0 92 92">
+              <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="7"/>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
+            </svg>
+            <div class="ring-center"><b>12,4</b><span>/ 20 GB</span></div>
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">210<span class="u"> / 300</span></span></div><div class="track"><div class="fill" style="width:70%"></div></div></div>
+            <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">74<span class="u"> / 100</span></span></div><div class="track"><div class="fill amber" style="width:74%"></div></div></div>
+          </div>
+        </div>
+        <div class="cactions"><button class="cbtn"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</button><button class="cbtn"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</button></div>
+      </div>
+
+      <div class="hero pcard" data-open-detail>
+        <div class="sheen"></div><div class="grid"></div>
+        <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2025</span><span class="g5">Havidíjas</span></div>
+        <p class="num">+36 20 290 7566</p>
+        <p class="plan-sub">Megújul · 2026. 07. 22.</p>
+        <div class="hero-bottom">
+          <div class="ring-wrap">
+            <svg width="92" height="92" viewBox="0 0 92 92">
+              <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="7"/>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
+            </svg>
+            <div class="ring-center"><b>3,1</b><span>/ 5 GB</span></div>
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">60<span class="u"> / 100</span></span></div><div class="track"><div class="fill" style="width:60%"></div></div></div>
+            <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">18<span class="u"> / 50</span></span></div><div class="track"><div class="fill amber" style="width:36%"></div></div></div>
+          </div>
+        </div>
+        <div class="cactions"><button class="cbtn"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</button><button class="cbtn"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</button></div>
+      </div>
+
+      <div class="hero pcard">
+        <div class="sheen"></div><div class="grid"></div>
+        <div class="hero-row"><span class="plan-tag"><span class="pip"></span>XS+</span><span class="g5">Feltöltőkártyás</span></div>
+        <p class="num">+36 20 290 9734</p>
+        <p class="plan-sub">Havidíj nélkül</p>
+        <div class="hero-bottom">
+          <div><p style="font-size:11px;color:var(--mid);letter-spacing:.08em;margin:0 0 5px;">EGYENLEG</p><p style="font-family:'Sora';font-size:27px;font-weight:700;margin:0;">3 450 Ft</p></div>
+        </div>
+        <div class="cactions"><button class="cbtn"><span class="c"><i class="ti ti-plus"></i></span>Egyenlegfeltöltés</button><button class="cbtn"><span class="c"><i class="ti ti-arrow-up"></i></span>Havidíjasra váltás</button></div>
+      </div>
+
+    </div>
+    <div class="hdots"><span class="on"></span><span></span><span></span></div>
+
+    <div class="sec"><h3>Neked ajánljuk</h3><a>Több →</a></div>
+    <div class="promo">
+      <div class="blob"></div><div class="blob2"></div>
+      <h4>FULL kedvezmények</h4>
+      <p>FULL-tagként a szolgáltatásaid árából akár 20%-ot is elengedünk.</p>
+      <button class="go">Megnézem <i class="ti ti-arrow-right" style="font-size:15px"></i></button>
+      <div class="pct">20<small>%</small></div>
+    </div>
+
+    <div class="sec"><h3>Előfizetéseim</h3></div>
+
+    <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás hozzáadása</label>
+
+    <div class="acc">
+      <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>3</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-body">
+        <div class="sub" data-open-detail style="position:relative;"><label class="subcover" for="s-detail"></label>
+          <div class="itile"><i class="ti ti-device-mobile"></i></div>
+          <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+        <div class="sub" data-open-detail style="position:relative;"><label class="subcover" for="s-detail"></label>
+          <div class="itile"><i class="ti ti-device-mobile"></i></div>
+          <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+        <div class="sub">
+          <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+          <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" data-acc><span class="at">Otthoni szolgáltatások <small>2</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-body">
+        <div class="sub" data-goto="detail-net" style="position:relative;"><label class="subcover" for="s-detail-net"></label>
+          <div class="itile blue"><i class="ti ti-router"></i></div>
+          <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+        <div class="sub" data-goto="detail-tv" style="position:relative;"><label class="subcover" for="s-detail-tv"></label>
+          <div class="itile violet"><i class="ti ti-device-tv"></i></div>
+          <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">TV · TV Prémium</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============= DETAIL ============= -->
+  <div class="screen" data-screen="detail" style="display:none;">
+
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatás részletei</span>
+      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+    </div>
+
+    <div class="planbar">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="s">Prime Plus 2024</p><p class="t">+36 20 290 7430</p></div>
+      <button class="edit"><i class="ti ti-pencil" style="font-size:13px"></i>Szerkesztés</button>
+    </div>
+
+    <p class="mlab">Szerződés</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2026. 11. 30.</span></div>
+      <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">5 hónap</span></div>
+      <div class="krow"><span class="k">Havidíj</span><span class="v">7 990 Ft / hó</span></div>
+      <div class="krow"><span class="k">Tarifacsomagom</span><span class="link">részletek</span></div>
+    </div>
+
+    <p class="mlab">Elérhető keret</p>
+    <div class="gcard keret">
+      <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">12,4<span class="u"> / 20 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
+      <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">210<span class="u"> / 300</span></span></div><div class="track"><div class="fill" style="width:70%"></div></div></div>
+      <div class="stat" style="margin-bottom:6px;"><div class="lab"><span class="k">SMS</span><span class="v">74<span class="u"> / 100</span></span></div><div class="track"><div class="fill amber" style="width:74%"></div></div></div>
+      <div class="krow" style="padding:12px 0 0; border-top:1px solid rgba(255,255,255,.07);"><span class="k">Csomagon felüli forgalom</span><span class="v strong">1 240 Ft</span></div>
+      <div class="krow" style="padding:10px 0 0;"><span class="k" style="display:flex;align-items:center;gap:7px;color:var(--mid);font-size:12px;"><i class="ti ti-calendar-event" style="font-size:15px"></i>Megújul</span><span class="v strong">2026. 07. 31.</span></div>
+    </div>
+
+    <p class="mlab">Roaming keret</p>
+    <div class="gcard" style="padding:15px 16px;">
+      <div class="stat" style="margin:0;"><div class="lab"><span class="k">EU-s adatroaming</span><span class="v">4,2<span class="u"> / 6,4 GB</span></span></div><div class="track"><div class="fill" style="width:66%"></div></div></div>
+    </div>
+
+    <p class="mlab">Vásárlási lehetőségek</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Roaming csomagok</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <div class="guard">
+      <span class="gi"><i class="ti ti-shield-check"></i></span>
+      <div class="gt"><p class="a">Gyermekvédelem hozzáadása</p><p class="b">Tartalomszűrés és képernyőidő-korlát</p></div>
+      <span class="plus"><i class="ti ti-plus"></i></span>
+    </div>
+
+    <p class="mlab">Extrák</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Hívásrészletező</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-arrows-exchange"></i></span><span class="n">Számhordozás</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-device-sim"></i></span><span class="n">SIM-csere / eSIM</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-settings"></i></span><span class="n">Hívásbeállítások</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+
+  </div>
+
+  <!-- ============= DETAIL: OTTHONI INTERNET ============= -->
+  <div class="screen" data-screen="detail-net" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatás részletei</span>
+      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+    </div>
+
+    <div class="planbar">
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="s">Veszprém, Tölgyfa u. 4</p><p class="t" style="font-size:15px;">Otthoni Net 1000</p></div>
+      <button class="edit"><i class="ti ti-pencil" style="font-size:13px"></i>Szerkesztés</button>
+    </div>
+
+    <p class="mlab">Szerződés</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2027. 03. 15.</span></div>
+      <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">9 hónap</span></div>
+      <div class="krow"><span class="k">Havidíj</span><span class="v">8 990 Ft / hó</span></div>
+    </div>
+
+    <p class="mlab">Csomag adatai</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Letöltési sebesség</span><span class="v strong">1000 Mbps</span></div>
+      <div class="krow"><span class="k">Feltöltési sebesség</span><span class="v">300 Mbps</span></div>
+      <div class="krow"><span class="k">Adatkeret</span><span class="v">Korlátlan</span></div>
+      <div class="krow"><span class="k">Kapcsolat állapota</span><span class="v" style="color:#5FA810; font-weight:700;">Aktív</span></div>
+    </div>
+
+    <p class="mlab">Eszközök</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-router"></i></span><span class="n">Wi-Fi router (bérelt)</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-wifi"></i></span><span class="n">Wi-Fi beállítások</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <p class="mlab">Vásárlási lehetőségek</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-access-point"></i></span><span class="n">Wi-Fi lefedettség bővítése</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-network"></i></span><span class="n">Statikus IP-cím</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <div class="guard">
+      <span class="gi"><i class="ti ti-shield-check"></i></span>
+      <div class="gt"><p class="a">Gyermekvédelem hozzáadása</p><p class="b">Tartalomszűrés az otthoni hálózaton</p></div>
+      <span class="plus"><i class="ti ti-plus"></i></span>
+    </div>
+
+    <p class="mlab">Extrák</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-refresh"></i></span><span class="n">Router újraindítása</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Hibabejelentés</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Számla és díjak</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+  </div>
+
+  <!-- ============= DETAIL: TV ============= -->
+  <div class="screen" data-screen="detail-tv" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatás részletei</span>
+      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+    </div>
+
+    <div class="planbar">
+      <div class="itile violet"><i class="ti ti-device-tv"></i></div>
+      <div class="meta"><p class="s">Veszprém, Tölgyfa u. 4</p><p class="t" style="font-size:15px;">TV Prémium</p></div>
+      <button class="edit"><i class="ti ti-pencil" style="font-size:13px"></i>Szerkesztés</button>
+    </div>
+
+    <p class="mlab">Szerződés</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2027. 03. 15.</span></div>
+      <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">9 hónap</span></div>
+      <div class="krow"><span class="k">Havidíj</span><span class="v">5 490 Ft / hó</span></div>
+    </div>
+
+    <p class="mlab">Csomag adatai</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Csatornák száma</span><span class="v strong">120+</span></div>
+      <div class="krow"><span class="k">HD csatornák</span><span class="v">64</span></div>
+      <div class="krow"><span class="k">Felvétel (felhő)</span><span class="v">100 óra</span></div>
+      <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
+    </div>
+
+    <p class="mlab">Streaming</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Netflix</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <p class="mlab">Eszközök</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Beltéri egység (set-top box)</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <p class="mlab">Vásárlási lehetőségek</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-star"></i></span><span class="n">Prémium csatornacsomag</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Extra beltéri egység</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <div class="guard">
+      <span class="gi"><i class="ti ti-shield-check"></i></span>
+      <div class="gt"><p class="a">Gyermekzár beállítása</p><p class="b">PIN-kód és korhatáros tartalom</p></div>
+      <span class="plus"><i class="ti ti-plus"></i></span>
+    </div>
+
+    <p class="mlab">Extrák</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-list"></i></span><span class="n">Műsorújság</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Hibabejelentés</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Számla és díjak</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+  </div>
+
+  <!-- ============= ADD SERVICE ============= -->
+  <div class="screen" data-screen="add-service" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Új szolgáltatás</span>
+      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+    </div>
+
+    <p class="mlab" style="margin-top:14px;">Válassz szolgáltatást</p>
+
+    <div class="sub">
+      <div class="itile violet"><i class="ti ti-device-tv"></i></div>
+      <div class="meta"><p class="t">Otthoni internet és TV</p><p class="s">Internet és televízió egy csomagban</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub">
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="t">Otthoni internet</p><p class="s">Nagy sebességű otthoni net</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">Havidíjas mobil</p><p class="s">Korlátlan nettel, havidíjas előfizetés</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub">
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">Feltöltőkártyás mobil</p><p class="s">Egyenleg alapú, havidíj nélkül</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub">
+      <div class="itile"><i class="ti ti-bolt"></i></div>
+      <div class="meta"><p class="t">YEPP</p><p class="s">Digitális csomag fiataloknak</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+  </div>
+
+  <!-- ============= NAV ============= -->
+  <div class="nav" style="display:none;">
+    <div class="nitem on"><i class="ti ti-home"></i>Kezdőlap</div>
+    <div class="nitem"><i class="ti ti-receipt"></i>Számláim</div>
+    <div class="nitem"><i class="ti ti-files"></i>Dokumentumok</div>
+    <div class="nitem"><i class="ti ti-user"></i>Profil</div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var screens = Array.prototype.slice.call(document.querySelectorAll('[data-screen]'));
+  var navBar = document.querySelector('.nav');
+  function showScreen(name){
+    screens.forEach(function(s){ s.style.display = s.getAttribute('data-screen') === name ? 'block' : 'none'; });
+    if (navBar) navBar.style.display = (name === 'welcome' || name === 'login') ? 'none' : 'flex';
+    var t = document.querySelector('[data-screen="'+name+'"]'); if (t) t.scrollTop = 0;
+  }
+  showScreen('welcome');
+  Array.prototype.slice.call(document.querySelectorAll('[data-open-detail]')).forEach(function(el){
+    el.addEventListener('click', function(){ showScreen('detail'); });
+  });
+  Array.prototype.slice.call(document.querySelectorAll('[data-goto]')).forEach(function(el){
+    el.addEventListener('click', function(){ showScreen(el.getAttribute('data-goto')); });
+  });
+  Array.prototype.slice.call(document.querySelectorAll('[data-back]')).forEach(function(el){
+    el.addEventListener('click', function(){ showScreen('home'); });
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-acc]')).forEach(function(h){
+    h.addEventListener('click', function(){
+      var body = h.nextElementSibling;
+      var chev = h.querySelector('.achev');
+      var open = body.style.display !== 'none';
+      body.style.display = open ? 'none' : 'block';
+      chev.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+  });
+
+  var hcar = document.querySelector('.hcar');
+  var hdots = Array.prototype.slice.call(document.querySelectorAll('.hdots span'));
+  if (hcar && hdots.length){
+    var cards = hcar.querySelectorAll('.pcard');
+    function stepW(){ return cards[0].offsetWidth + 13; }
+    function updDots(){
+      var i = Math.round(hcar.scrollLeft / stepW());
+      if (i < 0) i = 0; if (i > hdots.length - 1) i = hdots.length - 1;
+      hdots.forEach(function(d, k){ d.classList.toggle('on', k === i); });
+    }
+    hcar.addEventListener('scroll', updDots, { passive: true });
+    updDots();
+    var auto;
+    function startAuto(){
+      clearInterval(auto);
+      auto = setInterval(function(){
+        var i = (Math.round(hcar.scrollLeft / stepW()) + 1) % cards.length;
+        hcar.scrollTo({ left: i * stepW(), behavior: 'smooth' });
+      }, 5000);
+    }
+    hcar.addEventListener('pointerdown', startAuto);
+    startAuto();
+  }
+})();
+</script>
+
+</body>
+</html>
