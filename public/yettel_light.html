@@ -21,7 +21,6 @@
   body{margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:26px 12px;
        font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
        background:
-         radial-gradient(120% 90% at 12% -8%, rgba(198,242,78,.20), transparent 52%),
          radial-gradient(120% 90% at 100% 108%, rgba(70,110,255,.16), transparent 55%),
          #E7ECF6;}
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
@@ -69,11 +68,10 @@
 
   /* hero = premium blue card on white */
   .hero{position:relative; border-radius:28px; padding:22px 22px 20px; overflow:hidden; color:var(--hi);
-        background:radial-gradient(125% 110% at 100% 0%, #E9F5C6 0%, #F7FBEE 40%, #FFFFFF 68%);
+        background:radial-gradient(circle 136px at calc(100% - 65px) -15px, rgba(255,255,255,.95) 0%, rgba(224,240,185,.5) 53%, rgba(198,242,78,0) 100%),
+                   radial-gradient(125% 110% at 100% 0%, #E9F5C6 0%, #F7FBEE 40%, #FFFFFF 68%);
         border:1px solid var(--line);
         box-shadow:0 16px 30px -16px rgba(20,36,94,.24), inset 0 1px 0 rgba(255,255,255,.9);}
-  .hero .sheen{position:absolute; width:300px;height:300px; border-radius:50%; top:-165px; right:-85px;
-        background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(224,240,185,.5) 34%,rgba(198,242,78,0) 64%); filter:blur(4px);}
   .hero .grid{position:absolute; inset:0; background-image:linear-gradient(rgba(20,36,94,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(20,36,94,.05) 1px,transparent 1px); background-size:26px 26px; mask-image:radial-gradient(120% 90% at 100% 0%, #000, transparent 70%); opacity:.7;}
   .hero-row{position:relative; display:flex; align-items:center; justify-content:space-between;}
   .plan-tag{display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--limed); text-transform:uppercase;}
@@ -346,7 +344,7 @@
     <div class="hcar">
 
       <div class="hero pcard" data-open-detail>
-        <div class="sheen"></div>
+        
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2024</span><span class="g5">Havidíjas</span></div>
         <p class="num">+36 20 290 7430</p>
         <p class="plan-sub">Megújul · 2026. 07. 31.</p>
@@ -368,7 +366,7 @@
       </div>
 
       <div class="hero pcard" data-open-detail>
-        <div class="sheen"></div>
+        
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2025</span><span class="g5">Havidíjas</span></div>
         <p class="num">+36 20 290 7566</p>
         <p class="plan-sub">Megújul · 2026. 07. 22.</p>
@@ -389,7 +387,7 @@
       </div>
 
       <div class="hero pcard">
-        <div class="sheen"></div>
+        
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>XS+</span><span class="g5">Feltöltőkártyás</span></div>
         <p class="num">+36 20 290 9734</p>
         <p class="plan-sub">Havidíj nélkül</p>

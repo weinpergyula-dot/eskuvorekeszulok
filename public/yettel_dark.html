@@ -69,11 +69,10 @@
   .hdots span.on{width:20px;background:var(--lime); box-shadow:0 0 10px rgba(198,242,78,.6);}
 
   .hero{position:relative; border-radius:28px; padding:22px 22px 20px; overflow:hidden;
-        background:linear-gradient(155deg,#233472 0%,#182a63 42%,#0F1E4C 100%);
+        background:radial-gradient(circle 114px at calc(100% - 60px) -20px, rgba(198,242,78,.55) 0%, rgba(198,242,78,0) 100%),
+                   linear-gradient(155deg,#233472 0%,#182a63 42%,#0F1E4C 100%);
         border:1px solid rgba(255,255,255,.12);
         box-shadow:0 24px 50px -18px rgba(6,12,40,.9), inset 0 1px 0 rgba(255,255,255,.14);}
-  .hero .sheen{position:absolute; width:260px;height:260px; border-radius:50%; top:-150px; right:-70px;
-        background:radial-gradient(circle,rgba(198,242,78,.55),rgba(198,242,78,0) 62%); filter:blur(6px);}
   .hero .grid{position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px); background-size:26px 26px; mask-image:radial-gradient(120% 90% at 100% 0%, #000, transparent 70%); opacity:.5;}
   .hero-row{position:relative; display:flex; align-items:center; justify-content:space-between;}
   .plan-tag{display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--lime); text-transform:uppercase;}
@@ -355,7 +354,7 @@
     <div class="hcar">
 
       <div class="hero pcard" data-open-detail>
-        <div class="sheen"></div>
+        
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2024</span><span class="g5">Havidíjas</span></div>
         <p class="num">+36 20 290 7430</p>
         <p class="plan-sub">Megújul · 2026. 07. 31.</p>
@@ -377,7 +376,7 @@
       </div>
 
       <div class="hero pcard" data-open-detail>
-        <div class="sheen"></div>
+        
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2025</span><span class="g5">Havidíjas</span></div>
         <p class="num">+36 20 290 7566</p>
         <p class="plan-sub">Megújul · 2026. 07. 22.</p>
@@ -398,7 +397,7 @@
       </div>
 
       <div class="hero pcard">
-        <div class="sheen"></div>
+        
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>XS+</span><span class="g5">Feltöltőkártyás</span></div>
         <p class="num">+36 20 290 9734</p>
         <p class="plan-sub">Havidíj nélkül</p>
