@@ -154,7 +154,7 @@
   .promo .pct small{font-size:20px; vertical-align:top;}
 
   .nav{position:absolute; left:16px; right:16px; bottom:16px; height:70px; border-radius:26px; display:flex; align-items:center; justify-content:space-around; z-index:5;
-       background:rgba(255,255,255,.82); border:1px solid rgba(20,36,94,.08); backdrop-filter:blur(22px);
+       background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.75); -webkit-backdrop-filter:blur(30px) saturate(170%); backdrop-filter:blur(30px) saturate(170%);
        box-shadow:0 20px 40px -14px rgba(20,36,94,.28), inset 0 1px 0 rgba(255,255,255,.8);}
   .nitem{display:flex; flex-direction:column; align-items:center; gap:5px; color:var(--low); font-size:10px; font-weight:600; cursor:pointer; flex:1;}
   .nitem i{font-size:22px;}
@@ -232,7 +232,7 @@
   .wactions{flex:0 0 auto; display:flex; flex-direction:column; gap:12px;}
   .wbtn{width:100%; border:none; border-radius:18px; font-family:'Manrope'; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;}
   .wbtn.primary{padding:18px; font-size:16px; color:#FFFFFF; background:linear-gradient(135deg,#1D2F6B,#14245E); box-shadow:0 16px 34px -12px rgba(20,36,94,.5);}
-  .wbtn.ghost{padding:15px; font-size:13px; color:var(--navy); background:rgba(255,255,255,.72); border:1px solid rgba(20,36,94,.14); backdrop-filter:blur(6px);}
+  .wbtn.ghost{padding:15px; font-size:13px; color:var(--navy); background:rgba(255,255,255,.72); border:1px solid rgba(20,36,94,.14); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
   .wbtn.link{padding:8px; font-size:13px; color:var(--navy); background:none;}
   .loginwrap{padding:14px 4px 0; display:flex; flex-direction:column;}
   .loginwrap .wbrand{font-size:24px; color:var(--navy); margin-bottom:22px;}
@@ -246,7 +246,7 @@
   .ldiv{display:flex; align-items:center; gap:12px; margin:20px 0;}
   .ldiv::before,.ldiv::after{content:''; flex:1; height:1px; background:var(--line);}
   .ldiv span{font-size:12px; color:var(--low);}
-  .wbox{background:rgba(255,255,255,.72); border:1px solid rgba(20,36,94,.14); border-radius:18px; overflow:hidden; backdrop-filter:blur(6px);}
+  .wbox{background:rgba(255,255,255,.72); border:1px solid rgba(20,36,94,.14); border-radius:18px; overflow:hidden; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
   .wboxbtn{width:100%; border:none; background:none; padding:15px; font-family:'Manrope'; font-weight:700; font-size:13px; color:var(--navy); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;}
   .wboxbtn:active{background:rgba(20,36,94,.04);}
   .wboxdiv{height:1px; background:rgba(20,36,94,.12);}
@@ -261,9 +261,35 @@
   #s-addservice:checked ~ [data-screen="add-service"],
   #s-allsubs:checked ~ [data-screen="all-subs"],
   #s-alldev:checked ~ [data-screen="all-devices"],
-  #s-devdetail:checked ~ [data-screen="device-detail"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav{display:flex !important;}
+  #s-devdetail:checked ~ [data-screen="device-detail"],
+  #s-fun:checked ~ [data-screen="fun"]{display:block !important;}
+  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .funhead{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-radius:20px; margin-top:14px;
+           background:#FFFFFF; border:1px solid var(--line); box-shadow:0 8px 20px -14px rgba(20,36,94,.22);}
+  .fhl{font-size:10px; color:var(--low); letter-spacing:.14em; font-weight:700; margin:0;}
+  .fhv{font-family:'Sora'; font-size:24px; font-weight:700; margin:3px 0 0;}
+  .fhv span{font-size:12px; font-weight:600; color:var(--mid);}
+  .fhb{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:#0B1330; padding:9px 14px; border-radius:999px; cursor:pointer;
+       background:linear-gradient(140deg,var(--lime2),var(--lime3));}
+  .funintro{font-size:12.5px; color:var(--mid); margin:16px 4px 16px; line-height:1.5;}
+  .funcard{position:relative; overflow:hidden; display:flex; align-items:center; gap:14px; padding:18px 16px; border-radius:22px; margin-bottom:12px; cursor:pointer;
+           border:1px solid rgba(255,255,255,.16); transition:transform .18s;}
+  .funcard:hover{transform:translateY(-3px);}
+  .funcard.c1{background:linear-gradient(135deg,#2E7D32 0%,#7CB342 55%,#C6F24E 100%); box-shadow:0 18px 34px -18px rgba(124,179,66,.75);}
+  .funcard.c2{background:linear-gradient(135deg,#1A3A8F 0%,#3B6FFF 60%,#6CA0FF 100%); box-shadow:0 18px 34px -18px rgba(59,111,255,.75);}
+  .funcard.c3{background:linear-gradient(135deg,#5B2A9E 0%,#8E4BE0 55%,#C77DFF 100%); box-shadow:0 18px 34px -18px rgba(142,75,224,.75);}
+  .funcard .fb1{position:absolute; width:130px;height:130px;border-radius:50%; right:-34px; top:-56px; background:rgba(255,255,255,.16);}
+  .funcard .fb2{position:absolute; width:86px;height:86px;border-radius:50%; right:46px; bottom:-48px; background:rgba(0,0,0,.10);}
+  .funic{position:relative; width:46px;height:46px;border-radius:15px; display:flex;align-items:center;justify-content:center; flex-shrink:0;
+         background:rgba(255,255,255,.22); border:1px solid rgba(255,255,255,.32);}
+  .funic i{font-size:24px; color:#FFFFFF;}
+  .funtx{position:relative; flex:1; min-width:0;}
+  .funtx .ft{font-family:'Sora'; font-size:16px; font-weight:700; margin:0; color:#FFFFFF;}
+  .funtx .fs{font-size:11.5px; margin:3px 0 0; color:rgba(255,255,255,.85);}
+  .fungo{position:relative; width:34px;height:34px;border-radius:50%; display:flex;align-items:center;justify-content:center; flex-shrink:0;
+         background:rgba(255,255,255,.92);}
+  .fungo i{font-size:15px; color:#14245E;}
   .menuscrim{position:absolute; inset:0; z-index:8; display:none; background:rgba(20,36,94,.35);}
   #s-menu:checked ~ .menuscrim{display:block;}
   .menupanel{position:absolute; top:0; right:0; bottom:0; width:82%; max-width:312px; z-index:9;
@@ -307,6 +333,7 @@
   <input class="rt" type="radio" name="nav" id="s-allsubs">
   <input class="rt" type="radio" name="nav" id="s-alldev">
   <input class="rt" type="radio" name="nav" id="s-devdetail">
+  <input class="rt" type="radio" name="nav" id="s-fun">
   <input class="rt" type="checkbox" id="s-menu">
   <label class="menuscrim" for="s-menu"></label>
   <div class="menupanel">
@@ -397,7 +424,7 @@
       <div class="qtile"><div class="qic"><i class="ti ti-ticket"></i></div><span>Kuponok</span></div>
       <div class="qtile"><div class="qic"><i class="ti ti-parking"></i></div><span>Parkolás</span></div>
       <div class="qtile"><div class="qic"><i class="ti ti-car"></i></div><span>Autópálya</span></div>
-      <div class="qtile"><div class="qic"><i class="ti ti-star"></i></div><span>Élménytér</span></div>
+      <label class="qtile" for="s-fun"><div class="qic"><i class="ti ti-star"></i></div><span>Élménytér</span></label>
     </div>
 
     <div class="hcar">
@@ -532,7 +559,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Szolgáltatás részletei</span>
-      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+      <div style="width:42px"></div>
     </div>
 
     <div class="planbar">
@@ -594,7 +621,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Szolgáltatás részletei</span>
-      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+      <div style="width:42px"></div>
     </div>
 
     <div class="planbar">
@@ -652,7 +679,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Szolgáltatás részletei</span>
-      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+      <div style="width:42px"></div>
     </div>
 
     <div class="planbar">
@@ -715,7 +742,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Új szolgáltatás</span>
-      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+      <div style="width:42px"></div>
     </div>
 
     <p class="mlab" style="margin-top:14px;">Válassz szolgáltatást</p>
@@ -752,7 +779,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Összes előfizetés</span>
-      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+      <div style="width:42px"></div>
     </div>
 
     <label class="addsvc" for="s-addservice" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás hozzáadása</label>
@@ -792,7 +819,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Összes készülék</span>
-      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+      <div style="width:42px"></div>
     </div>
 
     <div class="addsvc" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</div>
@@ -834,7 +861,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Készülék részletei</span>
-      <div class="icon-btn"><i class="ti ti-dots"></i></div>
+      <div style="width:42px"></div>
     </div>
 
     <div class="planbar">
@@ -872,6 +899,46 @@
       <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Szerviz igénylése</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic"><i class="ti ti-lock-open"></i></span><span class="n">Hálózati függetlenítés</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Számla és dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+  </div>
+
+  <!-- ============= ÉLMÉNYTÉR ============= -->
+  <div class="screen" data-screen="fun" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Élménytér</span>
+      <div style="width:42px"></div>
+    </div>
+
+    <div class="funhead">
+      <div>
+        <p class="fhl">EGYENLEGED</p>
+        <p class="fhv">1 240 <span>pont</span></p>
+      </div>
+      <span class="fhb"><i class="ti ti-gift" style="font-size:15px"></i>Beváltás</span>
+    </div>
+
+    <p class="funintro">Játssz, gyűjts pontokat, és váltsd be őket kedvezményekre — csak Yettel-ügyfeleknek.</p>
+
+    <div class="funcard c1">
+      <div class="fb1"></div><div class="fb2"></div>
+      <span class="funic"><i class="ti ti-bulb"></i></span>
+      <div class="funtx"><p class="ft">Kvíz</p><p class="fs">Napi 3 kérdés · azonnali pontok</p></div>
+      <span class="fungo"><i class="ti ti-player-play"></i></span>
+    </div>
+
+    <div class="funcard c2">
+      <div class="fb1"></div><div class="fb2"></div>
+      <span class="funic"><i class="ti ti-bolt"></i></span>
+      <div class="funtx"><p class="ft">Netvill</p><p class="fs">Gyorsasági játék · heti ranglista</p></div>
+      <span class="fungo"><i class="ti ti-player-play"></i></span>
+    </div>
+
+    <div class="funcard c3">
+      <div class="fb1"></div><div class="fb2"></div>
+      <span class="funic"><i class="ti ti-trophy"></i></span>
+      <div class="funtx"><p class="ft">Játssz és nyerj</p><p class="fs">Heti nyereményjáték · 3 sorsolás</p></div>
+      <span class="fungo"><i class="ti ti-player-play"></i></span>
     </div>
   </div>
 
