@@ -233,7 +233,7 @@
   .wbtn{width:100%; border:none; border-radius:18px; font-family:'Manrope'; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;}
   .wbtn.primary{padding:18px; font-size:16px; color:#FFFFFF; background:linear-gradient(135deg,#1D2F6B,#14245E); box-shadow:0 16px 34px -12px rgba(20,36,94,.5);}
   .wbtn.ghost{padding:15px; font-size:13px; color:var(--navy); background:rgba(255,255,255,.72); border:1px solid rgba(20,36,94,.14); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
-  .wbtn.link{padding:8px; font-size:13px; color:var(--navy); background:none;}
+  .wbtn.link{padding:8px; font-size:13px; color:var(--navy); background:none; text-decoration:none;}
   .loginwrap{padding:14px 4px 0; display:flex; flex-direction:column;}
   .loginwrap .wbrand{font-size:24px; color:var(--navy); margin-bottom:22px;}
   .lhead{font-family:'Sora'; font-weight:700; font-size:22px; margin:0 0 6px; color:var(--navy);}
@@ -262,9 +262,32 @@
   #s-allsubs:checked ~ [data-screen="all-subs"],
   #s-alldev:checked ~ [data-screen="all-devices"],
   #s-devdetail:checked ~ [data-screen="device-detail"],
-  #s-fun:checked ~ [data-screen="fun"]{display:block !important;}
+  #s-fun:checked ~ [data-screen="fun"],
+  #s-buy:checked ~ [data-screen="buy"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .buyhead{font-family:'Sora'; font-size:25px; font-weight:800; letter-spacing:-.02em; line-height:1.15; margin:16px 2px 9px; color:var(--hi);}
+  .buysub{font-size:13px; color:var(--mid); line-height:1.5; margin:0 2px 20px;}
+  .buycard{position:relative; display:flex; align-items:center; gap:14px; padding:16px; border-radius:22px; margin-bottom:12px; cursor:pointer;
+           background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.24); transition:transform .18s, border-color .18s;}
+  .buycard:hover{transform:translateY(-2px); border-color:rgba(198,242,78,.32);}
+  .buyic{width:52px;height:52px;border-radius:16px; display:flex;align-items:center;justify-content:center; flex-shrink:0; align-self:flex-start;}
+  .buyic.lime{background:linear-gradient(140deg,var(--lime2),var(--lime3)); box-shadow:0 10px 22px -8px rgba(198,242,78,.55);}
+  .buyic.blue{background:linear-gradient(140deg,#5C7CFF,#2E46C8); box-shadow:0 10px 22px -8px rgba(59,90,255,.5);}
+  .buyic.violet{background:linear-gradient(140deg,#B78CFF,#7A4BE0); box-shadow:0 10px 22px -8px rgba(150,90,255,.5);}
+  .buyic.slate{background:linear-gradient(140deg,#8DA0C9,#5C6F9E); box-shadow:0 10px 22px -8px rgba(120,140,200,.45);}
+  .buyic.sun{background:linear-gradient(140deg,#FFB25A,#FF6FA5); box-shadow:0 10px 22px -8px rgba(255,140,120,.5);}
+  .buyic i{font-size:27px; color:#0B1330;}
+  .buyic.blue i,.buyic.violet i,.buyic.slate i,.buyic.sun i{color:#fff;}
+  .buytx{flex:1; min-width:0;}
+  .buytop{display:flex; align-items:center; gap:8px;}
+  .buytx .bt{font-family:'Sora'; font-size:15px; font-weight:700; margin:0; color:var(--hi);}
+  .bbadge{font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:7px; color:#0B1330; background:var(--lime);}
+  .bbadge.new{background:linear-gradient(135deg,#FFB25A,#FF6FA5); color:#fff;}
+  .buytx .bs{font-size:12px; color:var(--mid); line-height:1.45; margin:3px 0 7px;}
+  .buytx .bp{font-family:'Sora'; font-size:15px; font-weight:700; margin:0; color:var(--hi);}
+  .buytx .bp span{font-family:'Manrope'; font-size:11px; font-weight:600; color:var(--low);}
+  .bchev{font-size:20px; color:var(--low); align-self:center;}
   .funhead{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-radius:20px; margin-top:14px;
            background:#FFFFFF; border:1px solid var(--line); box-shadow:0 8px 20px -14px rgba(20,36,94,.22);}
   .fhl{font-size:10px; color:var(--low); letter-spacing:.14em; font-weight:700; margin:0;}
@@ -334,6 +357,7 @@
   <input class="rt" type="radio" name="nav" id="s-alldev">
   <input class="rt" type="radio" name="nav" id="s-devdetail">
   <input class="rt" type="radio" name="nav" id="s-fun">
+  <input class="rt" type="radio" name="nav" id="s-buy">
   <input class="rt" type="checkbox" id="s-menu">
   <label class="menuscrim" for="s-menu"></label>
   <div class="menupanel">
@@ -370,7 +394,7 @@
       </div>
       <div class="wactions">
         <label class="wbtn primary" for="s-login">Belépés</label>
-        <button class="wbtn ghost">Nincs még Yettel szolgáltatásod?</button>
+        <label class="wbtn ghost" for="s-buy">Nincs még Yettel szolgáltatásod?</label>
         <button class="wbtn link"><i class="ti ti-device-sim" style="font-size:18px"></i> SIM-kártya aktiválása</button>
       </div>
     </div>
@@ -939,6 +963,68 @@
       <span class="funic"><i class="ti ti-trophy"></i></span>
       <div class="funtx"><p class="ft">Játssz és nyerj</p><p class="fs">Heti nyereményjáték · 3 sorsolás</p></div>
       <span class="fungo"><i class="ti ti-player-play"></i></span>
+    </div>
+  </div>
+
+  <!-- ============= SZOLGÁLTATÁSVÁSÁRLÁS ============= -->
+  <div class="screen" data-screen="buy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-welcome"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatásvásárlás</span>
+      <div style="width:42px"></div>
+    </div>
+
+    <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
+    <p class="buysub">Percek alatt aktiváljuk. Hűségidő nélküli és kedvezményes csomagok — mind egy helyen.</p>
+
+    <div class="buycard">
+      <span class="buyic lime"><i class="ti ti-infinity"></i></span>
+      <div class="buytx">
+        <div class="buytop"><p class="bt">Havidíjas mobil</p><span class="bbadge">Népszerű</span></div>
+        <p class="bs">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
+        <p class="bp">4 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic violet"><i class="ti ti-device-tv"></i></span>
+      <div class="buytx">
+        <p class="bt">Otthoni internet és TV</p>
+        <p class="bs">Optikai net akár 1 Gbps + 120+ csatorna, felhőalapú felvétellel.</p>
+        <p class="bp">8 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic blue"><i class="ti ti-router"></i></span>
+      <div class="buytx">
+        <p class="bt">Otthoni internet</p>
+        <p class="bs">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
+        <p class="bp">6 490 Ft<span> / hó-tól</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic slate"><i class="ti ti-device-mobile"></i></span>
+      <div class="buytx">
+        <p class="bt">Feltöltőkártyás mobil</p>
+        <p class="bs">Kötöttség és havidíj nélkül, egyenleg alapon — a te tempódban.</p>
+        <p class="bp">1 990 Ft<span> / feltöltéstől</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic sun"><i class="ti ti-bolt"></i></span>
+      <div class="buytx">
+        <div class="buytop"><p class="bt">YEPP</p><span class="bbadge new">Új</span></div>
+        <p class="bs">Digitális csomag fiataloknak — közösségi appok korlátlanul.</p>
+        <p class="bp">2 490 Ft<span> / hó</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
     </div>
   </div>
 
