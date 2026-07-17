@@ -201,9 +201,9 @@
   @keyframes wshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
   @keyframes wfloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(-34px,44px)}}
   @keyframes wfloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-34px)}}
-  @keyframes hbdrift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-70px,95px)}}
-  @keyframes hbdrift2{0%,100%{transform:translate(0,0)}50%{transform:translate(85px,-75px)}}
-  @keyframes hbdrift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-65px,-85px)}}
+  @keyframes hbdrift1{0%,100%{transform:translate(0,0)}30%{transform:translate(-110px,130px)}65%{transform:translate(50px,250px)}}
+  @keyframes hbdrift2{0%,100%{transform:translate(0,0)}35%{transform:translate(140px,-100px)}70%{transform:translate(55px,-230px)}}
+  @keyframes hbdrift3{0%,100%{transform:translate(0,0)}40%{transform:translate(-125px,-110px)}75%{transform:translate(-45px,-240px)}}
   .ydot{display:inline-block; width:.3em; height:.3em; margin-left:.06em; background:currentColor; vertical-align:baseline; border-radius:2px; transform-origin:center; animation:ybounce 4s ease-in-out infinite;}
   @keyframes ybounce{
     0%{transform:translateY(-1.2em) rotate(0deg); border-radius:2px; clip-path:none;}
@@ -257,10 +257,10 @@
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .homebg{position:absolute; inset:0; z-index:0; pointer-events:none; display:none; overflow:hidden;}
   #s-home:checked ~ .homebg{display:block;}
-  .homebg span{position:absolute; border-radius:50%; filter:blur(28px);}
-  .homebg .hb1{width:160px;height:160px; top:9%; right:-24px; background:radial-gradient(circle,rgba(198,242,78,.75),transparent 65%); animation:hbdrift1 14s ease-in-out infinite;}
-  .homebg .hb2{width:140px;height:140px; top:45%; left:-22px; background:radial-gradient(circle,rgba(198,242,78,.65),transparent 65%); animation:hbdrift2 18s ease-in-out infinite;}
-  .homebg .hb3{width:150px;height:150px; bottom:12%; right:12%; background:radial-gradient(circle,rgba(198,242,78,.58),transparent 65%); animation:hbdrift3 22s ease-in-out infinite;}
+  .homebg span{position:absolute; border-radius:50%; filter:blur(34px);}
+  .homebg .hb1{width:240px;height:240px; top:7%; right:-50px; background:radial-gradient(circle,rgba(218,255,110,.78),transparent 65%); animation:hbdrift1 16s ease-in-out infinite;}
+  .homebg .hb2{width:210px;height:210px; top:44%; left:-55px; background:radial-gradient(circle,rgba(218,255,110,.68),transparent 65%); animation:hbdrift2 22s ease-in-out infinite;}
+  .homebg .hb3{width:220px;height:220px; bottom:10%; right:8%; background:radial-gradient(circle,rgba(218,255,110,.62),transparent 65%); animation:hbdrift3 26s ease-in-out infinite;}
 </style>
 </head>
 <body>
