@@ -69,11 +69,8 @@
 
   /* hero = premium blue card on white */
   .hero{position:relative; border-radius:28px; padding:22px 22px 20px; overflow:hidden; color:var(--hi);
-        background:radial-gradient(110% 85% at 4% -2%, rgba(150,120,255,.11), transparent 58%),
-                   radial-gradient(110% 85% at 4% 102%, rgba(150,120,255,.11), transparent 58%),
-                   radial-gradient(95% 75% at 100% 100%, rgba(64,190,205,.11), transparent 60%),
-                   radial-gradient(85% 55% at 90% 4%, rgba(88,138,255,.24), transparent 62%),
-                   #FCFDFF;
+        background:radial-gradient(85% 55% at 90% 4%, rgba(88,138,255,.24), transparent 62%),
+                   #FFFFFF;
         border:1px solid var(--line);
         box-shadow:0 5px 12px -6px rgba(20,36,94,.10), 0 16px 32px -14px rgba(20,36,94,.16), inset 0 1px 0 rgba(255,255,255,.9);}
   .hero .grid{position:absolute; inset:0; background-image:linear-gradient(rgba(20,36,94,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(20,36,94,.05) 1px,transparent 1px); background-size:26px 26px; mask-image:radial-gradient(120% 90% at 100% 0%, #000, transparent 70%); opacity:.7;}
@@ -104,9 +101,9 @@
   /* hero világos témát használ, alap színekkel */
 
   .cactions{position:relative; display:flex; gap:9px; margin-top:16px;}
-  .cbtn{flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:12px 6px; border-radius:16px;
-        background:#FFFFFF; border:1px dashed #A9CE5A; color:var(--limed); font-family:'Manrope'; font-weight:700; font-size:11px; white-space:nowrap; cursor:pointer; transition:background .18s;}
-  .cbtn:hover{background:#F6FAEE;}
+  .cbtn{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:11px 8px; border-radius:14px;
+        background:#F1F5FC; border:1px solid var(--line); color:var(--navy); font-family:'Manrope'; font-weight:600; font-size:11px; white-space:nowrap; cursor:pointer; transition:background .18s;}
+  .cbtn:hover{background:#E9EFF8;}
   .cbtn .c{width:18px;height:18px;border-radius:50%; border:1.5px solid #7AB800; display:flex;align-items:center;justify-content:center; flex-shrink:0;}
   .cbtn .c i{font-size:11px; color:#7AB800;}
   .fbtn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(140deg,var(--lime2),var(--lime3));color:#0B1330;border:none;font-family:'Manrope';font-weight:700;font-size:12px;padding:11px 16px;border-radius:999px;cursor:pointer;}
