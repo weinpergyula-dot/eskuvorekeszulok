@@ -272,9 +272,29 @@
   #s-alldev:checked ~ [data-screen="all-devices"],
   #s-devdetail:checked ~ [data-screen="device-detail"],
   #s-fun:checked ~ [data-screen="fun"],
-  #s-buy:checked ~ [data-screen="buy"]{display:block !important;}
+  #s-buy:checked ~ [data-screen="buy"],
+  #s-addrbuy:checked ~ [data-screen="addr-buy"],
+  #s-addrsvc:checked ~ [data-screen="addr-svc"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .btrial{display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:8px; margin:0 0 8px;
+          color:var(--lime); background:rgba(198,242,78,.14); border:1px solid rgba(198,242,78,.30);}
+  .btrial i{font-size:13px;}
+  .formscr{display:flex; flex-direction:column; padding-bottom:22px;}
+  .formbody{flex:1 0 auto;}
+  .afl{display:block; font-size:13px; font-weight:700; color:var(--hi); margin:18px 2px 8px;}
+  .afl span{color:var(--lime);}
+  .afield{height:56px; border-radius:16px; display:flex; align-items:center; padding:0 16px; background:var(--glass); border:1px solid var(--stroke);}
+  .afield input{flex:1; border:none; background:none; outline:none; font-family:'Manrope'; font-size:15px; color:var(--hi);}
+  .afield input::placeholder{color:var(--low);}
+  .ahelp{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; margin-top:20px; cursor:pointer;
+         background:rgba(92,124,255,.15); border:1px solid rgba(92,124,255,.30);}
+  .ahic{width:36px;height:36px;border-radius:11px; display:flex;align-items:center;justify-content:center; flex-shrink:0; background:rgba(92,124,255,.22);}
+  .ahic i{font-size:19px; color:#9DB6FF;}
+  .ahelp p{flex:1; font-size:13px; font-weight:700; color:var(--hi); margin:0; line-height:1.35;}
+  .ahelp > i{font-size:18px; color:var(--low);}
+  .acont{width:100%; padding:16px; border-radius:16px; border:none; font-family:'Manrope'; font-weight:700; font-size:15px; cursor:pointer;
+         background:linear-gradient(135deg,var(--lime2),var(--lime3)); color:#0B1330; box-shadow:0 12px 26px -10px rgba(198,242,78,.5);}
   .buyhead{font-family:'Sora'; font-size:25px; font-weight:800; letter-spacing:-.02em; line-height:1.15; margin:16px 2px 9px; color:var(--hi);}
   .buysub{font-size:13px; color:var(--mid); line-height:1.5; margin:0 2px 20px;}
   .buycard{position:relative; display:flex; align-items:center; gap:14px; padding:16px; border-radius:22px; margin-bottom:12px; cursor:pointer;
@@ -367,6 +387,8 @@
   <input class="rt" type="radio" name="nav" id="s-devdetail">
   <input class="rt" type="radio" name="nav" id="s-fun">
   <input class="rt" type="radio" name="nav" id="s-buy">
+  <input class="rt" type="radio" name="nav" id="s-addrbuy">
+  <input class="rt" type="radio" name="nav" id="s-addrsvc">
   <input class="rt" type="checkbox" id="s-menu">
   <label class="menuscrim" for="s-menu"></label>
   <div class="menupanel">
@@ -771,41 +793,6 @@
   </div>
 
   <!-- ============= ADD SERVICE ============= -->
-  <div class="screen" data-screen="add-service" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Új szolgáltatás</span>
-      <div style="width:42px"></div>
-    </div>
-
-    <p class="mlab" style="margin-top:14px;">Válassz szolgáltatást</p>
-
-    <div class="sub">
-      <div class="itile violet"><i class="ti ti-device-tv"></i></div>
-      <div class="meta"><p class="t">Otthoni internet és TV</p><p class="s">Internet és televízió egy csomagban</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub">
-      <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="t">Otthoni internet</p><p class="s">Nagy sebességű otthoni net</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub">
-      <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">Havidíjas mobil</p><p class="s">Korlátlan nettel, havidíjas előfizetés</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub">
-      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">Feltöltőkártyás mobil</p><p class="s">Egyenleg alapú, havidíj nélkül</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub">
-      <div class="itile"><i class="ti ti-bolt"></i></div>
-      <div class="meta"><p class="t">YEPP</p><p class="s">Digitális csomag fiataloknak</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-  </div>
 
   <!-- ============= ALL SUBSCRIPTIONS ============= -->
   <div class="screen" data-screen="all-subs" style="display:none;">
@@ -976,16 +963,16 @@
   </div>
 
   <!-- ============= SZOLGÁLTATÁSVÁSÁRLÁS ============= -->
+
+  <!-- ============= SZOLGÁLTATÁSVÁSÁRLÁS ============= -->
   <div class="screen" data-screen="buy" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-welcome"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Szolgáltatásvásárlás</span>
       <div style="width:42px"></div>
     </div>
-
     <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
-    <p class="buysub">Percek alatt aktiváljuk. Hűségidő nélküli és kedvezményes csomagok — mind egy helyen.</p>
-
+    <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
     <div class="buycard">
       <span class="buyic lime"><i class="ti ti-infinity"></i></span>
       <div class="buytx">
@@ -996,25 +983,27 @@
       <i class="ti ti-chevron-right bchev"></i>
     </div>
 
-    <div class="buycard">
+    <label class="buycard" for="s-addrbuy">
       <span class="buyic violet"><i class="ti ti-device-tv"></i></span>
       <div class="buytx">
         <p class="bt">Otthoni internet és TV</p>
         <p class="bs">Optikai net akár 1 Gbps + 120+ csatorna, felhőalapú felvétellel.</p>
+        <span class="btrial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
         <p class="bp">8 990 Ft<span> / hó-tól</span></p>
       </div>
       <i class="ti ti-chevron-right bchev"></i>
-    </div>
+    </label>
 
-    <div class="buycard">
+    <label class="buycard" for="s-addrbuy">
       <span class="buyic blue"><i class="ti ti-router"></i></span>
       <div class="buytx">
         <p class="bt">Otthoni internet</p>
         <p class="bs">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
+        <span class="btrial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
         <p class="bp">6 490 Ft<span> / hó-tól</span></p>
       </div>
       <i class="ti ti-chevron-right bchev"></i>
-    </div>
+    </label>
 
     <div class="buycard">
       <span class="buyic slate"><i class="ti ti-device-mobile"></i></span>
@@ -1035,6 +1024,110 @@
       </div>
       <i class="ti ti-chevron-right bchev"></i>
     </div>
+  </div>
+
+  <!-- ============= ÚJ SZOLGÁLTATÁS (belső) ============= -->
+  <div class="screen" data-screen="add-service" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Új szolgáltatás</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
+    <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
+    <div class="buycard">
+      <span class="buyic lime"><i class="ti ti-infinity"></i></span>
+      <div class="buytx">
+        <div class="buytop"><p class="bt">Havidíjas mobil</p><span class="bbadge">Népszerű</span></div>
+        <p class="bs">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
+        <p class="bp">4 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <label class="buycard" for="s-addrsvc">
+      <span class="buyic violet"><i class="ti ti-device-tv"></i></span>
+      <div class="buytx">
+        <p class="bt">Otthoni internet és TV</p>
+        <p class="bs">Optikai net akár 1 Gbps + 120+ csatorna, felhőalapú felvétellel.</p>
+        <span class="btrial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
+        <p class="bp">8 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </label>
+
+    <label class="buycard" for="s-addrsvc">
+      <span class="buyic blue"><i class="ti ti-router"></i></span>
+      <div class="buytx">
+        <p class="bt">Otthoni internet</p>
+        <p class="bs">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
+        <span class="btrial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
+        <p class="bp">6 490 Ft<span> / hó-tól</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </label>
+
+    <div class="buycard">
+      <span class="buyic slate"><i class="ti ti-device-mobile"></i></span>
+      <div class="buytx">
+        <p class="bt">Feltöltőkártyás mobil</p>
+        <p class="bs">Kötöttség és havidíj nélkül, egyenleg alapon — a te tempódban.</p>
+        <p class="bp">1 990 Ft<span> / feltöltéstől</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic sun"><i class="ti ti-bolt"></i></span>
+      <div class="buytx">
+        <div class="buytop"><p class="bt">YEPP</p><span class="bbadge new">Új</span></div>
+        <p class="bs">Digitális csomag fiataloknak — közösségi appok korlátlanul.</p>
+        <p class="bp">2 490 Ft<span> / hó</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+  </div>
+
+  <!-- ============= CÍMKERESŐ: addr-buy ============= -->
+  <div class="screen formscr" data-screen="addr-buy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Címed</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="formbody">
+      <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Hova szeretnél otthon internetet?</h2>
+      <p class="buysub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
+      <label class="afl">Település vagy irányítószám <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="1097"></div>
+      <label class="afl">Közterület <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="Deák Ferenc utca"></div>
+      <label class="afl">Házszám <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="6"></div>
+      <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
+    </div>
+    <button class="acont">Tovább</button>
+  </div>
+
+  <!-- ============= CÍMKERESŐ: addr-svc ============= -->
+  <div class="screen formscr" data-screen="addr-svc" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-addservice"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Címed</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="formbody">
+      <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Hova szeretnél otthon internetet?</h2>
+      <p class="buysub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
+      <label class="afl">Település vagy irányítószám <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="1097"></div>
+      <label class="afl">Közterület <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="Deák Ferenc utca"></div>
+      <label class="afl">Házszám <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="6"></div>
+      <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
+    </div>
+    <button class="acont">Tovább</button>
   </div>
 
   <!-- ============= NAV ============= -->
