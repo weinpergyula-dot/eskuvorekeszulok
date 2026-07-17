@@ -44,6 +44,9 @@
   .icon-btn{width:42px;height:42px;border-radius:14px; display:flex;align-items:center;justify-content:center;
             background:#FFFFFF; border:1px solid var(--line); box-shadow:0 5px 14px -8px rgba(20,36,94,.25); position:relative; cursor:pointer;}
   .icon-btn i{font-size:20px;color:var(--navy);}
+  .icon-btn.burger{width:44px;height:44px;border-radius:15px; border:none;
+                   background:linear-gradient(140deg,var(--lime2),var(--lime3)); box-shadow:0 8px 20px -4px rgba(164,216,46,.5);}
+  .icon-btn.burger i{color:#0B1330;}
   .dot{position:absolute; top:9px; right:10px; width:7px;height:7px;border-radius:50%;background:var(--lime3); box-shadow:0 0 8px rgba(164,216,46,.7);}
   .avatar{width:44px;height:44px;border-radius:15px; display:flex;align-items:center;justify-content:center;
           font-family:'Sora'; font-weight:700; font-size:15px; color:#0B1330;
@@ -376,7 +379,7 @@
       <span class="brand">Yettel.</span>
       <div class="top-actions">
         <div class="icon-btn"><i class="ti ti-bell"></i><span class="dot"></span></div>
-        <label class="icon-btn" for="s-menu"><i class="ti ti-menu-2"></i></label>
+        <label class="icon-btn burger" for="s-menu"><i class="ti ti-menu-2"></i></label>
       </div>
     </div>
 
