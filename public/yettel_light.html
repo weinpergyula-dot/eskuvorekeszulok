@@ -26,13 +26,13 @@
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
 
   .app{position:relative; width:390px; max-width:100%; height:842px; border-radius:44px; overflow:hidden;
-       background:linear-gradient(180deg,#FCFDFF 0%,#EEF3FB 100%);
+       background:
+         radial-gradient(85% 55% at 90% 4%, rgba(88,138,255,.16), transparent 62%),
+         radial-gradient(75% 50% at 4% 24%, rgba(150,120,255,.12), transparent 64%),
+         radial-gradient(90% 55% at 60% 103%, rgba(64,190,205,.12), transparent 62%),
+         linear-gradient(180deg,#FCFDFF 0%,#EEF3FB 100%);
        box-shadow:0 44px 90px -26px rgba(20,36,94,.34), 0 0 0 1px rgba(20,36,94,.05), inset 0 1px 0 rgba(255,255,255,.7);
        color:var(--hi);}
-  .glow{position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; z-index:0;}
-  .glow.a{width:300px;height:300px; top:-120px; right:-80px; background:radial-gradient(circle,rgba(198,242,78,.45),transparent 65%);}
-  .glow.b{width:260px;height:260px; top:150px; left:-130px; background:radial-gradient(circle,rgba(70,110,255,.20),transparent 65%);}
-  .glow.c{width:280px;height:280px; bottom:60px; right:-120px; background:radial-gradient(circle,rgba(198,242,78,.16),transparent 65%);}
 
   .screen{position:absolute; inset:0; overflow-y:auto; padding:0 20px 122px; scrollbar-width:none; z-index:1;}
   .screen::-webkit-scrollbar{display:none;}
@@ -201,9 +201,6 @@
   @keyframes wshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
   @keyframes wfloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(-34px,44px)}}
   @keyframes wfloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-34px)}}
-  @keyframes hbdrift1{0%,100%{transform:translate(0,0)}30%{transform:translate(-110px,130px)}65%{transform:translate(50px,250px)}}
-  @keyframes hbdrift2{0%,100%{transform:translate(0,0)}35%{transform:translate(140px,-100px)}70%{transform:translate(55px,-230px)}}
-  @keyframes hbdrift3{0%,100%{transform:translate(0,0)}40%{transform:translate(-125px,-110px)}75%{transform:translate(-45px,-240px)}}
   .ydot{display:inline-block; width:.3em; height:.3em; margin-left:.06em; background:currentColor; vertical-align:baseline; border-radius:2px; transform-origin:center; animation:ybounce 4s ease-in-out infinite;}
   @keyframes ybounce{
     0%{transform:translateY(-1.2em) rotate(0deg); border-radius:2px; clip-path:none;}
@@ -255,12 +252,6 @@
   #s-addservice:checked ~ [data-screen="add-service"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
-  .homebg{position:absolute; inset:0; z-index:0; pointer-events:none; display:none; overflow:hidden;}
-  #s-home:checked ~ .homebg{display:block;}
-  .homebg span{position:absolute; border-radius:50%; filter:blur(34px);}
-  .homebg .hb1{width:240px;height:240px; top:7%; right:-50px; background:radial-gradient(circle,rgba(218,255,110,.78),transparent 65%); animation:hbdrift1 16s ease-in-out infinite;}
-  .homebg .hb2{width:210px;height:210px; top:44%; left:-55px; background:radial-gradient(circle,rgba(218,255,110,.68),transparent 65%); animation:hbdrift2 22s ease-in-out infinite;}
-  .homebg .hb3{width:220px;height:220px; bottom:10%; right:8%; background:radial-gradient(circle,rgba(218,255,110,.62),transparent 65%); animation:hbdrift3 26s ease-in-out infinite;}
 </style>
 </head>
 <body>
@@ -273,7 +264,6 @@
   <input class="rt" type="radio" name="nav" id="s-detail-net">
   <input class="rt" type="radio" name="nav" id="s-detail-tv">
   <input class="rt" type="radio" name="nav" id="s-addservice">
-  <div class="homebg"><span class="hb1"></span><span class="hb2"></span><span class="hb3"></span></div><div class="glow b"></div><div class="glow c"></div>
 
   <!-- ============= WELCOME ============= -->
   <div class="welcome" data-screen="welcome">
