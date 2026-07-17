@@ -265,9 +265,33 @@
   #s-fun:checked ~ [data-screen="fun"],
   #s-buy:checked ~ [data-screen="buy"],
   #s-addrbuy:checked ~ [data-screen="addr-buy"],
-  #s-addrsvc:checked ~ [data-screen="addr-svc"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav{display:flex !important;}
+  #s-addrsvc:checked ~ [data-screen="addr-svc"],
+  #s-notif:checked ~ [data-screen="notif"],
+  #s-devbuy:checked ~ [data-screen="devbuy"]{display:block !important;}
+  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .nbadge{position:absolute; top:-4px; right:-4px; min-width:18px; height:18px; border-radius:9px; padding:0 5px;
+          display:flex; align-items:center; justify-content:center; font-family:'Manrope'; font-size:10px; font-weight:800;
+          color:#14245E; background:var(--lime); border:2px solid #FFFFFF; box-shadow:0 4px 10px -2px rgba(164,216,46,.6);}
+  .ncard{position:relative; display:flex; gap:13px; padding:16px; border-radius:20px; margin-bottom:12px;
+         background:#FFFFFF; border:1px solid var(--line); box-shadow:0 10px 24px -16px rgba(20,36,94,.22);}
+  .ncard.unread{border-color:rgba(198,242,78,.28);}
+  .ncard.unread::after{content:""; position:absolute; top:15px; right:15px; width:8px;height:8px;border-radius:50%; background:var(--lime); box-shadow:0 0 8px var(--lime);}
+  .nic{width:42px;height:42px;border-radius:13px; display:flex;align-items:center;justify-content:center; flex-shrink:0; align-self:flex-start;}
+  .nic.warn{background:rgba(227,154,37,.16); border:1px solid rgba(227,154,37,.32);}
+  .nic.warn i{font-size:21px; color:#C87F14;}
+  .nic.ok{background:rgba(95,168,16,.16); border:1px solid rgba(95,168,16,.32);}
+  .nic.ok i{font-size:21px; color:#4E9A0E;}
+  .nic.info{background:rgba(92,124,255,.16); border:1px solid rgba(92,124,255,.32);}
+  .nic.info i{font-size:21px; color:#2E46C8;}
+  .ntx{flex:1; min-width:0;}
+  .ntx .nt{font-family:'Sora'; font-size:14px; font-weight:700; margin:0 0 4px; color:var(--hi);}
+  .ntx .ns{font-size:12.5px; color:var(--mid); line-height:1.45; margin:0;}
+  .nrow{display:flex; align-items:center; justify-content:space-between; margin-top:11px;}
+  .ntime{font-size:11px; color:var(--low);}
+  .ntime.solo{display:inline-block; margin-top:9px;}
+  .nbtn{font-family:'Manrope'; font-weight:700; font-size:12px; padding:8px 16px; border-radius:999px; border:none; cursor:pointer;
+        background:linear-gradient(140deg,var(--lime2),var(--lime3)); color:#0B1330;}
   .btrial{display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:8px; margin:0 0 8px;
           color:var(--limed); background:rgba(198,242,78,.16); border:1px solid rgba(164,216,46,.40);}
   .btrial i{font-size:13px;}
@@ -335,6 +359,7 @@
   .fungo i{font-size:15px; color:#14245E;}
   .menuscrim{position:absolute; inset:0; z-index:8; display:none; background:rgba(20,36,94,.35);}
   #s-menu:checked ~ .menuscrim{display:block;}
+  #s-menu:checked ~ [data-screen="home"]{display:block !important;}
   .menupanel{position:absolute; top:0; right:0; bottom:0; width:82%; max-width:312px; z-index:9;
              transform:translateX(103%); transition:transform .32s cubic-bezier(.4,0,.2,1);
              display:flex; flex-direction:column; padding:20px 16px 18px; overflow-y:auto; scrollbar-width:none;
@@ -380,13 +405,15 @@
   <input class="rt" type="radio" name="nav" id="s-buy">
   <input class="rt" type="radio" name="nav" id="s-addrbuy">
   <input class="rt" type="radio" name="nav" id="s-addrsvc">
-  <input class="rt" type="checkbox" id="s-menu">
-  <label class="menuscrim" for="s-menu"></label>
+  <input class="rt" type="radio" name="nav" id="s-notif">
+  <input class="rt" type="radio" name="nav" id="s-devbuy">
+  <input class="rt" type="radio" name="nav" id="s-menu">
+  <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
       <div class="avatar">GY</div>
       <div class="menuwho"><p class="mn">Weinper Gyula</p><p class="me">weinper.gyula@gmail.com</p></div>
-      <label class="icon-btn" for="s-menu"><i class="ti ti-x"></i></label>
+      <label class="icon-btn" for="s-home"><i class="ti ti-x"></i></label>
     </div>
     <p class="mlab2">Fiók</p>
     <div class="mrow"><span class="mic"><i class="ti ti-user"></i></span><span class="n">Fiókadatok</span><i class="ti ti-chevron-right chev"></i></div>
@@ -396,7 +423,7 @@
     <p class="mlab2">Szolgáltatások</p>
     <div class="mrow"><span class="mic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></div>
     <div class="mrow"><span class="mic"><i class="ti ti-device-sim"></i></span><span class="n">SIM és eSIM kezelés</span><i class="ti ti-chevron-right chev"></i></div>
-    <div class="mrow"><span class="mic"><i class="ti ti-mail"></i></span><span class="n">Üzeneteim</span><span class="mbadge">2</span></div>
+    <label class="mrow" for="s-notif"><span class="mic"><i class="ti ti-bell"></i></span><span class="n">Értesítések</span><span class="mbadge">2</span></label>
     <p class="mlab2">Segítség</p>
     <div class="mrow"><span class="mic"><i class="ti ti-headset"></i></span><span class="n">Ügyfélszolgálat</span><i class="ti ti-chevron-right chev"></i></div>
     <div class="mrow"><span class="mic"><i class="ti ti-map-pin"></i></span><span class="n">Üzletkereső</span><i class="ti ti-chevron-right chev"></i></div>
@@ -461,7 +488,7 @@
     <div class="top">
       <span class="brand">Yettel.</span>
       <div class="top-actions">
-        <div class="icon-btn"><i class="ti ti-bell"></i><span class="dot"></span></div>
+        <label class="icon-btn" for="s-notif"><i class="ti ti-bell"></i><span class="nbadge">2</span></label>
         <label class="icon-btn burger" for="s-menu"><i class="ti ti-menu-2"></i></label>
       </div>
     </div>
@@ -585,7 +612,7 @@
 
     <div class="sec"><h3>Készülékeim</h3><label for="s-alldev">Összes</label></div>
 
-    <div class="addsvc" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</div>
+    <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
 
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
@@ -833,7 +860,7 @@
       <div style="width:42px"></div>
     </div>
 
-    <div class="addsvc" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</div>
+    <label class="addsvc" for="s-devbuy" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
 
     <p class="mlab">Részletfizetés alatt</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
@@ -1119,6 +1146,117 @@
       <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
     </div>
     <button class="acont">Tovább</button>
+  </div>
+
+  <!-- ============= ÉRTESÍTÉSEK ============= -->
+  <div class="screen" data-screen="notif" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Értesítések</span>
+      <div style="width:42px"></div>
+    </div>
+
+    <p class="mlab" style="margin-top:14px;">Új</p>
+
+    <div class="ncard unread">
+      <span class="nic warn"><i class="ti ti-alert-triangle"></i></span>
+      <div class="ntx">
+        <p class="nt">Fizetetlen számlád van</p>
+        <p class="ns">A 2026. júliusi számlád 7 990 Ft összegben esedékes. Kérjük, rendezd 2026. 07. 31-ig, hogy szolgáltatásaid folyamatosak maradjanak.</p>
+        <div class="nrow"><span class="ntime">2 órája</span><button class="nbtn">Fizetés</button></div>
+      </div>
+    </div>
+
+    <div class="ncard unread">
+      <span class="nic ok"><i class="ti ti-circle-check"></i></span>
+      <div class="ntx">
+        <p class="nt">Sikeres bekötés</p>
+        <p class="ns">Az otthoni interneted bekötése sikeresen megtörtént. Csatlakozz a Wi-Fi hálózatodhoz, és élvezd a gyors netet!</p>
+        <span class="ntime solo">Tegnap, 16:20</span>
+      </div>
+    </div>
+
+    <p class="mlab">Korábbi</p>
+
+    <div class="ncard">
+      <span class="nic info"><i class="ti ti-device-mobile"></i></span>
+      <div class="ntx">
+        <p class="nt">Megérkeztek az új telefonok</p>
+        <p class="ns">Nézd meg a legújabb készülékeket akár részletfizetéssel, kedvezményes áron.</p>
+        <span class="ntime solo">3 napja</span>
+      </div>
+    </div>
+
+    <div class="ncard">
+      <span class="nic info"><i class="ti ti-chart-donut"></i></span>
+      <div class="ntx">
+        <p class="nt">Elhasználtad az adatkereted 80%-át</p>
+        <p class="ns">A Prime Plus 2024 csomagodból 16 GB-ot használtál el a 20 GB-ból ebben a hónapban.</p>
+        <span class="ntime solo">5 napja</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
+  <div class="screen" data-screen="devbuy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Új készülék</span>
+      <div style="width:42px"></div>
+    </div>
+
+    <h2 class="buyhead">Válaszd ki az új<br>készüléked.</h2>
+    <p class="buysub">Egyszerű megrendelés, akár részletfizetéssel — házhoz szállítással.</p>
+
+    <div class="buycard">
+      <span class="buyic lime"><i class="ti ti-device-mobile"></i></span>
+      <div class="buytx">
+        <div class="buytop"><p class="bt">iPhone 15 Pro</p><span class="bbadge">Új</span></div>
+        <p class="bs">A17 Pro chip, 256 GB, titánium ház.</p>
+        <p class="bp">449 990 Ft<span> vagy 18 750 Ft / hó</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic blue"><i class="ti ti-device-mobile"></i></span>
+      <div class="buytx">
+        <p class="bt">Samsung Galaxy S24 Ultra</p>
+        <p class="bs">200 MP kamera, S Pen, 512 GB tárhely.</p>
+        <p class="bp">549 990 Ft<span> vagy 22 920 Ft / hó</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic violet"><i class="ti ti-device-mobile"></i></span>
+      <div class="buytx">
+        <p class="bt">Google Pixel 8</p>
+        <p class="bs">Tensor G3, tiszta Android, 128 GB.</p>
+        <p class="bp">329 990 Ft<span> vagy 13 750 Ft / hó</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic slate"><i class="ti ti-device-mobile"></i></span>
+      <div class="buytx">
+        <p class="bt">Xiaomi 14</p>
+        <p class="bs">Leica optika, Snapdragon 8 Gen 3, 512 GB.</p>
+        <p class="bp">299 990 Ft<span> vagy 12 500 Ft / hó</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
+
+    <div class="buycard">
+      <span class="buyic sun"><i class="ti ti-device-mobile"></i></span>
+      <div class="buytx">
+        <div class="buytop"><p class="bt">iPhone SE</p><span class="bbadge new">Akció</span></div>
+        <p class="bs">Kompakt, gyors és megfizethető.</p>
+        <p class="bp">189 990 Ft<span> vagy 7 920 Ft / hó</span></p>
+      </div>
+      <i class="ti ti-chevron-right bchev"></i>
+    </div>
   </div>
 
   <!-- ============= NAV ============= -->
