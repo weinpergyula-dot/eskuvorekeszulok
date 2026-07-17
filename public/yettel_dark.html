@@ -72,7 +72,6 @@
 
   .hero{position:relative; border-radius:28px; padding:22px 22px 20px; overflow:hidden;
         background:radial-gradient(85% 55% at 88% 6%, rgba(64,116,255,.28), transparent 62%),
-                   radial-gradient(115% 90% at 6% 102%, rgba(116,84,255,.28), transparent 58%),
                    radial-gradient(95% 75% at 100% 100%, rgba(34,124,186,.20), transparent 60%),
                    #0E1A44;
         border:1px solid rgba(255,255,255,.12);
@@ -165,10 +164,10 @@
   .nav{position:absolute; left:16px; right:16px; bottom:16px; height:70px; border-radius:26px; display:flex; align-items:center; justify-content:space-around; z-index:5;
        background:rgba(20,30,68,.45); border:1px solid rgba(255,255,255,.16); -webkit-backdrop-filter:blur(30px) saturate(170%); backdrop-filter:blur(30px) saturate(170%);
        box-shadow:0 20px 40px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.14);}
-  .nitem{display:flex; flex-direction:column; align-items:center; gap:5px; color:var(--low); font-size:10px; font-weight:600; cursor:pointer; flex:1;}
-  .nitem i{font-size:22px;}
+  .nitem{display:flex; flex-direction:column; align-items:center; gap:5px; color:rgba(243,246,255,.62); font-size:10px; font-weight:600; cursor:pointer; flex:1;}
+  .nitem i{font-size:22px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.10); border-radius:12px; padding:6px 14px;}
   .nitem.on{color:var(--lime);}
-  .nitem.on i{filter:drop-shadow(0 0 8px rgba(198,242,78,.6));}
+  .nitem.on i{background:rgba(198,242,78,.16); border-color:rgba(198,242,78,.34); filter:drop-shadow(0 0 8px rgba(198,242,78,.5));}
 
   /* detail */
   .dhead{display:flex; align-items:center; justify-content:space-between; padding:16px 0 8px;}
