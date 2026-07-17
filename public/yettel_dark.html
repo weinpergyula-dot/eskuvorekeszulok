@@ -70,7 +70,7 @@
         background:radial-gradient(circle 114px at calc(100% - 60px) -20px, rgba(198,242,78,.55) 0%, rgba(198,242,78,0) 100%),
                    linear-gradient(155deg,#233472 0%,#182a63 42%,#0F1E4C 100%);
         border:1px solid rgba(255,255,255,.12);
-        box-shadow:0 24px 50px -18px rgba(6,12,40,.9), inset 0 1px 0 rgba(255,255,255,.14);}
+        box-shadow:0 8px 16px -8px rgba(4,9,28,.35), 0 22px 44px -16px rgba(4,9,28,.45), inset 0 1px 0 rgba(255,255,255,.14);}
   .hero .grid{position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px); background-size:26px 26px; mask-image:radial-gradient(120% 90% at 100% 0%, #000, transparent 70%); opacity:.5;}
   .hero-row{position:relative; display:flex; align-items:center; justify-content:space-between;}
   .plan-tag{display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--lime); text-transform:uppercase;}
@@ -261,11 +261,13 @@
   #s-detail-tv:checked ~ [data-screen="detail-tv"],
   #s-addservice:checked ~ [data-screen="add-service"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav{display:flex !important;}
-&
-  .homebg{position:absolute; inset:0; z-index:0; pointer-events:none; display:none;
-          background:linear-gradient(130deg, rgba(198,242,78,0) 44%, rgba(198,242,78,.07) 48%, rgba(198,242,78,.16) 50%, rgba(198,242,78,.07) 52%, rgba(198,242,78,0) 56%);
-          background-size:220% 220%; animation:wshift 20s ease-in-out infinite;}
+  .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .homebg{position:absolute; inset:0; z-index:0; pointer-events:none; display:none; overflow:hidden;}
   #s-home:checked ~ .homebg{display:block;}
+  .homebg span{position:absolute; border-radius:50%; filter:blur(38px);}
+  .homebg .hb1{width:130px;height:130px; top:10%; right:-14px; background:radial-gradient(circle,rgba(198,242,78,.22),transparent 66%); animation:wfloat1 16s ease-in-out infinite;}
+  .homebg .hb2{width:105px;height:105px; top:46%; left:-12px; background:radial-gradient(circle,rgba(198,242,78,.18),transparent 66%); animation:wfloat2 21s ease-in-out infinite;}
+  .homebg .hb3{width:120px;height:120px; bottom:14%; right:16%; background:radial-gradient(circle,rgba(198,242,78,.15),transparent 66%); animation:wfloat1 26s ease-in-out infinite reverse;}
 </style>
 </head>
 <body>
@@ -278,7 +280,7 @@
   <input class="rt" type="radio" name="nav" id="s-detail-net">
   <input class="rt" type="radio" name="nav" id="s-detail-tv">
   <input class="rt" type="radio" name="nav" id="s-addservice">
-  <div class="homebg"></div><div class="glow b"></div><div class="glow c"></div>
+  <div class="homebg"><span class="hb1"></span><span class="hb2"></span><span class="hb3"></span></div><div class="glow b"></div><div class="glow c"></div>
 
   <!-- ============= WELCOME ============= -->
   <div class="welcome" data-screen="welcome">
