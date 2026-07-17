@@ -267,6 +267,31 @@
   #s-devbuy:checked ~ [data-screen="devbuy"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .brandfilter{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:2px; margin:14px -2px 0;}
+  .brandfilter::-webkit-scrollbar{display:none;}
+  .chip{flex:0 0 auto; padding:9px 16px; border-radius:999px; font-size:12.5px; font-weight:600; cursor:pointer; white-space:nowrap;
+        background:#FFFFFF; border:1px solid var(--line); color:var(--mid);}
+  .chip.on{background:linear-gradient(140deg,var(--lime2),var(--lime3)); color:#14245E; border-color:transparent; font-weight:700;}
+  .morefilter{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin:12px 0 16px; padding:12px; border-radius:14px; cursor:pointer;
+              background:#FFFFFF; border:1px solid var(--line); color:var(--navy); font-family:'Manrope'; font-weight:600; font-size:13px; box-shadow:0 8px 20px -14px rgba(20,36,94,.2);}
+  .morefilter i{font-size:18px; color:var(--limed);}
+  .dvcard{border-radius:22px; padding:15px; margin-bottom:12px; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
+  .dvtop{display:flex; gap:14px; align-items:center;}
+  .dvthumb{width:58px;height:78px;border-radius:14px; display:flex;align-items:center;justify-content:center; flex-shrink:0; box-shadow:0 8px 18px -10px rgba(20,36,94,.28);}
+  .dvthumb i{font-size:30px; color:#fff;}
+  .dvthumb.t-lime{background:linear-gradient(155deg,var(--lime2),var(--lime3));} .dvthumb.t-lime i{color:#14245E;}
+  .dvthumb.t-blue{background:linear-gradient(155deg,#5C7CFF,#2E46C8);}
+  .dvthumb.t-violet{background:linear-gradient(155deg,#B78CFF,#7A4BE0);}
+  .dvthumb.t-slate{background:linear-gradient(155deg,#9AA9C8,#455474);}
+  .dvthumb.t-sun{background:linear-gradient(155deg,#FFB25A,#FF6FA5);}
+  .dvinfo{flex:1; min-width:0;}
+  .dvname{font-family:'Sora'; font-size:15px; font-weight:700; margin:0; color:var(--hi);}
+  .dvspec{font-size:12px; color:var(--mid); margin:5px 0 0; line-height:1.4;}
+  .dvprices{display:flex; gap:10px; margin-top:14px;}
+  .dvprice{flex:1; display:flex; flex-direction:column; gap:3px; padding:11px 13px; border-radius:14px; background:#F1F5FC; border:1px solid var(--line);}
+  .dpl{font-size:9.5px; color:var(--low); letter-spacing:.06em; text-transform:uppercase; font-weight:700;}
+  .dpv{font-family:'Sora'; font-size:14.5px; font-weight:700; color:var(--hi);}
+  .dpv small{font-family:'Manrope'; font-size:11px; font-weight:600; color:var(--mid);}
   .nbadge{position:absolute; top:-4px; right:-4px; min-width:18px; height:18px; border-radius:9px; padding:0 5px;
           display:flex; align-items:center; justify-content:center; font-family:'Manrope'; font-size:10px; font-weight:800;
           color:#14245E; background:var(--lime); border:2px solid #FFFFFF; box-shadow:0 4px 10px -2px rgba(164,216,46,.6);}
@@ -1195,6 +1220,8 @@
   </div>
 
   <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
+
+  <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
   <div class="screen" data-screen="devbuy" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
@@ -1202,60 +1229,81 @@
       <div style="width:42px"></div>
     </div>
 
-    <h2 class="buyhead">Válaszd ki az új<br>készüléked.</h2>
-    <p class="buysub">Egyszerű megrendelés, akár részletfizetéssel — házhoz szállítással.</p>
-
-    <div class="buycard">
-      <span class="buyic lime"><i class="ti ti-device-mobile"></i></span>
-      <div class="buytx">
-        <div class="buytop"><p class="bt">iPhone 15 Pro</p><span class="bbadge">Új</span></div>
-        <p class="bs">A17 Pro chip, 256 GB, titánium ház.</p>
-        <p class="bp">449 990 Ft<span> vagy 18 750 Ft / hó</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
+    <div class="brandfilter">
+      <span class="chip on">Összes</span>
+      <span class="chip">Apple</span>
+      <span class="chip">Samsung</span>
+      <span class="chip">Google</span>
+      <span class="chip">Xiaomi</span>
     </div>
+    <button class="morefilter"><i class="ti ti-adjustments-horizontal"></i>További szűrő</button>
 
-    <div class="buycard">
-      <span class="buyic blue"><i class="ti ti-device-mobile"></i></span>
-      <div class="buytx">
-        <p class="bt">Samsung Galaxy S24 Ultra</p>
-        <p class="bs">200 MP kamera, S Pen, 512 GB tárhely.</p>
-        <p class="bp">549 990 Ft<span> vagy 22 920 Ft / hó</span></p>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb t-slate"><i class="ti ti-device-mobile"></i></div>
+        <div class="dvinfo">
+          <p class="dvname">iPhone 15 Pro</p>
+          <p class="dvspec">A17 Pro chip · 256 GB · Titánium</p>
+        </div>
       </div>
-      <i class="ti ti-chevron-right bchev"></i>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">449 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">18 750 Ft<small> / hó</small></span></div>
+      </div>
     </div>
-
-    <div class="buycard">
-      <span class="buyic violet"><i class="ti ti-device-mobile"></i></span>
-      <div class="buytx">
-        <p class="bt">Google Pixel 8</p>
-        <p class="bs">Tensor G3, tiszta Android, 128 GB.</p>
-        <p class="bp">329 990 Ft<span> vagy 13 750 Ft / hó</span></p>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb t-blue"><i class="ti ti-device-mobile"></i></div>
+        <div class="dvinfo">
+          <p class="dvname">Samsung Galaxy S24 Ultra</p>
+          <p class="dvspec">200 MP kamera · S Pen · 512 GB</p>
+        </div>
       </div>
-      <i class="ti ti-chevron-right bchev"></i>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">549 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">22 920 Ft<small> / hó</small></span></div>
+      </div>
     </div>
-
-    <div class="buycard">
-      <span class="buyic slate"><i class="ti ti-device-mobile"></i></span>
-      <div class="buytx">
-        <p class="bt">Xiaomi 14</p>
-        <p class="bs">Leica optika, Snapdragon 8 Gen 3, 512 GB.</p>
-        <p class="bp">299 990 Ft<span> vagy 12 500 Ft / hó</span></p>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb t-violet"><i class="ti ti-device-mobile"></i></div>
+        <div class="dvinfo">
+          <p class="dvname">Google Pixel 8</p>
+          <p class="dvspec">Tensor G3 · tiszta Android · 128 GB</p>
+        </div>
       </div>
-      <i class="ti ti-chevron-right bchev"></i>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">329 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">13 750 Ft<small> / hó</small></span></div>
+      </div>
     </div>
-
-    <div class="buycard">
-      <span class="buyic sun"><i class="ti ti-device-mobile"></i></span>
-      <div class="buytx">
-        <div class="buytop"><p class="bt">iPhone SE</p><span class="bbadge new">Akció</span></div>
-        <p class="bs">Kompakt, gyors és megfizethető.</p>
-        <p class="bp">189 990 Ft<span> vagy 7 920 Ft / hó</span></p>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb t-sun"><i class="ti ti-device-mobile"></i></div>
+        <div class="dvinfo">
+          <p class="dvname">Xiaomi 14</p>
+          <p class="dvspec">Leica optika · Snapdragon 8 Gen 3 · 512 GB</p>
+        </div>
       </div>
-      <i class="ti ti-chevron-right bchev"></i>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">299 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">12 500 Ft<small> / hó</small></span></div>
+      </div>
+    </div>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb t-lime"><i class="ti ti-device-mobile"></i></div>
+        <div class="dvinfo">
+          <p class="dvname">iPhone SE</p>
+          <p class="dvspec">Kompakt kialakítás · 128 GB</p>
+        </div>
+      </div>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">189 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">7 920 Ft<small> / hó</small></span></div>
+      </div>
     </div>
   </div>
-
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <div class="nitem on"><i class="ti ti-home"></i>Kezdőlap</div>
