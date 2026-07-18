@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
   :root{
     --lime:#C6F24E; --lime2:#DAFF6E; --lime3:#A4D82E; --limed:#4F7A00;
@@ -223,7 +223,9 @@
   }
   .welcome .wframe{position:relative; z-index:1; height:100%; display:flex; flex-direction:column; padding:64px 26px 40px; color:var(--navy);}
   .wtop{flex:0 0 auto;}
-  .wtag{font-family:'Sora'; font-weight:600; font-size:15px; color:#3A4A6B; margin:9px 0 0; letter-spacing:.01em;}
+  .wtag{display:block; width:-webkit-fit-content; width:fit-content; font-family:'Caveat',cursive; font-weight:600; font-size:24px; line-height:1.25; color:#3A4A6B; margin:6px 0 0;
+         clip-path:inset(-25% 100% -25% 0); animation:wwrite 3s ease-out .35s both;}
+  @keyframes wwrite{to{clip-path:inset(-25% -6px -25% 0);}}
   .wbrand{font-family:'Sora'; font-weight:800; font-size:34px; letter-spacing:-.02em; color:var(--navy);}
   .wmid{flex:1 1 auto; display:flex; flex-direction:column; justify-content:center;}
   .whead{font-family:'Sora'; font-weight:800; font-size:32px; line-height:1.15; letter-spacing:-.02em; margin:0 0 14px; color:var(--navy); text-shadow:0 2px 20px rgba(255,255,255,.5);}
