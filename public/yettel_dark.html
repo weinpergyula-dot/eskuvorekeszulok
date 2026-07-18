@@ -286,16 +286,31 @@
   #s-offbuy:checked ~ [data-screen="offers-buy"],
   #s-offsvc:checked ~ [data-screen="offers-svc"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
-  #s-tvselsvc:checked ~ [data-screen="tvsel-svc"]{display:block !important;}
+  #s-tvselsvc:checked ~ [data-screen="tvsel-svc"],
+  #s-extrabuy:checked ~ [data-screen="extra-buy"],
+  #s-extrasvc:checked ~ [data-screen="extra-svc"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .xcard{display:flex; gap:13px; padding:16px; border-radius:20px; margin-bottom:16px; background:var(--glass); border:1px solid var(--stroke);}
+  .xic{width:44px;height:44px;border-radius:14px; display:flex;align-items:center;justify-content:center; flex-shrink:0; align-self:flex-start; background:rgba(198,242,78,.14); border:1px solid rgba(198,242,78,.24);}
+  .xic i{font-size:22px; color:var(--lime);}
+  .xtx{flex:1; min-width:0;}
+  .xt{font-family:'Sora'; font-size:14px; font-weight:700; margin:0; color:var(--hi);}
+  .xs{font-size:12px; color:var(--mid); line-height:1.5; margin:6px 0 0;}
+  .xfree{display:inline-block; margin-top:10px; font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:4px 9px; border-radius:7px; background:var(--lime); color:#0B1330;}
+  .xchoice{display:flex; gap:10px;}
+  .xopt{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:13px 8px; border-radius:14px; cursor:pointer; font-size:13px; font-weight:600;
+        background:var(--glass); border:1px solid var(--stroke); color:var(--mid); transition:border-color .18s, color .18s, background .18s;}
+  .xopt i{font-size:17px;}
+  #xb-yes:checked ~ .xchoice .xopt[for="xb-yes"],#xs-yes:checked ~ .xchoice .xopt[for="xs-yes"],
+  #xb-no:checked ~ .xchoice .xopt[for="xb-no"],#xs-no:checked ~ .xchoice .xopt[for="xs-no"]{background:rgba(198,242,78,.12); border-color:var(--lime); color:var(--hi);}
   .tabs{display:flex; gap:6px; margin:2px 0 18px; padding:4px; border-radius:15px; background:var(--glass); border:1px solid var(--stroke);}
   .tab{flex:1; text-align:center; padding:10px 6px; border-radius:11px; font-size:11.5px; font-weight:600; color:var(--mid); cursor:pointer; white-space:nowrap; transition:background .18s, color .18s;}
   .tabpane{display:none;}
   #tb-mobil:checked ~ .tp-mobil,#ts-mobil:checked ~ .tp-mobil{display:block;}
   #tb-otthon:checked ~ .tp-otthon,#ts-otthon:checked ~ .tp-otthon{display:block;}
   #tb-mobil:checked ~ .tabs .tab[for="tb-mobil"],#ts-mobil:checked ~ .tabs .tab[for="ts-mobil"],
-  #tb-otthon:checked ~ .tabs .tab[for="tb-otthon"],#ts-otthon:checked ~ .tabs .tab[for="ts-otthon"]{background:linear-gradient(140deg,var(--lime2),var(--lime3)); color:#0B1330; font-weight:700;}
+  #tb-otthon:checked ~ .tabs .tab[for="tb-otthon"],#ts-otthon:checked ~ .tabs .tab[for="ts-otthon"]{background:#FFFFFF; color:#14245E; font-weight:700;}
   .offaddr{margin:0 2px;}
   .oal{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--low); font-weight:700; margin:0;}
   .oav{font-size:13px; color:var(--hi); font-weight:600; line-height:1.45; margin:5px 0 0;}
@@ -534,6 +549,8 @@
   <input class="rt" type="radio" name="nav" id="s-offsvc">
   <input class="rt" type="radio" name="nav" id="s-tvselbuy">
   <input class="rt" type="radio" name="nav" id="s-tvselsvc">
+  <input class="rt" type="radio" name="nav" id="s-extrabuy">
+  <input class="rt" type="radio" name="nav" id="s-extrasvc">
   <input class="rt" type="radio" name="nav" id="s-notif">
   <input class="rt" type="radio" name="nav" id="s-devbuy">
   <input class="rt" type="radio" name="nav" id="s-menu">
@@ -1533,112 +1550,8 @@
   </div>
 
   <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
-  <div class="screen" data-screen="offers-buy" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-addrbuy"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Ajánlatok</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Ajánlatok a címeden</h2>
-    <div class="offaddr">
-      <p class="oal">Címed:</p>
-      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
-      <label class="offchg" for="s-addrbuy">Másik címet adok meg.</label>
-    </div>
-    <p class="offsec">Internet</p>
-    <div class="tfcard">
-      <div class="tfmain">
-        <span class="tfbadge">30 nap ingyen</span>
-        <p class="tfname">HiperNet L</p>
-        <p class="tfdata">1000 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <div class="tfprice">
-          <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tfnote">e-Komfort, 12 hó hűséggel</span>
-        </div>
-      </div>
-      <i class="ti ti-chevron-right tfchev"></i>
-    </div>
-    <div class="tfcard">
-      <div class="tfmain">
-        <span class="tfbadge">30 nap ingyen</span>
-        <p class="tfname">HiperNet M</p>
-        <p class="tfdata">500 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <div class="tfprice">
-          <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tfnote">e-Komfort, 12 hó hűséggel</span>
-        </div>
-      </div>
-      <i class="ti ti-chevron-right tfchev"></i>
-    </div>
-    <div class="tfhelp">
-      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
-      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
-    </div>
-  </div>
 
   <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
-  <div class="screen" data-screen="offers-svc" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-addrsvc"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Ajánlatok</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Ajánlatok a címeden</h2>
-    <div class="offaddr">
-      <p class="oal">Címed:</p>
-      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
-      <label class="offchg" for="s-addrsvc">Másik címet adok meg.</label>
-    </div>
-    <p class="offsec">Internet</p>
-    <div class="tfcard">
-      <div class="tfmain">
-        <span class="tfbadge">30 nap ingyen</span>
-        <p class="tfname">HiperNet L</p>
-        <p class="tfdata">1000 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <div class="tfprice">
-          <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tfnote">e-Komfort, 12 hó hűséggel</span>
-        </div>
-      </div>
-      <i class="ti ti-chevron-right tfchev"></i>
-    </div>
-    <div class="tfcard">
-      <div class="tfmain">
-        <span class="tfbadge">30 nap ingyen</span>
-        <p class="tfname">HiperNet M</p>
-        <p class="tfdata">500 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <div class="tfprice">
-          <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tfnote">e-Komfort, 12 hó hűséggel</span>
-        </div>
-      </div>
-      <i class="ti ti-chevron-right tfchev"></i>
-    </div>
-    <div class="tfhelp">
-      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
-      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
-    </div>
-  </div>
 
   <!-- ============= Szolgáltatásvásárlás ============= -->
 
@@ -1874,6 +1787,170 @@
       <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
+  </div>
+
+  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
+  <div class="screen" data-screen="offers-buy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-addrbuy"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Ajánlatok</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Ajánlatok a címeden</h2>
+    <div class="offaddr">
+      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
+      <label class="offchg" for="s-addrbuy">Másik címet adok meg.</label>
+    </div>
+    <p class="offsec">Internet</p>
+    <label class="tfcard" for="s-extrabuy">
+      <div class="tfmain">
+        <span class="tfbadge">30 nap ingyen</span>
+        <p class="tfname">HiperNet L</p>
+        <p class="tfdata">1000 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Optikai internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">7 990 Ft<small> / hó</small></span>
+          <span class="tfnote">e-Komfort, 12 hó hűséggel</span>
+        </div>
+      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
+    </label>
+    <label class="tfcard" for="s-extrabuy">
+      <div class="tfmain">
+        <span class="tfbadge">30 nap ingyen</span>
+        <p class="tfname">HiperNet M</p>
+        <p class="tfdata">500 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Optikai internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">6 990 Ft<small> / hó</small></span>
+          <span class="tfnote">e-Komfort, 12 hó hűséggel</span>
+        </div>
+      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
+    </label>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    </div>
+  </div>
+
+  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
+  <div class="screen" data-screen="offers-svc" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-addrsvc"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Ajánlatok</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Ajánlatok a címeden</h2>
+    <div class="offaddr">
+      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
+      <label class="offchg" for="s-addrsvc">Másik címet adok meg.</label>
+    </div>
+    <p class="offsec">Internet</p>
+    <label class="tfcard" for="s-extrasvc">
+      <div class="tfmain">
+        <span class="tfbadge">30 nap ingyen</span>
+        <p class="tfname">HiperNet L</p>
+        <p class="tfdata">1000 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Optikai internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">7 990 Ft<small> / hó</small></span>
+          <span class="tfnote">e-Komfort, 12 hó hűséggel</span>
+        </div>
+      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
+    </label>
+    <label class="tfcard" for="s-extrasvc">
+      <div class="tfmain">
+        <span class="tfbadge">30 nap ingyen</span>
+        <p class="tfname">HiperNet M</p>
+        <p class="tfdata">500 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Optikai internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">6 990 Ft<small> / hó</small></span>
+          <span class="tfnote">e-Komfort, 12 hó hűséggel</span>
+        </div>
+      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
+    </label>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    </div>
+  </div>
+
+  <!-- ============= EXTRÁK: extra-buy ============= -->
+  <div class="screen" data-screen="extra-buy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-offbuy"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Extrák</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Extrák választása</h2>
+    <p class="buysub">Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé.</p>
+
+    <div class="xcard">
+      <span class="xic"><i class="ti ti-shield-check"></i></span>
+      <div class="xtx">
+        <p class="xt">Gyermekvédelmi tartalomszűrő</p>
+        <p class="xs">A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat. Később is igényelheted és bármikor lemondhatod.</p>
+        <span class="xfree">Díjmentes</span>
+      </div>
+    </div>
+
+    <input class="rt" type="radio" name="x-extra-buy" id="xb-yes" checked>
+    <input class="rt" type="radio" name="x-extra-buy" id="xb-no">
+    <div class="xchoice">
+      <label class="xopt" for="xb-yes"><i class="ti ti-check"></i>Kérem</label>
+      <label class="xopt" for="xb-no"><i class="ti ti-x"></i>Nem kérem</label>
+    </div>
+
+    <label class="acont" for="s-offbuy">Tovább</label>
+  </div>
+
+  <!-- ============= EXTRÁK: extra-svc ============= -->
+  <div class="screen" data-screen="extra-svc" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-offsvc"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Extrák</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Extrák választása</h2>
+    <p class="buysub">Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé.</p>
+
+    <div class="xcard">
+      <span class="xic"><i class="ti ti-shield-check"></i></span>
+      <div class="xtx">
+        <p class="xt">Gyermekvédelmi tartalomszűrő</p>
+        <p class="xs">A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat. Később is igényelheted és bármikor lemondhatod.</p>
+        <span class="xfree">Díjmentes</span>
+      </div>
+    </div>
+
+    <input class="rt" type="radio" name="x-extra-svc" id="xs-yes" checked>
+    <input class="rt" type="radio" name="x-extra-svc" id="xs-no">
+    <div class="xchoice">
+      <label class="xopt" for="xs-yes"><i class="ti ti-check"></i>Kérem</label>
+      <label class="xopt" for="xs-no"><i class="ti ti-x"></i>Nem kérem</label>
+    </div>
+
+    <label class="acont" for="s-offsvc">Tovább</label>
   </div>
 
   <!-- ============= NAV ============= -->
