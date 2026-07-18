@@ -272,7 +272,9 @@
   #s-tarifbuy:checked ~ [data-screen="tarif-buy"],
   #s-tarifsvc:checked ~ [data-screen="tarif-svc"],
   #s-offbuy:checked ~ [data-screen="offers-buy"],
-  #s-offsvc:checked ~ [data-screen="offers-svc"]{display:block !important;}
+  #s-offsvc:checked ~ [data-screen="offers-svc"],
+  #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
+  #s-tvselsvc:checked ~ [data-screen="tvsel-svc"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .tabs{display:flex; gap:6px; margin:2px 0 18px; padding:4px; border-radius:15px; background:#F1F5FC; border:1px solid var(--line);}
@@ -317,6 +319,7 @@
   .svccard.s-blue{background:linear-gradient(140deg,#5C7CFF,#2E46C8); box-shadow:0 18px 34px -18px rgba(59,90,255,.65);}
   .svccard.s-violet{background:linear-gradient(140deg,#B78CFF,#7A4BE0); box-shadow:0 18px 34px -18px rgba(150,90,255,.65);}
   .svccard.s-slate{background:linear-gradient(140deg,#8DA0C9,#5C6F9E); box-shadow:0 18px 34px -18px rgba(120,140,200,.60);}
+  .svccard.s-sun{background:linear-gradient(140deg,#FF9F4A,#FF5E9C); box-shadow:0 18px 34px -18px rgba(255,110,140,.65);}
   .svccard.s-soon{background:linear-gradient(140deg,#5A6270,#39404E); border-color:rgba(255,255,255,.12); box-shadow:0 14px 28px -20px rgba(0,0,0,.55);}
   .svccard.s-soon .svcic{background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.22);}
   .svccard.s-soon .svcgo{background:rgba(255,255,255,.30);}
@@ -516,6 +519,8 @@
   <input class="rt" type="radio" name="nav" id="s-tarifsvc">
   <input class="rt" type="radio" name="nav" id="s-offbuy">
   <input class="rt" type="radio" name="nav" id="s-offsvc">
+  <input class="rt" type="radio" name="nav" id="s-tvselbuy">
+  <input class="rt" type="radio" name="nav" id="s-tvselsvc">
   <input class="rt" type="radio" name="nav" id="s-notif">
   <input class="rt" type="radio" name="nav" id="s-devbuy">
   <input class="rt" type="radio" name="nav" id="s-menu">
@@ -1627,6 +1632,10 @@
   <!-- ============= Új szolgáltatás ============= -->
 
   <!-- ============= Szolgáltatásvásárlás ============= -->
+
+  <!-- ============= Új szolgáltatás ============= -->
+
+  <!-- ============= Szolgáltatásvásárlás ============= -->
   <div class="screen" data-screen="buy" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-welcome"><i class="ti ti-arrow-left"></i></label>
@@ -1663,7 +1672,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </div>
-      <div class="svccard s-lime">
+      <div class="svccard s-sun">
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-bolt"></i></span>
         <div class="svctx">
@@ -1684,6 +1693,16 @@
           <p class="ss">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
           <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
           <p class="sp">6 490 Ft<span> / hó-tól</span></p>
+        </div>
+        <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+      </label>
+      <label class="svccard s-violet" for="s-tvselbuy">
+        <div class="sb1"></div><div class="sb2"></div>
+        <span class="svcic"><i class="ti ti-device-tv"></i></span>
+        <div class="svctx">
+          <p class="st">TV</p>
+          <p class="ss">120+ csatorna, felhőalapú felvétellel, 2 eszközön.</p>
+          <p class="sp">5 490 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
@@ -1737,7 +1756,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </div>
-      <div class="svccard s-lime">
+      <div class="svccard s-sun">
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-bolt"></i></span>
         <div class="svctx">
@@ -1761,6 +1780,16 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
+      <label class="svccard s-violet" for="s-tvselsvc">
+        <div class="sb1"></div><div class="sb2"></div>
+        <span class="svcic"><i class="ti ti-device-tv"></i></span>
+        <div class="svctx">
+          <p class="st">TV</p>
+          <p class="ss">120+ csatorna, felhőalapú felvétellel, 2 eszközön.</p>
+          <p class="sp">5 490 Ft<span> / hó-tól</span></p>
+        </div>
+        <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+      </label>
       <div class="svccard s-soon">
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
@@ -1771,6 +1800,66 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </div>
+    </div>
+  </div>
+
+  <!-- ============= TV — MELYIK SZOLGÁLTATÁS ALÁ: tvsel-buy ============= -->
+  <div class="screen" data-screen="tvsel-buy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">TV szolgáltatás</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Melyik szolgáltatásod alá<br>szeretnéd kérni?</h2>
+    <p class="buysub">Válaszd ki, melyik meglévő szolgáltatásodhoz adjuk hozzá a TV-t.</p>
+
+    <p class="mlab">Havidíjas mobil</p>
+    <div class="sub">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+
+    <p class="mlab">Otthoni internet</p>
+    <div class="sub">
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+  </div>
+
+  <!-- ============= TV — MELYIK SZOLGÁLTATÁS ALÁ: tvsel-svc ============= -->
+  <div class="screen" data-screen="tvsel-svc" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-addservice"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">TV szolgáltatás</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Melyik szolgáltatásod alá<br>szeretnéd kérni?</h2>
+    <p class="buysub">Válaszd ki, melyik meglévő szolgáltatásodhoz adjuk hozzá a TV-t.</p>
+
+    <p class="mlab">Havidíjas mobil</p>
+    <div class="sub">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+
+    <p class="mlab">Otthoni internet</p>
+    <div class="sub">
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+      <i class="ti ti-chevron-right chev"></i>
     </div>
   </div>
 
