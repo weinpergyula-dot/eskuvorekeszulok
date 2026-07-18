@@ -283,6 +283,32 @@
   #s-devbuy:checked ~ [data-screen="devbuy"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .svccard{position:relative; overflow:hidden; display:flex; align-items:center; gap:14px; padding:18px 16px; border-radius:22px; margin-bottom:12px; cursor:pointer;
+           border:1px solid rgba(255,255,255,.16); transition:transform .18s;}
+  .svccard:hover{transform:translateY(-3px);}
+  .svccard.s1{background:linear-gradient(135deg,#2E7D32 0%,#6FAF3A 55%,#C6F24E 100%); box-shadow:0 18px 34px -18px rgba(124,179,66,.75);}
+  .svccard.s2{background:linear-gradient(135deg,#5B2A9E 0%,#8E4BE0 55%,#C77DFF 100%); box-shadow:0 18px 34px -18px rgba(142,75,224,.75);}
+  .svccard.s3{background:linear-gradient(135deg,#1A3A8F 0%,#3B6FFF 60%,#6CA0FF 100%); box-shadow:0 18px 34px -18px rgba(59,111,255,.75);}
+  .svccard.s4{background:linear-gradient(135deg,#0F4C57 0%,#1E8E8A 58%,#54C7BE 100%); box-shadow:0 18px 34px -18px rgba(30,142,138,.7);}
+  .svccard.s5{background:linear-gradient(135deg,#A33A72 0%,#FF6FA5 55%,#FFB25A 100%); box-shadow:0 18px 34px -18px rgba(255,111,165,.7);}
+  .svccard .sb1{position:absolute; width:140px;height:140px;border-radius:50%; right:-40px; top:-60px; background:rgba(255,255,255,.16);}
+  .svccard .sb2{position:absolute; width:92px;height:92px;border-radius:50%; right:52px; bottom:-52px; background:rgba(0,0,0,.10);}
+  .svcic{position:relative; width:48px;height:48px;border-radius:16px; display:flex;align-items:center;justify-content:center; flex-shrink:0; align-self:flex-start;
+         background:rgba(255,255,255,.22); border:1px solid rgba(255,255,255,.32);}
+  .svcic i{font-size:25px; color:#FFFFFF;}
+  .svctx{position:relative; flex:1; min-width:0;}
+  .svctop{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .svctx .st{font-family:'Sora'; font-size:16px; font-weight:700; margin:0; color:#FFFFFF;}
+  .sbadge{font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:7px; background:#FFFFFF; color:#14245E;}
+  .svctx .ss{font-size:11.5px; color:rgba(255,255,255,.88); line-height:1.45; margin:4px 0 0;}
+  .strial{display:inline-flex; align-items:center; gap:5px; margin:8px 0 0; font-size:10px; font-weight:700; padding:4px 9px; border-radius:8px;
+          background:rgba(255,255,255,.20); border:1px solid rgba(255,255,255,.34); color:#FFFFFF;}
+  .strial i{font-size:12px;}
+  .svctx .sp{font-family:'Sora'; font-size:15px; font-weight:700; margin:9px 0 0; color:#FFFFFF;}
+  .svctx .sp span{font-family:'Manrope'; font-size:11px; font-weight:600; color:rgba(255,255,255,.8);}
+  .svcgo{position:relative; width:34px;height:34px;border-radius:50%; display:flex;align-items:center;justify-content:center; flex-shrink:0; align-self:center;
+         background:rgba(255,255,255,.92);}
+  .svcgo i{font-size:16px; color:#14245E;}
   .loginscr{background:radial-gradient(115% 52% at 50% 30%, rgba(96,132,220,.22), transparent 72%);}
   .brandfilter{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:2px; margin:14px -2px 0;}
   .brandfilter::-webkit-scrollbar{display:none;}
@@ -1025,128 +1051,8 @@
   <!-- ============= SZOLGÁLTATÁSVÁSÁRLÁS ============= -->
 
   <!-- ============= SZOLGÁLTATÁSVÁSÁRLÁS ============= -->
-  <div class="screen" data-screen="buy" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-welcome"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Szolgáltatásvásárlás</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
-    <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
-    <div class="buycard">
-      <span class="buyic lime"><i class="ti ti-infinity"></i></span>
-      <div class="buytx">
-        <div class="buytop"><p class="bt">Havidíjas mobil</p><span class="bbadge">Népszerű</span></div>
-        <p class="bs">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
-        <p class="bp">4 990 Ft<span> / hó-tól</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </div>
-
-    <label class="buycard" for="s-addrbuy">
-      <span class="buyic violet"><i class="ti ti-device-tv"></i></span>
-      <div class="buytx">
-        <p class="bt">Otthoni internet és TV</p>
-        <p class="bs">Optikai net akár 1 Gbps + 120+ csatorna, felhőalapú felvétellel.</p>
-        <span class="btrial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
-        <p class="bp">8 990 Ft<span> / hó-tól</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </label>
-
-    <label class="buycard" for="s-addrbuy">
-      <span class="buyic blue"><i class="ti ti-router"></i></span>
-      <div class="buytx">
-        <p class="bt">Otthoni internet</p>
-        <p class="bs">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
-        <span class="btrial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
-        <p class="bp">6 490 Ft<span> / hó-tól</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </label>
-
-    <div class="buycard">
-      <span class="buyic slate"><i class="ti ti-device-mobile"></i></span>
-      <div class="buytx">
-        <p class="bt">Feltöltőkártyás mobil</p>
-        <p class="bs">Kötöttség és havidíj nélkül, egyenleg alapon — a te tempódban.</p>
-        <p class="bp">1 990 Ft<span> / feltöltéstől</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </div>
-
-    <div class="buycard">
-      <span class="buyic sun"><i class="ti ti-bolt"></i></span>
-      <div class="buytx">
-        <div class="buytop"><p class="bt">YEPP</p><span class="bbadge new">Új</span></div>
-        <p class="bs">Digitális csomag fiataloknak — közösségi appok korlátlanul.</p>
-        <p class="bp">2 490 Ft<span> / hó</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </div>
-  </div>
 
   <!-- ============= ÚJ SZOLGÁLTATÁS (belső) ============= -->
-  <div class="screen" data-screen="add-service" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Új szolgáltatás</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
-    <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
-    <div class="buycard">
-      <span class="buyic lime"><i class="ti ti-infinity"></i></span>
-      <div class="buytx">
-        <div class="buytop"><p class="bt">Havidíjas mobil</p><span class="bbadge">Népszerű</span></div>
-        <p class="bs">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
-        <p class="bp">4 990 Ft<span> / hó-tól</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </div>
-
-    <label class="buycard" for="s-addrsvc">
-      <span class="buyic violet"><i class="ti ti-device-tv"></i></span>
-      <div class="buytx">
-        <p class="bt">Otthoni internet és TV</p>
-        <p class="bs">Optikai net akár 1 Gbps + 120+ csatorna, felhőalapú felvétellel.</p>
-        <span class="btrial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
-        <p class="bp">8 990 Ft<span> / hó-tól</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </label>
-
-    <label class="buycard" for="s-addrsvc">
-      <span class="buyic blue"><i class="ti ti-router"></i></span>
-      <div class="buytx">
-        <p class="bt">Otthoni internet</p>
-        <p class="bs">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
-        <span class="btrial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
-        <p class="bp">6 490 Ft<span> / hó-tól</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </label>
-
-    <div class="buycard">
-      <span class="buyic slate"><i class="ti ti-device-mobile"></i></span>
-      <div class="buytx">
-        <p class="bt">Feltöltőkártyás mobil</p>
-        <p class="bs">Kötöttség és havidíj nélkül, egyenleg alapon — a te tempódban.</p>
-        <p class="bp">1 990 Ft<span> / feltöltéstől</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </div>
-
-    <div class="buycard">
-      <span class="buyic sun"><i class="ti ti-bolt"></i></span>
-      <div class="buytx">
-        <div class="buytop"><p class="bt">YEPP</p><span class="bbadge new">Új</span></div>
-        <p class="bs">Digitális csomag fiataloknak — közösségi appok korlátlanul.</p>
-        <p class="bp">2 490 Ft<span> / hó</span></p>
-      </div>
-      <i class="ti ti-chevron-right bchev"></i>
-    </div>
-  </div>
 
   <!-- ============= CÍMKERESŐ: addr-buy ============= -->
   <div class="screen formscr" data-screen="addr-buy" style="display:none;">
@@ -1327,6 +1233,131 @@
         <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">159 990 Ft</span></div>
         <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">6 670 Ft<small> / hó</small></span></div>
       </div>
+    </div>
+  </div>
+  <!-- ============= SZOLGÁLTATÁSVÁSÁRLÁS ============= -->
+  <div class="screen" data-screen="buy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-welcome"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatásvásárlás</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
+    <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
+    <div class="svccard s1">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-infinity"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">Havidíjas mobil</p><span class="sbadge">Népszerű</span></div>
+        <p class="ss">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
+        <p class="sp">4 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </div>
+    <label class="svccard s2" for="s-addrbuy">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-device-tv"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">Otthoni internet és TV</p></div>
+        <p class="ss">Optikai net akár 1 Gbps + 120+ csatorna, felvétellel.</p>
+        <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
+        <p class="sp">8 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </label>
+    <label class="svccard s3" for="s-addrbuy">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-router"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">Otthoni internet</p></div>
+        <p class="ss">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
+        <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
+        <p class="sp">6 490 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </label>
+    <div class="svccard s4">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-device-mobile"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">Feltöltőkártyás mobil</p></div>
+        <p class="ss">Kötöttség és havidíj nélkül, egyenleg alapon.</p>
+        <p class="sp">1 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </div>
+    <div class="svccard s5">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-bolt"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">YEPP</p><span class="sbadge">Új</span></div>
+        <p class="ss">Digitális csomag fiataloknak — közösségi appok korlátlanul.</p>
+        <p class="sp">2 490 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </div>
+  </div>
+
+  <!-- ============= ÚJ SZOLGÁLTATÁS (belső) ============= -->
+  <div class="screen" data-screen="add-service" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Új szolgáltatás</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
+    <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
+    <div class="svccard s1">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-infinity"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">Havidíjas mobil</p><span class="sbadge">Népszerű</span></div>
+        <p class="ss">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
+        <p class="sp">4 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </div>
+    <label class="svccard s2" for="s-addrsvc">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-device-tv"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">Otthoni internet és TV</p></div>
+        <p class="ss">Optikai net akár 1 Gbps + 120+ csatorna, felvétellel.</p>
+        <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
+        <p class="sp">8 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </label>
+    <label class="svccard s3" for="s-addrsvc">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-router"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">Otthoni internet</p></div>
+        <p class="ss">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
+        <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
+        <p class="sp">6 490 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </label>
+    <div class="svccard s4">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-device-mobile"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">Feltöltőkártyás mobil</p></div>
+        <p class="ss">Kötöttség és havidíj nélkül, egyenleg alapon.</p>
+        <p class="sp">1 990 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
+    </div>
+    <div class="svccard s5">
+      <div class="sb1"></div><div class="sb2"></div>
+      <span class="svcic"><i class="ti ti-bolt"></i></span>
+      <div class="svctx">
+        <div class="svctop"><p class="st">YEPP</p><span class="sbadge">Új</span></div>
+        <p class="ss">Digitális csomag fiataloknak — közösségi appok korlátlanul.</p>
+        <p class="sp">2 490 Ft<span> / hó-tól</span></p>
+      </div>
+      <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </div>
   </div>
   <!-- ============= NAV ============= -->
