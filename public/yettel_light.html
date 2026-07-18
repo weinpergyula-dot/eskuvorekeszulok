@@ -273,11 +273,13 @@
   #s-tarifsvc:checked ~ [data-screen="tarif-svc"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
-  .tfcard{border-radius:20px; padding:16px; margin-bottom:12px;
+  .tfcard{display:flex; align-items:center; gap:12px; border-radius:20px; padding:16px; margin-bottom:12px;
           background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
+  .tfmain{flex:1; min-width:0;}
+  .tfchev{font-size:20px; color:var(--low); flex-shrink:0;}
   .tftop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
   .tfhead{min-width:0;}
-  .tfname{font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--low); margin:0;}
+  .tfname{font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--limed); margin:0;}
   .tfdata{font-family:'Sora'; font-size:19px; font-weight:700; color:var(--hi); margin:5px 0 0;}
   .tfbadge{flex-shrink:0; font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:4px 9px; border-radius:7px; background:var(--lime); color:#14245E;}
   .tfspecs{display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:13px;}
@@ -1376,78 +1378,113 @@
     </div>
   </div>
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
+
+  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
+
+  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
   <div class="screen" data-screen="tarif-buy" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Havidíjas tarifák</span>
       <div style="width:42px"></div>
     </div>
-    <h2 class="buyhead">Yettel Prime<br>tarifák.</h2>
-    <p class="buysub">Válaszd ki a hozzád illő csomagot. Számhordozással 6 hónapon át 30% kedvezmény.</p>
+    <h2 class="buyhead">Válaszd ki a<br>tarifádat.</h2>
+    <p class="buysub">Számhordozással 6 hónapon át 30% havidíjkedvezmény.</p>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime</p><p class="tfdata">25 GB adat</p></div>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Start</p><p class="tfdata">2 GB adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>100 perc</span>
+          <span><i class="ti ti-world"></i>2 GB EU roaming</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">4 679 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>200 perc</span>
-        <span><i class="ti ti-world"></i>25 GB EU roaming</span>
-      </div>
-      <div class="tfprice">
-        <span class="tfp">9 379 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime Simple Net</p><p class="tfdata">60 GB adat</p></div>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime</p><p class="tfdata">25 GB adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 perc</span>
+          <span><i class="ti ti-world"></i>25 GB EU roaming</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">9 379 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>100 perc</span>
-        <span><i class="ti ti-world"></i>60 GB EU roaming</span>
-      </div>
-      <div class="tfprice">
-        <span class="tfp">11 989 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime Plus</p><p class="tfdata">Korlátlan adat</p></div><span class="tfbadge">Népszerű</span>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime Simple Net</p><p class="tfdata">60 GB adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>100 perc</span>
+          <span><i class="ti ti-world"></i>60 GB EU roaming</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">11 989 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>200 perc</span>
-        <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-      </div>
-      <div class="tfprice">
-        <span class="tfp">14 599 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime Extra</p><p class="tfdata">Korlátlan adat</p></div>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime Plus</p><p class="tfdata">Korlátlan adat</p></div><span class="tfbadge">Népszerű</span>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 perc</span>
+          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">14 599 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>Korlátlan perc</span>
-        <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-      </div>
-      <div class="tfprice">
-        <span class="tfp">17 729 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime Max</p><p class="tfdata">Korlátlan adat</p></div>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime Extra</p><p class="tfdata">Korlátlan adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>Korlátlan perc</span>
+          <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">17 729 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
-        <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+      <i class="ti ti-chevron-right tfchev"></i>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime Max</p><p class="tfdata">Korlátlan adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
+          <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">23 999 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfprice">
-        <span class="tfp">23 999 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
   </div>
 
@@ -1458,72 +1495,103 @@
       <span class="title">Havidíjas tarifák</span>
       <div style="width:42px"></div>
     </div>
-    <h2 class="buyhead">Yettel Prime<br>tarifák.</h2>
-    <p class="buysub">Válaszd ki a hozzád illő csomagot. Számhordozással 6 hónapon át 30% kedvezmény.</p>
+    <h2 class="buyhead">Válaszd ki a<br>tarifádat.</h2>
+    <p class="buysub">Számhordozással 6 hónapon át 30% havidíjkedvezmény.</p>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime</p><p class="tfdata">25 GB adat</p></div>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Start</p><p class="tfdata">2 GB adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>100 perc</span>
+          <span><i class="ti ti-world"></i>2 GB EU roaming</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">4 679 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>200 perc</span>
-        <span><i class="ti ti-world"></i>25 GB EU roaming</span>
-      </div>
-      <div class="tfprice">
-        <span class="tfp">9 379 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime Simple Net</p><p class="tfdata">60 GB adat</p></div>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime</p><p class="tfdata">25 GB adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 perc</span>
+          <span><i class="ti ti-world"></i>25 GB EU roaming</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">9 379 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>100 perc</span>
-        <span><i class="ti ti-world"></i>60 GB EU roaming</span>
-      </div>
-      <div class="tfprice">
-        <span class="tfp">11 989 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime Plus</p><p class="tfdata">Korlátlan adat</p></div><span class="tfbadge">Népszerű</span>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime Simple Net</p><p class="tfdata">60 GB adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>100 perc</span>
+          <span><i class="ti ti-world"></i>60 GB EU roaming</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">11 989 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>200 perc</span>
-        <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-      </div>
-      <div class="tfprice">
-        <span class="tfp">14 599 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime Extra</p><p class="tfdata">Korlátlan adat</p></div>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime Plus</p><p class="tfdata">Korlátlan adat</p></div><span class="tfbadge">Népszerű</span>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 perc</span>
+          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">14 599 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>Korlátlan perc</span>
-        <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-      </div>
-      <div class="tfprice">
-        <span class="tfp">17 729 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
-      <div class="tftop">
-        <div class="tfhead"><p class="tfname">Yettel Prime Max</p><p class="tfdata">Korlátlan adat</p></div>
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime Extra</p><p class="tfdata">Korlátlan adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>Korlátlan perc</span>
+          <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">17 729 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfspecs">
-        <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
-        <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+      <i class="ti ti-chevron-right tfchev"></i>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tftop">
+          <div class="tfhead"><p class="tfname">Yettel Prime Max</p><p class="tfdata">Korlátlan adat</p></div>
+        </div>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
+          <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <div class="tfprice">
+          <span class="tfp">23 999 Ft<small> / hó</small></span>
+          <span class="tfnote">11 hónapos hűséggel</span>
+        </div>
       </div>
-      <div class="tfprice">
-        <span class="tfp">23 999 Ft<small> / hó</small></span>
-        <span class="tfnote">11 hónapos hűséggel</span>
-      </div>
+      <i class="ti ti-chevron-right tfchev"></i>
     </div>
   </div>
 
