@@ -275,19 +275,22 @@
   #s-offsvc:checked ~ [data-screen="offers-svc"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
-  .offaddr{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; font-size:11.5px; color:var(--mid); line-height:1.5; margin:0 2px;}
+  .offaddr{margin:0 2px;}
+  .oal{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--low); font-weight:700; margin:0;}
+  .oav{font-size:13px; color:var(--hi); font-weight:600; line-height:1.45; margin:5px 0 0;}
   .offaddr b{color:var(--hi); font-weight:600;}
-  .offchg{color:var(--limed); font-weight:700; white-space:nowrap; flex-shrink:0; cursor:pointer;}
+  .offchg{display:inline-block; margin-top:9px; font-size:12px; font-weight:700; cursor:pointer; text-decoration:underline; text-underline-offset:3px; color:var(--limed);}
   .offsec{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--low); font-weight:700; margin:20px 4px 12px;}
   .tfcard{display:flex; align-items:center; gap:12px; border-radius:20px; padding:16px; margin-bottom:12px;
           background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
+  .tfcard.pop{border-color:var(--lime); box-shadow:0 0 0 1px var(--lime);}
   .tfmain{flex:1; min-width:0;}
   .tfchev{font-size:20px; color:var(--low); flex-shrink:0;}
   .tftop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
   .tfhead{min-width:0;}
   .tfname{font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--limed); margin:0;}
   .tfdata{font-family:'Sora'; font-size:19px; font-weight:700; color:var(--hi); margin:5px 0 0;}
-  .tfbadge{flex-shrink:0; font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:4px 9px; border-radius:7px; background:var(--lime); color:#14245E;}
+  .tfbadge{display:inline-block; margin-bottom:8px; font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:4px 9px; border-radius:7px; background:var(--lime); color:#14245E;}
   .tfspecs{display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:13px;}
   .tfspecs span{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--mid);}
   .tfspecs i{font-size:15px; color:var(--limed);}
@@ -295,6 +298,11 @@
   .tfp{font-family:'Sora'; font-size:17px; font-weight:700; color:var(--hi);}
   .tfp small{font-family:'Manrope'; font-size:11px; font-weight:600; color:var(--mid);}
   .tfnote{font-size:10.5px; color:var(--low);}
+  .tfhelp{display:flex; gap:10px; margin-top:18px;}
+  .tfhb{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:13px 8px; border-radius:14px; cursor:pointer; white-space:nowrap;
+        background:#FFFFFF; border:1px solid var(--line); color:var(--navy); font-weight:600; font-size:12px;}
+  .tfhb i{font-size:17px; color:var(--limed);}
+  .sbadge.soon{background:#FFB25A; color:#3A2A00;}
   .svccard{position:relative; overflow:hidden; display:flex; align-items:center; gap:14px; padding:18px 16px; border-radius:22px; margin-bottom:12px; cursor:pointer;
            border:1px solid rgba(255,255,255,.16); transition:transform .18s;}
   .svccard:hover{transform:translateY(-3px);}
@@ -1261,6 +1269,25 @@
     </div>
   </div>
   <!-- ============= SZOLGÁLTATÁSVÁSÁRLÁS ============= -->
+
+  <!-- ============= ÚJ SZOLGÁLTATÁS (belső) ============= -->
+  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
+
+  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
+
+  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
+
+  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
+
+  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
+
+  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
+
+  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
+
+  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
+
+  <!-- ============= Szolgáltatásvásárlás ============= -->
   <div class="screen" data-screen="buy" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-welcome"><i class="ti ti-arrow-left"></i></label>
@@ -1271,7 +1298,7 @@
     <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
     <label class="svccard s-lime" for="s-tarifbuy">
       <div class="sb1"></div><div class="sb2"></div>
-      <span class="svcic"><i class="ti ti-device-mobile"></i></span>
+      <span class="svcic"><i class="ti ti-infinity"></i></span>
       <div class="svctx">
         <div class="svctop"><p class="st">Havidíjas mobil</p><span class="sbadge">Népszerű</span></div>
         <p class="ss">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
@@ -1279,17 +1306,16 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </label>
-    <label class="svccard s-violet" for="s-addrbuy">
+    <div class="svccard s-violet">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-device-tv"></i></span>
       <div class="svctx">
-        <div class="svctop"><p class="st">Otthoni internet és TV</p></div>
+        <div class="svctop"><p class="st">Otthoni internet és TV</p><span class="sbadge soon">Hamarosan</span></div>
         <p class="ss">Optikai net akár 1 Gbps + 120+ csatorna, felvétellel.</p>
-        <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
         <p class="sp">8 990 Ft<span> / hó-tól</span></p>
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
-    </label>
+    </div>
     <label class="svccard s-blue" for="s-addrbuy">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-router"></i></span>
@@ -1323,7 +1349,7 @@
     </div>
   </div>
 
-  <!-- ============= ÚJ SZOLGÁLTATÁS (belső) ============= -->
+  <!-- ============= Új szolgáltatás ============= -->
   <div class="screen" data-screen="add-service" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
@@ -1334,7 +1360,7 @@
     <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
     <label class="svccard s-lime" for="s-tarifsvc">
       <div class="sb1"></div><div class="sb2"></div>
-      <span class="svcic"><i class="ti ti-device-mobile"></i></span>
+      <span class="svcic"><i class="ti ti-infinity"></i></span>
       <div class="svctx">
         <div class="svctop"><p class="st">Havidíjas mobil</p><span class="sbadge">Népszerű</span></div>
         <p class="ss">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
@@ -1342,17 +1368,16 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </label>
-    <label class="svccard s-violet" for="s-addrsvc">
+    <div class="svccard s-violet">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-device-tv"></i></span>
       <div class="svctx">
-        <div class="svctop"><p class="st">Otthoni internet és TV</p></div>
+        <div class="svctop"><p class="st">Otthoni internet és TV</p><span class="sbadge soon">Hamarosan</span></div>
         <p class="ss">Optikai net akár 1 Gbps + 120+ csatorna, felvétellel.</p>
-        <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
         <p class="sp">8 990 Ft<span> / hó-tól</span></p>
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
-    </label>
+    </div>
     <label class="svccard s-blue" for="s-addrsvc">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-router"></i></span>
@@ -1385,9 +1410,6 @@
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </div>
   </div>
-  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
-
-  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
 
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
   <div class="screen" data-screen="tarif-buy" style="display:none;">
@@ -1400,9 +1422,8 @@
     <p class="buysub">Számhordozással 6 hónapon át 30% havidíjkedvezmény.</p>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Start</p><p class="tfdata">2 GB adat</p></div>
-        </div>
+        <p class="tfname">Yettel Start</p>
+        <p class="tfdata">2 GB adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>2 GB EU roaming</span>
@@ -1416,9 +1437,8 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime</p><p class="tfdata">25 GB adat</p></div>
-        </div>
+        <p class="tfname">Yettel Prime</p>
+        <p class="tfdata">25 GB adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>25 GB EU roaming</span>
@@ -1432,9 +1452,8 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime Simple Net</p><p class="tfdata">60 GB adat</p></div>
-        </div>
+        <p class="tfname">Yettel Prime Simple Net</p>
+        <p class="tfdata">60 GB adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>60 GB EU roaming</span>
@@ -1446,11 +1465,11 @@
       </div>
       <i class="ti ti-chevron-right tfchev"></i>
     </div>
-    <div class="tfcard">
+    <div class="tfcard pop">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime Plus</p><p class="tfdata">Korlátlan adat</p></div><span class="tfbadge">Népszerű</span>
-        </div>
+        <span class="tfbadge">Népszerű</span>
+        <p class="tfname">Yettel Prime Plus</p>
+        <p class="tfdata">Korlátlan adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
@@ -1464,9 +1483,8 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime Extra</p><p class="tfdata">Korlátlan adat</p></div>
-        </div>
+        <p class="tfname">Yettel Prime Extra</p>
+        <p class="tfdata">Korlátlan adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>Korlátlan perc</span>
           <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
@@ -1480,9 +1498,8 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime Max</p><p class="tfdata">Korlátlan adat</p></div>
-        </div>
+        <p class="tfname">Yettel Prime Max</p>
+        <p class="tfdata">Korlátlan adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
           <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
@@ -1493,6 +1510,10 @@
         </div>
       </div>
       <i class="ti ti-chevron-right tfchev"></i>
+    </div>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
     </div>
   </div>
 
@@ -1507,9 +1528,8 @@
     <p class="buysub">Számhordozással 6 hónapon át 30% havidíjkedvezmény.</p>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Start</p><p class="tfdata">2 GB adat</p></div>
-        </div>
+        <p class="tfname">Yettel Start</p>
+        <p class="tfdata">2 GB adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>2 GB EU roaming</span>
@@ -1523,9 +1543,8 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime</p><p class="tfdata">25 GB adat</p></div>
-        </div>
+        <p class="tfname">Yettel Prime</p>
+        <p class="tfdata">25 GB adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>25 GB EU roaming</span>
@@ -1539,9 +1558,8 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime Simple Net</p><p class="tfdata">60 GB adat</p></div>
-        </div>
+        <p class="tfname">Yettel Prime Simple Net</p>
+        <p class="tfdata">60 GB adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>60 GB EU roaming</span>
@@ -1553,11 +1571,11 @@
       </div>
       <i class="ti ti-chevron-right tfchev"></i>
     </div>
-    <div class="tfcard">
+    <div class="tfcard pop">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime Plus</p><p class="tfdata">Korlátlan adat</p></div><span class="tfbadge">Népszerű</span>
-        </div>
+        <span class="tfbadge">Népszerű</span>
+        <p class="tfname">Yettel Prime Plus</p>
+        <p class="tfdata">Korlátlan adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
@@ -1571,9 +1589,8 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime Extra</p><p class="tfdata">Korlátlan adat</p></div>
-        </div>
+        <p class="tfname">Yettel Prime Extra</p>
+        <p class="tfdata">Korlátlan adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>Korlátlan perc</span>
           <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
@@ -1587,9 +1604,8 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">Yettel Prime Max</p><p class="tfdata">Korlátlan adat</p></div>
-        </div>
+        <p class="tfname">Yettel Prime Max</p>
+        <p class="tfdata">Korlátlan adat</p>
         <div class="tfspecs">
           <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
           <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
@@ -1601,11 +1617,11 @@
       </div>
       <i class="ti ti-chevron-right tfchev"></i>
     </div>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    </div>
   </div>
-
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
-
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
 
   <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
   <div class="screen" data-screen="offers-buy" style="display:none;">
@@ -1616,15 +1632,16 @@
     </div>
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Ajánlatok a címeden</h2>
     <div class="offaddr">
-      <span>Címed: <b>1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</b></span>
-      <label class="offchg" for="s-addrbuy">Másik cím</label>
+      <p class="oal">Címed:</p>
+      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
+      <label class="offchg" for="s-addrbuy">Másik címet adok meg.</label>
     </div>
     <p class="offsec">Internet</p>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">HiperNet L</p><p class="tfdata">1000 Mbit/s</p></div><span class="tfbadge">30 nap ingyen</span>
-        </div>
+        <span class="tfbadge">30 nap ingyen</span>
+        <p class="tfname">HiperNet L</p>
+        <p class="tfdata">1000 Mbit/s</p>
         <div class="tfspecs">
           <span><i class="ti ti-world"></i>Optikai internet</span>
           <span><i class="ti ti-router"></i>WiFi 7 router</span>
@@ -1639,9 +1656,9 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">HiperNet M</p><p class="tfdata">500 Mbit/s</p></div><span class="tfbadge">30 nap ingyen</span>
-        </div>
+        <span class="tfbadge">30 nap ingyen</span>
+        <p class="tfname">HiperNet M</p>
+        <p class="tfdata">500 Mbit/s</p>
         <div class="tfspecs">
           <span><i class="ti ti-world"></i>Optikai internet</span>
           <span><i class="ti ti-router"></i>WiFi 7 router</span>
@@ -1653,6 +1670,10 @@
         </div>
       </div>
       <i class="ti ti-chevron-right tfchev"></i>
+    </div>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
     </div>
   </div>
 
@@ -1665,15 +1686,16 @@
     </div>
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Ajánlatok a címeden</h2>
     <div class="offaddr">
-      <span>Címed: <b>1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</b></span>
-      <label class="offchg" for="s-addrsvc">Másik cím</label>
+      <p class="oal">Címed:</p>
+      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
+      <label class="offchg" for="s-addrsvc">Másik címet adok meg.</label>
     </div>
     <p class="offsec">Internet</p>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">HiperNet L</p><p class="tfdata">1000 Mbit/s</p></div><span class="tfbadge">30 nap ingyen</span>
-        </div>
+        <span class="tfbadge">30 nap ingyen</span>
+        <p class="tfname">HiperNet L</p>
+        <p class="tfdata">1000 Mbit/s</p>
         <div class="tfspecs">
           <span><i class="ti ti-world"></i>Optikai internet</span>
           <span><i class="ti ti-router"></i>WiFi 7 router</span>
@@ -1688,9 +1710,9 @@
     </div>
     <div class="tfcard">
       <div class="tfmain">
-        <div class="tftop">
-          <div class="tfhead"><p class="tfname">HiperNet M</p><p class="tfdata">500 Mbit/s</p></div><span class="tfbadge">30 nap ingyen</span>
-        </div>
+        <span class="tfbadge">30 nap ingyen</span>
+        <p class="tfname">HiperNet M</p>
+        <p class="tfdata">500 Mbit/s</p>
         <div class="tfspecs">
           <span><i class="ti ti-world"></i>Optikai internet</span>
           <span><i class="ti ti-router"></i>WiFi 7 router</span>
@@ -1702,6 +1724,10 @@
         </div>
       </div>
       <i class="ti ti-chevron-right tfchev"></i>
+    </div>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
     </div>
   </div>
 
