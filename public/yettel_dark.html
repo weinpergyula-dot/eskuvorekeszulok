@@ -286,11 +286,21 @@
   .svccard{position:relative; overflow:hidden; display:flex; align-items:center; gap:14px; padding:18px 16px; border-radius:22px; margin-bottom:12px; cursor:pointer;
            border:1px solid rgba(255,255,255,.16); transition:transform .18s;}
   .svccard:hover{transform:translateY(-3px);}
-  .svccard.s1{background:linear-gradient(135deg,#2E7D32 0%,#6FAF3A 55%,#C6F24E 100%); box-shadow:0 18px 34px -18px rgba(124,179,66,.75);}
-  .svccard.s2{background:linear-gradient(135deg,#5B2A9E 0%,#8E4BE0 55%,#C77DFF 100%); box-shadow:0 18px 34px -18px rgba(142,75,224,.75);}
-  .svccard.s3{background:linear-gradient(135deg,#1A3A8F 0%,#3B6FFF 60%,#6CA0FF 100%); box-shadow:0 18px 34px -18px rgba(59,111,255,.75);}
-  .svccard.s4{background:linear-gradient(135deg,#0F4C57 0%,#1E8E8A 58%,#54C7BE 100%); box-shadow:0 18px 34px -18px rgba(30,142,138,.7);}
-  .svccard.s5{background:linear-gradient(135deg,#A33A72 0%,#FF6FA5 55%,#FFB25A 100%); box-shadow:0 18px 34px -18px rgba(255,111,165,.7);}
+  .svccard.s-lime{background:linear-gradient(140deg,var(--lime2),var(--lime3)); border-color:rgba(11,19,48,.12); box-shadow:0 18px 34px -18px rgba(164,216,46,.70);}
+  .svccard.s-blue{background:linear-gradient(140deg,#5C7CFF,#2E46C8); box-shadow:0 18px 34px -18px rgba(59,90,255,.65);}
+  .svccard.s-violet{background:linear-gradient(140deg,#B78CFF,#7A4BE0); box-shadow:0 18px 34px -18px rgba(150,90,255,.65);}
+  .svccard.s-slate{background:linear-gradient(140deg,#8DA0C9,#5C6F9E); box-shadow:0 18px 34px -18px rgba(120,140,200,.60);}
+  .svccard.s-lime .st,.svccard.s-lime .sp{color:#0B1330;}
+  .svccard.s-lime .ss{color:rgba(11,19,48,.72);}
+  .svccard.s-lime .sp span{color:rgba(11,19,48,.60);}
+  .svccard.s-lime .svcic{background:rgba(11,19,48,.13); border-color:rgba(11,19,48,.20);}
+  .svccard.s-lime .svcic i{color:#0B1330;}
+  .svccard.s-lime .sbadge{background:#0B1330; color:var(--lime2);}
+  .svccard.s-lime .strial{background:rgba(11,19,48,.12); border-color:rgba(11,19,48,.22); color:#0B1330;}
+  .svccard.s-lime .svcgo{background:rgba(11,19,48,.90);}
+  .svccard.s-lime .svcgo i{color:var(--lime2);}
+  .svccard.s-lime .sb1{background:rgba(255,255,255,.30);}
+  .svccard.s-lime .sb2{background:rgba(11,19,48,.07);}
   .svccard .sb1{position:absolute; width:140px;height:140px;border-radius:50%; right:-40px; top:-60px; background:rgba(255,255,255,.16);}
   .svccard .sb2{position:absolute; width:92px;height:92px;border-radius:50%; right:52px; bottom:-52px; background:rgba(0,0,0,.10);}
   .svcic{position:relative; width:48px;height:48px;border-radius:16px; display:flex;align-items:center;justify-content:center; flex-shrink:0; align-self:flex-start;
@@ -1244,9 +1254,9 @@
     </div>
     <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
     <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
-    <div class="svccard s1">
+    <div class="svccard s-lime">
       <div class="sb1"></div><div class="sb2"></div>
-      <span class="svcic"><i class="ti ti-infinity"></i></span>
+      <span class="svcic"><i class="ti ti-device-mobile"></i></span>
       <div class="svctx">
         <div class="svctop"><p class="st">Havidíjas mobil</p><span class="sbadge">Népszerű</span></div>
         <p class="ss">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
@@ -1254,7 +1264,7 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </div>
-    <label class="svccard s2" for="s-addrbuy">
+    <label class="svccard s-violet" for="s-addrbuy">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-device-tv"></i></span>
       <div class="svctx">
@@ -1265,7 +1275,7 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </label>
-    <label class="svccard s3" for="s-addrbuy">
+    <label class="svccard s-blue" for="s-addrbuy">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-router"></i></span>
       <div class="svctx">
@@ -1276,7 +1286,7 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </label>
-    <div class="svccard s4">
+    <div class="svccard s-slate">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-device-mobile"></i></span>
       <div class="svctx">
@@ -1286,7 +1296,7 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </div>
-    <div class="svccard s5">
+    <div class="svccard s-lime">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-bolt"></i></span>
       <div class="svctx">
@@ -1307,9 +1317,9 @@
     </div>
     <h2 class="buyhead">Válaszd ki, mivel<br>kezdenéd.</h2>
     <p class="buysub">Egyszerű megrendelés, gyors aktiválás, prémium szolgáltatás!</p>
-    <div class="svccard s1">
+    <div class="svccard s-lime">
       <div class="sb1"></div><div class="sb2"></div>
-      <span class="svcic"><i class="ti ti-infinity"></i></span>
+      <span class="svcic"><i class="ti ti-device-mobile"></i></span>
       <div class="svctx">
         <div class="svctop"><p class="st">Havidíjas mobil</p><span class="sbadge">Népszerű</span></div>
         <p class="ss">Korlátlan net, percek és SMS, 5G-vel az egész országban.</p>
@@ -1317,7 +1327,7 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </div>
-    <label class="svccard s2" for="s-addrsvc">
+    <label class="svccard s-violet" for="s-addrsvc">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-device-tv"></i></span>
       <div class="svctx">
@@ -1328,7 +1338,7 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </label>
-    <label class="svccard s3" for="s-addrsvc">
+    <label class="svccard s-blue" for="s-addrsvc">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-router"></i></span>
       <div class="svctx">
@@ -1339,7 +1349,7 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </label>
-    <div class="svccard s4">
+    <div class="svccard s-slate">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-device-mobile"></i></span>
       <div class="svctx">
@@ -1349,7 +1359,7 @@
       </div>
       <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
     </div>
-    <div class="svccard s5">
+    <div class="svccard s-lime">
       <div class="sb1"></div><div class="sb2"></div>
       <span class="svcic"><i class="ti ti-bolt"></i></span>
       <div class="svctx">
