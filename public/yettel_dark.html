@@ -364,7 +364,7 @@
   .tfnote{margin-left:auto; text-align:right; font-size:10px; line-height:1.35; color:var(--low);}
   .tfdet{font-size:11.5px; font-weight:700; color:var(--lime); text-decoration:underline; text-underline-offset:3px; cursor:pointer;}
   .tfcard.pop .tfdet{color:#0B1330;}
-  .bimg{position:absolute; right:12px; bottom:10px; width:74px; height:104px; background-size:contain; background-repeat:no-repeat; background-position:center bottom; filter:drop-shadow(0 8px 14px rgba(0,0,0,.45));}
+  .bimg{position:absolute; right:12px; top:50%; transform:translateY(-50%); width:96px; height:134px; background-size:contain; background-repeat:no-repeat; background-position:center; filter:drop-shadow(0 8px 14px rgba(0,0,0,.45));}
   .bbtx{position:relative; max-width:65%; display:flex; flex-direction:column; height:100%;}
   .tfhelp{display:flex; gap:10px; margin-top:18px;}
   .tfhb{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:13px 8px; border-radius:14px; cursor:pointer; white-space:nowrap;
@@ -1593,122 +1593,6 @@
   </div>
 
   <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
-  <div class="screen" data-screen="devbuy" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Új készülék</span>
-      <div style="width:42px"></div>
-    </div>
-
-    <div class="bcar">
-      <div class="bban p1">
-        <div class="bb1"></div><div class="bb2"></div>
-        <div class="bimg pi-xiaomi"></div>
-        <div class="bbtx">
-          <span class="bbtag">Akció</span>
-          <p class="bbt">Xiaomi 17T Pro<br>30 000 Ft kedvezmény</p>
-          <p class="bbs">Leica optika · 512 GB</p>
-          <p class="bbp">Most 299 990 Ft<span> · 12 500 Ft / hó</span></p>
-        </div>
-      </div>
-      <div class="bban p2">
-        <div class="bb1"></div><div class="bb2"></div>
-        <div class="bimg pi-samsung"></div>
-        <div class="bbtx">
-          <span class="bbtag">Újdonság</span>
-          <p class="bbt">Galaxy A27<br>már 5 000 Ft / hó-tól</p>
-          <p class="bbs">Kamatmentes részletfizetés</p>
-          <p class="bbp">Teljes ár 119 990 Ft</p>
-        </div>
-      </div>
-      <div class="bban p3">
-        <div class="bb1"></div><div class="bb2"></div>
-        <div class="bimg pi-honor4"></div>
-        <div class="bbtx">
-          <span class="bbtag">Ajándék</span>
-          <p class="bbt">HONOR 400 Pro<br>ajándék gyorstöltővel</p>
-          <p class="bbs">200 MP kamera · 512 GB</p>
-          <p class="bbp">199 990 Ft<span> · 8 330 Ft / hó</span></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="brandfilter">
-      <span class="chip on">Összes</span><span class="chip">Samsung</span><span class="chip">Xiaomi</span><span class="chip">HONOR</span><span class="chip">Motorola</span>
-    </div>
-    <button class="morefilter"><i class="ti ti-adjustments-horizontal"></i>További szűrő</button>
-
-    <div class="dvcard">
-      <div class="dvtop">
-        <div class="dvthumb"><div class="dvimg pi-xiaomi"></div></div>
-        <div class="dvinfo"><span class="dvbadge">Népszerű</span>
-          <p class="dvname">Xiaomi 17T Pro</p>
-          <p class="dvspec">Leica optika · 512 GB · 144 Hz AMOLED</p>
-        </div>
-        <i class="ti ti-chevron-right dvchev"></i>
-      </div>
-      <div class="dvprices">
-        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">329 990 Ft</span></div>
-        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">13 750 Ft<small> / hó</small></span></div>
-      </div>
-    </div>
-    <div class="dvcard">
-      <div class="dvtop">
-        <div class="dvthumb"><div class="dvimg pi-samsung"></div></div>
-        <div class="dvinfo"><span class="dvbadge">Népszerű</span>
-          <p class="dvname">Samsung Galaxy A27</p>
-          <p class="dvspec">50 MP kamera · 128 GB · 5G</p>
-        </div>
-        <i class="ti ti-chevron-right dvchev"></i>
-      </div>
-      <div class="dvprices">
-        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">119 990 Ft</span></div>
-        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">5 000 Ft<small> / hó</small></span></div>
-      </div>
-    </div>
-    <div class="dvcard">
-      <div class="dvtop">
-        <div class="dvthumb"><div class="dvimg pi-moto"></div></div>
-        <div class="dvinfo">
-          <p class="dvname">Motorola Edge 70 Fusion</p>
-          <p class="dvspec">pOLED kijelző · 256 GB · 5G</p>
-        </div>
-        <i class="ti ti-chevron-right dvchev"></i>
-      </div>
-      <div class="dvprices">
-        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">149 990 Ft</span></div>
-        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">6 250 Ft<small> / hó</small></span></div>
-      </div>
-    </div>
-    <div class="dvcard">
-      <div class="dvtop">
-        <div class="dvthumb"><div class="dvimg pi-honor4"></div></div>
-        <div class="dvinfo">
-          <p class="dvname">HONOR 400 Pro</p>
-          <p class="dvspec">200 MP kamera · 512 GB · 5G</p>
-        </div>
-        <i class="ti ti-chevron-right dvchev"></i>
-      </div>
-      <div class="dvprices">
-        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">199 990 Ft</span></div>
-        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">8 330 Ft<small> / hó</small></span></div>
-      </div>
-    </div>
-    <div class="dvcard">
-      <div class="dvtop">
-        <div class="dvthumb"><div class="dvimg pi-honor6"></div></div>
-        <div class="dvinfo">
-          <p class="dvname">HONOR 600</p>
-          <p class="dvspec">6 000 mAh akku · 256 GB · 5G</p>
-        </div>
-        <i class="ti ti-chevron-right dvchev"></i>
-      </div>
-      <div class="dvprices">
-        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">159 990 Ft</span></div>
-        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">6 670 Ft<small> / hó</small></span></div>
-      </div>
-    </div>
-  </div>
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
   <div class="screen" data-screen="tarif-buy" style="display:none;">
     <div class="dhead">
@@ -2037,6 +1921,123 @@
     </div>
   </div>
 
+  <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
+  <div class="screen" data-screen="devbuy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Új készülék</span>
+      <div style="width:42px"></div>
+    </div>
+
+    <div class="bcar">
+      <div class="bban p1">
+        <div class="bb1"></div><div class="bb2"></div>
+        <div class="bimg pi-xiaomi"></div>
+        <div class="bbtx">
+          <span class="bbtag">Akció</span>
+          <p class="bbt">Xiaomi 17T Pro<br>30 000 Ft kedvezmény</p>
+          <p class="bbs">Leica optika · 512 GB</p>
+          <p class="bbp">Most 299 990 Ft<span> · 12 500 Ft / hó</span></p>
+        </div>
+      </div>
+      <div class="bban p2">
+        <div class="bb1"></div><div class="bb2"></div>
+        <div class="bimg pi-moto"></div>
+        <div class="bbtx">
+          <span class="bbtag">Újdonság</span>
+          <p class="bbt">Motorola Edge 70<br>Fusion most érkezett</p>
+          <p class="bbs">pOLED kijelző · 256 GB</p>
+          <p class="bbp">149 990 Ft<span> · 6 250 Ft / hó</span></p>
+        </div>
+      </div>
+      <div class="bban p3">
+        <div class="bb1"></div><div class="bb2"></div>
+        <div class="bimg pi-honor4"></div>
+        <div class="bbtx">
+          <span class="bbtag">Ajándék</span>
+          <p class="bbt">HONOR 400 Pro<br>ajándék gyorstöltővel</p>
+          <p class="bbs">200 MP kamera · 512 GB</p>
+          <p class="bbp">199 990 Ft<span> · 8 330 Ft / hó</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="brandfilter">
+      <span class="chip on">Összes</span><span class="chip">Samsung</span><span class="chip">Xiaomi</span><span class="chip">HONOR</span><span class="chip">Motorola</span>
+    </div>
+    <button class="morefilter"><i class="ti ti-adjustments-horizontal"></i>További szűrő</button>
+
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb"><div class="dvimg pi-xiaomi"></div></div>
+        <div class="dvinfo"><span class="dvbadge">Akció</span>
+          <p class="dvname">Xiaomi 17T Pro</p>
+          <p class="dvspec">Leica optika · 512 GB · 144 Hz AMOLED</p>
+        </div>
+        <i class="ti ti-chevron-right dvchev"></i>
+      </div>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">329 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">13 750 Ft<small> / hó</small></span></div>
+      </div>
+    </div>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb"><div class="dvimg pi-samsung"></div></div>
+        <div class="dvinfo"><span class="dvbadge">Népszerű</span>
+          <p class="dvname">Samsung Galaxy A27</p>
+          <p class="dvspec">50 MP kamera · 128 GB · 5G</p>
+        </div>
+        <i class="ti ti-chevron-right dvchev"></i>
+      </div>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">119 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">5 000 Ft<small> / hó</small></span></div>
+      </div>
+    </div>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb"><div class="dvimg pi-moto"></div></div>
+        <div class="dvinfo"><span class="dvbadge">Újdonság</span>
+          <p class="dvname">Motorola Edge 70 Fusion</p>
+          <p class="dvspec">pOLED kijelző · 256 GB · 5G</p>
+        </div>
+        <i class="ti ti-chevron-right dvchev"></i>
+      </div>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">149 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">6 250 Ft<small> / hó</small></span></div>
+      </div>
+    </div>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb"><div class="dvimg pi-honor4"></div></div>
+        <div class="dvinfo"><span class="dvbadge">Ajándék</span>
+          <p class="dvname">HONOR 400 Pro</p>
+          <p class="dvspec">200 MP kamera · 512 GB · 5G</p>
+        </div>
+        <i class="ti ti-chevron-right dvchev"></i>
+      </div>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">199 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">8 330 Ft<small> / hó</small></span></div>
+      </div>
+    </div>
+    <div class="dvcard">
+      <div class="dvtop">
+        <div class="dvthumb"><div class="dvimg pi-honor6"></div></div>
+        <div class="dvinfo">
+          <p class="dvname">HONOR 600</p>
+          <p class="dvspec">6 000 mAh akku · 256 GB · 5G</p>
+        </div>
+        <i class="ti ti-chevron-right dvchev"></i>
+      </div>
+      <div class="dvprices">
+        <div class="dvprice"><span class="dpl">Teljes ár</span><span class="dpv">159 990 Ft</span></div>
+        <div class="dvprice"><span class="dpl">Részletfizetés</span><span class="dpv">6 670 Ft<small> / hó</small></span></div>
+      </div>
+    </div>
+  </div>
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <div class="nitem on"><i class="ti ti-home"></i>Kezdőlap</div>
