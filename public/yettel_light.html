@@ -595,9 +595,9 @@
   .ddval b{display:block; font-family:'Sora'; font-size:13px; font-weight:700; color:var(--hi);}
   .ddval span{font-size:11px; color:var(--mid);}
   .ddic{font-size:18px; color:var(--mid); transition:transform .2s;}
-  .dd:focus-within .ddic{transform:rotate(180deg);}
+  html:not(.js) .dd:focus-within .ddic{transform:rotate(180deg);}
   .ddlist{display:none; flex-direction:column; gap:7px; margin-top:8px;}
-  .dd:focus-within .ddlist{display:flex;}
+  html:not(.js) .dd:focus-within .ddlist{display:flex;}
   .ddopt{padding:12px 15px; border-radius:14px; cursor:pointer; background:#FFFFFF; border:1px solid var(--line);}
   .ddopt b{display:block; font-family:'Sora'; font-size:12.5px; font-weight:700; color:var(--hi);}
   .ddopt span{font-size:10.5px; color:var(--mid);}
@@ -728,6 +728,9 @@
   .ddopt{position:relative; padding-right:40px;}
   .screen:has(#xd3-o1:checked) .ddopt[for="xd3-o1"],.screen:has(#xd3-o2:checked) .ddopt[for="xd3-o2"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
   .screen:has(#tc1-o1:checked) .ddopt[for="tc1-o1"]::after,.screen:has(#tc1-o2:checked) .ddopt[for="tc1-o2"]::after,.screen:has(#tc1-o3:checked) .ddopt[for="tc1-o3"]::after,.screen:has(#tc1-o4:checked) .ddopt[for="tc1-o4"]::after,.screen:has(#tc2-o1:checked) .ddopt[for="tc2-o1"]::after,.screen:has(#tc2-o2:checked) .ddopt[for="tc2-o2"]::after,.screen:has(#tc2-o3:checked) .ddopt[for="tc2-o3"]::after,.screen:has(#tc2-o4:checked) .ddopt[for="tc2-o4"]::after,.screen:has(#tc3-o1:checked) .ddopt[for="tc3-o1"]::after,.screen:has(#tc3-o2:checked) .ddopt[for="tc3-o2"]::after,.screen:has(#tc3-o3:checked) .ddopt[for="tc3-o3"]::after,.screen:has(#tc3-o4:checked) .ddopt[for="tc3-o4"]::after,.screen:has(#tc4-o1:checked) .ddopt[for="tc4-o1"]::after,.screen:has(#tc4-o2:checked) .ddopt[for="tc4-o2"]::after,.screen:has(#tc4-o3:checked) .ddopt[for="tc4-o3"]::after,.screen:has(#tc4-o4:checked) .ddopt[for="tc4-o4"]::after,.screen:has(#tu1-o3:checked) .ddopt[for="tu1-o3"]::after,.screen:has(#tu1-o4:checked) .ddopt[for="tu1-o4"]::after,.screen:has(#tu2-o3:checked) .ddopt[for="tu2-o3"]::after,.screen:has(#tu2-o4:checked) .ddopt[for="tu2-o4"]::after,.screen:has(#xd1-o1:checked) .ddopt[for="xd1-o1"]::after,.screen:has(#xd1-o2:checked) .ddopt[for="xd1-o2"]::after,.screen:has(#xd2-o1:checked) .ddopt[for="xd2-o1"]::after,.screen:has(#xd2-o2:checked) .ddopt[for="xd2-o2"]::after,.screen:has(#xd3-o1:checked) .ddopt[for="xd3-o1"]::after,.screen:has(#xd3-o2:checked) .ddopt[for="xd3-o2"]::after,.screen:has(#xm-o1:checked) .ddopt[for="xm-o1"]::after,.screen:has(#xm-o2:checked) .ddopt[for="xm-o2"]::after{content:"\2713"; position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:14px; font-weight:800; color:var(--limed);}
+  /* with JS the chevron toggles the list open AND shut; selection is kept */
+  html.js .dd.ddopen .ddlist{display:flex;}
+  html.js .dd.ddopen .ddic{transform:rotate(180deg);}
 </style>
 </head>
 <body>
@@ -3230,5 +3233,26 @@
 })();
 </script>
 
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var dds = Array.prototype.slice.call(document.querySelectorAll('.dd'));
+  function closeAll(keep){ dds.forEach(function(d){ if(d!==keep) d.classList.remove('ddopen'); }); }
+  dds.forEach(function(dd){
+    var sum = dd.querySelector('.ddsum');
+    if(!sum) return;
+    sum.addEventListener('click', function(e){
+      e.stopPropagation();
+      var open = dd.classList.contains('ddopen');
+      closeAll(dd);
+      if(open){ dd.classList.remove('ddopen'); dd.blur(); } else { dd.classList.add('ddopen'); }
+    });
+    dd.querySelectorAll('.ddopt').forEach(function(o){
+      o.addEventListener('click', function(){ dd.classList.remove('ddopen'); });
+    });
+  });
+  document.addEventListener('click', function(){ closeAll(null); });
+})();
+</script>
 </body>
 </html>
