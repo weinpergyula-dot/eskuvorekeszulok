@@ -281,9 +281,8 @@
   #s-tarifch1:checked ~ [data-screen="tarifch-1"],
   #s-tarifch2:checked ~ [data-screen="tarifch-2"],
   #s-tarifch3:checked ~ [data-screen="tarifch-3"],
-  #s-xdata1:checked ~ [data-screen="extradata-1"],
-  #s-xdata2:checked ~ [data-screen="extradata-2"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xdata2:checked ~ .nav{display:flex !important;}
+  #s-xdata:checked ~ [data-screen="extradata"]{display:block !important;}
+  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -292,10 +291,6 @@
   .xdd{flex:1; font-size:11.5px; color:var(--mid);}
   .xdp{font-family:'Sora'; font-size:14px; font-weight:700; color:var(--hi);}
   .xdlist .xdopt{position:relative;}
-  #extradata-1-a:checked ~ .xdlist .xdopt[for="extradata-1-a"],#extradata-1-b:checked ~ .xdlist .xdopt[for="extradata-1-b"],
-  #extradata-1-c:checked ~ .xdlist .xdopt[for="extradata-1-c"],#extradata-1-d:checked ~ .xdlist .xdopt[for="extradata-1-d"],
-  #extradata-2-a:checked ~ .xdlist .xdopt[for="extradata-2-a"],#extradata-2-b:checked ~ .xdlist .xdopt[for="extradata-2-b"],
-  #extradata-2-c:checked ~ .xdlist .xdopt[for="extradata-2-c"],#extradata-2-d:checked ~ .xdlist .xdopt[for="extradata-2-d"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
   .tubal{border-radius:20px; padding:18px 16px; margin-top:14px; text-align:center; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
   .tubl{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--low); font-weight:700; margin:0;}
   .tubv{font-family:'Sora'; font-size:30px; font-weight:800; color:var(--hi); margin:6px 0 0;}
@@ -588,6 +583,19 @@
     38.9%{opacity:0; transform:scale(.96); filter:blur(7px);}
     100%{opacity:0; transform:scale(.96); filter:blur(7px);}
   }
+  /* subscription / card selector */
+  .selrow{display:flex; gap:9px; margin-bottom:14px;}
+  .selopt{flex:1; display:flex; flex-direction:column; gap:3px; padding:12px 13px; border-radius:15px; cursor:pointer; background:#FFFFFF; border:1px solid var(--line); transition:background .18s, border-color .18s;}
+  .selopt b{font-family:'Sora'; font-size:12.5px; font-weight:700; color:var(--hi); display:block;}
+  .selopt span{font-size:10.5px; color:var(--mid);}
+  #tc-1:checked ~ .selrow .selopt[for="tc-1"],#tc-2:checked ~ .selrow .selopt[for="tc-2"],
+  #xs-1:checked ~ .selrow .selopt[for="xs-1"],#xs-2:checked ~ .selrow .selopt[for="xs-2"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
+  /* the shown balance / data allowance follows the selection */
+  .tubal.c1,.tubal.c2,.usg.u1,.usg.u2{display:none;}
+  #tc-1:checked ~ .tubal.c1,#tc-2:checked ~ .tubal.c2{display:block;}
+  #xs-1:checked ~ .usg.u1,#xs-2:checked ~ .usg.u2{display:block;}
+  #xa-1:checked ~ .xdlist .xdopt[for="xa-1"],#xa-2:checked ~ .xdlist .xdopt[for="xa-2"],
+  #xa-3:checked ~ .xdlist .xdopt[for="xa-3"],#xa-4:checked ~ .xdlist .xdopt[for="xa-4"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
 </style>
 </head>
 <body>
@@ -619,8 +627,7 @@
   <input class="rt" type="radio" name="nav" id="s-tarifch1">
   <input class="rt" type="radio" name="nav" id="s-tarifch2">
   <input class="rt" type="radio" name="nav" id="s-tarifch3">
-  <input class="rt" type="radio" name="nav" id="s-xdata1">
-  <input class="rt" type="radio" name="nav" id="s-xdata2">
+  <input class="rt" type="radio" name="nav" id="s-xdata">
   <input class="rt" type="radio" name="nav" id="s-notif">
   <input class="rt" type="radio" name="nav" id="s-devbuy">
   <input class="rt" type="radio" name="nav" id="s-menu">
@@ -738,7 +745,7 @@
             <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">74<span class="u"> / 100</span></span></div><div class="track"><div class="fill amber" style="width:74%"></div></div></div>
           </div>
         </div>
-        <div class="cactions"><label class="cbtn" for="s-xdata1"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch1"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
+        <div class="cactions"><label class="cbtn" for="s-xdata"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch1"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
       </div>
 
       <div class="hero pcard" data-open-detail>
@@ -759,7 +766,7 @@
             <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">18<span class="u"> / 50</span></span></div><div class="track"><div class="fill amber" style="width:36%"></div></div></div>
           </div>
         </div>
-        <div class="cactions"><label class="cbtn" for="s-xdata2"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch2"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
+        <div class="cactions"><label class="cbtn" for="s-xdata"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch2"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
       </div>
 
       <div class="hero pcard">
@@ -812,7 +819,7 @@
     <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
     <div class="acc">
-      <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>3</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>4</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
       <div class="acc-body">
         <div class="sub" data-open-detail style="position:relative;"><label class="subcover" for="s-detail"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
@@ -827,6 +834,11 @@
         <div class="sub">
           <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+        <div class="sub">
+          <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+          <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
       </div>
@@ -1075,6 +1087,11 @@
     <div class="sub">
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub">
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
@@ -1513,121 +1530,7 @@
   <!-- ============= Havidíjasra váltás: tarifch-3 ============= -->
 
   <!-- ============= EGYENLEGFELTÖLTÉS ============= -->
-  <div class="screen" data-screen="topup" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Egyenlegfeltöltés</span>
-      <div style="width:42px"></div>
-    </div>
 
-    <div class="planbar" style="margin-top:14px;">
-      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
-    </div>
-
-    <div class="tubal">
-      <p class="tubl">Jelenlegi egyenleg</p>
-      <p class="tubv">3 450 Ft</p>
-      <p class="tube">Érvényes: 2026. 09. 30-ig</p>
-    </div>
-
-    <p class="mlab">Feltöltés összege</p>
-    <input class="rt" type="radio" name="topup" id="tu-1">
-    <input class="rt" type="radio" name="topup" id="tu-2">
-    <input class="rt" type="radio" name="topup" id="tu-3" checked>
-    <input class="rt" type="radio" name="topup" id="tu-4">
-    <input class="rt" type="radio" name="topup" id="tu-5">
-    <input class="rt" type="radio" name="topup" id="tu-6">
-    <div class="amtgrid">
-      <label class="amt" for="tu-1">1 000 Ft</label>
-      <label class="amt" for="tu-2">2 000 Ft</label>
-      <label class="amt" for="tu-3">3 000 Ft</label>
-      <label class="amt" for="tu-4">5 000 Ft</label>
-      <label class="amt" for="tu-5">10 000 Ft</label>
-      <label class="amt" for="tu-6">20 000 Ft</label>
-    </div>
-
-    <p class="mlab">Fizetési mód</p>
-    <div class="gcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-credit-card"></i></span><span class="n">Bankkártya · **** 6411</span><i class="ti ti-circle-check chev" style="color:var(--lime);"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-plus"></i></span><span class="n">Új kártya hozzáadása</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-receipt"></i></span><span class="n">Feltöltés a számlámra</span><i class="ti ti-chevron-right chev"></i></div>
-    </div>
-
-    <button class="acont">Feltöltés</button>
-    <p class="sumnote" style="text-align:center;">A feltöltött egyenleg azonnal felhasználható.</p>
-  </div>
-  <!-- ============= EXTRA ADAT: extradata-1 ============= -->
-  <div class="screen" data-screen="extradata-1" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Extra adat</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="planbar" style="margin-top:14px;">
-      <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
-    </div>
-
-    <p class="mlab">Jelenlegi adatkeret</p>
-    <div class="gcard keret">
-      <div class="stat" style="margin-bottom:0;">
-        <div class="lab"><span class="k">Felhasznált</span><span class="v">12,4 GB<span class="u"> / 20 GB</span></span></div>
-        <div class="track"><div class="fill" style="width:62%"></div></div>
-      </div>
-    </div>
-
-    <p class="mlab">Válassz extra adatot</p>
-    <input class="rt" type="radio" name="xd-extradata-1" id="extradata-1-a">
-    <input class="rt" type="radio" name="xd-extradata-1" id="extradata-1-b" checked>
-    <input class="rt" type="radio" name="xd-extradata-1" id="extradata-1-c">
-    <input class="rt" type="radio" name="xd-extradata-1" id="extradata-1-d">
-    <div class="xdlist">
-      <label class="xdopt" for="extradata-1-a"><span class="xdn">1 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">890 Ft</span></label>
-      <label class="xdopt" for="extradata-1-b"><span class="xdn">5 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">2 490 Ft</span></label>
-      <label class="xdopt" for="extradata-1-c"><span class="xdn">10 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">3 990 Ft</span></label>
-      <label class="xdopt" for="extradata-1-d"><span class="xdn">50 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">6 990 Ft</span></label>
-    </div>
-
-    <button class="acont">Megveszem</button>
-    <p class="sumnote" style="text-align:center;">Az extra adat a megvásárlás után azonnal felhasználható.</p>
-  </div>
-
-  <!-- ============= EXTRA ADAT: extradata-2 ============= -->
-  <div class="screen" data-screen="extradata-2" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Extra adat</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="planbar" style="margin-top:14px;">
-      <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
-    </div>
-
-    <p class="mlab">Jelenlegi adatkeret</p>
-    <div class="gcard keret">
-      <div class="stat" style="margin-bottom:0;">
-        <div class="lab"><span class="k">Felhasznált</span><span class="v">3,1 GB<span class="u"> / 5 GB</span></span></div>
-        <div class="track"><div class="fill" style="width:62%"></div></div>
-      </div>
-    </div>
-
-    <p class="mlab">Válassz extra adatot</p>
-    <input class="rt" type="radio" name="xd-extradata-2" id="extradata-2-a">
-    <input class="rt" type="radio" name="xd-extradata-2" id="extradata-2-b" checked>
-    <input class="rt" type="radio" name="xd-extradata-2" id="extradata-2-c">
-    <input class="rt" type="radio" name="xd-extradata-2" id="extradata-2-d">
-    <div class="xdlist">
-      <label class="xdopt" for="extradata-2-a"><span class="xdn">1 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">890 Ft</span></label>
-      <label class="xdopt" for="extradata-2-b"><span class="xdn">5 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">2 490 Ft</span></label>
-      <label class="xdopt" for="extradata-2-c"><span class="xdn">10 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">3 990 Ft</span></label>
-      <label class="xdopt" for="extradata-2-d"><span class="xdn">50 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">6 990 Ft</span></label>
-    </div>
-
-    <button class="acont">Megveszem</button>
-    <p class="sumnote" style="text-align:center;">Az extra adat a megvásárlás után azonnal felhasználható.</p>
-  </div>
 
   <!-- ============= Szolgáltatásvásárlás ============= -->
   <div class="screen" data-screen="buy" style="display:none;">
@@ -2580,6 +2483,104 @@
     </div>
   </div>
 
+  <!-- ============= EGYENLEGFELTÖLTÉS ============= -->
+  <div class="screen" data-screen="topup" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Egyenlegfeltöltés</span>
+      <div style="width:42px"></div>
+    </div>
+
+    <p class="mlab" style="margin-top:14px;">Melyik kártyát töltöd fel?</p>
+    <input class="rt" type="radio" name="tucard" id="tc-1" checked>
+    <input class="rt" type="radio" name="tucard" id="tc-2">
+    <div class="selrow">
+      <label class="selopt" for="tc-1"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></label>
+      <label class="selopt" for="tc-2"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></label>
+    </div>
+
+    <div class="tubal c1">
+      <p class="tubl">Jelenlegi egyenleg</p>
+      <p class="tubv">3 450 Ft</p>
+      <p class="tube">+36 20 290 9734 · érvényes 2026. 09. 30-ig</p>
+    </div>
+    <div class="tubal c2">
+      <p class="tubl">Jelenlegi egyenleg</p>
+      <p class="tubv">1 280 Ft</p>
+      <p class="tube">+36 20 290 8812 · érvényes 2026. 08. 15-ig</p>
+    </div>
+
+    <p class="mlab">Feltöltés összege</p>
+    <input class="rt" type="radio" name="topup" id="tu-1">
+    <input class="rt" type="radio" name="topup" id="tu-2">
+    <input class="rt" type="radio" name="topup" id="tu-3" checked>
+    <input class="rt" type="radio" name="topup" id="tu-4">
+    <input class="rt" type="radio" name="topup" id="tu-5">
+    <input class="rt" type="radio" name="topup" id="tu-6">
+    <div class="amtgrid">
+      <label class="amt" for="tu-1">1 000 Ft</label>
+      <label class="amt" for="tu-2">2 000 Ft</label>
+      <label class="amt" for="tu-3">3 000 Ft</label>
+      <label class="amt" for="tu-4">5 000 Ft</label>
+      <label class="amt" for="tu-5">10 000 Ft</label>
+      <label class="amt" for="tu-6">20 000 Ft</label>
+    </div>
+
+    <p class="mlab">Fizetési mód</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-credit-card"></i></span><span class="n">Bankkártya · **** 6411</span><i class="ti ti-circle-check chev" style="color:var(--lime);"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-plus"></i></span><span class="n">Új kártya hozzáadása</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-receipt"></i></span><span class="n">Feltöltés a számlámra</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+
+    <button class="acont">Feltöltés</button>
+    <p class="sumnote" style="text-align:center;">A feltöltött egyenleg azonnal felhasználható.</p>
+  </div>
+
+  <!-- ============= EXTRA ADAT ============= -->
+  <div class="screen" data-screen="extradata" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Extra adat</span>
+      <div style="width:42px"></div>
+    </div>
+
+    <p class="mlab" style="margin-top:14px;">Melyik előfizetésedhez kéred?</p>
+    <input class="rt" type="radio" name="xdsub" id="xs-1" checked>
+    <input class="rt" type="radio" name="xdsub" id="xs-2">
+    <div class="selrow">
+      <label class="selopt" for="xs-1"><b>+36 20 290 7430</b><span>Prime Plus 2024</span></label>
+      <label class="selopt" for="xs-2"><b>+36 20 290 7566</b><span>Prime Plus 2025</span></label>
+    </div>
+
+    <div class="gcard keret usg u1">
+      <div class="stat" style="margin-bottom:0;">
+        <div class="lab"><span class="k">Felhasznált</span><span class="v">12,4<span class="u"> / 20 GB</span></span></div>
+        <div class="track"><div class="fill" style="width:62%"></div></div>
+      </div>
+    </div>
+    <div class="gcard keret usg u2">
+      <div class="stat" style="margin-bottom:0;">
+        <div class="lab"><span class="k">Felhasznált</span><span class="v">3,1<span class="u"> / 5 GB</span></span></div>
+        <div class="track"><div class="fill" style="width:62%"></div></div>
+      </div>
+    </div>
+
+    <p class="mlab">Válassz extra adatot</p>
+    <input class="rt" type="radio" name="xdamt" id="xa-1">
+    <input class="rt" type="radio" name="xdamt" id="xa-2" checked>
+    <input class="rt" type="radio" name="xdamt" id="xa-3">
+    <input class="rt" type="radio" name="xdamt" id="xa-4">
+    <div class="xdlist">
+      <label class="xdopt" for="xa-1"><span class="xdn">1 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">890 Ft</span></label>
+      <label class="xdopt" for="xa-2"><span class="xdn">5 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">2 490 Ft</span></label>
+      <label class="xdopt" for="xa-3"><span class="xdn">10 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">3 990 Ft</span></label>
+      <label class="xdopt" for="xa-4"><span class="xdn">50 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">6 990 Ft</span></label>
+    </div>
+
+    <button class="acont">Megveszem</button>
+    <p class="sumnote" style="text-align:center;">Az extra adat a megvásárlás után azonnal felhasználható.</p>
+  </div>
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <div class="nitem on"><i class="ti ti-home"></i>Kezdőlap</div>
