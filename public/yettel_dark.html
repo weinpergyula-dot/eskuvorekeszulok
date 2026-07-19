@@ -3427,23 +3427,6 @@
 
 <script>
 (function(){
-  var screens = Array.prototype.slice.call(document.querySelectorAll('[data-screen]'));
-  var navBar = document.querySelector('.nav');
-  function showScreen(name){
-    screens.forEach(function(s){ s.style.display = s.getAttribute('data-screen') === name ? 'block' : 'none'; });
-    if (navBar) navBar.style.display = (name === 'welcome' || name === 'login') ? 'none' : 'flex';
-    var t = document.querySelector('[data-screen="'+name+'"]'); if (t) t.scrollTop = 0;
-  }
-  showScreen('welcome');
-  Array.prototype.slice.call(document.querySelectorAll('[data-open-detail]')).forEach(function(el){
-    el.addEventListener('click', function(){ showScreen('detail'); });
-  });
-  Array.prototype.slice.call(document.querySelectorAll('[data-goto]')).forEach(function(el){
-    el.addEventListener('click', function(){ showScreen(el.getAttribute('data-goto')); });
-  });
-  Array.prototype.slice.call(document.querySelectorAll('[data-back]')).forEach(function(el){
-    el.addEventListener('click', function(){ showScreen('home'); });
-  });
 
   Array.prototype.slice.call(document.querySelectorAll('[data-acc]')).forEach(function(h){
     h.addEventListener('click', function(){
