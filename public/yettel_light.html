@@ -280,9 +280,27 @@
   #s-topup:checked ~ [data-screen="topup"],
   #s-tarifch1:checked ~ [data-screen="tarifch-1"],
   #s-tarifch2:checked ~ [data-screen="tarifch-2"],
-  #s-tarifch3:checked ~ [data-screen="tarifch-3"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav{display:flex !important;}
+  #s-tarifch3:checked ~ [data-screen="tarifch-3"],
+  #s-xdata1:checked ~ [data-screen="extradata-1"],
+  #s-xdata2:checked ~ [data-screen="extradata-2"]{display:block !important;}
+  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xdata2:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .xdlist{display:flex; flex-direction:column; gap:9px;}
+  .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
+         background:#FFFFFF; border:1px solid var(--line); transition:border-color .18s, background .18s;}
+  .xdn{font-family:'Sora'; font-size:16px; font-weight:700; color:var(--hi); min-width:52px;}
+  .xdd{flex:1; font-size:11.5px; color:var(--mid);}
+  .xdp{font-family:'Sora'; font-size:14px; font-weight:700; color:var(--hi);}
+  .xdlist .xdopt{position:relative;}
+  #extradata-1-a:checked ~ .xdlist .xdopt[for="extradata-1-a"],#extradata-1-b:checked ~ .xdlist .xdopt[for="extradata-1-b"],
+  #extradata-1-c:checked ~ .xdlist .xdopt[for="extradata-1-c"],#extradata-1-d:checked ~ .xdlist .xdopt[for="extradata-1-d"],
+  #extradata-2-a:checked ~ .xdlist .xdopt[for="extradata-2-a"],#extradata-2-b:checked ~ .xdlist .xdopt[for="extradata-2-b"],
+  #extradata-2-c:checked ~ .xdlist .xdopt[for="extradata-2-c"],#extradata-2-d:checked ~ .xdlist .xdopt[for="extradata-2-d"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
+  /* badges sit inside the card's top edge, as the featured pills do on the wedding site */
+  .tfbadge,.sbadge,.dvbadge{position:absolute; top:11px; left:15px; z-index:2; margin:0; border-radius:999px; padding:4px 10px;}
+  .tfcard:has(.tfbadge) .tfmain{padding-top:23px;}
+  .svccard:has(.sbadge){padding-top:40px;}
+  .dvcard:has(.dvbadge){padding-top:38px;}
   .tubal{border-radius:20px; padding:18px 16px; margin-top:14px; text-align:center; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
   .tubl{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--low); font-weight:700; margin:0;}
   .tubv{font-family:'Sora'; font-size:30px; font-weight:800; color:var(--hi); margin:6px 0 0;}
@@ -337,7 +355,7 @@
   .offaddr b{color:var(--hi); font-weight:600;}
   .offchg{display:inline-block; margin-top:9px; font-size:12px; font-weight:700; cursor:pointer; text-decoration:underline; text-underline-offset:3px; color:var(--limed);}
   .offsec{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--low); font-weight:700; margin:20px 4px 12px;}
-  .tfcard{display:flex; align-items:center; gap:12px; border-radius:20px; padding:16px; margin-bottom:12px;
+  .tfcard{position:relative; display:flex; align-items:center; gap:12px; border-radius:20px; padding:16px; margin-bottom:12px;
           background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
   .tfcard.pop{background:linear-gradient(140deg,var(--lime2),var(--lime3)); border-color:var(--lime3); box-shadow:0 18px 34px -20px rgba(164,216,46,.75);}
   .tfcard.pop .tfname,.tfcard.pop .tfdata,.tfcard.pop .tfp{color:#0B1330;}
@@ -391,7 +409,6 @@
   .svccard.s-lime .svcic{background:rgba(11,19,48,.13); border-color:rgba(11,19,48,.20);}
   .svccard.s-lime .svcic i{color:#0B1330;}
   .svccard.s-lime .sbadge{background:#0B1330; color:var(--lime2);}
-  .svccard.s-lime .strial{background:rgba(11,19,48,.12); border-color:rgba(11,19,48,.22); color:#0B1330;}
   .svccard.s-lime .svcgo{background:rgba(11,19,48,.90);}
   .svccard.s-lime .svcgo i{color:var(--lime2);}
   .svccard.s-lime .sb1{background:rgba(255,255,255,.30);}
@@ -405,9 +422,6 @@
   .svctx .st{font-family:'Sora'; font-size:16px; font-weight:700; margin:0; color:#FFFFFF;}
   .sbadge{display:inline-block; margin-bottom:7px; font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:7px; background:#FFFFFF; color:#14245E;}
   .svctx .ss{font-size:11.5px; color:rgba(255,255,255,.88); line-height:1.45; margin:4px 0 0;}
-  .strial{display:inline-flex; align-items:center; gap:5px; margin:8px 0 0; font-size:10px; font-weight:700; padding:4px 9px; border-radius:8px;
-          background:rgba(255,255,255,.20); border:1px solid rgba(255,255,255,.34); color:#FFFFFF;}
-  .strial i{font-size:12px;}
   .svctx .sp{font-family:'Sora'; font-size:15px; font-weight:700; margin:9px 0 0; color:#FFFFFF;}
   .svctx .sp span{font-family:'Manrope'; font-size:11px; font-weight:600; color:rgba(255,255,255,.8);}
   .svcgo{position:relative; width:34px;height:34px;border-radius:50%; display:flex;align-items:center;justify-content:center; flex-shrink:0; align-self:center;
@@ -421,7 +435,7 @@
   .morefilter{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin:12px 0 16px; padding:12px; border-radius:14px; cursor:pointer;
               background:#FFFFFF; border:1px solid var(--line); color:var(--navy); font-family:'Manrope'; font-weight:600; font-size:13px; box-shadow:0 8px 20px -14px rgba(20,36,94,.2);}
   .morefilter i{font-size:18px; color:var(--limed);}
-  .dvcard{display:block; border-radius:22px; padding:15px; margin-bottom:12px; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
+  .dvcard{position:relative; display:block; border-radius:22px; padding:15px; margin-bottom:12px; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
   .dvtop{display:flex; gap:14px; align-items:center;}
   .dvthumb{display:flex; align-items:center; justify-content:center; flex-shrink:0;}
   .dvthumb .dvimg{width:60px; height:86px; background-size:contain; background-repeat:no-repeat; background-position:center; filter:drop-shadow(0 8px 15px rgba(20,36,94,.26));}
@@ -588,6 +602,8 @@
   <input class="rt" type="radio" name="nav" id="s-tarifch1">
   <input class="rt" type="radio" name="nav" id="s-tarifch2">
   <input class="rt" type="radio" name="nav" id="s-tarifch3">
+  <input class="rt" type="radio" name="nav" id="s-xdata1">
+  <input class="rt" type="radio" name="nav" id="s-xdata2">
   <input class="rt" type="radio" name="nav" id="s-notif">
   <input class="rt" type="radio" name="nav" id="s-devbuy">
   <input class="rt" type="radio" name="nav" id="s-menu">
@@ -705,7 +721,7 @@
             <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">74<span class="u"> / 100</span></span></div><div class="track"><div class="fill amber" style="width:74%"></div></div></div>
           </div>
         </div>
-        <div class="cactions"><button class="cbtn"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</button><label class="cbtn" for="s-tarifch1"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
+        <div class="cactions"><label class="cbtn" for="s-xdata1"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch1"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
       </div>
 
       <div class="hero pcard" data-open-detail>
@@ -726,7 +742,7 @@
             <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">18<span class="u"> / 50</span></span></div><div class="track"><div class="fill amber" style="width:36%"></div></div></div>
           </div>
         </div>
-        <div class="cactions"><button class="cbtn"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</button><label class="cbtn" for="s-tarifch2"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
+        <div class="cactions"><label class="cbtn" for="s-xdata2"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch2"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
       </div>
 
       <div class="hero pcard">
@@ -1361,9 +1377,9 @@
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-router"></i></span>
         <div class="svctx">
+          <span class="sbadge">30 nap díjmentes</span>
           <p class="st">Otthoni internet</p>
           <p class="ss">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
-          <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
           <p class="sp">6 490 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
@@ -1445,9 +1461,9 @@
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-router"></i></span>
         <div class="svctx">
+          <span class="sbadge">30 nap díjmentes</span>
           <p class="st">Otthoni internet</p>
           <p class="ss">Villámgyors optikai kapcsolat, korlátlan adatkerettel.</p>
-          <span class="strial"><i class="ti ti-gift"></i>30 nap díjmentes kipróbálás</span>
           <p class="sp">6 490 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
@@ -1950,7 +1966,7 @@
     <p class="offsec">Internet</p>
     <label class="tfcard" for="s-extrabuy">
       <div class="tfmain">
-        <span class="tfbadge">30 nap ingyen</span>
+        <span class="tfbadge">30 nap díjmentes</span>
         <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
         <p class="tfdata">1000 Mbit/s</p>
         <div class="tfspecs">
@@ -1967,7 +1983,7 @@
     </label>
     <label class="tfcard" for="s-extrabuy">
       <div class="tfmain">
-        <span class="tfbadge">30 nap ingyen</span>
+        <span class="tfbadge">30 nap díjmentes</span>
         <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
         <p class="tfdata">500 Mbit/s</p>
         <div class="tfspecs">
@@ -2003,7 +2019,7 @@
     <p class="offsec">Internet</p>
     <label class="tfcard" for="s-extrasvc">
       <div class="tfmain">
-        <span class="tfbadge">30 nap ingyen</span>
+        <span class="tfbadge">30 nap díjmentes</span>
         <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
         <p class="tfdata">1000 Mbit/s</p>
         <div class="tfspecs">
@@ -2020,7 +2036,7 @@
     </label>
     <label class="tfcard" for="s-extrasvc">
       <div class="tfmain">
-        <span class="tfbadge">30 nap ingyen</span>
+        <span class="tfbadge">30 nap díjmentes</span>
         <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
         <p class="tfdata">500 Mbit/s</p>
         <div class="tfspecs">
@@ -2416,6 +2432,78 @@
     <button class="acont">Feltöltés</button>
     <p class="sumnote" style="text-align:center;">A feltöltött egyenleg azonnal felhasználható.</p>
   </div>
+  <!-- ============= EXTRA ADAT: extradata-1 ============= -->
+  <div class="screen" data-screen="extradata-1" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Extra adat</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar" style="margin-top:14px;">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+    </div>
+
+    <p class="mlab">Jelenlegi adatkeret</p>
+    <div class="gcard keret">
+      <div class="stat" style="margin-bottom:0;">
+        <div class="lab"><span class="k">Felhasznált</span><span class="v">12,4 GB<span class="u"> / 20 GB</span></span></div>
+        <div class="track"><div class="fill" style="width:62%"></div></div>
+      </div>
+    </div>
+
+    <p class="mlab">Válassz extra adatot</p>
+    <input class="rt" type="radio" name="xd-extradata-1" id="extradata-1-a">
+    <input class="rt" type="radio" name="xd-extradata-1" id="extradata-1-b" checked>
+    <input class="rt" type="radio" name="xd-extradata-1" id="extradata-1-c">
+    <input class="rt" type="radio" name="xd-extradata-1" id="extradata-1-d">
+    <div class="xdlist">
+      <label class="xdopt" for="extradata-1-a"><span class="xdn">1 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">890 Ft</span></label>
+      <label class="xdopt" for="extradata-1-b"><span class="xdn">5 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">2 490 Ft</span></label>
+      <label class="xdopt" for="extradata-1-c"><span class="xdn">10 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">3 990 Ft</span></label>
+      <label class="xdopt" for="extradata-1-d"><span class="xdn">50 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">6 990 Ft</span></label>
+    </div>
+
+    <button class="acont">Megveszem</button>
+    <p class="sumnote" style="text-align:center;">Az extra adat a megvásárlás után azonnal felhasználható.</p>
+  </div>
+
+  <!-- ============= EXTRA ADAT: extradata-2 ============= -->
+  <div class="screen" data-screen="extradata-2" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Extra adat</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar" style="margin-top:14px;">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
+    </div>
+
+    <p class="mlab">Jelenlegi adatkeret</p>
+    <div class="gcard keret">
+      <div class="stat" style="margin-bottom:0;">
+        <div class="lab"><span class="k">Felhasznált</span><span class="v">3,1 GB<span class="u"> / 5 GB</span></span></div>
+        <div class="track"><div class="fill" style="width:62%"></div></div>
+      </div>
+    </div>
+
+    <p class="mlab">Válassz extra adatot</p>
+    <input class="rt" type="radio" name="xd-extradata-2" id="extradata-2-a">
+    <input class="rt" type="radio" name="xd-extradata-2" id="extradata-2-b" checked>
+    <input class="rt" type="radio" name="xd-extradata-2" id="extradata-2-c">
+    <input class="rt" type="radio" name="xd-extradata-2" id="extradata-2-d">
+    <div class="xdlist">
+      <label class="xdopt" for="extradata-2-a"><span class="xdn">1 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">890 Ft</span></label>
+      <label class="xdopt" for="extradata-2-b"><span class="xdn">5 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">2 490 Ft</span></label>
+      <label class="xdopt" for="extradata-2-c"><span class="xdn">10 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">3 990 Ft</span></label>
+      <label class="xdopt" for="extradata-2-d"><span class="xdn">50 GB</span><span class="xdd">30 napig érvényes</span><span class="xdp">6 990 Ft</span></label>
+    </div>
+
+    <button class="acont">Megveszem</button>
+    <p class="sumnote" style="text-align:center;">Az extra adat a megvásárlás után azonnal felhasználható.</p>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <div class="nitem on"><i class="ti ti-home"></i>Kezdőlap</div>
