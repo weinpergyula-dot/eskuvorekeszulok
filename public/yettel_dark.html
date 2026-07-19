@@ -602,14 +602,15 @@
   }
   /* ---- number dropdown (native details, no JS) ---- */
   .dd{margin-bottom:16px;}
-  .ddsum{list-style:none; display:flex; align-items:center; gap:10px; padding:13px 15px; border-radius:15px; cursor:pointer; background:var(--glass); border:1px solid var(--stroke);}
-  .ddsum::-webkit-details-marker{display:none;}
+  .dd{outline:none;}
+  .ddsum{display:flex; align-items:center; gap:10px; padding:13px 15px; border-radius:15px; cursor:pointer; background:var(--glass); border:1px solid var(--stroke);}
   .ddval{display:none; flex:1; min-width:0;}
   .ddval b{display:block; font-family:'Sora'; font-size:13px; font-weight:700; color:var(--hi);}
   .ddval span{font-size:11px; color:var(--mid);}
   .ddic{font-size:18px; color:var(--mid); transition:transform .2s;}
-  .dd[open] .ddic{transform:rotate(180deg);}
-  .ddlist{display:flex; flex-direction:column; gap:7px; margin-top:8px;}
+  .dd:focus-within .ddic{transform:rotate(180deg);}
+  .ddlist{display:none; flex-direction:column; gap:7px; margin-top:8px;}
+  .dd:focus-within .ddlist{display:flex;}
   .ddopt{padding:12px 15px; border-radius:14px; cursor:pointer; background:var(--glass); border:1px solid var(--stroke);}
   .ddopt b{display:block; font-family:'Sora'; font-size:12.5px; font-weight:700; color:var(--hi);}
   .ddopt span{font-size:10.5px; color:var(--mid);}
@@ -2335,21 +2336,21 @@
     <input class="rt" type="radio" name="tc1-sel" id="tc1-o2">
     <input class="rt" type="radio" name="tc1-sel" id="tc1-o3">
     <input class="rt" type="radio" name="tc1-sel" id="tc1-o4">
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></span>
         <span class="ddval v2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></span>
         <span class="ddval v3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></span>
         <span class="ddval v4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="tc1-o1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></label>
         <label class="ddopt" for="tc1-o2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></label>
         <label class="ddopt" for="tc1-o3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></label>
         <label class="ddopt" for="tc1-o4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></label>
       </div>
-    </details>
+    </div>
     <h2 class="buyhead" style="font-size:22px;">Válaszd ki az új tarifádat.</h2>
     <p class="buysub">A váltás a következő számlázási ciklustól lép életbe.</p>
     <div class="tfcard">
@@ -2443,21 +2444,21 @@
     <input class="rt" type="radio" name="tc2-sel" id="tc2-o2" checked>
     <input class="rt" type="radio" name="tc2-sel" id="tc2-o3">
     <input class="rt" type="radio" name="tc2-sel" id="tc2-o4">
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></span>
         <span class="ddval v2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></span>
         <span class="ddval v3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></span>
         <span class="ddval v4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="tc2-o1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></label>
         <label class="ddopt" for="tc2-o2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></label>
         <label class="ddopt" for="tc2-o3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></label>
         <label class="ddopt" for="tc2-o4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></label>
       </div>
-    </details>
+    </div>
     <h2 class="buyhead" style="font-size:22px;">Válaszd ki az új tarifádat.</h2>
     <p class="buysub">A váltás a következő számlázási ciklustól lép életbe.</p>
     <div class="tfcard">
@@ -2551,21 +2552,21 @@
     <input class="rt" type="radio" name="tc3-sel" id="tc3-o2">
     <input class="rt" type="radio" name="tc3-sel" id="tc3-o3" checked>
     <input class="rt" type="radio" name="tc3-sel" id="tc3-o4">
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></span>
         <span class="ddval v2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></span>
         <span class="ddval v3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></span>
         <span class="ddval v4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="tc3-o1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></label>
         <label class="ddopt" for="tc3-o2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></label>
         <label class="ddopt" for="tc3-o3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></label>
         <label class="ddopt" for="tc3-o4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></label>
       </div>
-    </details>
+    </div>
     <h2 class="buyhead" style="font-size:22px;">Válaszd ki az új tarifádat.</h2>
     <p class="buysub">A váltás a következő számlázási ciklustól lép életbe.</p>
     <div class="tfcard">
@@ -2659,21 +2660,21 @@
     <input class="rt" type="radio" name="tc4-sel" id="tc4-o2">
     <input class="rt" type="radio" name="tc4-sel" id="tc4-o3">
     <input class="rt" type="radio" name="tc4-sel" id="tc4-o4" checked>
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></span>
         <span class="ddval v2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></span>
         <span class="ddval v3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></span>
         <span class="ddval v4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="tc4-o1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></label>
         <label class="ddopt" for="tc4-o2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></label>
         <label class="ddopt" for="tc4-o3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></label>
         <label class="ddopt" for="tc4-o4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></label>
       </div>
-    </details>
+    </div>
     <h2 class="buyhead" style="font-size:22px;">Válaszd ki az új tarifádat.</h2>
     <p class="buysub">A váltás a következő számlázási ciklustól lép életbe.</p>
     <div class="tfcard">
@@ -2765,17 +2766,17 @@
     <p class="mlab" style="margin-top:14px;">Melyik előfizetésedhez?</p>
     <input class="rt" type="radio" name="xd1-sel" id="xd1-o1" checked>
     <input class="rt" type="radio" name="xd1-sel" id="xd1-o2">
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></span>
         <span class="ddval v2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="xd1-o1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></label>
         <label class="ddopt" for="xd1-o2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></label>
       </div>
-    </details>
+    </div>
     <div class="gcard keret usg xd1u1">
       <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált</span><span class="v">12,4<span class="u"> / 20 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
     </div>
@@ -2825,17 +2826,17 @@
     <p class="mlab" style="margin-top:14px;">Melyik előfizetésedhez?</p>
     <input class="rt" type="radio" name="xd2-sel" id="xd2-o1">
     <input class="rt" type="radio" name="xd2-sel" id="xd2-o2" checked>
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></span>
         <span class="ddval v2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="xd2-o1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></label>
         <label class="ddopt" for="xd2-o2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></label>
       </div>
-    </details>
+    </div>
     <div class="gcard keret usg xd2u1">
       <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált</span><span class="v">12,4<span class="u"> / 20 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
     </div>
@@ -2885,17 +2886,17 @@
     <p class="mlab" style="margin-top:14px;">Melyik kártyát töltöd fel?</p>
     <input class="rt" type="radio" name="tu1-sel" id="tu1-o3" checked>
     <input class="rt" type="radio" name="tu1-sel" id="tu1-o4">
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></span>
         <span class="ddval v4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="tu1-o3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></label>
         <label class="ddopt" for="tu1-o4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></label>
       </div>
-    </details>
+    </div>
     <div class="tubal tu1c3">
       <p class="tubl">Jelenlegi egyenleg</p>
       <p class="tubv">3 450 Ft</p>
@@ -2939,17 +2940,17 @@
     <p class="mlab" style="margin-top:14px;">Melyik kártyát töltöd fel?</p>
     <input class="rt" type="radio" name="tu2-sel" id="tu2-o3">
     <input class="rt" type="radio" name="tu2-sel" id="tu2-o4" checked>
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></span>
         <span class="ddval v4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="tu2-o3"><b>+36 20 290 9734</b><span>Feltöltőkártyás · XS+</span></label>
         <label class="ddopt" for="tu2-o4"><b>+36 20 290 8812</b><span>Feltöltőkártyás · XS</span></label>
       </div>
-    </details>
+    </div>
     <div class="tubal tu2c3">
       <p class="tubl">Jelenlegi egyenleg</p>
       <p class="tubv">3 450 Ft</p>
@@ -3073,17 +3074,17 @@
     <p class="mlab" style="margin-top:14px;">Melyik előfizetésedhez?</p>
     <input class="rt" type="radio" name="xm-sel" id="xm-o1" checked>
     <input class="rt" type="radio" name="xm-sel" id="xm-o2">
-    <details class="dd">
-      <summary class="ddsum">
+    <div class="dd" tabindex="0">
+      <div class="ddsum">
         <span class="ddval v1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></span>
         <span class="ddval v2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></span>
         <i class="ti ti-chevron-down ddic"></i>
-      </summary>
+      </div>
       <div class="ddlist">
         <label class="ddopt" for="xm-o1"><b>+36 20 290 7430</b><span>Havidíjas · Prime Plus 2024</span></label>
         <label class="ddopt" for="xm-o2"><b>+36 20 290 7566</b><span>Havidíjas · Prime Plus 2025</span></label>
       </div>
-    </details>
+    </div>
     <div class="gcard keret usg xmu1">
       <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált percek</span><span class="v">210<span class="u"> / 300 perc</span></span></div><div class="track"><div class="fill" style="width:70%"></div></div></div>
     </div>
