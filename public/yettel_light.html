@@ -376,7 +376,7 @@
   .tfp{font-family:'Sora'; font-size:17px; font-weight:700; color:var(--hi);}
   .tfp small{font-family:'Manrope'; font-size:11px; font-weight:600; color:var(--mid);}
   .tfnote{margin-left:auto; text-align:right; font-size:10px; line-height:1.35; color:var(--low);}
-  .tfdet{font-size:11.5px; font-weight:700; color:var(--limed); text-decoration:underline; text-underline-offset:3px; cursor:pointer;}
+  .tfdet{display:inline-block; margin-top:13px; font-size:11.5px; font-weight:700; color:var(--limed); text-decoration:underline; text-underline-offset:3px; cursor:pointer;}
   .tfcard.pop .tfdet{color:#0B1330;}
   .bimg{position:absolute; right:12px; top:50%; transform:translateY(-50%); width:96px; height:134px; background-size:contain; background-repeat:no-repeat; background-position:center; filter:drop-shadow(0 8px 14px rgba(20,36,94,.35));}
   .bimg.pi-moto,.bimg.pi-honor4{width:128px; height:146px;}
@@ -571,6 +571,17 @@
   .tfcard:has(.tfbadge) .tfmain{padding-top:24px;}
   .svccard:has(.sbadge){padding-top:44px;}
   .dvcard:has(.dvbadge){padding-top:40px;}
+  /* order CTA replaces the old Részletek slot in the price row */
+  .tford{font-family:'Manrope'; font-weight:700; font-size:12px; padding:9px 16px; border-radius:999px; cursor:pointer; white-space:nowrap; background:linear-gradient(140deg,var(--lime2),var(--lime3)); color:#14245E;}
+  .tfcard.pop .tford{background:#0B1330; color:var(--lime2);}
+  /* commitment note rides up to the badge line when a badge is present */
+  .tfcard:has(.tfbadge) .tfnote{position:absolute; top:13px; right:15px; margin:0; max-width:46%;}
+  /* recommendation carousel: one fades out, the next fades in, 3s each */
+  .rcar{position:relative; height:172px; margin-top:2px;}
+  .rcar > *{position:absolute; inset:0; margin:0; opacity:0; animation:rfade 9s ease-in-out infinite;}
+  .rcar > *:nth-child(2){animation-delay:3s;}
+  .rcar > *:nth-child(3){animation-delay:6s;}
+  @keyframes rfade{0%{opacity:0}2%{opacity:1}31%{opacity:1}33%{opacity:0}100%{opacity:0}}
 </style>
 </head>
 <body>
@@ -616,11 +627,11 @@
     </div>
     <p class="mlab2">Fiók</p>
     <div class="mrow"><span class="mic"><i class="ti ti-user"></i></span><span class="n">Fiókadatok</span><i class="ti ti-chevron-right chev"></i></div>
-    <div class="mrow"><span class="mic"><i class="ti ti-device-mobile"></i></span><span class="n">Előfizetéseim</span><i class="ti ti-chevron-right chev"></i></div>
-    <div class="mrow"><span class="mic"><i class="ti ti-devices"></i></span><span class="n">Készülékeim</span><i class="ti ti-chevron-right chev"></i></div>
+    <label class="mrow" for="s-allsubs"><span class="mic"><i class="ti ti-device-mobile"></i></span><span class="n">Előfizetéseim</span><i class="ti ti-chevron-right chev"></i></label>
+    <label class="mrow" for="s-alldev"><span class="mic"><i class="ti ti-devices"></i></span><span class="n">Készülékeim</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="mrow"><span class="mic"><i class="ti ti-receipt"></i></span><span class="n">Számláim és fizetés</span><i class="ti ti-chevron-right chev"></i></div>
     <p class="mlab2">Szolgáltatások</p>
-    <div class="mrow"><span class="mic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></div>
+    <label class="mrow" for="s-topup"><span class="mic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="mrow"><span class="mic"><i class="ti ti-device-sim"></i></span><span class="n">SIM és eSIM kezelés</span><i class="ti ti-chevron-right chev"></i></div>
     <label class="mrow" for="s-notif"><span class="mic"><i class="ti ti-bell"></i></span><span class="n">Értesítések</span><span class="mbadge">2</span></label>
     <p class="mlab2">Segítség</p>
@@ -760,15 +771,37 @@
     <div class="hdots"><span class="on"></span><span></span><span></span></div>
 
     <div class="sec"><h3>Neked ajánljuk</h3><a>Több →</a></div>
-    <div class="promo">
-      <div class="blob"></div><div class="blob2"></div>
-      <h4>FULL kedvezmények</h4>
-      <p>FULL-tagként a szolgáltatásaid árából akár 20%-ot is elengedünk.</p>
-      <button class="go">Megnézem <i class="ti ti-arrow-right" style="font-size:15px"></i></button>
-      <div class="pct">20<small>%</small></div>
+    <div class="rcar">
+      <div class="promo">
+        <div class="blob"></div><div class="blob2"></div>
+        <h4>FULL kedvezmények</h4>
+        <p>FULL-tagként a szolgáltatásaid árából akár 20%-ot is elengedünk.</p>
+        <button class="go">Megnézem <i class="ti ti-arrow-right" style="font-size:15px"></i></button>
+        <div class="pct">20<small>%</small></div>
+      </div>
+      <div class="bban p1">
+        <div class="bb1"></div><div class="bb2"></div>
+        <div class="bimg pi-xiaomi"></div>
+        <div class="bbtx">
+          <span class="bbtag">Akció</span>
+          <p class="bbt">Xiaomi 17T Pro<br>30 000 Ft kedvezmény</p>
+          <p class="bbs">Leica optika · 512 GB</p>
+          <p class="bbp">Most 299 990 Ft<span>vagy 12 500 Ft / hó</span></p>
+        </div>
+      </div>
+      <div class="bban p3">
+        <div class="bb1"></div><div class="bb2"></div>
+        <div class="bimg pi-honor4"></div>
+        <div class="bbtx">
+          <span class="bbtag">Ajándék</span>
+          <p class="bbt">HONOR 400 Pro<br>ajándék gyorstöltővel</p>
+          <p class="bbs">200 MP kamera · 512 GB</p>
+          <p class="bbp">199 990 Ft<span>vagy 8 330 Ft / hó</span></p>
+        </div>
+      </div>
     </div>
 
-    <div class="sec"><h3>Előfizetéseim</h3><label for="s-allsubs">Összes</label></div>
+    <div class="sec"><h3>Előfizetéseim</h3><label for="s-allsubs">Összes →</label></div>
 
     <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
@@ -810,7 +843,7 @@
     </div>
 
 
-    <div class="sec"><h3>Készülékeim</h3><label for="s-alldev">Összes</label></div>
+    <div class="sec"><h3>Készülékeim</h3><label for="s-alldev">Összes →</label></div>
 
     <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
 
@@ -1880,6 +1913,20 @@
     </div>
   </div>
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
+
+  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
+
+  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
+
+  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
+
+  <!-- ============= Csomagváltás: tarifch-1 ============= -->
+
+  <!-- ============= Csomagváltás: tarifch-2 ============= -->
+
+  <!-- ============= Havidíjasra váltás: tarifch-3 ============= -->
+
+  <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
   <div class="screen" data-screen="tarif-buy" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
@@ -1896,12 +1943,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>2 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">4 679 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -1911,12 +1958,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>25 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">9 379 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -1926,12 +1973,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>60 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">11 989 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard pop">
       <span class="tfbadge">Népszerű</span>
@@ -1942,12 +1989,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">14 599 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -1957,12 +2004,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span>
           <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">17 729 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -1972,12 +2019,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
           <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">23 999 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfhelp">
       <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
@@ -2002,12 +2049,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>2 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">4 679 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2017,12 +2064,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>25 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">9 379 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2032,12 +2079,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>60 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">11 989 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard pop">
       <span class="tfbadge">Népszerű</span>
@@ -2048,12 +2095,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">14 599 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2063,12 +2110,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span>
           <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">17 729 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2078,12 +2125,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
           <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">23 999 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfhelp">
       <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
@@ -2114,12 +2161,12 @@
           <span><i class="ti ti-router"></i>WiFi 7 router</span>
           <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </label>
     <label class="tfcard" for="s-extrabuy">
       <span class="tfbadge">30 nap díjmentes</span>
@@ -2131,12 +2178,12 @@
           <span><i class="ti ti-router"></i>WiFi 7 router</span>
           <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </label>
     <div class="tfhelp">
       <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
@@ -2167,12 +2214,12 @@
           <span><i class="ti ti-router"></i>WiFi 7 router</span>
           <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </label>
     <label class="tfcard" for="s-extrasvc">
       <span class="tfbadge">30 nap díjmentes</span>
@@ -2184,12 +2231,12 @@
           <span><i class="ti ti-router"></i>WiFi 7 router</span>
           <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </label>
     <div class="tfhelp">
       <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
@@ -2218,12 +2265,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>2 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">4 679 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2233,12 +2280,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>25 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">9 379 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2248,12 +2295,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>60 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">11 989 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard pop">
       <span class="tfbadge">Népszerű</span>
@@ -2264,12 +2311,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">14 599 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2279,12 +2326,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span>
           <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">17 729 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2294,12 +2341,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
           <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">23 999 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfhelp">
       <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
@@ -2328,12 +2375,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>2 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">4 679 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2343,12 +2390,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>25 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">9 379 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2358,12 +2405,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>60 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">11 989 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard pop">
       <span class="tfbadge">Népszerű</span>
@@ -2374,12 +2421,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">14 599 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2389,12 +2436,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span>
           <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">17 729 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2404,12 +2451,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
           <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">23 999 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfhelp">
       <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
@@ -2438,12 +2485,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>2 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">4 679 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2453,12 +2500,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>25 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">9 379 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2468,12 +2515,12 @@
           <span><i class="ti ti-phone"></i>100 perc</span>
           <span><i class="ti ti-world"></i>60 GB EU roaming</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">11 989 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard pop">
       <span class="tfbadge">Népszerű</span>
@@ -2484,12 +2531,12 @@
           <span><i class="ti ti-phone"></i>200 perc</span>
           <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">14 599 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2499,12 +2546,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span>
           <span><i class="ti ti-world"></i>83 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">17 729 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfcard">
       <div class="tfmain">
@@ -2514,12 +2561,12 @@
           <span><i class="ti ti-phone"></i>Korlátlan perc</span><span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
           <span><i class="ti ti-world"></i>110 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
         </div>
+        <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">23 999 Ft<small> / hó</small></span>
-          <span class="tfdet">Részletek</span>
+          <span class="tford">Megrendelem</span>
         </div>
       </div>
-      <i class="ti ti-chevron-right tfchev"></i>
     </div>
     <div class="tfhelp">
       <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
