@@ -268,6 +268,15 @@
   #s-welcome:checked ~ [data-screen="welcome"],
   #s-login:checked ~ [data-screen="login"],
   #s-home:checked ~ [data-screen="home"],
+  #s-detailpre1:checked ~ [data-screen="detail-pre1"],
+  #s-detailpre2:checked ~ [data-screen="detail-pre2"],
+  #s-edmob:checked ~ [data-screen="ed-mob"],
+  #s-edpre1:checked ~ [data-screen="ed-pre1"],
+  #s-edpre2:checked ~ [data-screen="ed-pre2"],
+  #s-ednet:checked ~ [data-screen="ed-net"],
+  #s-edtv:checked ~ [data-screen="ed-tv"],
+  #s-eddev:checked ~ [data-screen="ed-dev"],
+  #s-edacc:checked ~ [data-screen="ed-acc"],
   #s-detail:checked ~ [data-screen="detail"],
   #s-detail-net:checked ~ [data-screen="detail-net"],
   #s-detail-tv:checked ~ [data-screen="detail-tv"],
@@ -301,7 +310,7 @@
   #s-xdata1:checked ~ [data-screen="xdata-1"],
   #s-xmin:checked ~ [data-screen="xmin"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -744,6 +753,12 @@
   /* with JS the chevron toggles the list open AND shut; selection is kept */
   html.js .dd.ddopen .ddlist{display:flex;}
   html.js .dd.ddopen .ddic{transform:rotate(180deg);}
+  /* ---- inline edit screens ---- */
+  .edfield{width:100%; padding:15px 16px; border-radius:16px; font-family:'Manrope'; font-size:15px; font-weight:600; color:var(--hi); background:var(--glass); border:1px solid var(--stroke); outline:none; -webkit-appearance:none;}
+  .edfield:focus{border-color:var(--lime);}
+  .ednote{font-size:11.5px; color:var(--mid); margin:10px 2px 0; line-height:1.55;}
+  .gbtn{display:block; text-align:center; width:100%; margin-top:10px; padding:15px; border-radius:16px; font-family:'Manrope'; font-weight:700; font-size:14px; cursor:pointer; color:var(--mid); background:transparent; border:1px solid var(--stroke);}
+  label.edit.icon{cursor:pointer;}
 </style>
 </head>
 <body>
@@ -786,6 +801,15 @@
   <input class="rt" type="radio" name="nav" id="s-notif">
   <input class="rt" type="radio" name="nav" id="s-devbuy">
   <input class="rt" type="radio" name="nav" id="s-menu">
+  <input class="rt" type="radio" name="nav" id="s-detailpre1">
+  <input class="rt" type="radio" name="nav" id="s-detailpre2">
+  <input class="rt" type="radio" name="nav" id="s-edmob">
+  <input class="rt" type="radio" name="nav" id="s-edpre1">
+  <input class="rt" type="radio" name="nav" id="s-edpre2">
+  <input class="rt" type="radio" name="nav" id="s-ednet">
+  <input class="rt" type="radio" name="nav" id="s-edtv">
+  <input class="rt" type="radio" name="nav" id="s-eddev">
+  <input class="rt" type="radio" name="nav" id="s-edacc">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
@@ -997,12 +1021,12 @@
           <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <div class="sub">
+        <div class="sub" style="position:relative;"><label class="subcover" for="s-detailpre1"></label>
           <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <div class="sub">
+        <div class="sub" style="position:relative;"><label class="subcover" for="s-detailpre2"></label>
           <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
           <i class="ti ti-chevron-right chev"></i>
@@ -1055,7 +1079,7 @@
     <div class="planbar">
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="s">Prime Plus 2024</p><p class="t">+36 20 290 7430</p></div>
-      <button class="edit icon"><i class="ti ti-pencil"></i></button>
+      <label class="edit icon" for="s-edmob"><i class="ti ti-pencil"></i></label>
     </div>
 
     <p class="mlab">Szerződés</p>
@@ -1122,7 +1146,7 @@
     <div class="planbar">
       <div class="itile blue"><i class="ti ti-router"></i></div>
       <div class="meta"><p class="s">Otthoni Net 1000</p><p class="t" style="font-size:16px;">Veszprém, Tölgyfa u. 4</p></div>
-      <button class="edit icon"><i class="ti ti-pencil"></i></button>
+      <label class="edit icon" for="s-ednet"><i class="ti ti-pencil"></i></label>
     </div>
 
     <p class="mlab">Szerződés</p>
@@ -1184,7 +1208,7 @@
     <div class="planbar">
       <div class="itile violet"><i class="ti ti-device-tv"></i></div>
       <div class="meta"><p class="s">TV Prémium</p><p class="t" style="font-size:16px;">Veszprém, Tölgyfa u. 4</p></div>
-      <button class="edit icon"><i class="ti ti-pencil"></i></button>
+      <label class="edit icon" for="s-edtv"><i class="ti ti-pencil"></i></label>
     </div>
 
     <p class="mlab">Szerződés</p>
@@ -1263,12 +1287,12 @@
       <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub">
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-detailpre1"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub">
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-detailpre2"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
       <i class="ti ti-chevron-right chev"></i>
@@ -1340,7 +1364,7 @@
     <div class="planbar">
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="s">Apple · 256 GB · Titán</p><p class="t" style="font-size:15px;">iPhone 15 Pro</p></div>
-      <button class="edit icon"><i class="ti ti-pencil"></i></button>
+      <label class="edit icon" for="s-eddev"><i class="ti ti-pencil"></i></label>
     </div>
 
     <p class="mlab">Részletfizetés</p>
@@ -3009,7 +3033,7 @@
     <div class="planbar" style="margin-top:14px;">
       <div class="avatar">GY</div>
       <div class="meta"><p class="t">Weinper Gyula</p><p class="s">weinper.gyula@gmail.com</p></div>
-      <button class="edit icon"><i class="ti ti-pencil"></i></button>
+      <label class="edit icon" for="s-edacc"><i class="ti ti-pencil"></i></label>
     </div>
 
     <p class="mlab">Személyes adatok</p>
@@ -3180,6 +3204,217 @@
     <p class="sumnote" style="text-align:center;">A roaming adat a megvásárlás után azonnal felhasználható.</p>
   </div>
 
+  <!-- ============= FELTOLTOKARTYAS RESZLETEK ============= -->
+  <div class="screen" data-screen="detail-pre1" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatás részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="s">Feltöltőkártyás · XS+</p><p class="t">+36 20 290 9734</p></div>
+      <label class="edit icon" for="s-edpre1"><i class="ti ti-pencil"></i></label>
+    </div>
+    <p class="mlab">Egyenleg</p>
+    <div class="gcard keret">
+      <div class="krow"><span class="k">Jelenlegi egyenleg</span><span class="v strong">3 450 Ft</span></div>
+      <div class="krow"><span class="k">Egyenleg érvényessége</span><span class="v">2026. 09. 30.</span></div>
+      <div class="krow"><span class="k">Utolsó feltöltés</span><span class="v">2026. 07. 02. · 3 000 Ft</span></div>
+      <div class="krow"><span class="k">Csomag</span><span class="v">Feltöltőkártyás · XS+</span></div>
+    </div>
+    <p class="mlab">Elérhető keret</p>
+    <div class="gcard keret">
+      <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">1,8<span class="u"> / 5 GB</span></span></div><div class="track"><div class="fill" style="width:36%"></div></div></div>
+      <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">48<span class="u"> / 100</span></span></div><div class="track"><div class="fill" style="width:48%"></div></div></div>
+      <div class="stat" style="margin-bottom:6px;"><div class="lab"><span class="k">SMS</span><span class="v">12<span class="u"> / 50</span></span></div><div class="track"><div class="fill" style="width:24%"></div></div></div>
+      <div class="krow" style="padding:12px 0 0; border-top:1px solid var(--stroke);"><span class="k" style="display:flex;align-items:center;gap:7px;color:var(--mid);font-size:12px;"><i class="ti ti-calendar-event" style="font-size:15px"></i>Keret megújul</span><span class="v strong">2026. 09. 30.</span></div>
+    </div>
+    <p class="mlab">Vásárlási lehetőségek</p>
+    <div class="gcard">
+      <label class="lrow" for="s-topup1"><span class="sic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Havidíjasra váltás</span><i class="ti ti-chevron-right chev"></i></label>
+    </div>
+    <p class="mlab">Extrák</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Hívásrészletező</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-arrows-exchange"></i></span><span class="n">Számhordozás</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-device-sim"></i></span><span class="n">SIM-csere / eSIM</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-settings"></i></span><span class="n">Hívásbeállítások</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <div class="gcard" style="margin-top:22px;">
+      <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+  </div>
+
+  <div class="screen" data-screen="detail-pre2" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatás részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="s">Feltöltőkártyás · XS</p><p class="t">+36 20 290 8812</p></div>
+      <label class="edit icon" for="s-edpre2"><i class="ti ti-pencil"></i></label>
+    </div>
+    <p class="mlab">Egyenleg</p>
+    <div class="gcard keret">
+      <div class="krow"><span class="k">Jelenlegi egyenleg</span><span class="v strong">1 280 Ft</span></div>
+      <div class="krow"><span class="k">Egyenleg érvényessége</span><span class="v">2026. 08. 15.</span></div>
+      <div class="krow"><span class="k">Utolsó feltöltés</span><span class="v">2026. 06. 18. · 2 000 Ft</span></div>
+      <div class="krow"><span class="k">Csomag</span><span class="v">Feltöltőkártyás · XS</span></div>
+    </div>
+    <p class="mlab">Elérhető keret</p>
+    <div class="gcard keret">
+      <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">0,6<span class="u"> / 2 GB</span></span></div><div class="track"><div class="fill" style="width:30%"></div></div></div>
+      <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">22<span class="u"> / 50</span></span></div><div class="track"><div class="fill" style="width:44%"></div></div></div>
+      <div class="stat" style="margin-bottom:6px;"><div class="lab"><span class="k">SMS</span><span class="v">5<span class="u"> / 20</span></span></div><div class="track"><div class="fill" style="width:25%"></div></div></div>
+      <div class="krow" style="padding:12px 0 0; border-top:1px solid var(--stroke);"><span class="k" style="display:flex;align-items:center;gap:7px;color:var(--mid);font-size:12px;"><i class="ti ti-calendar-event" style="font-size:15px"></i>Keret megújul</span><span class="v strong">2026. 08. 15.</span></div>
+    </div>
+    <p class="mlab">Vásárlási lehetőségek</p>
+    <div class="gcard">
+      <label class="lrow" for="s-topup2"><span class="sic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Havidíjasra váltás</span><i class="ti ti-chevron-right chev"></i></label>
+    </div>
+    <p class="mlab">Extrák</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Hívásrészletező</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-arrows-exchange"></i></span><span class="n">Számhordozás</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-device-sim"></i></span><span class="n">SIM-csere / eSIM</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-settings"></i></span><span class="n">Hívásbeállítások</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <div class="gcard" style="margin-top:22px;">
+      <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+  </div>
+
+  <!-- ============= SZERKESZTES ============= -->
+  <div class="screen" data-screen="ed-mob" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-detail"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szerkesztés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="s">Prime Plus 2024</p><p class="t">+36 20 290 7430</p></div>
+    </div>
+    <p class="mlab">Előfizetés elnevezése</p>
+    <input class="edfield" type="text" value="+36 20 290 7430" data-edold="+36 20 290 7430" maxlength="40">
+    <p class="ednote">Ez a név jelenik meg a kezdőlapon és az előfizetéseid között. A telefonszám nem változik.</p>
+    <label class="acont" for="s-detail" data-edsave>Mentés</label>
+    <label class="gbtn" for="s-detail" data-edcancel>Mégse</label>
+  </div>
+
+  <div class="screen" data-screen="ed-pre1" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-detailpre1"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szerkesztés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="s">Feltöltőkártyás · XS+</p><p class="t">+36 20 290 9734</p></div>
+    </div>
+    <p class="mlab">Előfizetés elnevezése</p>
+    <input class="edfield" type="text" value="+36 20 290 9734" data-edold="+36 20 290 9734" maxlength="40">
+    <p class="ednote">Ez a név jelenik meg a kezdőlapon és az előfizetéseid között. A telefonszám nem változik.</p>
+    <label class="acont" for="s-detailpre1" data-edsave>Mentés</label>
+    <label class="gbtn" for="s-detailpre1" data-edcancel>Mégse</label>
+  </div>
+
+  <div class="screen" data-screen="ed-pre2" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-detailpre2"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szerkesztés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="s">Feltöltőkártyás · XS</p><p class="t">+36 20 290 8812</p></div>
+    </div>
+    <p class="mlab">Előfizetés elnevezése</p>
+    <input class="edfield" type="text" value="+36 20 290 8812" data-edold="+36 20 290 8812" maxlength="40">
+    <p class="ednote">Ez a név jelenik meg a kezdőlapon és az előfizetéseid között. A telefonszám nem változik.</p>
+    <label class="acont" for="s-detailpre2" data-edsave>Mentés</label>
+    <label class="gbtn" for="s-detailpre2" data-edcancel>Mégse</label>
+  </div>
+
+  <div class="screen" data-screen="ed-net" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-detail-net"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szerkesztés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="s">Otthoni Net 1000</p><p class="t" style="font-size:16px;">Veszprém, Tölgyfa u. 4</p></div>
+    </div>
+    <p class="mlab">Szolgáltatás elnevezése</p>
+    <input class="edfield" type="text" value="Veszprém, Tölgyfa u. 4" data-edold="Veszprém, Tölgyfa u. 4" maxlength="40">
+    <p class="ednote">A telepítési cím megváltoztatásához átköltözést kell igényelned az ügyfélszolgálaton.</p>
+    <label class="acont" for="s-detail-net" data-edsave>Mentés</label>
+    <label class="gbtn" for="s-detail-net" data-edcancel>Mégse</label>
+  </div>
+
+  <div class="screen" data-screen="ed-tv" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-detail-tv"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szerkesztés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile"><i class="ti ti-device-tv"></i></div>
+      <div class="meta"><p class="s">TV Prémium</p><p class="t" style="font-size:16px;">Veszprém, Tölgyfa u. 4</p></div>
+    </div>
+    <p class="mlab">Szolgáltatás elnevezése</p>
+    <input class="edfield" type="text" value="Veszprém, Tölgyfa u. 4" data-edold="Veszprém, Tölgyfa u. 4" maxlength="40">
+    <p class="ednote">A telepítési cím megváltoztatásához átköltözést kell igényelned az ügyfélszolgálaton.</p>
+    <label class="acont" for="s-detail-tv" data-edsave>Mentés</label>
+    <label class="gbtn" for="s-detail-tv" data-edcancel>Mégse</label>
+  </div>
+
+  <div class="screen" data-screen="ed-dev" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-devdetail"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szerkesztés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="s">Apple · 256 GB · Titán</p><p class="t" style="font-size:15px;">iPhone 15 Pro</p></div>
+    </div>
+    <p class="mlab">Készülék elnevezése</p>
+    <input class="edfield" type="text" value="iPhone 15 Pro" data-edold="iPhone 15 Pro" maxlength="40">
+    <p class="ednote">Ezen a néven látod a készüléket a Készülékeim között.</p>
+    <label class="acont" for="s-devdetail" data-edsave>Mentés</label>
+    <label class="gbtn" for="s-devdetail" data-edcancel>Mégse</label>
+  </div>
+
+  <div class="screen" data-screen="ed-acc" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-account"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szerkesztés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="avatar">GY</div>
+      <div class="meta"><p class="s">Weinper Gyula</p><p class="t">weinper.gyula@gmail.com</p></div>
+    </div>
+    <p class="mlab">E-mail-cím</p>
+    <input class="edfield" type="text" value="weinper.gyula@gmail.com" data-edold="weinper.gyula@gmail.com" maxlength="40">
+    <p class="ednote">Erre a címre küldjük a számlaértesítőket és a fiókoddal kapcsolatos üzeneteket.</p>
+    <label class="acont" for="s-account" data-edsave>Mentés</label>
+    <label class="gbtn" for="s-account" data-edcancel>Mégse</label>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
@@ -3262,6 +3497,29 @@
     });
     dd.querySelectorAll('.ddopt').forEach(function(o){
       o.addEventListener('click', function(){ dd.classList.remove('ddopen'); });
+    });
+  });
+  /* edit screens: Mentés rewrites the name everywhere it appears */
+  function edApply(oldv,newv){
+    document.querySelectorAll('.meta .t, .meta .s, .ddval b, .ddopt b').forEach(function(el){
+      if(el.textContent.trim() === oldv) el.textContent = newv;
+    });
+  }
+  document.querySelectorAll('[data-edsave]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var sc = btn.closest('[data-screen]'); if(!sc) return;
+      var fld = sc.querySelector('.edfield'); if(!fld) return;
+      var oldv = fld.getAttribute('data-edold'), newv = fld.value.trim();
+      if(!newv || newv === oldv){ fld.value = oldv; return; }
+      edApply(oldv, newv);
+      fld.setAttribute('data-edold', newv);
+      sc.querySelectorAll('.edfield').forEach(function(o){ o.value = newv; });
+    });
+  });
+  document.querySelectorAll('[data-edcancel]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var sc = btn.closest('[data-screen]'); if(!sc) return;
+      var fld = sc.querySelector('.edfield'); if(fld) fld.value = fld.getAttribute('data-edold');
     });
   });
   document.addEventListener('click', function(){ closeAll(null); });
