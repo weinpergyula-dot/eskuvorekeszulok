@@ -759,6 +759,9 @@
   .ednote{font-size:11.5px; color:var(--mid); margin:10px 2px 0; line-height:1.55;}
   .gbtn{display:block; text-align:center; width:100%; margin-top:10px; padding:15px; border-radius:16px; font-family:'Manrope'; font-weight:700; font-size:14px; cursor:pointer; color:var(--mid); background:transparent; border:1px solid var(--stroke);}
   label.edit.icon{cursor:pointer;}
+  /* whole hero card opens its details; the action buttons stay on top */
+  .herocover{position:absolute; inset:0; z-index:2; cursor:pointer;}
+  .hero .cactions{z-index:4;}
 </style>
 </head>
 <body>
@@ -907,7 +910,7 @@
 
     <div class="hcar">
 
-      <div class="hero pcard" data-open-detail>
+      <div class="hero pcard"><label class="herocover" for="s-detail"></label>
         
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2024</span><span class="g5">Havidíjas</span></div>
         <p class="num">+36 20 290 7430</p>
@@ -929,7 +932,7 @@
         <div class="cactions"><label class="cbtn" for="s-xdata1"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch1"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
       </div>
 
-      <div class="hero pcard" data-open-detail>
+      <div class="hero pcard"><label class="herocover" for="s-detail"></label>
         
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2025</span><span class="g5">Havidíjas</span></div>
         <p class="num">+36 20 290 7566</p>
@@ -950,7 +953,7 @@
         <div class="cactions"><label class="cbtn" for="s-xdata1"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch2"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
       </div>
 
-      <div class="hero pcard">
+      <div class="hero pcard"><label class="herocover" for="s-detailpre1"></label>
         
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>XS+</span><span class="g5">Feltöltőkártyás</span></div>
         <p class="num">+36 20 290 9734</p>
@@ -960,7 +963,7 @@
         </div>
         <div class="cactions"><label class="cbtn" for="s-topup1"><span class="c"><i class="ti ti-plus"></i></span>Egyenlegfeltöltés</label><label class="cbtn" for="s-tarifch3"><span class="c"><i class="ti ti-arrow-up"></i></span>Havidíjasra váltás</label></div>
       </div>
-      <div class="hero pcard">
+      <div class="hero pcard"><label class="herocover" for="s-detailpre2"></label>
         <div class="hero-row"><span class="plan-tag"><span class="pip"></span>XS</span><span class="g5">Feltöltőkártyás</span></div>
         <p class="num">+36 20 290 8812</p>
         <p class="plan-sub">Havidíj nélkül</p>
@@ -1011,12 +1014,12 @@
     <div class="acc">
       <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>4</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
       <div class="acc-body">
-        <div class="sub" data-open-detail style="position:relative;"><label class="subcover" for="s-detail"></label>
+        <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <div class="sub" data-open-detail style="position:relative;"><label class="subcover" for="s-detail"></label>
+        <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
           <i class="ti ti-chevron-right chev"></i>
