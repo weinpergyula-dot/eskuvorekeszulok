@@ -764,6 +764,18 @@
   /* whole hero card opens its details; the action buttons stay on top */
   .herocover{position:absolute; inset:0; z-index:2; cursor:pointer;}
   .hero .cactions{z-index:4;}
+  /* notice shown for controls that do not have a page yet */
+  .wip{position:absolute; inset:0; z-index:120; display:none; align-items:center; justify-content:center; padding:30px;
+       background:rgba(8,15,40,.66); backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px);}
+  .wip.on{display:flex;}
+  .wipcard{width:100%; max-width:280px; text-align:center; border-radius:26px; padding:26px 22px 20px; background:#131B3A; border:1px solid var(--stroke);}
+  .wipic{width:52px; height:52px; margin:0 auto 14px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+         background:rgba(198,242,78,.14); border:1px solid rgba(198,242,78,.34);}
+  .wipic i{font-size:24px; color:var(--lime);}
+  .wipt{font-family:'Sora'; font-size:17px; font-weight:800; color:var(--hi); margin:0 0 7px; letter-spacing:-.01em;}
+  .wips{font-size:12.5px; line-height:1.55; color:var(--mid); margin:0 0 18px;}
+  .wipb{width:100%; padding:14px; border:none; border-radius:15px; font-family:'Manrope'; font-weight:700; font-size:14px; cursor:pointer;
+        background:linear-gradient(140deg,var(--lime2),var(--lime3)); color:#0B1330;}
 </style>
 </head>
 <body>
@@ -3587,6 +3599,15 @@
     <label class="nitem" for="s-account"><i class="ti ti-user"></i>Fiók</label>
   </div>
 
+
+  <div class="wip" id="wip">
+    <div class="wipcard">
+      <span class="wipic"><i class="ti ti-tool"></i></span>
+      <p class="wipt">Fejlesztés alatt!</p>
+      <p class="wips">Ez a funkció még nem érhető el ebben a bemutatóban.</p>
+      <button class="wipb" type="button">Rendben</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -3670,6 +3691,39 @@
     });
   });
   document.addEventListener('click', function(){ closeAll(null); });
+})();
+</script>
+<script>
+(function(){
+  var modal = document.getElementById('wip');
+  if (!modal) return;
+
+  /* Anything that reads as a control. A click is only "dead" if it did not land
+     on a label[for] (the CSS navigation) or on something with its own handler. */
+  var CONTROLS = '.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+               + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
+               + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
+               + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.krow .v';
+  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip';
+
+  function show(){ modal.classList.add('on'); }
+  function hide(){ modal.classList.remove('on'); }
+
+  document.addEventListener('click', function(e){
+    if (!e.target.closest) return;
+    if (e.target.closest(OWN_BEHAVIOUR)) return;
+    if (e.target.closest('label[for]')) return;
+    if (!e.target.closest(CONTROLS)) return;
+    e.preventDefault();
+    show();
+  });
+
+  modal.addEventListener('click', function(e){
+    if (e.target === modal || e.target.closest('.wipb')) hide();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') hide();
+  });
 })();
 </script>
 </body>
