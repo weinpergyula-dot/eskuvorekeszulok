@@ -279,6 +279,20 @@
   #s-extrasvc:checked ~ [data-screen="extra-svc"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
+  .bcar{display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; margin:14px -20px 4px; padding:2px 20px 12px;}
+  .bcar::-webkit-scrollbar{display:none;}
+  .bban{position:relative; overflow:hidden; flex:0 0 84%; scroll-snap-align:center; border-radius:22px; padding:16px; min-height:150px;
+        display:flex; flex-direction:column; border:1px solid rgba(255,255,255,.16);}
+  .bban.p1{background:linear-gradient(135deg,#0B1330 0%,#22336E 52%,#3E5FBF 100%); box-shadow:0 18px 34px -20px rgba(62,95,191,.8);}
+  .bban.p2{background:linear-gradient(135deg,#1A3A8F 0%,#3B6FFF 58%,#6CA0FF 100%); box-shadow:0 18px 34px -20px rgba(59,111,255,.8);}
+  .bban.p3{background:linear-gradient(135deg,#5B2A9E 0%,#8E4BE0 55%,#C77DFF 100%); box-shadow:0 18px 34px -20px rgba(142,75,224,.8);}
+  .bban .bb1{position:absolute; width:150px;height:150px;border-radius:50%; right:-46px; top:-58px; background:rgba(255,255,255,.15);}
+  .bban .bb2{position:absolute; width:96px;height:96px;border-radius:50%; right:44px; bottom:-56px; background:rgba(0,0,0,.12);}
+  .bbtag{position:relative; align-self:flex-start; font-size:9px; font-weight:800; letter-spacing:.10em; text-transform:uppercase; padding:4px 9px; border-radius:7px; background:var(--lime); color:#0B1330;}
+  .bbt{position:relative; font-family:'Sora'; font-size:15px; font-weight:700; color:#FFFFFF; line-height:1.3; margin:11px 0 0;}
+  .bbs{position:relative; font-size:11px; color:rgba(255,255,255,.82); margin:6px 0 0;}
+  .bbp{position:relative; font-family:'Sora'; font-size:14px; font-weight:800; color:var(--lime); margin:auto 0 0; padding-top:10px;}
+  .bbp span{font-family:'Manrope'; font-size:11px; font-weight:600; color:rgba(255,255,255,.75);}
   .xcard{display:flex; gap:13px; padding:16px; border-radius:20px; margin-bottom:16px; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 10px 24px -18px rgba(20,36,94,.2);}
   .xic{width:44px;height:44px;border-radius:14px; display:flex;align-items:center;justify-content:center; flex-shrink:0; align-self:flex-start; background:rgba(198,242,78,.14); border:1px solid rgba(198,242,78,.24);}
   .xic i{font-size:22px; color:var(--limed);}
@@ -298,7 +312,7 @@
   #tb-mobil:checked ~ .tp-mobil,#ts-mobil:checked ~ .tp-mobil{display:block;}
   #tb-otthon:checked ~ .tp-otthon,#ts-otthon:checked ~ .tp-otthon{display:block;}
   #tb-mobil:checked ~ .tabs .tab[for="tb-mobil"],#ts-mobil:checked ~ .tabs .tab[for="ts-mobil"],
-  #tb-otthon:checked ~ .tabs .tab[for="tb-otthon"],#ts-otthon:checked ~ .tabs .tab[for="ts-otthon"]{background:#2E46C8; color:#FFFFFF; font-weight:700;}
+  #tb-otthon:checked ~ .tabs .tab[for="tb-otthon"],#ts-otthon:checked ~ .tabs .tab[for="ts-otthon"]{background:var(--navy); color:#FFFFFF; font-weight:700;}
   .offaddr{margin:0 2px;}
   .oal{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--low); font-weight:700; margin:0;}
   .oav{font-size:13px; color:var(--hi); font-weight:600; line-height:1.45; margin:5px 0 0;}
@@ -307,7 +321,15 @@
   .offsec{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--low); font-weight:700; margin:20px 4px 12px;}
   .tfcard{display:flex; align-items:center; gap:12px; border-radius:20px; padding:16px; margin-bottom:12px;
           background:#FFFFFF; border:1px solid var(--line); box-shadow:0 12px 26px -18px rgba(20,36,94,.22);}
-  .tfcard.pop{border-color:var(--lime); box-shadow:0 0 0 1px var(--lime);}
+  .tfcard.pop{background:linear-gradient(140deg,var(--lime2),var(--lime3)); border-color:var(--lime3); box-shadow:0 18px 34px -20px rgba(164,216,46,.75);}
+  .tfcard.pop .tfname,.tfcard.pop .tfdata,.tfcard.pop .tfp{color:#0B1330;}
+  .tfcard.pop .tfspecs span{color:rgba(11,19,48,.78);}
+  .tfcard.pop .tfspecs i{color:#0B1330;}
+  .tfcard.pop .tfp small{color:rgba(11,19,48,.70);}
+  .tfcard.pop .tfnote{color:rgba(11,19,48,.62);}
+  .tfcard.pop .tfchev{color:rgba(11,19,48,.55);}
+  .tfcard.pop .tfprice{border-top-color:rgba(11,19,48,.18);}
+  .tfcard.pop .tfbadge{background:#0B1330; color:var(--lime2);}
   .tfmain{flex:1; min-width:0;}
   .tfchev{font-size:20px; color:var(--low); flex-shrink:0;}
   .tftop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
@@ -704,7 +726,7 @@
 
     <div class="sec"><h3>Előfizetéseim</h3><label for="s-allsubs">Összes</label></div>
 
-    <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás hozzáadása</label>
+    <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
     <div class="acc">
       <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>3</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
@@ -954,7 +976,7 @@
       <div style="width:42px"></div>
     </div>
 
-    <label class="addsvc" for="s-addservice" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás hozzáadása</label>
+    <label class="addsvc" for="s-addservice" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
     <p class="mlab">Mobil szolgáltatások</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
@@ -1225,6 +1247,29 @@
       <div style="width:42px"></div>
     </div>
 
+    <div class="bcar">
+      <div class="bban p1">
+        <div class="bb1"></div><div class="bb2"></div>
+        <span class="bbtag">Akció</span>
+        <p class="bbt">Xiaomi 17T Pro<br>30 000 Ft kedvezménnyel</p>
+        <p class="bbs">Leica optika · 512 GB · 144 Hz AMOLED</p>
+        <p class="bbp">Most 299 990 Ft<span> · 12 500 Ft / hó</span></p>
+      </div>
+      <div class="bban p2">
+        <div class="bb1"></div><div class="bb2"></div>
+        <span class="bbtag">Újdonság</span>
+        <p class="bbt">Samsung Galaxy A27<br>már 5 000 Ft / hó-tól</p>
+        <p class="bbs">Kamatmentes részletfizetéssel, 24 hónapra</p>
+        <p class="bbp">Teljes ár 119 990 Ft</p>
+      </div>
+      <div class="bban p3">
+        <div class="bb1"></div><div class="bb2"></div>
+        <span class="bbtag">Ajándék</span>
+        <p class="bbt">HONOR 400 Pro<br>ajándék gyorstöltővel</p>
+        <p class="bbs">200 MP kamera · 512 GB · 5G</p>
+        <p class="bbp">199 990 Ft<span> · 8 330 Ft / hó</span></p>
+      </div>
+    </div>
     <div class="brandfilter">
       <span class="chip on">Összes</span><span class="chip">Samsung</span><span class="chip">Xiaomi</span><span class="chip">HONOR</span><span class="chip">Motorola</span>
     </div>
