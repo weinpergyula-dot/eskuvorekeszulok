@@ -280,6 +280,8 @@
   #s-devbuy:checked ~ [data-screen="devbuy"],
   #s-tarifbuy:checked ~ [data-screen="tarif-buy"],
   #s-tarifsvc:checked ~ [data-screen="tarif-svc"],
+  #s-prebuy:checked ~ [data-screen="pre-buy"],
+  #s-presvc:checked ~ [data-screen="pre-svc"],
   #s-offbuy:checked ~ [data-screen="offers-buy"],
   #s-offsvc:checked ~ [data-screen="offers-svc"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
@@ -791,6 +793,8 @@
   <input class="rt" type="radio" name="nav" id="s-notif">
   <input class="rt" type="radio" name="nav" id="s-devbuy">
   <input class="rt" type="radio" name="nav" id="s-menu">
+  <input class="rt" type="radio" name="nav" id="s-prebuy">
+  <input class="rt" type="radio" name="nav" id="s-presvc">
   <input class="rt" type="radio" name="nav" id="s-detailpre1">
   <input class="rt" type="radio" name="nav" id="s-detailpre2">
   <input class="rt" type="radio" name="nav" id="s-edmob">
@@ -1751,7 +1755,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <div class="svccard s-slate">
+      <label class="svccard s-slate" for="s-prebuy">
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-mobile"></i></span>
         <div class="svctx">
@@ -1760,7 +1764,7 @@
           <p class="sp">1 990 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
-      </div>
+      </label>
       <div class="svccard s-sun">
         <span class="sbadge">Új</span>
         <div class="sb1"></div><div class="sb2"></div>
@@ -1835,7 +1839,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <div class="svccard s-slate">
+      <label class="svccard s-slate" for="s-presvc">
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-mobile"></i></span>
         <div class="svctx">
@@ -1844,7 +1848,7 @@
           <p class="sp">1 990 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
-      </div>
+      </label>
       <div class="svccard s-sun">
         <span class="sbadge">Új</span>
         <div class="sb1"></div><div class="sb2"></div>
@@ -3403,6 +3407,163 @@
     <p class="ednote">Erre a címre küldjük a számlaértesítőket és a fiókoddal kapcsolatos üzeneteket.</p>
     <label class="acont" for="s-account" data-edsave>Mentés</label>
     <label class="gbtn" for="s-account" data-edcancel>Mégse</label>
+  </div>
+
+  <!-- ============= FELTOLTOKARTYAS VASARLAS ============= -->
+  <div class="screen" data-screen="pre-buy" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Feltöltőkártyás csomagok</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Válaszd ki a<br>csomagodat.</h2>
+    <p class="buysub">Hűségidő és havidíj nélkül — az egyenlegedből használod, bármikor válthatsz.</p>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel XS</p><span class="tfnote">Hűségidő nélkül</span></div>
+        <p class="tfdata">1 GB adat</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>50 perc</span>
+          <span><i class="ti ti-message-2"></i>20 SMS</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">2 000 Ft<small> / 30 nap</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel XS+</p><span class="tfnote">Hűségidő nélkül</span></div>
+        <p class="tfdata">3 GB adat</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>100 perc</span>
+          <span><i class="ti ti-message-2"></i>50 SMS</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">3 000 Ft<small> / 30 nap</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard pop">
+      <span class="tfbadge">Népszerű</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel S</p><span class="tfnote">Hűségidő nélkül</span></div>
+        <p class="tfdata">10 GB adat</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 perc</span>
+          <span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
+          <span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">4 500 Ft<small> / 30 nap</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel M</p><span class="tfnote">Hűségidő nélkül</span></div>
+        <p class="tfdata">25 GB adat</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>Korlátlan perc</span>
+          <span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
+          <span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">6 500 Ft<small> / 30 nap</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </div>
+    <p class="sumnote">A SIM-kártyát ingyenesen kiszállítjuk, vagy átveheted bármelyik Yettel üzletben. Az aktiválás után azonnal használható.</p>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    </div>
+  </div>
+
+  <div class="screen" data-screen="pre-svc" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-addservice"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Feltöltőkártyás csomagok</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Válaszd ki a<br>csomagodat.</h2>
+    <p class="buysub">Hűségidő és havidíj nélkül — az egyenlegedből használod, bármikor válthatsz.</p>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel XS</p><span class="tfnote">Hűségidő nélkül</span></div>
+        <p class="tfdata">1 GB adat</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>50 perc</span>
+          <span><i class="ti ti-message-2"></i>20 SMS</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">2 000 Ft<small> / 30 nap</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel XS+</p><span class="tfnote">Hűségidő nélkül</span></div>
+        <p class="tfdata">3 GB adat</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>100 perc</span>
+          <span><i class="ti ti-message-2"></i>50 SMS</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">3 000 Ft<small> / 30 nap</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard pop">
+      <span class="tfbadge">Népszerű</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel S</p><span class="tfnote">Hűségidő nélkül</span></div>
+        <p class="tfdata">10 GB adat</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 perc</span>
+          <span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
+          <span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">4 500 Ft<small> / 30 nap</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel M</p><span class="tfnote">Hűségidő nélkül</span></div>
+        <p class="tfdata">25 GB adat</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>Korlátlan perc</span>
+          <span><i class="ti ti-message-2"></i>Korlátlan SMS</span>
+          <span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">6 500 Ft<small> / 30 nap</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </div>
+    <p class="sumnote">A SIM-kártyát ingyenesen kiszállítjuk, vagy átveheted bármelyik Yettel üzletben. Az aktiválás után azonnal használható.</p>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    </div>
   </div>
 
   <!-- ============= NAV ============= -->
