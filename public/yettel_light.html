@@ -763,6 +763,22 @@
   .wips{font-size:12.5px; line-height:1.55; color:var(--mid); margin:0 0 18px;}
   .wipb{width:100%; padding:14px; border:none; border-radius:15px; font-family:'Manrope'; font-weight:700; font-size:14px; cursor:pointer;
         background:linear-gradient(140deg,var(--lime2),var(--lime3)); color:#0B1330;}
+  /* TV purchase: pick one of your services first, nothing preselected */
+  .selopt{position:relative; padding-right:46px;}
+  .screen:has(#tvs-o1:checked) .selopt[for="tvs-o1"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
+  .screen:has(#tvs-o2:checked) .selopt[for="tvs-o2"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
+  .screen:has(#tvs-o3:checked) .selopt[for="tvs-o3"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
+  .screen:has(#tvb-o1:checked) .selopt[for="tvb-o1"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
+  .screen:has(#tvb-o2:checked) .selopt[for="tvb-o2"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
+  .screen:has(#tvb-o3:checked) .selopt[for="tvb-o3"]{background:rgba(198,242,78,.16); border-color:var(--lime3);}
+  .screen:has(#tvs-o1:checked) .selopt[for="tvs-o1"]::after,.screen:has(#tvs-o2:checked) .selopt[for="tvs-o2"]::after,.screen:has(#tvs-o3:checked) .selopt[for="tvs-o3"]::after,.screen:has(#tvb-o1:checked) .selopt[for="tvb-o1"]::after,.screen:has(#tvb-o2:checked) .selopt[for="tvb-o2"]::after,.screen:has(#tvb-o3:checked) .selopt[for="tvb-o3"]::after{content:"\2713"; position:absolute; right:17px; top:50%; transform:translateY(-50%); font-size:15px; font-weight:800; color:var(--limed);}
+  .tvgate{display:flex; align-items:center; justify-content:center; gap:8px; margin:18px 0 0; font-size:12px; color:var(--mid); text-align:center;}
+  .tvgate i{font-size:15px;}
+  .tvpacks{display:none;}
+  .screen:has(input[name="tvssrc"]:checked) .tvpacks,
+  .screen:has(input[name="tvbsrc"]:checked) .tvpacks{display:block;}
+  .screen:has(input[name="tvssrc"]:checked) .tvgate,
+  .screen:has(input[name="tvbsrc"]:checked) .tvgate{display:none;}
 </style>
 </head>
 <body>
@@ -1599,28 +1615,83 @@
       <span class="title">TV szolgáltatás</span>
       <div style="width:42px"></div>
     </div>
-    <h2 class="buyhead">Melyik szolgáltatásod alá<br>szeretnéd kérni?</h2>
-    <p class="buysub">Válaszd ki, melyik meglévő szolgáltatásodhoz adjuk hozzá a TV-t.</p>
-
+    <h2 class="buyhead">Válaszd ki a<br>TV-csomagodat.</h2>
+    <p class="buysub">Először add meg, melyik meglévő szolgáltatásod alá kéred — utána megmutatjuk az elérhető csomagokat.</p>
+    <input class="rt" type="radio" name="tvbsrc" id="tvb-o1">
+    <input class="rt" type="radio" name="tvbsrc" id="tvb-o2">
+    <input class="rt" type="radio" name="tvbsrc" id="tvb-o3">
     <p class="mlab">Havidíjas mobil</p>
-    <div class="sub">
+    <label class="sub selopt" for="tvb-o1">
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub">
+    </label>
+    <label class="sub selopt" for="tvb-o2">
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-
+    </label>
     <p class="mlab">Otthoni internet</p>
-    <div class="sub">
+    <label class="sub selopt" for="tvb-o3">
       <div class="itile blue"><i class="ti ti-router"></i></div>
       <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
-      <i class="ti ti-chevron-right chev"></i>
+    </label>
+    <p class="tvgate"><i class="ti ti-arrow-up"></i>Válassz egy szolgáltatást, és itt jelennek meg a TV-csomagok.</p>
+    <div class="tvpacks">
+      <p class="mlab">Elérhető TV-csomagok</p>
+      <div class="tfcard">
+        <div class="tfmain">
+          <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12 hónapos hűséggel</span></div>
+          <p class="tfdata">60+ csatorna</p>
+          <div class="tfspecs">
+            <span><i class="ti ti-device-tv"></i>HD minőség</span>
+            <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
+          </div>
+          <span class="tfdet">Részletek</span>
+          <div class="tfprice">
+            <span class="tfp">2 990 Ft<small> / hó</small></span>
+            <span class="tford">Megrendelem</span>
+          </div>
+        </div>
+      </div>
+      <div class="tfcard pop">
+        <span class="tfbadge">Népszerű</span>
+        <div class="tfmain">
+          <div class="tfnamerow"><p class="tfname">TV Extra</p><span class="tfnote">12 hónapos hűséggel</span></div>
+          <p class="tfdata">110+ csatorna</p>
+          <div class="tfspecs">
+            <span><i class="ti ti-device-tv"></i>HD minőség</span>
+            <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
+            <span><i class="ti ti-list"></i>Felvétel</span>
+          </div>
+          <span class="tfdet">Részletek</span>
+          <div class="tfprice">
+            <span class="tfp">4 490 Ft<small> / hó</small></span>
+            <span class="tford">Megrendelem</span>
+          </div>
+        </div>
+      </div>
+      <div class="tfcard">
+        <div class="tfmain">
+          <div class="tfnamerow"><p class="tfname">TV Prémium</p><span class="tfnote">12 hónapos hűséggel</span></div>
+          <p class="tfdata">160+ csatorna</p>
+          <div class="tfspecs">
+            <span><i class="ti ti-device-tv"></i>4K minőség</span>
+            <span><i class="ti ti-trophy"></i>Sportcsatornák</span>
+            <span><i class="ti ti-list"></i>Felvétel</span>
+          </div>
+          <span class="tfdet">Részletek</span>
+          <div class="tfprice">
+            <span class="tfp">6 490 Ft<small> / hó</small></span>
+            <span class="tford">Megrendelem</span>
+          </div>
+        </div>
+      </div>
+      <div class="tfhelp">
+        <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+        <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+      </div>
     </div>
   </div>
+
 
   <!-- ============= TV — MELYIK SZOLGÁLTATÁS ALÁ: tvsel-svc ============= -->
   <div class="screen" data-screen="tvsel-svc" style="display:none;">
@@ -1629,28 +1700,83 @@
       <span class="title">TV szolgáltatás</span>
       <div style="width:42px"></div>
     </div>
-    <h2 class="buyhead">Melyik szolgáltatásod alá<br>szeretnéd kérni?</h2>
-    <p class="buysub">Válaszd ki, melyik meglévő szolgáltatásodhoz adjuk hozzá a TV-t.</p>
-
+    <h2 class="buyhead">Válaszd ki a<br>TV-csomagodat.</h2>
+    <p class="buysub">Először add meg, melyik meglévő szolgáltatásod alá kéred — utána megmutatjuk az elérhető csomagokat.</p>
+    <input class="rt" type="radio" name="tvssrc" id="tvs-o1">
+    <input class="rt" type="radio" name="tvssrc" id="tvs-o2">
+    <input class="rt" type="radio" name="tvssrc" id="tvs-o3">
     <p class="mlab">Havidíjas mobil</p>
-    <div class="sub">
+    <label class="sub selopt" for="tvs-o1">
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub">
+    </label>
+    <label class="sub selopt" for="tvs-o2">
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-
+    </label>
     <p class="mlab">Otthoni internet</p>
-    <div class="sub">
+    <label class="sub selopt" for="tvs-o3">
       <div class="itile blue"><i class="ti ti-router"></i></div>
       <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
-      <i class="ti ti-chevron-right chev"></i>
+    </label>
+    <p class="tvgate"><i class="ti ti-arrow-up"></i>Válassz egy szolgáltatást, és itt jelennek meg a TV-csomagok.</p>
+    <div class="tvpacks">
+      <p class="mlab">Elérhető TV-csomagok</p>
+      <div class="tfcard">
+        <div class="tfmain">
+          <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12 hónapos hűséggel</span></div>
+          <p class="tfdata">60+ csatorna</p>
+          <div class="tfspecs">
+            <span><i class="ti ti-device-tv"></i>HD minőség</span>
+            <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
+          </div>
+          <span class="tfdet">Részletek</span>
+          <div class="tfprice">
+            <span class="tfp">2 990 Ft<small> / hó</small></span>
+            <span class="tford">Megrendelem</span>
+          </div>
+        </div>
+      </div>
+      <div class="tfcard pop">
+        <span class="tfbadge">Népszerű</span>
+        <div class="tfmain">
+          <div class="tfnamerow"><p class="tfname">TV Extra</p><span class="tfnote">12 hónapos hűséggel</span></div>
+          <p class="tfdata">110+ csatorna</p>
+          <div class="tfspecs">
+            <span><i class="ti ti-device-tv"></i>HD minőség</span>
+            <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
+            <span><i class="ti ti-list"></i>Felvétel</span>
+          </div>
+          <span class="tfdet">Részletek</span>
+          <div class="tfprice">
+            <span class="tfp">4 490 Ft<small> / hó</small></span>
+            <span class="tford">Megrendelem</span>
+          </div>
+        </div>
+      </div>
+      <div class="tfcard">
+        <div class="tfmain">
+          <div class="tfnamerow"><p class="tfname">TV Prémium</p><span class="tfnote">12 hónapos hűséggel</span></div>
+          <p class="tfdata">160+ csatorna</p>
+          <div class="tfspecs">
+            <span><i class="ti ti-device-tv"></i>4K minőség</span>
+            <span><i class="ti ti-trophy"></i>Sportcsatornák</span>
+            <span><i class="ti ti-list"></i>Felvétel</span>
+          </div>
+          <span class="tfdet">Részletek</span>
+          <div class="tfprice">
+            <span class="tfp">6 490 Ft<small> / hó</small></span>
+            <span class="tford">Megrendelem</span>
+          </div>
+        </div>
+      </div>
+      <div class="tfhelp">
+        <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+        <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+      </div>
     </div>
   </div>
+
 
   <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
 
