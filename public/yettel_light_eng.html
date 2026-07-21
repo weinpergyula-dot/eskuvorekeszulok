@@ -283,6 +283,8 @@
   #s-prebuy:checked ~ [data-screen="pre-buy"],
   #s-presvc:checked ~ [data-screen="pre-svc"],
   #s-offbuy:checked ~ [data-screen="offers-buy"],
+  #s-offsvc1:checked ~ [data-screen="offers-svc-1"],
+  #s-offbuy1:checked ~ [data-screen="offers-buy-1"],
   #s-offsvc:checked ~ [data-screen="offers-svc"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
   #s-tvselsvc:checked ~ [data-screen="tvsel-svc"],
@@ -536,6 +538,7 @@
   .funcard.c1{background:linear-gradient(135deg,#2E7D32 0%,#7CB342 55%,#C6F24E 100%); box-shadow:0 18px 34px -18px rgba(124,179,66,.75);}
   .funcard.c2{background:linear-gradient(135deg,#1A3A8F 0%,#3B6FFF 60%,#6CA0FF 100%); box-shadow:0 18px 34px -18px rgba(59,111,255,.75);}
   .funcard.c3{background:linear-gradient(135deg,#5B2A9E 0%,#8E4BE0 55%,#C77DFF 100%); box-shadow:0 18px 34px -18px rgba(142,75,224,.75);}
+  .funcard.c4{background:linear-gradient(135deg,#B8860B 0%,#E39A25 55%,#FFC24B 100%); box-shadow:0 18px 34px -18px rgba(227,154,37,.75);}
   .funcard .fb1{position:absolute; width:130px;height:130px;border-radius:50%; right:-34px; top:-56px; background:rgba(255,255,255,.16);}
   .funcard .fb2{position:absolute; width:86px;height:86px;border-radius:50%; right:46px; bottom:-48px; background:rgba(0,0,0,.10);}
   .funic{position:relative; width:46px;height:46px;border-radius:15px; display:flex;align-items:center;justify-content:center; flex-shrink:0;
@@ -716,10 +719,12 @@
   .lrow .n{line-height:1.3;}
   /* bottom-nav highlight follows the active screen */
   #s-home:checked ~ .nav .nitem[for="s-home"],
-  #s-billing:checked ~ .nav .nitem[for="s-billing"],
+  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"],
+  #s-alldev:checked ~ .nav .nitem[for="s-alldev"],
   #s-account:checked ~ .nav .nitem[for="s-account"]{color:var(--limed);}
   #s-home:checked ~ .nav .nitem[for="s-home"] i,
-  #s-billing:checked ~ .nav .nitem[for="s-billing"] i,
+  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"] i,
+  #s-alldev:checked ~ .nav .nitem[for="s-alldev"] i,
   #s-account:checked ~ .nav .nitem[for="s-account"] i{filter:drop-shadow(0 0 8px rgba(164,216,46,.55));}
   .edit.icon{padding:8px; width:34px; height:34px; justify-content:center;}
   .edit.icon i{font-size:16px;}
@@ -823,6 +828,8 @@
   <input class="rt" type="radio" name="nav" id="s-menu">
   <input class="rt" type="radio" name="nav" id="s-prebuy">
   <input class="rt" type="radio" name="nav" id="s-presvc">
+  <input class="rt" type="radio" name="nav" id="s-offsvc1">
+  <input class="rt" type="radio" name="nav" id="s-offbuy1">
   <input class="rt" type="radio" name="nav" id="s-detailpre1">
   <input class="rt" type="radio" name="nav" id="s-detailpre2">
   <input class="rt" type="radio" name="nav" id="s-edmob">
@@ -844,6 +851,7 @@
     <label class="mrow" for="s-allsubs"><span class="mic"><i class="ti ti-device-mobile"></i></span><span class="n">My subscriptions</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-alldev"><span class="mic"><i class="ti ti-devices"></i></span><span class="n">My devices</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-billing"><span class="mic"><i class="ti ti-receipt"></i></span><span class="n">Bills and payment</span><i class="ti ti-chevron-right chev"></i></label>
+    <div class="mrow"><span class="mic"><i class="ti ti-files"></i></span><span class="n">Documents</span><i class="ti ti-chevron-right chev"></i></div>
     <p class="mlab2">Services</p>
     <label class="mrow" for="s-topup1"><span class="mic"><i class="ti ti-wallet"></i></span><span class="n">Top up balance</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-xdata1"><span class="mic"><i class="ti ti-database"></i></span><span class="n">Extra data</span><i class="ti ti-chevron-right chev"></i></label>
@@ -921,7 +929,7 @@
     </div>
 
     <div class="quick">
-      <div class="qtile"><div class="qic"><i class="ti ti-ticket"></i></div><span>Coupons</span></div>
+      <label class="qtile" for="s-billing"><div class="qic"><i class="ti ti-receipt"></i></div><span>Bills</span></label>
       <div class="qtile"><div class="qic"><i class="ti ti-parking"></i></div><span>Parking</span></div>
       <div class="qtile"><div class="qic"><i class="ti ti-car"></i></div><span>Motorway</span></div>
       <label class="qtile" for="s-fun"><div class="qic"><i class="ti ti-star"></i></div><span>Rewards</span></label>
@@ -1134,7 +1142,7 @@
       <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra minutes</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Change plan</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming data</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-tvselsvc"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Buy TV service</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o1"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Buy TV service</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
     <div class="guard">
@@ -1200,7 +1208,7 @@
       <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Change plan</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic"><i class="ti ti-access-point"></i></span><span class="n">Extend Wi-Fi coverage</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic"><i class="ti ti-network"></i></span><span class="n">Static IP address</span><i class="ti ti-chevron-right chev"></i></div>
-      <label class="lrow" for="s-tvselsvc"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Buy TV service</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o3"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Buy TV service</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
     <div class="guard">
@@ -1463,6 +1471,13 @@
       <div class="funtx"><p class="ft">Play and win</p><p class="fs">Weekly prize draw · 3 winners</p></div>
       <span class="fungo"><i class="ti ti-player-play"></i></span>
     </div>
+
+    <div class="funcard c4">
+      <div class="fb1"></div><div class="fb2"></div>
+      <span class="funic"><i class="ti ti-ticket"></i></span>
+      <div class="funtx"><p class="ft">Coupons</p><p class="fs">Redeemable discounts and coupons</p></div>
+      <span class="fungo"><i class="ti ti-chevron-right"></i></span>
+    </div>
   </div>
 
   <!-- ============= SZOLGÁLTATÁSVÁSÁRLÁS ============= -->
@@ -1474,7 +1489,7 @@
   <!-- ============= CÍMKERESŐ: addr-buy ============= -->
   <div class="screen formscr" data-screen="addr-buy" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
+      <label class="icon-btn" for="s-offbuy1"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Your address</span>
       <div style="width:42px"></div>
     </div>
@@ -1495,7 +1510,7 @@
   <!-- ============= CÍMKERESŐ: addr-svc ============= -->
   <div class="screen formscr" data-screen="addr-svc" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-addservice"><i class="ti ti-arrow-left"></i></label>
+      <label class="icon-btn" for="s-offsvc1"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Your address</span>
       <div style="width:42px"></div>
     </div>
@@ -1920,7 +1935,7 @@
       </div>
     </div>
     <div class="tabpane tp-otthon">
-      <label class="svccard s-blue" for="s-addrbuy">
+      <label class="svccard s-blue" for="s-offbuy1">
         <span class="sbadge">30 days free</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-router"></i></span>
@@ -1931,7 +1946,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <label class="svccard s-violet" for="s-tvselbuy">
+      <label class="svccard s-violet" for="s-tvselbuy" data-tvpre="none">
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
         <div class="svctx">
@@ -2004,7 +2019,7 @@
       </div>
     </div>
     <div class="tabpane tp-otthon">
-      <label class="svccard s-blue" for="s-addrsvc">
+      <label class="svccard s-blue" for="s-offsvc1">
         <span class="sbadge">30 days free</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-router"></i></span>
@@ -2015,7 +2030,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <label class="svccard s-violet" for="s-tvselsvc">
+      <label class="svccard s-violet" for="s-tvselsvc" data-tvpre="none">
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
         <div class="svctx">
@@ -3708,11 +3723,111 @@
     </div>
   </div>
 
+  <!-- ============= INTERNET TARIFÁK (1. lépés) ============= -->
+  <div class="screen" data-screen="offers-svc-1" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-addservice"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Internet plans</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Choose your<br>internet plan.</h2>
+    <p class="buysub">Browse the plans first, then check availability at your address.</p>
+    <p class="offsec">Internet</p>
+    <label class="tfcard" for="s-addrsvc">
+      <span class="tfbadge">30 days free</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Comfort, 12-month term</span></div>
+        <p class="tfdata">1000 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Fibre internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Free installation</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice">
+          <span class="tfp">7 990 Ft<small> / mo</small></span>
+          <span class="tford">Check availability</span>
+        </div>
+      </div>
+    </label>
+    <label class="tfcard" for="s-addrsvc">
+      <span class="tfbadge">30 days free</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Comfort, 12-month term</span></div>
+        <p class="tfdata">500 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Fibre internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Free installation</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice">
+          <span class="tfp">6 990 Ft<small> / mo</small></span>
+          <span class="tford">Check availability</span>
+        </div>
+      </div>
+    </label>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Request a callback</span>
+    </div>
+  </div>
+
+  <div class="screen" data-screen="offers-buy-1" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Internet plans</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Choose your<br>internet plan.</h2>
+    <p class="buysub">Browse the plans first, then check availability at your address.</p>
+    <p class="offsec">Internet</p>
+    <label class="tfcard" for="s-addrbuy">
+      <span class="tfbadge">30 days free</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Comfort, 12-month term</span></div>
+        <p class="tfdata">1000 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Fibre internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Free installation</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice">
+          <span class="tfp">7 990 Ft<small> / mo</small></span>
+          <span class="tford">Check availability</span>
+        </div>
+      </div>
+    </label>
+    <label class="tfcard" for="s-addrbuy">
+      <span class="tfbadge">30 days free</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Comfort, 12-month term</span></div>
+        <p class="tfdata">500 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Fibre internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Free installation</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice">
+          <span class="tfp">6 990 Ft<small> / mo</small></span>
+          <span class="tford">Check availability</span>
+        </div>
+      </div>
+    </label>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Request a callback</span>
+    </div>
+  </div>
+
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Home</label>
-    <label class="nitem" for="s-billing"><i class="ti ti-receipt"></i>Bills</label>
-    <div class="nitem"><i class="ti ti-files"></i>Documents</div>
+    <label class="nitem" for="s-allsubs"><i class="ti ti-device-mobile"></i>My subscriptions</label>
+    <label class="nitem" for="s-alldev"><i class="ti ti-devices"></i>My devices</label>
     <label class="nitem" for="s-account"><i class="ti ti-user"></i>Account</label>
   </div>
 
@@ -3805,6 +3920,13 @@
     btn.addEventListener('click', function(){
       var sc = btn.closest('[data-screen]'); if(!sc) return;
       var fld = sc.querySelector('.edfield'); if(fld) fld.value = fld.getAttribute('data-edold');
+    });
+  });
+  /* TV purchase: preselect the subscription the user came from */
+  Array.prototype.slice.call(document.querySelectorAll("[data-tvpre]")).forEach(function(el){
+    el.addEventListener("click", function(){
+      var v = el.getAttribute("data-tvpre");
+      Array.prototype.slice.call(document.querySelectorAll("input[name='tvssrc'], input[name='tvbsrc']")).forEach(function(r){ r.checked = (r.id === v); });
     });
   });
   document.addEventListener('click', function(){ closeAll(null); });
