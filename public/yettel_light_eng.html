@@ -201,7 +201,7 @@
   /* ===== WELCOME + LOGIN (light) ===== */
   .welcome{position:absolute; inset:0; overflow:hidden; z-index:3;}
   .welcome .wbg{position:absolute; inset:-25%; z-index:0;
-    background:linear-gradient(130deg,#FFFFFF 0%,#F7FCE0 26%,#DCEF94 44%,#C4EC52 54%,#DEF29C 64%,#F9FDEC 82%,#FFFFFF 100%);
+    background:linear-gradient(130deg,#FFFFFF 0%,#FFFFFF 32%,#DCEF94 44%,#C4EC52 50%,#DCEF94 56%,#FFFFFF 68%,#FFFFFF 100%);
     background-size:220% 220%; animation:wshift 15s ease-in-out infinite;}
   .welcome .wblob{position:absolute; border-radius:50%; filter:blur(50px); z-index:0; opacity:.4;}
   .welcome .wblob.b1{width:280px;height:280px; top:-70px; right:-80px; background:radial-gradient(circle,rgba(198,242,78,.75),transparent 65%); animation:wfloat1 9s ease-in-out infinite;}
@@ -788,6 +788,12 @@
   .stepper{display:flex; gap:6px; margin:16px 0 6px;}
   .stp{flex:1; height:5px; border-radius:5px; background:rgba(20,36,94,.12);}
   .stp.on{background:linear-gradient(90deg,var(--lime3),var(--lime2));}
+  /* selectable overdue invoices */
+  .paysel{cursor:pointer;}
+  .paychk{width:24px; height:24px; border-radius:50%; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s, border-color .15s;}
+  .paychk i{font-size:14px; color:#0B1330; opacity:0;}
+  .paysel input:checked ~ .paychk{background:var(--lime); border-color:var(--lime3);}
+  .paysel input:checked ~ .paychk i{opacity:1;}
 </style>
 </head>
 <body>
@@ -3254,8 +3260,8 @@
 
     <p class="mlab">Bills</p>
     <div class="gcard">
-      <div class="lrow"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">July 2026<small class="ninv">Overdue · 7 990 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">June 2026<small class="ninv">Overdue · 8 490 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lrow paysel"><input type="checkbox" class="rt" data-pay="7990" checked><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">July 2026<small class="ninv">Overdue · 7 990 Ft</small></span><span class="paychk"><i class="ti ti-check"></i></span></label>
+      <label class="lrow paysel"><input type="checkbox" class="rt" data-pay="8490" checked><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">June 2026<small class="ninv">Overdue · 8 490 Ft</small></span><span class="paychk"><i class="ti ti-check"></i></span></label>
       <div class="lrow"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">May 2026<small class="ninv">Paid · 8 490 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">April 2026<small class="ninv">Paid · 7 990 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
     </div>
@@ -3949,6 +3955,15 @@
       Array.prototype.slice.call(document.querySelectorAll("input[name='tvssrc'], input[name='tvbsrc']")).forEach(function(r){ r.checked = (r.id === v); });
     });
   });
+  /* bills: payable total follows the selected overdue invoices */
+  (function(){
+    var bs = document.querySelector("[data-screen='billing']"); if(!bs) return;
+    var amt = bs.querySelector(".tubv"); if(!amt) return;
+    var boxes = Array.prototype.slice.call(bs.querySelectorAll(".paysel input[data-pay]"));
+    function fmt(n){ var s=n.toString(), o=""; for(var i=0;i<s.length;i++){ if(i>0 && (s.length-i)%3===0) o+=" "; o+=s.charAt(i); } return o; }
+    function recalc(){ var t=0; boxes.forEach(function(b){ if(b.checked) t+=parseInt(b.getAttribute("data-pay"),10); }); amt.textContent = fmt(t)+" Ft"; }
+    boxes.forEach(function(b){ b.addEventListener("change", recalc); });
+  })();
   document.addEventListener('click', function(){ closeAll(null); });
 })();
 </script>
@@ -3963,7 +3978,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip';
+  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip,.paysel';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
