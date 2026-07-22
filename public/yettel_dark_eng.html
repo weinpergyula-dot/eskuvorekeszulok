@@ -797,6 +797,10 @@
   .screen:has(input[name="tvbsrc"]:checked) .tvpacks{display:block;}
   .screen:has(input[name="tvssrc"]:checked) .tvgate,
   .screen:has(input[name="tvbsrc"]:checked) .tvgate{display:none;}
+  /* internet purchase progress stepper */
+  .stepper{display:flex; gap:6px; margin:16px 0 6px;}
+  .stp{flex:1; height:5px; border-radius:5px; background:rgba(255,255,255,.14);}
+  .stp.on{background:linear-gradient(90deg,var(--lime3),var(--lime2));}
 </style>
 </head>
 <body>
@@ -1000,7 +1004,14 @@
         <p class="plan-sub">No monthly fee</p>
         <div class="hero-bottom">
           <div class="balbox"><p class="ball">BALANCE</p><p class="balv">3 450 Ft</p></div>
-          <div class="stats"><div class="stat"><div class="lab"><span class="k">Data</span><span class="v">1,8<span class="u"> / 5 GB</span></span></div><div class="track"><div class="fill" style="width:36%"></div></div></div></div>
+          <div class="ring-wrap">
+            <svg width="92" height="92" viewBox="0 0 92 92">
+              <defs><linearGradient id="rgp1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="7"/>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rgp1)" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="152.8" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
+            </svg>
+            <div class="ring-center"><b>1,8</b><span>/ 5 GB</span></div>
+          </div>
         </div>
         <div class="cactions"><label class="cbtn" for="s-topup1"><span class="c"><i class="ti ti-plus"></i></span>Top up balance</label><label class="cbtn" for="s-tarifch3"><span class="c"><i class="ti ti-arrow-up"></i></span>Switch to monthly</label></div>
       </div>
@@ -1010,7 +1021,14 @@
         <p class="plan-sub">No monthly fee</p>
         <div class="hero-bottom">
           <div class="balbox"><p class="ball">BALANCE</p><p class="balv">1 280 Ft</p></div>
-          <div class="stats"><div class="stat"><div class="lab"><span class="k">Data</span><span class="v">0,6<span class="u"> / 2 GB</span></span></div><div class="track"><div class="fill" style="width:30%"></div></div></div></div>
+          <div class="ring-wrap">
+            <svg width="92" height="92" viewBox="0 0 92 92">
+              <defs><linearGradient id="rgp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="7"/>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rgp2)" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="167.1" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
+            </svg>
+            <div class="ring-center"><b>0,6</b><span>/ 2 GB</span></div>
+          </div>
         </div>
         <div class="cactions"><label class="cbtn" for="s-topup2"><span class="c"><i class="ti ti-plus"></i></span>Top up balance</label><label class="cbtn" for="s-tarifch4"><span class="c"><i class="ti ti-arrow-up"></i></span>Switch to monthly</label></div>
       </div>
@@ -1669,21 +1687,6 @@
     <p class="tvgate"><i class="ti ti-arrow-up"></i>Pick a service and the TV packages will appear here.</p>
     <div class="tvpacks">
       <p class="mlab">Available TV packages</p>
-      <div class="tfcard">
-        <div class="tfmain">
-          <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12-month term</span></div>
-          <p class="tfdata">60+ channels</p>
-          <div class="tfspecs">
-            <span><i class="ti ti-device-tv"></i>HD quality</span>
-            <span><i class="ti ti-refresh"></i>7-day catch-up</span>
-          </div>
-          <span class="tfdet">Details</span>
-          <div class="tfprice">
-            <span class="tfp">2 990 Ft<small> / mo</small></span>
-            <span class="tford">Order now</span>
-          </div>
-        </div>
-      </div>
       <div class="tfcard pop">
         <span class="tfbadge">Popular</span>
         <div class="tfmain">
@@ -1697,6 +1700,21 @@
           <span class="tfdet">Details</span>
           <div class="tfprice">
             <span class="tfp">4 490 Ft<small> / mo</small></span>
+            <span class="tford">Order now</span>
+          </div>
+        </div>
+      </div>
+      <div class="tfcard">
+        <div class="tfmain">
+          <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12-month term</span></div>
+          <p class="tfdata">60+ channels</p>
+          <div class="tfspecs">
+            <span><i class="ti ti-device-tv"></i>HD quality</span>
+            <span><i class="ti ti-refresh"></i>7-day catch-up</span>
+          </div>
+          <span class="tfdet">Details</span>
+          <div class="tfprice">
+            <span class="tfp">2 990 Ft<small> / mo</small></span>
             <span class="tford">Order now</span>
           </div>
         </div>
@@ -1754,21 +1772,6 @@
     <p class="tvgate"><i class="ti ti-arrow-up"></i>Pick a service and the TV packages will appear here.</p>
     <div class="tvpacks">
       <p class="mlab">Available TV packages</p>
-      <div class="tfcard">
-        <div class="tfmain">
-          <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12-month term</span></div>
-          <p class="tfdata">60+ channels</p>
-          <div class="tfspecs">
-            <span><i class="ti ti-device-tv"></i>HD quality</span>
-            <span><i class="ti ti-refresh"></i>7-day catch-up</span>
-          </div>
-          <span class="tfdet">Details</span>
-          <div class="tfprice">
-            <span class="tfp">2 990 Ft<small> / mo</small></span>
-            <span class="tford">Order now</span>
-          </div>
-        </div>
-      </div>
       <div class="tfcard pop">
         <span class="tfbadge">Popular</span>
         <div class="tfmain">
@@ -1782,6 +1785,21 @@
           <span class="tfdet">Details</span>
           <div class="tfprice">
             <span class="tfp">4 490 Ft<small> / mo</small></span>
+            <span class="tford">Order now</span>
+          </div>
+        </div>
+      </div>
+      <div class="tfcard">
+        <div class="tfmain">
+          <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12-month term</span></div>
+          <p class="tfdata">60+ channels</p>
+          <div class="tfspecs">
+            <span><i class="ti ti-device-tv"></i>HD quality</span>
+            <span><i class="ti ti-refresh"></i>7-day catch-up</span>
+          </div>
+          <span class="tfdet">Details</span>
+          <div class="tfprice">
+            <span class="tfp">2 990 Ft<small> / mo</small></span>
             <span class="tford">Order now</span>
           </div>
         </div>
@@ -1821,6 +1839,7 @@
       <span class="title">Extras</span>
       <div style="width:42px"></div>
     </div>
+    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
     <h2 class="buyhead">Choose extras</h2>
     <p class="buysub">Choose the add-ons you want alongside your service.</p>
 
@@ -1850,6 +1869,7 @@
       <span class="title">Extras</span>
       <div style="width:42px"></div>
     </div>
+    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
     <h2 class="buyhead">Choose extras</h2>
     <p class="buysub">Choose the add-ons you want alongside your service.</p>
 
@@ -2210,6 +2230,22 @@
     </div>
     <h2 class="buyhead">Choose your<br>plan.</h2>
     <p class="buysub">Port your number and get 30% off for 6 months.</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Popular</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
+        <p class="tfdata">Unlimited data</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 min</span>
+          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice">
+          <span class="tfp">14 599 Ft<small> / mo</small></span>
+          <span class="tford">Order now</span>
+        </div>
+      </div>
+    </div>
     <div class="tfcard">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">Yettel Start</p><span class="tfnote">11-month term</span></div>
@@ -2251,22 +2287,6 @@
         <span class="tfdet">Details</span>
         <div class="tfprice">
           <span class="tfp">11 989 Ft<small> / mo</small></span>
-          <span class="tford">Order now</span>
-        </div>
-      </div>
-    </div>
-    <div class="tfcard pop">
-      <span class="tfbadge">Popular</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
-        <p class="tfdata">Unlimited data</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-phone"></i>200 min</span>
-          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-        </div>
-        <span class="tfdet">Details</span>
-        <div class="tfprice">
-          <span class="tfp">14 599 Ft<small> / mo</small></span>
           <span class="tford">Order now</span>
         </div>
       </div>
@@ -2316,6 +2336,22 @@
     </div>
     <h2 class="buyhead">Choose your<br>plan.</h2>
     <p class="buysub">Port your number and get 30% off for 6 months.</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Popular</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
+        <p class="tfdata">Unlimited data</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 min</span>
+          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice">
+          <span class="tfp">14 599 Ft<small> / mo</small></span>
+          <span class="tford">Order now</span>
+        </div>
+      </div>
+    </div>
     <div class="tfcard">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">Yettel Start</p><span class="tfnote">11-month term</span></div>
@@ -2357,22 +2393,6 @@
         <span class="tfdet">Details</span>
         <div class="tfprice">
           <span class="tfp">11 989 Ft<small> / mo</small></span>
-          <span class="tford">Order now</span>
-        </div>
-      </div>
-    </div>
-    <div class="tfcard pop">
-      <span class="tfbadge">Popular</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
-        <p class="tfdata">Unlimited data</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-phone"></i>200 min</span>
-          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-        </div>
-        <span class="tfdet">Details</span>
-        <div class="tfprice">
-          <span class="tfp">14 599 Ft<small> / mo</small></span>
           <span class="tford">Order now</span>
         </div>
       </div>
@@ -2555,6 +2575,19 @@
     </div>
     <h2 class="buyhead" style="font-size:22px;">Choose your new plan.</h2>
     <p class="buysub">The change takes effect from your next billing cycle.</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Popular</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
+        <p class="tfdata">Unlimited data</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 min</span>
+          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice"><span class="tfp">14 599 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
+      </div>
+    </div>
     <div class="tfcard">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">Yettel Start</p><span class="tfnote">11-month term</span></div>
@@ -2589,19 +2622,6 @@
         </div>
         <span class="tfdet">Details</span>
         <div class="tfprice"><span class="tfp">11 989 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
-      </div>
-    </div>
-    <div class="tfcard pop">
-      <span class="tfbadge">Popular</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
-        <p class="tfdata">Unlimited data</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-phone"></i>200 min</span>
-          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-        </div>
-        <span class="tfdet">Details</span>
-        <div class="tfprice"><span class="tfp">14 599 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
       </div>
     </div>
     <div class="tfcard">
@@ -2663,6 +2683,19 @@
     </div>
     <h2 class="buyhead" style="font-size:22px;">Choose your new plan.</h2>
     <p class="buysub">The change takes effect from your next billing cycle.</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Popular</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
+        <p class="tfdata">Unlimited data</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 min</span>
+          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice"><span class="tfp">14 599 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
+      </div>
+    </div>
     <div class="tfcard">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">Yettel Start</p><span class="tfnote">11-month term</span></div>
@@ -2697,19 +2730,6 @@
         </div>
         <span class="tfdet">Details</span>
         <div class="tfprice"><span class="tfp">11 989 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
-      </div>
-    </div>
-    <div class="tfcard pop">
-      <span class="tfbadge">Popular</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
-        <p class="tfdata">Unlimited data</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-phone"></i>200 min</span>
-          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-        </div>
-        <span class="tfdet">Details</span>
-        <div class="tfprice"><span class="tfp">14 599 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
       </div>
     </div>
     <div class="tfcard">
@@ -2771,6 +2791,19 @@
     </div>
     <h2 class="buyhead" style="font-size:22px;">Choose your new plan.</h2>
     <p class="buysub">The change takes effect from your next billing cycle.</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Popular</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
+        <p class="tfdata">Unlimited data</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 min</span>
+          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice"><span class="tfp">14 599 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
+      </div>
+    </div>
     <div class="tfcard">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">Yettel Start</p><span class="tfnote">11-month term</span></div>
@@ -2805,19 +2838,6 @@
         </div>
         <span class="tfdet">Details</span>
         <div class="tfprice"><span class="tfp">11 989 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
-      </div>
-    </div>
-    <div class="tfcard pop">
-      <span class="tfbadge">Popular</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
-        <p class="tfdata">Unlimited data</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-phone"></i>200 min</span>
-          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-        </div>
-        <span class="tfdet">Details</span>
-        <div class="tfprice"><span class="tfp">14 599 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
       </div>
     </div>
     <div class="tfcard">
@@ -2879,6 +2899,19 @@
     </div>
     <h2 class="buyhead" style="font-size:22px;">Choose your new plan.</h2>
     <p class="buysub">The change takes effect from your next billing cycle.</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Popular</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
+        <p class="tfdata">Unlimited data</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 min</span>
+          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice"><span class="tfp">14 599 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
+      </div>
+    </div>
     <div class="tfcard">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">Yettel Start</p><span class="tfnote">11-month term</span></div>
@@ -2913,19 +2946,6 @@
         </div>
         <span class="tfdet">Details</span>
         <div class="tfprice"><span class="tfp">11 989 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
-      </div>
-    </div>
-    <div class="tfcard pop">
-      <span class="tfbadge">Popular</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">Yettel Prime Plus</p><span class="tfnote">11-month term</span></div>
-        <p class="tfdata">Unlimited data</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-phone"></i>200 min</span>
-          <span><i class="ti ti-world"></i>69 GB EU roaming</span><span><i class="ti ti-signal-5g"></i>5G</span>
-        </div>
-        <span class="tfdet">Details</span>
-        <div class="tfprice"><span class="tfp">14 599 Ft<small> / mo</small></span><span class="tford">Order now</span></div>
       </div>
     </div>
     <div class="tfcard">
@@ -3239,16 +3259,16 @@
     </div>
 
     <div class="tubal" style="display:block;">
-      <p class="tubl">Amount due</p>
-      <p class="tubv">7 990 Ft</p>
-      <p class="tube">Due by 31 July 2026</p>
+      <p class="tubl">To pay (2 overdue bills)</p>
+      <p class="tubv">16 480 Ft</p>
+      <p class="tube">Please settle it soon</p>
     </div>
     <button class="acont" style="margin-top:14px;">Pay</button>
 
     <p class="mlab">Bills</p>
     <div class="gcard">
-      <div class="lrow"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">July 2026<small class="ninv">Due · 7 990 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">June 2026<small class="ninv">Paid · 7 990 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">July 2026<small class="ninv">Overdue · 7 990 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">June 2026<small class="ninv">Overdue · 8 490 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">May 2026<small class="ninv">Paid · 8 490 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">April 2026<small class="ninv">Paid · 7 990 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
     </div>
@@ -3588,6 +3608,23 @@
     </div>
     <h2 class="buyhead">Choose your<br>package.</h2>
     <p class="buysub">No commitment, no monthly fee — pay from your balance and switch any time.</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Popular</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel S</p><span class="tfnote">No commitment</span></div>
+        <p class="tfdata">10 GB data</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 min</span>
+          <span><i class="ti ti-message-2"></i>Unlimited texts</span>
+          <span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice">
+          <span class="tfp">4 500 Ft<small> / 30 nap</small></span>
+          <span class="tford">Order now</span>
+        </div>
+      </div>
+    </div>
     <div class="tfcard">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">Yettel XS</p><span class="tfnote">No commitment</span></div>
@@ -3614,23 +3651,6 @@
         <span class="tfdet">Details</span>
         <div class="tfprice">
           <span class="tfp">3 000 Ft<small> / 30 nap</small></span>
-          <span class="tford">Order now</span>
-        </div>
-      </div>
-    </div>
-    <div class="tfcard pop">
-      <span class="tfbadge">Popular</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">Yettel S</p><span class="tfnote">No commitment</span></div>
-        <p class="tfdata">10 GB data</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-phone"></i>200 min</span>
-          <span><i class="ti ti-message-2"></i>Unlimited texts</span>
-          <span><i class="ti ti-signal-5g"></i>5G</span>
-        </div>
-        <span class="tfdet">Details</span>
-        <div class="tfprice">
-          <span class="tfp">4 500 Ft<small> / 30 nap</small></span>
           <span class="tford">Order now</span>
         </div>
       </div>
@@ -3666,6 +3686,23 @@
     </div>
     <h2 class="buyhead">Choose your<br>package.</h2>
     <p class="buysub">No commitment, no monthly fee — pay from your balance and switch any time.</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Popular</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">Yettel S</p><span class="tfnote">No commitment</span></div>
+        <p class="tfdata">10 GB data</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-phone"></i>200 min</span>
+          <span><i class="ti ti-message-2"></i>Unlimited texts</span>
+          <span><i class="ti ti-signal-5g"></i>5G</span>
+        </div>
+        <span class="tfdet">Details</span>
+        <div class="tfprice">
+          <span class="tfp">4 500 Ft<small> / 30 nap</small></span>
+          <span class="tford">Order now</span>
+        </div>
+      </div>
+    </div>
     <div class="tfcard">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">Yettel XS</p><span class="tfnote">No commitment</span></div>
@@ -3692,23 +3729,6 @@
         <span class="tfdet">Details</span>
         <div class="tfprice">
           <span class="tfp">3 000 Ft<small> / 30 nap</small></span>
-          <span class="tford">Order now</span>
-        </div>
-      </div>
-    </div>
-    <div class="tfcard pop">
-      <span class="tfbadge">Popular</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">Yettel S</p><span class="tfnote">No commitment</span></div>
-        <p class="tfdata">10 GB data</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-phone"></i>200 min</span>
-          <span><i class="ti ti-message-2"></i>Unlimited texts</span>
-          <span><i class="ti ti-signal-5g"></i>5G</span>
-        </div>
-        <span class="tfdet">Details</span>
-        <div class="tfprice">
-          <span class="tfp">4 500 Ft<small> / 30 nap</small></span>
           <span class="tford">Order now</span>
         </div>
       </div>
@@ -3841,7 +3861,7 @@
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Home</label>
     <label class="nitem" for="s-allsubs"><i class="ti ti-device-mobile"></i>My subscriptions</label>
     <label class="nitem" for="s-alldev"><i class="ti ti-devices"></i>My devices</label>
-    <label class="nitem" for="s-account"><i class="ti ti-user"></i>Account</label>
+    <label class="nitem" for="s-account"><i class="ti ti-user"></i>Profile</label>
   </div>
 
 
