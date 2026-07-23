@@ -295,6 +295,10 @@
   #s-prebuy:checked ~ [data-screen="pre-buy"],
   #s-presvc:checked ~ [data-screen="pre-svc"],
   #s-offbuy:checked ~ [data-screen="offers-buy"],
+  #s-devdet2:checked ~ [data-screen="devdet-2"],
+  #s-devdet3:checked ~ [data-screen="devdet-3"],
+  #s-devdet4:checked ~ [data-screen="devdet-4"],
+  #s-devdet5:checked ~ [data-screen="devdet-5"],
   #s-strm1:checked ~ [data-screen="strm-1"],
   #s-strm2:checked ~ [data-screen="strm-2"],
   #s-strm3:checked ~ [data-screen="strm-3"],
@@ -317,7 +321,7 @@
   #s-xdata1:checked ~ [data-screen="xdata-1"],
   #s-xmin:checked ~ [data-screen="xmin"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -876,6 +880,10 @@
   <input class="rt" type="radio" name="nav" id="s-strm1">
   <input class="rt" type="radio" name="nav" id="s-strm2">
   <input class="rt" type="radio" name="nav" id="s-strm3">
+  <input class="rt" type="radio" name="nav" id="s-devdet2">
+  <input class="rt" type="radio" name="nav" id="s-devdet3">
+  <input class="rt" type="radio" name="nav" id="s-devdet4">
+  <input class="rt" type="radio" name="nav" id="s-devdet5">
   <input class="rt" type="radio" name="nav" id="s-detailpre1">
   <input class="rt" type="radio" name="nav" id="s-detailpre2">
   <input class="rt" type="radio" name="nav" id="s-edmob">
@@ -1152,28 +1160,28 @@
     <p class="mlab">Megvásárolt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">12/24 hónap · 9 990 Ft / hó</p></div>
+      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">Hátralévő részletek · 12 hónap</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet2"></label>
       <div class="itile blue"><i class="ti ti-device-watch"></i></div>
-      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">4/12 hónap · 4 490 Ft / hó</p></div>
+      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">Hátralévő részletek · 8 hónap</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet3"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">2024. 05. 12.</p></div>
+      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">Kifizetve</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
     <p class="mlab">Bérelt készülékek</p>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet4"></label>
       <div class="itile blue"><i class="ti ti-router"></i></div>
       <div class="meta"><p class="t">Wi-Fi router</p><p class="s">Bérelt · Otthoni Net 1000</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet5"></label>
       <div class="itile violet"><i class="ti ti-device-tv"></i></div>
       <div class="meta"><p class="t">Beltéri egység</p><p class="s">Bérelt · TV Prémium</p></div>
       <i class="ti ti-chevron-right chev"></i>
@@ -1401,6 +1409,7 @@
       <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
+    <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">RTL Plus</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
@@ -1428,22 +1437,8 @@
       <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">TV · TV Prémium</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <p class="mlab">Streaming</p>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-strm1"></label>
-      <div class="itile violet"><i class="ti ti-player-play"></i></div>
-      <div class="meta"><p class="t">HBO Max</p><p class="s">TV Prémium alá</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-strm2"></label>
-      <div class="itile violet"><i class="ti ti-movie"></i></div>
-      <div class="meta"><p class="t">Netflix</p><p class="s">TV Prémium alá</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-strm3"></label>
-      <div class="itile violet"><i class="ti ti-player-play"></i></div>
-      <div class="meta"><p class="t">RTL Plus</p><p class="s">Prime Plus 2024 alá</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
+    <label class="substrm" for="s-strm1"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+    <label class="substrm" for="s-strm2"><span class="ssic"><i class="ti ti-movie"></i></span><span class="ssn">Netflix</span><i class="ti ti-chevron-right chev"></i></label>
   </div>
 
   <!-- ============= ALL DEVICES ============= -->
@@ -1459,28 +1454,28 @@
     <p class="mlab">Megvásárolt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">12/24 hónap · 9 990 Ft / hó</p></div>
+      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">Hátralévő részletek · 12 hónap</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet2"></label>
       <div class="itile blue"><i class="ti ti-device-watch"></i></div>
-      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">4/12 hónap · 4 490 Ft / hó</p></div>
+      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">Hátralévő részletek · 8 hónap</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet3"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">2024. 05. 12.</p></div>
+      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">Kifizetve</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
     <p class="mlab">Bérelt készülékek</p>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet4"></label>
       <div class="itile blue"><i class="ti ti-router"></i></div>
       <div class="meta"><p class="t">Wi-Fi router</p><p class="s">Bérelt · Otthoni Net 1000</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet5"></label>
       <div class="itile violet"><i class="ti ti-device-tv"></i></div>
       <div class="meta"><p class="t">Beltéri egység</p><p class="s">Bérelt · TV Prémium</p></div>
       <i class="ti ti-chevron-right chev"></i>
@@ -4011,6 +4006,116 @@
       <div class="lrow codelink" data-code="RTLP-6620-8B4M"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
     <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+  </div>
+
+  <!-- ============= TOVÁBBI KÉSZÜLÉK RÉSZLETEK ============= -->
+  <div class="screen" data-screen="devdet-2" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Készülék részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile"><i class="ti ti-device-watch"></i></div>
+      <div class="meta"><p class="s">Apple · GPS · 40 mm</p><p class="t" style="font-size:15px;">Apple Watch SE</p></div>
+      <label class="edit icon" for="s-eddev"><i class="ti ti-pencil"></i></label>
+    </div>
+    <p class="mlab">Részletfizetés</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Havi részlet</span><span class="v strong">4 490 Ft / hó</span></div>
+      <div class="krow"><span class="k">Hátralévő részletek</span><span class="v">8 / 12 hó</span></div>
+      <div class="krow"><span class="k">Hátralévő tartozás</span><span class="v">35 920 Ft</span></div>
+      <div class="krow"><span class="k">Utolsó részlet</span><span class="v">2027. 03. 15.</span></div>
+      <div class="krow"><span class="k">Egyösszegű kifizetés</span><span class="link">Részletek</span></div>
+    </div>
+    <p class="mlab">Készülék adatai</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">IMEI</span><span class="v">35 774102 889341 6</span></div>
+      <div class="krow"><span class="k">Garancia</span><span class="v" style="color:#5FA810; font-weight:700;">2027. 03. 15-ig</span></div>
+      <div class="krow"><span class="k">Hozzárendelt szám</span><span class="v">+36 20 290 7430</span></div>
+    </div>
+    <p class="mlab">Lehetőségek</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-refresh"></i></span><span class="n">Készülékcsere</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Szerviz igénylése</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Számla és dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+  </div>
+
+  <div class="screen" data-screen="devdet-3" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Készülék részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="s">Samsung · 128 GB</p><p class="t" style="font-size:15px;">Samsung Galaxy A55</p></div>
+      <label class="edit icon" for="s-eddev"><i class="ti ti-pencil"></i></label>
+    </div>
+    <p class="mlab">Fizetési állapot</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Állapot</span><span class="v strong" style="color:#5FA810;">Kifizetve</span></div>
+      <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2024. 05. 12.</span></div>
+    </div>
+    <p class="mlab">Készülék adatai</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">IMEI</span><span class="v">35 991044 220117 9</span></div>
+      <div class="krow"><span class="k">Garancia</span><span class="v">2026. 05. 12-ig</span></div>
+      <div class="krow"><span class="k">Hozzárendelt szám</span><span class="v">+36 20 290 7566</span></div>
+    </div>
+    <p class="mlab">Lehetőségek</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-lock-open"></i></span><span class="n">Hálózati függetlenítés</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Szerviz igénylése</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Számla és dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+  </div>
+
+  <div class="screen" data-screen="devdet-4" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Készülék részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="s">Bérelt eszköz</p><p class="t" style="font-size:15px;">Wi-Fi router</p></div>
+    </div>
+    <p class="mlab">Bérlet</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Állapot</span><span class="v strong">Bérelt</span></div>
+      <label class="krow krlink" for="s-detail-net"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">Internet · Otthoni Net 1000</span></label>
+      <div class="krow"><span class="k">Bérleti díj</span><span class="v">A szolgáltatás díja tartalmazza</span></div>
+    </div>
+    <p class="mlab">Lehetőségek</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-refresh"></i></span><span class="n">Csere igénylése</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Hibabejelentés</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+  </div>
+
+  <div class="screen" data-screen="devdet-5" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Készülék részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile violet"><i class="ti ti-device-tv"></i></div>
+      <div class="meta"><p class="s">Bérelt eszköz</p><p class="t" style="font-size:15px;">Beltéri egység</p></div>
+    </div>
+    <p class="mlab">Bérlet</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Állapot</span><span class="v strong">Bérelt</span></div>
+      <label class="krow krlink" for="s-detail-tv"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">TV · TV Prémium</span></label>
+      <div class="krow"><span class="k">Bérleti díj</span><span class="v">A szolgáltatás díja tartalmazza</span></div>
+    </div>
+    <p class="mlab">Lehetőségek</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic"><i class="ti ti-refresh"></i></span><span class="n">Csere igénylése</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Hibabejelentés</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
   </div>
 
   <!-- ============= NAV ============= -->
