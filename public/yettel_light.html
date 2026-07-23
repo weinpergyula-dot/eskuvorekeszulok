@@ -283,6 +283,9 @@
   #s-prebuy:checked ~ [data-screen="pre-buy"],
   #s-presvc:checked ~ [data-screen="pre-svc"],
   #s-offbuy:checked ~ [data-screen="offers-buy"],
+  #s-strm1:checked ~ [data-screen="strm-1"],
+  #s-strm2:checked ~ [data-screen="strm-2"],
+  #s-strm3:checked ~ [data-screen="strm-3"],
   #s-offsvc1:checked ~ [data-screen="offers-svc-1"],
   #s-offbuy1:checked ~ [data-screen="offers-buy-1"],
   #s-offsvc:checked ~ [data-screen="offers-svc"],
@@ -302,7 +305,7 @@
   #s-xdata1:checked ~ [data-screen="xdata-1"],
   #s-xmin:checked ~ [data-screen="xmin"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -794,6 +797,9 @@
   .paychk i{font-size:14px; color:#0B1330; opacity:0;}
   .paysel input:checked ~ .paychk{background:var(--lime); border-color:var(--lime3);}
   .paysel input:checked ~ .paychk i{opacity:1;}
+  /* linked contract row (streaming <-> parent service) */
+  label.krow{cursor:pointer;}
+  .krow .v.link{color:var(--limed);}
 </style>
 </head>
 <body>
@@ -840,6 +846,9 @@
   <input class="rt" type="radio" name="nav" id="s-presvc">
   <input class="rt" type="radio" name="nav" id="s-offsvc1">
   <input class="rt" type="radio" name="nav" id="s-offbuy1">
+  <input class="rt" type="radio" name="nav" id="s-strm1">
+  <input class="rt" type="radio" name="nav" id="s-strm2">
+  <input class="rt" type="radio" name="nav" id="s-strm3">
   <input class="rt" type="radio" name="nav" id="s-detailpre1">
   <input class="rt" type="radio" name="nav" id="s-detailpre2">
   <input class="rt" type="radio" name="nav" id="s-edmob">
@@ -1105,6 +1114,26 @@
         </div>
       </div>
     </div>
+    <div class="acc">
+      <div class="acc-head" data-acc><span class="at">Streaming <small>3</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-body">
+        <div class="sub" style="position:relative;"><label class="subcover" for="s-strm1"></label>
+          <div class="itile violet"><i class="ti ti-player-play"></i></div>
+          <div class="meta"><p class="t">HBO Max</p><p class="s">TV Prémium alá</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+        <div class="sub" style="position:relative;"><label class="subcover" for="s-strm2"></label>
+          <div class="itile violet"><i class="ti ti-movie"></i></div>
+          <div class="meta"><p class="t">Netflix</p><p class="s">TV Prémium alá</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+        <div class="sub" style="position:relative;"><label class="subcover" for="s-strm3"></label>
+          <div class="itile violet"><i class="ti ti-music"></i></div>
+          <div class="meta"><p class="t">Spotify Premium</p><p class="s">Prime Plus 2024 alá</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+      </div>
+    </div>
 
 
     <div class="sec"><h3>Készülékeim</h3><label for="s-alldev">Összes →</label></div>
@@ -1146,6 +1175,10 @@
       <div class="krow"><span class="k">Tarifacsomagom</span><span class="link">Részletek</span></div>
     </div>
 
+    <p class="mlab">Streaming</p>
+    <div class="gcard">
+      <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-music"></i></span><span class="n">Spotify Premium</span><i class="ti ti-chevron-right chev"></i></label>
+    </div>
     <p class="mlab">Elérhető keret</p>
     <div class="gcard keret">
       <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">12,4<span class="u"> / 20 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
@@ -1286,8 +1319,8 @@
 
     <p class="mlab">Streaming</p>
     <div class="gcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Netflix</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lrow" for="s-strm1"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-strm2"><span class="sic"><i class="ti ti-movie"></i></span><span class="n">Netflix</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
     <p class="mlab">Eszközök</p>
@@ -1367,6 +1400,22 @@
       <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">TV · TV Prémium</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
+    <p class="mlab">Streaming</p>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-strm1"></label>
+      <div class="itile violet"><i class="ti ti-player-play"></i></div>
+      <div class="meta"><p class="t">HBO Max</p><p class="s">TV Prémium alá</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-strm2"></label>
+      <div class="itile violet"><i class="ti ti-movie"></i></div>
+      <div class="meta"><p class="t">Netflix</p><p class="s">TV Prémium alá</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-strm3"></label>
+      <div class="itile violet"><i class="ti ti-music"></i></div>
+      <div class="meta"><p class="t">Spotify Premium</p><p class="s">Prime Plus 2024 alá</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
   </div>
 
   <!-- ============= ALL DEVICES ============= -->
@@ -1379,7 +1428,7 @@
 
     <label class="addsvc" for="s-devbuy" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
 
-    <p class="mlab">Részletfizetés alatt</p>
+    <p class="mlab">Megvásárolt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">12/24 hónap · 9 990 Ft / hó</p></div>
@@ -1391,14 +1440,13 @@
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
-    <p class="mlab">Kifizetve</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">2024. 05. 12.</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
-    <p class="mlab">Szolgáltatáshoz tartozó</p>
+    <p class="mlab">Bérelt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
       <div class="itile blue"><i class="ti ti-router"></i></div>
       <div class="meta"><p class="t">Wi-Fi router</p><p class="s">Bérelt · Otthoni Net 1000</p></div>
@@ -3848,6 +3896,82 @@
     </div>
   </div>
 
+
+  <!-- ============= STREAMING RÉSZLETEK ============= -->
+  <div class="screen" data-screen="strm-1" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatás részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile violet"><i class="ti ti-player-play"></i></div>
+      <div class="meta"><p class="s">Streaming</p><p class="t" style="font-size:16px;">HBO Max</p></div>
+    </div>
+    <p class="mlab">Szerződés</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Havidíj</span><span class="v">2 490 Ft / hó</span></div>
+      <div class="krow"><span class="k">Aktiválás dátuma</span><span class="v">2026. 05. 10.</span></div>
+      <label class="krow krlink" for="s-detail-tv"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">TV · TV Prémium</span></label>
+    </div>
+    <p class="mlab">Csomag adatai</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Felbontás</span><span class="v strong">4K HDR</span></div>
+      <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
+      <div class="krow"><span class="k">Letöltés offline</span><span class="v">Elérhető</span></div>
+    </div>
+    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+  </div>
+
+  <div class="screen" data-screen="strm-2" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatás részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile violet"><i class="ti ti-movie"></i></div>
+      <div class="meta"><p class="s">Streaming</p><p class="t" style="font-size:16px;">Netflix</p></div>
+    </div>
+    <p class="mlab">Szerződés</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Havidíj</span><span class="v">4 490 Ft / hó</span></div>
+      <div class="krow"><span class="k">Aktiválás dátuma</span><span class="v">2026. 05. 10.</span></div>
+      <label class="krow krlink" for="s-detail-tv"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">TV · TV Prémium</span></label>
+    </div>
+    <p class="mlab">Csomag adatai</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Felbontás</span><span class="v strong">4K UHD</span></div>
+      <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">4 eszköz</span></div>
+      <div class="krow"><span class="k">Letöltés offline</span><span class="v">Elérhető</span></div>
+    </div>
+    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+  </div>
+
+  <div class="screen" data-screen="strm-3" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatás részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="planbar">
+      <div class="itile violet"><i class="ti ti-music"></i></div>
+      <div class="meta"><p class="s">Streaming</p><p class="t" style="font-size:16px;">Spotify Premium</p></div>
+    </div>
+    <p class="mlab">Szerződés</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Havidíj</span><span class="v">1 990 Ft / hó</span></div>
+      <div class="krow"><span class="k">Aktiválás dátuma</span><span class="v">2026. 05. 10.</span></div>
+      <label class="krow krlink" for="s-detail"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">Mobil · Prime Plus 2024</span></label>
+    </div>
+    <p class="mlab">Csomag adatai</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Felbontás</span><span class="v strong">Lossless</span></div>
+      <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">1 eszköz</span></div>
+      <div class="krow"><span class="k">Letöltés offline</span><span class="v">Elérhető</span></div>
+    </div>
+    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+  </div>
 
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
