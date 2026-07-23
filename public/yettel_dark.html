@@ -299,6 +299,10 @@
   #s-devdet3:checked ~ [data-screen="devdet-3"],
   #s-devdet4:checked ~ [data-screen="devdet-4"],
   #s-devdet5:checked ~ [data-screen="devdet-5"],
+  #s-consent:checked ~ [data-screen="consent-decl"],
+  #s-appt:checked ~ [data-screen="appt-set"],
+  #s-ordsum:checked ~ [data-screen="order-sum"],
+  #s-ordok:checked ~ [data-screen="order-ok"],
   #s-strm1:checked ~ [data-screen="strm-1"],
   #s-strm2:checked ~ [data-screen="strm-2"],
   #s-strm3:checked ~ [data-screen="strm-3"],
@@ -831,6 +835,32 @@
   .codeic{width:52px; height:52px; margin:0 auto 14px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(198,242,78,.14); border:1px solid rgba(198,242,78,.34);}
   .codeic i{font-size:24px; color:var(--lime);}
   .codebox{margin:4px 0 18px; padding:13px; border-radius:14px; background:rgba(255,255,255,.06); border:1px dashed var(--stroke); font-family:monospace; font-size:17px; font-weight:700; letter-spacing:.12em; color:var(--lime);}
+  /* internet journey: consent, appointment, summary, success */
+  .consent{display:flex; gap:12px; align-items:flex-start; padding:14px 15px; border-radius:16px; margin-bottom:10px; cursor:pointer; background:var(--glass); border:1px solid var(--stroke);}
+  .cschk{width:24px; height:24px; border-radius:7px; border:2px solid var(--stroke); flex-shrink:0; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+  .cschk i{font-size:14px; color:#0B1330; opacity:0;}
+  .consent input:checked ~ .cschk{background:var(--lime); border-color:var(--lime);}
+  .consent input:checked ~ .cschk i{opacity:1;}
+  .cst{font-size:13px; font-weight:700; color:var(--hi); margin:0 0 3px;}
+  .css{font-size:11.5px; color:var(--mid); line-height:1.5; margin:0;}
+  .csreq{font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--lime); margin-left:5px;}
+  .csopt{font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--mid); margin-left:5px;}
+  .slotgrid{display:flex; flex-direction:column; gap:9px; margin-top:4px;}
+  .slot{display:flex; align-items:center; gap:9px; padding:14px 16px; border-radius:15px; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--hi); background:var(--glass); border:1px solid var(--stroke);}
+  .slot i{font-size:17px; color:var(--mid);}
+  #as-1:checked ~ .slotgrid .slot[for="as-1"],#as-2:checked ~ .slotgrid .slot[for="as-2"],#as-3:checked ~ .slotgrid .slot[for="as-3"]{background:rgba(198,242,78,.12); border-color:var(--lime);}
+  .afieldtx{height:auto; padding:12px 16px; align-items:stretch;}
+  .afieldtx textarea{width:100%; border:none; background:transparent; outline:none; resize:none; min-height:56px; font-family:'Manrope'; font-size:14px; color:var(--hi);}
+  .afieldtx textarea::placeholder{color:var(--low);}
+  /* gate the Tovább buttons until required inputs are satisfied */
+  [data-screen="consent-decl"]:has(.creq:not(:checked)) .jbtn{opacity:.4; pointer-events:none;}
+  [data-screen="appt-set"]:not(:has(input[name="appt-slot"]:checked)) .jslot{opacity:.4; pointer-events:none;}
+  .okscr{display:flex; flex-direction:column; min-height:100%;}
+  .okwrap{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px 6px;}
+  .okic{width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(198,242,78,.14); border:1px solid rgba(198,242,78,.34); margin-bottom:22px;}
+  .okic i{font-size:44px; color:var(--lime);}
+  .okt{font-family:'Sora'; font-size:26px; font-weight:800; color:var(--hi); margin:0 0 14px; line-height:1.15;}
+  .oks{font-size:13.5px; color:var(--mid); line-height:1.6; max-width:300px; margin:0;}
 </style>
 </head>
 <body>
@@ -880,6 +910,10 @@
   <input class="rt" type="radio" name="nav" id="s-strm1">
   <input class="rt" type="radio" name="nav" id="s-strm2">
   <input class="rt" type="radio" name="nav" id="s-strm3">
+  <input class="rt" type="radio" name="nav" id="s-consent">
+  <input class="rt" type="radio" name="nav" id="s-appt">
+  <input class="rt" type="radio" name="nav" id="s-ordsum">
+  <input class="rt" type="radio" name="nav" id="s-ordok">
   <input class="rt" type="radio" name="nav" id="s-devdet2">
   <input class="rt" type="radio" name="nav" id="s-devdet3">
   <input class="rt" type="radio" name="nav" id="s-devdet4">
@@ -1923,7 +1957,7 @@
       <label class="xopt" for="xb-no"><i class="ti ti-x"></i>Nem kérem</label>
     </div>
 
-    <label class="acont" for="s-offbuy">Tovább</label>
+    <label class="acont" for="s-consent">Tovább</label>
   </div>
 
   <!-- ============= EXTRÁK: extra-svc ============= -->
@@ -1953,7 +1987,7 @@
       <label class="xopt" for="xs-no"><i class="ti ti-x"></i>Nem kérem</label>
     </div>
 
-    <label class="acont" for="s-offsvc">Tovább</label>
+    <label class="acont" for="s-consent">Tovább</label>
   </div>
 
   <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
@@ -4116,6 +4150,127 @@
       <div class="lrow"><span class="sic"><i class="ti ti-refresh"></i></span><span class="n">Csere igénylése</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Hibabejelentés</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
+  </div>
+
+  <!-- ============= INTERNET JOURNEY: HOZZAJARULASOK ============= -->
+  <div class="screen formscr" data-screen="consent-decl" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-extrasvc"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Hozzájárulások</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="formbody">
+      <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Hozzájárulások és<br>nyilatkozatok</h2>
+      <p class="buysub">A megrendelés véglegesítéséhez fogadd el az alábbi kötelező nyilatkozatokat.</p>
+      <label class="consent">
+        <input type="checkbox" class="rt creq">
+        <span class="cschk"><i class="ti ti-check"></i></span>
+        <div class="cstx"><p class="cst">Általános Szerződési Feltételek <span class="csreq">Kötelező</span></p><p class="css">Elfogadom a lakossági Általános Szerződési Feltételeket és a mindenkori Díjszabást.</p></div>
+      </label>
+      <label class="consent">
+        <input type="checkbox" class="rt creq">
+        <span class="cschk"><i class="ti ti-check"></i></span>
+        <div class="cstx"><p class="cst">Egyedi előfizetői szerződés <span class="csreq">Kötelező</span></p><p class="css">Elfogadom az egyedi előfizetői szerződés feltételeit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
+      </label>
+      <label class="consent">
+        <input type="checkbox" class="rt creq">
+        <span class="cschk"><i class="ti ti-check"></i></span>
+        <div class="cstx"><p class="cst">Adatkezelési tájékoztató <span class="csreq">Kötelező</span></p><p class="css">Megismertem az Adatkezelési tájékoztatót, és tudomásul veszem személyes adataim kezelését a szerződés teljesítéséhez.</p></div>
+      </label>
+      <label class="consent">
+        <input type="checkbox" class="rt">
+        <span class="cschk"><i class="ti ti-check"></i></span>
+        <div class="cstx"><p class="cst">Marketing megkeresés <span class="csopt">Opcionális</span></p><p class="css">Hozzájárulok, hogy a Yettel elektronikus úton személyre szabott ajánlatokat és hírlevelet küldjön. Lorem ipsum dolor sit amet.</p></div>
+      </label>
+      <label class="consent">
+        <input type="checkbox" class="rt">
+        <span class="cschk"><i class="ti ti-check"></i></span>
+        <div class="cstx"><p class="cst">Adatátadás partnereknek <span class="csopt">Opcionális</span></p><p class="css">Hozzájárulok adataim marketingcélú átadásához partnervállalatoknak. Sed do eiusmod tempor incididunt ut labore.</p></div>
+      </label>
+    </div>
+    <label class="acont jbtn" for="s-appt">Tovább</label>
+  </div>
+
+  <!-- ============= INTERNET JOURNEY: IDOPONTVALASZTAS ============= -->
+  <div class="screen formscr" data-screen="appt-set" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-consent"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Időpontválasztás</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="formbody">
+      <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Mikor menjen ki a<br>szaktechnikus?</h2>
+      <p class="buysub">A bekötéshez szaktechnikus érkezik a megadott címre. Válaszd ki a napot és az idősávot.</p>
+      <input class="rt" type="radio" name="appt-day" id="ad-1" checked>
+      <input class="rt" type="radio" name="appt-day" id="ad-2">
+      <input class="rt" type="radio" name="appt-day" id="ad-3">
+      <div class="chiprow" style="margin-top:6px;">
+        <label class="chip" for="ad-1">Júl. 28. H</label>
+        <label class="chip" for="ad-2">Júl. 29. K</label>
+        <label class="chip" for="ad-3">Júl. 30. Sze</label>
+      </div>
+      <p class="afl">Idősáv</p>
+      <input class="rt" type="radio" name="appt-slot" id="as-1">
+      <input class="rt" type="radio" name="appt-slot" id="as-2">
+      <input class="rt" type="radio" name="appt-slot" id="as-3">
+      <div class="slotgrid">
+        <label class="slot" for="as-1"><i class="ti ti-clock"></i>08:00 – 12:00</label>
+        <label class="slot" for="as-2"><i class="ti ti-clock"></i>12:00 – 16:00</label>
+        <label class="slot" for="as-3"><i class="ti ti-clock"></i>16:00 – 20:00</label>
+      </div>
+      <p class="afl">Kapcsolattartó neve</p>
+      <div class="afield"><input type="text" placeholder="Add meg a nevet"></div>
+      <p class="afl">Telefonszám</p>
+      <div class="afield"><input type="tel" placeholder="+36 20 000 0000"></div>
+      <p class="afl">Megjegyzés a szaktechnikusnak <span style="color:var(--mid); font-weight:500;">(opcionális)</span></p>
+      <div class="afield afieldtx"><textarea placeholder="Pl. kapucsengő nem működik, hívjon telefonon"></textarea></div>
+    </div>
+    <label class="acont jbtn jslot" for="s-ordsum">Tovább</label>
+  </div>
+
+  <!-- ============= INTERNET JOURNEY: OSSZEFOGLALO ============= -->
+  <div class="screen" data-screen="order-sum" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-appt"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Összefoglaló</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Rendelés áttekintése</h2>
+    <p class="mlab">Megrendelt szolgáltatás</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Csomag</span><span class="v strong">HiperNet L</span></div>
+      <div class="krow"><span class="k">Sávszélesség</span><span class="v">1000 Mbit/s</span></div>
+      <div class="krow"><span class="k">Hűségidő</span><span class="v">12 hónap</span></div>
+      <div class="krow"><span class="k">Gyermekvédelmi szűrő</span><span class="v">Díjmentes</span></div>
+      <div class="krow"><span class="k">Telepítés</span><span class="v">Díjmentes</span></div>
+    </div>
+    <p class="mlab">Fizetendő havidíj</p>
+    <div class="tubal" style="display:block;">
+      <p class="tubl">Havidíj</p>
+      <p class="tubv">7 990 Ft<span style="font-size:14px; font-weight:600; color:var(--mid);"> / hó</span></p>
+      <p class="tube">Az első számla a bekötés után érkezik.</p>
+    </div>
+    <p class="mlab">Kiszállási információk</p>
+    <div class="gcard">
+      <div class="krow"><span class="k">Cím</span><span class="v" style="text-align:right; max-width:60%;">1144 Budapest, Ond vezér útja 13-15.</span></div>
+      <div class="krow"><span class="k">Időpont</span><span class="v strong">2026. 07. 28. · 08:00 – 12:00</span></div>
+      <div class="krow"><span class="k">Kapcsolattartó</span><span class="v">Weinper Gyula</span></div>
+    </div>
+    <p class="mlab">Dokumentumok</p>
+    <div class="gcard">
+      <div class="lrow"><span class="sic ok"><i class="ti ti-file-download"></i></span><span class="n">Előszerződés<small class="ninv">PDF · elkészült</small></span><i class="ti ti-download chev"></i></div>
+    </div>
+    <label class="acont jbtn" for="s-ordok">Megrendelés véglegesítése</label>
+  </div>
+
+  <!-- ============= INTERNET JOURNEY: SIKERES ============= -->
+  <div class="screen okscr" data-screen="order-ok" style="display:none;">
+    <div class="okwrap">
+      <span class="okic"><i class="ti ti-circle-check"></i></span>
+      <h2 class="okt">Köszönjük a<br>megrendelését!</h2>
+      <p class="oks">A szaktechnikus a megadott időpontban — <b>2026. 07. 28. · 08:00 – 12:00</b> — érkezik a bekötéshez a megadott címre. A részleteket e-mailben is elküldtük.</p>
+    </div>
+    <label class="acont jbtn" for="s-home">Vissza a Kezdőlapra</label>
   </div>
 
   <!-- ============= NAV ============= -->
