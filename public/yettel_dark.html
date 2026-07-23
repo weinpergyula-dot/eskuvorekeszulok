@@ -855,12 +855,27 @@
   /* gate the Tovább buttons until required inputs are satisfied */
   [data-screen="consent-decl"]:has(.creq:not(:checked)) .jbtn{opacity:.4; pointer-events:none;}
   [data-screen="appt-set"]:not(:has(input[name="appt-slot"]:checked)) .jslot{opacity:.4; pointer-events:none;}
-  .okscr{display:flex; flex-direction:column; min-height:100%;}
-  .okwrap{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px 6px;}
+  .okscr{padding-bottom:24px;}
+  .okinner{min-height:100%; display:flex; flex-direction:column; justify-content:center; gap:10px;}
+  .okwrap{display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 6px 24px;}
   .okic{width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(198,242,78,.14); border:1px solid rgba(198,242,78,.34); margin-bottom:22px;}
   .okic i{font-size:44px; color:var(--lime);}
   .okt{font-family:'Sora'; font-size:26px; font-weight:800; color:var(--hi); margin:0 0 14px; line-height:1.15;}
   .oks{font-size:13.5px; color:var(--mid); line-height:1.6; max-width:300px; margin:0;}
+  /* appointment calendar */
+  .calwrap{background:var(--glass); border:1px solid var(--stroke); border-radius:18px; padding:14px; margin-top:8px;}
+  .calhead{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+  .calmon{font-family:'Sora'; font-size:14px; font-weight:700; color:var(--hi); text-transform:capitalize;}
+  .calnav{width:32px; height:32px; border-radius:10px; border:1px solid var(--stroke); background:transparent; color:var(--hi); cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .calnav:disabled{opacity:.3; cursor:default;}
+  .caldow{display:grid; grid-template-columns:repeat(7,1fr); gap:2px; margin-bottom:6px;}
+  .caldow span{text-align:center; font-size:10px; font-weight:700; color:var(--mid);}
+  .calgrid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
+  .calday{aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:10px; font-size:13px; font-weight:600; color:var(--hi); cursor:pointer; background:transparent; border:none; font-family:'Manrope';}
+  .calday:disabled{color:var(--low); opacity:.45; cursor:default;}
+  .calday.avail:hover{background:var(--glass2);}
+  .calday.sel{background:var(--lime); color:#0B1330; font-weight:800;}
+  .calday.empty{visibility:hidden; pointer-events:none;}
 </style>
 </head>
 <body>
@@ -4201,19 +4216,16 @@
     <div class="formbody">
       <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Mikor menjen ki a<br>szaktechnikus?</h2>
       <p class="buysub">A bekötéshez szaktechnikus érkezik a megadott címre. Válaszd ki a napot és az idősávot.</p>
-      <input class="rt" type="radio" name="appt-day" id="ad-1" checked>
-      <input class="rt" type="radio" name="appt-day" id="ad-2">
-      <input class="rt" type="radio" name="appt-day" id="ad-3">
-      <div class="chiprow" style="margin-top:6px;">
-        <label class="chip" for="ad-1">Júl. 28. H</label>
-        <label class="chip" for="ad-2">Júl. 29. K</label>
-        <label class="chip" for="ad-3">Júl. 30. Sze</label>
+      <div class="calwrap">
+        <div class="calhead"><button class="calnav" data-cal="prev" type="button"><i class="ti ti-chevron-left"></i></button><span class="calmon" id="calmon"></span><button class="calnav" data-cal="next" type="button"><i class="ti ti-chevron-right"></i></button></div>
+        <div class="caldow"><span>H</span><span>K</span><span>Sze</span><span>Cs</span><span>P</span><span>Szo</span><span>V</span></div>
+        <div class="calgrid" id="calgrid"></div>
       </div>
-      <p class="afl">Idősáv</p>
+      <p class="afl apptslotlbl" style="display:none;">Szabad idősávok</p>
       <input class="rt" type="radio" name="appt-slot" id="as-1">
       <input class="rt" type="radio" name="appt-slot" id="as-2">
       <input class="rt" type="radio" name="appt-slot" id="as-3">
-      <div class="slotgrid">
+      <div class="slotgrid" id="apptslots" style="display:none;">
         <label class="slot" for="as-1"><i class="ti ti-clock"></i>08:00 – 12:00</label>
         <label class="slot" for="as-2"><i class="ti ti-clock"></i>12:00 – 16:00</label>
         <label class="slot" for="as-3"><i class="ti ti-clock"></i>16:00 – 20:00</label>
@@ -4253,7 +4265,7 @@
     <p class="mlab">Kiszállási információk</p>
     <div class="gcard">
       <div class="krow"><span class="k">Cím</span><span class="v" style="text-align:right; max-width:60%;">1144 Budapest, Ond vezér útja 13-15.</span></div>
-      <div class="krow"><span class="k">Időpont</span><span class="v strong">2026. 07. 28. · 08:00 – 12:00</span></div>
+      <div class="krow"><span class="k">Időpont</span><span class="v strong apptwhen">2026. 07. 28. · 08:00 – 12:00</span></div>
       <div class="krow"><span class="k">Kapcsolattartó</span><span class="v">Weinper Gyula</span></div>
     </div>
     <p class="mlab">Dokumentumok</p>
@@ -4265,12 +4277,14 @@
 
   <!-- ============= INTERNET JOURNEY: SIKERES ============= -->
   <div class="screen okscr" data-screen="order-ok" style="display:none;">
+    <div class="okinner">
     <div class="okwrap">
       <span class="okic"><i class="ti ti-circle-check"></i></span>
       <h2 class="okt">Köszönjük a<br>megrendelését!</h2>
-      <p class="oks">A szaktechnikus a megadott időpontban — <b>2026. 07. 28. · 08:00 – 12:00</b> — érkezik a bekötéshez a megadott címre. A részleteket e-mailben is elküldtük.</p>
+      <p class="oks">A szaktechnikus a megadott időpontban — <b class="apptwhenok">2026. 07. 28. · 08:00 – 12:00</b> — érkezik a bekötéshez a megadott címre. A részleteket e-mailben is elküldtük.</p>
     </div>
     <label class="acont jbtn" for="s-home">Vissza a Kezdőlapra</label>
+    </div>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -4405,6 +4419,69 @@
       el.addEventListener("click", function(){ val.textContent = el.getAttribute("data-code"); pop.classList.add("on"); });
     });
     pop.addEventListener("click", function(e){ if(e.target===pop || e.target.closest(".wipb")) pop.classList.remove("on"); });
+  })();
+  /* appointment calendar: future weekdays within one month */
+  (function(){
+    var grid = document.getElementById('calgrid'); if(!grid) return;
+    var monEl = document.getElementById('calmon');
+    var prevBtn = document.querySelector('.calnav[data-cal="prev"]');
+    var nextBtn = document.querySelector('.calnav[data-cal="next"]');
+    var slotLbl = document.querySelector('.apptslotlbl');
+    var slots = document.getElementById('apptslots');
+    var MON = ['január','február','március','április','május','június','július','augusztus','szeptember','október','november','december'];
+    var today = new Date(); today.setHours(0,0,0,0);
+    var maxDate = new Date(today); maxDate.setMonth(maxDate.getMonth()+1);
+    var view = new Date(today.getFullYear(), today.getMonth(), 1);
+    var selected = null;
+    function ym(d){ return d.getFullYear()*12 + d.getMonth(); }
+    function fmt(d){ return d.getFullYear()+'. '+('0'+(d.getMonth()+1)).slice(-2)+'. '+('0'+d.getDate()).slice(-2)+'.'; }
+    function updateSummary(){
+      var slot = document.querySelector('input[name="appt-slot"]:checked');
+      var slotTxt = slot ? document.querySelector('.slot[for="'+slot.id+'"]').textContent.trim() : '';
+      var whenFull = selected ? (fmt(selected) + (slotTxt ? ' · ' + slotTxt : '')) : '';
+      var sumRow = document.querySelector('[data-screen="order-sum"] .apptwhen');
+      if(sumRow && selected) sumRow.textContent = whenFull;
+      var okB = document.querySelector('[data-screen="order-ok"] .apptwhenok');
+      if(okB && selected && slotTxt) okB.textContent = whenFull;
+    }
+    function pick(date, el){
+      selected = date;
+      Array.prototype.slice.call(grid.querySelectorAll('.calday')).forEach(function(x){ x.classList.remove('sel'); });
+      el.classList.add('sel');
+      if(slotLbl) slotLbl.style.display = '';
+      if(slots) slots.style.display = '';
+      Array.prototype.slice.call(document.querySelectorAll('input[name="appt-slot"]')).forEach(function(r){ r.checked = false; });
+      updateSummary();
+    }
+    function render(){
+      monEl.textContent = view.getFullYear() + '. ' + MON[view.getMonth()];
+      grid.innerHTML = '';
+      var first = new Date(view.getFullYear(), view.getMonth(), 1);
+      var startDow = (first.getDay() + 6) % 7;
+      for(var i=0;i<startDow;i++){ var e=document.createElement('div'); e.className='calday empty'; grid.appendChild(e); }
+      var dim = new Date(view.getFullYear(), view.getMonth()+1, 0).getDate();
+      for(var d=1; d<=dim; d++){
+        var date = new Date(view.getFullYear(), view.getMonth(), d);
+        var btn = document.createElement('button'); btn.type='button'; btn.textContent = d;
+        var dow = date.getDay();
+        var avail = date > today && date <= maxDate && dow!==0 && dow!==6;
+        if(!avail){ btn.className='calday'; btn.disabled = true; }
+        else {
+          btn.className='calday avail';
+          (function(dt){ btn.addEventListener('click', function(){ pick(dt, this); }); })(date);
+        }
+        if(selected && date.getTime()===selected.getTime()) btn.classList.add('sel');
+        grid.appendChild(btn);
+      }
+      prevBtn.disabled = ym(view) <= ym(today);
+      nextBtn.disabled = ym(view) >= ym(maxDate);
+    }
+    prevBtn.addEventListener('click', function(){ view.setMonth(view.getMonth()-1); render(); });
+    nextBtn.addEventListener('click', function(){ view.setMonth(view.getMonth()+1); render(); });
+    Array.prototype.slice.call(document.querySelectorAll('input[name="appt-slot"]')).forEach(function(r){
+      r.addEventListener('change', updateSummary);
+    });
+    render();
   })();
   document.addEventListener('click', function(){ closeAll(null); });
 })();
