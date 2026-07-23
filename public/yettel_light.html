@@ -800,6 +800,20 @@
   /* linked contract row (streaming <-> parent service) */
   label.krow{cursor:pointer;}
   .krow .v.link{color:var(--limed);}
+  /* nested streaming under its parent subscription (home) */
+  .substrm{display:flex; align-items:center; gap:10px; margin:-3px 0 11px 22px; padding:10px 13px; border-radius:15px; background:#FFFFFF; border:1px solid var(--line); border-left:2px solid var(--lime3); cursor:pointer; transition:transform .18s;}
+  .substrm:hover{transform:translateX(2px);}
+  .substrm .ssic{width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:rgba(198,242,78,.20); flex-shrink:0;}
+  .substrm .ssic i{font-size:15px; color:var(--limed);}
+  .substrm .ssn{flex:1; font-size:12.5px; font-weight:600; color:var(--hi);}
+  .substrm .chev{font-size:16px; color:var(--mid);}
+  /* activation code popup */
+  .codepop{position:absolute; inset:0; z-index:120; display:none; align-items:center; justify-content:center; padding:30px; background:rgba(20,36,94,.30); backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px);}
+  .codepop.on{display:flex;}
+  .codecard{width:100%; max-width:280px; text-align:center; border-radius:26px; padding:26px 22px 20px; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 30px 60px -28px rgba(20,36,94,.45);}
+  .codeic{width:52px; height:52px; margin:0 auto 14px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(198,242,78,.20); border:1px solid var(--lime3);}
+  .codeic i{font-size:24px; color:var(--limed);}
+  .codebox{margin:4px 0 18px; padding:13px; border-radius:14px; background:var(--page); border:1px dashed var(--line); font-family:monospace; font-size:17px; font-weight:700; letter-spacing:.12em; color:var(--limed);}
 </style>
 </head>
 <body>
@@ -1081,6 +1095,7 @@
           <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
+        <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">RTL Plus</span><i class="ti ti-chevron-right chev"></i></label>
         <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
@@ -1112,26 +1127,8 @@
           <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">TV · TV Prémium</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-      </div>
-    </div>
-    <div class="acc">
-      <div class="acc-head" data-acc><span class="at">Streaming <small>3</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
-      <div class="acc-body">
-        <div class="sub" style="position:relative;"><label class="subcover" for="s-strm1"></label>
-          <div class="itile violet"><i class="ti ti-player-play"></i></div>
-          <div class="meta"><p class="t">HBO Max</p><p class="s">TV Prémium alá</p></div>
-          <i class="ti ti-chevron-right chev"></i>
-        </div>
-        <div class="sub" style="position:relative;"><label class="subcover" for="s-strm2"></label>
-          <div class="itile violet"><i class="ti ti-movie"></i></div>
-          <div class="meta"><p class="t">Netflix</p><p class="s">TV Prémium alá</p></div>
-          <i class="ti ti-chevron-right chev"></i>
-        </div>
-        <div class="sub" style="position:relative;"><label class="subcover" for="s-strm3"></label>
-          <div class="itile violet"><i class="ti ti-music"></i></div>
-          <div class="meta"><p class="t">Spotify Premium</p><p class="s">Prime Plus 2024 alá</p></div>
-          <i class="ti ti-chevron-right chev"></i>
-        </div>
+        <label class="substrm" for="s-strm1"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="substrm" for="s-strm2"><span class="ssic"><i class="ti ti-movie"></i></span><span class="ssn">Netflix</span><i class="ti ti-chevron-right chev"></i></label>
       </div>
     </div>
 
@@ -1139,15 +1136,33 @@
     <div class="sec"><h3>Készülékeim</h3><label for="s-alldev">Összes →</label></div>
 
     <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
-
+    <p class="mlab">Megvásárolt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">Részletfizetés · 12/24 hónap</p></div>
+      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">12/24 hónap · 9 990 Ft / hó</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+      <div class="itile blue"><i class="ti ti-device-watch"></i></div>
+      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">4/12 hónap · 4 490 Ft / hó</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">Kifizetve · 2024. 05. 12.</p></div>
+      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">2024. 05. 12.</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+
+    <p class="mlab">Bérelt készülékek</p>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="t">Wi-Fi router</p><p class="s">Bérelt · Otthoni Net 1000</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+      <div class="itile violet"><i class="ti ti-device-tv"></i></div>
+      <div class="meta"><p class="t">Beltéri egység</p><p class="s">Bérelt · TV Prémium</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
   </div>
@@ -1177,7 +1192,7 @@
 
     <p class="mlab">Streaming</p>
     <div class="gcard">
-      <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-music"></i></span><span class="n">Spotify Premium</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">RTL Plus</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
     <p class="mlab">Elérhető keret</p>
     <div class="gcard keret">
@@ -1412,8 +1427,8 @@
       <i class="ti ti-chevron-right chev"></i>
     </div>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-strm3"></label>
-      <div class="itile violet"><i class="ti ti-music"></i></div>
-      <div class="meta"><p class="t">Spotify Premium</p><p class="s">Prime Plus 2024 alá</p></div>
+      <div class="itile violet"><i class="ti ti-player-play"></i></div>
+      <div class="meta"><p class="t">RTL Plus</p><p class="s">Prime Plus 2024 alá</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
   </div>
@@ -3920,6 +3935,10 @@
       <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
       <div class="krow"><span class="k">Letöltés offline</span><span class="v">Elérhető</span></div>
     </div>
+    <p class="mlab">Aktiválás</p>
+    <div class="gcard">
+      <div class="lrow codelink" data-code="HBOX-4821-9F3K"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
     <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
@@ -3945,6 +3964,10 @@
       <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">4 eszköz</span></div>
       <div class="krow"><span class="k">Letöltés offline</span><span class="v">Elérhető</span></div>
     </div>
+    <p class="mlab">Aktiválás</p>
+    <div class="gcard">
+      <div class="lrow codelink" data-code="NFLX-7A2C-11QD"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
     <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
@@ -3955,20 +3978,24 @@
       <div style="width:42px"></div>
     </div>
     <div class="planbar">
-      <div class="itile violet"><i class="ti ti-music"></i></div>
-      <div class="meta"><p class="s">Streaming</p><p class="t" style="font-size:16px;">Spotify Premium</p></div>
+      <div class="itile violet"><i class="ti ti-player-play"></i></div>
+      <div class="meta"><p class="s">Streaming</p><p class="t" style="font-size:16px;">RTL Plus</p></div>
     </div>
     <p class="mlab">Szerződés</p>
     <div class="gcard">
-      <div class="krow"><span class="k">Havidíj</span><span class="v">1 990 Ft / hó</span></div>
+      <div class="krow"><span class="k">Havidíj</span><span class="v">1 590 Ft / hó</span></div>
       <div class="krow"><span class="k">Aktiválás dátuma</span><span class="v">2026. 05. 10.</span></div>
       <label class="krow krlink" for="s-detail"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">Mobil · Prime Plus 2024</span></label>
     </div>
     <p class="mlab">Csomag adatai</p>
     <div class="gcard">
-      <div class="krow"><span class="k">Felbontás</span><span class="v strong">Lossless</span></div>
-      <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">1 eszköz</span></div>
+      <div class="krow"><span class="k">Felbontás</span><span class="v strong">Full HD</span></div>
+      <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
       <div class="krow"><span class="k">Letöltés offline</span><span class="v">Elérhető</span></div>
+    </div>
+    <p class="mlab">Aktiválás</p>
+    <div class="gcard">
+      <div class="lrow codelink" data-code="RTLP-6620-8B4M"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
     <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
@@ -3982,6 +4009,15 @@
   </div>
 
 
+  <div class="codepop" id="codepop">
+    <div class="codecard">
+      <span class="codeic"><i class="ti ti-key"></i></span>
+      <p class="wipt">Aktiváló kód</p>
+      <p class="wips">Add meg ezt a kódot a szolgáltatás appjában vagy weboldalán az aktiváláshoz.</p>
+      <div class="codebox"><span id="codeval">----</span></div>
+      <button class="wipb" type="button">Bezárás</button>
+    </div>
+  </div>
   <div class="wip" id="wip">
     <div class="wipcard">
       <span class="wipic"><i class="ti ti-tool"></i></span>
@@ -4088,6 +4124,15 @@
     function recalc(){ var t=0; boxes.forEach(function(b){ if(b.checked) t+=parseInt(b.getAttribute("data-pay"),10); }); amt.textContent = fmt(t)+" Ft"; }
     boxes.forEach(function(b){ b.addEventListener("change", recalc); });
   })();
+  /* streaming activation code popup */
+  (function(){
+    var pop = document.getElementById("codepop"); if(!pop) return;
+    var val = document.getElementById("codeval");
+    Array.prototype.slice.call(document.querySelectorAll(".codelink[data-code]")).forEach(function(el){
+      el.addEventListener("click", function(){ val.textContent = el.getAttribute("data-code"); pop.classList.add("on"); });
+    });
+    pop.addEventListener("click", function(e){ if(e.target===pop || e.target.closest(".wipb")) pop.classList.remove("on"); });
+  })();
   document.addEventListener('click', function(){ closeAll(null); });
 })();
 </script>
@@ -4102,7 +4147,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip,.paysel';
+  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
