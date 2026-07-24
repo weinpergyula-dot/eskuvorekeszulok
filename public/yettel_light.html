@@ -609,15 +609,16 @@
   .tfcard:has(.tfbadge) .tfnote{position:absolute; top:13px; right:15px; margin:0; max-width:46%;}
   /* recommendation carousel: one fades out, the next fades in, 3s each */
   .rcar{position:relative; height:172px; margin-top:2px;}
-  .rcar > *{position:absolute; inset:0; margin:0; opacity:0; will-change:opacity, transform, filter; animation:rfade 18s cubic-bezier(.4,0,.2,1) infinite;}
+  .rcar > *{position:absolute; inset:0; margin:0; opacity:0; will-change:opacity, transform, filter; animation:rfade 24s cubic-bezier(.4,0,.2,1) infinite;}
   .rcar > *:nth-child(2){animation-delay:6s;}
   .rcar > *:nth-child(3){animation-delay:12s;}
+  .rcar > *:nth-child(4){animation-delay:18s;}
   @keyframes rfade{
-    0%{opacity:0; transform:scale(1.05); filter:blur(7px);}
-    5.6%{opacity:1; transform:scale(1); filter:blur(0);}
-    33.3%{opacity:1; transform:scale(1); filter:blur(0);}
-    38.9%{opacity:0; transform:scale(.96); filter:blur(7px);}
-    100%{opacity:0; transform:scale(.96); filter:blur(7px);}
+    0%{opacity:0; transform:scale(1.05); filter:blur(7px); pointer-events:none;}
+    5.6%{opacity:1; transform:scale(1); filter:blur(0); pointer-events:auto;}
+    33.3%{opacity:1; transform:scale(1); filter:blur(0); pointer-events:auto;}
+    38.9%{opacity:0; transform:scale(.96); filter:blur(7px); pointer-events:none;}
+    100%{opacity:0; transform:scale(.96); filter:blur(7px); pointer-events:none;}
   }
   /* ---- number dropdown (native details, no JS) ---- */
   .dd{margin-bottom:16px;}
@@ -893,7 +894,18 @@
   .acont.jspin.loading{color:transparent !important; position:relative;}
   .acont.jspin.loading::after{content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(11,19,48,.28); border-top-color:#0B1330; animation:spin .7s linear infinite;}
   .tfcard.jspin.loading .tford{color:transparent; position:relative;}
-  .tfcard.jspin.loading .tford::after{content:''; position:absolute; top:50%; right:8px; width:14px; height:14px; margin-top:-7px; border-radius:50%; border:2px solid rgba(198,242,78,.32); border-top-color:var(--lime); animation:spin .7s linear infinite;}
+  .tfcard.jspin.loading .tford::after{content:''; position:absolute; top:50%; left:50%; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; border:2px solid rgba(11,19,48,.28); border-top-color:#0B1330; animation:spin .7s linear infinite;}
+  /* home: internet offer banner */
+  .promo.inet{background:linear-gradient(135deg,#7FB0FF 0%,#3B6FFF 45%,#14245E 100%); box-shadow:0 22px 45px -16px rgba(59,111,255,.45); display:block; cursor:pointer;}
+  .promo.inet h4{color:#FFFFFF;}
+  .promo.inet p{color:rgba(255,255,255,.88);}
+  .promo.inet .go{position:relative; display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:999px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.3); color:#FFFFFF; font-family:'Manrope'; font-weight:700; font-size:12px;}
+  .promo.inet .pct{color:rgba(255,255,255,.9);}
+  .promo.inet .blob{background:rgba(255,255,255,.12);}
+  /* summary: section heading with an edit link */
+  .mlabrow{display:flex; align-items:center; justify-content:space-between; margin:24px 0 10px;}
+  .mlabrow .mlab{margin:0;}
+  .mlabedit{font-size:12px; font-weight:700; cursor:pointer; color:var(--limed);}
 </style>
 </head>
 <body>
@@ -978,12 +990,19 @@
     <label class="mrow" for="s-alldev"><span class="mic"><i class="ti ti-devices"></i></span><span class="n">Készülékeim</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-billing"><span class="mic"><i class="ti ti-receipt"></i></span><span class="n">Számláim és fizetés</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="mrow"><span class="mic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
-    <p class="mlab2">Szolgáltatások</p>
-    <label class="mrow" for="s-topup1"><span class="mic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></label>
+    <label class="mrow" for="s-notif"><span class="mic"><i class="ti ti-bell"></i></span><span class="n">Értesítések</span><span class="mbadge">2</span></label>
+    <p class="mlab2">Vásárlás</p>
+    <label class="mrow" for="s-addservice" data-tab="ts-otthon"><span class="mic"><i class="ti ti-router"></i></span><span class="n">Otthoni szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
+    <label class="mrow" for="s-addservice" data-tab="ts-mobil"><span class="mic"><i class="ti ti-device-mobile"></i></span><span class="n">Mobil szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
+    <div class="mrow"><span class="mic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></div>
     <label class="mrow" for="s-xdata1"><span class="mic"><i class="ti ti-database"></i></span><span class="n">Extra adatok</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-xmin"><span class="mic"><i class="ti ti-phone-plus"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
-    <div class="mrow"><span class="mic"><i class="ti ti-device-tv"></i></span><span class="n">Extra mediabox</span><i class="ti ti-chevron-right chev"></i></div>
-    <label class="mrow" for="s-notif"><span class="mic"><i class="ti ti-bell"></i></span><span class="n">Értesítések</span><span class="mbadge">2</span></label>
+    <div class="mrow"><span class="mic"><i class="ti ti-device-tv"></i></span><span class="n">Extra médiabox</span><i class="ti ti-chevron-right chev"></i></div>
+    <p class="mlab2">Szolgáltatások</p>
+    <label class="mrow" for="s-topup1"><span class="mic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></label>
+    <div class="mrow"><span class="mic"><i class="ti ti-parking"></i></span><span class="n">Parkolás</span><i class="ti ti-chevron-right chev"></i></div>
+    <div class="mrow"><span class="mic"><i class="ti ti-car"></i></span><span class="n">Autópályamatrica</span><i class="ti ti-chevron-right chev"></i></div>
+    <label class="mrow" for="s-fun"><span class="mic"><i class="ti ti-star"></i></span><span class="n">Élménytér</span><i class="ti ti-chevron-right chev"></i></label>
     <p class="mlab2">Segítség</p>
     <div class="mrow"><span class="mic"><i class="ti ti-headset"></i></span><span class="n">Ügyfélszolgálat</span><i class="ti ti-chevron-right chev"></i></div>
     <div class="mrow"><span class="mic"><i class="ti ti-map-pin"></i></span><span class="n">Üzletkereső</span><i class="ti ti-chevron-right chev"></i></div>
@@ -1147,6 +1166,13 @@
 
     <div class="sec"><h3>Neked ajánljuk</h3></div>
     <div class="rcar">
+      <label class="promo inet" for="s-addrsvc">
+        <div class="blob"></div><div class="blob2"></div>
+        <h4>Otthoni internet szuper áron</h4>
+        <p>Már 6 990 Ft / hó-tól, díjmentes telepítéssel. Nézd meg, elérhető-e a címeden!</p>
+        <span class="go">Címellenőrzés <i class="ti ti-arrow-right" style="font-size:15px"></i></span>
+        <div class="pct">1000<small>Mbit</small></div>
+      </label>
       <div class="promo">
         <div class="blob"></div><div class="blob2"></div>
         <h4>FULL kedvezmények</h4>
@@ -3902,7 +3928,7 @@
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Válaszd ki az<br>internetcsomagod.</h2>
     <p class="buysub">Előbb nézd meg a csomagokat, majd ellenőrizd az elérhetőséget a címeden.</p>
     <p class="offsec">Internet</p>
-    <label class="tfcard jspin" for="s-addrsvc">
+    <label class="tfcard" for="s-addrsvc">
       <span class="tfbadge">30 nap díjmentes</span>
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
@@ -3919,7 +3945,7 @@
         </div>
       </div>
     </label>
-    <label class="tfcard jspin" for="s-addrsvc">
+    <label class="tfcard" for="s-addrsvc">
       <span class="tfbadge">30 nap díjmentes</span>
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
@@ -4256,11 +4282,11 @@
         <label class="slot" for="as-3"><i class="ti ti-clock"></i>16:00 – 20:00</label>
       </div>
       <p class="afl">Kapcsolattartó neve</p>
-      <div class="afield"><input type="text" placeholder="Add meg a nevet"></div>
+      <div class="afield"><input id="apptName" type="text" placeholder="Add meg a nevet"></div>
       <p class="afl">Telefonszám</p>
-      <div class="afield"><input type="tel" placeholder="+36 20 000 0000"></div>
+      <div class="afield"><input id="apptPhone" type="tel" placeholder="+36 20 000 0000"></div>
       <p class="afl">Megjegyzés a szaktechnikusnak <span style="color:var(--mid); font-weight:500;">(opcionális)</span></p>
-      <div class="afield afieldtx"><textarea placeholder="Pl. kapucsengő nem működik, hívjon telefonon"></textarea></div>
+      <div class="afield afieldtx"><textarea id="apptNote" placeholder="Pl. kapucsengő nem működik, hívjon telefonon"></textarea></div>
     </div>
     <label class="acont jbtn jslot jspin" for="s-ordsum">Tovább</label>
   </div>
@@ -4288,11 +4314,13 @@
       <p class="tubv"><span class="sumprice">7 990 Ft</span><span style="font-size:14px; font-weight:600; color:var(--mid);"> / hó</span></p>
       <p class="tube">Az első számla a bekötés után érkezik.</p>
     </div>
-    <p class="mlab">Kiszállási információk</p>
+    <div class="mlabrow"><p class="mlab">Kiszállási információk</p><label class="mlabedit" for="s-appt">Módosítom</label></div>
     <div class="gcard">
       <div class="krow"><span class="k">Cím</span><span class="v" style="text-align:right; max-width:60%;">1144 Budapest, Ond vezér útja 13-15.</span></div>
       <div class="krow"><span class="k">Időpont</span><span class="v strong apptwhen">2026. 07. 28. · 08:00 – 12:00</span></div>
-      <div class="krow"><span class="k">Kapcsolattartó</span><span class="v">Weinper Gyula</span></div>
+      <div class="krow"><span class="k">Kapcsolattartó</span><span class="v apptname">Weinper Gyula</span></div>
+      <div class="krow"><span class="k">Telefonszám</span><span class="v apptphone">Nincs megadva</span></div>
+      <div class="krow"><span class="k">Megjegyzés</span><span class="v apptnote" style="text-align:right; max-width:58%;">Nincs megadva</span></div>
     </div>
     <p class="mlab">Dokumentumok</p>
     <div class="gcard">
@@ -4659,6 +4687,26 @@
         if((e=document.querySelector('.sumpkg'))) e.textContent = pkg;
         if((e=document.querySelector('.sumbw'))) e.textContent = bw;
         if((e=document.querySelector('.sumprice'))) e.textContent = price;
+      });
+    });
+  })();
+  /* carry the appointment details into the summary */
+  (function(){
+    var btn = document.querySelector('label.jslot[for="s-ordsum"]'); if(!btn) return;
+    function val(id, fallback){ var e = document.getElementById(id); var v = e ? e.value.trim() : ''; return v || fallback; }
+    btn.addEventListener('click', function(){
+      var e;
+      if((e=document.querySelector('.apptname')))  e.textContent = val('apptName', 'Weinper Gyula');
+      if((e=document.querySelector('.apptphone'))) e.textContent = val('apptPhone', 'Nincs megadva');
+      if((e=document.querySelector('.apptnote')))  e.textContent = val('apptNote', 'Nincs megadva');
+    });
+  })();
+  /* menu: purchase entries preselect the right tab */
+  (function(){
+    Array.prototype.slice.call(document.querySelectorAll('.mrow[data-tab]')).forEach(function(el){
+      el.addEventListener('click', function(){
+        var t = document.getElementById(el.getAttribute('data-tab'));
+        if(t) t.checked = true;
       });
     });
   })();
