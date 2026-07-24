@@ -303,6 +303,7 @@
   #s-load1:checked ~ [data-screen="load-1"],
   #s-addrdata:checked ~ [data-screen="address-data"],
   #s-load2:checked ~ [data-screen="load-2"],
+  #s-loadavail:checked ~ [data-screen="load-avail"],
   #s-consent:checked ~ [data-screen="consent-decl"],
   #s-appt:checked ~ [data-screen="appt-set"],
   #s-ordsum:checked ~ [data-screen="order-sum"],
@@ -376,6 +377,8 @@
   .xopt i{font-size:17px;}
   #xb-yes:checked ~ .xchoice .xopt[for="xb-yes"],#xs-yes:checked ~ .xchoice .xopt[for="xs-yes"],
   #xb-no:checked ~ .xchoice .xopt[for="xb-no"],#xs-no:checked ~ .xchoice .xopt[for="xs-no"]{background:rgba(198,242,78,.12); border-color:var(--lime); color:var(--hi);}
+  #idt-1:checked ~ .xchoice .xopt[for="idt-1"],#idt-2:checked ~ .xchoice .xopt[for="idt-2"],#idt-3:checked ~ .xchoice .xopt[for="idt-3"]{background:rgba(198,242,78,.12); border-color:var(--lime); color:var(--hi);}
+  .idchoice .xopt{flex-direction:column; gap:5px; font-size:11.5px; padding:12px 4px; text-align:center;}
   .tabs{display:flex; gap:6px; margin:2px 0 18px; padding:4px; border-radius:15px; background:var(--glass); border:1px solid var(--stroke);}
   .tab{flex:1; text-align:center; padding:10px 6px; border-radius:11px; font-size:11.5px; font-weight:600; color:var(--mid); cursor:pointer; white-space:nowrap; transition:background .18s, color .18s;}
   .tabpane{display:none;}
@@ -896,6 +899,14 @@
   .okpop{animation:okpop .45s cubic-bezier(.2,1.3,.5,1) both;}
   @keyframes okpop{0%{transform:scale(0); opacity:0;} 60%{transform:scale(1.15);} 100%{transform:scale(1); opacity:1;}}
   .loadok .okic{margin-bottom:20px;}
+  /* summary: hide the guard row when the child filter is declined */
+  body:has(#xs-no:checked) .gvrow{display:none;}
+  /* CTA button spinner (1.2s) */
+  .jspin.loading{pointer-events:none;}
+  .acont.jspin.loading{color:transparent !important; position:relative;}
+  .acont.jspin.loading::after{content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(11,19,48,.28); border-top-color:#0B1330; animation:spin .7s linear infinite;}
+  .tfcard.jspin.loading .tford{color:transparent; position:relative;}
+  .tfcard.jspin.loading .tford::after{content:''; position:absolute; top:50%; right:8px; width:14px; height:14px; margin-top:-7px; border-radius:50%; border:2px solid rgba(198,242,78,.32); border-top-color:var(--lime); animation:spin .7s linear infinite;}
 </style>
 </head>
 <body>
@@ -953,6 +964,7 @@
   <input class="rt" type="radio" name="nav" id="s-load1">
   <input class="rt" type="radio" name="nav" id="s-addrdata">
   <input class="rt" type="radio" name="nav" id="s-load2">
+  <input class="rt" type="radio" name="nav" id="s-loadavail">
   <input class="rt" type="radio" name="nav" id="s-devdet2">
   <input class="rt" type="radio" name="nav" id="s-devdet3">
   <input class="rt" type="radio" name="nav" id="s-devdet4">
@@ -1693,7 +1705,7 @@
       <div class="afield"><input type="text" placeholder="6"></div>
       <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
     </div>
-    <label class="acont" for="s-offsvc">Tovább</label>
+    <label class="acont jbtn" for="s-loadavail">Tovább</label>
   </div>
 
   <!-- ============= ÉRTESÍTÉSEK ============= -->
@@ -1996,7 +2008,7 @@
       <label class="xopt" for="xb-no"><i class="ti ti-x"></i>Nem kérem</label>
     </div>
 
-    <label class="acont" for="s-persdata">Tovább</label>
+    <label class="acont jspin" for="s-persdata">Tovább</label>
   </div>
 
   <!-- ============= EXTRÁK: extra-svc ============= -->
@@ -2026,7 +2038,7 @@
       <label class="xopt" for="xs-no"><i class="ti ti-x"></i>Nem kérem</label>
     </div>
 
-    <label class="acont" for="s-persdata">Tovább</label>
+    <label class="acont jspin" for="s-persdata">Tovább</label>
   </div>
 
   <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
@@ -2636,7 +2648,7 @@
       <label class="offchg" for="s-addrsvc">Másik címet adok meg.</label>
     </div>
     <p class="offsec">Internet</p>
-    <label class="tfcard" for="s-extrasvc">
+    <label class="tfcard jpkg jspin" for="s-extrasvc" data-pkg="HiperNet L" data-bw="1000 Mbit/s" data-price="7 990 Ft">
       <span class="tfbadge">30 nap díjmentes</span>
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
@@ -2653,7 +2665,7 @@
         </div>
       </div>
     </label>
-    <label class="tfcard" for="s-extrasvc">
+    <label class="tfcard jpkg jspin" for="s-extrasvc" data-pkg="HiperNet M" data-bw="500 Mbit/s" data-price="6 990 Ft">
       <span class="tfbadge">30 nap díjmentes</span>
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
@@ -3903,7 +3915,7 @@
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Válaszd ki az<br>internetcsomagod.</h2>
     <p class="buysub">Előbb nézd meg a csomagokat, majd ellenőrizd az elérhetőséget a címeden.</p>
     <p class="offsec">Internet</p>
-    <label class="tfcard" for="s-addrsvc">
+    <label class="tfcard jspin" for="s-addrsvc">
       <span class="tfbadge">30 nap díjmentes</span>
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
@@ -3920,7 +3932,7 @@
         </div>
       </div>
     </label>
-    <label class="tfcard" for="s-addrsvc">
+    <label class="tfcard jspin" for="s-addrsvc">
       <span class="tfbadge">30 nap díjmentes</span>
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
@@ -4228,7 +4240,7 @@
         <div class="cstx"><p class="cst">Adatátadás partnereknek <span class="csopt">Opcionális</span></p><p class="css">Hozzájárulok adataim marketingcélú átadásához partnervállalatoknak. Sed do eiusmod tempor incididunt ut labore.</p></div>
       </label>
     </div>
-    <label class="acont jbtn" for="s-appt">Tovább</label>
+    <label class="acont jbtn jspin" for="s-appt">Tovább</label>
   </div>
 
   <!-- ============= INTERNET JOURNEY: IDOPONTVALASZTAS ============= -->
@@ -4263,7 +4275,7 @@
       <p class="afl">Megjegyzés a szaktechnikusnak <span style="color:var(--mid); font-weight:500;">(opcionális)</span></p>
       <div class="afield afieldtx"><textarea placeholder="Pl. kapucsengő nem működik, hívjon telefonon"></textarea></div>
     </div>
-    <label class="acont jbtn jslot" for="s-ordsum">Tovább</label>
+    <label class="acont jbtn jslot jspin" for="s-ordsum">Tovább</label>
   </div>
 
   <!-- ============= INTERNET JOURNEY: OSSZEFOGLALO ============= -->
@@ -4277,16 +4289,16 @@
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Rendelés áttekintése</h2>
     <p class="mlab">Megrendelt szolgáltatás</p>
     <div class="gcard">
-      <div class="krow"><span class="k">Csomag</span><span class="v strong">HiperNet L</span></div>
-      <div class="krow"><span class="k">Sávszélesség</span><span class="v">1000 Mbit/s</span></div>
+      <div class="krow"><span class="k">Csomag</span><span class="v strong sumpkg">HiperNet L</span></div>
+      <div class="krow"><span class="k">Sávszélesség</span><span class="v sumbw">1000 Mbit/s</span></div>
       <div class="krow"><span class="k">Hűségidő</span><span class="v">12 hónap</span></div>
-      <div class="krow"><span class="k">Gyermekvédelmi szűrő</span><span class="v">Díjmentes</span></div>
+      <div class="krow gvrow"><span class="k">Gyermekvédelmi szűrő</span><span class="v">Díjmentes</span></div>
       <div class="krow"><span class="k">Telepítés</span><span class="v">Díjmentes</span></div>
     </div>
     <p class="mlab">Fizetendő havidíj</p>
     <div class="tubal" style="display:block;">
       <p class="tubl">Havidíj</p>
-      <p class="tubv">7 990 Ft<span style="font-size:14px; font-weight:600; color:var(--mid);"> / hó</span></p>
+      <p class="tubv"><span class="sumprice">7 990 Ft</span><span style="font-size:14px; font-weight:600; color:var(--mid);"> / hó</span></p>
       <p class="tube">Az első számla a bekötés után érkezik.</p>
     </div>
     <p class="mlab">Kiszállási információk</p>
@@ -4299,7 +4311,7 @@
     <div class="gcard">
       <div class="lrow"><span class="sic ok"><i class="ti ti-file-download"></i></span><span class="n">Előszerződés<small class="ninv">PDF · elkészült</small></span><i class="ti ti-download chev"></i></div>
     </div>
-    <label class="acont jbtn" for="s-ordok">Megrendelés véglegesítése</label>
+    <label class="acont jbtn jspin" for="s-ordok">Megrendelés véglegesítése</label>
   </div>
 
   <!-- ============= INTERNET JOURNEY: SIKERES ============= -->
@@ -4328,9 +4340,11 @@
       <p class="afl">Igazolvány típusa</p>
       <input class="rt" type="radio" name="idtype" id="idt-1" checked>
       <input class="rt" type="radio" name="idtype" id="idt-2">
-      <div class="xchoice">
-        <label class="xopt" for="idt-1"><i class="ti ti-id"></i>Személyi igazolvány</label>
-        <label class="xopt" for="idt-2"><i class="ti ti-book"></i>Útlevél</label>
+      <input class="rt" type="radio" name="idtype" id="idt-3">
+      <div class="xchoice idchoice">
+        <label class="xopt" for="idt-1"><i class="ti ti-id"></i>Személyi</label>
+        <label class="xopt" for="idt-2"><i class="ti ti-car"></i>Jogosítvány</label>
+        <label class="xopt" for="idt-3"><i class="ti ti-book"></i>Útlevél</label>
       </div>
       <p class="afl">Okmány száma</p>
       <div class="afield"><input type="text" placeholder="pl. 123456AB"></div>
@@ -4394,6 +4408,14 @@
     <div class="loadinner">
       <div class="loadspin" id="loadspin2"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet. Kérjük, ne zárd be az ablakot.</p></div>
       <div class="loadok" id="loadok2" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres ellenőrzés!</p></div>
+    </div>
+  </div>
+
+  <!-- ============= JOURNEY: ELERHETOSEG ELLENORZESE ============= -->
+  <div class="screen loadscr" data-screen="load-avail" style="display:none;">
+    <div class="loadinner">
+      <div class="loadspin" id="loadspinA"><div class="spinner"></div><p class="loadt">Elérhetőség ellenőrzése…</p><p class="loads">Megnézzük, elérhető-e a kért szolgáltatás a megadott címen.</p></div>
+      <div class="loadok" id="loadokA" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Elérhető a címeden!</p></div>
     </div>
   </div>
 
@@ -4611,6 +4633,47 @@
     }
     runLoad('s-load1', 'loadspin1', 'loadok1', 's-addrdata');
     runLoad('s-load2', 'loadspin2', 'loadok2', 's-consent');
+  })();
+  /* internet journey: 1.2s spinner on plain navigation CTAs */
+  (function(){
+    Array.prototype.slice.call(document.querySelectorAll('.jspin')).forEach(function(el){
+      el.addEventListener('click', function(e){
+        if(el.classList.contains('loading')) return;
+        e.preventDefault();
+        el.classList.add('loading');
+        var target = el.getAttribute('for');
+        setTimeout(function(){
+          el.classList.remove('loading');
+          var r = document.getElementById(target); if(r) r.checked = true;
+        }, 1200);
+      });
+    });
+  })();
+  /* availability check loader */
+  (function(){
+    var btn = document.querySelector('label.jbtn[for="s-loadavail"]');
+    var spin = document.getElementById('loadspinA'), ok = document.getElementById('loadokA');
+    if(!btn || !spin || !ok) return;
+    btn.addEventListener('click', function(){
+      spin.style.display = 'flex'; ok.style.display = 'none';
+      setTimeout(function(){
+        spin.style.display = 'none'; ok.style.display = 'flex';
+        var ic = ok.querySelector('.okpop'); if(ic){ ic.style.animation='none'; void ic.offsetWidth; ic.style.animation=''; }
+        setTimeout(function(){ var r = document.getElementById('s-offsvc'); if(r) r.checked = true; }, 2000);
+      }, 5000);
+    });
+  })();
+  /* remember the chosen package for the summary */
+  (function(){
+    Array.prototype.slice.call(document.querySelectorAll('.jpkg')).forEach(function(card){
+      card.addEventListener('click', function(){
+        var pkg = card.getAttribute('data-pkg'), bw = card.getAttribute('data-bw'), price = card.getAttribute('data-price');
+        var e;
+        if((e=document.querySelector('.sumpkg'))) e.textContent = pkg;
+        if((e=document.querySelector('.sumbw'))) e.textContent = bw;
+        if((e=document.querySelector('.sumprice'))) e.textContent = price;
+      });
+    });
   })();
   document.addEventListener('click', function(){ closeAll(null); });
 })();
