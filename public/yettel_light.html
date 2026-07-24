@@ -287,6 +287,10 @@
   #s-devdet3:checked ~ [data-screen="devdet-3"],
   #s-devdet4:checked ~ [data-screen="devdet-4"],
   #s-devdet5:checked ~ [data-screen="devdet-5"],
+  #s-persdata:checked ~ [data-screen="personal-data"],
+  #s-load1:checked ~ [data-screen="load-1"],
+  #s-addrdata:checked ~ [data-screen="address-data"],
+  #s-load2:checked ~ [data-screen="load-2"],
   #s-consent:checked ~ [data-screen="consent-decl"],
   #s-appt:checked ~ [data-screen="appt-set"],
   #s-ordsum:checked ~ [data-screen="order-sum"],
@@ -863,6 +867,22 @@
   .calday.avail:hover{background:var(--page);}
   .calday.sel{background:var(--lime3); color:#0B1330; font-weight:800;}
   .calday.empty{visibility:hidden; pointer-events:none;}
+  /* KYC info box */
+  .infobox{display:flex; gap:11px; align-items:flex-start; padding:13px 14px; border-radius:14px; margin:14px 0 4px; background:rgba(20,36,94,.05); border:1px solid rgba(20,36,94,.12);}
+  .infobox .ibic{flex-shrink:0; margin-top:1px;}
+  .infobox .ibic i{font-size:18px; color:var(--navy);}
+  .infobox p{font-size:11.5px; line-height:1.55; color:var(--mid); margin:0;}
+  /* loading screen */
+  .loadscr{display:flex;}
+  .loadinner{min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; width:100%;}
+  .loadspin, .loadok{display:flex; flex-direction:column; align-items:center;}
+  .spinner{width:64px; height:64px; border-radius:50%; border:3px solid var(--line); border-top-color:var(--lime3); animation:spin .9s linear infinite; margin-bottom:22px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loadt{font-family:'Sora'; font-size:17px; font-weight:800; color:var(--hi); margin:0 0 8px;}
+  .loads{font-size:12.5px; color:var(--mid); line-height:1.55; max-width:280px; margin:0;}
+  .okpop{animation:okpop .45s cubic-bezier(.2,1.3,.5,1) both;}
+  @keyframes okpop{0%{transform:scale(0); opacity:0;} 60%{transform:scale(1.15);} 100%{transform:scale(1); opacity:1;}}
+  .loadok .okic{margin-bottom:20px;}
 </style>
 </head>
 <body>
@@ -916,6 +936,10 @@
   <input class="rt" type="radio" name="nav" id="s-appt">
   <input class="rt" type="radio" name="nav" id="s-ordsum">
   <input class="rt" type="radio" name="nav" id="s-ordok">
+  <input class="rt" type="radio" name="nav" id="s-persdata">
+  <input class="rt" type="radio" name="nav" id="s-load1">
+  <input class="rt" type="radio" name="nav" id="s-addrdata">
+  <input class="rt" type="radio" name="nav" id="s-load2">
   <input class="rt" type="radio" name="nav" id="s-devdet2">
   <input class="rt" type="radio" name="nav" id="s-devdet3">
   <input class="rt" type="radio" name="nav" id="s-devdet4">
@@ -1939,7 +1963,7 @@
       <span class="title">Extrák</span>
       <div style="width:42px"></div>
     </div>
-    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
+    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
     <h2 class="buyhead">Extrák választása</h2>
     <p class="buysub">Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé.</p>
 
@@ -1959,7 +1983,7 @@
       <label class="xopt" for="xb-no"><i class="ti ti-x"></i>Nem kérem</label>
     </div>
 
-    <label class="acont" for="s-consent">Tovább</label>
+    <label class="acont" for="s-persdata">Tovább</label>
   </div>
 
   <!-- ============= EXTRÁK: extra-svc ============= -->
@@ -1969,7 +1993,7 @@
       <span class="title">Extrák</span>
       <div style="width:42px"></div>
     </div>
-    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
+    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
     <h2 class="buyhead">Extrák választása</h2>
     <p class="buysub">Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé.</p>
 
@@ -1989,7 +2013,7 @@
       <label class="xopt" for="xs-no"><i class="ti ti-x"></i>Nem kérem</label>
     </div>
 
-    <label class="acont" for="s-consent">Tovább</label>
+    <label class="acont" for="s-persdata">Tovább</label>
   </div>
 
   <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
@@ -4157,10 +4181,11 @@
   <!-- ============= INTERNET JOURNEY: HOZZAJARULASOK ============= -->
   <div class="screen formscr" data-screen="consent-decl" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-extrasvc"><i class="ti ti-arrow-left"></i></label>
+      <label class="icon-btn" for="s-addrdata"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Hozzájárulások</span>
       <div style="width:42px"></div>
     </div>
+    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span></div>
     <div class="formbody">
       <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Hozzájárulások és<br>nyilatkozatok</h2>
       <p class="buysub">A megrendelés véglegesítéséhez fogadd el az alábbi kötelező nyilatkozatokat.</p>
@@ -4200,6 +4225,7 @@
       <span class="title">Időpontválasztás</span>
       <div style="width:42px"></div>
     </div>
+    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span></div>
     <div class="formbody">
       <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Mikor menjen ki a<br>szaktechnikus?</h2>
       <p class="buysub">A bekötéshez szaktechnikus érkezik a megadott címre. Válaszd ki a napot és az idősávot.</p>
@@ -4234,6 +4260,7 @@
       <span class="title">Összefoglaló</span>
       <div style="width:42px"></div>
     </div>
+    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp on"></span></div>
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Rendelés áttekintése</h2>
     <p class="mlab">Megrendelt szolgáltatás</p>
     <div class="gcard">
@@ -4271,6 +4298,89 @@
       <p class="oks">A szaktechnikus a megadott időpontban — <b class="apptwhenok">2026. 07. 28. · 08:00 – 12:00</b> — érkezik a bekötéshez a megadott címre. A részleteket e-mailben is elküldtük.</p>
     </div>
     <label class="acont jbtn" for="s-home">Vissza a Kezdőlapra</label>
+    </div>
+  </div>
+
+  <!-- ============= INTERNET JOURNEY: SZEMELYES ADATOK ============= -->
+  <div class="screen formscr" data-screen="personal-data" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-extrasvc"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Személyes adatok</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="stepper"><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
+    <div class="formbody">
+      <h2 class="buyhead" style="font-size:22px; margin-top:8px;">Személyes adatok</h2>
+      <div class="infobox"><span class="ibic"><i class="ti ti-shield-lock"></i></span><p>Az adatok hitelességét ellenőrizzük, ami néha hosszabb időt is igénybe vehet. Kérjük, pontosan úgy töltsd ki, ahogyan a hivatalos dokumentumodban szerepel.</p></div>
+      <p class="afl">Igazolvány típusa</p>
+      <input class="rt" type="radio" name="idtype" id="idt-1" checked>
+      <input class="rt" type="radio" name="idtype" id="idt-2">
+      <div class="xchoice">
+        <label class="xopt" for="idt-1"><i class="ti ti-id"></i>Személyi igazolvány</label>
+        <label class="xopt" for="idt-2"><i class="ti ti-book"></i>Útlevél</label>
+      </div>
+      <p class="afl">Okmány száma</p>
+      <div class="afield"><input type="text" placeholder="pl. 123456AB"></div>
+      <p class="afl">Név előtag</p>
+      <div class="afield"><input type="text" placeholder="pl. Dr. (nem kötelező)"></div>
+      <p class="afl">Vezetéknév</p>
+      <div class="afield"><input type="text" placeholder="Ahogy az okmányban szerepel"></div>
+      <p class="afl">Keresztnév</p>
+      <div class="afield"><input type="text" placeholder="Ahogy az okmányban szerepel"></div>
+      <p class="afl">Születési név</p>
+      <div class="afield"><input type="text" placeholder="Ha eltér, add meg"></div>
+      <p class="afl">Anyja neve</p>
+      <div class="afield"><input type="text" placeholder="Anyja születési neve"></div>
+      <p class="afl">Születési hely</p>
+      <div class="afield"><input type="text" placeholder="Város"></div>
+      <p class="afl">Születési idő</p>
+      <div class="afield"><input type="text" placeholder="ÉÉÉÉ. HH. NN."></div>
+    </div>
+    <label class="acont jbtn" for="s-load1">Adatok ellenőrzése</label>
+  </div>
+
+  <!-- ============= JOURNEY: ELLENORZES (1) ============= -->
+  <div class="screen loadscr" data-screen="load-1" style="display:none;">
+    <div class="loadinner">
+      <div class="loadspin" id="loadspin1"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet. Kérjük, ne zárd be az ablakot.</p></div>
+      <div class="loadok" id="loadok1" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres ellenőrzés!</p></div>
+    </div>
+  </div>
+
+  <!-- ============= INTERNET JOURNEY: LAKCIM ADATOK ============= -->
+  <div class="screen formscr" data-screen="address-data" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-persdata"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Lakcím adatok</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
+    <div class="formbody">
+      <h2 class="buyhead" style="font-size:22px; margin-top:8px;">Lakcím adatok</h2>
+      <div class="infobox"><span class="ibic"><i class="ti ti-home-check"></i></span><p>Az adatok hitelességét ellenőrizzük, ami néha hosszabb időt is igénybe vehet. Kérjük, pontosan úgy töltsd ki, <b>ahogyan a lakcímkártyádon szerepel</b>.</p></div>
+      <p class="afl">Irányítószám</p>
+      <div class="afield"><input type="text" placeholder="pl. 1144"></div>
+      <p class="afl">Település neve</p>
+      <div class="afield"><input type="text" placeholder="pl. Budapest"></div>
+      <p class="afl">Közterület neve</p>
+      <div class="afield"><input type="text" placeholder="pl. Ond vezér"></div>
+      <p class="afl">Közterület típusa</p>
+      <div class="afield"><input type="text" placeholder="pl. útja, utca, tér"></div>
+      <p class="afl">Házszám</p>
+      <div class="afield"><input type="text" placeholder="pl. 13-15."></div>
+      <p class="afl">Emelet</p>
+      <div class="afield"><input type="text" placeholder="pl. 1. (nem kötelező)"></div>
+      <p class="afl">Ajtó</p>
+      <div class="afield"><input type="text" placeholder="pl. 12. (nem kötelező)"></div>
+    </div>
+    <label class="acont jbtn" for="s-load2">Adatok ellenőrzése</label>
+  </div>
+
+  <!-- ============= JOURNEY: ELLENORZES (2) ============= -->
+  <div class="screen loadscr" data-screen="load-2" style="display:none;">
+    <div class="loadinner">
+      <div class="loadspin" id="loadspin2"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet. Kérjük, ne zárd be az ablakot.</p></div>
+      <div class="loadok" id="loadok2" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres ellenőrzés!</p></div>
     </div>
   </div>
 
@@ -4469,6 +4579,25 @@
       r.addEventListener('change', updateSummary);
     });
     render();
+  })();
+  /* KYC verification loading: 5s spinner, 2s success tick, then advance */
+  (function(){
+    function runLoad(btnId, spinId, okId, nextRadioId){
+      var btn = document.querySelector('label.jbtn[for="'+btnId+'"]');
+      var spin = document.getElementById(spinId), ok = document.getElementById(okId);
+      if(!btn || !spin || !ok) return;
+      btn.addEventListener('click', function(){
+        spin.style.display = 'flex'; ok.style.display = 'none';
+        setTimeout(function(){
+          spin.style.display = 'none'; ok.style.display = 'flex';
+          var icon = ok.querySelector('.okpop');
+          if(icon){ icon.style.animation = 'none'; void icon.offsetWidth; icon.style.animation = ''; }
+          setTimeout(function(){ var r = document.getElementById(nextRadioId); if(r) r.checked = true; }, 2000);
+        }, 5000);
+      });
+    }
+    runLoad('s-load1', 'loadspin1', 'loadok1', 's-addrdata');
+    runLoad('s-load2', 'loadspin2', 'loadok2', 's-consent');
   })();
   document.addEventListener('click', function(){ closeAll(null); });
 })();
