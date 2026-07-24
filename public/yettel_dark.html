@@ -622,10 +622,10 @@
   .tfcard:has(.tfbadge) .tfnote{position:absolute; top:13px; right:15px; margin:0; max-width:46%;}
   /* recommendation carousel: one fades out, the next fades in, 3s each */
   .rcar{position:relative; height:172px; margin-top:2px;}
-  .rcar > *{position:absolute; inset:0; margin:0; opacity:0; will-change:opacity, transform, filter; animation:rfade 24s cubic-bezier(.4,0,.2,1) infinite;}
+  .rcar > *{position:absolute; inset:0; margin:0; opacity:0; will-change:opacity, transform, filter; animation:rfade 18s cubic-bezier(.4,0,.2,1) infinite;}
   .rcar > *:nth-child(2){animation-delay:6s;}
   .rcar > *:nth-child(3){animation-delay:12s;}
-  .rcar > *:nth-child(4){animation-delay:18s;}
+
   @keyframes rfade{
     0%{opacity:0; transform:scale(1.05); filter:blur(7px); pointer-events:none;}
     5.6%{opacity:1; transform:scale(1); filter:blur(0); pointer-events:auto;}
@@ -909,7 +909,7 @@
   .tfcard.jspin.loading .tford{color:transparent; position:relative;}
   .tfcard.jspin.loading .tford::after{content:''; position:absolute; top:50%; left:50%; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; border:2px solid rgba(11,19,48,.28); border-top-color:#0B1330; animation:spin .7s linear infinite;}
   /* home: internet offer banner */
-  .promo.inet{background:linear-gradient(135deg,#6CA0FF 0%,#3B6FFF 45%,#1A3A8F 100%); box-shadow:0 22px 45px -16px rgba(59,111,255,.6); display:block; cursor:pointer;}
+  .promo.inet{margin:16px 0 8px; background:linear-gradient(135deg,#6CA0FF 0%,#3B6FFF 45%,#1A3A8F 100%); box-shadow:0 22px 45px -16px rgba(59,111,255,.6); display:block; cursor:pointer;}
   .promo.inet h4{color:#FFFFFF;}
   .promo.inet p{color:rgba(255,255,255,.86);}
   .promo.inet .go{position:relative; display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:999px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.3); color:#FFFFFF; font-family:'Manrope'; font-weight:700; font-size:12px;}
@@ -1178,15 +1178,15 @@
     </div>
     <div class="hdots"><span class="on"></span><span></span><span></span><span></span></div>
 
+    <label class="promo inet" for="s-addrsvc">
+      <div class="blob"></div><div class="blob2"></div>
+      <h4>Otthoni internet szuper áron</h4>
+      <p>Már 6 990 Ft / hó-tól, díjmentes telepítéssel. Nézd meg, elérhető-e a címeden!</p>
+      <span class="go">Címellenőrzés <i class="ti ti-arrow-right" style="font-size:15px"></i></span>
+      <div class="pct">1000<small>Mbit</small></div>
+    </label>
     <div class="sec"><h3>Neked ajánljuk</h3></div>
     <div class="rcar">
-      <label class="promo inet" for="s-addrsvc">
-        <div class="blob"></div><div class="blob2"></div>
-        <h4>Otthoni internet szuper áron</h4>
-        <p>Már 6 990 Ft / hó-tól, díjmentes telepítéssel. Nézd meg, elérhető-e a címeden!</p>
-        <span class="go">Címellenőrzés <i class="ti ti-arrow-right" style="font-size:15px"></i></span>
-        <div class="pct">1000<small>Mbit</small></div>
-      </label>
       <div class="promo">
         <div class="blob"></div><div class="blob2"></div>
         <h4>FULL kedvezmények</h4>
