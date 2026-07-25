@@ -920,6 +920,10 @@
   .mlabrow{display:flex; align-items:center; justify-content:space-between; margin:24px 0 10px;}
   .mlabrow .mlab{margin:0;}
   .mlabedit{font-size:12px; font-weight:700; cursor:pointer; color:var(--lime);}
+  /* outer (section) accordions on the home screen */
+  .accouter{margin-top:8px;}
+  .accouter > .accotop{padding:6px 2px 14px;}
+  .accotop .at{font-family:'Sora'; font-size:17px; font-weight:700; letter-spacing:-.01em;}
 </style>
 </head>
 <body>
@@ -1216,8 +1220,9 @@
       </div>
     </div>
 
-    <div class="sec"><h3>Előfizetéseim</h3><label for="s-allsubs">Összes →</label></div>
-
+    <div class="acc accouter">
+      <div class="acc-head accotop" data-acc><span class="at">Előfizetéseim</span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-body">
     <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
     <div class="acc">
@@ -1266,8 +1271,12 @@
     </div>
 
 
-    <div class="sec"><h3>Készülékeim</h3><label for="s-alldev">Összes →</label></div>
+      </div>
+    </div>
 
+    <div class="acc accouter">
+      <div class="acc-head accotop" data-acc><span class="at">Készülékeim</span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-body">
     <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
     <p class="mlab">Megvásárolt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
@@ -1297,6 +1306,8 @@
       <div class="itile violet"><i class="ti ti-device-tv"></i></div>
       <div class="meta"><p class="t">Beltéri egység</p><p class="s">Bérelt · TV Prémium</p></div>
       <i class="ti ti-chevron-right chev"></i>
+    </div>
+      </div>
     </div>
   </div>
 
@@ -1341,13 +1352,15 @@
       <div class="stat" style="margin:0;"><div class="lab"><span class="k">EU-s adatroaming</span><span class="v">4,2<span class="u"> / 6,4 GB</span></span></div><div class="track"><div class="fill" style="width:66%"></div></div></div>
     </div>
 
-    <p class="mlab">Vásárlási lehetőségek</p>
+    <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
     <div class="gcard">
-      <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming adatok</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o1"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">TV szolgáltatás vásárlás</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o1"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
+      <div class="lrow"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Gyermekvédelmi szolgáltatás</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming adat</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
     <div class="guard">
@@ -1408,12 +1421,12 @@
       <div class="lrow"><span class="sic"><i class="ti ti-wifi"></i></span><span class="n">Wi-Fi beállítások</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <p class="mlab">Vásárlási lehetőségek</p>
+    <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
     <div class="gcard">
       <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-access-point"></i></span><span class="n">Wi-Fi lefedettség bővítése</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-network"></i></span><span class="n">Statikus IP-cím</span><i class="ti ti-chevron-right chev"></i></div>
-      <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o3"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">TV szolgáltatás vásárlás</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o3"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
+      <div class="lrow"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="lrow"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Gyermekvédelmi szolgáltatás</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
     <div class="guard">
@@ -1476,7 +1489,7 @@
       <div class="lrow"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Mediabox</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <p class="mlab">Vásárlási lehetőségek</p>
+    <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
     <div class="gcard">
       <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="lrow"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming hozzáadása</span><i class="ti ti-chevron-right chev"></i></div>
@@ -2159,8 +2172,8 @@
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
         <div class="svctx">
-          <p class="st">TV</p>
-          <p class="ss">120+ csatorna, felhőalapú felvétellel, 2 eszközön.</p>
+          <p class="st">YettelTV</p>
+          <p class="ss">Kábelmentes online TV szolgáltatás, 120+ csatornával.</p>
           <p class="sp">5 490 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
@@ -2243,8 +2256,8 @@
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
         <div class="svctx">
-          <p class="st">TV</p>
-          <p class="ss">120+ csatorna, felhőalapú felvétellel, 2 eszközön.</p>
+          <p class="st">YettelTV</p>
+          <p class="ss">Kábelmentes online TV szolgáltatás, 120+ csatornával.</p>
           <p class="sp">5 490 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
@@ -3590,12 +3603,13 @@
       <div class="stat" style="margin-bottom:6px;"><div class="lab"><span class="k">SMS</span><span class="v">12<span class="u"> / 50</span></span></div><div class="track"><div class="fill" style="width:24%"></div></div></div>
       <div class="krow" style="padding:12px 0 0; border-top:1px solid var(--stroke);"><span class="k" style="display:flex;align-items:center;gap:7px;color:var(--mid);font-size:12px;"><i class="ti ti-calendar-event" style="font-size:15px"></i>Keret megújul</span><span class="v strong">2026. 09. 30.</span></div>
     </div>
-    <p class="mlab">Vásárlási lehetőségek</p>
+    <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
     <div class="gcard">
+      <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Havidíjasra váltás</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-topup1"><span class="sic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming adat</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Havidíjasra váltás</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
     <p class="mlab">Extrák</p>
     <div class="gcard">
@@ -3635,12 +3649,13 @@
       <div class="stat" style="margin-bottom:6px;"><div class="lab"><span class="k">SMS</span><span class="v">5<span class="u"> / 20</span></span></div><div class="track"><div class="fill" style="width:25%"></div></div></div>
       <div class="krow" style="padding:12px 0 0; border-top:1px solid var(--stroke);"><span class="k" style="display:flex;align-items:center;gap:7px;color:var(--mid);font-size:12px;"><i class="ti ti-calendar-event" style="font-size:15px"></i>Keret megújul</span><span class="v strong">2026. 08. 15.</span></div>
     </div>
-    <p class="mlab">Vásárlási lehetőségek</p>
+    <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
     <div class="gcard">
+      <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Havidíjasra váltás</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-topup2"><span class="sic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming adat</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Havidíjasra váltás</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
     <p class="mlab">Extrák</p>
     <div class="gcard">
