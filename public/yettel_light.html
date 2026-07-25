@@ -614,11 +614,11 @@
   .rcar > *:nth-child(3){animation-delay:12s;}
   .rcar > *:nth-child(4){animation-delay:18s;}
   @keyframes rfade{
-    0%{opacity:0; transform:scale(1.05); filter:blur(7px); pointer-events:none;}
-    5.6%{opacity:1; transform:scale(1); filter:blur(0); pointer-events:auto;}
-    33.3%{opacity:1; transform:scale(1); filter:blur(0); pointer-events:auto;}
-    38.9%{opacity:0; transform:scale(.96); filter:blur(7px); pointer-events:none;}
-    100%{opacity:0; transform:scale(.96); filter:blur(7px); pointer-events:none;}
+    0%{opacity:0; transform:scale(1.05); filter:blur(7px); pointer-events:none; z-index:0;}
+    5.6%{opacity:1; transform:scale(1); filter:blur(0); pointer-events:auto; z-index:3;}
+    33.3%{opacity:1; transform:scale(1); filter:blur(0); pointer-events:auto; z-index:3;}
+    38.9%{opacity:0; transform:scale(.96); filter:blur(7px); pointer-events:none; z-index:0;}
+    100%{opacity:0; transform:scale(.96); filter:blur(7px); pointer-events:none; z-index:0;}
   }
   /* ---- number dropdown (native details, no JS) ---- */
   .dd{margin-bottom:16px;}
@@ -908,9 +908,10 @@
   .mlabrow .mlab{margin:0;}
   .mlabedit{font-size:12px; font-weight:700; cursor:pointer; color:var(--limed);}
   /* outer (section) accordions on the home screen */
-  .accouter{margin-top:8px;}
+  .accouter{margin-top:24px;}
   .accouter > .accotop{padding:6px 2px 14px;}
   .accotop .at{font-family:'Sora'; font-size:17px; font-weight:700; letter-spacing:-.01em;}
+  .dashtitle{font-family:'Sora'; font-size:15px; font-weight:700; color:var(--mid); letter-spacing:.02em; margin:2px 2px 12px;}
 </style>
 </head>
 <body>
@@ -1078,6 +1079,7 @@
       </div>
     </div>
 
+    <h2 class="dashtitle">Mobil dashboard</h2>
     <div class="quick">
       <label class="qtile" for="s-billing"><div class="qic"><i class="ti ti-receipt"></i></div><span>Számláim</span></label>
       <div class="qtile"><div class="qic"><i class="ti ti-parking"></i></div><span>Parkolás</span></div>
@@ -1191,7 +1193,6 @@
         <div class="bbtx">
           <span class="bbtag">Akció</span>
           <p class="bbt">Xiaomi 17T Pro<br>30 000 Ft kedvezmény</p>
-          <p class="bbs">Leica optika · 512 GB</p>
           <p class="bbp">Most 299 990 Ft<span>vagy 12 500 Ft / hó</span></p>
         </div>
       </div>
@@ -1208,8 +1209,8 @@
     </div>
 
     <div class="acc accouter">
-      <div class="acc-head accotop" data-acc><span class="at">Előfizetéseim</span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
-      <div class="acc-body">
+      <div class="acc-head accotop" data-acc><span class="at">Előfizetéseim</span><i class="ti ti-chevron-down achev"></i></div>
+      <div class="acc-body" style="display:none;">
     <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
     <div class="acc">
@@ -1220,7 +1221,8 @@
           <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">RTL Plus</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="substrm" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">TV Prémium</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
         <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
@@ -1262,8 +1264,8 @@
     </div>
 
     <div class="acc accouter">
-      <div class="acc-head accotop" data-acc><span class="at">Készülékeim</span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
-      <div class="acc-body">
+      <div class="acc-head accotop" data-acc><span class="at">Készülékeim</span><i class="ti ti-chevron-down achev"></i></div>
+      <div class="acc-body" style="display:none;">
     <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
     <p class="mlab">Megvásárolt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
@@ -1323,7 +1325,7 @@
 
     <p class="mlab">Streaming</p>
     <div class="gcard">
-      <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">RTL Plus</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
     <p class="mlab">Elérhető keret</p>
     <div class="gcard keret">
@@ -1479,8 +1481,6 @@
     <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
     <div class="gcard">
       <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming hozzáadása</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Extra mediabox</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
     <div class="guard">
@@ -1521,7 +1521,7 @@
       <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">RTL Plus</span><i class="ti ti-chevron-right chev"></i></label>
+    <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
@@ -2277,7 +2277,6 @@
         <div class="bbtx">
           <span class="bbtag">Akció</span>
           <p class="bbt">Xiaomi 17T Pro<br>30 000 Ft kedvezmény</p>
-          <p class="bbs">Leica optika · 512 GB</p>
           <p class="bbp">Most 299 990 Ft<span>vagy 12 500 Ft / hó</span></p>
         </div>
       </div>
@@ -4101,7 +4100,7 @@
     </div>
     <div class="planbar">
       <div class="itile violet"><i class="ti ti-player-play"></i></div>
-      <div class="meta"><p class="s">Streaming</p><p class="t" style="font-size:16px;">RTL Plus</p></div>
+      <div class="meta"><p class="s">Streaming</p><p class="t" style="font-size:16px;">HBO Max</p></div>
     </div>
     <p class="mlab">Szerződés</p>
     <div class="gcard">
@@ -4724,6 +4723,21 @@
         var t = document.getElementById(el.getAttribute('data-tab'));
         if(t) t.checked = true;
       });
+    });
+  })();
+  /* internet banner: when it is the most-visible carousel slide, any tap on the carousel opens the address finder (a fading sibling can otherwise steal the hit) */
+  (function(){
+    Array.prototype.slice.call(document.querySelectorAll('.rcar')).forEach(function(car){
+      var ban = car.querySelector('.promo.inet[for]'); if(!ban) return;
+      car.addEventListener('click', function(e){
+        if(e.target.closest('.promo.inet[for]')) return;  // real banner hit already navigates
+        var slides = Array.prototype.slice.call(car.children);
+        var top = slides.reduce(function(a,b){ return parseFloat(getComputedStyle(b).opacity||0) > parseFloat(getComputedStyle(a).opacity||0) ? b : a; });
+        if(top === ban && parseFloat(getComputedStyle(ban).opacity||0) > 0.4){
+          e.preventDefault(); e.stopPropagation();
+          var r = document.getElementById(ban.getAttribute('for')); if(r) r.checked = true;
+        }
+      }, true);
     });
   })();
   document.addEventListener('click', function(){ closeAll(null); });
