@@ -159,8 +159,8 @@
   .promo p{position:relative; font-size:12px; color:#20305F; margin:0 0 14px; line-height:1.45; max-width:74%;}
   .promo .go{position:relative; display:inline-flex; align-items:center; gap:7px; background:#0C1740; color:#fff; border:none;
              font-family:'Manrope'; font-weight:700; font-size:12px; padding:11px 18px; border-radius:999px; cursor:pointer; box-shadow:0 10px 24px -8px rgba(12,23,64,.8);}
-  .promo .pct{position:absolute; right:20px; top:50%; transform:translateY(-50%); font-family:'Sora'; font-weight:800; font-size:44px; color:#0B1330; opacity:.9;}
-  .promo .pct small{font-size:20px; vertical-align:top;}
+  .promo .pct{position:absolute; right:18px; bottom:14px; font-family:'Sora'; font-weight:800; font-size:28px; color:#0B1330; opacity:.55; line-height:1;}
+  .promo .pct small{font-size:14px; vertical-align:baseline; margin-left:1px;}
 
   .nav{position:absolute; left:16px; right:16px; bottom:16px; height:70px; border-radius:26px; display:flex; align-items:center; justify-content:space-around; z-index:5;
        background:rgba(20,30,68,.45); border:1px solid rgba(255,255,255,.16); -webkit-backdrop-filter:blur(30px) saturate(170%); backdrop-filter:blur(30px) saturate(170%);
@@ -924,6 +924,7 @@
   .accouter{margin-top:24px;}
   .accouter > .accotop{padding:6px 2px 14px;}
   .accotop .at{font-family:'Sora'; font-size:17px; font-weight:700; letter-spacing:-.01em;}
+  .substrm .ssn .sssub{display:block; font-size:10.5px; font-weight:500; color:var(--mid); margin-top:1px;}
 </style>
 </head>
 <body>
@@ -1214,7 +1215,6 @@
         <div class="bbtx">
           <span class="bbtag">Kihagyhatatlan</span>
           <p class="bbt">HONOR 400 Pro<br>ajándék gyorstöltővel</p>
-          <p class="bbs">200 MP kamera · 512 GB</p>
           <p class="bbp">199 990 Ft<span>vagy 8 330 Ft / hó</span></p>
         </div>
       </div>
@@ -1233,7 +1233,7 @@
           <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <label class="substrm" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">TV Prémium</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="substrm" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
         <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
         <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
@@ -1254,20 +1254,13 @@
     </div>
 
     <div class="acc">
-      <div class="acc-head" data-acc><span class="at">Otthoni szolgáltatások <small>2</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-head" data-acc><span class="at">Otthoni szolgáltatások <small>1</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
       <div class="acc-body">
         <div class="sub" data-goto="detail-net" style="position:relative;"><label class="subcover" for="s-detail-net"></label>
           <div class="itile blue"><i class="ti ti-router"></i></div>
           <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <div class="sub" data-goto="detail-tv" style="position:relative;"><label class="subcover" for="s-detail-tv"></label>
-          <div class="itile violet"><i class="ti ti-device-tv"></i></div>
-          <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">TV · TV Prémium</p></div>
-          <i class="ti ti-chevron-right chev"></i>
-        </div>
-        <label class="substrm" for="s-strm1"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="substrm" for="s-strm2"><span class="ssic"><i class="ti ti-movie"></i></span><span class="ssn">Netflix</span><i class="ti ti-chevron-right chev"></i></label>
       </div>
     </div>
 
@@ -1364,12 +1357,6 @@
       <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
-    <div class="guard">
-      <span class="gi"><i class="ti ti-shield-check"></i></span>
-      <div class="gt"><p class="a">Gyermekvédelem hozzáadása</p><p class="b">Tartalomszűrés és képernyőidő-korlát</p></div>
-      <span class="plus"><i class="ti ti-plus"></i></span>
-    </div>
-
     <p class="mlab">Extrák</p>
     <div class="gcard">
       <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Hívásrészletező</span><i class="ti ti-chevron-right chev"></i></div>
@@ -1430,12 +1417,6 @@
       <div class="lrow"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Gyermekvédelmi szolgáltatás</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <div class="guard">
-      <span class="gi"><i class="ti ti-shield-check"></i></span>
-      <div class="gt"><p class="a">Gyermekvédelem hozzáadása</p><p class="b">Tartalomszűrés az otthoni hálózaton</p></div>
-      <span class="plus"><i class="ti ti-plus"></i></span>
-    </div>
-
     <p class="mlab">Extrák</p>
     <div class="gcard">
       <div class="lrow"><span class="sic"><i class="ti ti-refresh"></i></span><span class="n">Router újraindítása</span><i class="ti ti-chevron-right chev"></i></div>
@@ -1460,7 +1441,7 @@
 
     <div class="planbar">
       <div class="itile violet"><i class="ti ti-device-tv"></i></div>
-      <div class="meta"><p class="s">TV Prémium</p><p class="t" style="font-size:16px;">Veszprém, Tölgyfa u. 4</p></div>
+      <div class="meta"><p class="s">TV Prémium</p><p class="t" style="font-size:16px;">YettelTV</p></div>
       <label class="edit icon" for="s-edtv"><i class="ti ti-pencil"></i></label>
     </div>
 
@@ -1469,6 +1450,7 @@
       <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2027. 03. 15.</span></div>
       <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">9 hónap</span></div>
       <div class="krow"><span class="k">Havidíj</span><span class="v">5 490 Ft / hó</span></div>
+      <label class="krow krlink" for="s-detail"><span class="k">Kapcsolt szolgáltatás</span><span class="v link">Havidíjas · Prime Plus 2024</span></label>
     </div>
 
     <p class="mlab">Csomag adatai</p>
@@ -1479,26 +1461,9 @@
       <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
     </div>
 
-    <p class="mlab">Streaming</p>
-    <div class="gcard">
-      <label class="lrow" for="s-strm1"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-strm2"><span class="sic"><i class="ti ti-movie"></i></span><span class="n">Netflix</span><i class="ti ti-chevron-right chev"></i></label>
-    </div>
-
-    <p class="mlab">Eszközök</p>
-    <div class="gcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Mediabox</span><i class="ti ti-chevron-right chev"></i></div>
-    </div>
-
     <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
     <div class="gcard">
       <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
-    </div>
-
-    <div class="guard">
-      <span class="gi"><i class="ti ti-shield-check"></i></span>
-      <div class="gt"><p class="a">Gyermekzár beállítása</p><p class="b">PIN-kód és korhatáros tartalom</p></div>
-      <span class="plus"><i class="ti ti-plus"></i></span>
     </div>
 
     <p class="mlab">Extrák</p>
@@ -1533,6 +1498,7 @@
       <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
+    <label class="substrm" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
     <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
@@ -1556,13 +1522,6 @@
       <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-detail-tv"></label>
-      <div class="itile violet"><i class="ti ti-device-tv"></i></div>
-      <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">TV · TV Prémium</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <label class="substrm" for="s-strm1"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="substrm" for="s-strm2"><span class="ssic"><i class="ti ti-movie"></i></span><span class="ssn">Netflix</span><i class="ti ti-chevron-right chev"></i></label>
   </div>
 
   <!-- ============= ALL DEVICES ============= -->
@@ -2308,7 +2267,6 @@
         <div class="bbtx">
           <span class="bbtag">Kihagyhatatlan</span>
           <p class="bbt">HONOR 400 Pro<br>ajándék gyorstöltővel</p>
-          <p class="bbs">200 MP kamera · 512 GB</p>
           <p class="bbp">199 990 Ft<span>vagy 8 330 Ft / hó</span></p>
         </div>
       </div>
@@ -3745,7 +3703,7 @@
     </div>
     <div class="planbar">
       <div class="itile"><i class="ti ti-device-tv"></i></div>
-      <div class="meta"><p class="s">TV Prémium</p><p class="t" style="font-size:16px;">Veszprém, Tölgyfa u. 4</p></div>
+      <div class="meta"><p class="s">TV Prémium</p><p class="t" style="font-size:16px;">YettelTV</p></div>
     </div>
     <p class="mlab">Szolgáltatás elnevezése</p>
     <input class="edfield" type="text" value="Veszprém, Tölgyfa u. 4" data-edold="Veszprém, Tölgyfa u. 4" maxlength="40">
