@@ -937,6 +937,7 @@
   .strow:has(input:checked){background:rgba(198,242,78,.1); border-color:var(--lime);}
   .strow:has(input:checked) .strbox{background:var(--lime); border-color:var(--lime);}
   .strow:has(input:checked) .strbox i{opacity:1;}
+  .sumsub{display:block; font-size:11px; font-weight:600; color:var(--mid); margin-top:2px;}
 </style>
 </head>
 <body>
@@ -4495,7 +4496,7 @@
     <h2 class="buyhead">Válaszd ki a<br>TV-csomagod.</h2>
     <p class="buysub">Mediaboxos TV az optikai internet mellé — előfeltétele az otthoni internet. (Ez nem a YettelTV, hanem beltéri egységgel működő TV.)</p>
     <p class="mlab">Elérhető TV-csomagok</p>
-    <div class="tfcard pop">
+    <label class="tfcard pop jspin" for="s-ctvxtv" data-tvpkg="TV Extra" data-tvprice="4 490 Ft">
       <span class="tfbadge">Népszerű</span>
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">TV Extra</p><span class="tfnote">12 hónapos hűséggel</span></div>
@@ -4508,11 +4509,11 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">4 490 Ft<small> / hó</small></span>
-          <label class="tford tfsel" for="s-ctvxtv">Kiválasztom</label>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
-    </div>
-    <div class="tfcard">
+    </label>
+    <label class="tfcard jspin" for="s-ctvxtv" data-tvpkg="TV Start" data-tvprice="2 990 Ft">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12 hónapos hűséggel</span></div>
         <p class="tfdata">60+ csatorna</p>
@@ -4523,11 +4524,11 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">2 990 Ft<small> / hó</small></span>
-          <label class="tford tfsel" for="s-ctvxtv">Kiválasztom</label>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
-    </div>
-    <div class="tfcard">
+    </label>
+    <label class="tfcard jspin" for="s-ctvxtv" data-tvpkg="TV Prémium" data-tvprice="6 490 Ft">
       <div class="tfmain">
         <div class="tfnamerow"><p class="tfname">TV Prémium</p><span class="tfnote">12 hónapos hűséggel</span></div>
         <p class="tfdata">160+ csatorna</p>
@@ -4539,10 +4540,10 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">6 490 Ft<small> / hó</small></span>
-          <label class="tford tfsel" for="s-ctvxtv">Kiválasztom</label>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
-    </div>
+    </label>
   </div>
 
   <!-- ============= INTERNET + TV FLOW: TV EXTRÁK ============= -->
@@ -4668,26 +4669,13 @@
     </div>
     <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp on"></span></div>
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Rendelés áttekintése</h2>
-    <p class="mlab">Megrendelt szolgáltatás</p>
-    <div class="gcard">
-      <div class="krow"><span class="k">Csomag</span><span class="v strong sumpkg">HiperNet L</span></div>
-      <div class="krow"><span class="k">Sávszélesség</span><span class="v sumbw">1000 Mbit/s</span></div>
-      <div class="krow"><span class="k">Hűségidő</span><span class="v">12 hónap</span></div>
-      <div class="krow gvrow"><span class="k">Gyermekvédelmi szűrő</span><span class="v sumgyv">Kérem (díjmentes)</span></div>
-      <div class="krow sumnprow"><span class="k">NetPajzs</span><span class="v sumnp">Nem kérem</span></div>
-      <div class="krow"><span class="k">Telepítés</span><span class="v">Díjmentes</span></div>
-    </div>
-    <p class="mlab sumtvhead" style="display:none;">TV szolgáltatás</p>
-    <div class="gcard sumtvcard" style="display:none;">
-      <div class="krow"><span class="k">TV-csomag</span><span class="v strong sumtvpkg">—</span></div>
-      <div class="krow"><span class="k">Médiabox</span><span class="v summbox">0 db</span></div>
-      <div class="krow"><span class="k">Streaming</span><span class="v sumstrm">Nincs</span></div>
-    </div>
+    <p class="mlab">Megrendelt szolgáltatások</p>
+    <div class="gcard" id="sumlist"></div>
     <p class="mlab">Fizetendő havidíj</p>
     <div class="tubal" style="display:block;">
-      <p class="tubl">Havidíj</p>
-      <p class="tubv"><span class="sumprice">7 990 Ft</span><span style="font-size:14px; font-weight:600; color:var(--mid);"> / hó</span></p>
-      <p class="tube">Az első számla a bekötés után érkezik.</p>
+      <p class="tubl">Összesen</p>
+      <p class="tubv"><span class="sumtotal">—</span><span style="font-size:14px; font-weight:600; color:var(--mid);"> / hó</span></p>
+      <p class="tube">Az első számla a bekötés után érkezik. A telepítés díjmentes.</p>
     </div>
     <div class="mlabrow"><p class="mlab">Kiszállási információk</p><label class="mlabedit" for="s-appt">Módosítom</label></div>
     <div class="gcard">
@@ -5111,39 +5099,45 @@
   })();
   /* internet / internet+TV journey: remember choices and build the summary */
   (function(){
-    var od = {combo:false, gyv:true, np:false, tvpkg:'', tvprice:'', mbox:0, strm:[]};
+    var od = {combo:false, gyv:true, np:false, netpkg:'', netbw:'', netprice:'', tvpkg:'', tvprice:'', mbox:0, strm:[]};
+    var STRM = {'HBO Max':2490, 'Netflix':4490, 'RTL Plusz':1590};
     function chk(id){ var e=document.getElementById(id); return !!(e && e.checked); }
     function on(sel, fn){ var e=document.querySelector(sel); if(e) e.addEventListener('click', fn); }
+    function num(s){ return parseInt(String(s||'').replace(/[^0-9]/g,''),10) || 0; }
+    function fmt(n){ var s=String(n), o=''; for(var i=0;i<s.length;i++){ if(i>0 && (s.length-i)%3===0) o+=' '; o+=s.charAt(i); } return o+' Ft'; }
+    Array.prototype.slice.call(document.querySelectorAll('.jpkg[data-pkg]')).forEach(function(c){
+      c.addEventListener('click', function(){ od.netpkg=c.getAttribute('data-pkg'); od.netbw=c.getAttribute('data-bw'); od.netprice=c.getAttribute('data-price'); });
+    });
     on('[data-screen="extra-svc"] .acont[for="s-persdata"]', function(){ od.combo=false; od.gyv=chk('xs-yes'); od.np=chk('nps-yes'); });
     on('[data-screen="extra-buy"] .acont[for="s-persdata"]', function(){ od.combo=false; od.gyv=chk('xb-yes'); od.np=chk('npb-yes'); });
     on('[data-screen="ctv-xnet"] .acont[for="s-ctvtvsel"]', function(){ od.combo=true; od.gyv=chk('cxg-yes'); od.np=chk('cxn-yes'); });
-    Array.prototype.slice.call(document.querySelectorAll('[data-screen="ctv-tvsel"] .tfsel[for="s-ctvxtv"]')).forEach(function(l){
-      l.addEventListener('click', function(){
-        var card=l.closest('.tfcard'); if(!card) return;
-        var nm=card.querySelector('.tfname'), pr=card.querySelector('.tfp');
-        od.tvpkg = nm?nm.textContent.trim():'';
-        od.tvprice = pr?pr.textContent.replace(/\s*\/\s*h.*/,'').trim():'';
-      });
+    Array.prototype.slice.call(document.querySelectorAll('[data-screen="ctv-tvsel"] label[for="s-ctvxtv"]')).forEach(function(l){
+      l.addEventListener('click', function(){ od.tvpkg=l.getAttribute('data-tvpkg')||''; od.tvprice=l.getAttribute('data-tvprice')||''; });
     });
     on('[data-screen="ctv-xtv"] .acont[for="s-persdata"]', function(){
-      var m=document.querySelector('input[name="x-mbox-ctv"]:checked');
-      od.mbox = m ? parseInt(m.id.replace('mb-',''),10) : 0;
+      var m=document.querySelector('input[name="x-mbox-ctv"]:checked'); od.mbox = m?parseInt(m.id.replace('mb-',''),10):0;
       od.strm = Array.prototype.slice.call(document.querySelectorAll('.strchk-in:checked')).map(function(c){ return c.getAttribute('data-strm'); });
     });
     var sumBtn = document.querySelector('label.jslot[for="s-ordsum"]');
     if(sumBtn) sumBtn.addEventListener('click', function(){
-      var e;
-      if((e=document.querySelector('.sumgyv'))) e.textContent = od.gyv ? 'Kérem (díjmentes)' : 'Nem kérem';
-      if((e=document.querySelector('.sumnp')))  e.textContent = od.np ? 'Kérem · 490 Ft / hó' : 'Nem kérem';
-      var head=document.querySelector('.sumtvhead'), card=document.querySelector('.sumtvcard');
-      if(od.combo){
-        if(head) head.style.display=''; if(card) card.style.display='';
-        if((e=document.querySelector('.sumtvpkg'))) e.textContent = od.tvpkg ? (od.tvpkg + (od.tvprice? ' · '+od.tvprice+' / hó':'')) : '—';
-        if((e=document.querySelector('.summbox')))  e.textContent = od.mbox + ' db';
-        if((e=document.querySelector('.sumstrm')))  e.textContent = od.strm.length ? od.strm.join(', ') : 'Nincs';
-      } else {
-        if(head) head.style.display='none'; if(card) card.style.display='none';
+      var list=document.getElementById('sumlist'); if(!list) return;
+      var rows=[], total=0;
+      function item(k, sub, price, free){
+        if(price) total += price;
+        var val = free ? 'Díjmentes' : (price!=null ? fmt(price)+' / hó' : '');
+        rows.push('<div class="krow"><span class="k">'+k+(sub?'<span class="sumsub">'+sub+'</span>':'')+'</span><span class="v strong">'+val+'</span></div>');
       }
+      item('Otthoni internet', od.netpkg || 'HiperNet L', num(od.netprice) || 7990);
+      if(od.gyv) item('Gyermekvédelmi szűrő', 'Tartalomszűrő', 0, true);
+      if(od.np) item('NetPajzs', 'Hálózati védelem', 490);
+      if(od.combo){
+        item('TV szolgáltatás', od.tvpkg || 'TV Extra', num(od.tvprice) || 4490);
+        if(od.mbox>0){ var mc=(od.mbox-1)*990; item('Médiabox', od.mbox+' db (első díjmentes)', mc, mc===0); }
+        od.strm.forEach(function(s){ item(s, 'Streaming', STRM[s]||0); });
+      }
+      rows.push('<div class="krow"><span class="k">Hűségidő</span><span class="v">12 hónap</span></div>');
+      list.innerHTML = rows.join('');
+      var t=document.querySelector('.sumtotal'); if(t) t.textContent = fmt(total);
     });
   })();
   /* combined flow: availability loader after the address step (5s + success tick) */
