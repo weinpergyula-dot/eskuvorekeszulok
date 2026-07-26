@@ -148,8 +148,8 @@
   .promo p{position:relative; font-size:12px; color:#20305F; margin:0 0 14px; line-height:1.45; max-width:74%;}
   .promo .go{position:relative; display:inline-flex; align-items:center; gap:7px; background:#0C1740; color:#fff; border:none;
              font-family:'Manrope'; font-weight:700; font-size:12px; padding:11px 18px; border-radius:999px; cursor:pointer; box-shadow:0 10px 24px -8px rgba(12,23,64,.5);}
-  .promo .pct{position:absolute; right:18px; bottom:14px; font-family:'Sora'; font-weight:800; font-size:28px; color:#0B1330; opacity:.55; line-height:1;}
-  .promo .pct small{font-size:14px; vertical-align:baseline; margin-left:1px;}
+  .promo .pct{position:absolute; right:18px; bottom:14px; font-family:'Sora'; font-weight:800; font-size:36px; color:#0B1330; opacity:.55; line-height:1;}
+  .promo .pct small{font-size:18px; vertical-align:baseline; margin-left:1px;}
 
   .nav{position:absolute; left:16px; right:16px; bottom:16px; height:70px; border-radius:26px; display:flex; align-items:center; justify-content:space-around; z-index:5;
        background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.75); -webkit-backdrop-filter:blur(30px) saturate(170%); backdrop-filter:blur(30px) saturate(170%);
@@ -317,6 +317,13 @@
   #s-tarifch3:checked ~ [data-screen="tarifch-3"],
   #s-xdata1:checked ~ [data-screen="xdata-1"],
   #s-xmin:checked ~ [data-screen="xmin"],
+  #s-tvpkg:checked ~ [data-screen="tvpkg"],
+  #s-ctvnet:checked ~ [data-screen="ctv-net"],
+  #s-ctvaddr:checked ~ [data-screen="ctv-addr"],
+  #s-ctvavail:checked ~ [data-screen="ctv-avail"],
+  #s-ctvxnet:checked ~ [data-screen="ctv-xnet"],
+  #s-ctvtvsel:checked ~ [data-screen="ctv-tvsel"],
+  #s-ctvxtv:checked ~ [data-screen="ctv-xtv"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
@@ -912,6 +919,14 @@
   .accouter > .accotop{padding:6px 2px 14px;}
   .accotop .at{font-family:'Sora'; font-size:17px; font-weight:700; letter-spacing:-.01em;}
   .substrm .ssn .sssub{display:block; font-size:10.5px; font-weight:500; color:var(--mid); margin-top:1px;}
+  .acctoggle{margin-left:auto; margin-right:8px; font-size:12px; font-weight:700; color:var(--mid); font-family:'Manrope';}
+  .xprice{display:inline-block; margin-top:10px; font-size:9px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:4px 9px; border-radius:7px; background:var(--glass); border:1px solid var(--stroke); color:var(--hi);}
+  .xscope{display:inline-flex; align-items:center; gap:7px; margin:2px 0 16px; padding:8px 12px; border-radius:12px; font-size:12px; color:var(--mid); background:var(--glass); border:1px solid var(--stroke);}
+  .xscope i{font-size:15px; color:var(--lime);}
+  .xscope b{color:var(--hi); font-weight:700;}
+  .mboxchoice .xopt{font-family:'Sora'; font-weight:800; font-size:16px;}
+  .tfsel{cursor:pointer;}
+  #cxg-yes:checked ~ .xchoice .xopt[for="cxg-yes"],#cxg-no:checked ~ .xchoice .xopt[for="cxg-no"],#cxn-yes:checked ~ .xchoice .xopt[for="cxn-yes"],#cxn-no:checked ~ .xchoice .xopt[for="cxn-no"],#cxl-yes:checked ~ .xchoice .xopt[for="cxl-yes"],#cxl-no:checked ~ .xchoice .xopt[for="cxl-no"],#mb-0:checked ~ .xchoice .xopt[for="mb-0"],#mb-1:checked ~ .xchoice .xopt[for="mb-1"],#mb-2:checked ~ .xchoice .xopt[for="mb-2"],#mb-3:checked ~ .xchoice .xopt[for="mb-3"],#nps-yes:checked ~ .xchoice .xopt[for="nps-yes"],#nps-no:checked ~ .xchoice .xopt[for="nps-no"],#npb-yes:checked ~ .xchoice .xopt[for="npb-yes"],#npb-no:checked ~ .xchoice .xopt[for="npb-no"]{background:rgba(198,242,78,.12); border-color:var(--lime); color:var(--hi);}
 </style>
 </head>
 <body>
@@ -983,6 +998,13 @@
   <input class="rt" type="radio" name="nav" id="s-edtv">
   <input class="rt" type="radio" name="nav" id="s-eddev">
   <input class="rt" type="radio" name="nav" id="s-edacc">
+  <input class="rt" type="radio" name="nav" id="s-tvpkg">
+  <input class="rt" type="radio" name="nav" id="s-ctvnet">
+  <input class="rt" type="radio" name="nav" id="s-ctvaddr">
+  <input class="rt" type="radio" name="nav" id="s-ctvavail">
+  <input class="rt" type="radio" name="nav" id="s-ctvxnet">
+  <input class="rt" type="radio" name="nav" id="s-ctvtvsel">
+  <input class="rt" type="radio" name="nav" id="s-ctvxtv">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
@@ -1208,7 +1230,7 @@
     </div>
 
     <div class="acc accouter">
-      <div class="acc-head accotop" data-acc><span class="at">Előfizetéseim</span><i class="ti ti-chevron-down achev"></i></div>
+      <div class="acc-head accotop" data-acc><span class="at">Előfizetéseim</span><span class="acctoggle">Kinyit</span><i class="ti ti-chevron-down achev"></i></div>
       <div class="acc-body" style="display:none;">
     <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
@@ -1256,7 +1278,7 @@
     </div>
 
     <div class="acc accouter">
-      <div class="acc-head accotop" data-acc><span class="at">Készülékeim</span><i class="ti ti-chevron-down achev"></i></div>
+      <div class="acc-head accotop" data-acc><span class="at">Készülékeim</span><span class="acctoggle">Kinyit</span><i class="ti ti-chevron-down achev"></i></div>
       <div class="acc-body" style="display:none;">
     <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
     <p class="mlab">Megvásárolt készülékek</p>
@@ -1450,7 +1472,7 @@
 
     <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
     <div class="gcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lrow" for="s-tvpkg"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
     <p class="mlab">Extrák</p>
@@ -1992,6 +2014,20 @@
       <label class="xopt" for="xb-yes"><i class="ti ti-check"></i>Kérem</label>
       <label class="xopt" for="xb-no"><i class="ti ti-x"></i>Nem kérem</label>
     </div>
+    <div class="xcard" style="margin-top:16px;">
+      <span class="xic"><i class="ti ti-shield-lock"></i></span>
+      <div class="xtx">
+        <p class="xt">NetPajzs</p>
+        <p class="xs">Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen — a hálózat szintjén, minden otthoni eszközödön.</p>
+        <span class="xprice">490 Ft / hó</span>
+      </div>
+    </div>
+    <input class="rt" type="radio" name="x-netpajzs-buy" id="npb-yes">
+    <input class="rt" type="radio" name="x-netpajzs-buy" id="npb-no" checked>
+    <div class="xchoice">
+      <label class="xopt" for="npb-yes"><i class="ti ti-check"></i>Kérem</label>
+      <label class="xopt" for="npb-no"><i class="ti ti-x"></i>Nem kérem</label>
+    </div>
 
     <label class="acont jspin" for="s-persdata">Tovább</label>
   </div>
@@ -2021,6 +2057,20 @@
     <div class="xchoice">
       <label class="xopt" for="xs-yes"><i class="ti ti-check"></i>Kérem</label>
       <label class="xopt" for="xs-no"><i class="ti ti-x"></i>Nem kérem</label>
+    </div>
+    <div class="xcard" style="margin-top:16px;">
+      <span class="xic"><i class="ti ti-shield-lock"></i></span>
+      <div class="xtx">
+        <p class="xt">NetPajzs</p>
+        <p class="xs">Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen — a hálózat szintjén, minden otthoni eszközödön.</p>
+        <span class="xprice">490 Ft / hó</span>
+      </div>
+    </div>
+    <input class="rt" type="radio" name="x-netpajzs-svc" id="nps-yes">
+    <input class="rt" type="radio" name="x-netpajzs-svc" id="nps-no" checked>
+    <div class="xchoice">
+      <label class="xopt" for="nps-yes"><i class="ti ti-check"></i>Kérem</label>
+      <label class="xopt" for="nps-no"><i class="ti ti-x"></i>Nem kérem</label>
     </div>
 
     <label class="acont jspin" for="s-persdata">Tovább</label>
@@ -2123,16 +2173,17 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <div class="svccard s-soon">
-        <span class="sbadge soon">Hamarosan</span>
+      <label class="svccard s-violet" for="s-ctvnet">
+        <span class="sbadge">Csomagban</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
         <div class="svctx">
           <p class="st">Otthoni internet és TV</p>
           <p class="ss">Optikai net akár 1 Gbps + 120+ csatorna, felvétellel.</p>
+          <p class="sp">9 990 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
-      </div>
+      </label>
     </div>
   </div>
 
@@ -2207,16 +2258,17 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <div class="svccard s-soon">
-        <span class="sbadge soon">Hamarosan</span>
+      <label class="svccard s-violet" for="s-ctvnet">
+        <span class="sbadge">Csomagban</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
         <div class="svctx">
           <p class="st">Otthoni internet és TV</p>
           <p class="ss">Optikai net akár 1 Gbps + 120+ csatorna, felvétellel.</p>
+          <p class="sp">9 990 Ft<span> / hó-tól</span></p>
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
-      </div>
+      </label>
     </div>
   </div>
 
@@ -4188,6 +4240,349 @@
     </div>
   </div>
 
+  <!-- ============= YettelTV CSOMAGVÁLTÁS (csak csomagok) ============= -->
+  <div class="screen" data-screen="tvpkg" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-detail-tv"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Csomagváltás</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead">Válaszd ki az új<br>YettelTV-csomagod.</h2>
+    <p class="buysub">A csomagváltás a következő számlázási ciklustól lép életbe, a hűségidőd nem változik.</p>
+    <p class="mlab">Elérhető TV-csomagok</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Népszerű</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">TV Extra</p><span class="tfnote">12 hónapos hűséggel</span></div>
+        <p class="tfdata">110+ csatorna</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-device-tv"></i>HD minőség</span>
+          <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
+          <span><i class="ti ti-list"></i>Felvétel</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">4 490 Ft<small> / hó</small></span>
+          <span class="tford">Kiválasztom</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12 hónapos hűséggel</span></div>
+        <p class="tfdata">60+ csatorna</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-device-tv"></i>HD minőség</span>
+          <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">2 990 Ft<small> / hó</small></span>
+          <span class="tford">Kiválasztom</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard">
+      <span class="tfbadge" style="background:rgba(198,242,78,.16); color:var(--lime);">Jelenlegi</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">TV Prémium</p><span class="tfnote">12 hónapos hűséggel</span></div>
+        <p class="tfdata">160+ csatorna</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-device-tv"></i>4K minőség</span>
+          <span><i class="ti ti-trophy"></i>Sportcsatornák</span>
+          <span><i class="ti ti-list"></i>Felvétel</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">6 490 Ft<small> / hó</small></span>
+          <span class="tford" style="opacity:.5;">Aktív</span>
+        </div>
+      </div>
+    </div>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    </div>
+  </div>
+
+  <!-- ============= INTERNET + TV FLOW: CSOMAGVÁLASZTÁS ============= -->
+  <div class="screen" data-screen="ctv-net" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Internet + TV</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Válaszd ki az<br>internetcsomagod.</h2>
+    <p class="buysub">Előbb az internetcsomagot választod, majd ellenőrizzük az elérhetőséget, végül jöhet a TV.</p>
+    <p class="offsec">Internet</p>
+    <label class="tfcard" for="s-ctvaddr">
+      <span class="tfbadge">30 nap díjmentes</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
+        <p class="tfdata">1000 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Optikai internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">7 990 Ft<small> / hó</small></span>
+          <span class="tford">Címellenőrzés</span>
+        </div>
+      </div>
+    </label>
+    <label class="tfcard" for="s-ctvaddr">
+      <span class="tfbadge">30 nap díjmentes</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
+        <p class="tfdata">500 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Optikai internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">6 990 Ft<small> / hó</small></span>
+          <span class="tford">Címellenőrzés</span>
+        </div>
+      </div>
+    </label>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    </div>
+  </div>
+
+  <!-- ============= INTERNET + TV FLOW: CÍMED ============= -->
+  <div class="screen formscr" data-screen="ctv-addr" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-ctvnet"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Címed</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="formbody">
+      <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Hova szeretnél internetet és TV-t?</h2>
+      <p class="buysub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
+      <label class="afl">Település vagy irányítószám <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="1097"></div>
+      <label class="afl">Közterület <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="Deák Ferenc utca"></div>
+      <label class="afl">Házszám <span>*</span></label>
+      <div class="afield"><input type="text" placeholder="6"></div>
+      <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
+    </div>
+    <label class="acont jspin" for="s-ctvavail">Tovább</label>
+  </div>
+
+  <!-- ============= INTERNET + TV FLOW: AJÁNLATOK ============= -->
+  <div class="screen" data-screen="ctv-avail" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-ctvaddr"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Ajánlatok</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Ajánlatok a címeden</h2>
+    <div class="offaddr">
+      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
+      <label class="offchg" for="s-ctvaddr">Másik címet adok meg.</label>
+    </div>
+    <p class="offsec">Internet</p>
+    <label class="tfcard jpkg jspin" for="s-ctvxnet" data-pkg="HiperNet L" data-bw="1000 Mbit/s" data-price="7 990 Ft">
+      <span class="tfbadge">30 nap díjmentes</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
+        <p class="tfdata">1000 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Optikai internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">7 990 Ft<small> / hó</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </label>
+    <label class="tfcard jpkg jspin" for="s-ctvxnet" data-pkg="HiperNet M" data-bw="500 Mbit/s" data-price="6 990 Ft">
+      <span class="tfbadge">30 nap díjmentes</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
+        <p class="tfdata">500 Mbit/s</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-world"></i>Optikai internet</span>
+          <span><i class="ti ti-router"></i>WiFi 7 router</span>
+          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">6 990 Ft<small> / hó</small></span>
+          <span class="tford">Megrendelem</span>
+        </div>
+      </div>
+    </label>
+    <div class="tfhelp">
+      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
+      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    </div>
+  </div>
+
+  <!-- ============= INTERNET + TV FLOW: INTERNET EXTRÁK ============= -->
+  <div class="screen" data-screen="ctv-xnet" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-ctvavail"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Extrák</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
+    <h2 class="buyhead">Extrák választása</h2>
+    <p class="xscope"><i class="ti ti-router"></i>Ezek az extrák az <b>otthoni internetedhez</b> tartoznak</p>
+
+    <div class="xcard">
+      <span class="xic"><i class="ti ti-shield-check"></i></span>
+      <div class="xtx">
+        <p class="xt">Gyermekvédelmi tartalomszűrő</p>
+        <p class="xs">A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat. Később is igényelheted és bármikor lemondhatod.</p>
+        <span class="xfree">Díjmentes</span>
+      </div>
+    </div>
+    <input class="rt" type="radio" name="x-gyv-ctv" id="cxg-yes" checked>
+    <input class="rt" type="radio" name="x-gyv-ctv" id="cxg-no">
+    <div class="xchoice" style="margin-bottom:16px;">
+      <label class="xopt" for="cxg-yes"><i class="ti ti-check"></i>Kérem</label>
+      <label class="xopt" for="cxg-no"><i class="ti ti-x"></i>Nem kérem</label>
+    </div>
+
+    <div class="xcard">
+      <span class="xic"><i class="ti ti-shield-lock"></i></span>
+      <div class="xtx">
+        <p class="xt">NetPajzs</p>
+        <p class="xs">Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen — a hálózat szintjén, minden otthoni eszközödön.</p>
+        <span class="xprice">490 Ft / hó</span>
+      </div>
+    </div>
+    <input class="rt" type="radio" name="x-netpajzs-ctv" id="cxn-yes">
+    <input class="rt" type="radio" name="x-netpajzs-ctv" id="cxn-no" checked>
+    <div class="xchoice">
+      <label class="xopt" for="cxn-yes"><i class="ti ti-check"></i>Kérem</label>
+      <label class="xopt" for="cxn-no"><i class="ti ti-x"></i>Nem kérem</label>
+    </div>
+
+    <label class="acont jspin" for="s-ctvtvsel">Tovább a TV-hez</label>
+  </div>
+
+  <!-- ============= INTERNET + TV FLOW: TV CSOMAGVÁLASZTÁS ============= -->
+  <div class="screen" data-screen="ctv-tvsel" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-ctvxnet"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">TV-csomag</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="stepper"><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
+    <h2 class="buyhead">Válaszd ki a<br>TV-csomagod.</h2>
+    <p class="buysub">A YettelTV kábelmentes, online TV szolgáltatás. Az internetedhez kapcsoljuk.</p>
+    <p class="mlab">Elérhető TV-csomagok</p>
+    <div class="tfcard pop">
+      <span class="tfbadge">Népszerű</span>
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">TV Extra</p><span class="tfnote">12 hónapos hűséggel</span></div>
+        <p class="tfdata">110+ csatorna</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-device-tv"></i>HD minőség</span>
+          <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
+          <span><i class="ti ti-list"></i>Felvétel</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">4 490 Ft<small> / hó</small></span>
+          <label class="tford tfsel" for="s-ctvxtv">Kiválasztom</label>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12 hónapos hűséggel</span></div>
+        <p class="tfdata">60+ csatorna</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-device-tv"></i>HD minőség</span>
+          <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">2 990 Ft<small> / hó</small></span>
+          <label class="tford tfsel" for="s-ctvxtv">Kiválasztom</label>
+        </div>
+      </div>
+    </div>
+    <div class="tfcard">
+      <div class="tfmain">
+        <div class="tfnamerow"><p class="tfname">TV Prémium</p><span class="tfnote">12 hónapos hűséggel</span></div>
+        <p class="tfdata">160+ csatorna</p>
+        <div class="tfspecs">
+          <span><i class="ti ti-device-tv"></i>4K minőség</span>
+          <span><i class="ti ti-trophy"></i>Sportcsatornák</span>
+          <span><i class="ti ti-list"></i>Felvétel</span>
+        </div>
+        <span class="tfdet">Részletek</span>
+        <div class="tfprice">
+          <span class="tfp">6 490 Ft<small> / hó</small></span>
+          <label class="tford tfsel" for="s-ctvxtv">Kiválasztom</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= INTERNET + TV FLOW: TV EXTRÁK ============= -->
+  <div class="screen" data-screen="ctv-xtv" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-ctvtvsel"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">TV extrák</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
+    <h2 class="buyhead">TV extrák</h2>
+    <p class="xscope"><i class="ti ti-device-tv"></i>Ezek az extrák a <b>YettelTV-hez</b> tartoznak</p>
+
+    <div class="xcard">
+      <span class="xic"><i class="ti ti-device-tv"></i></span>
+      <div class="xtx">
+        <p class="xt">Médiabox</p>
+        <p class="xs">Kiegészítő beltéri egység további TV-khez. Az elsőt díjmentesen adjuk, legfeljebb 3 médiaboxot kérhetsz.</p>
+        <span class="xprice">Első díjmentes · továbbiak 990 Ft / hó</span>
+      </div>
+    </div>
+    <p class="afl">Hány médiaboxot kérsz?</p>
+    <input class="rt" type="radio" name="x-mbox-ctv" id="mb-0" checked>
+    <input class="rt" type="radio" name="x-mbox-ctv" id="mb-1">
+    <input class="rt" type="radio" name="x-mbox-ctv" id="mb-2">
+    <input class="rt" type="radio" name="x-mbox-ctv" id="mb-3">
+    <div class="xchoice mboxchoice" style="margin-bottom:16px;">
+      <label class="xopt" for="mb-0">0</label>
+      <label class="xopt" for="mb-1">1</label>
+      <label class="xopt" for="mb-2">2</label>
+      <label class="xopt" for="mb-3">3</label>
+    </div>
+
+    <div class="xcard">
+      <span class="xic"><i class="ti ti-lock"></i></span>
+      <div class="xtx">
+        <p class="xt">Gyermekzár</p>
+        <p class="xs">PIN-kóddal védett hozzáférés a korhatáros csatornákhoz és tartalmakhoz.</p>
+        <span class="xfree">Díjmentes</span>
+      </div>
+    </div>
+    <input class="rt" type="radio" name="x-lock-ctv" id="cxl-yes" checked>
+    <input class="rt" type="radio" name="x-lock-ctv" id="cxl-no">
+    <div class="xchoice">
+      <label class="xopt" for="cxl-yes"><i class="ti ti-check"></i>Kérem</label>
+      <label class="xopt" for="cxl-no"><i class="ti ti-x"></i>Nem kérem</label>
+    </div>
+
+    <label class="acont jspin" for="s-persdata">Tovább</label>
+  </div>
+
   <!-- ============= INTERNET JOURNEY: HOZZAJARULASOK ============= -->
   <div class="screen formscr" data-screen="consent-decl" style="display:none;">
     <div class="dhead">
@@ -4444,6 +4839,7 @@
       var open = body.style.display !== 'none';
       body.style.display = open ? 'none' : 'block';
       chev.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+      var tog = h.querySelector('.acctoggle'); if(tog) tog.textContent = open ? 'Kinyit' : 'Elrejt';
     });
   });
 
