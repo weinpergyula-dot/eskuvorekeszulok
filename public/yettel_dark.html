@@ -336,6 +336,7 @@
   #s-ctvxnet:checked ~ [data-screen="ctv-xnet"],
   #s-ctvtvsel:checked ~ [data-screen="ctv-tvsel"],
   #s-ctvxtv:checked ~ [data-screen="ctv-xtv"],
+  #s-ctvloadavail:checked ~ [data-screen="ctv-loadavail"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
@@ -940,6 +941,15 @@
   .mboxchoice .xopt{font-family:'Sora'; font-weight:800; font-size:16px;}
   .tfsel{cursor:pointer;}
   #cxg-yes:checked ~ .xchoice .xopt[for="cxg-yes"],#cxg-no:checked ~ .xchoice .xopt[for="cxg-no"],#cxn-yes:checked ~ .xchoice .xopt[for="cxn-yes"],#cxn-no:checked ~ .xchoice .xopt[for="cxn-no"],#cxl-yes:checked ~ .xchoice .xopt[for="cxl-yes"],#cxl-no:checked ~ .xchoice .xopt[for="cxl-no"],#mb-0:checked ~ .xchoice .xopt[for="mb-0"],#mb-1:checked ~ .xchoice .xopt[for="mb-1"],#mb-2:checked ~ .xchoice .xopt[for="mb-2"],#mb-3:checked ~ .xchoice .xopt[for="mb-3"],#nps-yes:checked ~ .xchoice .xopt[for="nps-yes"],#nps-no:checked ~ .xchoice .xopt[for="nps-no"],#npb-yes:checked ~ .xchoice .xopt[for="npb-yes"],#npb-no:checked ~ .xchoice .xopt[for="npb-no"]{background:rgba(198,242,78,.12); border-color:var(--lime); color:var(--hi);}
+  .strow{display:flex; align-items:center; gap:12px; padding:13px 15px; border-radius:16px; margin-bottom:9px; cursor:pointer; background:var(--glass); border:1px solid var(--stroke); transition:border-color .18s, background .18s;}
+  .strow .stric{width:38px;height:38px;border-radius:11px; display:flex;align-items:center;justify-content:center; flex-shrink:0; background:rgba(198,242,78,.12); border:1px solid rgba(198,242,78,.2); font-size:18px; color:var(--lime);}
+  .strn{flex:1; font-family:'Sora'; font-size:14px; font-weight:700; color:var(--hi); display:flex; flex-direction:column; gap:2px;}
+  .strn small{font-family:'Manrope'; font-size:11.5px; font-weight:600; color:var(--mid);}
+  .strbox{width:24px;height:24px;border-radius:8px; border:1.5px solid var(--stroke); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .strbox i{font-size:15px; opacity:0; color:#0B1330;}
+  .strow:has(input:checked){background:rgba(198,242,78,.1); border-color:var(--lime);}
+  .strow:has(input:checked) .strbox{background:var(--lime); border-color:var(--lime);}
+  .strow:has(input:checked) .strbox i{opacity:1;}
 </style>
 </head>
 <body>
@@ -1018,6 +1028,7 @@
   <input class="rt" type="radio" name="nav" id="s-ctvxnet">
   <input class="rt" type="radio" name="nav" id="s-ctvtvsel">
   <input class="rt" type="radio" name="nav" id="s-ctvxtv">
+  <input class="rt" type="radio" name="nav" id="s-ctvloadavail">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
@@ -1243,7 +1254,7 @@
     </div>
 
     <div class="acc accouter">
-      <div class="acc-head accotop" data-acc><span class="at">Előfizetéseim</span><span class="acctoggle">Kinyit</span><i class="ti ti-chevron-down achev"></i></div>
+      <div class="acc-head accotop" data-acc><span class="at">Előfizetéseim</span><span class="acctoggle">Megjelenít</span><i class="ti ti-chevron-down achev"></i></div>
       <div class="acc-body" style="display:none;">
     <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
@@ -1291,7 +1302,7 @@
     </div>
 
     <div class="acc accouter">
-      <div class="acc-head accotop" data-acc><span class="at">Készülékeim</span><span class="acctoggle">Kinyit</span><i class="ti ti-chevron-down achev"></i></div>
+      <div class="acc-head accotop" data-acc><span class="at">Készülékeim</span><span class="acctoggle">Megjelenít</span><i class="ti ti-chevron-down achev"></i></div>
       <div class="acc-body" style="display:none;">
     <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
     <p class="mlab">Megvásárolt készülékek</p>
@@ -2656,7 +2667,7 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Megrendelem</span>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
     </label>
@@ -2673,7 +2684,7 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Megrendelem</span>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
     </label>
@@ -2709,7 +2720,7 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Megrendelem</span>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
     </label>
@@ -2726,7 +2737,7 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Megrendelem</span>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
     </label>
@@ -4386,7 +4397,7 @@
       <div class="afield"><input type="text" placeholder="6"></div>
       <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
     </div>
-    <label class="acont jspin" for="s-ctvavail">Tovább</label>
+    <label class="acont jbtn" for="s-ctvloadavail">Tovább</label>
   </div>
 
   <!-- ============= INTERNET + TV FLOW: AJÁNLATOK ============= -->
@@ -4415,7 +4426,7 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Megrendelem</span>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
     </label>
@@ -4432,7 +4443,7 @@
         <span class="tfdet">Részletek</span>
         <div class="tfprice">
           <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Megrendelem</span>
+          <span class="tford">Kiválasztom</span>
         </div>
       </div>
     </label>
@@ -4495,7 +4506,7 @@
     </div>
     <div class="stepper"><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
     <h2 class="buyhead">Válaszd ki a<br>TV-csomagod.</h2>
-    <p class="buysub">A YettelTV kábelmentes, online TV szolgáltatás. Az internetedhez kapcsoljuk.</p>
+    <p class="buysub">Mediaboxos TV az optikai internet mellé — előfeltétele az otthoni internet. (Ez nem a YettelTV, hanem beltéri egységgel működő TV.)</p>
     <p class="mlab">Elérhető TV-csomagok</p>
     <div class="tfcard pop">
       <span class="tfbadge">Népszerű</span>
@@ -4556,7 +4567,7 @@
     </div>
     <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
     <h2 class="buyhead">TV extrák</h2>
-    <p class="xscope"><i class="ti ti-device-tv"></i>Ezek az extrák a <b>YettelTV-hez</b> tartoznak</p>
+    <p class="xscope"><i class="ti ti-device-tv"></i>Ezek az extrák a <b>TV szolgáltatáshoz</b> tartoznak</p>
 
     <div class="xcard">
       <span class="xic"><i class="ti ti-device-tv"></i></span>
@@ -4578,20 +4589,10 @@
       <label class="xopt" for="mb-3">3</label>
     </div>
 
-    <div class="xcard">
-      <span class="xic"><i class="ti ti-lock"></i></span>
-      <div class="xtx">
-        <p class="xt">Gyermekzár</p>
-        <p class="xs">PIN-kóddal védett hozzáférés a korhatáros csatornákhoz és tartalmakhoz.</p>
-        <span class="xfree">Díjmentes</span>
-      </div>
-    </div>
-    <input class="rt" type="radio" name="x-lock-ctv" id="cxl-yes" checked>
-    <input class="rt" type="radio" name="x-lock-ctv" id="cxl-no">
-    <div class="xchoice">
-      <label class="xopt" for="cxl-yes"><i class="ti ti-check"></i>Kérem</label>
-      <label class="xopt" for="cxl-no"><i class="ti ti-x"></i>Nem kérem</label>
-    </div>
+    <p class="afl">Streaming szolgáltatások</p>
+    <label class="strow"><input type="checkbox" class="rt strchk-in" id="cs-hbo" data-strm="HBO Max"><span class="stric"><i class="ti ti-player-play"></i></span><span class="strn">HBO Max<small>2 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
+    <label class="strow"><input type="checkbox" class="rt strchk-in" id="cs-nflx" data-strm="Netflix"><span class="stric"><i class="ti ti-movie"></i></span><span class="strn">Netflix<small>4 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
+    <label class="strow" style="margin-bottom:16px;"><input type="checkbox" class="rt strchk-in" id="cs-rtl" data-strm="RTL Plusz"><span class="stric"><i class="ti ti-device-tv"></i></span><span class="strn">RTL Plusz<small>1 590 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
 
     <label class="acont jspin" for="s-persdata">Tovább</label>
   </div>
@@ -4685,8 +4686,15 @@
       <div class="krow"><span class="k">Csomag</span><span class="v strong sumpkg">HiperNet L</span></div>
       <div class="krow"><span class="k">Sávszélesség</span><span class="v sumbw">1000 Mbit/s</span></div>
       <div class="krow"><span class="k">Hűségidő</span><span class="v">12 hónap</span></div>
-      <div class="krow gvrow"><span class="k">Gyermekvédelmi szűrő</span><span class="v">Díjmentes</span></div>
+      <div class="krow gvrow"><span class="k">Gyermekvédelmi szűrő</span><span class="v sumgyv">Kérem (díjmentes)</span></div>
+      <div class="krow sumnprow"><span class="k">NetPajzs</span><span class="v sumnp">Nem kérem</span></div>
       <div class="krow"><span class="k">Telepítés</span><span class="v">Díjmentes</span></div>
+    </div>
+    <p class="mlab sumtvhead" style="display:none;">TV szolgáltatás</p>
+    <div class="gcard sumtvcard" style="display:none;">
+      <div class="krow"><span class="k">TV-csomag</span><span class="v strong sumtvpkg">—</span></div>
+      <div class="krow"><span class="k">Médiabox</span><span class="v summbox">0 db</span></div>
+      <div class="krow"><span class="k">Streaming</span><span class="v sumstrm">Nincs</span></div>
     </div>
     <p class="mlab">Fizetendő havidíj</p>
     <div class="tubal" style="display:block;">
@@ -4742,21 +4750,21 @@
         <label class="xopt" for="idt-3"><i class="ti ti-book"></i>Útlevél</label>
       </div>
       <p class="afl">Okmány száma</p>
-      <div class="afield"><input type="text" placeholder="pl. 123456AB"></div>
+      <div class="afield"><input type="text" placeholder="pl. 123456AB" value="123456AB"></div>
       <p class="afl">Név előtag</p>
       <div class="afield"><input type="text" placeholder="pl. Dr. (nem kötelező)"></div>
       <p class="afl">Vezetéknév</p>
-      <div class="afield"><input type="text" placeholder="Ahogy az okmányban szerepel"></div>
+      <div class="afield"><input type="text" placeholder="Ahogy az okmányban szerepel" value="Weinper"></div>
       <p class="afl">Keresztnév</p>
-      <div class="afield"><input type="text" placeholder="Ahogy az okmányban szerepel"></div>
+      <div class="afield"><input type="text" placeholder="Ahogy az okmányban szerepel" value="Gyula"></div>
       <p class="afl">Születési név</p>
-      <div class="afield"><input type="text" placeholder="Ha eltér, add meg"></div>
+      <div class="afield"><input type="text" placeholder="Ha eltér, add meg" value="Weinper Gyula"></div>
       <p class="afl">Anyja neve</p>
-      <div class="afield"><input type="text" placeholder="Anyja születési neve"></div>
+      <div class="afield"><input type="text" placeholder="Anyja születési neve" value="Kovács Mária"></div>
       <p class="afl">Születési hely</p>
-      <div class="afield"><input type="text" placeholder="Város"></div>
+      <div class="afield"><input type="text" placeholder="Város" value="Budapest"></div>
       <p class="afl">Születési idő</p>
-      <div class="afield"><input type="text" placeholder="ÉÉÉÉ. HH. NN."></div>
+      <div class="afield"><input type="text" placeholder="ÉÉÉÉ. HH. NN." value="1990. 05. 12."></div>
     </div>
     <label class="acont jbtn" for="s-load1">Adatok ellenőrzése</label>
   </div>
@@ -4764,7 +4772,7 @@
   <!-- ============= JOURNEY: ELLENORZES (1) ============= -->
   <div class="screen loadscr" data-screen="load-1" style="display:none;">
     <div class="loadinner">
-      <div class="loadspin" id="loadspin1"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet. Kérjük, ne zárd be az ablakot.</p></div>
+      <div class="loadspin" id="loadspin1"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet — érdemes egy picit várni. Kérjük, ne zárd be az ablakot.</p></div>
       <div class="loadok" id="loadok1" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres ellenőrzés!</p></div>
     </div>
   </div>
@@ -4781,19 +4789,19 @@
       <h2 class="buyhead" style="font-size:22px; margin-top:8px;">Lakcím adatok</h2>
       <div class="infobox"><span class="ibic"><i class="ti ti-home-check"></i></span><p>Az adatok hitelességét ellenőrizzük, ami néha hosszabb időt is igénybe vehet. Kérjük, pontosan úgy töltsd ki, <b>ahogyan a lakcímkártyádon szerepel</b>.</p></div>
       <p class="afl">Irányítószám</p>
-      <div class="afield"><input type="text" placeholder="pl. 1144"></div>
+      <div class="afield"><input type="text" placeholder="pl. 1144" value="1144"></div>
       <p class="afl">Település neve</p>
-      <div class="afield"><input type="text" placeholder="pl. Budapest"></div>
+      <div class="afield"><input type="text" placeholder="pl. Budapest" value="Budapest"></div>
       <p class="afl">Közterület neve</p>
-      <div class="afield"><input type="text" placeholder="pl. Ond vezér"></div>
+      <div class="afield"><input type="text" placeholder="pl. Ond vezér" value="Ond vezér"></div>
       <p class="afl">Közterület típusa</p>
-      <div class="afield"><input type="text" placeholder="pl. útja, utca, tér"></div>
+      <div class="afield"><input type="text" placeholder="pl. útja, utca, tér" value="útja"></div>
       <p class="afl">Házszám</p>
-      <div class="afield"><input type="text" placeholder="pl. 13-15."></div>
+      <div class="afield"><input type="text" placeholder="pl. 13-15." value="13-15."></div>
       <p class="afl">Emelet</p>
-      <div class="afield"><input type="text" placeholder="pl. 1. (nem kötelező)"></div>
+      <div class="afield"><input type="text" placeholder="pl. 1. (nem kötelező)" value="1."></div>
       <p class="afl">Ajtó</p>
-      <div class="afield"><input type="text" placeholder="pl. 12. (nem kötelező)"></div>
+      <div class="afield"><input type="text" placeholder="pl. 12. (nem kötelező)" value="12."></div>
     </div>
     <label class="acont jbtn" for="s-load2">Adatok ellenőrzése</label>
   </div>
@@ -4801,7 +4809,7 @@
   <!-- ============= JOURNEY: ELLENORZES (2) ============= -->
   <div class="screen loadscr" data-screen="load-2" style="display:none;">
     <div class="loadinner">
-      <div class="loadspin" id="loadspin2"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet. Kérjük, ne zárd be az ablakot.</p></div>
+      <div class="loadspin" id="loadspin2"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet — érdemes egy picit várni. Kérjük, ne zárd be az ablakot.</p></div>
       <div class="loadok" id="loadok2" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres ellenőrzés!</p></div>
     </div>
   </div>
@@ -4809,8 +4817,16 @@
   <!-- ============= JOURNEY: ELERHETOSEG ELLENORZESE ============= -->
   <div class="screen loadscr" data-screen="load-avail" style="display:none;">
     <div class="loadinner">
-      <div class="loadspin" id="loadspinA"><div class="spinner"></div><p class="loadt">Elérhetőség ellenőrzése…</p><p class="loads">Megnézzük, elérhető-e a kért szolgáltatás a megadott címen.</p></div>
+      <div class="loadspin" id="loadspinA"><div class="spinner"></div><p class="loadt">Elérhetőség ellenőrzése…</p><p class="loads">Megnézzük, elérhető-e a kért szolgáltatás a megadott címen. Érdemes egy picit várni.</p></div>
       <div class="loadok" id="loadokA" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Elérhető a címeden!</p></div>
+    </div>
+  </div>
+
+  <!-- ============= INTERNET + TV FLOW: CÍM ELLENŐRZÉSE ============= -->
+  <div class="screen loadscr" data-screen="ctv-loadavail" style="display:none;">
+    <div class="loadinner">
+      <div class="loadspin" id="loadspinC"><div class="spinner"></div><p class="loadt">Cím ellenőrzése…</p><p class="loads">Megnézzük, elérhető-e az internet és a TV a megadott címen. Érdemes egy picit várni.</p></div>
+      <div class="loadok" id="loadokC" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres címkeresés!</p></div>
     </div>
   </div>
 
@@ -4852,7 +4868,7 @@
       var open = body.style.display !== 'none';
       body.style.display = open ? 'none' : 'block';
       chev.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
-      var tog = h.querySelector('.acctoggle'); if(tog) tog.textContent = open ? 'Kinyit' : 'Elrejt';
+      var tog = h.querySelector('.acctoggle'); if(tog) tog.textContent = open ? 'Megjelenít' : 'Elrejt';
     });
   });
 
@@ -5104,6 +5120,57 @@
           var r = document.getElementById(ban.getAttribute('for')); if(r) r.checked = true;
         }
       }, true);
+    });
+  })();
+  /* internet / internet+TV journey: remember choices and build the summary */
+  (function(){
+    var od = {combo:false, gyv:true, np:false, tvpkg:'', tvprice:'', mbox:0, strm:[]};
+    function chk(id){ var e=document.getElementById(id); return !!(e && e.checked); }
+    function on(sel, fn){ var e=document.querySelector(sel); if(e) e.addEventListener('click', fn); }
+    on('[data-screen="extra-svc"] .acont[for="s-persdata"]', function(){ od.combo=false; od.gyv=chk('xs-yes'); od.np=chk('nps-yes'); });
+    on('[data-screen="extra-buy"] .acont[for="s-persdata"]', function(){ od.combo=false; od.gyv=chk('xb-yes'); od.np=chk('npb-yes'); });
+    on('[data-screen="ctv-xnet"] .acont[for="s-ctvtvsel"]', function(){ od.combo=true; od.gyv=chk('cxg-yes'); od.np=chk('cxn-yes'); });
+    Array.prototype.slice.call(document.querySelectorAll('[data-screen="ctv-tvsel"] .tfsel[for="s-ctvxtv"]')).forEach(function(l){
+      l.addEventListener('click', function(){
+        var card=l.closest('.tfcard'); if(!card) return;
+        var nm=card.querySelector('.tfname'), pr=card.querySelector('.tfp');
+        od.tvpkg = nm?nm.textContent.trim():'';
+        od.tvprice = pr?pr.textContent.replace(/\s*\/\s*h.*/,'').trim():'';
+      });
+    });
+    on('[data-screen="ctv-xtv"] .acont[for="s-persdata"]', function(){
+      var m=document.querySelector('input[name="x-mbox-ctv"]:checked');
+      od.mbox = m ? parseInt(m.id.replace('mb-',''),10) : 0;
+      od.strm = Array.prototype.slice.call(document.querySelectorAll('.strchk-in:checked')).map(function(c){ return c.getAttribute('data-strm'); });
+    });
+    var sumBtn = document.querySelector('label.jslot[for="s-ordsum"]');
+    if(sumBtn) sumBtn.addEventListener('click', function(){
+      var e;
+      if((e=document.querySelector('.sumgyv'))) e.textContent = od.gyv ? 'Kérem (díjmentes)' : 'Nem kérem';
+      if((e=document.querySelector('.sumnp')))  e.textContent = od.np ? 'Kérem · 490 Ft / hó' : 'Nem kérem';
+      var head=document.querySelector('.sumtvhead'), card=document.querySelector('.sumtvcard');
+      if(od.combo){
+        if(head) head.style.display=''; if(card) card.style.display='';
+        if((e=document.querySelector('.sumtvpkg'))) e.textContent = od.tvpkg ? (od.tvpkg + (od.tvprice? ' · '+od.tvprice+' / hó':'')) : '—';
+        if((e=document.querySelector('.summbox')))  e.textContent = od.mbox + ' db';
+        if((e=document.querySelector('.sumstrm')))  e.textContent = od.strm.length ? od.strm.join(', ') : 'Nincs';
+      } else {
+        if(head) head.style.display='none'; if(card) card.style.display='none';
+      }
+    });
+  })();
+  /* combined flow: availability loader after the address step (5s + success tick) */
+  (function(){
+    var btn = document.querySelector('label.jbtn[for="s-ctvloadavail"]');
+    var spin = document.getElementById('loadspinC'), ok = document.getElementById('loadokC');
+    if(!btn || !spin || !ok) return;
+    btn.addEventListener('click', function(){
+      spin.style.display='flex'; ok.style.display='none';
+      setTimeout(function(){
+        spin.style.display='none'; ok.style.display='flex';
+        var ic=ok.querySelector('.okpop'); if(ic){ ic.style.animation='none'; void ic.offsetWidth; ic.style.animation=''; }
+        setTimeout(function(){ var r=document.getElementById('s-ctvavail'); if(r) r.checked=true; }, 2000);
+      }, 5000);
     });
   })();
   document.addEventListener('click', function(){ closeAll(null); });
