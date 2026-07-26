@@ -960,6 +960,8 @@
   .dsvcgate i{font-size:15px;}
   [data-screen="str-pick"]:has(.strpick-in:checked) .dsvcgate{display:none;}
   [data-screen="str-pick"]:not(:has(.strpick-in:checked)) .acont[for="s-dsvcsum"]{opacity:.4; pointer-events:none;}
+  .screen:has(#strsrc-mob:checked) .selopt[for="strsrc-mob"],.screen:has(#strsrc-net:checked) .selopt[for="strsrc-net"]{background:rgba(198,242,78,.12); border-color:var(--lime);}
+  .screen:has(#strsrc-mob:checked) .selopt[for="strsrc-mob"]::after,.screen:has(#strsrc-net:checked) .selopt[for="strsrc-net"]::after{content:"\2713"; position:absolute; right:17px; top:50%; transform:translateY(-50%); font-size:15px; font-weight:800; color:var(--lime);}
 </style>
 </head>
 <body>
@@ -1057,11 +1059,11 @@
     <label class="mrow" for="s-alldev"><span class="mic"><i class="ti ti-devices"></i></span><span class="n">Készülékeim</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-billing"><span class="mic"><i class="ti ti-receipt"></i></span><span class="n">Számláim és fizetés</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="mrow"><span class="mic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
-    <label class="mrow" for="s-notif"><span class="mic"><i class="ti ti-bell"></i></span><span class="n">Értesítések</span><span class="mbadge">2</span></label>
     <p class="mlab2">Vásárlás</p>
     <label class="mrow" for="s-addservice" data-tab="ts-otthon"><span class="mic"><i class="ti ti-router"></i></span><span class="n">Otthoni szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-addservice" data-tab="ts-mobil"><span class="mic"><i class="ti ti-device-mobile"></i></span><span class="n">Mobil szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-strpick"><span class="mic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
+    <label class="mrow" for="s-nppick"><span class="mic"><i class="ti ti-shield-lock"></i></span><span class="n">NetPajzs</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-xdata1"><span class="mic"><i class="ti ti-database"></i></span><span class="n">Extra adatok</span><i class="ti ti-chevron-right chev"></i></label>
     <label class="mrow" for="s-xmin"><span class="mic"><i class="ti ti-phone-plus"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="mrow"><span class="mic"><i class="ti ti-device-tv"></i></span><span class="n">Extra médiabox</span><i class="ti ti-chevron-right chev"></i></div>
@@ -1398,7 +1400,7 @@
     <div class="gcard">
       <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o1"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-strpick"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-gyvpick"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Gyermekvédelmi szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming adat</span><i class="ti ti-chevron-right chev"></i></label>
@@ -1461,7 +1463,7 @@
     <div class="gcard">
       <div class="lrow"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></div>
       <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o3"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-strpick"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-strpick" data-strpre="strsrc-net"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-gyvpick"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Gyermekvédelmi szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-nppick"><span class="sic"><i class="ti ti-shield-lock"></i></span><span class="n">NetPajzs</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
@@ -4842,6 +4844,18 @@
     </div>
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Válaszd ki a<br>streaming csomagod.</h2>
     <p class="buysub">Válaszd ki, melyik szolgáltatásokat szeretnéd — egyszerre több is kérhető, és bármikor lemondható.</p>
+    <p class="mlab">Melyik szolgáltatáshoz?</p>
+    <input class="rt" type="radio" name="strsrc" id="strsrc-mob" checked>
+    <input class="rt" type="radio" name="strsrc" id="strsrc-net">
+    <label class="sub selopt" for="strsrc-mob">
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+    </label>
+    <label class="sub selopt" for="strsrc-net">
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+    </label>
+    <p class="mlab">Streaming csomagok</p>
     <label class="strow"><input type="checkbox" class="rt strpick-in" id="sp-hbo" data-strm="HBO Max" data-price="2490"><span class="stric"><i class="ti ti-player-play"></i></span><span class="strn">HBO Max<small>2 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
     <label class="strow"><input type="checkbox" class="rt strpick-in" id="sp-nflx" data-strm="Netflix" data-price="4490"><span class="stric"><i class="ti ti-movie"></i></span><span class="strn">Netflix<small>4 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
     <label class="strow" style="margin-bottom:8px;"><input type="checkbox" class="rt strpick-in" id="sp-rtl" data-strm="RTL Plusz" data-price="1590"><span class="stric"><i class="ti ti-device-tv"></i></span><span class="strn">RTL Plusz<small>1 590 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
@@ -4878,6 +4892,11 @@
     </div>
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">NetPajzs<br>védelem.</h2>
     <p class="buysub">Hálózati szintű védelem az otthoni interneted minden eszközén — külön telepítés nélkül.</p>
+    <p class="mlab">Ehhez a szolgáltatáshoz</p>
+    <div class="sub">
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+    </div>
     <div class="xcard">
       <span class="xic"><i class="ti ti-shield-lock"></i></span>
       <div class="xtx">
@@ -5271,7 +5290,7 @@
   })();
   /* digital service order (streaming / gyermekvédelem / NetPajzs): pick -> summary -> success */
   (function(){
-    var dsvc = {kind:'', items:[]};
+    var dsvc = {kind:'', target:'', items:[]};
     function fmt(n){ var s=String(n), o=''; for(var i=0;i<s.length;i++){ if(i>0 && (s.length-i)%3===0) o+=' '; o+=s.charAt(i); } return o+' Ft'; }
     function on(sel, fn){ var e=document.querySelector(sel); if(e) e.addEventListener('click', fn); }
     function render(){
@@ -5283,22 +5302,24 @@
         rows.push('<div class="krow"><span class="k">'+it.name+'</span><span class="v strong">'+val+'</span></div>');
       });
       if(!rows.length) rows.push('<div class="krow"><span class="k">Nincs kiválasztva</span><span class="v">—</span></div>');
+      if(dsvc.target) rows.unshift('<div class="krow"><span class="k">Ehhez a szolgáltatáshoz</span><span class="v">'+dsvc.target+'</span></div>');
       list.innerHTML = rows.join('');
       var k=document.querySelector('.dsvckind'); if(k) k.textContent = dsvc.kind ? ('Megrendelt szolgáltatás · '+dsvc.kind) : 'Megrendelt szolgáltatás';
       var t=document.querySelector('.dsvctotal'); if(t) t.textContent = fmt(total);
     }
     on('[data-screen="str-pick"] .acont[for="s-dsvcsum"]', function(){
       dsvc.kind='Streaming';
+      var src=document.querySelector('input[name="strsrc"]:checked');
+      dsvc.target = src ? (src.id==='strsrc-net' ? 'Internet · Otthoni Net 1000' : 'Havidíjas mobil · Prime Plus 2024') : '';
       dsvc.items = Array.prototype.slice.call(document.querySelectorAll('[data-screen="str-pick"] .strpick-in:checked')).map(function(c){
         return {name:c.getAttribute('data-strm'), price:parseInt(c.getAttribute('data-price'),10)};
       });
       render();
     });
-    on('[data-screen="gyv-pick"] .acont[for="s-dsvcsum"]', function(){
-      dsvc.kind='Gyermekvédelem'; dsvc.items=[{name:'Gyermekvédelmi szűrő', price:0, free:true}]; render();
-    });
-    on('[data-screen="np-pick"] .acont[for="s-dsvcsum"]', function(){
-      dsvc.kind='NetPajzs'; dsvc.items=[{name:'NetPajzs', price:490}]; render();
+    on('[data-screen="gyv-pick"] .acont[for="s-dsvcsum"]', function(){ dsvc.kind='Gyermekvédelem'; dsvc.target=''; dsvc.items=[{name:'Gyermekvédelmi szűrő', price:0, free:true}]; render(); });
+    on('[data-screen="np-pick"] .acont[for="s-dsvcsum"]', function(){ dsvc.kind='NetPajzs'; dsvc.target='Internet · Otthoni Net 1000'; dsvc.items=[{name:'NetPajzs', price:490}]; render(); });
+    Array.prototype.slice.call(document.querySelectorAll('[data-strpre]')).forEach(function(el){
+      el.addEventListener('click', function(){ var r=document.getElementById(el.getAttribute('data-strpre')); if(r) r.checked=true; });
     });
   })();
   document.addEventListener('click', function(){ closeAll(null); });
