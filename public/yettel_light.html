@@ -1265,24 +1265,24 @@
     <div class="acc">
       <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>4</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
       <div class="acc-body">
-        <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
+        <div class="sub" style="position:relative;" data-sub="mob-7430"><label class="subcover" for="s-detail"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <label class="substrm" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
-        <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
+        <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+        <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detail"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <div class="sub" style="position:relative;"><label class="subcover" for="s-detailpre1"></label>
+        <div class="sub" style="position:relative;" data-sub="mob-9734"><label class="subcover" for="s-detailpre1"></label>
           <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
-        <div class="sub" style="position:relative;"><label class="subcover" for="s-detailpre2"></label>
+        <div class="sub" style="position:relative;" data-sub="mob-8812"><label class="subcover" for="s-detailpre2"></label>
           <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
           <i class="ti ti-chevron-right chev"></i>
@@ -1293,7 +1293,7 @@
     <div class="acc">
       <div class="acc-head" data-acc><span class="at">Otthoni szolgáltatások <small>1</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
       <div class="acc-body">
-        <div class="sub" data-goto="detail-net" style="position:relative;"><label class="subcover" for="s-detail-net"></label>
+        <div class="sub" data-goto="detail-net" style="position:relative;" data-sub="net"><label class="subcover" for="s-detail-net"></label>
           <div class="itile blue"><i class="ti ti-router"></i></div>
           <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
           <i class="ti ti-chevron-right chev"></i>
@@ -1407,7 +1407,7 @@
       <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+    <button class="cancel" data-cancel="mob-7430 tv strm-hbo strm-nflx strm-rtl gyv"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
 
   </div>
 
@@ -1466,7 +1466,7 @@
       <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+    <button class="cancel" data-cancel="net net-new netpajzs"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <!-- ============= DETAIL: TV ============= -->
@@ -1515,7 +1515,7 @@
       <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+    <button class="cancel" data-cancel="tv tv-new"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <!-- ============= ADD SERVICE ============= -->
@@ -1531,31 +1531,31 @@
     <label class="addsvc" for="s-addservice" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
     <p class="mlab">Mobil szolgáltatások</p>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
+    <div class="sub" style="position:relative;" data-sub="mob-7430"><label class="subcover" for="s-detail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <label class="substrm" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="substrm" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-detail"></label>
+    <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
+    <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+    <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detail"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-detailpre1"></label>
+    <div class="sub" style="position:relative;" data-sub="mob-9734"><label class="subcover" for="s-detailpre1"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-detailpre2"></label>
+    <div class="sub" style="position:relative;" data-sub="mob-8812"><label class="subcover" for="s-detailpre2"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
     <p class="mlab">Otthoni szolgáltatások</p>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-detail-net"></label>
+    <div class="sub" style="position:relative;" data-sub="net"><label class="subcover" for="s-detail-net"></label>
       <div class="itile blue"><i class="ti ti-router"></i></div>
       <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
       <i class="ti ti-chevron-right chev"></i>
@@ -3645,7 +3645,7 @@
     <div class="gcard" style="margin-top:22px;">
       <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+    <button class="cancel" data-cancel="mob-9734"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <div class="screen" data-screen="detail-pre2" style="display:none;">
@@ -3691,7 +3691,7 @@
     <div class="gcard" style="margin-top:22px;">
       <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+    <button class="cancel" data-cancel="mob-8812"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <!-- ============= SZERKESZTES ============= -->
@@ -4098,7 +4098,7 @@
     <div class="gcard">
       <div class="lrow codelink" data-code="HBOX-4821-9F3K"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+    <button class="cancel" data-cancel="strm-hbo"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <div class="screen" data-screen="strm-2" style="display:none;">
@@ -4127,7 +4127,7 @@
     <div class="gcard">
       <div class="lrow codelink" data-code="NFLX-7A2C-11QD"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+    <button class="cancel" data-cancel="strm-nflx"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <div class="screen" data-screen="strm-3" style="display:none;">
@@ -4156,7 +4156,7 @@
     <div class="gcard">
       <div class="lrow codelink" data-code="RTLP-6620-8B4M"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+    <button class="cancel" data-cancel="strm-hbo"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <!-- ============= TOVÁBBI KÉSZÜLÉK RÉSZLETEK ============= -->
@@ -5309,6 +5309,94 @@
       el.addEventListener('click', function(){ var r=document.getElementById(el.getAttribute('data-strpre')); if(r) r.checked=true; });
     });
   })();
+  /* subscription state: orders add rows, cancellations remove them (home + all-subs) */
+  (function(){
+    function all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+    /* persistent end-of-section anchors so otthoni inserts survive even if the internet sub is cancelled */
+    all('.acc-head .at').forEach(function(at){
+      if(at.textContent.indexOf('Otthoni')>=0){
+        var b=at.closest('.acc-head').nextElementSibling;
+        if(b && !b.querySelector(':scope > [data-anchor="otthoni"]')){ var s=document.createElement('span'); s.setAttribute('data-anchor','otthoni'); s.style.display='none'; b.appendChild(s); }
+      }
+    });
+    var asub=document.querySelector('[data-screen="all-subs"]');
+    if(asub && !asub.querySelector('[data-anchor="otthoni"]')){ var s=document.createElement('span'); s.setAttribute('data-anchor','otthoni'); s.style.display='none'; asub.appendChild(s); }
+
+    function recount(){
+      all('.acc-head .at small').forEach(function(sm){
+        var body=sm.closest('.acc-head').nextElementSibling; if(!body) return;
+        sm.textContent = body.querySelectorAll(':scope > .sub').length;
+      });
+    }
+    function addRow(anchorSel, pos, subId, html){
+      all(anchorSel).forEach(function(anchor){
+        var parent=anchor.parentNode; if(!parent) return;
+        if(parent.querySelector(':scope > [data-sub="'+subId+'"]')) return;
+        var tmp=document.createElement('div'); tmp.innerHTML=html.trim();
+        var node=tmp.firstElementChild; if(!node) return;
+        parent.insertBefore(node, pos==='before' ? anchor : anchor.nextSibling);
+      });
+      recount();
+    }
+    function removeSub(ids){
+      (ids||'').split(/\s+/).forEach(function(id){ if(!id) return; all('[data-sub="'+id+'"]').forEach(function(n){ n.remove(); }); });
+      recount();
+    }
+    var STRM = {'HBO Max':{k:'hbo',ic:'ti-player-play',d:'s-strm3'},'Netflix':{k:'nflx',ic:'ti-movie',d:'s-strm2'},'RTL Plusz':{k:'rtl',ic:'ti-device-tv',d:'s-strm3'}};
+    function strmRow(name){
+      var m=STRM[name]||{k:'x',ic:'ti-player-play',d:'s-strm3'};
+      return {id:'strm-'+m.k, html:'<label class="substrm" data-sub="strm-'+m.k+'" for="'+m.d+'"><span class="ssic"><i class="ti '+m.ic+'"></i></span><span class="ssn">'+name+'</span><i class="ti ti-chevron-right chev"></i></label>'};
+    }
+    function featRow(id,name,ic){
+      return '<div class="substrm" data-sub="'+id+'"><span class="ssic"><i class="ti '+ic+'"></i></span><span class="ssn">'+name+'<span class="sssub">Aktív</span></span></div>';
+    }
+    function netSub(pkg){ return '<div class="sub" data-sub="net-new" style="position:relative;"><label class="subcover" for="s-detail-net"></label><div class="itile blue"><i class="ti ti-router"></i></div><div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Új megrendelés</p><p class="s">Internet · '+pkg+'</p></div><i class="ti ti-chevron-right chev"></i></div>'; }
+    function tvSub(pkg){ return '<div class="sub" data-sub="tv-new" style="position:relative;"><label class="subcover" for="s-detail-tv"></label><div class="itile violet"><i class="ti ti-device-tv"></i></div><div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Új megrendelés</p><p class="s">TV · '+pkg+'</p></div><i class="ti ti-chevron-right chev"></i></div>'; }
+
+    /* ORDER: digital services (streaming / gyermekvédelem / NetPajzs) */
+    var dsvcBtn=document.querySelector('label[for="s-dsvcok"]');
+    if(dsvcBtn) dsvcBtn.addEventListener('click', function(){
+      var ke=document.querySelector('.dsvckind'); var kind = ke ? ke.textContent.split('·').pop().trim() : '';
+      var target='', names=[];
+      all('#dsvclist .krow').forEach(function(r){
+        var k=r.querySelector('.k'), v=r.querySelector('.v'); if(!k) return;
+        var kt=k.textContent.trim();
+        if(kt==='Ehhez a szolgáltatáshoz'){ target = v?v.textContent.trim():''; return; }
+        if(kt==='Nincs kiválasztva') return;
+        names.push(kt);
+      });
+      if(kind==='Streaming'){
+        var toNet = (target.indexOf('Internet')===0);
+        names.forEach(function(nm){ var r=strmRow(nm); if(toNet) addRow('[data-anchor="otthoni"]','before', r.id, r.html); else addRow('[data-sub="mob-7430"]','after', r.id, r.html); });
+      } else if(kind==='NetPajzs'){
+        addRow('[data-anchor="otthoni"]','before','netpajzs', featRow('netpajzs','NetPajzs','ti-shield-lock'));
+      } else if(kind==='Gyermekvédelem'){
+        addRow('[data-sub="mob-7430"]','after','gyv', featRow('gyv','Gyermekvédelmi szűrő','ti-shield-check'));
+      }
+    });
+
+    /* ORDER: physical internet / internet+TV */
+    var ordBtn=document.querySelector('label[for="s-ordok"]');
+    if(ordBtn) ordBtn.addEventListener('click', function(){
+      var netPkg='', tvPkg='';
+      all('#sumlist .krow').forEach(function(r){
+        var k=r.querySelector('.k'); if(!k) return; var kt=k.textContent.trim();
+        var sub=k.querySelector('.sumsub'); var sv=sub?sub.textContent.trim():'';
+        if(kt.indexOf('Otthoni internet')===0) netPkg=sv||'HiperNet L';
+        if(kt.indexOf('TV szolgáltatás')===0) tvPkg=sv||'TV Extra';
+      });
+      if(netPkg) addRow('[data-anchor="otthoni"]','before','net-new', netSub(netPkg));
+      if(tvPkg) addRow('[data-anchor="otthoni"]','before','tv-new', tvSub(tvPkg));
+    });
+
+    /* CANCELLATION: any detail's "Szolgáltatás lemondása" */
+    all('[data-cancel]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        removeSub(btn.getAttribute('data-cancel'));
+        var h=document.getElementById('s-home'); if(h) h.checked=true;
+      });
+    });
+  })();
   document.addEventListener('click', function(){ closeAll(null); });
 })();
 </script>
@@ -5323,7 +5411,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop';
+  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
