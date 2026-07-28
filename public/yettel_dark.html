@@ -962,6 +962,21 @@
   [data-screen="str-pick"]:not(:has(.strpick-in:checked)) .acont[for="s-dsvcsum"]{opacity:.4; pointer-events:none;}
   .screen:has(#strsrc-mob:checked) .selopt[for="strsrc-mob"],.screen:has(#strsrc-net:checked) .selopt[for="strsrc-net"]{background:rgba(198,242,78,.12); border-color:var(--lime);}
   .screen:has(#strsrc-mob:checked) .selopt[for="strsrc-mob"]::after,.screen:has(#strsrc-net:checked) .selopt[for="strsrc-net"]::after{content:"\2713"; position:absolute; right:17px; top:50%; transform:translateY(-50%); font-size:15px; font-weight:800; color:var(--lime);}
+  #bt-monthly:checked ~ .billpane-monthly,#bt-other:checked ~ .billpane-other{display:block;}
+  #bt-monthly:checked ~ .tabs .tab[for="bt-monthly"],#bt-other:checked ~ .tabs .tab[for="bt-other"]{background:#FFFFFF; color:#14245E; font-weight:700;}
+  .invcard{border-radius:16px; background:var(--glass); border:1px solid var(--stroke); margin-bottom:10px; overflow:hidden;}
+  .invtop{display:flex; align-items:center;}
+  .invchk{display:flex; align-items:center; padding:14px 4px 14px 15px; cursor:pointer;}
+  .invmain{flex:1; min-width:0; display:flex; align-items:center; gap:12px; padding:14px 15px 14px 9px; background:none; border:0; cursor:pointer; text-align:left; font-family:inherit; color:inherit;}
+  .invchev{transition:transform .25s;}
+  .invcard.open .invchev{transform:rotate(180deg);}
+  .invbody{padding:4px 15px 15px; border-top:1px solid var(--stroke);}
+  .invbody .krow{padding:9px 0;}
+  .invcta{display:flex; gap:10px; margin-top:14px;}
+  .invbtn{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:12px; border-radius:12px; font-size:13px; font-weight:700; cursor:pointer; border:1px solid var(--stroke); font-family:inherit;}
+  .invbtn i{font-size:16px;}
+  .invbtn.primary{background:var(--lime); color:#0B1330; border-color:var(--lime);}
+  .invbtn.ghost{background:transparent; color:var(--hi);}
 </style>
 </head>
 <body>
@@ -3492,13 +3507,116 @@
     <button class="acont" style="margin-top:14px;">Fizetés</button>
 
     <p class="mlab">Számláim</p>
-    <div class="gcard">
-      <label class="lrow paysel"><input type="checkbox" class="rt" data-pay="7990" checked><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">2026. július<small class="ninv">Lejárt · 7 990 Ft</small></span><span class="paychk"><i class="ti ti-check"></i></span></label>
-      <label class="lrow paysel"><input type="checkbox" class="rt" data-pay="8490" checked><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">2026. június<small class="ninv">Lejárt · 8 490 Ft</small></span><span class="paychk"><i class="ti ti-check"></i></span></label>
-      <div class="lrow"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">2026. május<small class="ninv">Kifizetve · 8 490 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">2026. április<small class="ninv">Kifizetve · 7 990 Ft</small></span><i class="ti ti-chevron-right chev"></i></div>
+    <input class="rt" type="radio" name="billtab" id="bt-monthly" checked>
+    <input class="rt" type="radio" name="billtab" id="bt-other">
+    <div class="tabs">
+      <label class="tab" for="bt-monthly">Havi számlák</label>
+      <label class="tab" for="bt-other">Egyéb számlák</label>
     </div>
 
+    <div class="tabpane billpane-monthly">
+      <div class="invcard">
+        <div class="invtop">
+          <label class="invchk paysel"><input type="checkbox" class="rt" data-pay="7990" checked><span class="paychk"><i class="ti ti-check"></i></span></label>
+          <button class="invmain" data-inv type="button"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">2026. július<small class="ninv">Lejárt · 7 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+        </div>
+        <div class="invbody" style="display:none;">
+          <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/07-4821</span></div>
+          <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 07. 01.</span></div>
+          <div class="krow"><span class="k">Fizetési határidő</span><span class="v">2026. 07. 15.</span></div>
+          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">7 990 Ft</span></div>
+          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#E8615F; font-weight:700;">Lejárt</span></div>
+          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button><button class="invbtn ghost" data-invclose type="button">Bezárás</button></div>
+        </div>
+      </div>
+      <div class="invcard">
+        <div class="invtop">
+          <label class="invchk paysel"><input type="checkbox" class="rt" data-pay="8490" checked><span class="paychk"><i class="ti ti-check"></i></span></label>
+          <button class="invmain" data-inv type="button"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">2026. június<small class="ninv">Lejárt · 8 490 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+        </div>
+        <div class="invbody" style="display:none;">
+          <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/06-3915</span></div>
+          <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 06. 01.</span></div>
+          <div class="krow"><span class="k">Fizetési határidő</span><span class="v">2026. 06. 15.</span></div>
+          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">8 490 Ft</span></div>
+          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#E8615F; font-weight:700;">Lejárt</span></div>
+          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button><button class="invbtn ghost" data-invclose type="button">Bezárás</button></div>
+        </div>
+      </div>
+      <div class="invcard">
+        <div class="invtop">
+          <label class="invchk paysel"><input type="checkbox" class="rt"><span class="paychk"><i class="ti ti-check"></i></span></label>
+          <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">2026. május<small class="ninv">Kifizetve · 8 490 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+        </div>
+        <div class="invbody" style="display:none;">
+          <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/05-2740</span></div>
+          <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 05. 01.</span></div>
+          <div class="krow"><span class="k">Kifizetve</span><span class="v">2026. 05. 12.</span></div>
+          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">8 490 Ft</span></div>
+          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
+          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button><button class="invbtn ghost" data-invclose type="button">Bezárás</button></div>
+        </div>
+      </div>
+      <div class="invcard">
+        <div class="invtop">
+          <label class="invchk paysel"><input type="checkbox" class="rt"><span class="paychk"><i class="ti ti-check"></i></span></label>
+          <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">2026. április<small class="ninv">Kifizetve · 7 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+        </div>
+        <div class="invbody" style="display:none;">
+          <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/04-1663</span></div>
+          <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 04. 01.</span></div>
+          <div class="krow"><span class="k">Kifizetve</span><span class="v">2026. 04. 10.</span></div>
+          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">7 990 Ft</span></div>
+          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
+          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button><button class="invbtn ghost" data-invclose type="button">Bezárás</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabpane billpane-other">
+      <div class="invcard">
+        <div class="invtop">
+          <label class="invchk paysel"><input type="checkbox" class="rt"><span class="paychk"><i class="ti ti-check"></i></span></label>
+          <button class="invmain" data-inv type="button"><span class="sic"><i class="ti ti-device-mobile"></i></span><span class="n">iPhone 15 Pro<small class="ninv">Eszközvásárlás · 449 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+        </div>
+        <div class="invbody" style="display:none;">
+          <div class="krow"><span class="k">Számlaszám</span><span class="v">2025/03-1180</span></div>
+          <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2025. 03. 15.</span></div>
+          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">449 990 Ft</span></div>
+          <div class="krow"><span class="k">Fizetési mód</span><span class="v">Részletfizetés · 12 hó</span></div>
+          <div class="krow"><span class="k">Státusz</span><span class="v">Folyamatban</span></div>
+          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button><button class="invbtn ghost" data-invclose type="button">Bezárás</button></div>
+        </div>
+      </div>
+      <div class="invcard">
+        <div class="invtop">
+          <label class="invchk paysel"><input type="checkbox" class="rt"><span class="paychk"><i class="ti ti-check"></i></span></label>
+          <button class="invmain" data-inv type="button"><span class="sic"><i class="ti ti-device-watch"></i></span><span class="n">Apple Watch SE<small class="ninv">Eszközvásárlás · 89 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+        </div>
+        <div class="invbody" style="display:none;">
+          <div class="krow"><span class="k">Számlaszám</span><span class="v">2025/07-2044</span></div>
+          <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2025. 07. 10.</span></div>
+          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">89 990 Ft</span></div>
+          <div class="krow"><span class="k">Fizetési mód</span><span class="v">Részletfizetés · 12 hó</span></div>
+          <div class="krow"><span class="k">Státusz</span><span class="v">Folyamatban</span></div>
+          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button><button class="invbtn ghost" data-invclose type="button">Bezárás</button></div>
+        </div>
+      </div>
+      <div class="invcard">
+        <div class="invtop">
+          <label class="invchk paysel"><input type="checkbox" class="rt"><span class="paychk"><i class="ti ti-check"></i></span></label>
+          <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-device-mobile"></i></span><span class="n">Samsung Galaxy A55<small class="ninv">Eszközvásárlás · 149 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+        </div>
+        <div class="invbody" style="display:none;">
+          <div class="krow"><span class="k">Számlaszám</span><span class="v">2024/05-8827</span></div>
+          <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2024. 05. 12.</span></div>
+          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">149 990 Ft</span></div>
+          <div class="krow"><span class="k">Fizetési mód</span><span class="v">Egyösszegű</span></div>
+          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
+          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button><button class="invbtn ghost" data-invclose type="button">Bezárás</button></div>
+        </div>
+      </div>
+    </div>
     <p class="mlab">Fizetési mód</p>
     <div class="gcard">
       <div class="lrow"><span class="sic"><i class="ti ti-credit-card"></i></span><span class="n">Bankkártya · **** 6411</span><i class="ti ti-circle-check chev" style="color:var(--lime);"></i></div>
@@ -5408,6 +5526,28 @@
         removeSub(btn.getAttribute('data-cancel'));
         var h=document.getElementById('s-home'); if(h) h.checked=true;
       });
+    });
+  })();
+  /* invoices: expand a row to show its details + Számlakép / Bezárás */
+  (function(){
+    Array.prototype.slice.call(document.querySelectorAll('.invmain[data-inv]')).forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var card=btn.closest('.invcard'); if(!card) return;
+        var body=card.querySelector('.invbody'); if(!body) return;
+        var open=card.classList.toggle('open');
+        body.style.display = open ? 'block' : 'none';
+      });
+    });
+    Array.prototype.slice.call(document.querySelectorAll('[data-invclose]')).forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var card=btn.closest('.invcard'); if(!card) return;
+        card.classList.remove('open');
+        var body=card.querySelector('.invbody'); if(body) body.style.display='none';
+      });
+    });
+    var wip=document.getElementById('wip');
+    Array.prototype.slice.call(document.querySelectorAll('[data-invimg]')).forEach(function(btn){
+      btn.addEventListener('click', function(){ if(wip) wip.classList.add('on'); });
     });
   })();
   document.addEventListener('click', function(){ closeAll(null); });
