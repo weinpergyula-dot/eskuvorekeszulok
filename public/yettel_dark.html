@@ -978,6 +978,10 @@
   .invbtn{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:12px; border-radius:12px; font-size:13px; font-weight:700; cursor:pointer; border:1px solid var(--stroke); font-family:inherit;}
   .invbtn i{font-size:16px;}
   .invbtn.primary{background:var(--lime); color:#0B1330; border-color:var(--lime);}
+  .tabsbig{margin:2px 0 16px;}
+  .tabsbig .tab{padding:13px 8px; font-size:13px;}
+  #bm-inv:checked ~ .billmain-inv,#bm-pay:checked ~ .billmain-pay{display:block;}
+  #bm-inv:checked ~ .tabsbig .tab[for="bm-inv"],#bm-pay:checked ~ .tabsbig .tab[for="bm-pay"]{background:#FFFFFF; color:#14245E; font-weight:700;}
 </style>
 </head>
 <body>
@@ -3500,130 +3504,141 @@
       <div style="width:42px"></div>
     </div>
 
-    <div class="tubal" style="display:block;">
-      <p class="tubl">Fizetendő (2 lejárt számla)</p>
-      <p class="tubv">16 480 Ft</p>
-      <p class="tube">Kérjük, mielőbb rendezd</p>
-    </div>
-    <button class="acont" style="margin-top:14px;">Fizetés</button>
-
-    <p class="mlab">Számláim</p>
-    <input class="rt" type="radio" name="billtab" id="bt-monthly" checked>
-    <input class="rt" type="radio" name="billtab" id="bt-other">
-    <div class="tabs">
-      <label class="tab" for="bt-monthly">Havi számlák</label>
-      <label class="tab" for="bt-other">Egyéb számlák</label>
+    <input class="rt" type="radio" name="billmain" id="bm-inv" checked>
+    <input class="rt" type="radio" name="billmain" id="bm-pay">
+    <div class="tabs tabsbig">
+      <label class="tab" for="bm-inv">Számláim</label>
+      <label class="tab" for="bm-pay">Fizetési beállítások</label>
     </div>
 
-    <div class="tabpane billpane-monthly">
-      <div class="invcard">
-        <div class="invtop">
-          <label class="invchk paysel"><input type="checkbox" class="rt" data-pay="7990" checked><span class="paychk"><i class="ti ti-check"></i></span></label>
-          <button class="invmain" data-inv type="button"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">2026. július<small class="ninv">Lejárt · 7 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+    <div class="tabpane billmain-inv">
+      <input class="rt" type="radio" name="billtab" id="bt-monthly" checked>
+      <input class="rt" type="radio" name="billtab" id="bt-other">
+      <div class="tabs">
+        <label class="tab" for="bt-monthly">Havi számlák</label>
+        <label class="tab" for="bt-other">Egyéb számlák</label>
+      </div>
+
+      <div class="tabpane billpane-monthly">
+        <div class="invcard">
+          <div class="invtop">
+            <label class="invchk paysel"><input type="checkbox" class="rt" data-pay="7990" checked><span class="paychk"><i class="ti ti-check"></i></span></label>
+            <button class="invmain" data-inv type="button"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">2026. július<small class="ninv">Lejárt · 7 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+          </div>
+          <div class="invbody" style="display:none;">
+            <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/07-4821</span></div>
+            <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 07. 01.</span></div>
+            <div class="krow"><span class="k">Fizetési határidő</span><span class="v">2026. 07. 15.</span></div>
+            <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">7 990 Ft</span></div>
+            <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#E8615F; font-weight:700;">Lejárt</span></div>
+            <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+          </div>
         </div>
-        <div class="invbody" style="display:none;">
-          <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/07-4821</span></div>
-          <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 07. 01.</span></div>
-          <div class="krow"><span class="k">Fizetési határidő</span><span class="v">2026. 07. 15.</span></div>
-          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">7 990 Ft</span></div>
-          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#E8615F; font-weight:700;">Lejárt</span></div>
-          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+        <div class="invcard">
+          <div class="invtop">
+            <label class="invchk paysel"><input type="checkbox" class="rt" data-pay="8490" checked><span class="paychk"><i class="ti ti-check"></i></span></label>
+            <button class="invmain" data-inv type="button"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">2026. június<small class="ninv">Lejárt · 8 490 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+          </div>
+          <div class="invbody" style="display:none;">
+            <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/06-3915</span></div>
+            <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 06. 01.</span></div>
+            <div class="krow"><span class="k">Fizetési határidő</span><span class="v">2026. 06. 15.</span></div>
+            <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">8 490 Ft</span></div>
+            <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#E8615F; font-weight:700;">Lejárt</span></div>
+            <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+          </div>
+        </div>
+        <div class="invcard">
+          <div class="invtop">
+            <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">2026. május<small class="ninv">Kifizetve · 8 490 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+          </div>
+          <div class="invbody" style="display:none;">
+            <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/05-2740</span></div>
+            <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 05. 01.</span></div>
+            <div class="krow"><span class="k">Kifizetve</span><span class="v">2026. 05. 12.</span></div>
+            <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">8 490 Ft</span></div>
+            <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
+            <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+          </div>
+        </div>
+        <div class="invcard">
+          <div class="invtop">
+            <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">2026. április<small class="ninv">Kifizetve · 7 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+          </div>
+          <div class="invbody" style="display:none;">
+            <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/04-1663</span></div>
+            <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 04. 01.</span></div>
+            <div class="krow"><span class="k">Kifizetve</span><span class="v">2026. 04. 10.</span></div>
+            <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">7 990 Ft</span></div>
+            <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
+            <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+          </div>
         </div>
       </div>
-      <div class="invcard">
-        <div class="invtop">
-          <label class="invchk paysel"><input type="checkbox" class="rt" data-pay="8490" checked><span class="paychk"><i class="ti ti-check"></i></span></label>
-          <button class="invmain" data-inv type="button"><span class="sic warn"><i class="ti ti-file-invoice"></i></span><span class="n">2026. június<small class="ninv">Lejárt · 8 490 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+
+      <div class="tabpane billpane-other">
+        <div class="invcard">
+          <div class="invtop">
+            <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-device-mobile"></i></span><span class="n">iPhone 15 Pro<small class="ninv">Eszközvásárlás · 449 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+          </div>
+          <div class="invbody" style="display:none;">
+            <div class="krow"><span class="k">Számlaszám</span><span class="v">2025/03-1180</span></div>
+            <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2025. 03. 15.</span></div>
+            <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">449 990 Ft</span></div>
+            <div class="krow"><span class="k">Fizetési mód</span><span class="v">Egyösszegű</span></div>
+            <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
+            <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+          </div>
         </div>
-        <div class="invbody" style="display:none;">
-          <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/06-3915</span></div>
-          <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 06. 01.</span></div>
-          <div class="krow"><span class="k">Fizetési határidő</span><span class="v">2026. 06. 15.</span></div>
-          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">8 490 Ft</span></div>
-          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#E8615F; font-weight:700;">Lejárt</span></div>
-          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+        <div class="invcard">
+          <div class="invtop">
+            <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-device-watch"></i></span><span class="n">Apple Watch SE<small class="ninv">Eszközvásárlás · 89 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+          </div>
+          <div class="invbody" style="display:none;">
+            <div class="krow"><span class="k">Számlaszám</span><span class="v">2025/07-2044</span></div>
+            <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2025. 07. 10.</span></div>
+            <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">89 990 Ft</span></div>
+            <div class="krow"><span class="k">Fizetési mód</span><span class="v">Egyösszegű</span></div>
+            <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
+            <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+          </div>
         </div>
-      </div>
-      <div class="invcard">
-        <div class="invtop">
-          <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">2026. május<small class="ninv">Kifizetve · 8 490 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
-        </div>
-        <div class="invbody" style="display:none;">
-          <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/05-2740</span></div>
-          <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 05. 01.</span></div>
-          <div class="krow"><span class="k">Kifizetve</span><span class="v">2026. 05. 12.</span></div>
-          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">8 490 Ft</span></div>
-          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
-          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
-        </div>
-      </div>
-      <div class="invcard">
-        <div class="invtop">
-          <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-file-invoice"></i></span><span class="n">2026. április<small class="ninv">Kifizetve · 7 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
-        </div>
-        <div class="invbody" style="display:none;">
-          <div class="krow"><span class="k">Számlaszám</span><span class="v">2026/04-1663</span></div>
-          <div class="krow"><span class="k">Kiállítás dátuma</span><span class="v">2026. 04. 01.</span></div>
-          <div class="krow"><span class="k">Kifizetve</span><span class="v">2026. 04. 10.</span></div>
-          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">7 990 Ft</span></div>
-          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
-          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+        <div class="invcard">
+          <div class="invtop">
+            <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-device-mobile"></i></span><span class="n">Samsung Galaxy A55<small class="ninv">Eszközvásárlás · 149 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
+          </div>
+          <div class="invbody" style="display:none;">
+            <div class="krow"><span class="k">Számlaszám</span><span class="v">2024/05-8827</span></div>
+            <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2024. 05. 12.</span></div>
+            <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">149 990 Ft</span></div>
+            <div class="krow"><span class="k">Fizetési mód</span><span class="v">Egyösszegű</span></div>
+            <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
+            <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="tabpane billpane-other">
-      <div class="invcard">
-        <div class="invtop">
-          <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-device-mobile"></i></span><span class="n">iPhone 15 Pro<small class="ninv">Eszközvásárlás · 449 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
-        </div>
-        <div class="invbody" style="display:none;">
-          <div class="krow"><span class="k">Számlaszám</span><span class="v">2025/03-1180</span></div>
-          <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2025. 03. 15.</span></div>
-          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">449 990 Ft</span></div>
-          <div class="krow"><span class="k">Fizetési mód</span><span class="v">Egyösszegű</span></div>
-          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
-          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
-        </div>
+    <div class="tabpane billmain-pay">
+      <div class="tubal" style="display:block;">
+        <p class="tubl">Fizetendő (2 lejárt számla)</p>
+        <p class="tubv">16 480 Ft</p>
+        <p class="tube">Kérjük, mielőbb rendezd</p>
       </div>
-      <div class="invcard">
-        <div class="invtop">
-          <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-device-watch"></i></span><span class="n">Apple Watch SE<small class="ninv">Eszközvásárlás · 89 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
-        </div>
-        <div class="invbody" style="display:none;">
-          <div class="krow"><span class="k">Számlaszám</span><span class="v">2025/07-2044</span></div>
-          <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2025. 07. 10.</span></div>
-          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">89 990 Ft</span></div>
-          <div class="krow"><span class="k">Fizetési mód</span><span class="v">Egyösszegű</span></div>
-          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
-          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
-        </div>
-      </div>
-      <div class="invcard">
-        <div class="invtop">
-          <button class="invmain" data-inv type="button"><span class="sic ok"><i class="ti ti-device-mobile"></i></span><span class="n">Samsung Galaxy A55<small class="ninv">Eszközvásárlás · 149 990 Ft</small></span><i class="ti ti-chevron-down chev invchev"></i></button>
-        </div>
-        <div class="invbody" style="display:none;">
-          <div class="krow"><span class="k">Számlaszám</span><span class="v">2024/05-8827</span></div>
-          <div class="krow"><span class="k">Vásárlás dátuma</span><span class="v">2024. 05. 12.</span></div>
-          <div class="krow"><span class="k">Bruttó összeg</span><span class="v strong">149 990 Ft</span></div>
-          <div class="krow"><span class="k">Fizetési mód</span><span class="v">Egyösszegű</span></div>
-          <div class="krow"><span class="k">Státusz</span><span class="v" style="color:#5FA810; font-weight:700;">Kifizetve</span></div>
-          <div class="invcta"><button class="invbtn primary" data-invimg type="button"><i class="ti ti-photo"></i>Számlakép</button></div>
-        </div>
-      </div>
-    </div>
-    <p class="mlab">Fizetési mód</p>
-    <div class="gcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-credit-card"></i></span><span class="n">Bankkártya · **** 6411</span><i class="ti ti-circle-check chev" style="color:var(--lime);"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-plus"></i></span><span class="n">Új fizetési mód</span><i class="ti ti-chevron-right chev"></i></div>
-    </div>
+      <button class="acont" style="margin-top:14px;">Fizetés</button>
 
-    <p class="mlab">Számlabeállítások</p>
-    <div class="gcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-mail"></i></span><span class="n">E-számla</span><i class="ti ti-circle-check chev" style="color:var(--lime);"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-repeat"></i></span><span class="n">Csoportos beszedés</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-calendar-event"></i></span><span class="n">Számlázási ciklus</span><span class="v" style="font-size:12px;">1-je</span></div>
+      <p class="mlab">Fizetési mód</p>
+      <div class="gcard">
+        <div class="lrow"><span class="sic"><i class="ti ti-credit-card"></i></span><span class="n">Bankkártya · **** 6411</span><i class="ti ti-circle-check chev" style="color:var(--lime);"></i></div>
+        <div class="lrow"><span class="sic"><i class="ti ti-plus"></i></span><span class="n">Új fizetési mód</span><i class="ti ti-chevron-right chev"></i></div>
+      </div>
+
+      <p class="mlab">Számlabeállítások</p>
+      <div class="gcard">
+        <div class="lrow"><span class="sic"><i class="ti ti-mail"></i></span><span class="n">E-számla</span><i class="ti ti-circle-check chev" style="color:var(--lime);"></i></div>
+        <div class="lrow"><span class="sic"><i class="ti ti-repeat"></i></span><span class="n">Csoportos beszedés</span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="lrow"><span class="sic"><i class="ti ti-calendar-event"></i></span><span class="n">Számlázási ciklus</span><span class="v" style="font-size:12px;">1-je</span></div>
+      </div>
     </div>
   </div>
   <!-- ============= EXTRA PERCEK ============= -->
