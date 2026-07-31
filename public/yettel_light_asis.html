@@ -1068,12 +1068,15 @@
   .wblob,.wblob.b1,.wblob.b2{ display:none !important; }
   .go,.morefilter,.codecard,.funhead,.menupanel,.ncard,.ncard.unread,.qtile,.wipcard,.lfield,.nbadge,.avatar,.hdots span,.hdots span.on,.stp,.stp.on,.dvcard,.chip{ box-shadow:none !important; }
   /* ===== refinements: blue login, colourful banners, quick padding, Összes link ===== */
-  .wbtn.primary{ background:#2E6FE0 !important; color:#FFFFFF !important; }
+  .wbtn.primary{ background:#14245E !important; color:#FFFFFF !important; }
   .bban.p1{ background:#22346E !important; }
   .bban.p2{ background:#3B6FFF !important; }
   .bban.p3{ background:#7A4BE0 !important; }
   .quick{ margin-top:20px !important; }
-  .acclink{ margin-left:auto; font-size:13px; font-weight:700; color:#2E6FE0; cursor:pointer; text-decoration:none; }
+  .acclink{ margin-left:auto; font-size:13px; font-weight:700; color:#14245E; cursor:pointer; text-decoration:none; }
+  /* fix: glass/stroke were undefined -> transparent bluish cards. Make them white. */
+  :root{ --glass:#FFFFFF; --stroke:var(--line); }
+  .invcard,.strow,.xcard,.calwrap,.xscope,.xprice{ background:#FFFFFF; }
 </style>
 </head>
 <body>
