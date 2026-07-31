@@ -101,6 +101,7 @@
   .track{height:6px; border-radius:6px; background:rgba(255,255,255,.10); overflow:hidden;}
   .fill{height:100%; border-radius:6px; background:linear-gradient(90deg,var(--lime3),var(--lime2));}
   .fill.amber{background:linear-gradient(90deg,#E39A25,#FFC24B);}
+  .fill.red{background:linear-gradient(90deg,#C7413F,#E8615F);}
   .fill.red{background:linear-gradient(90deg,#D64545,#FF6B6B);}
   .fbtn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(140deg,var(--lime2),var(--lime3));color:#0B1330;border:none;font-family:'Manrope';font-weight:700;font-size:12px;padding:11px 16px;border-radius:999px;cursor:pointer;box-shadow:0 10px 22px -8px rgba(198,242,78,.6);}
   .cactions{position:relative; display:flex; gap:9px; margin-top:16px;}
@@ -344,6 +345,7 @@
   #s-dsvcok:checked ~ [data-screen="dsvc-ok"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
+  #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
   #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
@@ -1070,6 +1072,7 @@
   <input class="rt" type="radio" name="nav" id="s-dsvcok">
   <input class="rt" type="radio" name="nav" id="s-detailmob2">
   <input class="rt" type="radio" name="nav" id="s-actok">
+  <input class="rt" type="radio" name="nav" id="s-actload">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
@@ -1186,7 +1189,7 @@
             <svg width="92" height="92" viewBox="0 0 92 92">
               <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs>
               <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="7"/>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" data-dring="7430" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
             </svg>
             <div class="ring-center"><b>12,4</b><span data-dtot="7430">/ 20 GB</span></div>
           </div>
@@ -1207,7 +1210,7 @@
           <div class="ring-wrap">
             <svg width="92" height="92" viewBox="0 0 92 92">
               <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="7"/>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" data-dring="7566" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
             </svg>
             <div class="ring-center"><b>3,1</b><span data-dtot="7566">/ 5 GB</span></div>
           </div>
@@ -1216,7 +1219,7 @@
             <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">18<span class="u"> / 50</span></span></div><div class="track"><div class="fill amber" style="width:36%"></div></div></div>
           </div>
         </div>
-        <div class="cactions"><label class="cbtn" for="s-xdata1"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch2"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
+        <div class="cactions"><label class="cbtn" for="s-xdata2"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch2"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
       </div>
 
       <div class="hero pcard"><label class="herocover" for="s-detailpre1"></label>
@@ -1409,7 +1412,7 @@
     </div>
     <p class="mlab">Elérhető keret</p>
     <div class="gcard keret">
-      <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">12,4<span class="u" data-dtot="7430"> / 20 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
+      <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">12,4<span class="u" data-dtot="7430"> / 20 GB</span></span></div><div class="track"><div class="fill" data-dfill="7430" style="width:62%"></div></div></div>
       <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">210<span class="u"> / 300</span></span></div><div class="track"><div class="fill" style="width:70%"></div></div></div>
       <div class="stat" style="margin-bottom:6px;"><div class="lab"><span class="k">SMS</span><span class="v">74<span class="u"> / 100</span></span></div><div class="track"><div class="fill amber" style="width:74%"></div></div></div>
       <div class="krow" style="padding:12px 0 0; border-top:1px solid rgba(255,255,255,.07);"><span class="k">Csomagon felüli forgalom</span><span class="v strong">1 240 Ft</span></div>
@@ -3251,7 +3254,7 @@
       </div>
     </div>
     <div class="gcard keret usg xd1u1">
-      <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált</span><span class="v">12,4<span class="u" data-dtot="7430"> / 20 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
+      <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált</span><span class="v">12,4<span class="u" data-dtot="7430"> / 20 GB</span></span></div><div class="track"><div class="fill" data-dfill="7430" style="width:62%"></div></div></div>
     </div>
     <div class="gcard keret usg xd1u2">
       <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált</span><span class="v">3,1<span class="u"> / 5 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
@@ -3311,7 +3314,7 @@
       </div>
     </div>
     <div class="gcard keret usg xd2u1">
-      <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált</span><span class="v">12,4<span class="u" data-dtot="7430"> / 20 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
+      <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált</span><span class="v">12,4<span class="u" data-dtot="7430"> / 20 GB</span></span></div><div class="track"><div class="fill" data-dfill="7430" style="width:62%"></div></div></div>
     </div>
     <div class="gcard keret usg xd2u2">
       <div class="stat" style="margin-bottom:0;"><div class="lab"><span class="k">Felhasznált</span><span class="v">3,1<span class="u"> / 5 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
@@ -3683,7 +3686,7 @@
       <label class="xdopt" for="xm-a3"><span class="xdn">300 perc</span><span class="xdd">30 napig érvényes</span><span class="xdp">3 990 Ft</span></label>
       <label class="xdopt" for="xm-a4"><span class="xdn">Korlátlan</span><span class="xdd">Belföldi hívások · 30 nap</span><span class="xdp">5 990 Ft</span></label>
     </div>
-    <button class="acont">Megveszem</button>
+    <button class="acont" data-buygen="Az extra perckeret aktiválva. Azonnal felhasználható.">Megveszem</button>
     <p class="sumnote" style="text-align:center;">Az extra percek a megvásárlás után azonnal felhasználhatók.</p>
   </div>
 
@@ -3743,7 +3746,7 @@
     <input class="rt" type="radio" name="xdamt-3" id="xa3-5">
     <input class="rt" type="radio" name="xdamt-3" id="xa3-6" checked>
     <input class="rt" type="radio" name="xdamt-3" id="xa3-7">
-    <button class="acont">Megveszem</button>
+    <button class="acont" data-buygen="Az extra roaming adat aktiválva. Azonnal felhasználható.">Megveszem</button>
     <p class="sumnote" style="text-align:center;">A roaming adat a megvásárlás után azonnal felhasználható.</p>
   </div>
 
@@ -5096,7 +5099,7 @@
 
     <p class="mlab">Elérhető keret</p>
     <div class="gcard keret">
-      <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">3,1<span class="u" data-dtot="7566"> / 5 GB</span></span></div><div class="track"><div class="fill" style="width:62%"></div></div></div>
+      <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">3,1<span class="u" data-dtot="7566"> / 5 GB</span></span></div><div class="track"><div class="fill" data-dfill="7566" style="width:62%"></div></div></div>
       <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">60<span class="u"> / 100</span></span></div><div class="track"><div class="fill" style="width:60%"></div></div></div>
       <div class="stat" style="margin-bottom:6px;"><div class="lab"><span class="k">SMS</span><span class="v">18<span class="u"> / 50</span></span></div><div class="track"><div class="fill amber" style="width:36%"></div></div></div>
       <div class="krow" style="padding:12px 0 0; border-top:1px solid rgba(255,255,255,.07);"><span class="k">Csomagon felüli forgalom</span><span class="v strong">0 Ft</span></div>
@@ -5143,6 +5146,13 @@
       <p class="oks actokmsg">A tranzakció sikeresen megtörtént.</p>
     </div>
     <label class="acont jbtn" for="s-home">Vissza a Kezdőlapra</label>
+    </div>
+  </div>
+  <!-- ============= FELDOLGOZÁS (extra adat / feltöltés / stb.) ============= -->
+  <div class="screen loadscr" data-screen="act-load" style="display:none;">
+    <div class="loadinner">
+      <div class="loadspin" id="loadspinX"><div class="spinner"></div><p class="loadt">Feldolgozás folyamatban…</p><p class="loads">Ez néhány másodpercig eltarthat — érdemes egy picit várni.</p></div>
+      <div class="loadok" id="loadokX" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres tranzakció!</p></div>
     </div>
   </div>
   <!-- ============= NAV ============= -->
@@ -5635,33 +5645,56 @@
   (function(){
     function all(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
     function fmt(n){ var s=String(n), o=''; for(var i=0;i<s.length;i++){ if(i>0 && (s.length-i)%3===0) o+=' '; o+=s.charAt(i); } return o; }
+    function gbtxt(x){ return String(x).replace('.',','); }
     var bal  = {'9734':3450, '8812':1280};
-    var dtot = {'7430':20, '7566':5};
+    var data = {'7430':{u:12.4,t:20}, '7566':{u:3.1,t:5}};
     function updBal(sub){ all('[data-bal="'+sub+'"]').forEach(function(e){ e.textContent = fmt(bal[sub])+' Ft'; }); }
-    function updData(sub){ all('[data-dtot="'+sub+'"]').forEach(function(e){ e.textContent = e.textContent.replace(/(\d+)(\s*GB)/, dtot[sub]+'$2'); }); }
-    function go(msg){ var m=document.querySelector('.actokmsg'); if(m) m.textContent=msg; var r=document.getElementById('s-actok'); if(r) r.checked=true; }
-    function checkedLabel(scr, name){ var c=scr.querySelector('input[name="'+name+'"]:checked'); if(!c) return null; return scr.querySelector('label[for="'+c.id+'"]'); }
-
-    all('[data-xdbuy]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var n=btn.getAttribute('data-xdbuy'), scr=btn.closest('[data-screen]');
-        var sub = scr.querySelector('#xd'+n+'-o1') && scr.querySelector('#xd'+n+'-o1').checked ? '7430' : '7566';
-        var lab=checkedLabel(scr, 'xdamt-'+n); var gb=0;
-        if(lab){ var el=lab.querySelector('.xdn')||lab; var mm=el.textContent.match(/([\d,\.]+)/); gb=mm?parseFloat(mm[1].replace(',','.')):0; }
-        dtot[sub]+=gb; updData(sub);
-        go('+36 20 290 '+sub+' · +'+String(gb).replace('.',',')+' GB extra adat aktiválva. Azonnal felhasználható.');
+    function updData(sub){
+      var d=data[sub], r=d.u/d.t; if(r>1) r=1;
+      all('[data-dtot="'+sub+'"]').forEach(function(e){ e.textContent = e.textContent.replace(/(\d+([.,]\d+)?)(\s*GB)/, gbtxt(d.t)+'$3'); });
+      var cls = r>0.9 ? 'fill red' : (r>0.75 ? 'fill amber' : 'fill');
+      all('[data-dfill="'+sub+'"]').forEach(function(e){ e.style.width = Math.round(r*100)+'%'; e.className = cls; });
+      var C=238.7;
+      all('[data-dring="'+sub+'"]').forEach(function(c){
+        c.setAttribute('stroke-dashoffset', (C*(1-r)).toFixed(1));
+        c.setAttribute('stroke', r>0.9 ? '#E8615F' : (r>0.75 ? '#F5B301' : 'url(#rg)'));
       });
-    });
+    }
+    function setMsg(m){ var e=document.querySelector('.actokmsg'); if(e) e.textContent=m; }
+    function runLoader(){
+      var r=document.getElementById('s-actload'); if(r) r.checked=true;
+      var spin=document.getElementById('loadspinX'), ok=document.getElementById('loadokX');
+      if(spin) spin.style.display='flex'; if(ok) ok.style.display='none';
+      setTimeout(function(){
+        if(spin) spin.style.display='none';
+        if(ok){ ok.style.display='flex'; var ic=ok.querySelector('.okpop'); if(ic){ ic.style.animation='none'; void ic.offsetWidth; ic.style.animation=''; } }
+        setTimeout(function(){ var a=document.getElementById('s-actok'); if(a) a.checked=true; }, 1800);
+      }, 5000);
+    }
+    function checkedLabel(scr,name){ var c=scr.querySelector('input[name="'+name+'"]:checked'); if(!c) return null; return scr.querySelector('label[for="'+c.id+'"]'); }
 
-    all('[data-tubuy]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var n=btn.getAttribute('data-tubuy'), scr=btn.closest('[data-screen]');
-        var sub = scr.querySelector('#tu'+n+'-o3') && scr.querySelector('#tu'+n+'-o3').checked ? '9734' : '8812';
-        var lab=checkedLabel(scr, 'tuamt-'+n); var ft=lab?parseInt(lab.textContent.replace(/[^0-9]/g,''),10)||0:0;
-        bal[sub]+=ft; updBal(sub);
-        go('+36 20 290 '+sub+' · '+fmt(ft)+' Ft feltöltve. Új egyenleg: '+fmt(bal[sub])+' Ft.');
-      });
-    });
+    all('[data-xdbuy]').forEach(function(btn){ btn.addEventListener('click', function(){
+      var n=btn.getAttribute('data-xdbuy'), scr=btn.closest('[data-screen]');
+      var sub = scr.querySelector('#xd'+n+'-o1') && scr.querySelector('#xd'+n+'-o1').checked ? '7430' : '7566';
+      var lab=checkedLabel(scr,'xdamt-'+n), gb=0;
+      if(lab){ var el=lab.querySelector('.xdn')||lab; var mm=el.textContent.match(/([\d,.]+)/); gb=mm?parseFloat(mm[1].replace(',','.')):0; }
+      data[sub].t+=gb; updData(sub);
+      setMsg('+36 20 290 '+sub+' · +'+gbtxt(gb)+' GB extra adat aktiválva. Azonnal felhasználható.');
+      runLoader();
+    });});
+
+    all('[data-tubuy]').forEach(function(btn){ btn.addEventListener('click', function(){
+      var n=btn.getAttribute('data-tubuy'), scr=btn.closest('[data-screen]');
+      var sub = scr.querySelector('#tu'+n+'-o3') && scr.querySelector('#tu'+n+'-o3').checked ? '9734' : '8812';
+      var lab=checkedLabel(scr,'tuamt-'+n), ft=lab?parseInt(lab.textContent.replace(/[^0-9]/g,''),10)||0:0;
+      bal[sub]+=ft; updBal(sub);
+      setMsg('+36 20 290 '+sub+' · '+fmt(ft)+' Ft feltöltve. Új egyenleg: '+fmt(bal[sub])+' Ft.');
+      runLoader();
+    });});
+
+    all('[data-buygen]').forEach(function(btn){ btn.addEventListener('click', function(){
+      setMsg(btn.getAttribute('data-buygen')); runLoader();
+    });});
   })();
   document.addEventListener('click', function(){ closeAll(null); });
 })();
@@ -5677,7 +5710,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy]';
+  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
