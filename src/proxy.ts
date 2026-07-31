@@ -19,12 +19,14 @@ const PREVIEW_PATHS = new Set([
   "/yettel_light_eng",
   "/yettel_dark_cz",
   "/yettel_light_cz",
+  "/yettel_light_asis",
   "/yettel_dark.html",
   "/yettel_light.html",
   "/yettel_dark_eng.html",
   "/yettel_light_eng.html",
   "/yettel_dark_cz.html",
   "/yettel_light_cz.html",
+  "/yettel_light_asis.html",
 ]);
 
 function previewUnauthorized(): NextResponse {
