@@ -1067,6 +1067,13 @@
   .wbg,.welcome .wbg{ background:var(--lime) !important; }
   .wblob,.wblob.b1,.wblob.b2{ display:none !important; }
   .go,.morefilter,.codecard,.funhead,.menupanel,.ncard,.ncard.unread,.qtile,.wipcard,.lfield,.nbadge,.avatar,.hdots span,.hdots span.on,.stp,.stp.on,.dvcard,.chip{ box-shadow:none !important; }
+  /* ===== refinements: blue login, colourful banners, quick padding, Összes link ===== */
+  .wbtn.primary{ background:#2E6FE0 !important; color:#FFFFFF !important; }
+  .bban.p1{ background:#22346E !important; }
+  .bban.p2{ background:#3B6FFF !important; }
+  .bban.p3{ background:#7A4BE0 !important; }
+  .quick{ margin-top:20px !important; }
+  .acclink{ margin-left:auto; font-size:13px; font-weight:700; color:#2E6FE0; cursor:pointer; text-decoration:none; }
 </style>
 </head>
 <body>
@@ -1379,8 +1386,8 @@
     </div>
 
     <div class="acc accouter">
-      <div class="acc-head accotop" data-acc><span class="at">Előfizetéseim</span><span class="acctoggle">Megjelenít</span><i class="ti ti-chevron-down achev"></i></div>
-      <div class="acc-body" style="display:none;">
+      <div class="acc-head accotop"><span class="at">Előfizetéseim</span><label class="acclink" for="s-allsubs">Összes</label></div>
+      <div class="acc-body">
     <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
     <div class="acc">
@@ -1427,8 +1434,8 @@
     </div>
 
     <div class="acc accouter">
-      <div class="acc-head accotop" data-acc><span class="at">Készülékeim</span><span class="acctoggle">Megjelenít</span><i class="ti ti-chevron-down achev"></i></div>
-      <div class="acc-body" style="display:none;">
+      <div class="acc-head accotop"><span class="at">Készülékeim</span><label class="acclink" for="s-alldev">Összes</label></div>
+      <div class="acc-body">
     <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
     <p class="mlab">Megvásárolt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
