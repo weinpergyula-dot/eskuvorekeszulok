@@ -1077,6 +1077,24 @@
   /* fix: glass/stroke were undefined -> transparent bluish cards. Make them white. */
   :root{ --glass:#FFFFFF; --stroke:var(--line); }
   .invcard,.strow,.xcard,.calwrap,.xscope,.xprice{ background:#FFFFFF; }
+  /* input fields: clearer contrast */
+  .afield{ background:#FFFFFF !important; border:1.5px solid #C4D1E1 !important; }
+  .afield input,.afieldtx textarea{ color:var(--navy) !important; }
+  .afield input::placeholder,.afieldtx textarea::placeholder{ color:#8894AC !important; }
+  .lfield{ border:1.5px solid #C4D1E1 !important; }
+  .lfield input::placeholder{ color:#8894AC !important; }
+
+  /* dashboard action buttons -> navy blue */
+  .cbtn{ background:#14245E !important; border-color:#14245E !important; color:#FFFFFF !important; }
+  .cbtn .c{ border-color:#FFFFFF !important; }
+  .cbtn .c i{ color:#FFFFFF !important; }
+
+  /* dashboard data rings: grey track + solid green arc (no glow) so prepaid == monthly */
+  .ring-wrap svg circle:first-of-type{ stroke:#E2E8F0 !important; }
+  .ring-wrap svg circle:last-of-type{ stroke:#8FBF20 !important; filter:none !important; }
+
+  /* prepaid balance box: readable on the white card */
+  .balbox{ background:#EDF2F9 !important; border:1px solid #DAE3EF !important; }
 </style>
 </head>
 <body>
