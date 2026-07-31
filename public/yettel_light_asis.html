@@ -1020,6 +1020,53 @@
   /* --- section headings navy/bold --- */
   .sec h3{ font-family:'Sora'; font-weight:800; color:var(--navy); font-size:18px; }
   .mlab{ color:var(--mid); }
+  /* ===== Yettel as-is: fully flat — no shadows, no gradients ===== */
+  .app{ box-shadow:0 0 0 1px rgba(20,36,94,.06); }
+  .gcard,.sub,.planbar,.buycard,.invcard,.hero,.icon-btn,.nav,.acont,.cbtn,.fbtn,.promo,.promo.inet,.guard,.guard .gi,.itile,.balbox,.tubal,.dd,.strow,.xcard,.svccard,.tfcard,.tfcard.pop,.okic,.wbtn,.bban,.funcard,.dvcard,.dvthumb,.sic,.mic,.buyic,.chip,.amt,.tford,.plan-tag .pip,.paychk,.sbadge,.bbadge{ box-shadow:none !important; }
+
+  /* solid lime — buttons / accents / bars */
+  .acont{ background:var(--lime); }
+  .cbtn{ background:var(--lime); border-color:var(--lime); }
+  .fbtn,.wbtn.primary{ background:var(--lime); }
+  .tford,.tfcard.pop .tford{ background:var(--lime); color:#0B1330; }
+  .chip.on,.stp.on{ background:var(--lime); }
+  .fill{ background:var(--lime3); }
+  .fill.amber{ background:#F0A93A; }
+  .fill.red{ background:#E8615F; }
+  .promo{ background:var(--lime); }
+  .promo.inet{ background:#3B6FFF; }
+  .guard{ background:#EFF6DE; }
+  .guard .gi{ background:var(--lime); }
+  .hero{ background:#FFFFFF; }
+  .hero .grid{ display:none; }
+  .itile,.itile.blue,.itile.violet,.itile.slate{ background:var(--icb); }
+  .buyic,.buyic.blue,.buyic.lime,.buyic.slate,.buyic.sun,.buyic.violet{ background:var(--icb); }
+  .buyic i{ color:var(--navy); }
+  #tm1-1:checked ~ .amtgrid .amt[for="tm1-1"],#tm1-2:checked ~ .amtgrid .amt[for="tm1-2"],#tm1-3:checked ~ .amtgrid .amt[for="tm1-3"],#tm1-4:checked ~ .amtgrid .amt[for="tm1-4"],#tm1-5:checked ~ .amtgrid .amt[for="tm1-5"],#tm1-6:checked ~ .amtgrid .amt[for="tm1-6"],#tm2-1:checked ~ .amtgrid .amt[for="tm2-1"],#tm2-2:checked ~ .amtgrid .amt[for="tm2-2"],#tm2-3:checked ~ .amtgrid .amt[for="tm2-3"],#tm2-4:checked ~ .amtgrid .amt[for="tm2-4"],#tm2-5:checked ~ .amtgrid .amt[for="tm2-5"],#tm2-6:checked ~ .amtgrid .amt[for="tm2-6"]{ background:var(--lime); }
+
+  /* colored service cards -> flat white, navy text */
+  .svccard,.svccard.s-lime,.svccard.s-blue,.svccard.s-violet,.svccard.s-slate,.svccard.s-sun,.svccard.s-soon{ background:#FFFFFF; border:1px solid var(--line); }
+  .svctx .st,.svctx .sp,.svccard .st,.svccard .sp{ color:var(--navy) !important; }
+  .svctx .ss,.svccard .ss,.svctx .sp span{ color:var(--mid) !important; }
+  .svcic,.svccard .svcic,.svccard.s-soon .svcic{ background:var(--icb) !important; border:none !important; }
+  .svcic i{ color:var(--navy) !important; }
+  .svcgo,.svccard .svcgo,.svccard.s-soon .svcgo{ background:var(--icb) !important; }
+  .svcgo i,.svccard.s-soon .svcgo i{ color:var(--navy) !important; }
+  .sbadge{ background:var(--navy) !important; color:#FFFFFF !important; }
+  .sb1,.sb2{ display:none !important; }
+
+  /* device thumbs / fun cards / banners -> flat light */
+  .dvthumb,.dvthumb.t-blue,.dvthumb.t-lime,.dvthumb.t-slate,.dvthumb.t-sun,.dvthumb.t-violet{ background:#E4EAF0; }
+  .funcard,.funcard.c1,.funcard.c2,.funcard.c3,.funcard.c4{ background:#FFFFFF; border:1px solid var(--line); }
+  .bban,.bban.p1,.bban.p2,.bban.p3{ background:#E9EEF3; }
+  .bbadge.new{ background:var(--lime); color:#0B1330; }
+  /* ===== flat pass 2: remaining gradients + shadows ===== */
+  .nbtn,.wipb,.fhb{ background:var(--lime) !important; color:#0B1330 !important; }
+  .avatar{ background:var(--icb) !important; color:var(--navy) !important; }
+  .tfcard.pop,.tfcard.pop.jspin{ background:#EEF6DC !important; }
+  .wbg,.welcome .wbg{ background:var(--lime) !important; }
+  .wblob,.wblob.b1,.wblob.b2{ display:none !important; }
+  .go,.morefilter,.codecard,.funhead,.menupanel,.ncard,.ncard.unread,.qtile,.wipcard,.lfield,.nbadge,.avatar,.hdots span,.hdots span.on,.stp,.stp.on,.dvcard,.chip{ box-shadow:none !important; }
 </style>
 </head>
 <body>
