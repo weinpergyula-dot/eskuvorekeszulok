@@ -95,7 +95,7 @@
       <div class="done" id="done">
         <div class="big">🥰</div>
         <h2>Köszönjük a tipped!</h2>
-        <p>Elmentettük a tipped. A nyertes a nagy nap után derül ki — szorítunk! 🎉</p>
+        <p>Elmentettük a tipped — átirányítunk az eddigi tippekhez… 🎉</p>
         <div class="guessline" id="doneGuess"></div>
       </div>
 
@@ -133,11 +133,17 @@
             name + ' tippje: ' + MONTHS[Number(month)-1] + ' ' + Number(day) + '., ' + (Number(hour)<10?'0':'')+Number(hour)+':00';
           document.getElementById('form-view').style.display='none';
           document.getElementById('done').style.display='block';
+          // A tipp leadása után átirányítunk az eredmények oldalára.
+          setTimeout(function(){ window.location.href = '/bella_result'; }, 1400);
         } else if(res.status===409 || res.j.error==='duplicate'){
           msg.className='msg err'; msg.textContent='Ezzel a névvel már leadtál egy tippet 🙈';
           btn.disabled=false; btn.textContent='Leadom a tippem 💕';
+        } else if(res.status===404){
+          msg.className='msg err'; msg.textContent='A szavazás még nem aktív — kérlek próbáld kicsit később! 🌷';
+          btn.disabled=false; btn.textContent='Leadom a tippem 💕';
         } else {
-          msg.className='msg err'; msg.textContent='Hoppá, valami hiba történt. Próbáld újra! 🌷';
+          var det = (res.j && (res.j.detail || res.j.error)) ? (' (' + (res.j.detail || res.j.error) + ')') : '';
+          msg.className='msg err'; msg.textContent='Hoppá, valami hiba történt' + det + ' 🌷';
           btn.disabled=false; btn.textContent='Leadom a tippem 💕';
         }
       }).catch(function(){
