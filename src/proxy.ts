@@ -53,6 +53,15 @@ function previewPasswordFromHeader(header: string | null): string | null {
 export async function proxy(request: NextRequest) {
   const { pathname, searchParams, origin } = request.nextUrl;
 
+  // --- Public baby-shower poll: clean URLs -> static HTML in /public ---
+  if (pathname === "/bella" || pathname === "/bella_result") {
+    const url = request.nextUrl.clone();
+    url.pathname = `${pathname}.html`;
+    const res = NextResponse.rewrite(url);
+    res.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return res;
+  }
+
   // --- Password-gated Yettel mockup previews ---
   if (PREVIEW_PATHS.has(pathname)) {
     if (
