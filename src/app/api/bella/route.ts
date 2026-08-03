@@ -11,12 +11,17 @@ export async function POST(request: NextRequest) {
       month?: unknown;
       day?: unknown;
       hour?: unknown;
+      minute?: unknown;
+      message?: unknown;
     } | null;
 
     const name = typeof body?.name === "string" ? body.name.trim() : "";
     const month = Number(body?.month);
     const day = Number(body?.day);
     const hour = Number(body?.hour);
+    const minute = Number(body?.minute);
+    let message = typeof body?.message === "string" ? body.message.trim() : "";
+    if (message.length > 300) message = message.slice(0, 300);
 
     if (name.length < 2 || name.length > 60) {
       return NextResponse.json({ error: "invalid_name" }, { status: 400 });
@@ -24,7 +29,8 @@ export async function POST(request: NextRequest) {
     if (
       !Number.isInteger(month) || month < 1 || month > 12 ||
       !Number.isInteger(day) || day < 1 || day > 31 ||
-      !Number.isInteger(hour) || hour < 0 || hour > 23
+      !Number.isInteger(hour) || hour < 0 || hour > 23 ||
+      !Number.isInteger(minute) || minute < 0 || minute > 59
     ) {
       return NextResponse.json({ error: "invalid_date" }, { status: 400 });
     }
@@ -32,7 +38,7 @@ export async function POST(request: NextRequest) {
     const admin = createAdminClient();
     const { error } = await admin
       .from("bella_guesses")
-      .insert({ name, month, day, hour });
+      .insert({ name, month, day, hour, minute, message: message || null });
 
     if (error) {
       if (error.code === "23505") {
@@ -53,7 +59,7 @@ export async function GET() {
     const admin = createAdminClient();
     const { data, error } = await admin
       .from("bella_guesses")
-      .select("name, month, day, hour, created_at")
+      .select("name, month, day, hour, minute, message, created_at")
       .order("created_at", { ascending: true });
     if (error) throw error;
     return NextResponse.json({ guesses: data ?? [] });

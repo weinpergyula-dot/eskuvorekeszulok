@@ -32,17 +32,22 @@
   .count{font-weight:800; color:var(--rose-d);}
   .card{background:var(--card); border:1px solid var(--line); border-radius:26px; overflow:hidden;
     box-shadow:0 26px 60px -34px rgba(120,60,80,.4);}
-  .grow{display:flex; align-items:center; gap:14px; padding:15px 18px;}
-  .grow + .grow{border-top:1px solid #F6E6EC;}
+  .gitem{border-top:1px solid #F6E6EC;}
+  .gitem:first-child{border-top:none;}
+  .grow{display:flex; align-items:center; gap:14px; padding:15px 18px; width:100%; background:none; border:none; cursor:pointer; font-family:inherit; text-align:left;}
   .av{width:44px; height:44px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
     font-family:Georgia,serif; font-weight:700; font-size:17px; color:#fff;
     background:linear-gradient(180deg,#EC94AF,#DE7A99);}
   .who{flex:1; min-width:0;}
   .who .nm{font-size:15.5px; font-weight:700; color:var(--ink); margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .who .sm{font-size:12px; color:var(--muted); margin:2px 0 0;}
-  .guess{flex-shrink:0; text-align:right;}
-  .guess .g1{font-family:Georgia,serif; font-size:15px; font-weight:700; color:var(--rose-d); white-space:nowrap;}
-  .guess .g2{font-size:12px; color:var(--gold); font-weight:700; margin-top:1px;}
+  .who .sm{font-size:12.5px; color:var(--rose-d); font-weight:700; margin:2px 0 0;}
+  .chev{flex-shrink:0; color:#D9B4C1; font-size:16px; transition:transform .2s;}
+  .gitem.open .chev{transform:rotate(180deg);}
+  .gmsg{display:none; padding:0 18px 16px 76px;}
+  .gitem.open .gmsg{display:block;}
+  .gmsg .mlbl{display:block; font-size:10.5px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+  .gmsg .mtxt{margin:0; font-size:14px; color:var(--ink); line-height:1.55; background:#FFF6F9; border:1px solid #F6E1E9; border-radius:14px; padding:11px 14px;}
+  .gmsg .mtxt.empty{color:var(--muted); font-style:italic; background:none; border:none; padding:0;}
   .empty,.loading{background:var(--card); border:1px solid var(--line); border-radius:26px; padding:40px 24px; text-align:center; color:var(--muted); font-size:14.5px;}
   .empty .big{font-size:44px; margin-bottom:10px;}
   .foot{text-align:center; margin-top:20px; font-size:12px; color:#BBA3AB;}
@@ -74,15 +79,26 @@
       content.innerHTML = '<div class="empty"><div class="big">🍼</div>Még senki sem tippelt. Legyél te az első!</div>';
       return;
     }
+    function pad(n){ return (n<10?'0':'')+n; }
     var rows = g.map(function(x){
-      var hh = (x.hour<10?'0':'')+x.hour;
-      return '<div class="grow">'
+      var time = pad(x.hour)+':'+pad(x.minute||0);
+      var hasMsg = x.message && String(x.message).trim().length;
+      var body = hasMsg
+        ? '<p class="mtxt">'+esc(x.message)+'</p>'
+        : '<p class="mtxt empty">Nem írt üzenetet 🤍</p>';
+      return '<div class="gitem">'
+        + '<button class="grow" type="button">'
         + '<div class="av">'+esc(initials(x.name)||'?')+'</div>'
-        + '<div class="who"><p class="nm">'+esc(x.name)+'</p><p class="sm">'+esc(MONTHS[x.month-1]||'')+' '+x.day+'., '+hh+':00</p></div>'
-        + '<div class="guess"><div class="g1">'+x.day+'.</div><div class="g2">'+hh+':00</div></div>'
+        + '<div class="who"><p class="nm">'+esc(x.name)+'</p><p class="sm">'+esc(MONTHS[x.month-1]||'')+' '+x.day+'., '+time+'</p></div>'
+        + '<span class="chev">▾</span>'
+        + '</button>'
+        + '<div class="gmsg"><span class="mlbl">Üzenet Bellának</span>'+body+'</div>'
         + '</div>';
     }).join('');
     content.innerHTML = '<div class="card">'+rows+'</div>';
+    Array.prototype.slice.call(content.querySelectorAll('.grow')).forEach(function(btn){
+      btn.addEventListener('click', function(){ btn.parentNode.classList.toggle('open'); });
+    });
   }).catch(function(){
     content.innerHTML = '<div class="empty">Nem sikerült betölteni a tippeket. 🌷</div>';
   });
