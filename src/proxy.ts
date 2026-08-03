@@ -11,7 +11,6 @@ import { NextResponse, type NextRequest } from "next/server";
  * never reached for these paths.
  */
 const PREVIEW_PASSWORD = "Teszt1234!";
-const BELLA_PASSWORD = "bella";
 const PREVIEW_REALM = "Yettel preview";
 const PREVIEW_PATHS = new Set([
   "/yettel_dark",
@@ -54,17 +53,8 @@ function previewPasswordFromHeader(header: string | null): string | null {
 export async function proxy(request: NextRequest) {
   const { pathname, searchParams, origin } = request.nextUrl;
 
-  // --- Password-gated baby-shower poll: clean URLs -> static HTML in /public ---
+  // --- Public baby-shower poll: clean URLs -> static HTML in /public ---
   if (pathname === "/bella" || pathname === "/bella_result") {
-    if (previewPasswordFromHeader(request.headers.get("authorization")) !== BELLA_PASSWORD) {
-      return new NextResponse("Hitelesítés szükséges.", {
-        status: 401,
-        headers: {
-          "WWW-Authenticate": `Basic realm="Bella", charset="UTF-8"`,
-          "X-Robots-Tag": "noindex, nofollow",
-        },
-      });
-    }
     const url = request.nextUrl.clone();
     url.pathname = `${pathname}.html`;
     const res = NextResponse.rewrite(url);
