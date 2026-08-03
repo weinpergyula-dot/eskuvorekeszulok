@@ -53,6 +53,8 @@
   input.field::placeholder,textarea.field::placeholder{color:#C7A9B3;}
   .rules{margin:-8px auto 22px; max-width:340px; font-size:12.5px; color:var(--rose-d); background:#FFF3E4; border:1px solid #F3DEBF; border-radius:14px; padding:10px 14px; line-height:1.5; text-align:center;}
   .rules b{color:var(--gold);}
+  .tiphint{font-size:12.5px; color:#5E7C86; background:#EAF4F5; border:1px solid #D3E9EB; border-radius:12px; padding:9px 13px; margin:2px 3px 18px; text-align:center; line-height:1.5;}
+  .tiphint b{color:#2E7D89;}
   .hint{font-size:12px; color:var(--muted); margin:4px 3px 20px; text-align:center;}
   .btn{width:100%; border:none; cursor:pointer; height:56px; border-radius:16px; font-family:inherit;
     font-size:16px; font-weight:800; color:#fff; letter-spacing:.01em;
@@ -97,6 +99,8 @@
             <select class="field" id="hour" name="hour" required></select>
             <select class="field" id="minute" name="minute" required></select>
           </div>
+
+          <p class="tiphint">💡 Kis segítség: a kiírt dátum <b>2026. 09. 01.</b></p>
 
           <label for="message" style="margin-top:11px;">Üzenet Bellának <span style="color:var(--muted); font-weight:600;">(nem kötelező)</span></label>
           <textarea class="field ta" id="message" name="message" placeholder="Írj egy kedves üzenetet Bellának… 💌" maxlength="300"></textarea>
