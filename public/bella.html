@@ -55,6 +55,9 @@
   .rules b{color:var(--gold);}
   .tiphint{font-size:12.5px; color:#5E7C86; background:#EAF4F5; border:1px solid #D3E9EB; border-radius:12px; padding:9px 13px; margin:2px 3px 18px; text-align:center; line-height:1.5;}
   .tiphint b{color:#2E7D89;}
+  .pot{display:inline-flex; align-items:center; gap:8px; margin:0 auto 20px; padding:10px 16px; border-radius:14px;
+    background:#FFF3E4; border:1px solid #F0D9B4; color:#8A5A1E; font-size:13px; font-weight:700;}
+  .pot b{font-family:Georgia,serif; font-size:17px; color:var(--gold); font-weight:700;}
   .hint{font-size:12px; color:var(--muted); margin:4px 3px 20px; text-align:center;}
   .btn{width:100%; border:none; cursor:pointer; height:56px; border-radius:16px; font-family:inherit;
     font-size:16px; font-weight:800; color:#fff; letter-spacing:.01em;
@@ -84,6 +87,7 @@
         <h1>Mikor érkezik<br>a kis <span class="nm">Bella</span>?</h1>
         <p class="sub">Tippeld meg a születési idejét! Egy névvel egyszer lehet tippelni. 💕</p>
         <div class="rules">💰 Egy tipp <b>1000 Ft</b> — a végén <b>egy valaki mindent visz</b>! 🎉</div>
+        <div class="pot" id="pot" style="display:none;">💰 A kalapban eddig: <b id="potv"></b></div>
         <form id="f" autocomplete="off">
           <label for="name">A neved</label>
           <input class="field" id="name" name="name" type="text" placeholder="Pl. Nagy Anna" maxlength="60" required>
@@ -131,6 +135,15 @@
   opt(dSel,'','Nap'); for(var d=1; d<=31; d++) opt(dSel, d, d+'.');
   opt(hSel,'','Óra'); for(var h=0; h<24; h++) opt(hSel, h, pad(h)+' óra');
   opt(mnSel,'','Perc'); for(var mn=0; mn<60; mn++) opt(mnSel, mn, pad(mn)+' perc');
+
+  // A kalapban lévő összeg (csak a tippek számát kérjük le, a tippeket nem).
+  function fmtFt(n){ var s=String(n), o=''; for(var i=0;i<s.length;i++){ if(i>0 && (s.length-i)%3===0) o+=' '; o+=s.charAt(i); } return o+' Ft'; }
+  fetch('/api/bella?count=1').then(function(r){ return r.json(); }).then(function(d){
+    if(d && typeof d.count === 'number'){
+      document.getElementById('potv').textContent = fmtFt(d.count * 1000);
+      document.getElementById('pot').style.display = 'inline-flex';
+    }
+  }).catch(function(){});
 
   var form=document.getElementById('f'), msg=document.getElementById('msg'), btn=document.getElementById('submit');
 

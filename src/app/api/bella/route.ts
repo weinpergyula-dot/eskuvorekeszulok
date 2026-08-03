@@ -53,10 +53,21 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// All guesses — used by /bella_result. Not exposed anywhere else.
-export async function GET() {
+// GET ?count=1  -> only the number of guesses (used by the voting page for the
+//                 running pot; does not leak the guesses themselves)
+// GET           -> all guesses (used by /bella_result)
+export async function GET(request: NextRequest) {
   try {
     const admin = createAdminClient();
+
+    if (request.nextUrl.searchParams.get("count") !== null) {
+      const { count, error } = await admin
+        .from("bella_guesses")
+        .select("*", { count: "exact", head: true });
+      if (error) throw error;
+      return NextResponse.json({ count: count ?? 0 });
+    }
+
     const { data, error } = await admin
       .from("bella_guesses")
       .select("name, month, day, hour, minute, message, created_at")
