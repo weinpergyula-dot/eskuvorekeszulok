@@ -1095,6 +1095,21 @@
 
   /* prepaid balance box: readable on the white card */
   .balbox{ background:#EDF2F9 !important; border:1px solid #DAE3EF !important; }
+  /* dashboard: package name / plan type / allowance -> site blue (navy) */
+  .plan-tag{ color:#14245E !important; }
+  .plan-tag .pip{ background:#14245E !important; }
+  .g5{ color:#14245E !important; border-color:#C7D2E0 !important; }
+  .ring-wrap svg circle:last-of-type{ stroke:#14245E !important; }
+  .hero .fill{ background:#14245E !important; }
+  /* dashboard quick buttons -> lime (like the Fizetés button) */
+  .cbtn{ background:var(--lime) !important; border-color:var(--lime) !important; color:#0B1330 !important; }
+  .cbtn .c{ border-color:#0B1330 !important; }
+  .cbtn .c i{ color:#0B1330 !important; }
+  /* ÉlményTér cards -> colourful again (flat solid colours, white text) */
+  .funcard.c1{ background:#5FA83C !important; }
+  .funcard.c2{ background:#3B6FFF !important; }
+  .funcard.c3{ background:#8E4BE0 !important; }
+  .funcard.c4{ background:#E39A25 !important; }
 </style>
 </head>
 <body>
@@ -1454,41 +1469,6 @@
       </div>
     </div>
 
-    <div class="acc accouter">
-      <div class="acc-head accotop"><span class="at">Készülékeim</span><label class="acclink" for="s-alldev">Összes</label></div>
-      <div class="acc-body">
-    <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
-    <p class="mlab">Megvásárolt készülékek</p>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
-      <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">Hátralévő részletek · 12 hónap</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet2"></label>
-      <div class="itile blue"><i class="ti ti-device-watch"></i></div>
-      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">Hátralévő részletek · 8 hónap</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet3"></label>
-      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">Kifizetve</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-
-    <p class="mlab">Bérelt készülékek</p>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet4"></label>
-      <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="t">Wi-Fi router</p><p class="s">Bérelt · Otthoni Net 1000</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet5"></label>
-      <div class="itile violet"><i class="ti ti-device-tv"></i></div>
-      <div class="meta"><p class="t">Beltéri egység</p><p class="s">Bérelt · TV Prémium</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-      </div>
-    </div>
   </div>
 
   <!-- ============= DETAIL ============= -->
@@ -1519,6 +1499,34 @@
       <label class="lrow" for="s-detail-tv"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV<small class="ninv">TV Prémium</small></span><i class="ti ti-chevron-right chev"></i></label>
       <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max<small class="ninv">Streaming</small></span><i class="ti ti-chevron-right chev"></i></label>
     </div>
+
+    <p class="mlab">Készülékeim</p>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">Hátralévő részletek · 12 hónap</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet2"></label>
+      <div class="itile blue"><i class="ti ti-device-watch"></i></div>
+      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">Hátralévő részletek · 8 hónap</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet3"></label>
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">Kifizetve</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet4"></label>
+      <div class="itile blue"><i class="ti ti-router"></i></div>
+      <div class="meta"><p class="t">Wi-Fi router</p><p class="s">Bérelt · Otthoni Net 1000</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet5"></label>
+      <div class="itile violet"><i class="ti ti-device-tv"></i></div>
+      <div class="meta"><p class="t">Beltéri egység</p><p class="s">Bérelt · TV Prémium</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <label class="addsvc" for="s-devbuy" style="margin-top:4px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
     <p class="mlab">Elérhető keret</p>
     <div class="gcard keret">
       <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">12,4<span class="u" data-dtot="7430"> / 20 GB</span></span></div><div class="track"><div class="fill" data-dfill="7430" style="width:62%"></div></div></div>
