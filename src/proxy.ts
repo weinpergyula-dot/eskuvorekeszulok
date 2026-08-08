@@ -62,6 +62,21 @@ export async function proxy(request: NextRequest) {
     return res;
   }
 
+  // --- Password-gated personal trade dashboard + its API routes ---
+  // Keeps the paid market-data / AI endpoints from being hit by anyone but the
+  // owner. Reuses the shared preview password.
+  if (pathname === "/trade" || pathname.startsWith("/api/trade")) {
+    if (
+      previewPasswordFromHeader(request.headers.get("authorization")) !==
+      PREVIEW_PASSWORD
+    ) {
+      return previewUnauthorized();
+    }
+    const res = NextResponse.next();
+    res.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return res;
+  }
+
   // --- Password-gated Yettel mockup previews ---
   if (PREVIEW_PATHS.has(pathname)) {
     if (
