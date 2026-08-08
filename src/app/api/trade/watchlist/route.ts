@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addSymbol, getWatchlist, removeSymbol } from "@/lib/trade/watchlist";
 import { isValidSymbol } from "@/lib/trade/symbols";
+import { toMessage } from "@/lib/trade/util";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,7 @@ export async function GET() {
   try {
     return NextResponse.json({ watchlist: await getWatchlist() });
   } catch (e) {
-    return NextResponse.json({ watchlist: [], error: String(e) }, { status: 500 });
+    return NextResponse.json({ watchlist: [], error: toMessage(e) }, { status: 500 });
   }
 }
 
@@ -24,7 +25,7 @@ export async function POST(request: NextRequest) {
     await addSymbol(symbol);
     return NextResponse.json({ ok: true, symbol });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: toMessage(e) }, { status: 500 });
   }
 }
 
@@ -38,6 +39,6 @@ export async function DELETE(request: NextRequest) {
     await removeSymbol(symbol);
     return NextResponse.json({ ok: true });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: toMessage(e) }, { status: 500 });
   }
 }

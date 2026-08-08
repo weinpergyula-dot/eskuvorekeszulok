@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCached } from "@/lib/trade/engine";
 import { getWatchlist } from "@/lib/trade/watchlist";
+import { toMessage } from "@/lib/trade/util";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export async function GET() {
     return NextResponse.json({ records, regime, watchlist });
   } catch (e) {
     return NextResponse.json(
-      { records: [], regime: null, watchlist: [], error: String(e) },
+      { records: [], regime: null, watchlist: [], error: toMessage(e) },
       { status: 500 }
     );
   }

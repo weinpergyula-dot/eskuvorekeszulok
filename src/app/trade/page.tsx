@@ -54,6 +54,7 @@ export default function TradePage() {
       setRecords(j.records ?? []);
       setWatchlist(j.watchlist ?? []);
       setRegime(j.regime ?? null);
+      if (j.error) setError(String(j.error));
     } catch {
       setError("Nem sikerült betölteni a gyorsítótárat.");
     } finally {
@@ -131,7 +132,9 @@ export default function TradePage() {
         setNewTicker("");
         refreshOne(sym); // fetch its first analysis
       } else {
-        setError(j.error === "invalid_symbol" ? "Érvénytelen ticker." : j.error);
+        setError(
+          j.error === "invalid_symbol" ? "Érvénytelen ticker." : String(j.error)
+        );
       }
     } catch {
       setError("Nem sikerült hozzáadni a tickert.");

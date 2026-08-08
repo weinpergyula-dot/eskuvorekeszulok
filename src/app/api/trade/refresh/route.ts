@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analyzeSymbol, getRegime } from "@/lib/trade/engine";
 import { isValidSymbol } from "@/lib/trade/symbols";
+import { toMessage } from "@/lib/trade/util";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -16,6 +17,6 @@ export async function POST(request: NextRequest) {
     const record = await analyzeSymbol(symbol, regime);
     return NextResponse.json({ record });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: toMessage(e) }, { status: 500 });
   }
 }

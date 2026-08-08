@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { analyzeSymbol, getRegime } from "@/lib/trade/engine";
 import { getWatchlist } from "@/lib/trade/watchlist";
+import { toMessage } from "@/lib/trade/util";
 import type { TradeRecord } from "@/lib/trade/types";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +20,7 @@ export async function POST() {
       try {
         records.push(await analyzeSymbol(symbol, regime));
       } catch (e) {
-        errors[symbol] = String(e);
+        errors[symbol] = toMessage(e);
       }
     }
 
@@ -29,6 +30,6 @@ export async function POST() {
       errors: Object.keys(errors).length ? errors : undefined,
     });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: toMessage(e) }, { status: 500 });
   }
 }
