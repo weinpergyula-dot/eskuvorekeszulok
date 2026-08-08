@@ -1,4 +1,4 @@
-import type { Analysis, Bar, Regime, Scores, Snapshot } from "./types";
+import type { Analysis, Bar, Catalysts, Regime, Scores, Snapshot } from "./types";
 import {
   atr,
   bollinger,
@@ -239,6 +239,7 @@ export function computeScores(s: Snapshot, regime: Regime): Scores {
 
   // Quality gates (0-10)
   let quality = 10;
+  if (s.gates.earnings_within_hold === true) quality -= 6; // gap risk
   if (s.gates.extreme_volatility) quality -= 6;
   if (s.trend.stack === "mixed") quality -= 3;
   quality = clamp(quality, 0, 10);
@@ -286,7 +287,8 @@ export function convictionFromScore(total: number): Analysis["conviction"] {
 export function fallbackAnalysis(
   s: Snapshot,
   scores: Scores,
-  regime: Regime
+  regime: Regime,
+  catalysts?: Catalysts
 ): Analysis {
   const bias = biasFromScores(scores);
   const setup = s.setup_tags[0] ?? "none";
@@ -300,13 +302,25 @@ export function fallbackAnalysis(
   const rr = round(s.levels.dist_to_resistance_atr / risk, 1);
 
   const risks: string[] = [];
+  if (s.gates.earnings_within_hold === true)
+    risks.push(
+      `Earnings ~${catalysts?.earnings_in_days ?? "?"} napon belül — gap-kockázat.`
+    );
   if (s.gates.extreme_volatility)
     risks.push("Magas volatilitás (ATR) — tág stop, kisebb pozíció indokolt.");
   if (regime.qqq_trend === "down")
     risks.push("A QQQ lefelé tart — a long setupok kockázatosabbak.");
   if (s.volume.rel_volume < 0.8)
     risks.push("Átlag alatti volumen — gyenge megerősítés.");
-  risks.push("Earnings dátum az MVP-ben nincs ellenőrizve.");
+
+  const catalystList: string[] = [];
+  if (catalysts?.next_earnings) {
+    const inDays =
+      catalysts.earnings_in_days != null
+        ? ` (${catalysts.earnings_in_days} nap)`
+        : "";
+    catalystList.push(`Earnings: ${catalysts.next_earnings}${inDays}`);
+  }
 
   return {
     symbol: s.symbol,
@@ -324,7 +338,7 @@ export function fallbackAnalysis(
       `RSI ${s.momentum.rsi14}, MACD ${s.momentum.macd_state}. ` +
       `Long score ${scores.long.total}/100, rezsim: QQQ ${regime.qqq_trend}.`,
     risks,
-    catalysts: [],
+    catalysts: catalystList,
     override_reason: null,
     confidence: clamp(scores.long.total / 100, 0, 1),
     not_advice: true,

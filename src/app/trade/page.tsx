@@ -449,6 +449,8 @@ function Card({
   const up = s.price.chg_pct >= 0;
   const score = scores.long.total;
   const scoreColor = score >= 70 ? "#16a34a" : score >= 50 ? "#ca8a04" : "#64748b";
+  const eDays = rec.catalysts?.earnings_in_days;
+  const earningsSoon = eDays != null && eDays >= 0 && eDays <= 10;
 
   return (
     <div
@@ -607,6 +609,54 @@ function Card({
           ))}
         </ul>
       )}
+
+      {/* Catalysts: earnings + headlines */}
+      {rec.catalysts &&
+        (rec.catalysts.next_earnings ||
+          (rec.catalysts.news?.length ?? 0) > 0) && (
+          <div
+            style={{
+              borderTop: "1px solid #1f2937",
+              paddingTop: 10,
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+            }}
+          >
+            {rec.catalysts.next_earnings && (
+              <div
+                style={{
+                  fontSize: 12,
+                  color: earningsSoon ? "#fca5a5" : "#94a3b8",
+                  fontWeight: earningsSoon ? 700 : 400,
+                }}
+              >
+                📅 Earnings: <b>{rec.catalysts.next_earnings}</b>
+                {rec.catalysts.earnings_in_days != null &&
+                  ` (${rec.catalysts.earnings_in_days} nap)`}
+              </div>
+            )}
+            {rec.catalysts.news?.slice(0, 3).map((n, i) => (
+              <a
+                key={i}
+                href={n.url}
+                target="_blank"
+                rel="noreferrer"
+                title={n.source}
+                style={{
+                  fontSize: 11.8,
+                  color: "#7dd3fc",
+                  textDecoration: "none",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                📰 {n.headline}
+              </a>
+            ))}
+          </div>
+        )}
 
       {/* Footer */}
       <div

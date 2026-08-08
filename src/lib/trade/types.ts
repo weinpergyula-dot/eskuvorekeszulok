@@ -16,6 +16,19 @@ export interface Regime {
   qqq_vs_50ma: string; // e.g. "+2.1%"
 }
 
+export interface NewsItem {
+  headline: string;
+  source: string;
+  url: string;
+  datetime: string; // ISO
+}
+
+export interface Catalysts {
+  next_earnings: string | null; // ISO date (YYYY-MM-DD)
+  earnings_in_days: number | null;
+  news: NewsItem[];
+}
+
 export interface Snapshot {
   symbol: string;
   as_of: string;
@@ -92,5 +105,6 @@ export interface TradeRecord {
   regime: Regime;
   scores: Scores;
   analysis: Analysis;
+  catalysts: Catalysts;
   updated_at?: string;
 }

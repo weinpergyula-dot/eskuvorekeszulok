@@ -1,9 +1,13 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildSnapshot, computeRegime, computeScores } from "./analysis";
 import { generateAnalysis } from "./ai";
+import { fetchCatalysts } from "./news";
 import { fetchDailyBars } from "./provider";
 import { REGIME_SYMBOL } from "./symbols";
 import type { Regime, TradeRecord } from "./types";
+
+// Swing hold window: earnings within this many days is a gap risk.
+const EARNINGS_WINDOW_DAYS = 10;
 
 // Fetch QQQ once and derive the market regime.
 export async function getRegime(): Promise<Regime> {
@@ -17,10 +21,21 @@ export async function analyzeSymbol(
   symbol: string,
   regime: Regime
 ): Promise<TradeRecord> {
-  const bars = await fetchDailyBars(symbol, 260);
+  const [bars, catalysts] = await Promise.all([
+    fetchDailyBars(symbol, 260),
+    fetchCatalysts(symbol),
+  ]);
   const snapshot = buildSnapshot(symbol, bars);
+
+  // Set the earnings gate from real data before scoring.
+  if (catalysts.earnings_in_days != null) {
+    snapshot.gates.earnings_within_hold =
+      catalysts.earnings_in_days >= 0 &&
+      catalysts.earnings_in_days <= EARNINGS_WINDOW_DAYS;
+  }
+
   const scores = computeScores(snapshot, regime);
-  const analysis = await generateAnalysis(snapshot, scores, regime);
+  const analysis = await generateAnalysis(snapshot, scores, regime, catalysts);
 
   const record: TradeRecord = {
     symbol,
@@ -29,6 +44,7 @@ export async function analyzeSymbol(
     regime,
     scores,
     analysis,
+    catalysts,
   };
 
   const admin = createAdminClient();

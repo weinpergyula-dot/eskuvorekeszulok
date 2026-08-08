@@ -1,4 +1,4 @@
-import type { Analysis, Regime, Scores, Snapshot } from "./types";
+import type { Analysis, Catalysts, Regime, Scores, Snapshot } from "./types";
 import { biasFromScores, convictionFromScore, fallbackAnalysis } from "./analysis";
 
 const SYSTEM = `Te egy swing-kereskedési DÖNTÉSTÁMOGATÓ asszisztens vagy, NEM pénzügyi tanácsadó.
@@ -10,6 +10,8 @@ SZIGORÚ SZABÁLYOK:
 - A "scores.total" a determinisztikus rangsor — NE írd felül. Ha az elemzésed eltér tőle, azt az "override_reason"-ben indokold, és csak a "gates" alapján vétózhatsz.
 - A "confidence" a score-ok konzisztenciáját tükrözze, ne az optimizmusodat.
 - NEM mondod meg, mekkora pozíciót vegyen fel, és nem adsz vételi/eladási utasítást.
+- A "catalysts" mezőbe a bemeneti "catalysts.next_earnings" dátumot és a "catalysts.headlines" hírekből levonható lényeget írd — NE találj ki hírt vagy dátumot. Ha nincs hír/earnings a bemenetben, üres tömb.
+- Ha "gates.earnings_within_hold" true, tedd be a "risks"-be az earnings gap-kockázatot.
 - Magyarul, tömören írj (rationale max ~3 mondat).
 
 Válaszod KIZÁRÓLAG egyetlen JSON objektum legyen, PONTOSAN ezekkel a kulcsokkal:
@@ -39,15 +41,21 @@ interface AiInput {
   setup_tags: string[];
   scores: Scores;
   gates: Snapshot["gates"];
+  catalysts: {
+    next_earnings: string | null;
+    earnings_in_days: number | null;
+    headlines: string[];
+  };
 }
 
 export async function generateAnalysis(
   s: Snapshot,
   scores: Scores,
-  regime: Regime
+  regime: Regime,
+  catalysts: Catalysts
 ): Promise<Analysis> {
   const key = process.env.OPENAI_API_KEY;
-  if (!key) return fallbackAnalysis(s, scores, regime);
+  if (!key) return fallbackAnalysis(s, scores, regime, catalysts);
 
   const input: AiInput = {
     symbol: s.symbol,
@@ -62,6 +70,11 @@ export async function generateAnalysis(
     setup_tags: s.setup_tags,
     scores,
     gates: s.gates,
+    catalysts: {
+      next_earnings: catalysts.next_earnings,
+      earnings_in_days: catalysts.earnings_in_days,
+      headlines: catalysts.news.map((n) => n.headline),
+    },
   };
 
   try {
@@ -82,17 +95,17 @@ export async function generateAnalysis(
       }),
     });
 
-    if (!res.ok) return fallbackAnalysis(s, scores, regime);
+    if (!res.ok) return fallbackAnalysis(s, scores, regime, catalysts);
     const json = (await res.json()) as {
       choices?: Array<{ message?: { content?: string } }>;
     };
     const content = json.choices?.[0]?.message?.content;
-    if (!content) return fallbackAnalysis(s, scores, regime);
+    if (!content) return fallbackAnalysis(s, scores, regime, catalysts);
 
     const parsed = JSON.parse(content) as Record<string, unknown>;
-    return validate(parsed, s, scores, regime);
+    return validate(parsed, s, scores, regime, catalysts);
   } catch {
-    return fallbackAnalysis(s, scores, regime);
+    return fallbackAnalysis(s, scores, regime, catalysts);
   }
 }
 
@@ -103,9 +116,10 @@ function validate(
   raw: Record<string, unknown>,
   s: Snapshot,
   scores: Scores,
-  regime: Regime
+  regime: Regime,
+  cat: Catalysts
 ): Analysis {
-  const fb = fallbackAnalysis(s, scores, regime);
+  const fb = fallbackAnalysis(s, scores, regime, cat);
 
   // Plausible price band: nothing outside ~0.5x..2x the 52w range.
   const lo = s.levels.range_52w.low * 0.5;
@@ -153,6 +167,12 @@ function validate(
   const catalysts: string[] = Array.isArray(raw.catalysts)
     ? raw.catalysts.filter(isStr).slice(0, 5)
     : [];
+  // Ensure the real earnings date is always surfaced, even if the model omits it.
+  if (cat.next_earnings && !catalysts.some((c) => /earnings/i.test(c))) {
+    const inDays =
+      cat.earnings_in_days != null ? ` (${cat.earnings_in_days} nap)` : "";
+    catalysts.unshift(`Earnings: ${cat.next_earnings}${inDays}`);
+  }
 
   const confidence =
     typeof raw.confidence === "number"
