@@ -631,11 +631,6 @@ function Card({
           {a.plain_summary}
         </div>
       )}
-
-      {/* Technical rationale */}
-      <div style={{ fontSize: 12.5, lineHeight: 1.5, color: "#94a3b8" }}>
-        {a.rationale}
-      </div>
       {a.risks.length > 0 && (
         <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "#fca5a5" }}>
           {a.risks.map((r, i) => (
@@ -808,7 +803,6 @@ function Legend() {
         <LRow term="💬 Mit jelent?">
           közérthető összegzés: mit jelent a kép és mit érdemes figyelni.
         </LRow>
-        <LRow term="Technikai indoklás">a szakmai, indikátoros magyarázat.</LRow>
         <LRow term="📅 Earnings / 📰 hírek">
           gyorsjelentés dátuma (közeli earnings = gap-kockázat) és friss hírek.
         </LRow>
