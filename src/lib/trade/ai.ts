@@ -58,6 +58,79 @@ function extractJson(text: string): string {
   return start !== -1 && end !== -1 ? body.slice(start, end + 1) : body;
 }
 
+// Diagnostic: run the REAL system prompt + a representative input end-to-end and
+// report the raw reply + whether it parses. Used by /api/trade/diag?test=full.
+export async function debugGenerate() {
+  const key = process.env.ANTHROPIC_API_KEY?.trim();
+  if (!key) return { error: "no key" };
+  const sampleInput = {
+    symbol: "TEST",
+    as_of: "2026-08-08",
+    market_regime: { qqq_trend: "up", qqq_vs_50ma: "+1%" },
+    price: { last: 100, chg_pct: 1, atr14: 2, atr_pct: 2 },
+    trend: {
+      ma20: 99, ma50: 95, ma200: 90, stack: "20>50>200",
+      regime: "up", weekly_trend: "up", ma20_slope: "up",
+    },
+    momentum: { rsi14: 55, rsi_zone: "neutral", macd_hist: 0.2, macd_state: "bullish_rising" },
+    volatility: { bb_bandwidth_pctile: 30, squeeze: false },
+    volume: { rel_volume: 1.1 },
+    levels: {
+      support: 95, resistance: 110, dist_to_support_atr: 2.5, dist_to_resistance_atr: 5,
+      range_52w: { high: 120, low: 70, pos_pct: 60 },
+    },
+    setup_tags: ["pullback_to_ma"],
+    scores: { long: { total: 70, trend: 25, momentum: 18, level_rr: 18, volume: 6, quality: 3 }, short: { total: 20 } },
+    gates: { earnings_within_hold: null, extreme_volatility: false },
+    catalysts: { next_earnings: null, earnings_in_days: null, headlines: [] },
+  };
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
+        max_tokens: 1024,
+        temperature: 0.2,
+        system: SYSTEM,
+        messages: [{ role: "user", content: JSON.stringify(sampleInput) }],
+      }),
+    });
+    const status = res.status;
+    if (!res.ok) return { status, ok: false, body: (await res.text()).slice(0, 800) };
+    const json = (await res.json()) as {
+      stop_reason?: string;
+      content?: Array<{ type: string; text?: string }>;
+    };
+    const content =
+      json.content?.find((c) => c.type === "text")?.text ??
+      json.content?.[0]?.text ??
+      "";
+    let parseError: string | null = null;
+    let parsedKeys: string[] | null = null;
+    try {
+      parsedKeys = Object.keys(JSON.parse(extractJson(content)));
+    } catch (e) {
+      parseError = String(e);
+    }
+    return {
+      status,
+      ok: true,
+      stop_reason: json.stop_reason,
+      content_types: json.content?.map((c) => c.type),
+      rawText: content.slice(0, 800),
+      parseError,
+      parsedKeys,
+    };
+  } catch (e) {
+    return { error: String(e) };
+  }
+}
+
 export async function generateAnalysis(
   s: Snapshot,
   scores: Scores,

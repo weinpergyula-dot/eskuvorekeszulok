@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { debugGenerate } from "@/lib/trade/ai";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,14 @@ export async function GET(request: NextRequest) {
     },
   };
 
-  if (request.nextUrl.searchParams.get("test") !== "anthropic") {
+  const test = request.nextUrl.searchParams.get("test");
+
+  // Full end-to-end: real system prompt -> raw reply + parse result.
+  if (test === "full") {
+    return NextResponse.json({ ...base, full: await debugGenerate() });
+  }
+
+  if (test !== "anthropic") {
     return NextResponse.json(base);
   }
 
