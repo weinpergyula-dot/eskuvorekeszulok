@@ -280,8 +280,12 @@ function validate(
       ? Math.max(0, Math.min(1, raw.confidence))
       : fb.confidence;
 
-  // Veto rule: if an earnings gate ever fires, force a warning in.
-  if (s.gates.earnings_within_hold === true) {
+  // Veto rule: if an earnings gate fires and the model didn't already flag it,
+  // force a single warning in (avoids a duplicate earnings bullet).
+  if (
+    s.gates.earnings_within_hold === true &&
+    !risks.some((r) => /earnings/i.test(r))
+  ) {
     risks.unshift("Earnings a tartási időtávon belül — kihagyás megfontolandó.");
   }
 
