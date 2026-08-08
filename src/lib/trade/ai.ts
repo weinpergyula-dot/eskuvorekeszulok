@@ -95,7 +95,6 @@ export async function debugGenerate() {
       body: JSON.stringify({
         model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
         max_tokens: 1024,
-        temperature: 0.2,
         system: SYSTEM,
         messages: [{ role: "user", content: JSON.stringify(sampleInput) }],
       }),
@@ -174,7 +173,6 @@ export async function generateAnalysis(
       body: JSON.stringify({
         model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
         max_tokens: 1024,
-        temperature: 0.2,
         system: SYSTEM,
         messages: [{ role: "user", content: JSON.stringify(input) }],
       }),
