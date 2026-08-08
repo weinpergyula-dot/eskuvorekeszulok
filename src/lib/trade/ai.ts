@@ -48,13 +48,23 @@ interface AiInput {
   };
 }
 
+// Pull the JSON object out of the model's reply (handles ```json fences or
+// stray prose around it).
+function extractJson(text: string): string {
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const body = fence ? fence[1] : text;
+  const start = body.indexOf("{");
+  const end = body.lastIndexOf("}");
+  return start !== -1 && end !== -1 ? body.slice(start, end + 1) : body;
+}
+
 export async function generateAnalysis(
   s: Snapshot,
   scores: Scores,
   regime: Regime,
   catalysts: Catalysts
 ): Promise<Analysis> {
-  const key = process.env.OPENAI_API_KEY;
+  const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return fallbackAnalysis(s, scores, regime, catalysts);
 
   const input: AiInput = {
@@ -78,38 +88,39 @@ export async function generateAnalysis(
   };
 
   try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${key}`,
+        "content-type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-5.4-mini",
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
+        max_tokens: 1024,
         temperature: 0.2,
-        response_format: { type: "json_object" },
-        messages: [
-          { role: "system", content: SYSTEM },
-          { role: "user", content: JSON.stringify(input) },
-        ],
+        system: SYSTEM,
+        messages: [{ role: "user", content: JSON.stringify(input) }],
       }),
     });
 
     if (!res.ok) {
       console.error(
-        "[trade/ai] OpenAI hiba",
+        "[trade/ai] Anthropic hiba",
         res.status,
         (await res.text()).slice(0, 400)
       );
       return fallbackAnalysis(s, scores, regime, catalysts);
     }
     const json = (await res.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
+      content?: Array<{ type: string; text?: string }>;
     };
-    const content = json.choices?.[0]?.message?.content;
+    const content =
+      json.content?.find((c) => c.type === "text")?.text ??
+      json.content?.[0]?.text;
     if (!content) return fallbackAnalysis(s, scores, regime, catalysts);
 
-    const parsed = JSON.parse(content) as Record<string, unknown>;
+    const parsed = JSON.parse(extractJson(content)) as Record<string, unknown>;
     return validate(parsed, s, scores, regime, catalysts);
   } catch (e) {
     console.error("[trade/ai] kivétel", e);
