@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(base);
   }
 
-  const key = process.env.ANTHROPIC_API_KEY;
+  const key = process.env.ANTHROPIC_API_KEY?.trim();
   if (!key) {
     return NextResponse.json({ ...base, anthropic_test: "no key" });
   }

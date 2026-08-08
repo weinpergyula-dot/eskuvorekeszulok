@@ -64,7 +64,7 @@ export async function generateAnalysis(
   regime: Regime,
   catalysts: Catalysts
 ): Promise<Analysis> {
-  const key = process.env.ANTHROPIC_API_KEY;
+  const key = process.env.ANTHROPIC_API_KEY?.trim();
   if (!key) {
     console.error("[trade/ai] nincs ANTHROPIC_API_KEY a környezetben");
     return fallbackAnalysis(s, scores, regime, catalysts);
