@@ -367,6 +367,24 @@ export function fallbackAnalysis(
       `Determinisztikus összegzés (AI nélkül): ${s.trend.stack} állás, ` +
       `RSI ${s.momentum.rsi14}, MACD ${s.momentum.macd_state}. ` +
       `Long score ${scores.long.total}/100, rezsim: QQQ ${regime.qqq_trend}.`,
+    plain_summary:
+      `Röviden: a technikai összkép ${
+        bias === "bullish"
+          ? "inkább pozitív"
+          : bias === "bearish"
+            ? "inkább negatív"
+            : "vegyes/semleges"
+      }, a beszállás minősége ${
+        scores.long.total >= 70
+          ? "magas"
+          : scores.long.total >= 50
+            ? "közepes"
+            : "alacsony"
+      } (${scores.long.total}/100). ` +
+      `Figyeld a ${round(s.levels.support)} támaszt és a ${round(
+        s.levels.resistance
+      )} ellenállást; ezek áttörése erősítené vagy buktatná a képet. ` +
+      `Ez döntéstámogatás — a pozícióméretet és a döntést te mérlegeld.`,
     risks,
     catalysts: catalystList,
     override_reason: null,

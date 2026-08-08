@@ -12,7 +12,9 @@ SZIGORÚ SZABÁLYOK:
 - NEM mondod meg, mekkora pozíciót vegyen fel, és nem adsz vételi/eladási utasítást.
 - A "catalysts" mezőbe a bemeneti "catalysts.next_earnings" dátumot és a "catalysts.headlines" hírekből levonható lényeget írd — NE találj ki hírt vagy dátumot. Ha nincs hír/earnings a bemenetben, üres tömb.
 - Ha "gates.earnings_within_hold" true, tedd be a "risks"-be az earnings gap-kockázatot.
-- Magyarul, tömören írj (rationale max ~3 mondat).
+- A "rationale" a szakmai indoklás (max ~3 mondat, indikátorokkal).
+- A "plain_summary" KÖZÉRTHETŐ, szakszavak nélküli (2-3 mondat): mit jelent ez emberi nyelven, és mit érdemes FIGYELNI (mi erősítené meg, mi buktatná a setupot). NE adj vételi/eladási utasítást és NE mondj pozícióméretet — csak leírod a képet és a figyelendőket.
+- Magyarul írj.
 
 Válaszod KIZÁRÓLAG egyetlen JSON objektum legyen, PONTOSAN ezekkel a kulcsokkal:
 {
@@ -22,6 +24,7 @@ Válaszod KIZÁRÓLAG egyetlen JSON objektum legyen, PONTOSAN ezekkel a kulcsokk
   "key_levels": { "entry_zone": [number, number] | null, "invalidation": number | null, "targets": number[] },
   "risk_reward": number | null,
   "rationale": string,
+  "plain_summary": string,
   "risks": string[],
   "catalysts": string[],
   "override_reason": string | null,
@@ -235,6 +238,11 @@ function validate(
       ? raw.rationale.trim().slice(0, 600)
       : fb.rationale;
 
+  const plain_summary =
+    typeof raw.plain_summary === "string" && raw.plain_summary.trim().length > 0
+      ? raw.plain_summary.trim().slice(0, 600)
+      : fb.plain_summary;
+
   // key_levels: accept only in-band numbers, else fall back per field.
   const kl = (raw.key_levels ?? {}) as Record<string, unknown>;
   let entry_zone = fb.key_levels.entry_zone;
@@ -288,6 +296,7 @@ function validate(
         ? raw.risk_reward
         : fb.risk_reward,
     rationale,
+    plain_summary,
     risks: risks.length ? risks : fb.risks,
     catalysts,
     override_reason:

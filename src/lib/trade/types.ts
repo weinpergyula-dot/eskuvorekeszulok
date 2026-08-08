@@ -89,6 +89,7 @@ export interface Analysis {
   };
   risk_reward: number | null;
   rationale: string;
+  plain_summary: string; // jargon-free, "what it means + what to watch"
   risks: string[];
   catalysts: string[];
   override_reason: string | null;

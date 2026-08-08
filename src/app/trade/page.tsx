@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import type { Regime, TradeRecord } from "@/lib/trade/types";
 
 const REGIME_LABEL: Record<Regime["qqq_trend"], string> = {
@@ -290,6 +291,8 @@ export default function TradePage() {
           ⚠️ Ez nem pénzügyi tanács. Döntéstámogató eszköz, technikai adatok
           összegzése — a döntés, a pozícióméret és a kockázatkezelés a tiéd.
         </p>
+
+        <Legend />
 
         {error && (
           <div
@@ -598,8 +601,39 @@ function Card({
         </div>
       </div>
 
-      {/* AI narrative */}
-      <div style={{ fontSize: 12.8, lineHeight: 1.55, color: "#cbd5e1" }}>
+      {/* Plain-language summary */}
+      {a.plain_summary && (
+        <div
+          style={{
+            background: "#0e1a2b",
+            border: "1px solid #1e3a5f",
+            borderLeft: "3px solid #38bdf8",
+            borderRadius: 10,
+            padding: "10px 12px",
+            fontSize: 13,
+            lineHeight: 1.55,
+            color: "#e2e8f0",
+          }}
+        >
+          <span
+            style={{
+              display: "block",
+              fontSize: 10.5,
+              fontWeight: 800,
+              letterSpacing: ".08em",
+              textTransform: "uppercase",
+              color: "#7dd3fc",
+              marginBottom: 4,
+            }}
+          >
+            💬 Mit jelent?
+          </span>
+          {a.plain_summary}
+        </div>
+      )}
+
+      {/* Technical rationale */}
+      <div style={{ fontSize: 12.5, lineHeight: 1.5, color: "#94a3b8" }}>
         {a.rationale}
       </div>
       {a.risks.length > 0 && (
@@ -681,5 +715,121 @@ function Metric({ label, value }: { label: string; value: string }) {
       <span style={{ color: "#64748b" }}>{label}: </span>
       <span style={{ color: "#e2e8f0" }}>{value}</span>
     </div>
+  );
+}
+
+function LRow({ term, children }: { term: string; children: ReactNode }) {
+  return (
+    <div style={{ marginBottom: 8, lineHeight: 1.5 }}>
+      <b style={{ color: "#e2e8f0" }}>{term}</b>{" "}
+      <span style={{ color: "#94a3b8" }}>— {children}</span>
+    </div>
+  );
+}
+
+function Legend() {
+  return (
+    <details
+      style={{
+        background: "#111827",
+        border: "1px solid #1f2937",
+        borderRadius: 12,
+        padding: "10px 14px",
+        margin: "0 0 18px",
+        fontSize: 12.5,
+      }}
+    >
+      <summary style={{ cursor: "pointer", fontWeight: 700, color: "#cbd5e1" }}>
+        ⓘ Mit jelent? — jelmagyarázat
+      </summary>
+      <div style={{ marginTop: 12 }}>
+        <div style={{ color: "#7dd3fc", fontWeight: 800, margin: "6px 0" }}>
+          Fejléc &amp; pontszám
+        </div>
+        <LRow term="Bias (bullish/neutral/bearish)">
+          az összesített irány: a long és short pontszám különbségéből.
+        </LRow>
+        <LRow term="Swing-setup pontszám (0–100) + low/medium/high">
+          mennyire „tiszta” most egy több napos long beszállás. Öt részből:
+          trend + momentum + szint/R-R + volumen + minőség; a piaci rezsim
+          kapuzza. A low/medium/high a meggyőződés.
+        </LRow>
+        <LRow term="Setup tag (pl. Kitörés, Visszahúzás MA-ra)">
+          a felismert mintázat a szabály-motor szerint.
+        </LRow>
+
+        <div style={{ color: "#7dd3fc", fontWeight: 800, margin: "12px 0 6px" }}>
+          Indikátorok
+        </div>
+        <LRow term="RSI(14)">
+          momentum-mérő 0–100. &lt;30 túladott, &gt;70 túlvett; 55–70 „strong” =
+          egészséges felfelé lendület.
+        </LRow>
+        <LRow term="MACD">
+          trend-momentum. „bullish rising” = pozitív és erősödő lendület.
+        </LRow>
+        <LRow term="MA állás">
+          a 20/50/200 napos mozgóátlagok sorrendje. „20&gt;50&gt;200” = tiszta
+          emelkedő trend; „mixed” = nem rendezett (óvatosság).
+        </LRow>
+        <LRow term="Heti trend">
+          a magasabb (heti) időtáv iránya — a legjobb setupok itt is egyeznek.
+        </LRow>
+        <LRow term="ATR (és %)">
+          átlagos napi mozgásterjedelem = volatilitás. Magas % → tág stop kell,
+          nagyobb kirázás-veszély.
+        </LRow>
+        <LRow term="Rel. volumen">
+          a mai forgalom a 20-napos átlaghoz képest. &gt;1 = átlag feletti
+          érdeklődés (kitörésnél megerősítés).
+        </LRow>
+        <LRow term="Támasz / Ellenállás">
+          a legutóbbi ~20 nap alja/teteje. Az ellenállás fölé zárás = kitörés.
+        </LRow>
+        <LRow term="52h pozíció">
+          hol áll az 52-hetes tartományban (0% = éves mély, 100% = éves csúcs).
+        </LRow>
+
+        <div style={{ color: "#7dd3fc", fontWeight: 800, margin: "12px 0 6px" }}>
+          Kulcs-szintek
+        </div>
+        <LRow term="Belépő-zóna">hol lenne értelme beszállni.</LRow>
+        <LRow term="Invalidáció (stop)">
+          ha ide esik az ár, a tézis megdőlt — itt a védelmi stop.
+        </LRow>
+        <LRow term="Célok · R/R">
+          a cél(ok), és a kockázat/hozam arány. R/R 2 = 2 egység nyereség 1
+          egység kockázatra; általában a ≥2 vonzó.
+        </LRow>
+
+        <div style={{ color: "#7dd3fc", fontWeight: 800, margin: "12px 0 6px" }}>
+          Szöveg
+        </div>
+        <LRow term="💬 Mit jelent?">
+          közérthető összegzés: mit jelent a kép és mit érdemes figyelni.
+        </LRow>
+        <LRow term="Technikai indoklás">a szakmai, indikátoros magyarázat.</LRow>
+        <LRow term="📅 Earnings / 📰 hírek">
+          gyorsjelentés dátuma (közeli earnings = gap-kockázat) és friss hírek.
+        </LRow>
+        <LRow term="🤖 AI-összegzés / ⚙️ Determinisztikus">
+          a szöveget a Claude írta, vagy (AI nélkül) a determinisztikus tartalék.
+        </LRow>
+
+        <div
+          style={{
+            marginTop: 12,
+            paddingTop: 10,
+            borderTop: "1px solid #1f2937",
+            color: "#64748b",
+            fontSize: 11.5,
+          }}
+        >
+          A számok determinisztikusan, a chart adataiból számolódnak; az AI ezt
+          fordítja emberi nyelvre és rangsorol. Ez döntéstámogatás, nem pénzügyi
+          tanács.
+        </div>
+      </div>
+    </details>
   );
 }
