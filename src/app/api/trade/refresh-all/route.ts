@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { analyzeSymbol, getRegime } from "@/lib/trade/engine";
-import { WATCHLIST } from "@/lib/trade/symbols";
+import { getWatchlist } from "@/lib/trade/watchlist";
 import type { TradeRecord } from "@/lib/trade/types";
 
 export const dynamic = "force-dynamic";
@@ -11,11 +11,11 @@ export const maxDuration = 120;
 // rate-limit / provider error we return whatever succeeded plus the errors.
 export async function POST() {
   try {
-    const regime = await getRegime();
+    const [regime, watchlist] = await Promise.all([getRegime(), getWatchlist()]);
     const records: TradeRecord[] = [];
     const errors: Record<string, string> = {};
 
-    for (const symbol of WATCHLIST) {
+    for (const symbol of watchlist) {
       try {
         records.push(await analyzeSymbol(symbol, regime));
       } catch (e) {

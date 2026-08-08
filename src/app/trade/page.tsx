@@ -37,11 +37,14 @@ function ago(iso?: string): string {
 
 export default function TradePage() {
   const [records, setRecords] = useState<TradeRecord[]>([]);
+  const [watchlist, setWatchlist] = useState<string[]>([]);
   const [regime, setRegime] = useState<Regime | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshingAll, setRefreshingAll] = useState(false);
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
+  const [newTicker, setNewTicker] = useState("");
+  const [adding, setAdding] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -49,6 +52,7 @@ export default function TradePage() {
       const r = await fetch("/api/trade", { cache: "no-store" });
       const j = await r.json();
       setRecords(j.records ?? []);
+      setWatchlist(j.watchlist ?? []);
       setRegime(j.regime ?? null);
     } catch {
       setError("Nem sikerült betölteni a gyorsítótárat.");
@@ -70,10 +74,10 @@ export default function TradePage() {
       });
       const j = await r.json();
       if (j.record) {
-        setRecords((prev) => {
-          const rest = prev.filter((x) => x.symbol !== symbol);
-          return [...rest, j.record as TradeRecord];
-        });
+        setRecords((prev) => [
+          ...prev.filter((x) => x.symbol !== symbol),
+          j.record as TradeRecord,
+        ]);
         setRegime((j.record as TradeRecord).regime);
       } else {
         setError(`${symbol}: ${j.error ?? "hiba"}`);
@@ -96,7 +100,7 @@ export default function TradePage() {
         setRegime(j.regime ?? null);
         if (j.errors) {
           setError(
-            "Néhány szimbólum nem frissült (rate limit?): " +
+            "Néhány szimbólum nem frissült (rate limit / hibás ticker?): " +
               Object.keys(j.errors).join(", ")
           );
         }
@@ -110,9 +114,55 @@ export default function TradePage() {
     }
   };
 
-  const sorted = [...records].sort(
-    (a, b) => b.scores.long.total - a.scores.long.total
-  );
+  const addTicker = async () => {
+    const sym = newTicker.trim().toUpperCase();
+    if (!sym) return;
+    setAdding(true);
+    setError(null);
+    try {
+      const r = await fetch("/api/trade/watchlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symbol: sym }),
+      });
+      const j = await r.json();
+      if (j.ok) {
+        setWatchlist((w) => (w.includes(sym) ? w : [...w, sym]));
+        setNewTicker("");
+        refreshOne(sym); // fetch its first analysis
+      } else {
+        setError(j.error === "invalid_symbol" ? "Érvénytelen ticker." : j.error);
+      }
+    } catch {
+      setError("Nem sikerült hozzáadni a tickert.");
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const removeTicker = async (symbol: string) => {
+    setBusy((b) => ({ ...b, [symbol]: true }));
+    try {
+      await fetch(`/api/trade/watchlist?symbol=${symbol}`, { method: "DELETE" });
+      setWatchlist((w) => w.filter((s) => s !== symbol));
+      setRecords((prev) => prev.filter((x) => x.symbol !== symbol));
+    } catch {
+      setError(`${symbol}: törlés sikertelen`);
+    } finally {
+      setBusy((b) => ({ ...b, [symbol]: false }));
+    }
+  };
+
+  // One entry per watchlist symbol; attach its record if we have one.
+  const bySymbol = new Map(records.map((r) => [r.symbol, r]));
+  const items = watchlist
+    .map((symbol) => ({ symbol, rec: bySymbol.get(symbol) }))
+    .sort((a, b) => {
+      const sa = a.rec ? a.rec.scores.long.total : -1;
+      const sb = b.rec ? b.rec.scores.long.total : -1;
+      if (sb !== sa) return sb - sa;
+      return a.symbol.localeCompare(b.symbol);
+    });
 
   return (
     <main
@@ -161,6 +211,43 @@ export default function TradePage() {
             {refreshingAll ? "Frissítés folyamatban…" : "Mindent frissít"}
           </button>
         </header>
+
+        {/* Watchlist add */}
+        <div style={{ display: "flex", gap: 8, margin: "12px 0 4px" }}>
+          <input
+            value={newTicker}
+            onChange={(e) => setNewTicker(e.target.value.toUpperCase())}
+            onKeyDown={(e) => e.key === "Enter" && addTicker()}
+            placeholder="Ticker (pl. GOOGL)"
+            maxLength={6}
+            style={{
+              background: "#111827",
+              border: "1px solid #334155",
+              borderRadius: 10,
+              color: "#e2e8f0",
+              padding: "10px 12px",
+              fontSize: 14,
+              width: 200,
+              textTransform: "uppercase",
+            }}
+          />
+          <button
+            onClick={addTicker}
+            disabled={adding}
+            style={{
+              background: "#1f2937",
+              color: "#e2e8f0",
+              border: "1px solid #334155",
+              borderRadius: 10,
+              padding: "10px 16px",
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: adding ? "default" : "pointer",
+            }}
+          >
+            {adding ? "…" : "+ Hozzáad"}
+          </button>
+        </div>
 
         {regime && (
           <div
@@ -219,7 +306,7 @@ export default function TradePage() {
 
         {loading ? (
           <p style={{ color: "#94a3b8" }}>Betöltés…</p>
-        ) : sorted.length === 0 ? (
+        ) : items.length === 0 ? (
           <div
             style={{
               textAlign: "center",
@@ -229,8 +316,7 @@ export default function TradePage() {
               borderRadius: 16,
             }}
           >
-            Még nincs adat. Nyomd meg a <b>„Mindent frissít”</b> gombot az első
-            elemzéshez.
+            Üres a watchlist. Adj hozzá egy tickert fent, majd frissíts.
           </div>
         ) : (
           <div
@@ -240,14 +326,25 @@ export default function TradePage() {
               gap: 16,
             }}
           >
-            {sorted.map((rec) => (
-              <Card
-                key={rec.symbol}
-                rec={rec}
-                busy={!!busy[rec.symbol]}
-                onRefresh={() => refreshOne(rec.symbol)}
-              />
-            ))}
+            {items.map(({ symbol, rec }) =>
+              rec ? (
+                <Card
+                  key={symbol}
+                  rec={rec}
+                  busy={!!busy[symbol]}
+                  onRefresh={() => refreshOne(symbol)}
+                  onRemove={() => removeTicker(symbol)}
+                />
+              ) : (
+                <PlaceholderCard
+                  key={symbol}
+                  symbol={symbol}
+                  busy={!!busy[symbol]}
+                  onRefresh={() => refreshOne(symbol)}
+                  onRemove={() => removeTicker(symbol)}
+                />
+              )
+            )}
           </div>
         )}
       </div>
@@ -255,14 +352,95 @@ export default function TradePage() {
   );
 }
 
+function RemoveBtn({ onRemove, busy }: { onRemove: () => void; busy: boolean }) {
+  return (
+    <button
+      onClick={onRemove}
+      disabled={busy}
+      title="Eltávolítás a watchlistről"
+      style={{
+        background: "transparent",
+        color: "#64748b",
+        border: "1px solid #334155",
+        borderRadius: 9,
+        padding: "6px 9px",
+        fontSize: 12,
+        cursor: busy ? "default" : "pointer",
+      }}
+    >
+      ✕
+    </button>
+  );
+}
+
+function RefreshBtn({ onRefresh, busy }: { onRefresh: () => void; busy: boolean }) {
+  return (
+    <button
+      onClick={onRefresh}
+      disabled={busy}
+      title="Frissítés"
+      style={{
+        background: "#1f2937",
+        color: "#e2e8f0",
+        border: "1px solid #334155",
+        borderRadius: 9,
+        padding: "6px 10px",
+        fontSize: 12,
+        cursor: busy ? "default" : "pointer",
+      }}
+    >
+      {busy ? "…" : "↻"}
+    </button>
+  );
+}
+
+function PlaceholderCard({
+  symbol,
+  busy,
+  onRefresh,
+  onRemove,
+}: {
+  symbol: string;
+  busy: boolean;
+  onRefresh: () => void;
+  onRemove: () => void;
+}) {
+  return (
+    <div
+      style={{
+        background: "#111827",
+        border: "1px dashed #334155",
+        borderRadius: 18,
+        padding: 16,
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        minHeight: 140,
+        justifyContent: "space-between",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 19, fontWeight: 800, flex: 1 }}>{symbol}</span>
+        <RefreshBtn onRefresh={onRefresh} busy={busy} />
+        <RemoveBtn onRemove={onRemove} busy={busy} />
+      </div>
+      <p style={{ fontSize: 13, color: "#94a3b8", margin: 0 }}>
+        {busy ? "Elemzés folyamatban…" : "Még nincs elemzés — nyomd meg a ↻-t."}
+      </p>
+    </div>
+  );
+}
+
 function Card({
   rec,
   busy,
   onRefresh,
+  onRemove,
 }: {
   rec: TradeRecord;
   busy: boolean;
   onRefresh: () => void;
+  onRemove: () => void;
 }) {
   const { snapshot: s, scores, analysis: a } = rec;
   const up = s.price.chg_pct >= 0;
@@ -282,7 +460,7 @@ function Card({
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ fontSize: 19, fontWeight: 800 }}>{s.symbol}</span>
@@ -309,22 +487,8 @@ function Card({
             </span>
           </div>
         </div>
-        <button
-          onClick={onRefresh}
-          disabled={busy}
-          title="Frissítés"
-          style={{
-            background: "#1f2937",
-            color: "#e2e8f0",
-            border: "1px solid #334155",
-            borderRadius: 9,
-            padding: "6px 10px",
-            fontSize: 12,
-            cursor: busy ? "default" : "pointer",
-          }}
-        >
-          {busy ? "…" : "↻"}
-        </button>
+        <RefreshBtn onRefresh={onRefresh} busy={busy} />
+        <RemoveBtn onRemove={onRemove} busy={busy} />
       </div>
 
       {/* Score bar */}
@@ -352,11 +516,7 @@ function Card({
           }}
         >
           <div
-            style={{
-              width: `${score}%`,
-              height: "100%",
-              background: scoreColor,
-            }}
+            style={{ width: `${score}%`, height: "100%", background: scoreColor }}
           />
         </div>
       </div>
