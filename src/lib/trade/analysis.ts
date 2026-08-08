@@ -292,14 +292,44 @@ export function fallbackAnalysis(
 ): Analysis {
   const bias = biasFromScores(scores);
   const setup = s.setup_tags[0] ?? "none";
-  const entryLow = Math.min(s.levels.support, s.trend.ma50);
-  const entryHigh = Math.max(entryLow, Math.min(s.price.last, s.trend.ma20));
-  const invalidation = round(s.levels.support - s.price.atr14);
-  const targets = [s.levels.resistance, s.levels.range_52w.high].filter(
-    (v, i, a) => a.indexOf(v) === i && v > s.price.last
-  );
-  const risk = Math.max(s.levels.dist_to_support_atr, 0.2);
-  const rr = round(s.levels.dist_to_resistance_atr / risk, 1);
+  const atr14 = s.price.atr14 || 1;
+  const last = s.price.last;
+  // Price already above the recent resistance -> treat as a breakout.
+  const isBreakout = last >= s.levels.resistance;
+
+  // Entry zone: near price on a breakout; otherwise the pullback zone.
+  let entryLow: number;
+  let entryHigh: number;
+  if (isBreakout) {
+    entryLow = round(Math.min(last, s.levels.resistance));
+    entryHigh = round(Math.max(last, s.levels.resistance));
+  } else {
+    entryLow = round(Math.min(s.levels.support, s.trend.ma50));
+    entryHigh = round(Math.max(entryLow, Math.min(last, s.trend.ma20)));
+  }
+  const entryMid = (entryLow + entryHigh) / 2;
+
+  // Stop below the breakout level / support, buffered by one ATR.
+  const stopBase = isBreakout ? s.levels.resistance : s.levels.support;
+  const invalidation = round(stopBase - atr14);
+
+  // Target: measured move for a breakout, else nearest resistance / 52w high.
+  let targets: number[];
+  if (isBreakout) {
+    const rangeH = Math.max(s.levels.resistance - s.levels.support, 2 * atr14);
+    targets = [round(last + rangeH)];
+  } else {
+    targets = [s.levels.resistance, s.levels.range_52w.high]
+      .filter((v, i, a) => a.indexOf(v) === i && v > last)
+      .map((v) => round(v));
+  }
+
+  // Real trade R/R from entry / stop / first target.
+  const firstTarget = targets[0];
+  const rr =
+    firstTarget != null && entryMid > invalidation
+      ? round((firstTarget - entryMid) / (entryMid - invalidation), 1)
+      : null;
 
   const risks: string[] = [];
   if (s.gates.earnings_within_hold === true)
@@ -328,11 +358,11 @@ export function fallbackAnalysis(
     setup,
     conviction: convictionFromScore(scores.long.total),
     key_levels: {
-      entry_zone: [round(entryLow), round(entryHigh)],
+      entry_zone: [entryLow, entryHigh],
       invalidation,
-      targets: targets.map((t) => round(t)),
+      targets,
     },
-    risk_reward: Number.isFinite(rr) ? rr : null,
+    risk_reward: rr,
     rationale:
       `Determinisztikus összegzés (AI nélkül): ${s.trend.stack} állás, ` +
       `RSI ${s.momentum.rsi14}, MACD ${s.momentum.macd_state}. ` +

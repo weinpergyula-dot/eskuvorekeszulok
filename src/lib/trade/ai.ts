@@ -95,7 +95,14 @@ export async function generateAnalysis(
       }),
     });
 
-    if (!res.ok) return fallbackAnalysis(s, scores, regime, catalysts);
+    if (!res.ok) {
+      console.error(
+        "[trade/ai] OpenAI hiba",
+        res.status,
+        (await res.text()).slice(0, 400)
+      );
+      return fallbackAnalysis(s, scores, regime, catalysts);
+    }
     const json = (await res.json()) as {
       choices?: Array<{ message?: { content?: string } }>;
     };
@@ -104,7 +111,8 @@ export async function generateAnalysis(
 
     const parsed = JSON.parse(content) as Record<string, unknown>;
     return validate(parsed, s, scores, regime, catalysts);
-  } catch {
+  } catch (e) {
+    console.error("[trade/ai] kivétel", e);
     return fallbackAnalysis(s, scores, regime, catalysts);
   }
 }
