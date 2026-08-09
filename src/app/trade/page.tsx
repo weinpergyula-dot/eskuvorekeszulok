@@ -60,6 +60,9 @@ export default function TradePage() {
     scanned: number;
     qualifying: number;
   } | null>(null);
+  const [cost, setCost] = useState<{ total: number; currency: string } | null>(
+    null
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -79,6 +82,14 @@ export default function TradePage() {
 
   useEffect(() => {
     load();
+    fetch("/api/trade/cost", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => {
+        if (typeof j.total === "number") {
+          setCost({ total: j.total, currency: j.currency ?? "USD" });
+        }
+      })
+      .catch(() => {});
   }, [load]);
 
   const toggle = (symbol: string) =>
@@ -260,6 +271,14 @@ export default function TradePage() {
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>
               Döntéstámogató technikai áttekintés. NASDAQ · napi időtáv.
             </p>
+            {cost && (
+              <p style={{ margin: "4px 0 0", fontSize: 12, color: "#64748b" }}>
+                💵 Anthropic API-költség (aktuális hó):{" "}
+                <b style={{ color: "#e2e8f0" }}>
+                  ${cost.total.toFixed(2)} {cost.currency}
+                </b>
+              </p>
+            )}
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <button
