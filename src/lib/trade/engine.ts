@@ -84,8 +84,9 @@ export async function analyzeSymbol(
 // day-trade candidates. Pre-filters cheaply with the deterministic score, then
 // runs the full AI only on the top picks that clear the threshold. Never throws
 // per symbol (rate limit / bad ticker are skipped).
-const SUGGEST_THRESHOLD = 70;
-const SUGGEST_MAX = 5;
+const SUGGEST_THRESHOLD = 70; // AI % at/above this counts as a strong signal
+const SUGGEST_MAX = 5; // how many top picks to show
+const AI_EVAL_MAX = 8; // how many pre-filtered candidates to run the AI on
 
 export async function scanForSuggestions(): Promise<{
   records: TradeRecord[];
@@ -131,21 +132,21 @@ export async function scanForSuggestions(): Promise<{
     }
   }
 
-  const qualifying = scored
-    .filter((x) => x.dts >= SUGGEST_THRESHOLD)
-    .sort((a, b) => b.dts - a.dts);
-  const top = qualifying.slice(0, SUGGEST_MAX);
+  // Evaluate (full AI) the strongest few by the cheap pre-filter, then rank by
+  // the AI's day-trade %. Show the top picks; report how many clear the
+  // threshold on the AI score (so the displayed % and the count always agree).
+  const ranked = [...scored].sort((a, b) => b.dts - a.dts).slice(0, AI_EVAL_MAX);
 
   const now = new Date().toISOString();
-  const records: TradeRecord[] = [];
-  for (const x of top) {
+  const evaluated: TradeRecord[] = [];
+  for (const x of ranked) {
     const analysis = await generateAnalysis(
       x.snapshot,
       x.scores,
       regime,
       x.catalysts
     );
-    records.push({
+    evaluated.push({
       symbol: x.symbol,
       as_of: x.snapshot.as_of,
       snapshot: x.snapshot,
@@ -156,8 +157,19 @@ export async function scanForSuggestions(): Promise<{
       updated_at: now,
     });
   }
+  evaluated.sort(
+    (a, b) => b.analysis.day_trade_score - a.analysis.day_trade_score
+  );
+  const qualifying = evaluated.filter(
+    (r) => r.analysis.day_trade_score >= SUGGEST_THRESHOLD
+  ).length;
 
-  return { records, regime, scanned: scored.length, qualifying: qualifying.length };
+  return {
+    records: evaluated.slice(0, SUGGEST_MAX),
+    regime,
+    scanned: scored.length,
+    qualifying,
+  };
 }
 
 // Read all cached records for the dashboard.

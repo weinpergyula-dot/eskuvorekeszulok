@@ -431,10 +431,10 @@ export default function TradePage() {
               🎯 AI napi javaslat
             </h2>
             <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 12px" }}>
-              Kurált NASDAQ-körből, ma ≥70%-os 1&nbsp;napos jelzés (a
-              watchlistedet kihagyva). {suggestMeta.scanned} papírt néztem át,{" "}
-              <b style={{ color: "#22c55e" }}>{suggestMeta.qualifying}</b> érte el
-              a küszöböt.
+              Top jelöltek a kurált NASDAQ-körből (a watchlistedet kihagyva).{" "}
+              {suggestMeta.scanned} papírt néztem át,{" "}
+              <b style={{ color: "#22c55e" }}>{suggestMeta.qualifying}</b> van 70%
+              felett (zöld = erős jelzés).
             </p>
             {suggestions.length === 0 ? (
               <div
@@ -446,7 +446,7 @@ export default function TradePage() {
                   fontSize: 13,
                 }}
               >
-                Ma egy papír sem érte el a 70%-ot a vizsgált körből.
+                Nem sikerült papírt lekérni (rate limit?). Próbáld pár perc múlva.
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
