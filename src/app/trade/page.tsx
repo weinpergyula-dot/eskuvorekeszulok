@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { Regime, TradeRecord } from "@/lib/trade/types";
+import BalanceView from "./balance-view";
 
 const BUY_THRESHOLD = 70; // day-trade signal at/above this is green / highlighted
 
@@ -63,6 +64,7 @@ export default function TradePage() {
   const [cost, setCost] = useState<{ total: number; currency: string } | null>(
     null
   );
+  const [tab, setTab] = useState<"tips" | "balance">("tips");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -266,7 +268,7 @@ export default function TradePage() {
         >
           <div>
             <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800 }}>
-              📈 Trade — napi jelzések
+              📈 Trade
             </h1>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>
               Döntéstámogató technikai áttekintés. NASDAQ · napi időtáv.
@@ -280,41 +282,55 @@ export default function TradePage() {
               </p>
             )}
           </div>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button
-              onClick={suggestNow}
-              disabled={suggesting}
-              style={{
-                background: suggesting ? "#334155" : "#15803d",
-                color: "#fff",
-                border: "none",
-                borderRadius: 12,
-                padding: "12px 18px",
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: suggesting ? "default" : "pointer",
-              }}
-            >
-              {suggesting ? "Keresés…" : "🎯 AI napi javaslat"}
-            </button>
-            <button
-              onClick={refreshAll}
-              disabled={refreshingAll}
-              style={{
-                background: refreshingAll ? "#334155" : "#2563eb",
-                color: "#fff",
-                border: "none",
-                borderRadius: 12,
-                padding: "12px 18px",
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: refreshingAll ? "default" : "pointer",
-              }}
-            >
-              {refreshingAll ? "Frissítés…" : "Mindent frissít"}
-            </button>
-          </div>
         </header>
+
+        <TabBar tab={tab} setTab={setTab} />
+
+        {tab === "balance" && <BalanceView />}
+
+        {tab === "tips" && (
+          <>
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                flexWrap: "wrap",
+                marginBottom: 4,
+              }}
+            >
+              <button
+                onClick={suggestNow}
+                disabled={suggesting}
+                style={{
+                  background: suggesting ? "#334155" : "#15803d",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "12px 18px",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  cursor: suggesting ? "default" : "pointer",
+                }}
+              >
+                {suggesting ? "Keresés…" : "🎯 AI napi javaslat"}
+              </button>
+              <button
+                onClick={refreshAll}
+                disabled={refreshingAll}
+                style={{
+                  background: refreshingAll ? "#334155" : "#2563eb",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "12px 18px",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  cursor: refreshingAll ? "default" : "pointer",
+                }}
+              >
+                {refreshingAll ? "Frissítés…" : "Mindent frissít"}
+              </button>
+            </div>
 
         {/* Watchlist add */}
         <div style={{ display: "flex", gap: 8, margin: "12px 0 4px" }}>
@@ -483,6 +499,8 @@ export default function TradePage() {
               </div>
             )}
           </section>
+        )}
+          </>
         )}
       </div>
     </main>
@@ -866,6 +884,45 @@ function CardBody({ rec }: { rec: TradeRecord }) {
         <span>{a.source === "ai" ? "🤖 AI-összegzés" : "⚙️ Determinisztikus"}</span>
         <span>frissítve {ago(rec.updated_at)}</span>
       </div>
+    </div>
+  );
+}
+
+function TabBar({
+  tab,
+  setTab,
+}: {
+  tab: "tips" | "balance";
+  setTab: (t: "tips" | "balance") => void;
+}) {
+  const Tab = ({ id, label }: { id: "tips" | "balance"; label: string }) => (
+    <button
+      onClick={() => setTab(id)}
+      style={{
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        color: tab === id ? "#e2e8f0" : "#64748b",
+        fontSize: 15,
+        fontWeight: 700,
+        padding: "8px 2px",
+        borderBottom: `2px solid ${tab === id ? "#2563eb" : "transparent"}`,
+      }}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: 20,
+        borderBottom: "1px solid #1f2937",
+        margin: "6px 0 16px",
+      }}
+    >
+      <Tab id="tips" label="Trade tips" />
+      <Tab id="balance" label="Trade balance" />
     </div>
   );
 }

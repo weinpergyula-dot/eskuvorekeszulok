@@ -7,6 +7,7 @@ import {
 } from "./analysis";
 import { generateAnalysis } from "./ai";
 import { fetchCatalysts } from "./news";
+import { recordSymbols } from "./positions";
 import { fetchDailyBars } from "./provider";
 import { REGIME_SYMBOL } from "./symbols";
 import { SUGGESTION_UNIVERSE } from "./universe";
@@ -163,6 +164,9 @@ export async function scanForSuggestions(): Promise<{
   const qualifying = evaluated.filter(
     (r) => r.analysis.day_trade_score >= SUGGEST_THRESHOLD
   ).length;
+
+  // Remember the surfaced symbols for the balance tab.
+  await recordSymbols(evaluated.slice(0, SUGGEST_MAX).map((r) => r.symbol));
 
   return {
     records: evaluated.slice(0, SUGGEST_MAX),

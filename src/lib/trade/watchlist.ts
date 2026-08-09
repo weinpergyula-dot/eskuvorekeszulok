@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { DEFAULT_WATCHLIST } from "./symbols";
+import { recordSymbols } from "./positions";
 
 // Read the watchlist from the DB, falling back to the defaults if the table is
 // empty (e.g. right after the migration before any seed).
@@ -19,6 +20,7 @@ export async function addSymbol(symbol: string): Promise<void> {
   const { error } = await admin.from("trade_watchlist").insert({ symbol });
   // 23505 = already present -> not an error for us.
   if (error && error.code !== "23505") throw error;
+  await recordSymbols([symbol]); // remember it for the balance tab
 }
 
 export async function removeSymbol(symbol: string): Promise<void> {
