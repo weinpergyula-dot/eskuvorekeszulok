@@ -15,20 +15,24 @@ export async function POST() {
     const [regime, watchlist] = await Promise.all([getRegime(), getWatchlist()]);
 
     const settled = await Promise.all(
-      watchlist.map(async (symbol) => {
-        try {
-          return { symbol, record: await analyzeSymbol(symbol, regime) };
-        } catch (e) {
-          return { symbol, error: toMessage(e) };
+      watchlist.map(
+        async (
+          symbol
+        ): Promise<{ symbol: string; record?: TradeRecord; error?: string }> => {
+          try {
+            return { symbol, record: await analyzeSymbol(symbol, regime) };
+          } catch (e) {
+            return { symbol, error: toMessage(e) };
+          }
         }
-      })
+      )
     );
 
     const records: TradeRecord[] = [];
     const errors: Record<string, string> = {};
     for (const s of settled) {
-      if ("record" in s) records.push(s.record);
-      else errors[s.symbol] = s.error;
+      if (s.record) records.push(s.record);
+      else if (s.error) errors[s.symbol] = s.error;
     }
 
     return NextResponse.json({
