@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { Regime, TradeRecord } from "@/lib/trade/types";
 import BalanceView from "./balance-view";
@@ -53,8 +53,10 @@ export default function TradePage() {
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
-  const [newTicker, setNewTicker] = useState("");
   const [adding, setAdding] = useState(false);
+  const [allSymbols, setAllSymbols] = useState<
+    { symbol: string; name: string }[]
+  >([]);
   const [suggestions, setSuggestions] = useState<TradeRecord[]>([]);
   const [suggesting, setSuggesting] = useState(false);
   const [suggestMeta, setSuggestMeta] = useState<{
@@ -90,6 +92,12 @@ export default function TradePage() {
         if (typeof j.total === "number") {
           setCost({ total: j.total, currency: j.currency ?? "USD" });
         }
+      })
+      .catch(() => {});
+    fetch("/api/trade/symbols-list", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => {
+        if (Array.isArray(j.symbols)) setAllSymbols(j.symbols);
       })
       .catch(() => {});
   }, [load]);
@@ -146,8 +154,8 @@ export default function TradePage() {
     }
   };
 
-  const addTicker = async () => {
-    const sym = newTicker.trim().toUpperCase();
+  const doAdd = async (raw: string) => {
+    const sym = raw.trim().toUpperCase();
     if (!sym) return;
     setAdding(true);
     setError(null);
@@ -160,7 +168,6 @@ export default function TradePage() {
       const j = await r.json();
       if (j.ok) {
         setWatchlist((w) => (w.includes(sym) ? w : [...w, sym]));
-        setNewTicker("");
         refreshOne(sym);
       } else {
         setError(
@@ -332,41 +339,9 @@ export default function TradePage() {
               </button>
             </div>
 
-        {/* Watchlist add */}
-        <div style={{ display: "flex", gap: 8, margin: "12px 0 4px" }}>
-          <input
-            value={newTicker}
-            onChange={(e) => setNewTicker(e.target.value.toUpperCase())}
-            onKeyDown={(e) => e.key === "Enter" && addTicker()}
-            placeholder="Ticker (pl. GOOGL)"
-            maxLength={6}
-            style={{
-              background: "#111827",
-              border: "1px solid #334155",
-              borderRadius: 10,
-              color: "#e2e8f0",
-              padding: "10px 12px",
-              fontSize: 14,
-              width: 200,
-              textTransform: "uppercase",
-            }}
-          />
-          <button
-            onClick={addTicker}
-            disabled={adding}
-            style={{
-              background: "#1f2937",
-              color: "#e2e8f0",
-              border: "1px solid #334155",
-              borderRadius: 10,
-              padding: "10px 16px",
-              fontSize: 14,
-              fontWeight: 700,
-              cursor: adding ? "default" : "pointer",
-            }}
-          >
-            {adding ? "…" : "+ Hozzáad"}
-          </button>
+        {/* Watchlist add — searchable NASDAQ combobox */}
+        <div style={{ margin: "12px 0 4px" }}>
+          <SymbolCombo options={allSymbols} onPick={doAdd} busy={adding} />
         </div>
 
         {regime && (
@@ -884,6 +859,119 @@ function CardBody({ rec }: { rec: TradeRecord }) {
         <span>{a.source === "ai" ? "🤖 AI-összegzés" : "⚙️ Determinisztikus"}</span>
         <span>frissítve {ago(rec.updated_at)}</span>
       </div>
+    </div>
+  );
+}
+
+function SymbolCombo({
+  options,
+  onPick,
+  busy,
+}: {
+  options: { symbol: string; name: string }[];
+  onPick: (symbol: string) => void;
+  busy: boolean;
+}) {
+  const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const matches = useMemo(() => {
+    const query = q.trim().toUpperCase();
+    if (!query) return [];
+    const starts: { symbol: string; name: string }[] = [];
+    const contains: { symbol: string; name: string }[] = [];
+    for (const o of options) {
+      if (o.symbol.startsWith(query)) starts.push(o);
+      else if (
+        o.symbol.includes(query) ||
+        o.name.toUpperCase().includes(query)
+      )
+        contains.push(o);
+      if (starts.length >= 20) break;
+    }
+    return [...starts, ...contains].slice(0, 20);
+  }, [q, options]);
+
+  const pick = (symbol: string) => {
+    onPick(symbol);
+    setQ("");
+    setOpen(false);
+  };
+
+  return (
+    <div style={{ position: "relative", width: "min(380px, 100%)" }}>
+      <input
+        value={q}
+        onChange={(e) => {
+          setQ(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && q.trim()) pick(q.trim().toUpperCase());
+        }}
+        placeholder={
+          options.length
+            ? "Keresés: ticker vagy cégnév…"
+            : "Ticker (pl. GOOGL) — Enter"
+        }
+        disabled={busy}
+        style={{
+          background: "#111827",
+          border: "1px solid #334155",
+          borderRadius: 10,
+          color: "#e2e8f0",
+          padding: "10px 12px",
+          fontSize: 14,
+          width: "100%",
+        }}
+      />
+      {open && matches.length > 0 && (
+        <div
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            right: 0,
+            zIndex: 30,
+            background: "#0b1120",
+            border: "1px solid #334155",
+            borderRadius: 10,
+            marginTop: 4,
+            maxHeight: 280,
+            overflowY: "auto",
+            boxShadow: "0 12px 32px -12px rgba(0,0,0,.6)",
+          }}
+        >
+          {matches.map((o) => (
+            <button
+              key={o.symbol}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                pick(o.symbol);
+              }}
+              style={{
+                display: "block",
+                width: "100%",
+                textAlign: "left",
+                background: "none",
+                border: "none",
+                borderBottom: "1px solid #1f2937",
+                color: "#e2e8f0",
+                padding: "9px 12px",
+                cursor: "pointer",
+                fontSize: 13,
+              }}
+            >
+              <b>{o.symbol}</b>
+              {o.name && (
+                <span style={{ color: "#94a3b8" }}> — {o.name}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

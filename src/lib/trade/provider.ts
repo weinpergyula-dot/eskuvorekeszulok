@@ -31,6 +31,12 @@ export async function fetchDailyBars(
 
   if (json.status === "error" || !Array.isArray(json.values)) {
     const msg = json.message || "ismeretlen hiba";
+    // Friendlier message for a mistyped / non-existent ticker.
+    if (/symbol/i.test(msg) && /(invalid|missing|not found)/i.test(msg)) {
+      throw new Error(
+        `Ismeretlen ticker: ${symbol} — ellenőrizd a pontos NASDAQ-szimbólumot.`
+      );
+    }
     // 429 = rate limit; surface it clearly so the caller can back off.
     throw new Error(`Twelve Data hiba (${symbol}): ${msg}`);
   }
