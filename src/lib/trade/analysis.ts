@@ -283,6 +283,31 @@ export function convictionFromScore(total: number): Analysis["conviction"] {
   return "low";
 }
 
+// Deterministic 1-day (day-trade) conviction, 0-100. Short-term oriented:
+// momentum + relative volume + breakout + regime, minus volatility/earnings.
+// Used as the AI fallback and as the cheap pre-filter for suggestions.
+export function dayTradeScore(s: Snapshot, regime: Regime): number {
+  let dts = 40;
+  if (s.momentum.macd_state === "bullish_rising") dts += 15;
+  else if (s.momentum.macd_state === "bullish_fading") dts += 6;
+  else if (s.momentum.macd_state === "bearish_rising") dts -= 12;
+  else dts -= 4;
+  if (s.momentum.rsi14 >= 50 && s.momentum.rsi14 <= 68) dts += 10;
+  else if (s.momentum.rsi14 > 68 && s.momentum.rsi14 <= 72) dts += 4;
+  else if (s.momentum.rsi14 > 72) dts -= 8;
+  else if (s.momentum.rsi14 < 40) dts -= 6;
+  if (s.volume.rel_volume >= 1.5) dts += 12;
+  else if (s.volume.rel_volume >= 1.2) dts += 7;
+  else if (s.volume.rel_volume < 0.8) dts -= 6;
+  if (s.setup_tags.includes("breakout")) dts += 8;
+  if (s.setup_tags.includes("squeeze")) dts += 3;
+  if (regime.qqq_trend === "up") dts += 8;
+  else if (regime.qqq_trend === "down") dts -= 12;
+  if (s.gates.extreme_volatility) dts -= 10;
+  if (s.gates.earnings_within_hold === true) dts -= 15;
+  return clamp(Math.round(dts), 0, 100);
+}
+
 // --- Deterministic fallback (used when the AI is unavailable/invalid) -----
 export function fallbackAnalysis(
   s: Snapshot,
@@ -343,27 +368,7 @@ export function fallbackAnalysis(
   if (s.volume.rel_volume < 0.8)
     risks.push("Átlag alatti volumen — gyenge megerősítés.");
 
-  // Deterministic 1-day (day-trade) conviction, 0-100. Short-term oriented:
-  // momentum + relative volume + breakout + regime, minus volatility/earnings.
-  let dts = 40;
-  if (s.momentum.macd_state === "bullish_rising") dts += 15;
-  else if (s.momentum.macd_state === "bullish_fading") dts += 6;
-  else if (s.momentum.macd_state === "bearish_rising") dts -= 12;
-  else dts -= 4;
-  if (s.momentum.rsi14 >= 50 && s.momentum.rsi14 <= 68) dts += 10;
-  else if (s.momentum.rsi14 > 68 && s.momentum.rsi14 <= 72) dts += 4;
-  else if (s.momentum.rsi14 > 72) dts -= 8;
-  else if (s.momentum.rsi14 < 40) dts -= 6;
-  if (s.volume.rel_volume >= 1.5) dts += 12;
-  else if (s.volume.rel_volume >= 1.2) dts += 7;
-  else if (s.volume.rel_volume < 0.8) dts -= 6;
-  if (s.setup_tags.includes("breakout")) dts += 8;
-  if (s.setup_tags.includes("squeeze")) dts += 3;
-  if (regime.qqq_trend === "up") dts += 8;
-  else if (regime.qqq_trend === "down") dts -= 12;
-  if (s.gates.extreme_volatility) dts -= 10;
-  if (s.gates.earnings_within_hold === true) dts -= 15;
-  const day_trade_score = clamp(Math.round(dts), 0, 100);
+  const day_trade_score = dayTradeScore(s, regime);
 
   const catalystList: string[] = [];
   if (catalysts?.next_earnings) {

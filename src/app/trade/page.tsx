@@ -54,6 +54,12 @@ export default function TradePage() {
   const [error, setError] = useState<string | null>(null);
   const [newTicker, setNewTicker] = useState("");
   const [adding, setAdding] = useState(false);
+  const [suggestions, setSuggestions] = useState<TradeRecord[]>([]);
+  const [suggesting, setSuggesting] = useState(false);
+  const [suggestMeta, setSuggestMeta] = useState<{
+    scanned: number;
+    qualifying: number;
+  } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -168,6 +174,49 @@ export default function TradePage() {
     }
   };
 
+  const suggestNow = async () => {
+    setSuggesting(true);
+    setError(null);
+    try {
+      const r = await fetch("/api/trade/suggest", { method: "POST" });
+      const j = await r.json();
+      if (j.records) {
+        setSuggestions(j.records as TradeRecord[]);
+        setSuggestMeta({ scanned: j.scanned ?? 0, qualifying: j.qualifying ?? 0 });
+        if (j.regime) setRegime(j.regime);
+      } else {
+        setError(j.error ?? "Nem sikerült a javaslat.");
+      }
+    } catch {
+      setError("Hálózati hiba a javaslatnál.");
+    } finally {
+      setSuggesting(false);
+    }
+  };
+
+  const addFromSuggestion = async (symbol: string) => {
+    setBusy((b) => ({ ...b, [symbol]: true }));
+    try {
+      const r = await fetch("/api/trade/watchlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symbol }),
+      });
+      const j = await r.json();
+      if (j.ok) {
+        setWatchlist((w) => (w.includes(symbol) ? w : [...w, symbol]));
+        setSuggestions((s) => s.filter((x) => x.symbol !== symbol));
+        refreshOne(symbol);
+      } else {
+        setError(String(j.error));
+      }
+    } catch {
+      setError(`${symbol}: nem sikerült hozzáadni`);
+    } finally {
+      setBusy((b) => ({ ...b, [symbol]: false }));
+    }
+  };
+
   const bySymbol = new Map(records.map((r) => [r.symbol, r]));
   const items = watchlist
     .map((symbol) => ({ symbol, rec: bySymbol.get(symbol) }))
@@ -212,22 +261,40 @@ export default function TradePage() {
               Döntéstámogató technikai áttekintés. NASDAQ · napi időtáv.
             </p>
           </div>
-          <button
-            onClick={refreshAll}
-            disabled={refreshingAll}
-            style={{
-              background: refreshingAll ? "#334155" : "#2563eb",
-              color: "#fff",
-              border: "none",
-              borderRadius: 12,
-              padding: "12px 20px",
-              fontSize: 14,
-              fontWeight: 700,
-              cursor: refreshingAll ? "default" : "pointer",
-            }}
-          >
-            {refreshingAll ? "Frissítés folyamatban…" : "Mindent frissít"}
-          </button>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <button
+              onClick={suggestNow}
+              disabled={suggesting}
+              style={{
+                background: suggesting ? "#334155" : "#15803d",
+                color: "#fff",
+                border: "none",
+                borderRadius: 12,
+                padding: "12px 18px",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: suggesting ? "default" : "pointer",
+              }}
+            >
+              {suggesting ? "Keresés…" : "🎯 AI napi javaslat"}
+            </button>
+            <button
+              onClick={refreshAll}
+              disabled={refreshingAll}
+              style={{
+                background: refreshingAll ? "#334155" : "#2563eb",
+                color: "#fff",
+                border: "none",
+                borderRadius: 12,
+                padding: "12px 18px",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: refreshingAll ? "default" : "pointer",
+              }}
+            >
+              {refreshingAll ? "Frissítés…" : "Mindent frissít"}
+            </button>
+          </div>
         </header>
 
         {/* Watchlist add */}
@@ -357,6 +424,47 @@ export default function TradePage() {
             ))}
           </div>
         )}
+
+        {suggestMeta && (
+          <section style={{ marginTop: 30 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 800, margin: "0 0 4px" }}>
+              🎯 AI napi javaslat
+            </h2>
+            <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 12px" }}>
+              Kurált NASDAQ-körből, ma ≥70%-os 1&nbsp;napos jelzés (a
+              watchlistedet kihagyva). {suggestMeta.scanned} papírt néztem át,{" "}
+              <b style={{ color: "#22c55e" }}>{suggestMeta.qualifying}</b> érte el
+              a küszöböt.
+            </p>
+            {suggestions.length === 0 ? (
+              <div
+                style={{
+                  padding: 20,
+                  color: "#94a3b8",
+                  border: "1px dashed #334155",
+                  borderRadius: 14,
+                  fontSize: 13,
+                }}
+              >
+                Ma egy papír sem érte el a 70%-ot a vizsgált körből.
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {suggestions.map((rec) => (
+                  <AccordionItem
+                    key={`sg-${rec.symbol}`}
+                    symbol={rec.symbol}
+                    rec={rec}
+                    open={!!open[`sg-${rec.symbol}`]}
+                    busy={!!busy[rec.symbol]}
+                    onToggle={() => toggle(`sg-${rec.symbol}`)}
+                    onAdd={() => addFromSuggestion(rec.symbol)}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </div>
     </main>
   );
@@ -426,14 +534,16 @@ function AccordionItem({
   onToggle,
   onRefresh,
   onRemove,
+  onAdd,
 }: {
   symbol: string;
   rec: TradeRecord | undefined;
   open: boolean;
   busy: boolean;
   onToggle: () => void;
-  onRefresh: () => void;
-  onRemove: () => void;
+  onRefresh?: () => void;
+  onRemove?: () => void;
+  onAdd?: () => void;
 }) {
   const pct = rec?.analysis.day_trade_score ?? null;
   const highlighted = pct != null && pct >= BUY_THRESHOLD;
@@ -496,12 +606,20 @@ function AccordionItem({
         </div>
 
         <DayBadge pct={pct} />
-        <IconBtn title="Frissítés" onClick={onRefresh} busy={busy}>
-          {busy ? "…" : "↻"}
-        </IconBtn>
-        <IconBtn title="Eltávolítás" onClick={onRemove} busy={busy}>
-          ✕
-        </IconBtn>
+        {onAdd ? (
+          <IconBtn title="Watchlistre" onClick={() => onAdd()} busy={busy}>
+            {busy ? "…" : "＋"}
+          </IconBtn>
+        ) : (
+          <>
+            <IconBtn title="Frissítés" onClick={() => onRefresh?.()} busy={busy}>
+              {busy ? "…" : "↻"}
+            </IconBtn>
+            <IconBtn title="Eltávolítás" onClick={() => onRemove?.()} busy={busy}>
+              ✕
+            </IconBtn>
+          </>
+        )}
         <span
           style={{
             color: "#64748b",
