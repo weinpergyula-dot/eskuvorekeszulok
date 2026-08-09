@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { Regime, TradeRecord } from "@/lib/trade/types";
 
+const BUY_THRESHOLD = 50; // day-trade signal at/above this is highlighted
+
 const REGIME_LABEL: Record<Regime["qqq_trend"], string> = {
   up: "Emelkedő piac",
   down: "Csökkenő piac",
@@ -36,6 +38,10 @@ function ago(iso?: string): string {
   return `${Math.floor(s / 86400)} napja`;
 }
 
+function dtsColor(pct: number): string {
+  return pct >= BUY_THRESHOLD ? "#16a34a" : pct >= 30 ? "#ca8a04" : "#64748b";
+}
+
 export default function TradePage() {
   const [records, setRecords] = useState<TradeRecord[]>([]);
   const [watchlist, setWatchlist] = useState<string[]>([]);
@@ -43,6 +49,7 @@ export default function TradePage() {
   const [loading, setLoading] = useState(true);
   const [refreshingAll, setRefreshingAll] = useState(false);
   const [busy, setBusy] = useState<Record<string, boolean>>({});
+  const [open, setOpen] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
   const [newTicker, setNewTicker] = useState("");
   const [adding, setAdding] = useState(false);
@@ -66,6 +73,9 @@ export default function TradePage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const toggle = (symbol: string) =>
+    setOpen((o) => ({ ...o, [symbol]: !o[symbol] }));
 
   const refreshOne = async (symbol: string) => {
     setBusy((b) => ({ ...b, [symbol]: true }));
@@ -131,7 +141,7 @@ export default function TradePage() {
       if (j.ok) {
         setWatchlist((w) => (w.includes(sym) ? w : [...w, sym]));
         setNewTicker("");
-        refreshOne(sym); // fetch its first analysis
+        refreshOne(sym);
       } else {
         setError(
           j.error === "invalid_symbol" ? "Érvénytelen ticker." : String(j.error)
@@ -157,16 +167,19 @@ export default function TradePage() {
     }
   };
 
-  // One entry per watchlist symbol; attach its record if we have one.
   const bySymbol = new Map(records.map((r) => [r.symbol, r]));
   const items = watchlist
     .map((symbol) => ({ symbol, rec: bySymbol.get(symbol) }))
     .sort((a, b) => {
-      const sa = a.rec ? a.rec.scores.long.total : -1;
-      const sb = b.rec ? b.rec.scores.long.total : -1;
+      const sa = a.rec?.analysis.day_trade_score ?? -1;
+      const sb = b.rec?.analysis.day_trade_score ?? -1;
       if (sb !== sa) return sb - sa;
       return a.symbol.localeCompare(b.symbol);
     });
+
+  const buyCount = items.filter(
+    (i) => (i.rec?.analysis.day_trade_score ?? -1) >= BUY_THRESHOLD
+  ).length;
 
   return (
     <main
@@ -179,7 +192,7 @@ export default function TradePage() {
         padding: "24px 16px 64px",
       }}
     >
-      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+      <div style={{ maxWidth: 820, margin: "0 auto" }}>
         <header
           style={{
             display: "flex",
@@ -192,7 +205,7 @@ export default function TradePage() {
         >
           <div>
             <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800 }}>
-              📈 Trade — swing dashboard
+              📈 Trade — napi jelzések
             </h1>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>
               Döntéstámogató technikai áttekintés. NASDAQ · napi időtáv.
@@ -259,7 +272,7 @@ export default function TradePage() {
               display: "inline-flex",
               alignItems: "center",
               gap: 10,
-              margin: "10px 0 4px",
+              margin: "10px 8px 4px 0",
               padding: "8px 14px",
               borderRadius: 999,
               background: "#111827",
@@ -280,16 +293,19 @@ export default function TradePage() {
           </div>
         )}
 
-        <p
-          style={{
-            fontSize: 11.5,
-            color: "#64748b",
-            margin: "8px 0 18px",
-            lineHeight: 1.5,
-          }}
-        >
-          ⚠️ Ez nem pénzügyi tanács. Döntéstámogató eszköz, technikai adatok
-          összegzése — a döntés, a pozícióméret és a kockázatkezelés a tiéd.
+        <p style={{ fontSize: 12.5, color: "#94a3b8", margin: "10px 0 4px" }}>
+          A <b style={{ color: "#e2e8f0" }}>%</b> az AI 1&nbsp;napos beszállási
+          jelzése minden együttállás alapján. {BUY_THRESHOLD}% felett érdemes
+          figyelni — most{" "}
+          <b style={{ color: buyCount > 0 ? "#16a34a" : "#94a3b8" }}>
+            {buyCount}
+          </b>{" "}
+          papír van a küszöb felett. Kattints a sorra a részletekért.
+        </p>
+
+        <p style={{ fontSize: 11.5, color: "#64748b", margin: "0 0 14px", lineHeight: 1.5 }}>
+          ⚠️ Ez nem pénzügyi tanács. Döntéstámogató eszköz — a döntés, a
+          pozícióméret és a kockázatkezelés a tiéd.
         </p>
 
         <Legend />
@@ -325,32 +341,19 @@ export default function TradePage() {
             Üres a watchlist. Adj hozzá egy tickert fent, majd frissíts.
           </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
-              gap: 16,
-            }}
-          >
-            {items.map(({ symbol, rec }) =>
-              rec ? (
-                <Card
-                  key={symbol}
-                  rec={rec}
-                  busy={!!busy[symbol]}
-                  onRefresh={() => refreshOne(symbol)}
-                  onRemove={() => removeTicker(symbol)}
-                />
-              ) : (
-                <PlaceholderCard
-                  key={symbol}
-                  symbol={symbol}
-                  busy={!!busy[symbol]}
-                  onRefresh={() => refreshOne(symbol)}
-                  onRemove={() => removeTicker(symbol)}
-                />
-              )
-            )}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {items.map(({ symbol, rec }) => (
+              <AccordionItem
+                key={symbol}
+                symbol={symbol}
+                rec={rec}
+                open={!!open[symbol]}
+                busy={!!busy[symbol]}
+                onToggle={() => toggle(symbol)}
+                onRefresh={() => refreshOne(symbol)}
+                onRemove={() => removeTicker(symbol)}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -358,98 +361,172 @@ export default function TradePage() {
   );
 }
 
-function RemoveBtn({ onRemove, busy }: { onRemove: () => void; busy: boolean }) {
+function IconBtn({
+  title,
+  onClick,
+  busy,
+  children,
+}: {
+  title: string;
+  onClick: () => void;
+  busy: boolean;
+  children: ReactNode;
+}) {
   return (
     <button
-      onClick={onRemove}
-      disabled={busy}
-      title="Eltávolítás a watchlistről"
-      style={{
-        background: "transparent",
-        color: "#64748b",
-        border: "1px solid #334155",
-        borderRadius: 9,
-        padding: "6px 9px",
-        fontSize: 12,
-        cursor: busy ? "default" : "pointer",
+      onClick={(e) => {
+        e.stopPropagation();
+        if (!busy) onClick();
       }}
-    >
-      ✕
-    </button>
-  );
-}
-
-function RefreshBtn({ onRefresh, busy }: { onRefresh: () => void; busy: boolean }) {
-  return (
-    <button
-      onClick={onRefresh}
       disabled={busy}
-      title="Frissítés"
+      title={title}
       style={{
         background: "#1f2937",
         color: "#e2e8f0",
         border: "1px solid #334155",
         borderRadius: 9,
-        padding: "6px 10px",
+        padding: "6px 9px",
         fontSize: 12,
         cursor: busy ? "default" : "pointer",
+        flexShrink: 0,
       }}
     >
-      {busy ? "…" : "↻"}
+      {children}
     </button>
   );
 }
 
-function PlaceholderCard({
-  symbol,
-  busy,
-  onRefresh,
-  onRemove,
-}: {
-  symbol: string;
-  busy: boolean;
-  onRefresh: () => void;
-  onRemove: () => void;
-}) {
-  return (
-    <div
-      style={{
-        background: "#111827",
-        border: "1px dashed #334155",
-        borderRadius: 18,
-        padding: 16,
-        display: "flex",
-        flexDirection: "column",
-        gap: 12,
-        minHeight: 140,
-        justifyContent: "space-between",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 19, fontWeight: 800, flex: 1 }}>{symbol}</span>
-        <RefreshBtn onRefresh={onRefresh} busy={busy} />
-        <RemoveBtn onRemove={onRemove} busy={busy} />
+function DayBadge({ pct }: { pct: number | null }) {
+  if (pct == null) {
+    return (
+      <div style={{ minWidth: 62, textAlign: "right", color: "#64748b", fontSize: 12 }}>
+        —
       </div>
-      <p style={{ fontSize: 13, color: "#94a3b8", margin: 0 }}>
-        {busy ? "Elemzés folyamatban…" : "Még nincs elemzés — nyomd meg a ↻-t."}
-      </p>
+    );
+  }
+  const color = dtsColor(pct);
+  return (
+    <div style={{ minWidth: 62, textAlign: "right", flexShrink: 0 }}>
+      <div style={{ fontSize: 20, fontWeight: 800, color, lineHeight: 1 }}>
+        {pct}%
+      </div>
+      <div style={{ fontSize: 9, color: "#64748b", marginTop: 2 }}>
+        1 napos jelzés
+      </div>
     </div>
   );
 }
 
-function Card({
+function AccordionItem({
+  symbol,
   rec,
+  open,
   busy,
+  onToggle,
   onRefresh,
   onRemove,
 }: {
-  rec: TradeRecord;
+  symbol: string;
+  rec: TradeRecord | undefined;
+  open: boolean;
   busy: boolean;
+  onToggle: () => void;
   onRefresh: () => void;
   onRemove: () => void;
 }) {
+  const pct = rec?.analysis.day_trade_score ?? null;
+  const highlighted = pct != null && pct >= BUY_THRESHOLD;
+
+  return (
+    <div
+      style={{
+        background: "#111827",
+        border: `1px solid ${highlighted ? "#16a34a66" : "#1f2937"}`,
+        borderLeft: `3px solid ${highlighted ? "#16a34a" : "#1f2937"}`,
+        borderRadius: 14,
+        overflow: "hidden",
+      }}
+    >
+      {/* Header row (click to expand) */}
+      <div
+        onClick={onToggle}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "12px 14px",
+          cursor: "pointer",
+        }}
+      >
+        <div style={{ minWidth: 62 }}>
+          <div style={{ fontSize: 16, fontWeight: 800 }}>{symbol}</div>
+          {rec && (
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                color: BIAS_COLOR[rec.analysis.bias],
+              }}
+            >
+              {rec.analysis.bias}
+            </div>
+          )}
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {rec ? (
+            <div style={{ fontSize: 13.5 }}>
+              <b>${rec.snapshot.price.last}</b>{" "}
+              <span
+                style={{
+                  color: rec.snapshot.price.chg_pct >= 0 ? "#4ade80" : "#f87171",
+                }}
+              >
+                {rec.snapshot.price.chg_pct >= 0 ? "+" : ""}
+                {rec.snapshot.price.chg_pct}%
+              </span>
+            </div>
+          ) : (
+            <div style={{ fontSize: 12.5, color: "#94a3b8" }}>
+              {busy ? "Elemzés folyamatban…" : "Még nincs elemzés — frissíts ↻"}
+            </div>
+          )}
+        </div>
+
+        <DayBadge pct={pct} />
+        <IconBtn title="Frissítés" onClick={onRefresh} busy={busy}>
+          {busy ? "…" : "↻"}
+        </IconBtn>
+        <IconBtn title="Eltávolítás" onClick={onRemove} busy={busy}>
+          ✕
+        </IconBtn>
+        <span
+          style={{
+            color: "#64748b",
+            fontSize: 16,
+            transform: open ? "rotate(180deg)" : "none",
+            transition: "transform .15s",
+            flexShrink: 0,
+          }}
+        >
+          ▾
+        </span>
+      </div>
+
+      {/* Body */}
+      {open && rec && <CardBody rec={rec} />}
+      {open && !rec && (
+        <div style={{ padding: "0 14px 14px", fontSize: 12.5, color: "#94a3b8" }}>
+          Nyomd meg a ↻ gombot az első elemzéshez.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CardBody({ rec }: { rec: TradeRecord }) {
   const { snapshot: s, scores, analysis: a } = rec;
-  const up = s.price.chg_pct >= 0;
   const score = scores.long.total;
   const scoreColor = score >= 70 ? "#16a34a" : score >= 50 ? "#ca8a04" : "#64748b";
   const eDays = rec.catalysts?.earnings_in_days;
@@ -458,48 +535,45 @@ function Card({
   return (
     <div
       style={{
-        background: "#111827",
-        border: "1px solid #1f2937",
-        borderRadius: 18,
-        padding: 16,
+        borderTop: "1px solid #1f2937",
+        padding: 14,
         display: "flex",
         flexDirection: "column",
         gap: 12,
       }}
     >
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 19, fontWeight: 800 }}>{s.symbol}</span>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: ".04em",
-                color: BIAS_COLOR[a.bias],
-                border: `1px solid ${BIAS_COLOR[a.bias]}66`,
-                borderRadius: 999,
-                padding: "2px 8px",
-              }}
-            >
-              {a.bias}
-            </span>
-          </div>
-          <div style={{ marginTop: 4, fontSize: 14 }}>
-            <b>${s.price.last}</b>{" "}
-            <span style={{ color: up ? "#4ade80" : "#f87171" }}>
-              {up ? "+" : ""}
-              {s.price.chg_pct}%
-            </span>
-          </div>
+      {/* Plain-language summary */}
+      {a.plain_summary && (
+        <div
+          style={{
+            background: "#0e1a2b",
+            border: "1px solid #1e3a5f",
+            borderLeft: "3px solid #38bdf8",
+            borderRadius: 10,
+            padding: "10px 12px",
+            fontSize: 13,
+            lineHeight: 1.55,
+            color: "#e2e8f0",
+          }}
+        >
+          <span
+            style={{
+              display: "block",
+              fontSize: 10.5,
+              fontWeight: 800,
+              letterSpacing: ".08em",
+              textTransform: "uppercase",
+              color: "#7dd3fc",
+              marginBottom: 4,
+            }}
+          >
+            💬 Mit jelent?
+          </span>
+          {a.plain_summary}
         </div>
-        <RefreshBtn onRefresh={onRefresh} busy={busy} />
-        <RemoveBtn onRemove={onRemove} busy={busy} />
-      </div>
+      )}
 
-      {/* Score bar */}
+      {/* Swing score bar */}
       <div>
         <div
           style={{
@@ -516,16 +590,9 @@ function Card({
           </span>
         </div>
         <div
-          style={{
-            height: 7,
-            borderRadius: 999,
-            background: "#1f2937",
-            overflow: "hidden",
-          }}
+          style={{ height: 7, borderRadius: 999, background: "#1f2937", overflow: "hidden" }}
         >
-          <div
-            style={{ width: `${score}%`, height: "100%", background: scoreColor }}
-          />
+          <div style={{ width: `${score}%`, height: "100%", background: scoreColor }} />
         </div>
       </div>
 
@@ -601,36 +668,7 @@ function Card({
         </div>
       </div>
 
-      {/* Plain-language summary */}
-      {a.plain_summary && (
-        <div
-          style={{
-            background: "#0e1a2b",
-            border: "1px solid #1e3a5f",
-            borderLeft: "3px solid #38bdf8",
-            borderRadius: 10,
-            padding: "10px 12px",
-            fontSize: 13,
-            lineHeight: 1.55,
-            color: "#e2e8f0",
-          }}
-        >
-          <span
-            style={{
-              display: "block",
-              fontSize: 10.5,
-              fontWeight: 800,
-              letterSpacing: ".08em",
-              textTransform: "uppercase",
-              color: "#7dd3fc",
-              marginBottom: 4,
-            }}
-          >
-            💬 Mit jelent?
-          </span>
-          {a.plain_summary}
-        </div>
-      )}
+      {/* Risks */}
       {a.risks.length > 0 && (
         <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "#fca5a5" }}>
           {a.risks.map((r, i) => (
@@ -639,7 +677,7 @@ function Card({
         </ul>
       )}
 
-      {/* Catalysts: earnings + headlines */}
+      {/* Catalysts */}
       {rec.catalysts &&
         (rec.catalysts.next_earnings ||
           (rec.catalysts.news?.length ?? 0) > 0) && (
@@ -694,7 +732,6 @@ function Card({
           justifyContent: "space-between",
           fontSize: 10.5,
           color: "#475569",
-          marginTop: 2,
         }}
       >
         <span>{a.source === "ai" ? "🤖 AI-összegzés" : "⚙️ Determinisztikus"}</span>
@@ -730,7 +767,7 @@ function Legend() {
         border: "1px solid #1f2937",
         borderRadius: 12,
         padding: "10px 14px",
-        margin: "0 0 18px",
+        margin: "0 0 16px",
         fontSize: 12.5,
       }}
     >
@@ -739,76 +776,54 @@ function Legend() {
       </summary>
       <div style={{ marginTop: 12 }}>
         <div style={{ color: "#7dd3fc", fontWeight: 800, margin: "6px 0" }}>
-          Fejléc &amp; pontszám
+          Soron (összecsukva)
         </div>
+        <LRow term="1 napos jelzés (%)">
+          az AI 0–100%-os jelzése: minden együttállás alapján mennyire kedvező
+          MOST egy 1 napos long beszállás. {BUY_THRESHOLD}% felett zöld
+          (figyelendő). Rövid távú — nem a swing-score. Napi adatból számol, így
+          heurisztika: valódi intraday day-tradinghez élő adat kellene.
+        </LRow>
         <LRow term="Bias (bullish/neutral/bearish)">
-          az összesített irány: a long és short pontszám különbségéből.
-        </LRow>
-        <LRow term="Swing-setup pontszám (0–100) + low/medium/high">
-          mennyire „tiszta” most egy több napos long beszállás. Öt részből:
-          trend + momentum + szint/R-R + volumen + minőség; a piaci rezsim
-          kapuzza. A low/medium/high a meggyőződés.
-        </LRow>
-        <LRow term="Setup tag (pl. Kitörés, Visszahúzás MA-ra)">
-          a felismert mintázat a szabály-motor szerint.
+          az összesített irány a hosszabb képre.
         </LRow>
 
         <div style={{ color: "#7dd3fc", fontWeight: 800, margin: "12px 0 6px" }}>
-          Indikátorok
+          Lenyitva — pontszám &amp; indikátorok
         </div>
+        <LRow term="Swing-setup pontszám (0–100)">
+          több napos long beszállás minősége (trend + momentum + szint/R-R +
+          volumen + minőség), a piaci rezsim kapuzza.
+        </LRow>
         <LRow term="RSI(14)">
-          momentum-mérő 0–100. &lt;30 túladott, &gt;70 túlvett; 55–70 „strong” =
-          egészséges felfelé lendület.
+          momentum 0–100. &lt;30 túladott, &gt;70 túlvett; 55–70 „strong”.
         </LRow>
-        <LRow term="MACD">
-          trend-momentum. „bullish rising” = pozitív és erősödő lendület.
-        </LRow>
+        <LRow term="MACD">trend-momentum („bullish rising” = erősödő).</LRow>
         <LRow term="MA állás">
-          a 20/50/200 napos mozgóátlagok sorrendje. „20&gt;50&gt;200” = tiszta
-          emelkedő trend; „mixed” = nem rendezett (óvatosság).
+          20/50/200 sorrend. „20&gt;50&gt;200” = tiszta emelkedő; „mixed” =
+          óvatosság.
         </LRow>
-        <LRow term="Heti trend">
-          a magasabb (heti) időtáv iránya — a legjobb setupok itt is egyeznek.
+        <LRow term="Heti trend">a magasabb időtáv iránya.</LRow>
+        <LRow term="ATR (%)">
+          napi mozgásterjedelem = volatilitás; magas → tág stop, kirázás-veszély.
         </LRow>
-        <LRow term="ATR (és %)">
-          átlagos napi mozgásterjedelem = volatilitás. Magas % → tág stop kell,
-          nagyobb kirázás-veszély.
-        </LRow>
-        <LRow term="Rel. volumen">
-          a mai forgalom a 20-napos átlaghoz képest. &gt;1 = átlag feletti
-          érdeklődés (kitörésnél megerősítés).
-        </LRow>
-        <LRow term="Támasz / Ellenállás">
-          a legutóbbi ~20 nap alja/teteje. Az ellenállás fölé zárás = kitörés.
-        </LRow>
-        <LRow term="52h pozíció">
-          hol áll az 52-hetes tartományban (0% = éves mély, 100% = éves csúcs).
-        </LRow>
+        <LRow term="Rel. volumen">mai forgalom a 20-napos átlaghoz képest.</LRow>
+        <LRow term="Támasz / Ellenállás">a legutóbbi ~20 nap alja/teteje.</LRow>
+        <LRow term="52h pozíció">hol áll az 52-hetes tartományban.</LRow>
 
         <div style={{ color: "#7dd3fc", fontWeight: 800, margin: "12px 0 6px" }}>
-          Kulcs-szintek
+          Lenyitva — szintek &amp; szöveg
         </div>
-        <LRow term="Belépő-zóna">hol lenne értelme beszállni.</LRow>
-        <LRow term="Invalidáció (stop)">
-          ha ide esik az ár, a tézis megdőlt — itt a védelmi stop.
+        <LRow term="Belépő-zóna / Stop / Célok · R/R">
+          a beszállás terve és a kockázat/hozam arány (≥2 vonzó).
         </LRow>
-        <LRow term="Célok · R/R">
-          a cél(ok), és a kockázat/hozam arány. R/R 2 = 2 egység nyereség 1
-          egység kockázatra; általában a ≥2 vonzó.
-        </LRow>
-
-        <div style={{ color: "#7dd3fc", fontWeight: 800, margin: "12px 0 6px" }}>
-          Szöveg
-        </div>
         <LRow term="💬 Mit jelent?">
-          közérthető összegzés: mit jelent a kép és mit érdemes figyelni.
+          közérthető összegzés: mit jelent a kép és mit figyelj.
         </LRow>
         <LRow term="📅 Earnings / 📰 hírek">
-          gyorsjelentés dátuma (közeli earnings = gap-kockázat) és friss hírek.
+          gyorsjelentés dátuma (≤10 nap = gap-kockázat) és friss hírek.
         </LRow>
-        <LRow term="🤖 AI-összegzés / ⚙️ Determinisztikus">
-          a szöveget a Claude írta, vagy (AI nélkül) a determinisztikus tartalék.
-        </LRow>
+        <LRow term="🤖 / ⚙️">Claude-összegzés, vagy determinisztikus tartalék.</LRow>
 
         <div
           style={{
@@ -819,9 +834,9 @@ function Legend() {
             fontSize: 11.5,
           }}
         >
-          A számok determinisztikusan, a chart adataiból számolódnak; az AI ezt
-          fordítja emberi nyelvre és rangsorol. Ez döntéstámogatás, nem pénzügyi
-          tanács.
+          A számok a chart adataiból, determinisztikusan számolódnak; az AI ezt
+          fordítja emberi nyelvre és adja a %-os jelzést. Döntéstámogatás, nem
+          pénzügyi tanács.
         </div>
       </div>
     </details>

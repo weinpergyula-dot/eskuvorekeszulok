@@ -12,6 +12,7 @@ SZIGORÚ SZABÁLYOK:
 - NEM mondod meg, mekkora pozíciót vegyen fel, és nem adsz vételi/eladási utasítást.
 - A "catalysts" mezőbe a bemeneti "catalysts.next_earnings" dátumot és a "catalysts.headlines" hírekből levonható lényeget írd — NE találj ki hírt vagy dátumot. Ha nincs hír/earnings a bemenetben, üres tömb.
 - Ha "gates.earnings_within_hold" true, tedd be a "risks"-be az earnings gap-kockázatot.
+- A "day_trade_score" egész szám 0–100: mennyire kedvező MOST egy 1 NAPOS (day-trade) long beszállás, MINDEN együttállást figyelembe véve — rövid távú momentum (MACD, RSI), relatív volumen, mai elmozdulás, kitörés, piaci rezsim; ebből LEVONVA a volatilitás- és az earnings-gap kockázatot. 0 = egyáltalán nem, 100 = nagyon kedvező. Ez RÖVID TÁVÚ (1 nap), NEM a swing-score. Legyél szigorú: earnings a tartási időn belül vagy extrém volatilitás erősen húzza lefelé.
 - A "rationale" a szakmai indoklás (max ~3 mondat, indikátorokkal).
 - A "plain_summary" KÖZÉRTHETŐ, szakszavak nélküli (2-3 mondat): mit jelent ez emberi nyelven, és mit érdemes FIGYELNI (mi erősítené meg, mi buktatná a setupot). NE adj vételi/eladási utasítást és NE mondj pozícióméretet — csak leírod a képet és a figyelendőket.
 - Magyarul írj.
@@ -23,6 +24,7 @@ Válaszod KIZÁRÓLAG egyetlen JSON objektum legyen, PONTOSAN ezekkel a kulcsokk
   "conviction": "low" | "medium" | "high",
   "key_levels": { "entry_zone": [number, number] | null, "invalidation": number | null, "targets": number[] },
   "risk_reward": number | null,
+  "day_trade_score": number (0..100),
   "rationale": string,
   "plain_summary": string,
   "risks": string[],
@@ -171,6 +173,11 @@ function validate(
       ? raw.plain_summary.trim().slice(0, 600)
       : fb.plain_summary;
 
+  const day_trade_score =
+    typeof raw.day_trade_score === "number" && Number.isFinite(raw.day_trade_score)
+      ? Math.max(0, Math.min(100, Math.round(raw.day_trade_score)))
+      : fb.day_trade_score;
+
   // key_levels: accept only in-band numbers, else fall back per field.
   const kl = (raw.key_levels ?? {}) as Record<string, unknown>;
   let entry_zone = fb.key_levels.entry_zone;
@@ -227,6 +234,7 @@ function validate(
       typeof raw.risk_reward === "number" && Number.isFinite(raw.risk_reward)
         ? raw.risk_reward
         : fb.risk_reward,
+    day_trade_score,
     rationale,
     plain_summary,
     risks: risks.length ? risks : fb.risks,

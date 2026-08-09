@@ -88,6 +88,9 @@ export interface Analysis {
     targets: number[];
   };
   risk_reward: number | null;
+  // 0-100: how favourable a 1-day (day-trade) long entry looks right now,
+  // all confluence considered. Short-term oriented, not the swing score.
+  day_trade_score: number;
   rationale: string;
   plain_summary: string; // jargon-free, "what it means + what to watch"
   risks: string[];
