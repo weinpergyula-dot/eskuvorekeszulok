@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { Regime, TradeRecord } from "@/lib/trade/types";
 
-const BUY_THRESHOLD = 50; // day-trade signal at/above this is highlighted
+const BUY_THRESHOLD = 70; // day-trade signal at/above this is green / highlighted
 
 const REGIME_LABEL: Record<Regime["qqq_trend"], string> = {
   up: "Emelkedő piac",
@@ -39,7 +39,8 @@ function ago(iso?: string): string {
 }
 
 function dtsColor(pct: number): string {
-  return pct >= BUY_THRESHOLD ? "#16a34a" : pct >= 30 ? "#ca8a04" : "#64748b";
+  // 0-39 red, 40-69 orange, 70+ green
+  return pct >= 70 ? "#22c55e" : pct >= 40 ? "#f59e0b" : "#ef4444";
 }
 
 export default function TradePage() {
@@ -441,8 +442,8 @@ function AccordionItem({
     <div
       style={{
         background: "#111827",
-        border: `1px solid ${highlighted ? "#16a34a66" : "#1f2937"}`,
-        borderLeft: `3px solid ${highlighted ? "#16a34a" : "#1f2937"}`,
+        border: `1px solid ${highlighted ? "#22c55e66" : "#1f2937"}`,
+        borderLeft: `3px solid ${highlighted ? "#22c55e" : "#1f2937"}`,
         borderRadius: 14,
         overflow: "hidden",
       }}
@@ -668,15 +669,6 @@ function CardBody({ rec }: { rec: TradeRecord }) {
         </div>
       </div>
 
-      {/* Risks */}
-      {a.risks.length > 0 && (
-        <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "#fca5a5" }}>
-          {a.risks.map((r, i) => (
-            <li key={i}>{r}</li>
-          ))}
-        </ul>
-      )}
-
       {/* Catalysts */}
       {rec.catalysts &&
         (rec.catalysts.next_earnings ||
@@ -780,9 +772,12 @@ function Legend() {
         </div>
         <LRow term="1 napos jelzés (%)">
           az AI 0–100%-os jelzése: minden együttállás alapján mennyire kedvező
-          MOST egy 1 napos long beszállás. {BUY_THRESHOLD}% felett zöld
-          (figyelendő). Rövid távú — nem a swing-score. Napi adatból számol, így
-          heurisztika: valódi intraday day-tradinghez élő adat kellene.
+          MOST egy 1 napos long beszállás. Sávok:{" "}
+          <b style={{ color: "#ef4444" }}>0–40 piros</b> (kerülendő),{" "}
+          <b style={{ color: "#f59e0b" }}>40–70 narancs</b> (óvatos),{" "}
+          <b style={{ color: "#22c55e" }}>70+ zöld</b> (erős jelzés). Rövid távú
+          — nem a swing-score. Napi adatból számol, így heurisztika: valódi
+          intraday day-tradinghez élő adat kellene.
         </LRow>
         <LRow term="Bias (bullish/neutral/bearish)">
           az összesített irány a hosszabb képre.
