@@ -208,7 +208,9 @@ export default function TradePage() {
         setError(j.error ?? "Nem sikerült a javaslat.");
       }
     } catch {
-      setError("Hálózati hiba a javaslatnál.");
+      setError(
+        "A javaslat nem készült el (időtúllépés vagy hálózati hiba). Próbáld újra kicsit később."
+      );
     } finally {
       setSuggesting(false);
     }

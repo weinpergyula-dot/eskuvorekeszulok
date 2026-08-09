@@ -87,7 +87,7 @@ export async function analyzeSymbol(
 // per symbol (rate limit / bad ticker are skipped).
 const SUGGEST_THRESHOLD = 70; // AI % at/above this counts as a strong signal
 const SUGGEST_MAX = 5; // how many top picks to show
-const AI_EVAL_MAX = 8; // how many pre-filtered candidates to run the AI on
+const AI_EVAL_MAX = 6; // how many pre-filtered candidates to run the AI on
 
 export async function scanForSuggestions(): Promise<{
   records: TradeRecord[];
@@ -139,25 +139,27 @@ export async function scanForSuggestions(): Promise<{
   const ranked = [...scored].sort((a, b) => b.dts - a.dts).slice(0, AI_EVAL_MAX);
 
   const now = new Date().toISOString();
-  const evaluated: TradeRecord[] = [];
-  for (const x of ranked) {
-    const analysis = await generateAnalysis(
-      x.snapshot,
-      x.scores,
-      regime,
-      x.catalysts
-    );
-    evaluated.push({
-      symbol: x.symbol,
-      as_of: x.snapshot.as_of,
-      snapshot: x.snapshot,
-      regime,
-      scores: x.scores,
-      analysis,
-      catalysts: x.catalysts,
-      updated_at: now,
-    });
-  }
+  // Run the AI calls concurrently so the whole scan fits the function timeout.
+  const evaluated = await Promise.all(
+    ranked.map(async (x) => {
+      const analysis = await generateAnalysis(
+        x.snapshot,
+        x.scores,
+        regime,
+        x.catalysts
+      );
+      return {
+        symbol: x.symbol,
+        as_of: x.snapshot.as_of,
+        snapshot: x.snapshot,
+        regime,
+        scores: x.scores,
+        analysis,
+        catalysts: x.catalysts,
+        updated_at: now,
+      } as TradeRecord;
+    })
+  );
   evaluated.sort(
     (a, b) => b.analysis.day_trade_score - a.analysis.day_trade_score
   );

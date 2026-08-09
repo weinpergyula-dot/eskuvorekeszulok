@@ -8,20 +8,27 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
 // POST /api/trade/refresh-all -> re-run the pipeline for the whole watchlist.
-// Sequential to stay within the Twelve Data free-tier rate limit; on a
-// rate-limit / provider error we return whatever succeeded plus the errors.
+// Runs symbols concurrently (mostly bounded by the slow AI call) so the request
+// fits the function timeout; per-symbol errors (rate limit) are isolated.
 export async function POST() {
   try {
     const [regime, watchlist] = await Promise.all([getRegime(), getWatchlist()]);
+
+    const settled = await Promise.all(
+      watchlist.map(async (symbol) => {
+        try {
+          return { symbol, record: await analyzeSymbol(symbol, regime) };
+        } catch (e) {
+          return { symbol, error: toMessage(e) };
+        }
+      })
+    );
+
     const records: TradeRecord[] = [];
     const errors: Record<string, string> = {};
-
-    for (const symbol of watchlist) {
-      try {
-        records.push(await analyzeSymbol(symbol, regime));
-      } catch (e) {
-        errors[symbol] = toMessage(e);
-      }
+    for (const s of settled) {
+      if ("record" in s) records.push(s.record);
+      else errors[s.symbol] = s.error;
     }
 
     return NextResponse.json({
