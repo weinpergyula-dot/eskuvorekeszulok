@@ -835,9 +835,21 @@
   /* linked contract row (streaming <-> parent service) */
   label.krow{cursor:pointer;}
   .krow .v.link{color:var(--limed);}
-  /* nested streaming under its parent subscription (home) */
-  .substrm{display:flex; align-items:center; gap:10px; margin:-3px 0 11px 22px; padding:10px 13px; border-radius:15px; background:#FFFFFF; border:1px solid var(--line); border-left:2px solid var(--lime3); cursor:pointer; transition:transform .18s;}
+  /* nested streaming under its parent subscription (home) — tree-grouped */
+  .substrm{position:relative; display:flex; align-items:center; gap:10px; margin:0 0 8px 34px; padding:10px 13px; border-radius:14px; background:#FFFFFF; border:1px solid var(--line); cursor:pointer; transition:transform .18s;}
   .substrm:hover{transform:translateX(2px);}
+  /* vertical grouping rail branching from the parent subscription */
+  .substrm::before{content:""; position:absolute; left:-18px; top:-8px; bottom:-8px; width:2px; background:var(--lime3);}
+  /* last item in the group: rail ends at the card centre (└) */
+  .substrm:not(:has(+ .substrm))::before{bottom:auto; height:calc(50% + 8px);}
+  /* horizontal tick from the rail to each card */
+  .substrm .ssic::after{content:""; position:absolute; left:-16px; top:50%; width:12px; height:2px; background:var(--lime3);}
+  /* first related item: rail reaches up to the parent + carries the group caption */
+  .sub + .substrm{margin-top:24px;}
+  .sub + .substrm::before{top:-24px;}
+  .sub + .substrm:not(:has(+ .substrm))::before{top:-24px; bottom:auto; height:calc(50% + 24px);}
+  .sub + .substrm::after{content:"Kapcsolódó szolgáltatások"; position:absolute; left:-18px; top:-17px;
+    font-size:9px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--limed); white-space:nowrap;}
   .substrm .ssic{width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:rgba(198,242,78,.20); flex-shrink:0;}
   .substrm .ssic i{font-size:15px; color:var(--limed);}
   .substrm .ssn{flex:1; font-size:12.5px; font-weight:600; color:var(--hi);}
