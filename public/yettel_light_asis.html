@@ -1155,17 +1155,41 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 6px 14px -8px rgba(20,36,94,.45);
   }
 
-  /* ===== collapsible service-detail accordions ===== */
-  .acc{ background:#FFFFFF; border:1px solid var(--line); border-radius:20px; overflow:hidden; margin-top:12px; }
-  .acc > summary{ list-style:none; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  /* ===== collapsible service-detail accordions (scoped: .sacc) ===== */
+  .sacc{ background:#FFFFFF; border:1px solid var(--line); border-radius:20px; overflow:hidden; margin-top:12px; }
+  .sacc > summary{ list-style:none; display:flex; align-items:center; justify-content:space-between; gap:12px;
                   padding:15px 16px; cursor:pointer; font-family:'Sora'; font-weight:700; font-size:14px;
                   color:var(--navy); letter-spacing:-.01em; -webkit-user-select:none; user-select:none; }
-  .acc > summary::-webkit-details-marker{ display:none; }
-  .acc > summary::marker{ content:""; }
-  .acc .accic{ font-size:21px; color:var(--mid); transition:transform .22s ease; flex-shrink:0; }
-  .acc[open] > summary .accic{ transform:rotate(180deg); }
-  .acc[open] > summary{ border-bottom:1px solid var(--line); }
+  .sacc > summary::-webkit-details-marker{ display:none; }
+  .sacc > summary::marker{ content:""; }
+  .sacc .accic{ font-size:21px; color:var(--mid); transition:transform .22s ease; flex-shrink:0; }
+  .sacc[open] > summary .accic{ transform:rotate(180deg); }
+  .sacc[open] > summary{ border-bottom:1px solid var(--line); }
   .accbody .accpad{ padding:14px 16px; }
+  /* sub-section label inside a merged accordion (e.g. Szolgáltatás információk) */
+  .saclab{ margin:0; padding:13px 16px 7px; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+           color:var(--low); font-weight:700; }
+  .accbody > .saclab{ border-top:1px solid var(--line); }
+  .accbody > .saclab:first-child{ border-top:none; }
+  .saclab + .krow, .saclab + .lrow{ border-top:none !important; }
+  /* nested accordions (e.g. Kiegészítő szolgáltatás vásárlása → Streaming / Internetbiztonság) */
+  .nacc{ border-top:1px solid var(--line); }
+  .nacc > summary{ list-style:none; display:flex; align-items:center; gap:13px; padding:13px 16px; cursor:pointer;
+                   font-family:'Manrope'; font-weight:700; font-size:13px; color:var(--navy);
+                   -webkit-user-select:none; user-select:none; }
+  .nacc > summary::-webkit-details-marker{ display:none; }
+  .nacc > summary::marker{ content:""; }
+  .nacc > summary .n{ flex:1; }
+  .nacc .accic{ font-size:19px; }
+  .nacc[open] > summary .accic{ transform:rotate(180deg); }
+  .nacc .naccbody{ background:#F7F9FD; }
+  .nacc .naccbody .lrow, .nacc .naccbody .nacc > summary{ padding-left:22px; }
+  .nacc .naccbody .nacc .naccbody .lrow{ padding-left:30px; }
+  /* CTA-styled nested accordion header (buy add-on) */
+  .nacc.cta > summary{ color:var(--limed); font-weight:700; }
+  .nacc.cta > summary .ctaic{ width:24px; height:24px; border-radius:50%; border:1.5px solid #7AB800;
+                              display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .nacc.cta > summary .ctaic i{ font-size:15px; color:#7AB800; }
   /* full-width "modify service" action inside a section */
   .svcmod{ display:flex; align-items:center; justify-content:center; gap:9px; box-sizing:border-box;
            width:calc(100% - 32px); margin:12px 16px 4px; padding:13px; border-radius:14px; cursor:pointer;
@@ -1548,21 +1572,16 @@
       <label class="edit icon" for="s-edmob"><i class="ti ti-pencil"></i></label>
     </div>
 
-    <!-- Szerződéses részletek — alapból zárva -->
-    <details class="acc">
-      <summary><span>Szerződéses részletek</span><i class="ti ti-chevron-down accic"></i></summary>
+    <!-- Szolgáltatás információk — alapból zárva; egy akkordion, két szekcióval -->
+    <details class="sacc">
+      <summary><span>Szolgáltatás információk</span><i class="ti ti-chevron-down accic"></i></summary>
       <div class="accbody">
+        <p class="saclab">Szerződéses részletek</p>
         <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2026. 11. 30.</span></div>
         <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">5 hónap</span></div>
         <div class="krow"><span class="k">Havidíj</span><span class="v">7 990 Ft / hó</span></div>
         <div class="krow"><span class="k">Szerződés típusa</span><span class="v">Határozott idejű</span></div>
-      </div>
-    </details>
-
-    <!-- Szolgáltatás részletei — alapból zárva, alján a módosítás -->
-    <details class="acc">
-      <summary><span>Szolgáltatás részletei</span><i class="ti ti-chevron-down accic"></i></summary>
-      <div class="accbody">
+        <p class="saclab">Szolgáltatás részletei</p>
         <div class="krow"><span class="k">Csomag neve</span><span class="v">Prime Plus 2024</span></div>
         <div class="krow"><span class="k">Csomag típusa</span><span class="v">Havidíjas</span></div>
         <div class="krow"><span class="k">Aktiválás dátuma</span><span class="v">2024. 12. 01.</span></div>
@@ -1574,7 +1593,7 @@
     </details>
 
     <!-- Elérhető keret — alapból zárva -->
-    <details class="acc">
+    <details class="sacc">
       <summary><span>Elérhető keret</span><i class="ti ti-chevron-down accic"></i></summary>
       <div class="accbody">
         <div class="accpad">
@@ -1588,23 +1607,46 @@
       </div>
     </details>
 
-    <!-- Kapcsolódó kiegészítő szolgáltatások — alapból nyitva -->
-    <details class="acc" open>
+    <!-- Kapcsolódó kiegészítő szolgáltatások — alapból nyitva; alján vásárlás CTA -->
+    <details class="sacc" open>
       <summary><span>Kapcsolódó kiegészítő szolgáltatások</span><i class="ti ti-chevron-down accic"></i></summary>
       <div class="accbody">
         <label class="lrow" for="s-detail-tv"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV<small class="ninv">TV Prémium</small></span><i class="ti ti-chevron-right chev"></i></label>
         <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max<small class="ninv">Streaming</small></span><i class="ti ti-chevron-right chev"></i></label>
+
+        <!-- CTA: kiegészítő szolgáltatás vásárlása → Streaming / Internetbiztonság, tovább bontva -->
+        <details class="nacc cta">
+          <summary><span class="ctaic"><i class="ti ti-plus"></i></span><span class="n">Kiegészítő szolgáltatás vásárlása</span><i class="ti ti-chevron-down accic"></i></summary>
+          <div class="naccbody">
+
+            <details class="nacc">
+              <summary><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-down accic"></i></summary>
+              <div class="naccbody">
+                <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-brand-hbo"></i></span><span class="n">HBO Max<small class="ninv">2 490 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></label>
+                <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-brand-netflix"></i></span><span class="n">Netflix<small class="ninv">3 490 Ft / hó-tól</small></span><i class="ti ti-chevron-right chev"></i></label>
+                <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-brand-disney"></i></span><span class="n">Disney+<small class="ninv">2 990 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></label>
+                <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-movie"></i></span><span class="n">SkyShowtime<small class="ninv">1 990 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></label>
+              </div>
+            </details>
+
+            <details class="nacc">
+              <summary><span class="sic"><i class="ti ti-shield-lock"></i></span><span class="n">Internetbiztonság</span><i class="ti ti-chevron-down accic"></i></summary>
+              <div class="naccbody">
+                <div class="lrow"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Yettel Protect<small class="ninv">690 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></div>
+                <div class="lrow"><span class="sic"><i class="ti ti-bug"></i></span><span class="n">Vírusirtó Premium<small class="ninv">990 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></div>
+                <label class="lrow" for="s-gyvpick"><span class="sic"><i class="ti ti-mood-kid"></i></span><span class="n">Szülői felügyelet<small class="ninv">Gyermekvédelmi szolgáltatás</small></span><i class="ti ti-chevron-right chev"></i></label>
+              </div>
+            </details>
+
+          </div>
+        </details>
       </div>
     </details>
 
-    <!-- Kiegészítő szolgáltatás vásárlása — alapból nyitva -->
-    <details class="acc" open>
-      <summary><span>Kiegészítő szolgáltatás vásárlása</span><i class="ti ti-chevron-down accic"></i></summary>
+    <!-- Addon vásárlása — alapból nyitva -->
+    <details class="sacc" open>
+      <summary><span>Addon vásárlása</span><i class="ti ti-chevron-down accic"></i></summary>
       <div class="accbody">
-        <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o1"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="lrow" for="s-gyvpick"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Gyermekvédelmi szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
         <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
         <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming adat</span><i class="ti ti-chevron-right chev"></i></label>
         <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
@@ -1612,7 +1654,7 @@
     </details>
 
     <!-- Kapcsolódó eszközök — alapból zárva -->
-    <details class="acc">
+    <details class="sacc">
       <summary><span>Kapcsolódó eszközök</span><i class="ti ti-chevron-down accic"></i></summary>
       <div class="accbody">
         <div class="accpad">
@@ -1647,7 +1689,7 @@
     </details>
 
     <!-- Extra szolgáltatások — alapból zárva -->
-    <details class="acc">
+    <details class="sacc">
       <summary><span>Extra szolgáltatások</span><i class="ti ti-chevron-down accic"></i></summary>
       <div class="accbody">
         <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Hívásrészletező</span><i class="ti ti-chevron-right chev"></i></div>
@@ -1658,7 +1700,7 @@
     </details>
 
     <!-- Dokumentumok — alapból zárva -->
-    <details class="acc">
+    <details class="sacc">
       <summary><span>Dokumentumok</span><i class="ti ti-chevron-down accic"></i></summary>
       <div class="accbody">
         <div class="lrow"><span class="sic"><i class="ti ti-file-invoice"></i></span><span class="n">Szerződés<small class="ninv">PDF · 240 KB</small></span><i class="ti ti-chevron-right chev"></i></div>
