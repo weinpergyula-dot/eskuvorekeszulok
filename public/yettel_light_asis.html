@@ -840,8 +840,6 @@
   .sub.subgroup:hover{transform:none; box-shadow:0 10px 24px -14px rgba(20,36,94,.24);}
   .subhead{display:flex; align-items:center; gap:14px; padding:15px 16px; cursor:pointer;}
   .subgroup .subrel{margin:0 12px; padding:12px 0 14px; border-top:1px dashed var(--line);}
-  .subrel-lab{margin:0 4px 9px; font-size:9.5px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--limed); display:flex; align-items:center; gap:6px;}
-  .subrel-lab i{font-size:13px;}
   .subrel:not(:has(.substrm)){display:none;}
   /* related rows: tucked-in chips within the card */
   .substrm{position:relative; display:flex; align-items:center; gap:10px; margin:0 0 7px; padding:9px 12px; border-radius:13px; background:var(--page); border:1px solid var(--line); cursor:pointer; transition:transform .18s, background .18s;}
@@ -1211,6 +1209,7 @@
   .sacc[open] > summary .accic{ transform:rotate(180deg); }
   .sacc[open] > summary{ border-bottom:1px solid var(--line); }
   .accbody .accpad{ padding:14px 16px; }
+  .relnote{ margin:0 2px 10px; font-size:11.5px; line-height:1.5; color:var(--mid); }
   /* sub-section label inside a merged accordion (e.g. Szolgáltatás információk) */
   .saclab{ margin:0; padding:13px 16px 7px; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
            color:var(--low); font-weight:700; }
@@ -1576,9 +1575,9 @@
             <i class="ti ti-chevron-right chev"></i>
           </label>
           <div class="subrel" data-related="mob-7430">
-            <p class="subrel-lab" data-relhead="mob-7430"><i class="ti ti-arrow-ramp-right-2"></i>Kapcsolódó szolgáltatások</p>
+            <span class="relanchor" data-relhead="mob-7430" hidden></span>
             <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-            <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+            <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max<span class="sssub">Streaming</span></span><i class="ti ti-chevron-right chev"></i></label>
           </div>
         </div>
         <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detailmob2"></label>
@@ -1827,13 +1826,27 @@
         <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2027. 03. 15.</span></div>
         <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">9 hónap</span></div>
         <div class="krow"><span class="k">Havidíj</span><span class="v">5 490 Ft / hó</span></div>
-        <label class="krow krlink" for="s-detail"><span class="k">Kapcsolt szolgáltatás</span><span class="v link">Prime Plus 2024</span></label>
         <p class="saclab">Csomag adatai</p>
         <div class="krow"><span class="k">Csatornák száma</span><span class="v strong">120+</span></div>
         <div class="krow"><span class="k">HD csatornák</span><span class="v">64</span></div>
         <div class="krow"><span class="k">Felvétel (felhő)</span><span class="v">100 óra</span></div>
         <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
         <label class="svcmod" for="s-edtv"><i class="ti ti-adjustments-alt"></i>Szolgáltatás módosítása</label>
+      </div>
+    </details>
+
+    <!-- Kapcsolódó szolgáltatás: melyik havidíjashoz tartozik -->
+    <details class="sacc" open>
+      <summary><span>Kapcsolódó szolgáltatás</span><i class="ti ti-chevron-down accic"></i></summary>
+      <div class="accbody">
+        <div class="accpad">
+          <p class="relnote">Ehhez a havidíjas előfizetéshez tartozik:</p>
+          <div class="sub" style="position:relative; margin-bottom:0;"><label class="subcover" for="s-detail"></label>
+            <div class="itile"><i class="ti ti-device-mobile"></i></div>
+            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </div>
+        </div>
       </div>
     </details>
 
@@ -1878,9 +1891,9 @@
         <i class="ti ti-chevron-right chev"></i>
       </label>
       <div class="subrel" data-related="mob-7430">
-        <p class="subrel-lab" data-relhead="mob-7430"><i class="ti ti-arrow-ramp-right-2"></i>Kapcsolódó szolgáltatások</p>
+        <span class="relanchor" data-relhead="mob-7430" hidden></span>
         <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max<span class="sssub">Streaming</span></span><i class="ti ti-chevron-right chev"></i></label>
       </div>
     </div>
     <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detailmob2"></label>
@@ -4593,22 +4606,42 @@
       <div class="itile violet"><i class="ti ti-player-play"></i></div>
       <div class="meta"><p class="s">Streaming</p><p class="t" style="font-size:16px;">HBO Max</p></div>
     </div>
-    <p class="mlab">Szerződés</p>
-    <div class="gcard">
-      <div class="krow"><span class="k">Havidíj</span><span class="v">1 590 Ft / hó</span></div>
-      <div class="krow"><span class="k">Aktiválás dátuma</span><span class="v">2026. 05. 10.</span></div>
-      <label class="krow krlink" for="s-detail"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">Mobil · Prime Plus 2024</span></label>
-    </div>
-    <p class="mlab">Csomag adatai</p>
-    <div class="gcard">
-      <div class="krow"><span class="k">Felbontás</span><span class="v strong">Full HD</span></div>
-      <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
-      <div class="krow"><span class="k">Letöltés offline</span><span class="v">Elérhető</span></div>
-    </div>
-    <p class="mlab">Aktiválás</p>
-    <div class="gcard">
-      <div class="lrow codelink" data-code="RTLP-6620-8B4M"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
-    </div>
+    <!-- Szolgáltatás információk -->
+    <details class="sacc">
+      <summary><span>Szolgáltatás információk</span><i class="ti ti-chevron-down accic"></i></summary>
+      <div class="accbody">
+        <p class="saclab">Szerződéses részletek</p>
+        <div class="krow"><span class="k">Havidíj</span><span class="v">1 590 Ft / hó</span></div>
+        <div class="krow"><span class="k">Aktiválás dátuma</span><span class="v">2026. 05. 10.</span></div>
+        <p class="saclab">Csomag adatai</p>
+        <div class="krow"><span class="k">Felbontás</span><span class="v strong">Full HD</span></div>
+        <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
+        <div class="krow"><span class="k">Letöltés offline</span><span class="v">Elérhető</span></div>
+      </div>
+    </details>
+
+    <!-- Kapcsolódó szolgáltatás: melyik havidíjashoz tartozik -->
+    <details class="sacc" open>
+      <summary><span>Kapcsolódó szolgáltatás</span><i class="ti ti-chevron-down accic"></i></summary>
+      <div class="accbody">
+        <div class="accpad">
+          <p class="relnote">Ehhez a havidíjas előfizetéshez tartozik:</p>
+          <div class="sub" style="position:relative; margin-bottom:0;"><label class="subcover" for="s-detail"></label>
+            <div class="itile"><i class="ti ti-device-mobile"></i></div>
+            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Aktiválás -->
+    <details class="sacc">
+      <summary><span>Aktiválás</span><i class="ti ti-chevron-down accic"></i></summary>
+      <div class="accbody">
+        <div class="lrow codelink" data-code="RTLP-6620-8B4M"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
+      </div>
+    </details>
     <button class="cancel" data-cancel="strm-hbo"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
