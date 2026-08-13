@@ -1110,6 +1110,50 @@
   .funcard.c2{ background:#3B6FFF !important; }
   .funcard.c3{ background:#8E4BE0 !important; }
   .funcard.c4{ background:#E39A25 !important; }
+
+  /* ===== floating liquid-glass bottom nav ===== */
+  .nav{
+    left:16px !important; right:16px !important; bottom:18px !important;
+    height:66px !important; border-radius:26px !important;
+    padding:0 8px !important;
+    background:linear-gradient(180deg, rgba(255,255,255,.60), rgba(255,255,255,.34)) !important;
+    border:1px solid rgba(255,255,255,.65) !important;
+    border-top-color:rgba(255,255,255,.92) !important;
+    -webkit-backdrop-filter:blur(26px) saturate(185%) !important;
+    backdrop-filter:blur(26px) saturate(185%) !important;
+    box-shadow:0 22px 48px -18px rgba(20,36,94,.42), 0 6px 16px -10px rgba(20,36,94,.22),
+               inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 1px rgba(255,255,255,.4) !important;
+    overflow:hidden;
+  }
+  /* glossy light streak across the top of the glass */
+  .nav::before{
+    content:""; position:absolute; left:0; right:0; top:0; height:52%;
+    background:linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0));
+    pointer-events:none; z-index:0;
+  }
+  .nitem{ position:relative; z-index:1; border-radius:18px; padding:8px 0 6px; transition:color .2s ease; }
+  /* soft glass pill that sits behind the active item */
+  .nitem::before{
+    content:""; position:absolute; inset:5px 8px; border-radius:16px;
+    background:transparent; transition:background .22s ease, box-shadow .22s ease, border-color .22s ease;
+    border:1px solid transparent; z-index:-1;
+  }
+  #s-home:checked ~ .nav .nitem[for="s-home"],
+  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"],
+  #s-alldev:checked ~ .nav .nitem[for="s-alldev"],
+  #s-account:checked ~ .nav .nitem[for="s-account"]{ color:var(--navy); }
+  #s-home:checked ~ .nav .nitem[for="s-home"] i,
+  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"] i,
+  #s-alldev:checked ~ .nav .nitem[for="s-alldev"] i,
+  #s-account:checked ~ .nav .nitem[for="s-account"] i{ filter:none; }
+  #s-home:checked ~ .nav .nitem[for="s-home"]::before,
+  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"]::before,
+  #s-alldev:checked ~ .nav .nitem[for="s-alldev"]::before,
+  #s-account:checked ~ .nav .nitem[for="s-account"]::before{
+    background:linear-gradient(180deg, rgba(20,36,94,.14), rgba(20,36,94,.05));
+    border-color:rgba(255,255,255,.5);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 6px 14px -8px rgba(20,36,94,.45);
+  }
 </style>
 </head>
 <body>
