@@ -1785,37 +1785,41 @@
       <label class="edit icon" for="s-edtv"><i class="ti ti-pencil"></i></label>
     </div>
 
-    <p class="mlab">Szerződés</p>
-    <div class="gcard">
-      <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2027. 03. 15.</span></div>
-      <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">9 hónap</span></div>
-      <div class="krow"><span class="k">Havidíj</span><span class="v">5 490 Ft / hó</span></div>
-      <label class="krow krlink" for="s-detail"><span class="k">Kapcsolt szolgáltatás</span><span class="v link">Havidíjas · Prime Plus 2024</span></label>
-    </div>
+    <!-- Szolgáltatás információk — Szerződéses részletek + Csomag adatai egy akkordionban -->
+    <details class="sacc">
+      <summary><span>Szolgáltatás információk</span><i class="ti ti-chevron-down accic"></i></summary>
+      <div class="accbody">
+        <p class="saclab">Szerződéses részletek</p>
+        <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2027. 03. 15.</span></div>
+        <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">9 hónap</span></div>
+        <div class="krow"><span class="k">Havidíj</span><span class="v">5 490 Ft / hó</span></div>
+        <label class="krow krlink" for="s-detail"><span class="k">Kapcsolt szolgáltatás</span><span class="v link">Prime Plus 2024</span></label>
+        <p class="saclab">Csomag adatai</p>
+        <div class="krow"><span class="k">Csatornák száma</span><span class="v strong">120+</span></div>
+        <div class="krow"><span class="k">HD csatornák</span><span class="v">64</span></div>
+        <div class="krow"><span class="k">Felvétel (felhő)</span><span class="v">100 óra</span></div>
+        <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
+        <label class="svcmod" for="s-edtv"><i class="ti ti-adjustments-alt"></i>Szolgáltatás módosítása</label>
+      </div>
+    </details>
 
-    <p class="mlab">Csomag adatai</p>
-    <div class="gcard">
-      <div class="krow"><span class="k">Csatornák száma</span><span class="v strong">120+</span></div>
-      <div class="krow"><span class="k">HD csatornák</span><span class="v">64</span></div>
-      <div class="krow"><span class="k">Felvétel (felhő)</span><span class="v">100 óra</span></div>
-      <div class="krow"><span class="k">Egyszerre nézhető</span><span class="v">2 eszköz</span></div>
-    </div>
+    <!-- Extra szolgáltatások -->
+    <details class="sacc">
+      <summary><span>Extra szolgáltatások</span><i class="ti ti-chevron-down accic"></i></summary>
+      <div class="accbody">
+        <div class="lrow"><span class="sic"><i class="ti ti-list"></i></span><span class="n">Csatornakiosztás</span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Hibabejelentés</span><i class="ti ti-chevron-right chev"></i></div>
+      </div>
+    </details>
 
-    <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
-    <div class="gcard">
-      <label class="lrow" for="s-tvpkg"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></label>
-    </div>
-
-    <p class="mlab">Extrák</p>
-    <div class="gcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-list"></i></span><span class="n">Csatornakiosztás</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-tool"></i></span><span class="n">Hibabejelentés</span><i class="ti ti-chevron-right chev"></i></div>
-    </div>
-
-
-    <div class="gcard" style="margin-top:22px;">
-      <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
-    </div>
+    <!-- Dokumentumok -->
+    <details class="sacc">
+      <summary><span>Dokumentumok</span><i class="ti ti-chevron-down accic"></i></summary>
+      <div class="accbody">
+        <div class="lrow"><span class="sic"><i class="ti ti-file-invoice"></i></span><span class="n">Szerződés<small class="ninv">PDF · 210 KB</small></span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">ÁSZF<small class="ninv">PDF · 1,1 MB</small></span><i class="ti ti-chevron-right chev"></i></div>
+      </div>
+    </details>
 
     <button class="cancel" data-cancel="tv tv-new"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
