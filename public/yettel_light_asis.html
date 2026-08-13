@@ -835,21 +835,18 @@
   /* linked contract row (streaming <-> parent service) */
   label.krow{cursor:pointer;}
   .krow .v.link{color:var(--limed);}
-  /* nested streaming under its parent subscription (home) — tree-grouped */
-  .substrm{position:relative; display:flex; align-items:center; gap:10px; margin:0 0 8px 34px; padding:10px 13px; border-radius:14px; background:#FFFFFF; border:1px solid var(--line); cursor:pointer; transition:transform .18s;}
-  .substrm:hover{transform:translateX(2px);}
-  /* vertical grouping rail branching from the parent subscription */
-  .substrm::before{content:""; position:absolute; left:-18px; top:-8px; bottom:-8px; width:2px; background:var(--lime3);}
-  /* last item in the group: rail ends at the card centre (└) */
-  .substrm:not(:has(+ .substrm))::before{bottom:auto; height:calc(50% + 8px);}
-  /* horizontal tick from the rail to each card */
-  .substrm .ssic::after{content:""; position:absolute; left:-16px; top:50%; width:12px; height:2px; background:var(--lime3);}
-  /* first related item: rail reaches up to the parent + carries the group caption */
-  .sub + .substrm{margin-top:24px;}
-  .sub + .substrm::before{top:-24px;}
-  .sub + .substrm:not(:has(+ .substrm))::before{top:-24px; bottom:auto; height:calc(50% + 24px);}
-  .sub + .substrm::after{content:"Kapcsolódó szolgáltatások"; position:absolute; left:-18px; top:-17px;
-    font-size:9px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--limed); white-space:nowrap;}
+  /* grouped subscription: related services live INSIDE the parent card */
+  .sub.subgroup{display:block; padding:0; cursor:default;}
+  .sub.subgroup:hover{transform:none; box-shadow:0 10px 24px -14px rgba(20,36,94,.24);}
+  .subhead{display:flex; align-items:center; gap:14px; padding:15px 16px; cursor:pointer;}
+  .subgroup .subrel{margin:0 12px; padding:12px 0 14px; border-top:1px dashed var(--line);}
+  .subrel-lab{margin:0 4px 9px; font-size:9.5px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--limed); display:flex; align-items:center; gap:6px;}
+  .subrel-lab i{font-size:13px;}
+  .subrel:not(:has(.substrm)){display:none;}
+  /* related rows: tucked-in chips within the card */
+  .substrm{position:relative; display:flex; align-items:center; gap:10px; margin:0 0 7px; padding:9px 12px; border-radius:13px; background:var(--page); border:1px solid var(--line); cursor:pointer; transition:transform .18s, background .18s;}
+  .substrm:last-child{margin-bottom:0;}
+  .substrm:hover{background:#FFFFFF;}
   .substrm .ssic{width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:rgba(198,242,78,.20); flex-shrink:0;}
   .substrm .ssic i{font-size:15px; color:var(--limed);}
   .substrm .ssn{flex:1; font-size:12.5px; font-weight:600; color:var(--hi);}
@@ -1572,13 +1569,18 @@
     <div class="acc">
       <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>4</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
       <div class="acc-body">
-        <div class="sub" style="position:relative;" data-sub="mob-7430"><label class="subcover" for="s-detail"></label>
-          <div class="itile"><i class="ti ti-device-mobile"></i></div>
-          <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
-          <i class="ti ti-chevron-right chev"></i>
+        <div class="sub subgroup" data-sub="mob-7430">
+          <label class="subhead" for="s-detail">
+            <div class="itile"><i class="ti ti-device-mobile"></i></div>
+            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+          <div class="subrel" data-related="mob-7430">
+            <p class="subrel-lab" data-relhead="mob-7430"><i class="ti ti-arrow-ramp-right-2"></i>Kapcsolódó szolgáltatások</p>
+            <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
+            <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+          </div>
         </div>
-        <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
         <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detailmob2"></label>
           <div class="itile"><i class="ti ti-device-mobile"></i></div>
           <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
@@ -1869,13 +1871,18 @@
     <label class="addsvc" for="s-addservice" style="margin:16px 0 4px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
 
     <p class="mlab">Mobil szolgáltatások</p>
-    <div class="sub" style="position:relative;" data-sub="mob-7430"><label class="subcover" for="s-detail"></label>
-      <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
-      <i class="ti ti-chevron-right chev"></i>
+    <div class="sub subgroup" data-sub="mob-7430">
+      <label class="subhead" for="s-detail">
+        <div class="itile"><i class="ti ti-device-mobile"></i></div>
+        <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+        <i class="ti ti-chevron-right chev"></i>
+      </label>
+      <div class="subrel" data-related="mob-7430">
+        <p class="subrel-lab" data-relhead="mob-7430"><i class="ti ti-arrow-ramp-right-2"></i>Kapcsolódó szolgáltatások</p>
+        <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+      </div>
     </div>
-    <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detailmob2"></label>
       <div class="itile"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
@@ -5985,11 +5992,11 @@
       });
       if(kind==='Streaming'){
         var toNet = (target.indexOf('Internet')===0);
-        names.forEach(function(nm){ var r=strmRow(nm); if(toNet) addRow('[data-anchor="otthoni"]','before', r.id, r.html); else addRow('[data-sub="mob-7430"]','after', r.id, r.html); });
+        names.forEach(function(nm){ var r=strmRow(nm); if(toNet) addRow('[data-anchor="otthoni"]','before', r.id, r.html); else addRow('[data-relhead="mob-7430"]','after', r.id, r.html); });
       } else if(kind==='NetPajzs'){
         addRow('[data-anchor="otthoni"]','before','netpajzs', featRow('netpajzs','NetPajzs','ti-shield-lock'));
       } else if(kind==='Gyermekvédelem'){
-        addRow('[data-sub="mob-7430"]','after','gyv', featRow('gyv','Gyermekvédelmi szűrő','ti-shield-check'));
+        addRow('[data-relhead="mob-7430"]','after','gyv', featRow('gyv','Gyermekvédelmi szűrő','ti-shield-check'));
       }
     });
 
