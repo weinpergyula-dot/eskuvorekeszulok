@@ -329,6 +329,8 @@
   #s-strpick:checked ~ [data-screen="str-pick"],
   #s-gyvpick:checked ~ [data-screen="gyv-pick"],
   #s-nppick:checked ~ [data-screen="np-pick"],
+  #s-addonsvc:checked ~ [data-screen="addon-svc"],
+  #s-netsec:checked ~ [data-screen="net-sec"],
   #s-dsvcsum:checked ~ [data-screen="dsvc-sum"],
   #s-dsvcok:checked ~ [data-screen="dsvc-ok"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
@@ -951,6 +953,19 @@
   .dsvcgate i{font-size:15px;}
   [data-screen="str-pick"]:has(.strpick-in:checked) .dsvcgate{display:none;}
   [data-screen="str-pick"]:not(:has(.strpick-in:checked)) .acont[for="s-dsvcsum"]{opacity:.4; pointer-events:none;}
+  /* Internetbiztonság: egymást kizáró (radio) választás + tovább-gate */
+  [data-screen="net-sec"] .strow:has(input:checked){ border-color:var(--navy); background:rgba(20,36,94,.05); }
+  [data-screen="net-sec"] .strow:has(input:checked) .strbox{ border-color:var(--navy); background:var(--navy); }
+  [data-screen="net-sec"] .strow:has(input:checked) .strbox i{ opacity:1; color:#FFFFFF; }
+  [data-screen="net-sec"]:has(input[name="netsec"]:checked) .dsvcgate{display:none;}
+  [data-screen="net-sec"]:not(:has(input[name="netsec"]:checked)) .acont[for="s-dsvcsum"]{opacity:.4; pointer-events:none;}
+  .exnote{display:flex; align-items:flex-start; gap:9px; margin:2px 2px 16px; padding:12px 14px; border-radius:14px;
+          background:rgba(20,36,94,.05); border:1px solid var(--line); font-size:12px; line-height:1.5; color:var(--mid);}
+  .exnote i{font-size:17px; color:var(--navy); flex-shrink:0; margin-top:1px;}
+  /* CTA row that navigates to the add-on purchase page */
+  .lrow.addon-cta{ color:var(--limed); font-weight:700; }
+  .lrow.addon-cta .sic{ background:rgba(198,242,78,.18); }
+  .lrow.addon-cta .sic i{ color:var(--limed); }
   .screen:has(#strsrc-mob:checked) .selopt[for="strsrc-mob"],.screen:has(#strsrc-net:checked) .selopt[for="strsrc-net"]{background:rgba(198,242,78,.12); border-color:var(--lime);}
   .screen:has(#strsrc-mob:checked) .selopt[for="strsrc-mob"]::after,.screen:has(#strsrc-net:checked) .selopt[for="strsrc-net"]::after{content:"\2713"; position:absolute; right:17px; top:50%; transform:translateY(-50%); font-size:15px; font-weight:800; color:var(--lime);}
   #bt-monthly:checked ~ .billpane-monthly,#bt-other:checked ~ .billpane-other{display:block;}
@@ -1278,6 +1293,8 @@
   <input class="rt" type="radio" name="nav" id="s-strpick">
   <input class="rt" type="radio" name="nav" id="s-gyvpick">
   <input class="rt" type="radio" name="nav" id="s-nppick">
+  <input class="rt" type="radio" name="nav" id="s-addonsvc">
+  <input class="rt" type="radio" name="nav" id="s-netsec">
   <input class="rt" type="radio" name="nav" id="s-dsvcsum">
   <input class="rt" type="radio" name="nav" id="s-dsvcok">
   <input class="rt" type="radio" name="nav" id="s-detailmob2">
@@ -1613,33 +1630,8 @@
       <div class="accbody">
         <label class="lrow" for="s-detail-tv"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV<small class="ninv">TV Prémium</small></span><i class="ti ti-chevron-right chev"></i></label>
         <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max<small class="ninv">Streaming</small></span><i class="ti ti-chevron-right chev"></i></label>
-
-        <!-- CTA: kiegészítő szolgáltatás vásárlása → Streaming / Internetbiztonság, tovább bontva -->
-        <details class="nacc cta">
-          <summary><span class="ctaic"><i class="ti ti-plus"></i></span><span class="n">Kiegészítő szolgáltatás vásárlása</span><i class="ti ti-chevron-down accic"></i></summary>
-          <div class="naccbody">
-
-            <details class="nacc">
-              <summary><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-down accic"></i></summary>
-              <div class="naccbody">
-                <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-brand-hbo"></i></span><span class="n">HBO Max<small class="ninv">2 490 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></label>
-                <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-brand-netflix"></i></span><span class="n">Netflix<small class="ninv">3 490 Ft / hó-tól</small></span><i class="ti ti-chevron-right chev"></i></label>
-                <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-brand-disney"></i></span><span class="n">Disney+<small class="ninv">2 990 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></label>
-                <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-movie"></i></span><span class="n">SkyShowtime<small class="ninv">1 990 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></label>
-              </div>
-            </details>
-
-            <details class="nacc">
-              <summary><span class="sic"><i class="ti ti-shield-lock"></i></span><span class="n">Internetbiztonság</span><i class="ti ti-chevron-down accic"></i></summary>
-              <div class="naccbody">
-                <div class="lrow"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Yettel Protect<small class="ninv">690 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></div>
-                <div class="lrow"><span class="sic"><i class="ti ti-bug"></i></span><span class="n">Vírusirtó Premium<small class="ninv">990 Ft / hó</small></span><i class="ti ti-chevron-right chev"></i></div>
-                <label class="lrow" for="s-gyvpick"><span class="sic"><i class="ti ti-mood-kid"></i></span><span class="n">Szülői felügyelet<small class="ninv">Gyermekvédelmi szolgáltatás</small></span><i class="ti ti-chevron-right chev"></i></label>
-              </div>
-            </details>
-
-          </div>
-        </details>
+        <!-- CTA: külön oldalt nyit -->
+        <label class="lrow addon-cta" for="s-addonsvc"><span class="sic"><i class="ti ti-plus"></i></span><span class="n">Kiegészítő szolgáltatás vásárlása</span><i class="ti ti-chevron-right chev"></i></label>
       </div>
     </details>
 
@@ -5309,6 +5301,37 @@
     <label class="acont jspin" for="s-dsvcsum">Tovább az összegzéshez</label>
   </div>
 
+  <!-- ============= KIEGÉSZÍTŐ SZOLGÁLTATÁS VÁSÁRLÁSA (hub oldal) ============= -->
+  <div class="screen" data-screen="addon-svc" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-detail"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Kiegészítő szolgáltatás</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Kiegészítő<br>szolgáltatás vásárlása.</h2>
+    <p class="buysub">Válaszd ki, milyen kiegészítő szolgáltatást szeretnél az előfizetésedhez.</p>
+    <div class="gcard" style="margin-top:8px;">
+      <label class="lrow" for="s-netsec"><span class="sic"><i class="ti ti-shield-lock"></i></span><span class="n">Internetbiztonság<small class="ninv">NetPajzs, Gyermekvédelem</small></span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming<small class="ninv">HBO Max, RTL+, Netflix</small></span><i class="ti ti-chevron-right chev"></i></label>
+    </div>
+  </div>
+
+  <!-- ============= INTERNETBIZTONSÁG (egymást kizáró választás) ============= -->
+  <div class="screen" data-screen="net-sec" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-addonsvc"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Internetbiztonság</span>
+      <div style="width:42px"></div>
+    </div>
+    <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Válaszd ki a<br>védelmet.</h2>
+    <p class="buysub">Válaszd ki, melyik internetbiztonsági szolgáltatást szeretnéd aktiválni.</p>
+    <div class="exnote"><i class="ti ti-info-circle"></i><span>Egyszerre csak az egyik választható — a NetPajzs és a Gyermekvédelem együtt nem aktiválható, a másik kiválasztása automatikusan kikapcsolja a korábbit.</span></div>
+    <label class="strow"><input type="radio" class="rt" name="netsec" id="nsec-np" data-svc="NetPajzs" data-price="490"><span class="stric"><i class="ti ti-shield-lock"></i></span><span class="strn">NetPajzs<small>Hálózati szintű védelem · 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
+    <label class="strow" style="margin-bottom:8px;"><input type="radio" class="rt" name="netsec" id="nsec-gyv" data-svc="Gyermekvédelem" data-price="0"><span class="stric"><i class="ti ti-mood-kid"></i></span><span class="strn">Gyermekvédelem<small>Díjmentes tartalomszűrő</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
+    <p class="dsvcgate"><i class="ti ti-arrow-up"></i>Válassz egy szolgáltatást a folytatáshoz.</p>
+    <label class="acont jspin" for="s-dsvcsum">Tovább az összegzéshez</label>
+  </div>
+
   <!-- ============= DIGITÁLIS SZOLGÁLTATÁS: ÖSSZEGZÉS ============= -->
   <div class="screen" data-screen="dsvc-sum" style="display:none;">
     <div class="dhead">
@@ -5799,6 +5822,14 @@
     });
     on('[data-screen="gyv-pick"] .acont[for="s-dsvcsum"]', function(){ dsvc.kind='Gyermekvédelem'; dsvc.target=''; dsvc.items=[{name:'Gyermekvédelmi szűrő', price:0, free:true}]; render(); });
     on('[data-screen="np-pick"] .acont[for="s-dsvcsum"]', function(){ dsvc.kind='NetPajzs'; dsvc.target='Internet · Otthoni Net 1000'; dsvc.items=[{name:'NetPajzs', price:490}]; render(); });
+    on('[data-screen="net-sec"] .acont[for="s-dsvcsum"]', function(){
+      var sel=document.querySelector('input[name="netsec"]:checked');
+      if(!sel) return;
+      var name=sel.getAttribute('data-svc'), price=parseInt(sel.getAttribute('data-price'),10)||0;
+      dsvc.kind='Internetbiztonság'; dsvc.target='';
+      dsvc.items=[{name:name, price:price, free:price===0}];
+      render();
+    });
     Array.prototype.slice.call(document.querySelectorAll('[data-strpre]')).forEach(function(el){
       el.addEventListener('click', function(){ var r=document.getElementById(el.getAttribute('data-strpre')); if(r) r.checked=true; });
     });
