@@ -953,19 +953,40 @@
   .dsvcgate i{font-size:15px;}
   [data-screen="str-pick"]:has(.strpick-in:checked) .dsvcgate{display:none;}
   [data-screen="str-pick"]:not(:has(.strpick-in:checked)) .acont[for="s-dsvcsum"]{opacity:.4; pointer-events:none;}
-  /* Internetbiztonság: egymást kizáró (radio) választás + tovább-gate */
-  [data-screen="net-sec"] .strow:has(input:checked){ border-color:var(--navy); background:rgba(20,36,94,.05); }
-  [data-screen="net-sec"] .strow:has(input:checked) .strbox{ border-color:var(--navy); background:var(--navy); }
-  [data-screen="net-sec"] .strow:has(input:checked) .strbox i{ opacity:1; color:#FFFFFF; }
+  /* Internetbiztonság: kártyás, egymást kizáró (radio) választás + leírás + részletek */
+  [data-screen="net-sec"] .secopt{ border:1px solid var(--line); border-radius:16px; background:#FFFFFF; margin-bottom:11px; transition:border-color .18s, background .18s; }
+  [data-screen="net-sec"] .secopt:has(input:checked){ border-color:var(--navy); background:rgba(20,36,94,.04); }
+  [data-screen="net-sec"] .secopt .strow{ border:none; border-radius:0; margin:0; background:transparent; }
+  [data-screen="net-sec"] .secopt:has(input:checked) .strbox{ border-color:var(--navy); background:var(--navy); }
+  [data-screen="net-sec"] .secopt:has(input:checked) .strbox i{ opacity:1; color:#FFFFFF; }
+  [data-screen="net-sec"] .secfoot{ padding:0 15px 13px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  [data-screen="net-sec"] .secdesc{ flex:1; margin:0; font-size:11.5px; line-height:1.5; color:var(--mid); }
   [data-screen="net-sec"]:has(input[name="netsec"]:checked) .dsvcgate{display:none;}
   [data-screen="net-sec"]:not(:has(input[name="netsec"]:checked)) .acont[for="s-dsvcsum"]{opacity:.4; pointer-events:none;}
   .exnote{display:flex; align-items:flex-start; gap:9px; margin:2px 2px 16px; padding:12px 14px; border-radius:14px;
           background:rgba(20,36,94,.05); border:1px solid var(--line); font-size:12px; line-height:1.5; color:var(--mid);}
   .exnote i{font-size:17px; color:var(--navy); flex-shrink:0; margin-top:1px;}
-  /* CTA row that navigates to the add-on purchase page */
-  .lrow.addon-cta{ color:var(--limed); font-weight:700; }
-  .lrow.addon-cta .sic{ background:rgba(198,242,78,.18); }
-  .lrow.addon-cta .sic i{ color:var(--limed); }
+  .detbtn{display:inline-flex; align-items:center; gap:6px; padding:8px 13px; border-radius:11px; cursor:pointer; flex-shrink:0;
+          border:1px solid #C4D1E1; background:#FFFFFF; color:var(--navy); font-family:'Manrope'; font-weight:700; font-size:12px;}
+  .detbtn i{font-size:15px;}
+  /* service-detail info modal (CSS-only, checkbox toggled) */
+  .infomodal{position:absolute; inset:0; z-index:130; display:none; align-items:center; justify-content:center; padding:26px;
+             background:rgba(20,36,94,.34); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  #np-info-t:checked ~ .infomodal.m-np, #gyv-info-t:checked ~ .infomodal.m-gyv{display:flex;}
+  .infomodal .infomodal-bg{position:absolute; inset:0; cursor:pointer;}
+  .infocard{position:relative; z-index:1; width:100%; max-width:302px; max-height:82%; overflow-y:auto; border-radius:24px;
+            padding:24px 22px 20px; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 30px 60px -28px rgba(20,36,94,.45);}
+  .infoic{width:54px; height:54px; margin:0 auto 14px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+          background:rgba(20,36,94,.06); border:1px solid var(--line);}
+  .infoic i{font-size:25px; color:var(--navy);}
+  .infot{font-family:'Sora'; font-size:18px; font-weight:800; color:var(--navy); text-align:center; margin:0 0 4px; letter-spacing:-.01em;}
+  .infoprice{display:block; text-align:center; font-size:11px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--limed); margin-bottom:15px;}
+  .infocard p{font-size:12.5px; line-height:1.6; color:var(--mid); margin:0 0 12px;}
+  .infolist{list-style:none; padding:0; margin:2px 0 16px;}
+  .infolist li{display:flex; gap:9px; align-items:flex-start; font-size:12.5px; color:var(--hi); line-height:1.5; margin-bottom:10px;}
+  .infolist li i{color:var(--limed); font-size:16px; flex-shrink:0; margin-top:1px;}
+  .infoclose{display:block; text-align:center; width:100%; padding:14px; border-radius:14px; cursor:pointer;
+             background:var(--navy); color:#FFFFFF; font-family:'Manrope'; font-weight:700; font-size:14px;}
   .screen:has(#strsrc-mob:checked) .selopt[for="strsrc-mob"],.screen:has(#strsrc-net:checked) .selopt[for="strsrc-net"]{background:rgba(198,242,78,.12); border-color:var(--lime);}
   .screen:has(#strsrc-mob:checked) .selopt[for="strsrc-mob"]::after,.screen:has(#strsrc-net:checked) .selopt[for="strsrc-net"]::after{content:"\2713"; position:absolute; right:17px; top:50%; transform:translateY(-50%); font-size:15px; font-weight:800; color:var(--lime);}
   #bt-monthly:checked ~ .billpane-monthly,#bt-other:checked ~ .billpane-other{display:block;}
@@ -1207,7 +1228,7 @@
   .nacc.cta > summary .ctaic i{ font-size:15px; color:#7AB800; }
   /* full-width "modify service" action inside a section */
   .svcmod{ display:flex; align-items:center; justify-content:center; gap:9px; box-sizing:border-box;
-           width:calc(100% - 32px); margin:12px 16px 4px; padding:13px; border-radius:14px; cursor:pointer;
+           width:calc(100% - 32px); margin:12px 16px 18px; padding:13px; border-radius:14px; cursor:pointer;
            border:1px solid #C4D1E1; background:#F4F7FC; color:var(--navy);
            font-family:'Manrope'; font-weight:700; font-size:13.5px; }
   .svcmod i{ font-size:17px; }
@@ -1630,8 +1651,8 @@
       <div class="accbody">
         <label class="lrow" for="s-detail-tv"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV<small class="ninv">TV Prémium</small></span><i class="ti ti-chevron-right chev"></i></label>
         <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max<small class="ninv">Streaming</small></span><i class="ti ti-chevron-right chev"></i></label>
-        <!-- CTA: külön oldalt nyit -->
-        <label class="lrow addon-cta" for="s-addonsvc"><span class="sic"><i class="ti ti-plus"></i></span><span class="n">Kiegészítő szolgáltatás vásárlása</span><i class="ti ti-chevron-right chev"></i></label>
+        <!-- CTA: külön oldalt nyit; a "Szolgáltatás módosítása" gombbal egyező stílus -->
+        <label class="svcmod" for="s-addonsvc"><i class="ti ti-plus"></i>Kiegészítő szolgáltatás vásárlása</label>
       </div>
     </details>
 
@@ -5326,8 +5347,25 @@
     <h2 class="buyhead" style="font-size:22px; margin-top:14px;">Válaszd ki a<br>védelmet.</h2>
     <p class="buysub">Válaszd ki, melyik internetbiztonsági szolgáltatást szeretnéd aktiválni.</p>
     <div class="exnote"><i class="ti ti-info-circle"></i><span>Egyszerre csak az egyik választható — a NetPajzs és a Gyermekvédelem együtt nem aktiválható, a másik kiválasztása automatikusan kikapcsolja a korábbit.</span></div>
-    <label class="strow"><input type="radio" class="rt" name="netsec" id="nsec-np" data-svc="NetPajzs" data-price="490"><span class="stric"><i class="ti ti-shield-lock"></i></span><span class="strn">NetPajzs<small>Hálózati szintű védelem · 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
-    <label class="strow" style="margin-bottom:8px;"><input type="radio" class="rt" name="netsec" id="nsec-gyv" data-svc="Gyermekvédelem" data-price="0"><span class="stric"><i class="ti ti-mood-kid"></i></span><span class="strn">Gyermekvédelem<small>Díjmentes tartalomszűrő</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
+
+    <div class="secopt">
+      <input type="radio" class="rt" name="netsec" id="nsec-np" data-svc="NetPajzs" data-price="490">
+      <label class="strow" for="nsec-np"><span class="stric"><i class="ti ti-shield-lock"></i></span><span class="strn">NetPajzs<small>490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
+      <div class="secfoot">
+        <p class="secdesc">Hálózati szintű védelem a káros oldalak, vírusok és adathalászat ellen — minden otthoni eszközön.</p>
+        <label class="detbtn" for="np-info-t"><i class="ti ti-info-circle"></i>Részletek</label>
+      </div>
+    </div>
+
+    <div class="secopt">
+      <input type="radio" class="rt" name="netsec" id="nsec-gyv" data-svc="Gyermekvédelem" data-price="0">
+      <label class="strow" for="nsec-gyv"><span class="stric"><i class="ti ti-mood-kid"></i></span><span class="strn">Gyermekvédelem<small>Díjmentes</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
+      <div class="secfoot">
+        <p class="secdesc">Díjmentes tartalomszűrő, amely blokkolja a kiskorúak számára nem való weboldalakat.</p>
+        <label class="detbtn" for="gyv-info-t"><i class="ti ti-info-circle"></i>Részletek</label>
+      </div>
+    </div>
+
     <p class="dsvcgate"><i class="ti ti-arrow-up"></i>Válassz egy szolgáltatást a folytatáshoz.</p>
     <label class="acont jspin" for="s-dsvcsum">Tovább az összegzéshez</label>
   </div>
@@ -5451,6 +5489,42 @@
     <label class="nitem" for="s-account"><i class="ti ti-user"></i>Profilom</label>
   </div>
 
+
+  <!-- Internetbiztonság: részletek modalok (CSS-only, checkbox toggle) -->
+  <input type="checkbox" class="rt" id="np-info-t">
+  <input type="checkbox" class="rt" id="gyv-info-t">
+  <div class="infomodal m-np">
+    <label class="infomodal-bg" for="np-info-t"></label>
+    <div class="infocard">
+      <span class="infoic"><i class="ti ti-shield-lock"></i></span>
+      <p class="infot">NetPajzs</p>
+      <span class="infoprice">490 Ft / hó</span>
+      <p>A NetPajzs a hálózat szintjén véd — nincs szükség külön alkalmazás telepítésére. Automatikusan szűri a káros és csaló weboldalakat az otthoni internetedhez csatlakozó minden eszközön.</p>
+      <ul class="infolist">
+        <li><i class="ti ti-check"></i>Adathalász és csaló oldalak blokkolása</li>
+        <li><i class="ti ti-check"></i>Vírusok és kártevők elleni védelem</li>
+        <li><i class="ti ti-check"></i>Minden csatlakozó eszközre kiterjed</li>
+        <li><i class="ti ti-check"></i>Bármikor lemondható, hűségidő nélkül</li>
+      </ul>
+      <label class="infoclose" for="np-info-t">Bezárás</label>
+    </div>
+  </div>
+  <div class="infomodal m-gyv">
+    <label class="infomodal-bg" for="gyv-info-t"></label>
+    <div class="infocard">
+      <span class="infoic"><i class="ti ti-mood-kid"></i></span>
+      <p class="infot">Gyermekvédelem</p>
+      <span class="infoprice">Díjmentes</span>
+      <p>Díjmentes tartalomszűrő szolgáltatás a kiskorúak védelmében. A hatósági lista alapján blokkolja a felnőtt tartalmakat kínáló weboldalakat a hálózatodon.</p>
+      <ul class="infolist">
+        <li><i class="ti ti-check"></i>Felnőtt tartalmú oldalak automatikus szűrése</li>
+        <li><i class="ti ti-check"></i>Hatósági lista alapján frissül</li>
+        <li><i class="ti ti-check"></i>Minden otthoni eszközre érvényes</li>
+        <li><i class="ti ti-check"></i>Teljesen díjmentes, bármikor kikapcsolható</li>
+      </ul>
+      <label class="infoclose" for="gyv-info-t">Bezárás</label>
+    </div>
+  </div>
 
   <div class="codepop" id="codepop">
     <div class="codecard">
