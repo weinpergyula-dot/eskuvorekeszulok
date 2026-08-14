@@ -246,6 +246,19 @@ input:not(:-webkit-autofill) { animation-name: autofill-cancel; animation-durati
   }
 }
 
+/* ── Yette bemutató oldal: letisztult, sans-serif tipográfia ── */
+/* Felülírja az esküvős oldal serif (BloomSpeak) betűtípusait a /yette_web alatt. */
+.yette-root,
+.yette-root h1,
+.yette-root h2,
+.yette-root h3,
+.yette-root h4,
+.yette-root h5,
+.yette-root h6 {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
 /* ── Chat mode: compact footer on mobile (quote-requests) ── */
 /* Messages section uses a fixed overlay instead, so these only affect quotes. */
 @media (max-width: 639px) {

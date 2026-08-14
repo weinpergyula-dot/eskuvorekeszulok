@@ -5,6 +5,7 @@ import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { Footer } from "@/components/layout/footer";
 import { TopLoader } from "@/components/layout/top-loader";
 import { CookieBanner } from "@/components/layout/cookie-banner";
+import { HideOnYette } from "@/components/layout/hide-on-yette";
 
 const SITE_NAME = "Esküvőre Készülök";
 const SITE_URL = "https://eskuvorekeszulok.hu";
@@ -102,11 +103,19 @@ gtag('config', '${GA_ID}');
           }}
         />
         <TopLoader />
-        <AnnouncementBanner />
-        <Navbar />
+        <HideOnYette>
+          <AnnouncementBanner />
+        </HideOnYette>
+        <HideOnYette>
+          <Navbar />
+        </HideOnYette>
         <main className="flex-1">{children}</main>
-        <Footer />
-        <CookieBanner />
+        <HideOnYette>
+          <Footer />
+        </HideOnYette>
+        <HideOnYette>
+          <CookieBanner />
+        </HideOnYette>
       </body>
     </html>
   );
