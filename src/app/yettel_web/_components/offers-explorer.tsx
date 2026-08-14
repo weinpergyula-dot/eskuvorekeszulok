@@ -1,31 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, ArrowRight, Sparkles, Smartphone, Wifi, Tv, Package, type LucideIcon } from "lucide-react";
-import { OFFERS, OFFER_TABS, formatFt, type OfferCategory, type Offer } from "../_data/offers";
+import { Check, ArrowRight, Sparkles, Zap } from "lucide-react";
+import { OFFERS, OFFER_TABS, CATEGORY_META, formatFt, type OfferCategory, type Offer } from "../_data/offers";
 
-// A menü hash-ei ↔ a fülek kategóriái.
+// A menü/csempe hash-ei ↔ a tarifakategóriák.
 const HASH_TO_CAT: Record<string, OfferCategory> = {
   havidijas: "havidijas",
   ajanlatok: "havidijas",
   internet: "net",
   tv: "tv",
 };
-const CAT_TO_HASH: Record<OfferCategory, string> = {
-  havidijas: "havidijas",
-  net: "internet",
-  tv: "tv",
-  csomag: "csomag",
-};
-
-const TAB_ICONS: Record<OfferCategory, LucideIcon> = {
-  havidijas: Smartphone,
-  net: Wifi,
-  tv: Tv,
-  csomag: Package,
-};
 
 function OfferCard({ offer }: { offer: Offer }) {
+  const isFast = offer.badge === "Leggyorsabb";
   return (
     <div
       className={[
@@ -39,10 +27,15 @@ function OfferCard({ offer }: { offer: Offer }) {
         <span
           className={[
             "absolute -top-3 left-5 inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold",
-            offer.best ? "bg-[#B4FF00] text-[#002340]" : "bg-[#E4F2F7] text-[#2D466C]",
+            offer.best
+              ? "bg-[#B4FF00] text-[#002340]"
+              : isFast
+                ? "bg-[#002340] text-[#B4FF00]"
+                : "bg-[#E4F2F7] text-[#2D466C]",
           ].join(" ")}
         >
           {offer.best && <Sparkles className="h-3 w-3" />}
+          {isFast && !offer.best && <Zap className="h-3 w-3" />}
           {offer.badge}
         </span>
       )}
@@ -88,10 +81,11 @@ function OfferCard({ offer }: { offer: Offer }) {
 }
 
 export function OffersExplorer() {
+  // A kategóriát a felső csempék / menü választja ki (hash alapján); alapból "havidijas".
   const [active, setActive] = useState<OfferCategory>("havidijas");
   const activeTab = OFFER_TABS.find((t) => t.id === active);
+  const meta = CATEGORY_META[active];
 
-  // A menüből (hash) érkező váltás követése.
   useEffect(() => {
     function fromHash() {
       const cat = HASH_TO_CAT[window.location.hash.slice(1)];
@@ -102,54 +96,15 @@ export function OffersExplorer() {
     return () => window.removeEventListener("hashchange", fromHash);
   }, []);
 
-  // Fülre kattintáskor a fejléc is kövesse a kijelölést.
-  function selectTab(id: OfferCategory) {
-    setActive(id);
-    window.dispatchEvent(new CustomEvent("yettel:section", { detail: CAT_TO_HASH[id] }));
-  }
-
   return (
     <div>
-      {/* Tab választó – nagyobb, ikonokkal kiemelve */}
-      <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4" role="tablist" aria-label="Ajánlott csomagok">
-        {OFFER_TABS.map((tab) => {
-          const selected = tab.id === active;
-          const Icon = TAB_ICONS[tab.id];
-          return (
-            <button
-              key={tab.id}
-              role="tab"
-              aria-selected={selected}
-              onClick={() => selectTab(tab.id)}
-              className={[
-                "group relative flex items-center gap-3 rounded-2xl border px-4 py-4 text-left transition-all",
-                selected
-                  ? "border-[#B4FF00] bg-[#B4FF00] text-[#002340] shadow-[0_8px_24px_rgba(180,255,0,0.45)]"
-                  : "border-[#CDE0EA] bg-white text-[#002340] hover:-translate-y-0.5 hover:border-[#B4FF00] hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
-              ].join(" ")}
-            >
-              {tab.soon && (
-                <span className="absolute -top-2 right-3 inline-flex items-center gap-1 rounded-full bg-[#002340] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#B4FF00]">
-                  Hamarosan
-                </span>
-              )}
-              <span
-                className={[
-                  "grid h-11 w-11 shrink-0 place-items-center rounded-xl transition-colors",
-                  selected ? "bg-[#002340] text-[#B4FF00]" : "bg-[#B4FF00] text-[#002340]",
-                ].join(" ")}
-              >
-                <Icon className="h-6 w-6" strokeWidth={2} />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-base font-extrabold leading-tight">{tab.label}</span>
-                <span className={selected ? "block text-xs text-[#002340]/70" : "block text-xs text-[#2D466C]"}>
-                  {tab.hint}
-                </span>
-              </span>
-            </button>
-          );
-        })}
+      {/* Dinamikus fejléc – a felül kiválasztott kategória + rövid marketing szöveg */}
+      <div className="mb-8 max-w-2xl">
+        <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">
+          Tarifák és szolgáltatások
+        </span>
+        <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">{meta.title}</h2>
+        <p className="mt-2 text-base text-[#2D466C]">{meta.blurb}</p>
       </div>
 
       {/* Kártyák vagy "hamarosan" állapot */}

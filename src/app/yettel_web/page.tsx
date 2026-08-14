@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import {
-  Smartphone,
-  Wifi,
-  Tv,
   Phone,
   CreditCard,
-  Briefcase,
   ArrowRight,
   ShieldCheck,
   Gift,
@@ -16,6 +12,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { OffersExplorer } from "./_components/offers-explorer";
+import { CategoryTiles } from "./_components/category-tiles";
 import { YettelHeader } from "./_components/yettel-header";
 import { YettelFooter } from "./_components/yettel-footer";
 import { DEVICES, formatFt } from "./_data/offers";
@@ -26,15 +23,6 @@ export const metadata: Metadata = {
     "Átlátható csomagok és konkrét ajánlatok: havidíjas mobil, otthoni internet és TV. Válaszd ki a hozzád illő legjobb csomagot pár perc alatt.",
   robots: { index: false, follow: false },
 };
-
-const CATEGORIES = [
-  { icon: Smartphone, label: "Havidíjas mobil", desc: "Korlátlan hívás, 5G", href: "#havidijas" },
-  { icon: Wifi, label: "Otthoni internet", desc: "Optikai & 5G", href: "#internet" },
-  { icon: Tv, label: "Yettel TV", desc: "Élő adás & felvétel", href: "#tv" },
-  { icon: Smartphone, label: "Készülékek", desc: "Telefon részletre", href: "#keszulekek" },
-  { icon: CreditCard, label: "Feltöltőkártya", desc: "Kötöttség nélkül", href: "#ajanlatok" },
-  { icon: Briefcase, label: "Üzleti", desc: "Céges megoldások", href: "#ajanlatok" },
-];
 
 const VALUE_PROPS = [
   { icon: ShieldCheck, title: "Megbízható 5G hálózat", desc: "Az ország 99%-át lefedő hálózat, stabil sebesség otthon és úton." },
@@ -66,40 +54,14 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Gyors kategóriák ─────────────────────────────── */}
+        {/* ── Üdvözlő + gyors kategóriák (sötétkék sáv) ────── */}
         <section className="bg-[#002340]">
-          <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6">
-            <div className="flex flex-wrap justify-center gap-3">
-              {CATEGORIES.map((cat) => (
-                <a
-                  key={cat.label}
-                  href={cat.href}
-                  className="group flex w-[186px] flex-col items-center gap-2.5 rounded-[20px] border border-white/15 bg-white/[0.06] p-6 text-center transition-colors hover:border-[#B4FF00] hover:bg-white/10"
-                >
-                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[#B4FF00] text-[#002340]">
-                    <cat.icon className="h-7 w-7" strokeWidth={1.9} />
-                  </span>
-                  <span className="text-base font-bold text-white">{cat.label}</span>
-                  <span className="text-sm text-[#BBD3E4]">{cat.desc}</span>
-                </a>
-              ))}
-            </div>
-          </div>
+          <CategoryTiles />
         </section>
 
         {/* ── Ajánlott csomagok (a kiemelt szekció) ────────── */}
         <section id="ajanlatok" className="scroll-mt-16 bg-[#E4F2F7]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-            <div className="mb-8 max-w-2xl">
-              <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Tarifák és szolgáltatások</span>
-              <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">
-                A legjobb csomagok, kategóriánként
-              </h2>
-              <p className="mt-2 text-base text-[#2D466C]">
-                Összeválogattuk a legnépszerűbb havidíjas mobil, otthoni internet és TV csomagokat – konkrét árakkal,
-                hogy könnyen összehasonlíthasd őket.
-              </p>
-            </div>
             {/* Anchor célok az egyes fülekhez */}
             <span id="havidijas" className="block -mt-16 pt-16" aria-hidden />
             <span id="internet" className="block -mt-16 pt-16" aria-hidden />

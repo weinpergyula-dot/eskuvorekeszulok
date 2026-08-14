@@ -27,6 +27,29 @@ export const OFFER_TABS: { id: OfferCategory; label: string; hint: string; soon?
   { id: "csomag", label: "Internet + TV", hint: "Csomagban, egy számlán", soon: true },
 ];
 
+// A tarifakártyák feletti dinamikus cím + rövid marketing szöveg kategóriánként.
+export const CATEGORY_META: Record<OfferCategory, { title: string; blurb: string }> = {
+  havidijas: {
+    title: "Havidíjas mobil",
+    blurb:
+      "Korlátlan beszélgetés és villámgyors 5G net – kötöttség nélkül, kisbetűs meglepetések nélkül. Válaszd ki, mennyi adat kell, a többit bízd ránk.",
+  },
+  net: {
+    title: "Otthoni internet",
+    blurb:
+      "Stabil, gyors optikai és 5G net az egész családnak – ajándék Wi‑Fi 6 routerrel és ingyenes bekötéssel. Streamelj, játssz, dolgozz akadozás nélkül.",
+  },
+  tv: {
+    title: "Yettel TV",
+    blurb:
+      "Kedvenc csatornáid élőben és visszanézve, akár 4K-ban, bármelyik eszközödön. Sport, film, sorozat – mind egy helyen, felvétellel.",
+  },
+  csomag: {
+    title: "Internet + TV",
+    blurb: "A net és a TV egy csomagban, egy számlán, a legjobb áron. Hamarosan elérhető.",
+  },
+};
+
 export const OFFERS: Record<OfferCategory, Offer[]> = {
   havidijas: [
     {
@@ -68,6 +91,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
         "5G prémium sebesség",
         "EU + Nyugat-Balkán roaming",
       ],
+      badge: "Leggyorsabb",
       cta: "Megrendelem",
     },
   ],
@@ -105,6 +129,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       price: 8990,
       unit: "Ft/hó",
       features: ["1000 Mbit/s letöltés", "Alacsony késleltetés", "Wi‑Fi 6 mesh csomag", "Kiemelt támogatás"],
+      badge: "Leggyorsabb",
       cta: "Igénylem",
     },
   ],
