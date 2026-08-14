@@ -67,7 +67,7 @@ export default function YettelWebPage() {
 
       <main>
         {/* ── Hero (lime, mint a /yettel_light_asis) ────────── */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-[#B4FF00] to-[#9FE000]">
+        <section className="relative overflow-hidden bg-gradient-to-b from-[#B4FF00] from-70% via-[#AEF500] via-88% to-[#9FE000]">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
             <div className="pb-10 md:pb-20">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2D466C]">
@@ -195,7 +195,7 @@ export default function YettelWebPage() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={`/yettel/${device.img}`} alt={device.name} className="h-full w-full object-contain" />
                   </div>
-                  <h3 className="text-base font-extrabold text-[#002340]">{device.name}</h3>
+                  <h3 className="text-xl font-extrabold text-[#002340]">{device.name}</h3>
                   <p className="text-xs text-[#2D466C]">{device.note}</p>
                   <div className="mt-3 flex items-end gap-1">
                     <span className="text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(device.monthly)}</span>

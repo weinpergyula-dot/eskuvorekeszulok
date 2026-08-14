@@ -8,7 +8,6 @@ const NAV = [
   { label: "Internet", href: "#internet" },
   { label: "TV", href: "#tv" },
   { label: "Készülékek", href: "#keszulekek" },
-  { label: "Ajánlatok", href: "#ajanlatok" },
   { label: "Ügyfélszolgálat", href: "#ugyfelszolgalat" },
 ];
 
