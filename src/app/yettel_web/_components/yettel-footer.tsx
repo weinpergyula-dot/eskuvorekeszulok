@@ -7,7 +7,7 @@ const COLUMNS: { title: string; links: string[] }[] = [
 
 export function YettelFooter() {
   return (
-    <footer className="border-t border-[#E6EAF2] bg-[#14245E]">
+    <footer className="border-t border-[#CDE0EA] bg-[#002340]">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {COLUMNS.map((col) => (
@@ -16,7 +16,7 @@ export function YettelFooter() {
               <ul className="space-y-2">
                 {col.links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-sm text-[#C4D1E1] transition-colors hover:text-[#C6F24E]">
+                    <a href="#" className="text-sm text-[#BBD3E4] transition-colors hover:text-[#B4FF00]">
                       {link}
                     </a>
                   </li>
@@ -31,10 +31,10 @@ export function YettelFooter() {
             <span className="text-base font-extrabold tracking-tight text-white">Yettel</span>
             <span
               aria-hidden
-              className="inline-block h-0 w-0 border-x-[5px] border-b-[8px] border-x-transparent border-b-[#C6F24E]"
+              className="inline-block h-0 w-0 border-x-[5px] border-b-[8px] border-x-transparent border-b-[#B4FF00]"
             />
           </div>
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#8DA0C9]">
+          <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#7E9BC0]">
             <a href="#" className="hover:text-white">Adatkezelés</a>
             <a href="#" className="hover:text-white">ÁSZF</a>
             <a href="#" className="hover:text-white">Cookie-beállítások</a>

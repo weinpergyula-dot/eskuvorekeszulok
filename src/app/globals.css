@@ -252,17 +252,17 @@ html.a11y-underline a { text-decoration: underline !important; }
 /* A Yettel lime + navy dizájnrendszere (a /yettel_light_asis alapján). */
 /* Felülírja az esküvős oldal serif (BloomSpeak) betűit és színeit. */
 .yettel-root {
-  --y-lime: #C6F24E;
-  --y-lime2: #DAFF6E;
-  --y-lime3: #A4D82E;
-  --y-limed: #4F7A00;
-  --y-navy: #14245E;
-  --y-ink: #0B1330;
-  --y-page: #F1F5FC;
+  --y-lime: #B4FF00;
+  --y-lime2: #CBFF4D;
+  --y-lime3: #9BE000;
+  --y-limed: #2D466C;
+  --y-navy: #002340;
+  --y-ink: #001D36;
+  --y-page: #E4F2F7;
   --y-card: #FFFFFF;
-  --y-line: #E6EAF2;
-  --y-mid: #5B6684;
-  --y-low: #9AA3BC;
+  --y-line: #CDE0EA;
+  --y-mid: #2D466C;
+  --y-low: #7E93B0;
   --y-red: #D6453F;
   --y-amber: #E39A25;
   font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
