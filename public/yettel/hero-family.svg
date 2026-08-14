@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 468" role="img" aria-label="Család laptoppal – helykitöltő kép">
+  <!-- HELYKITÖLTŐ: cseréld le a saját családi fotódra (public/yettel/hero-family.*) -->
+  <defs>
+    <clipPath id="round"><rect x="0" y="0" width="640" height="468" rx="28"/></clipPath>
+  </defs>
+  <g clip-path="url(#round)">
+    <rect width="640" height="468" fill="#FFFFFF"/>
+    <rect width="640" height="468" fill="#E4F2F7"/>
+    <ellipse cx="320" cy="300" rx="300" ry="200" fill="#FFFFFF" opacity="0.7"/>
+
+    <!-- kanapé -->
+    <rect x="70" y="300" width="500" height="150" rx="30" fill="#CDE0EA"/>
+    <rect x="70" y="270" width="500" height="70" rx="26" fill="#BBD3E4"/>
+
+    <!-- anya (bal-közép) -->
+    <g>
+      <rect x="205" y="250" width="80" height="120" rx="34" fill="#B4FF00"/>
+      <circle cx="245" cy="215" r="34" fill="#EBC9A6"/>
+      <path d="M211 210a34 34 0 0 1 68 0c0-6-10-30-34-30s-34 24-34 30z" fill="#3A2E28"/>
+      <path d="M214 214c-4 26-2 44-2 44l14-6c-4-16-4-30-2-40z" fill="#3A2E28"/>
+    </g>
+
+    <!-- gyerek (bal) -->
+    <g>
+      <rect x="120" y="288" width="66" height="96" rx="28" fill="#FFFFFF"/>
+      <circle cx="153" cy="262" r="28" fill="#EBC9A6"/>
+      <path d="M126 258a27 27 0 0 1 54 0c0-16-12-28-27-28s-27 12-27 28z" fill="#C8A05C"/>
+      <!-- gyerek keze a laptop felé -->
+      <rect x="176" y="330" width="70" height="20" rx="10" fill="#EBC9A6" transform="rotate(-8 176 330)"/>
+    </g>
+
+    <!-- apa (jobb) -->
+    <g>
+      <rect x="360" y="252" width="84" height="120" rx="34" fill="#FFFFFF"/>
+      <circle cx="402" cy="214" r="35" fill="#EBC9A6"/>
+      <path d="M368 208a34 34 0 0 1 68 0c0-14-12-28-34-28s-34 14-34 28z" fill="#2C221C"/>
+      <rect x="384" y="232" width="36" height="16" rx="8" fill="#2C221C"/>
+    </g>
+
+    <!-- laptop -->
+    <g>
+      <rect x="300" y="330" width="150" height="96" rx="10" fill="#002340"/>
+      <rect x="308" y="338" width="134" height="72" rx="6" fill="#B4FF00"/>
+      <rect x="318" y="348" width="60" height="8" rx="4" fill="#002340"/>
+      <rect x="318" y="362" width="94" height="6" rx="3" fill="#002340" opacity="0.6"/>
+      <rect x="318" y="374" width="80" height="6" rx="3" fill="#002340" opacity="0.4"/>
+      <rect x="288" y="420" width="174" height="14" rx="7" fill="#001D36"/>
+    </g>
+  </g>
+</svg>

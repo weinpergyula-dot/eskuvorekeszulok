@@ -75,6 +75,7 @@ function OfferCard({ offer }: { offer: Offer }) {
 
 export function OffersExplorer() {
   const [active, setActive] = useState<OfferCategory>("havidijas");
+  const activeTab = OFFER_TABS.find((t) => t.id === active);
 
   return (
     <div>
@@ -90,12 +91,17 @@ export function OffersExplorer() {
               aria-selected={selected}
               onClick={() => setActive(tab.id)}
               className={[
-                "group flex items-center gap-3 rounded-2xl border px-4 py-4 text-left transition-all",
+                "group relative flex items-center gap-3 rounded-2xl border px-4 py-4 text-left transition-all",
                 selected
                   ? "border-[#B4FF00] bg-[#B4FF00] text-[#002340] shadow-[0_8px_24px_rgba(180,255,0,0.45)]"
                   : "border-[#CDE0EA] bg-white text-[#002340] hover:-translate-y-0.5 hover:border-[#B4FF00] hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
               ].join(" ")}
             >
+              {tab.soon && (
+                <span className="absolute -top-2 right-3 inline-flex items-center gap-1 rounded-full bg-[#002340] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#B4FF00]">
+                  Hamarosan
+                </span>
+              )}
               <span
                 className={[
                   "grid h-11 w-11 shrink-0 place-items-center rounded-xl transition-colors",
@@ -115,12 +121,31 @@ export function OffersExplorer() {
         })}
       </div>
 
-      {/* Kártyák */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {OFFERS[active].map((offer) => (
-          <OfferCard key={offer.id} offer={offer} />
-        ))}
-      </div>
+      {/* Kártyák vagy "hamarosan" állapot */}
+      {activeTab?.soon ? (
+        <div className="flex flex-col items-center rounded-[20px] border border-dashed border-[#B4FF00] bg-white px-6 py-12 text-center">
+          <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#B4FF00]">
+            <Sparkles className="h-3.5 w-3.5" /> Hamarosan
+          </span>
+          <h3 className="text-xl font-extrabold text-[#002340]">Internet + TV csomagok hamarosan</h3>
+          <p className="mt-2 max-w-md text-sm text-[#2D466C]">
+            Dolgozunk a kombinált Internet + TV ajánlatokon, hogy mindent egy számlán, kedvezményesen kaphass meg.
+            Iratkozz fel, és elsőként értesítünk, amint elérhető.
+          </p>
+          <a
+            href="#belepes"
+            className="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-[#002340] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+          >
+            Értesítést kérek <ArrowRight className="h-4 w-4" />
+          </a>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {OFFERS[active].map((offer) => (
+            <OfferCard key={offer.id} offer={offer} />
+          ))}
+        </div>
+      )}
 
       <p className="mt-5 text-xs text-[#7E93B0]">
         A feltüntetett árak online kedvezménnyel, tájékoztató jelleggel értendők. A pontos feltételekért nézd meg az

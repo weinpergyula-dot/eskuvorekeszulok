@@ -20,11 +20,11 @@ export type Offer = {
   cta: string;
 };
 
-export const OFFER_TABS: { id: OfferCategory; label: string; hint: string }[] = [
+export const OFFER_TABS: { id: OfferCategory; label: string; hint: string; soon?: boolean }[] = [
   { id: "havidijas", label: "Havidíjas mobil", hint: "Korlátlan hívás, 5G net" },
   { id: "net", label: "Otthoni internet", hint: "Optikai & 5G, Wi‑Fi 6" },
   { id: "tv", label: "Yettel TV", hint: "Élő adás & felvétel" },
-  { id: "csomag", label: "Csomag & megtakarítás", hint: "Net + TV + mobil egy számlán" },
+  { id: "csomag", label: "Internet + TV", hint: "Csomagban, egy számlán", soon: true },
 ];
 
 export const OFFERS: Record<OfferCategory, Offer[]> = {
