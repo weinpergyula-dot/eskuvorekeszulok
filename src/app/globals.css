@@ -268,6 +268,11 @@ html.a11y-underline a { text-decoration: underline !important; }
   font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   color: var(--y-ink);
 }
+/* A Yettel készülék-slideshow lassabban forogjon (nem érinti a többi carouselt). */
+.yettel-root .carousel-track {
+  animation-duration: 55s;
+}
+
 .yettel-root h1,
 .yettel-root h2,
 .yettel-root h3,

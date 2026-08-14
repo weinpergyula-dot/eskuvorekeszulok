@@ -172,8 +172,8 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── Készülékek ───────────────────────────────────── */}
-        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14">
+          <div className="mx-auto max-w-[1760px] px-4 sm:px-6">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Készülékek</span>
@@ -185,15 +185,17 @@ export default function YettelWebPage() {
                 Összes készülék <ArrowRight className="h-4 w-4" />
               </a>
             </div>
-            {/* Végtelenített, körbeforgó készülék-slideshow (marquee) */}
+          </div>
+          {/* Végtelenített, körbeforgó készülék-slideshow (marquee) – szélesebb sáv */}
+          <div className="mx-auto max-w-[1760px] px-4 sm:px-6">
             <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_4%,#000_96%,transparent)]">
-              <div className="carousel-track flex w-max gap-4 hover:[animation-play-state:paused]">
+              <div className="carousel-track flex w-max gap-5 hover:[animation-play-state:paused]">
                 {Array.from({ length: 8 })
                   .flatMap(() => DEVICES)
                   .map((device, i) => (
                     <div
                       key={i}
-                      className="flex w-[260px] shrink-0 flex-col rounded-[20px] border border-[#CDE0EA] bg-white p-5"
+                      className="flex w-[320px] shrink-0 flex-col rounded-[20px] border border-[#CDE0EA] bg-white p-5"
                     >
                       <div className="mb-4 h-60 overflow-hidden rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white p-4">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
