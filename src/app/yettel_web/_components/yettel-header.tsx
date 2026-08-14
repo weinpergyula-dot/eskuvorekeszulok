@@ -1,0 +1,102 @@
+"use client";
+
+import { useState } from "react";
+import { Menu, X, ShoppingCart, User, MapPin } from "lucide-react";
+
+const NAV = [
+  { label: "Mobil", href: "#havidijas" },
+  { label: "Internet", href: "#internet" },
+  { label: "TV", href: "#tv" },
+  { label: "Készülékek", href: "#keszulekek" },
+  { label: "Ajánlatok", href: "#ajanlatok" },
+  { label: "Ügyfélszolgálat", href: "#ugyfelszolgalat" },
+];
+
+function Logo() {
+  return (
+    <a href="#top" className="flex items-baseline gap-0.5" aria-label="Yettel főoldal">
+      <span className="text-xl font-extrabold tracking-tight text-[#002340]">Yettel</span>
+      {/* Yettel jellegű kis háromszög-akcentus */}
+      <span
+        aria-hidden
+        className="inline-block h-0 w-0 border-x-[5px] border-b-[8px] border-x-transparent border-b-[#B4FF00]"
+      />
+    </a>
+  );
+}
+
+export function YettelHeader() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header id="top" className="sticky top-0 z-50 border-b border-[#CDE0EA] bg-white/95 backdrop-blur">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+        <div className="flex items-center gap-8">
+          <Logo />
+          <nav className="hidden items-center gap-6 lg:flex" aria-label="Fő menü">
+            {NAV.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="text-sm font-semibold text-[#2D466C] transition-colors hover:text-[#002340]"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-1 sm:gap-2">
+          <a
+            href="#ugyfelszolgalat"
+            className="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-[#2D466C] hover:bg-[#E4F2F7] sm:inline-flex"
+          >
+            <MapPin className="h-4 w-4" />
+            Üzletek
+          </a>
+          <a
+            href="#belepes"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-[#002340] hover:bg-[#E4F2F7]"
+          >
+            <User className="h-4 w-4" />
+            <span className="hidden sm:inline">Belépés</span>
+          </a>
+          <a
+            href="#ajanlatok"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#B4FF00] px-3 py-2 text-sm font-bold text-[#002340] transition-colors hover:bg-[#9BE000]"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            <span className="hidden sm:inline">Vásárlás</span>
+          </a>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-[#002340] hover:bg-[#E4F2F7] lg:hidden"
+            aria-label={open ? "Menü bezárása" : "Menü megnyitása"}
+            aria-expanded={open}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobil menü */}
+      {open && (
+        <nav className="border-t border-[#CDE0EA] bg-white lg:hidden" aria-label="Mobil menü">
+          <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6">
+            {NAV.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="block rounded-lg px-2 py-2.5 text-sm font-semibold text-[#002340] hover:bg-[#E4F2F7]"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+      )}
+    </header>
+  );
+}

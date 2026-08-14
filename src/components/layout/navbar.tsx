@@ -6,22 +6,10 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, LayoutGrid, CircleUser, Check } from "lucide-react";
+import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboard, Heart, MessageCircle, FileText, ShieldCheck, LogOut, Bell, Settings, Link2, CircleUser, Check } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
-import { CATEGORY_LABELS } from "@/lib/types";
-
-const mainCategories = [
-  "fotosok-videosok",
-  "elo-zene-dj",
-  "vofely",
-  "torta-sutemeny",
-  "menyasszonyi-ruha",
-  "smink",
-  "fodrasz-borbely",
-  "helyszin",
-] as const;
-
+import { OnboardingTour } from "@/components/onboarding-tour";
 
 function NavBadge({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -40,33 +28,38 @@ export function Navbar() {
   const [pendingCount, setPendingCount] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadQuotes, setUnreadQuotes] = useState(0);
-  const [providerDot, setProviderDot] = useState<"amber" | "red" | "green" | null>(null);
+  const [providerDot, setProviderDot] = useState<"amber" | "red" | "green" | "gray" | null>(null);
   const [hasProvider, setHasProvider] = useState(false);
   const [providerIsActive, setProviderIsActive] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [navCategoryCounts, setNavCategoryCounts] = useState<Record<string, number>>({});
+  const [shrink, setShrink] = useState(false);
+  const lastScrollY = useRef(0);
   const [navAvatarUrl, setNavAvatarUrl] = useState<string | null>(null);
-  const categoryCountsFetched = useRef(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const desktopCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tourDropdownLockedRef = useRef(false);
 
-  const openServices = () => {
-    setServicesOpen(true);
-    if (!categoryCountsFetched.current) {
-      categoryCountsFetched.current = true;
-      fetch("/api/providers/category-counts")
-        .then(r => r.json()).then(setNavCategoryCounts).catch(() => {});
-    }
-  };
+  // Tour: open/close the user-dropdown (mobile + desktop) and prevent outside-click
+  // from closing it. Both are toggled so the tour works in either layout; only the
+  // one visible at the current breakpoint actually renders.
+  useEffect(() => {
+    const openDropdown = () => { setUserDropdownOpen(true); setDesktopDropdownOpen(true); tourDropdownLockedRef.current = true; };
+    const closeDropdown = () => { setUserDropdownOpen(false); setDesktopDropdownOpen(false); tourDropdownLockedRef.current = false; };
+    window.addEventListener("tour-open-mobile-dropdown", openDropdown);
+    window.addEventListener("tour-close-mobile-dropdown", closeDropdown);
+    return () => {
+      window.removeEventListener("tour-open-mobile-dropdown", openDropdown);
+      window.removeEventListener("tour-close-mobile-dropdown", closeDropdown);
+    };
+  }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
+      if (tourDropdownLockedRef.current) return; // tour holds the dropdown open
       if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node))
         setUserDropdownOpen(false);
       if (desktopDropdownRef.current && !desktopDropdownRef.current.contains(e.target as Node))
@@ -77,10 +70,30 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => {
+      const y = window.scrollY;
+      // Shrink only on mobile (<md). On desktop the navbar keeps its full size.
+      if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
+      // Only shrink while scrolling DOWN; expand again on scroll up or near top.
+      if (y < 80) setShrink(false);
+      else if (y > lastScrollY.current + 4) setShrink(true);
+      else if (y < lastScrollY.current - 4) setShrink(false);
+      lastScrollY.current = y;
+    };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
+
+  // Publish the current navbar height so sticky elements (e.g. the category CTA)
+  // can pin flush beneath it whether it's full-size or shrunk.
+  useEffect(() => {
+    document.documentElement.style.setProperty("--nav-h", shrink ? "2.75rem" : "4rem");
+  }, [shrink]);
 
   const supabase = createClient();
 
@@ -169,7 +182,7 @@ export function Navbar() {
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
         if (p.approval_status === "approved") {
-          setProviderDot(p.active !== false ? "green" : null);
+          setProviderDot(p.active !== false ? "green" : "gray");
           return;
         }
         setProviderDot(null);
@@ -219,12 +232,30 @@ export function Navbar() {
         })
         .catch(() => {});
     };
+    // Fires when a quote message/request is read (or a new one arrives) — refetch
+    // the quote count so the badge drops immediately once a chat is opened.
+    const onQuotesRead = () => {
+      fetch("/api/quote-requests/unread-count").then((r) => r.json())
+        .then(({ count }: { count: number }) => {
+          setUnreadQuotes(count);
+          window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: count }));
+        })
+        .catch(() => {});
+    };
     const onApprovalSeen = () => setProviderDot(null);
+    const onActiveChanged = (e: Event) => {
+      const active = (e as CustomEvent<boolean>).detail;
+      setProviderDot(active ? "green" : "gray");
+    };
     window.addEventListener("messages-read", onMessagesRead);
+    window.addEventListener("quotes-read", onQuotesRead);
     window.addEventListener("provider-approval-seen", onApprovalSeen);
+    window.addEventListener("provider-active-changed", onActiveChanged);
     return () => {
       window.removeEventListener("messages-read", onMessagesRead);
+      window.removeEventListener("quotes-read", onQuotesRead);
       window.removeEventListener("provider-approval-seen", onApprovalSeen);
+      window.removeEventListener("provider-active-changed", onActiveChanged);
     };
   }, []);
 
@@ -276,24 +307,27 @@ export function Navbar() {
     ...(hasProvider ? [
       { id: "provider", label: "Szolgáltatói profil", Icon: Briefcase },
     ] : []),
-    ...(hasProvider && providerIsActive ? [
+    ...(hasProvider ? [
       { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     ] : []),
-    { id: "favorites", label: "Kedvencek", Icon: Heart },
+    ...(!hasProvider ? [
+      { id: "favorites", label: "Kedvencek", Icon: Heart },
+    ] : []),
     { id: "chat",      label: "Chat",      Icon: MessageCircle },
   ];
 
   // ── Shared dropdown panel renderer ──────────────────────────────────────────
   const DropdownPanel = ({ closeAll }: { closeAll: () => void }) => (
-    <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+    <div data-tour="dropdown-panel" className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
       {/* Ajánlatkérés – highlighted at top */}
       <div className="border-b border-gray-100 mb-1 pb-1">
         <button
+          data-tour="dropdown-quotes"
           onClick={() => navTo("quotes", closeAll)}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#84AAA6] font-semibold hover:bg-[#84AAA6]/10 text-left"
         >
           <FileText className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-          <span className="flex-1">Ajánlatot kérek</span>
+          <span className="flex-1">Ajánlatkérés</span>
         </button>
       </div>
 
@@ -341,6 +375,7 @@ export function Navbar() {
       {providerItems.map(({ id, label, Icon }) => (
         <button
           key={id}
+          data-tour={`dropdown-${id}`}
           onClick={() => navTo(id, closeAll)}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
         >
@@ -355,6 +390,7 @@ export function Navbar() {
             <span className={`w-2.5 h-2.5 rounded-full ${
               providerDot === "red" ? "bg-[#F06C6C]" :
               providerDot === "green" ? "bg-green-500" :
+              providerDot === "gray" ? "bg-gray-400" :
               "bg-amber-400"
             }`} />
           )}
@@ -374,57 +410,25 @@ export function Navbar() {
   );
 
   return (
-    <nav className={`sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 relative ${scrolled ? "bg-white/80 backdrop-blur-md" : "bg-white"}`}>
+  <>
+    <nav className="sticky top-0 z-50 border-b border-gray-200 transition-all duration-300 relative bg-white/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className={`flex items-center justify-between transition-all duration-300 ${shrink ? "h-11" : "h-16"}`}>
           {/* Logo + Desktop nav */}
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center shrink-0">
-              <Image src="/logo.png" alt="Esküvőre Készülök" width={320} height={80} quality={100} className="h-10 w-auto" />
+              <Image src="/logo.png" alt="Esküvőre Készülök" width={320} height={80} quality={100} className={`w-auto transition-all duration-300 ${shrink ? "h-7" : "h-10"}`} />
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kezdőlap</Link>
+              <Link href="/" data-tour="nav-categories" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kezdőlap</Link>
               <Link href="/informaciok" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Információk</Link>
-
-              {/* Kategóriák dropdown */}
-              <div className="relative" onMouseEnter={openServices} onMouseLeave={() => setServicesOpen(false)}>
-                <button className="flex items-center gap-1 text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">
-                  Kategóriák <ChevronDown className="h-3.5 w-3.5" />
-                </button>
-                {servicesOpen && (
-                  <div className="absolute top-full left-0 pt-2 w-64 z-50">
-                    <div className="bg-white border border-gray-200 rounded-xl shadow-lg py-1">
-                      {(Object.keys(navCategoryCounts).length > 0
-                        ? (Object.keys(CATEGORY_LABELS) as (typeof mainCategories[number])[])
-                            .filter((cat) => (navCategoryCounts[cat] ?? 0) > 0)
-                            .sort((a, b) => (navCategoryCounts[b] ?? 0) - (navCategoryCounts[a] ?? 0))
-                            .slice(0, 8)
-                        : mainCategories
-                      ).map((cat) => (
-                        <Link key={cat} href={`/services/${cat}`} className="flex items-center justify-between px-4 py-2 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]">
-                          <span>{CATEGORY_LABELS[cat]}</span>
-                          {navCategoryCounts[cat] != null && (
-                            <span className="text-sm text-gray-400 font-normal ml-2">({navCategoryCounts[cat]})</span>
-                          )}
-                        </Link>
-                      ))}
-                      <div className="border-t border-gray-100 mt-1 pt-1">
-                        <Link href="/services" className="block px-4 py-2 text-base text-[#84AAA6] font-medium hover:bg-[#84AAA6]/10">
-                          Összes kategória →
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
               <Link href="/kapcsolat" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kapcsolat</Link>
             </div>
           </div>
 
           {/* Desktop auth */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className={`hidden md:flex items-center gap-3 transition-transform duration-300 origin-right ${shrink ? "scale-90" : ""}`}>
             {user ? (
               <div
                 ref={desktopDropdownRef}
@@ -434,7 +438,9 @@ export function Navbar() {
                   setDesktopDropdownOpen(true);
                 }}
                 onMouseLeave={() => {
-                  desktopCloseTimer.current = setTimeout(() => setDesktopDropdownOpen(false), 1000);
+                  desktopCloseTimer.current = setTimeout(() => {
+                    if (!tourDropdownLockedRef.current) setDesktopDropdownOpen(false);
+                  }, 1000);
                 }}
               >
                 <button className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
@@ -452,7 +458,7 @@ export function Navbar() {
                     </span>
                   )}
                   {showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : providerDot === "gray" ? "bg-gray-400" : "bg-amber-400"}`} />
                   )}
                 </button>
                 {desktopDropdownOpen && (
@@ -472,7 +478,7 @@ export function Navbar() {
           </div>
 
           {/* Mobile: user icon + categories icon + hamburger */}
-          <div className="md:hidden flex items-center gap-1">
+          <div className={`md:hidden flex items-center gap-1 transition-transform duration-300 origin-right ${shrink ? "scale-90" : ""}`}>
             {!user && (
               <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
                 <CircleUser className="h-7 w-7" strokeWidth={1.75} />
@@ -499,7 +505,7 @@ export function Navbar() {
                     </span>
                   )}
                   {showDot && (
-                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : "bg-amber-400"}`} />
+                    <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${providerDot === "red" ? "bg-[#F06C6C]" : providerDot === "green" ? "bg-green-500" : providerDot === "gray" ? "bg-gray-400" : "bg-amber-400"}`} />
                   )}
                 </button>
                 {userDropdownOpen && (
@@ -507,10 +513,6 @@ export function Navbar() {
                 )}
               </div>
             )}
-
-            <Link href="/services" className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
-              <LayoutGrid className="h-6 w-6" strokeWidth={2} />
-            </Link>
 
             <button
               className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
@@ -527,7 +529,6 @@ export function Navbar() {
         <div className="md:hidden absolute right-4 top-[calc(100%+4px)] w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
           <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kezdőlap</Link>
           <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Információk</Link>
-          <Link href="/services" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kategóriák</Link>
           <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
@@ -542,5 +543,9 @@ export function Navbar() {
         </div>
       )}
     </nav>
+    {user && profile && profile.role !== "admin" && (
+      <OnboardingTour userId={user.id} role={profile.role} />
+    )}
+  </>
   );
 }

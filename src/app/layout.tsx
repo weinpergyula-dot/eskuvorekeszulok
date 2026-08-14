@@ -5,6 +5,10 @@ import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { Footer } from "@/components/layout/footer";
 import { TopLoader } from "@/components/layout/top-loader";
 import { CookieBanner } from "@/components/layout/cookie-banner";
+import { ConditionalChrome } from "@/components/layout/conditional-chrome";
+import { ScrollToTop } from "@/components/scroll-to-top";
+import { BackgroundMusic } from "@/components/layout/background-music";
+import { AccessibilityWidget } from "@/components/layout/accessibility-widget";
 
 const SITE_NAME = "Esküvőre Készülök";
 const SITE_URL = "https://eskuvorekeszulok.hu";
@@ -101,12 +105,22 @@ gtag('config', '${GA_ID}');
             }),
           }}
         />
+        <ScrollToTop />
         <TopLoader />
-        <AnnouncementBanner />
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <CookieBanner />
+        <ConditionalChrome
+          announcement={<AnnouncementBanner />}
+          navbar={<Navbar />}
+          footer={<Footer />}
+          cookie={<CookieBanner />}
+          extras={
+            <>
+              <BackgroundMusic />
+              <AccessibilityWidget />
+            </>
+          }
+        >
+          {children}
+        </ConditionalChrome>
       </body>
     </html>
   );

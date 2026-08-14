@@ -9,6 +9,7 @@ import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
 
+
 interface ProviderCardProps {
   provider: Provider;
   showStatus?: boolean;
@@ -96,11 +97,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
         <div className="flex-1 min-w-0">
           <div className="font-bold text-gray-900 truncate" style={{ fontSize: "16px" }}>{provider.full_name}</div>
-          <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
-            <MapPin className={`h-3 w-3 ${tc.text} shrink-0`} />
-            <span className="truncate">
-              {(provider.counties ?? []).slice(0, 2).join(", ")}
-              {(provider.counties ?? []).length > 2 && ` +${(provider.counties ?? []).length - 2}`}
+          <div className="flex items-start gap-1 mt-0.5">
+            <MapPin className={`h-3 w-3 ${tc.text} shrink-0 mt-[2px]`} />
+            <span className="text-sm text-gray-500 leading-snug">
+              {countyExpanded
+                ? (provider.counties ?? []).join(", ")
+                : (provider.counties ?? [])[0] ?? ""}
+              {(provider.counties ?? []).length > 1 && !countyExpanded && (
+                <> <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
+                  +{(provider.counties ?? []).length - 1}
+                </button></>
+              )}
             </span>
           </div>
           <div className="flex items-center gap-1 mt-0.5">
@@ -110,6 +117,19 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             <span className="text-sm font-semibold text-gray-900 ml-0.5">{rating > 0 ? rating.toFixed(1) : "–"}</span>
             {reviewCount > 0 && <span className="text-sm text-gray-500">({reviewCount})</span>}
           </div>
+          {/* Kategória jelölés — az értékelés alatt */}
+          {!hideCategories && (provider.categories ?? []).length > 0 && (
+            <div className="flex flex-wrap items-center gap-1 mt-1">
+              {(provider.categories ?? []).slice(0, 2).map((cat) => (
+                <span key={cat} className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-full border", tc.badgeClass || "border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10")}>
+                  {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                </span>
+              ))}
+              {(provider.categories ?? []).length > 2 && (
+                <span className={cn("text-[10px] font-medium", tc.text)}>+{(provider.categories ?? []).length - 2}</span>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -218,9 +238,9 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
       )}
 
-      {/* ── REGULAR card: desktop side-by-side, mobile stacked ─────────── */}
+      {/* ── REGULAR card: compact horizontal header ──────────────────────── */}
       {!inCarousel && (
-        <div className="relative flex flex-col sm:flex-row" style={{ backgroundColor: headerBg }}>
+        <div className="relative flex items-center gap-3 px-4 pt-12 pb-5" style={{ backgroundColor: headerBg }}>
           {/* Absolute action buttons */}
           {!disableLink && (
             <div className="absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
@@ -240,72 +260,75 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </span>
           </div>
 
-          {/* Avatar column — mobile: centered top; desktop: left column */}
-          <div className="flex flex-col items-center justify-center pt-11 pb-3 sm:pt-12 sm:pb-5 sm:pl-10 sm:pr-5 sm:border-r sm:border-white/40">
-            <div
-              className={cn(
-                "w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center shrink-0",
-                provider.avatar_url && !inCarousel && "cursor-zoom-in"
-              )}
-              onClick={(e) => {
-                e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation();
-                if (provider.avatar_url) setAvatarOpen(true);
-              }}
-            >
-              {provider.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-2xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
-              )}
-            </div>
+          {/* Avatar */}
+          <div
+            className={cn(
+              "w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0 ml-1",
+              provider.avatar_url && "cursor-zoom-in"
+            )}
+            onClick={(e) => {
+              e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation();
+              if (provider.avatar_url) setAvatarOpen(true);
+            }}
+          >
+            {provider.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
+            )}
           </div>
 
-          {/* Info column — mobile: centered; desktop: left-aligned, fills rest */}
-          <div className="flex flex-col items-center sm:items-start justify-center pb-4 px-5 sm:py-5 sm:px-4 sm:pr-12 flex-1">
-            <h3
-              className={`font-bold text-gray-900 text-center sm:text-left mb-1.5 transition-colors text-[22px] sm:text-[20px] ${tc.groupHover}`}
-            >
-              {provider.full_name}
-            </h3>
-
-            {!hideCategories && (
-              <div className="sm:hidden flex flex-wrap items-center justify-center gap-1.5 mb-1.5">
-                {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
-                  <Badge key={cat} variant="outline" className="text-sm">{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
-                ))}
-                {(provider.categories ?? []).length > 1 && !catExpanded && (
-                  <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className="text-sm font-medium underline underline-offset-2 text-[#84AAA6]">
-                    +{(provider.categories ?? []).length - 1} több
-                  </button>
-                )}
-              </div>
-            )}
-
-            <div className="flex items-center justify-center sm:justify-start gap-1 mb-2 flex-wrap">
-              <MapPin className={`h-3.5 w-3.5 shrink-0 ${tc.text}`} />
-              <span className="text-sm text-gray-900">
-                {countyExpanded ? (provider.counties ?? []).join(", ") : ((provider.counties ?? [])[0] ?? "")}
-              </span>
-              {(provider.counties ?? []).length > 1 && !countyExpanded && (
-                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
-                  +{(provider.counties ?? []).length - 1} több
-                </button>
-              )}
-            </div>
-
+          {/* Info: name, counties, stars */}
+          <div className="flex-1 min-w-0 pr-14">
             {!disableLink ? (
-              <a href={`/providers/${provider.id}#reviews`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 hover:opacity-70 transition-opacity">
+              <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className="block">
+                <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
+                  {provider.full_name}
+                </h3>
+              </a>
+            ) : (
+              <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
+                {provider.full_name}
+              </h3>
+            )}
+            <div className="flex items-start gap-1 mt-0.5">
+              <MapPin className={`h-3.5 w-3.5 shrink-0 mt-[2px] ${tc.text}`} />
+              <span className="text-sm text-gray-900 leading-snug">
+                {countyExpanded
+                  ? (provider.counties ?? []).join(", ")
+                  : (provider.counties ?? [])[0] ?? ""}
+                {(provider.counties ?? []).length > 1 && !countyExpanded && (
+                  <> <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCountyExpanded(true); }} className={cn("text-sm font-medium underline underline-offset-2", tc.text)}>
+                    +{(provider.counties ?? []).length - 1}
+                  </button></>
+                )}
+              </span>
+            </div>
+            {!disableLink ? (
+              <a href={`/providers/${provider.id}#reviews`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 mt-0.5 hover:opacity-70 transition-opacity">
                 {ratingContent}
               </a>
             ) : (
-              <div className="flex items-center gap-1.5">{ratingContent}</div>
+              <div className="flex items-center gap-1 mt-0.5">{ratingContent}</div>
             )}
-
+            {/* Kategória jelölés — az értékelés alatt */}
+            {!hideCategories && (provider.categories ?? []).length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                {(provider.categories ?? []).slice(0, 2).map((cat) => (
+                  <span key={cat} className={cn("text-[11px] font-medium px-2 py-0.5 rounded-full border", tc.badgeClass || "border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10")}>
+                    {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
+                  </span>
+                ))}
+                {(provider.categories ?? []).length > 2 && (
+                  <span className={cn("text-[11px] font-medium", tc.text)}>+{(provider.categories ?? []).length - 2}</span>
+                )}
+              </div>
+            )}
             {showStatus && (
               <Badge
                 variant={provider.approval_status === "approved" ? "approved" : provider.approval_status === "rejected" ? "rejected" : "pending"}
-                className="mt-2 text-base"
+                className="mt-1.5 text-xs"
               >
                 {provider.approval_status === "approved" ? "Jóváhagyva" : provider.approval_status === "rejected" ? "Elutasítva" : "Jóváhagyásra vár"}
               </Badge>
@@ -324,7 +347,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               onClick={() => { setGalleryIndex(0); setGalleryOpen(true); }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={galleryUrls[0]} alt="Galéria" className="w-full h-full object-cover" draggable={false} />
+              <img src={galleryUrls[0]} alt="Galéria" className="w-full h-full object-cover" draggable={false} loading="lazy" />
             </button>
           ) : (
             <div
@@ -343,7 +366,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="w-full h-full object-cover" draggable={false} />
+                  <img src={url} alt="" className="w-full h-full object-cover" draggable={false} loading="lazy" />
                 </button>
               ))}
             </div>
@@ -394,19 +417,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Footer */}
       {!inCarousel && !disableLink && (
         <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
-          {/* Category badges — desktop only, left side */}
-          {!hideCategories && (
-            <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
-              {(catExpanded ? provider.categories ?? [] : (provider.categories ?? []).slice(0, 1)).map((cat) => (
-                <Badge key={cat} variant="outline" className={cn("text-xs", tc.badgeClass)}>{CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}</Badge>
-              ))}
-              {(provider.categories ?? []).length > 1 && !catExpanded && (
-                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCatExpanded(true); }} className={cn("text-xs font-medium underline underline-offset-2", tc.text)}>
-                  +{(provider.categories ?? []).length - 1} több
-                </button>
-              )}
-            </div>
-          )}
           {/* Chat + Részletek grouped — always pushed to right */}
           <div className="flex items-center gap-2 ml-auto">
             <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>

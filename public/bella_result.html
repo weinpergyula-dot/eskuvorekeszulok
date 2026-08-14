@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Bella babaváró — tippek</title>
+<style>
+  :root{
+    --rose:#E48AA5; --rose-d:#C86A88; --ink:#5A3B46; --muted:#9C7C86; --gold:#E0A94B;
+    --card:#FFFFFF; --line:#F1DBE2;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh; min-height:100dvh; color:var(--ink);
+    font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,sans-serif;
+    background:
+      radial-gradient(120% 80% at 12% -8%, #FBE7EF 0%, transparent 55%),
+      radial-gradient(120% 80% at 108% 4%, #FDEFE0 0%, transparent 52%),
+      linear-gradient(180deg,#FFF7F2 0%,#FDEDF2 100%);
+    display:flex; justify-content:center; padding:26px 16px 44px;
+  }
+  .wrap{width:100%; max-width:520px;}
+  .head{text-align:center; margin-bottom:20px;}
+  .head .deco{font-size:42px;}
+  .kicker{display:inline-block; font-size:11px; font-weight:800; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--rose-d); background:#FCE7EE; border:1px solid #F6D2DE; padding:6px 13px; border-radius:999px; margin:8px 0 12px;}
+  h1{font-family:Georgia,'Times New Roman',serif; font-size:32px; margin:0 0 6px; color:var(--rose-d); font-weight:700;}
+  h1 .nm{color:var(--gold);}
+  .sub{font-size:14px; color:var(--muted); margin:0;}
+  .count{font-weight:800; color:var(--rose-d);}
+  .pot{display:inline-flex; align-items:center; gap:8px; margin-top:14px; padding:11px 18px; border-radius:16px;
+    background:#FFF3E4; border:1px solid #F0D9B4; color:#8A5A1E; font-size:14px; font-weight:700;}
+  .pot b{font-family:Georgia,serif; font-size:19px; color:var(--gold); font-weight:700;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:26px; overflow:hidden;
+    box-shadow:0 26px 60px -34px rgba(120,60,80,.4);}
+  .gitem{border-top:1px solid #F6E6EC;}
+  .gitem:first-child{border-top:none;}
+  .grow{display:flex; align-items:center; gap:14px; padding:15px 18px; width:100%; background:none; border:none; cursor:pointer; font-family:inherit; text-align:left;}
+  .av{width:44px; height:44px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-family:Georgia,serif; font-weight:700; font-size:17px; color:#fff;
+    background:linear-gradient(180deg,#EC94AF,#DE7A99);}
+  .who{flex:1; min-width:0;}
+  .who .nm{font-size:15.5px; font-weight:700; color:var(--ink); margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .who .sm{font-size:12.5px; color:var(--rose-d); font-weight:700; margin:2px 0 0;}
+  .chev{flex-shrink:0; color:#D9B4C1; font-size:26px; line-height:1; transition:transform .2s;}
+  .gitem.open .chev{transform:rotate(180deg);}
+  .gmsg{display:none; padding:0 18px 16px 76px;}
+  .gitem.open .gmsg{display:block;}
+  .gmsg .mlbl{display:block; font-size:10.5px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+  .gmsg .mtxt{margin:0; font-size:14px; color:var(--ink); line-height:1.55; background:#FFF6F9; border:1px solid #F6E1E9; border-radius:14px; padding:11px 14px;}
+  .gmsg .mtxt.empty{color:var(--muted); font-style:italic; background:none; border:none; padding:0;}
+  .empty,.loading{background:var(--card); border:1px solid var(--line); border-radius:26px; padding:40px 24px; text-align:center; color:var(--muted); font-size:14.5px;}
+  .empty .big{font-size:44px; margin-bottom:10px;}
+  .btn{display:flex; align-items:center; justify-content:center; width:100%; height:56px; border-radius:16px; margin-top:22px;
+    border:none; cursor:pointer; font-family:inherit; font-size:16px; font-weight:800; color:#fff; text-decoration:none;
+    background:linear-gradient(180deg,#EC94AF 0%,#DE7A99 100%); box-shadow:0 16px 30px -12px rgba(222,122,153,.7); transition:filter .15s, transform .12s;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:translateY(1px);}
+  .foot{text-align:center; margin-top:20px; font-size:12px; color:#BBA3AB;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div class="deco">🎀</div>
+      <div><span class="kicker">Babaváró tippjáték</span></div>
+      <h1><span class="nm">Bella</span> — a tippek</h1>
+      <p class="sub">Ki mikorra tippelt? <span class="count" id="count"></span></p>
+      <div class="pot" id="pot" style="display:none;">💰 A kalapban eddig: <b id="potv"></b></div>
+    </div>
+    <div id="content"><div class="loading">Tippek betöltése… 🌸</div></div>
+    <a class="btn" href="/bella">Leadok még egy tippet 💕</a>
+    <div class="foot">A nyertes a nagy nap után derül ki 💕</div>
+  </div>
+
+<script>
+(function(){
+  var MONTHS = ["Január","Február","Március","Április","Május","Június","Július","Augusztus","Szeptember","Október","November","December"];
+  var content=document.getElementById('content'), countEl=document.getElementById('count');
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function initials(name){ var p=name.trim().split(/\s+/); return ((p[0]||'')[0]||'').toUpperCase() + (p.length>1?((p[p.length-1]||'')[0]||'').toUpperCase():''); }
+
+  fetch('/api/bella').then(function(r){ return r.json(); }).then(function(data){
+    var g = (data && data.guesses) || [];
+    countEl.textContent = '(' + g.length + ' tipp)';
+    function fmtFt(n){ var s=String(n), o=''; for(var i=0;i<s.length;i++){ if(i>0 && (s.length-i)%3===0) o+=' '; o+=s.charAt(i); } return o+' Ft'; }
+    document.getElementById('potv').textContent = fmtFt(g.length * 1000);
+    document.getElementById('pot').style.display = 'inline-flex';
+    if(!g.length){
+      content.innerHTML = '<div class="empty"><div class="big">🍼</div>Még senki sem tippelt. Legyél te az első!</div>';
+      return;
+    }
+    function pad(n){ return (n<10?'0':'')+n; }
+    var rows = g.map(function(x){
+      var time = pad(x.hour)+':'+pad(x.minute||0);
+      var hasMsg = x.message && String(x.message).trim().length;
+      var body = hasMsg
+        ? '<p class="mtxt">'+esc(x.message)+'</p>'
+        : '<p class="mtxt empty">Nem írt üzenetet 🤍</p>';
+      return '<div class="gitem">'
+        + '<button class="grow" type="button">'
+        + '<div class="av">'+esc(initials(x.name)||'?')+'</div>'
+        + '<div class="who"><p class="nm">'+esc(x.name)+'</p><p class="sm">'+esc(MONTHS[x.month-1]||'')+' '+x.day+'., '+time+'</p></div>'
+        + '<span class="chev">▾</span>'
+        + '</button>'
+        + '<div class="gmsg"><span class="mlbl">Üzenet Bellának</span>'+body+'</div>'
+        + '</div>';
+    }).join('');
+    content.innerHTML = '<div class="card">'+rows+'</div>';
+    Array.prototype.slice.call(content.querySelectorAll('.grow')).forEach(function(btn){
+      btn.addEventListener('click', function(){ btn.parentNode.classList.toggle('open'); });
+    });
+  }).catch(function(){
+    content.innerHTML = '<div class="empty">Nem sikerült betölteni a tippeket. 🌷</div>';
+  });
+})();
+</script>
+</body>
+</html>

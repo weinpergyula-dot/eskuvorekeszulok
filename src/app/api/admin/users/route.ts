@@ -18,9 +18,10 @@ export async function GET() {
       .single();
     if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    const [{ data: profiles, error }, { data: providers }] = await Promise.all([
+    const [{ data: profiles, error }, { data: providers }, { data: deletedRows }] = await Promise.all([
       supabase.from("profiles").select("id, user_id, email, full_name, role, created_at").order("created_at", { ascending: false }),
       supabase.from("providers").select("user_id, id, categories, view_count, phone, approval_status, pending_changes, featured, avatar_url"),
+      supabase.from("deleted_accounts").select("id, user_id, email, full_name, role, deleted_at, deleted_by").order("deleted_at", { ascending: false }),
     ]);
 
     if (error) { await logError("api/admin/users GET", error.message); return NextResponse.json({ error: error.message }, { status: 500 }); }
@@ -41,7 +42,7 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json(enriched);
+    return NextResponse.json({ users: enriched, deletedUsers: deletedRows ?? [] });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
@@ -114,6 +115,22 @@ export async function DELETE(request: Request) {
     }
 
     const adminClient = createAdminClient();
+
+    // Log to deleted_accounts before hard-delete
+    const { data: targetProfile } = await supabase
+      .from("profiles")
+      .select("email, full_name, role")
+      .eq("user_id", userId)
+      .single();
+
+    await adminClient.from("deleted_accounts").insert({
+      user_id:    userId,
+      email:      targetProfile?.email ?? null,
+      full_name:  targetProfile?.full_name ?? null,
+      role:       targetProfile?.role ?? null,
+      deleted_by: user.id,
+    });
+
     const { error } = await adminClient.auth.admin.deleteUser(userId);
 
     if (error) { await logError("api/admin/users DELETE", error.message, { userId }); return NextResponse.json({ error: error.message }, { status: 500 }); }

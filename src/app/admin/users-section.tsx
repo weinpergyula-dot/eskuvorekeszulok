@@ -4,9 +4,9 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { FloatingInput } from "@/components/ui/floating-input";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star } from "lucide-react";
+import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2, RotateCcw, Check } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
 
 interface UserProfile {
@@ -26,11 +26,39 @@ interface UserProfile {
   providerFeatured?: "teal" | "silver" | "gold" | null;
 }
 
+function OnboardingResetButton({ userId }: { userId: string }) {
+  const [done, setDone] = useState(false);
+  const reset = () => {
+    localStorage.removeItem(`onboarding_done_${userId}`);
+    setDone(true);
+    setTimeout(() => setDone(false), 1500);
+  };
+  return (
+    <button
+      onClick={reset}
+      title="Onboarding tour reset (localStorage törlés)"
+      className="h-7 w-7 flex items-center justify-center rounded border border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6] transition-colors cursor-pointer"
+    >
+      {done ? <Check className="h-3.5 w-3.5 text-green-500" /> : <RotateCcw className="h-3.5 w-3.5" />}
+    </button>
+  );
+}
+
 interface ProviderStatus {
   id: string;
   user_id: string;
   approval_status: string;
   pending_changes: unknown;
+}
+
+interface DeletedUser {
+  id: string;
+  user_id: string;
+  email: string | null;
+  full_name: string | null;
+  role: string | null;
+  deleted_at: string;
+  deleted_by: string | null;
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -47,13 +75,14 @@ const ROLE_BADGE: Record<string, "default" | "secondary" | "approved" | "admin">
 
 const PAGE_SIZE_OPTIONS = [10, 50, 100];
 
-type ApprovalFilter = "all" | "provider" | "visitor" | "admin";
+type ApprovalFilter = "all" | "provider" | "visitor" | "admin" | "deleted";
 
 const FILTER_LABELS: Record<ApprovalFilter, string> = {
   all:      "Összes",
   provider: "Szolgáltatók",
   visitor:  "Látogatók",
   admin:    "Admin",
+  deleted:  "Törölt",
 };
 
 type SortKey = "full_name" | "role" | "email" | "created_at" | "providerViewCount";
@@ -69,6 +98,7 @@ function SortIcon({ col, sortKey, dir }: { col: SortKey; sortKey: SortKey; dir: 
 export function UsersSection({ providerStatuses }: { providerStatuses: ProviderStatus[] }) {
   const router = useRouter();
   const [users, setUsers] = useState<UserProfile[]>([]);
+  const [deletedUsers, setDeletedUsers] = useState<DeletedUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -87,7 +117,13 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
     fetch("/api/admin/users")
       .then((r) => r.json())
       .then((data) => {
-        setUsers(Array.isArray(data) ? data : []);
+        if (data && typeof data === "object" && "users" in data) {
+          setUsers(Array.isArray(data.users) ? data.users : []);
+          setDeletedUsers(Array.isArray(data.deletedUsers) ? data.deletedUsers : []);
+        } else {
+          // fallback if old shape
+          setUsers(Array.isArray(data) ? data : []);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -248,26 +284,35 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
 
       <div className="space-y-4">
         {/* Search */}
-        <Input
-          placeholder="Keresés név vagy email alapján..."
-          value={search}
-          onChange={(e) => handleSearch(e.target.value)}
-          className="max-w-sm"
-        />
+        <div className="max-w-sm">
+          <FloatingInput
+            id="admin-search"
+            label="Keresés név vagy email alapján..."
+            value={search}
+            onChange={(e) => handleSearch(e.target.value)}
+            compact
+          />
+        </div>
 
         {/* Role / status filters */}
         <div className="flex flex-wrap gap-2">
-          {(["all", "provider", "visitor", "admin"] as ApprovalFilter[]).map((f) => (
+          {(["all", "provider", "visitor", "admin", "deleted"] as ApprovalFilter[]).map((f) => (
             <button
               key={f}
               onClick={() => handleFilter(f)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors cursor-pointer flex items-center gap-1.5 ${
                 approvalFilter === f
-                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  ? f === "deleted" ? "bg-[#F06C6C] text-white border-[#F06C6C]" : "bg-[#84AAA6] text-white border-[#84AAA6]"
                   : "bg-white text-gray-700 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
+              {f === "deleted" && <Trash2 className="h-3.5 w-3.5" />}
               {FILTER_LABELS[f]}
+              {f === "deleted" && deletedUsers.length > 0 && (
+                <span className={`text-xs font-bold rounded-full px-1.5 ${approvalFilter === "deleted" ? "bg-white/30" : "bg-[#F06C6C]/15 text-[#F06C6C]"}`}>
+                  {deletedUsers.length}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -329,12 +374,73 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           </div>
         )}
 
-        {paginated.length === 0 && (
+        {/* ── Törölt felhasználók nézet ─────────────────────────────────── */}
+        {approvalFilter === "deleted" && (
+          <>
+            {deletedUsers.length === 0 ? (
+              <p className="text-gray-500 text-sm">Még senki sem törölte a fiókját.</p>
+            ) : (
+              <div className="rounded-xl border border-gray-200 overflow-hidden">
+                <table className="w-full text-sm hidden sm:table">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">Név</th>
+                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">E-mail</th>
+                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">Korábbi szerepkör</th>
+                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">Törölve</th>
+                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">Ki törölte</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {deletedUsers.map((d) => (
+                      <tr key={d.id} className="bg-white hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-2.5 text-gray-900 font-medium">{d.full_name || "–"}</td>
+                        <td className="px-4 py-2.5 text-gray-600">{d.email || "–"}</td>
+                        <td className="px-4 py-2.5 text-gray-500">{ROLE_LABELS[d.role ?? ""] ?? d.role ?? "–"}</td>
+                        <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">
+                          {new Date(d.deleted_at).toLocaleString("hu-HU")}
+                        </td>
+                        <td className="px-4 py-2.5 text-gray-500">
+                          {d.deleted_by ? (
+                            <span className="text-[#F06C6C] font-medium">Admin</span>
+                          ) : (
+                            <span className="text-gray-400">Saját maga</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {/* Mobile cards */}
+                <div className="sm:hidden divide-y divide-gray-100">
+                  {deletedUsers.map((d) => (
+                    <div key={d.id} className="px-4 py-3 bg-white space-y-1">
+                      <p className="font-medium text-gray-900">{d.full_name || "–"}</p>
+                      <p className="text-xs text-gray-500 flex items-center gap-1.5">
+                        <Mail className="h-3.5 w-3.5" /> {d.email || "–"}
+                      </p>
+                      <p className="text-xs text-gray-400 flex items-center gap-1.5">
+                        <Calendar className="h-3.5 w-3.5" />
+                        {new Date(d.deleted_at).toLocaleString("hu-HU")}
+                        {" · "}
+                        {d.deleted_by
+                          ? <span className="text-[#F06C6C]">Admin törölte</span>
+                          : "Saját maga törölte"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {approvalFilter !== "deleted" && paginated.length === 0 && (
           <p className="text-gray-500 text-sm">Nincs találat.</p>
         )}
 
-        {/* Desktop table */}
-        <div className="hidden sm:block rounded-xl border border-gray-200 overflow-hidden">
+        {/* Desktop table – aktív felhasználók */}
+        {approvalFilter !== "deleted" && <div className="hidden sm:block rounded-xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -347,7 +453,6 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                 <th className={`${thClass} ${sortKey === "email" ? thActive : ""}`} onClick={() => handleSort("email")}>
                   E-mail <SortIcon col="email" sortKey={sortKey} dir={sortDir} />
                 </th>
-                <th className={`${thClass} cursor-default hover:bg-gray-50`}>Telefon</th>
                 <th className={`${thClass} cursor-default hover:bg-gray-50`}>Kategóriák</th>
                 <th className={`${thClass} ${sortKey === "created_at" ? thActive : ""}`} onClick={() => handleSort("created_at")}>
                   Regisztrált <SortIcon col="created_at" sortKey={sortKey} dir={sortDir} />
@@ -387,7 +492,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                     <Badge variant={ROLE_BADGE[u.role]} className="text-xs">{ROLE_LABELS[u.role]}</Badge>
                   </td>
                   <td className="px-4 py-2.5 text-gray-600 max-w-[180px] truncate">{u.email}</td>
-                  <td className="px-4 py-2.5 text-gray-600 whitespace-nowrap">{u.phone || "–"}</td>
+
                   <td className="px-4 py-2.5 text-gray-600 max-w-[200px]">
                     <span className="line-clamp-2 leading-snug">
                       {(u.providerCategories ?? []).length > 0
@@ -459,6 +564,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                           Admin jog elvétele
                         </Button>
                       )}
+                      <OnboardingResetButton userId={u.user_id} />
                       <Button size="sm" variant="destructive" disabled={deleting === u.user_id}
                         onClick={() => setConfirmDelete(u)}
                         className="text-xs cursor-pointer h-7 px-2.5">
@@ -472,8 +578,10 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           </table>
         </div>
 
-        {/* Mobile cards */}
-        <div className="sm:hidden space-y-3">
+        }
+
+        {/* Mobile cards – aktív felhasználók */}
+        {approvalFilter !== "deleted" && <div className="sm:hidden space-y-3">
           {paginated.map((u) => (
             <div key={u.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
               <div className="px-4 pt-3 pb-2 flex items-start justify-between gap-2">
@@ -512,12 +620,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   <Mail className="h-3.5 w-3.5 text-gray-400 shrink-0" />
                   <span className="truncate">{u.email}</span>
                 </div>
-                {u.phone && (
-                  <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                    <Phone className="h-3.5 w-3.5 text-gray-400 shrink-0" />
-                    <span>{u.phone}</span>
-                  </div>
-                )}
+
                 {(u.providerCategories ?? []).length > 0 && (
                   <div className="flex items-start gap-1.5 text-xs text-gray-600">
                     <Tag className="h-3.5 w-3.5 text-gray-400 shrink-0 mt-0.5" />
@@ -575,6 +678,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                     </button>
                   </>
                 )}
+                <OnboardingResetButton userId={u.user_id} />
                 {u.role !== "admin" ? (
                   <Button size="sm" variant="outline" disabled={updating === u.user_id}
                     onClick={() => setRole(u.user_id, "admin")}
@@ -596,10 +700,10 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
               </div>
             </div>
           ))}
-        </div>
+        </div>}
 
-        {/* Pagination */}
-        {totalPages > 1 && (
+        {/* Pagination – csak aktív nézetben */}
+        {approvalFilter !== "deleted" && totalPages > 1 && (
           <div className="flex items-center justify-between pt-2">
             <Button size="sm" variant="outline" disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="cursor-pointer">
               ← Előző

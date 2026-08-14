@@ -1,0 +1,322 @@
+"use client";
+
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
+import { X } from "lucide-react";
+import type { UserRole } from "@/lib/types";
+
+interface TourStep {
+  selector: string;
+  mobileSelector?: string; // targets an item in the navbar user-dropdown on mobile
+  side: "bottom" | "right";
+  title: string;
+  description: string;
+}
+
+const VISITOR_STEPS: TourStep[] = [
+  {
+    selector: '[data-tour="nav-categories"]',
+    // mobile: LayoutGrid icon in navbar also carries this attr, picked by visible-element scan
+    side: "bottom",
+    title: "Szolgáltatók",
+    description: "Böngészd az esküvői szolgáltatókat egy helyen – szűrj kategória és megye szerint, és nézd meg az értékeléseket.",
+  },
+  {
+    selector: '[data-tour="sidebar-quotes"]',
+    mobileSelector: '[data-tour="dropdown-quotes"]',
+    side: "right",
+    title: "Ajánlatkérés",
+    description: "Küldj egyéni vagy csoportos ajánlatkérést egyszerre több szolgáltatónak – egy kattintással, ingyenesen.",
+  },
+  {
+    selector: '[data-tour="sidebar-favorites"]',
+    mobileSelector: '[data-tour="dropdown-favorites"]',
+    side: "right",
+    title: "Kedvencek",
+    description: "Mentsd el a neked tetsző szolgáltatókat, hogy később könnyen megtalálhasd őket.",
+  },
+  {
+    selector: '[data-tour="sidebar-chat"]',
+    mobileSelector: '[data-tour="dropdown-chat"]',
+    side: "right",
+    title: "Chat",
+    description: "A szolgáltatókkal folytatott beszélgetéseket ebben a menüpontban találhatod.",
+  },
+];
+
+const PROVIDER_STEPS: TourStep[] = [
+  {
+    selector: '[data-tour="sidebar-provider"]',
+    mobileSelector: '[data-tour="dropdown-provider"]',
+    side: "right",
+    title: "Szolgáltatói profil",
+    description: "Töltsd ki és tartsd naprakészen a profilodat – ez jelenik meg az érdeklődő pároknak. Az adminisztrátor jóváhagyása után lesz látható.",
+  },
+  {
+    selector: '[data-tour="sidebar-dashboard"]',
+    mobileSelector: '[data-tour="dropdown-dashboard"]',
+    side: "right",
+    title: "Dashboard",
+    description: "Kövesd nyomon a megtekintéseidet, értékeléseidet és profil státuszodat.",
+  },
+  {
+    selector: '[data-tour="sidebar-chat"]',
+    mobileSelector: '[data-tour="dropdown-chat"]',
+    side: "right",
+    title: "Chat",
+    description: "Itt érnek el a párok üzenetei és az ajánlatkérések – válaszolj közvetlenül innen.",
+  },
+];
+
+const STORAGE_KEY = (id: string) => `onboarding_done_${id}`;
+const GAP = 14;
+const PAD = 6;
+const TOOLTIP_W = 300;
+
+interface Rect { top: number; left: number; width: number; height: number }
+
+export function OnboardingTour({ userId, role }: { userId: string; role: UserRole }) {
+  const [stepIdx, setStepIdx] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [rect, setRect] = useState<Rect | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [shouldShow, setShouldShow] = useState(false);
+  const [opacity, setOpacity] = useState(1);
+  const isTransitioning = useRef(false);
+
+  const pathname = usePathname();
+
+  const steps = role === "provider" ? PROVIDER_STEPS : VISITOR_STEPS;
+  const current = steps[stepIdx];
+
+  useEffect(() => {
+    setMounted(true);
+    if (localStorage.getItem(STORAGE_KEY(userId))) return;
+    const t = setTimeout(() => setShouldShow(true), 700);
+    return () => clearTimeout(t);
+  }, [userId]);
+
+  // The whole tour now runs through the navbar user-dropdown (desktop + mobile),
+  // so there is no longer any need to navigate to /profil for the sidebar.
+  useEffect(() => {
+    if (!shouldShow) return;
+    const t = setTimeout(() => setVisible(true), 200);
+    return () => clearTimeout(t);
+  }, [shouldShow]);
+
+  // Open / close the navbar user-dropdown for steps that target it.
+  // For steps without a mobileSelector we briefly open then close the dropdown
+  // (hidden under the dark overlay) so iOS refreshes its touch hit-area tree —
+  // this fixes the "first step Tovább button doesn't respond" bug on iOS Safari.
+  useEffect(() => {
+    if (!visible || !current) return;
+    const isMobileView = window.innerWidth < 640;
+    if (current.mobileSelector) {
+      // Dropdown-anchored step — keep the dropdown open while the step is shown.
+      window.dispatchEvent(new CustomEvent("tour-open-mobile-dropdown"));
+    } else if (isMobileView) {
+      // Non-dropdown step on mobile: brief open/close to refresh iOS hit-area.
+      window.dispatchEvent(new CustomEvent("tour-open-mobile-dropdown"));
+      const t = setTimeout(
+        () => window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown")),
+        40, // close before measureEl fires at 80 ms
+      );
+      return () => clearTimeout(t);
+    }
+  }, [visible, current]);
+
+  // Pick the first matching element that is actually painted (non-zero rect).
+  // Prefer the dropdown selector whenever the step has one — the tour runs
+  // through the navbar user-dropdown on both desktop and mobile now.
+  const measureEl = useCallback(() => {
+    if (!current) return;
+    const selector = current.mobileSelector ?? current.selector;
+
+    const candidates = document.querySelectorAll(selector);
+    let el: Element | null = null;
+    for (const candidate of candidates) {
+      const r = candidate.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) { el = candidate; break; }
+    }
+    if (!el) { setRect(null); return; }
+    const r = el.getBoundingClientRect();
+    setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+  }, [current]);
+
+  // Re-measure after step/page changes; 80 ms lets the dropdown render first
+  useEffect(() => {
+    if (!visible) return;
+    const t = setTimeout(measureEl, 80);
+    window.addEventListener("resize", measureEl);
+    return () => { clearTimeout(t); window.removeEventListener("resize", measureEl); };
+  }, [visible, measureEl, pathname]);
+
+  // Fade in after the new rect is measured following a step transition
+  useEffect(() => {
+    if (rect && isTransitioning.current) {
+      isTransitioning.current = false;
+      setOpacity(1);
+    }
+  }, [rect]);
+
+  const finish = () => {
+    setOpacity(0);
+    setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY(userId), "1");
+      setShouldShow(false);
+      setVisible(false);
+      window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+      // iOS fix: brief DOM mutation forces the browser to recalculate touch targets
+      const el = document.createElement("div");
+      document.body.appendChild(el);
+      document.body.removeChild(el);
+    }, 350);
+  };
+
+  const next = () => {
+    isTransitioning.current = true;
+    setOpacity(0);
+    setTimeout(() => {
+      setRect(null);
+      if (stepIdx < steps.length - 1) {
+        setStepIdx(i => i + 1);
+      } else {
+        localStorage.setItem(STORAGE_KEY(userId), "1");
+        setShouldShow(false);
+        setVisible(false);
+        window.dispatchEvent(new CustomEvent("tour-close-mobile-dropdown"));
+        const el = document.createElement("div");
+        document.body.appendChild(el);
+        document.body.removeChild(el);
+      }
+    }, 350);
+  };
+
+  if (!mounted || !visible || !current) return null;
+
+  const isMobile = window.innerWidth < 640;
+  const isLast = stepIdx === steps.length - 1;
+
+  // The currently painted dropdown panel (a hidden copy of it may also exist for
+  // the other breakpoint, so pick the one with a real rect).
+  const visiblePanelRect = (): DOMRect | null => {
+    const panels = document.querySelectorAll('[data-tour="dropdown-panel"]');
+    for (const p of panels) {
+      const r = p.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) return r;
+    }
+    return null;
+  };
+
+  const tooltipStyle = (): React.CSSProperties => {
+    // Centered fallback (no element found)
+    if (!rect) return {
+      position: "fixed", top: "50%", left: "50%",
+      transform: "translate(-50%,-50%)", width: "min(340px,90vw)",
+    };
+
+    if (isMobile) {
+      // For dropdown steps: position tooltip below the entire dropdown panel
+      let top = rect.top + rect.height + PAD + GAP;
+      if (current.mobileSelector) {
+        const pr = visiblePanelRect();
+        if (pr) top = pr.bottom + GAP;
+      }
+      return {
+        position: "fixed",
+        top,
+        left: 30,
+        right: 30,
+        // translate3d forces GPU compositing — fixes iOS touch-event hit-area misalignment
+        transform: "translate3d(0,0,0)",
+      };
+    }
+
+    // Desktop dropdown steps: the user-dropdown sits at the top-right, so anchor
+    // the tooltip to the LEFT of the panel (placing it to the right would overflow).
+    if (current.mobileSelector) {
+      const pr = visiblePanelRect();
+      const anchorLeft = pr ? pr.left : rect.left;
+      return {
+        position: "fixed",
+        top: Math.max(12, rect.top + rect.height / 2 - 100),
+        left: Math.max(12, anchorLeft - TOOLTIP_W - GAP),
+        width: TOOLTIP_W,
+        transform: "translate3d(0,0,0)",
+      };
+    }
+
+    if (current.side === "bottom") return {
+      position: "fixed",
+      top: rect.top + rect.height + PAD + GAP,
+      left: Math.max(12, Math.min(
+        rect.left + rect.width / 2 - TOOLTIP_W / 2,
+        window.innerWidth - TOOLTIP_W - 12,
+      )),
+      width: TOOLTIP_W,
+      transform: "translate3d(0,0,0)",
+    };
+
+    // right (fallback)
+    return {
+      position: "fixed",
+      top: Math.max(12, rect.top + rect.height / 2 - 100),
+      left: rect.left + rect.width + PAD + GAP,
+      width: TOOLTIP_W,
+      transform: "translate3d(0,0,0)",
+    };
+  };
+
+  return createPortal(
+    <>
+      {/* Spotlight overlay */}
+      {rect ? (
+        <div style={{
+          position: "fixed",
+          top: rect.top - PAD, left: rect.left - PAD,
+          width: rect.width + PAD * 2, height: rect.height + PAD * 2,
+          borderRadius: 10,
+          boxShadow: "0 0 0 9999px rgba(0,0,0,0.65)",
+          zIndex: 9997,
+          pointerEvents: "none",
+          outline: "2px solid rgba(255,255,255,0.25)",
+          opacity,
+          transition: "opacity 0.35s ease-in-out",
+        }} />
+      ) : (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 9997, opacity, transition: "opacity 0.35s ease-in-out", pointerEvents: opacity < 1 ? "none" : "auto" }} />
+      )}
+
+      {/* Tooltip card */}
+      <div style={{ ...tooltipStyle(), zIndex: 9999, opacity, transition: "opacity 0.35s ease-in-out", pointerEvents: opacity < 1 ? "none" : "auto" }}
+        className="bg-white rounded-2xl shadow-2xl p-5">
+        <div className="flex items-start justify-between mb-1">
+          <h2 className="text-base font-bold text-gray-900 flex-1 text-center">Hasznos menüpontok</h2>
+          <button
+            onClick={finish}
+            onTouchEnd={(e) => { e.preventDefault(); finish(); }}
+            className="text-gray-400 hover:text-gray-600 cursor-pointer shrink-0 ml-2 mt-0.5"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <hr className="border-gray-200 mb-3" />
+        <span className="text-[11px] font-semibold uppercase tracking-wider block mb-3" style={{ color: "#84AAA6" }}>
+          {stepIdx + 1} / {steps.length}
+        </span>
+        <h3 className="text-base font-bold text-gray-900 mb-2">{current.title}</h3>
+        <p className="text-sm text-gray-600 leading-relaxed mb-5">{current.description}</p>
+        <button
+          onClick={next}
+          onTouchEnd={(e) => { e.preventDefault(); next(); }}
+          className="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-colors cursor-pointer"
+          style={{ backgroundColor: "#84AAA6", touchAction: "manipulation" }}
+        >
+          {isLast ? "Kezdjük el! 🎉" : "Tovább →"}
+        </button>
+      </div>
+    </>,
+    document.body
+  );
+}

@@ -1,4 +1,5 @@
 import { ArrowLeft, type LucideIcon } from "lucide-react";
+import { StickyCta } from "./sticky-cta";
 
 interface PageHeaderProps {
   title: string;
@@ -6,15 +7,17 @@ interface PageHeaderProps {
   backHref?: string;
   icon?: LucideIcon;
   bgColor?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
   /** @deprecated use backHref instead */
   breadcrumb?: { label: string; href: string }[];
 }
 
-export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6" }: PageHeaderProps) {
+export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref }: PageHeaderProps) {
   return (
     <>
-      <div className="w-full border-b border-white/20" style={{ backgroundColor: bgColor }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className={`w-full ${ctaLabel && ctaHref ? "" : "border-b border-white/20"}`} style={{ backgroundColor: bgColor }}>
+        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${ctaLabel && ctaHref ? "pt-8 pb-6" : "py-8"}`}>
           <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
             {Icon && <Icon className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />}
             {title}
@@ -27,6 +30,13 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
           )}
         </div>
       </div>
+
+      {/* CTA sora — a navbar alá tapad scrollozáskor (sticky); a gomb feletti és
+          alatti hely közel azonos, a fölötte lévő elválasztó nélkül. Scrollozáskor
+          a háttere minimálisan áttetszővé válik, mint a header. */}
+      {ctaLabel && ctaHref && (
+        <StickyCta label={ctaLabel} href={ctaHref} bgColor={bgColor} />
+      )}
 
       {backHref && (
         <div className="w-full bg-white border-b border-gray-100">

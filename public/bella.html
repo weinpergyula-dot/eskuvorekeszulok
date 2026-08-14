@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Bella babaváró — tippjáték</title>
+<style>
+  :root{
+    --blush:#F7D6E0; --rose:#E48AA5; --rose-d:#C86A88; --cream:#FFF7F2;
+    --ink:#5A3B46; --muted:#9C7C86; --gold:#E0A94B; --card:#FFFFFF;
+    --line:#F1DBE2; --field:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh; min-height:100dvh; color:var(--ink);
+    font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,sans-serif;
+    background:
+      radial-gradient(120% 80% at 12% -8%, #FBE7EF 0%, transparent 55%),
+      radial-gradient(120% 80% at 108% 4%, #FDEFE0 0%, transparent 52%),
+      radial-gradient(140% 90% at 50% 120%, #F6D9E4 0%, transparent 60%),
+      linear-gradient(180deg,#FFF7F2 0%,#FDEDF2 100%);
+    display:flex; align-items:center; justify-content:center; padding:26px 16px 40px;
+  }
+  .wrap{width:100%; max-width:440px;}
+  .card{
+    position:relative; background:var(--card); border:1px solid var(--line);
+    border-radius:30px; padding:34px 26px 30px; text-align:center;
+    box-shadow:0 30px 70px -34px rgba(120,60,80,.45);
+  }
+  .deco{font-size:46px; line-height:1; margin-bottom:6px;}
+  .kicker{display:inline-block; font-size:11px; font-weight:800; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--rose-d); background:#FCE7EE; border:1px solid #F6D2DE; padding:6px 13px; border-radius:999px; margin-bottom:14px;}
+  h1{font-family:Georgia,'Times New Roman',serif; font-size:34px; line-height:1.05; margin:0 0 8px; color:var(--rose-d); font-weight:700;}
+  h1 .nm{color:var(--gold);}
+  .sub{font-size:14.5px; color:var(--muted); line-height:1.5; margin:0 auto 24px; max-width:300px;}
+  form{text-align:left; display:block;}
+  label{display:block; font-size:12px; font-weight:700; color:var(--rose-d); letter-spacing:.03em; margin:0 0 7px 3px;}
+  .field{width:100%; height:54px; border-radius:16px; border:1.6px solid #EED3DC; background:var(--field);
+    padding:0 15px; font-size:15.5px; color:var(--ink); outline:none; font-family:inherit; margin-bottom:17px;
+    transition:border-color .15s, box-shadow .15s;}
+  .field:focus{border-color:var(--rose); box-shadow:0 0 0 4px rgba(228,138,165,.16);}
+  input.field::placeholder{color:#C7A9B3;}
+  select.field{appearance:none; -webkit-appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23C86A88' stroke-width='2' stroke-linecap='round'><path d='M4 6l4 4 4-4'/></svg>");
+    background-repeat:no-repeat; background-position:right 15px center; padding-right:40px;}
+  .row3{display:grid; grid-template-columns:1.35fr 1fr 1fr; gap:10px;}
+  .row3 .field{margin-bottom:6px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .row2 .field{margin-bottom:6px;}
+  .ta{height:auto; min-height:86px; padding:13px 15px; resize:none; line-height:1.5; margin-top:2px;}
+  input.field::placeholder,textarea.field::placeholder{color:#C7A9B3;}
+  .rules{margin:-8px auto 22px; max-width:340px; font-size:12.5px; color:var(--rose-d); background:#FFF3E4; border:1px solid #F3DEBF; border-radius:14px; padding:10px 14px; line-height:1.5; text-align:center;}
+  .rules b{color:var(--gold);}
+  .tiphint{font-size:12.5px; color:#5E7C86; background:#EAF4F5; border:1px solid #D3E9EB; border-radius:12px; padding:9px 13px; margin:2px 3px 18px; text-align:center; line-height:1.5;}
+  .tiphint b{color:#2E7D89;}
+  .pot{display:inline-flex; align-items:center; gap:8px; margin:0 auto 20px; padding:10px 16px; border-radius:14px;
+    background:#FFF3E4; border:1px solid #F0D9B4; color:#8A5A1E; font-size:13px; font-weight:700;}
+  .pot b{font-family:Georgia,serif; font-size:17px; color:var(--gold); font-weight:700;}
+  .hint{font-size:12px; color:var(--muted); margin:4px 3px 20px; text-align:center;}
+  .btn{width:100%; border:none; cursor:pointer; height:56px; border-radius:16px; font-family:inherit;
+    font-size:16px; font-weight:800; color:#fff; letter-spacing:.01em;
+    background:linear-gradient(180deg,#EC94AF 0%,#DE7A99 100%);
+    box-shadow:0 16px 30px -12px rgba(222,122,153,.7); transition:transform .12s, filter .15s;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:translateY(1px);}
+  .btn[disabled]{opacity:.55; cursor:default; filter:none;}
+  .msg{margin-top:16px; font-size:13.5px; font-weight:600; min-height:18px;}
+  .msg.err{color:#C0392B;}
+  .foot{margin-top:22px; font-size:12px; color:#BBA3AB;}
+  /* success state */
+  .done{display:none; text-align:center;}
+  .done .big{font-size:56px; margin-bottom:8px;}
+  .done h2{font-family:Georgia,serif; color:var(--rose-d); font-size:26px; margin:0 0 10px;}
+  .done p{color:var(--muted); font-size:14.5px; line-height:1.55; margin:0 auto; max-width:300px;}
+  .guessline{margin-top:16px; display:inline-block; background:#FCE7EE; border:1px solid #F6D2DE; color:var(--rose-d);
+    font-weight:800; border-radius:14px; padding:11px 18px; font-size:15px;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div id="form-view">
+        <div class="deco">🎀👶🍼</div>
+        <span class="kicker">Babaváró tippjáték</span>
+        <h1>Mikor érkezik<br>a kis <span class="nm">Bella</span>?</h1>
+        <p class="sub">Tippeld meg a születési idejét! Egy névvel egyszer lehet tippelni. 💕</p>
+        <div class="rules">💰 Egy tipp <b>1000 Ft</b> — a végén <b>egy valaki mindent visz</b>! 🎉</div>
+        <div class="pot" id="pot" style="display:none;">💰 A kalapban eddig: <b id="potv"></b></div>
+        <form id="f" autocomplete="off">
+          <label for="name">A neved</label>
+          <input class="field" id="name" name="name" type="text" placeholder="Pl. Nagy Anna" maxlength="60" required>
+
+          <label>Bella születési dátuma szerinted</label>
+          <div class="row2">
+            <select class="field" id="month" name="month" required></select>
+            <select class="field" id="day" name="day" required></select>
+          </div>
+
+          <label style="margin-top:11px;">Pontos időpont</label>
+          <div class="row2">
+            <select class="field" id="hour" name="hour" required></select>
+            <select class="field" id="minute" name="minute" required></select>
+          </div>
+
+          <p class="tiphint">💡 Kis segítség: a kiírt dátum <b>2026. 09. 01.</b></p>
+
+          <label for="message" style="margin-top:11px;">Üzenet Bellának <span style="color:var(--muted); font-weight:600;">(nem kötelező)</span></label>
+          <textarea class="field ta" id="message" name="message" placeholder="Írj egy kedves üzenetet Bellának… 💌" maxlength="300"></textarea>
+
+          <button class="btn" id="submit" type="submit">Leadom a tippem 💕</button>
+          <div class="msg" id="msg"></div>
+        </form>
+      </div>
+
+      <div class="done" id="done">
+        <div class="big">🥰</div>
+        <h2>Köszönjük a tipped!</h2>
+        <p>Elmentettük a tipped — átirányítunk az eddigi tippekhez… 🎉</p>
+        <div class="guessline" id="doneGuess"></div>
+      </div>
+
+      <div class="foot">Készült szeretettel Bella érkezésére 🌸</div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var MONTHS = ["Január","Február","Március","Április","Május","Június","Július","Augusztus","Szeptember","Október","November","December"];
+  var mSel=document.getElementById('month'), dSel=document.getElementById('day'), hSel=document.getElementById('hour'), mnSel=document.getElementById('minute');
+  function opt(sel, val, txt){ var o=document.createElement('option'); o.value=val; o.textContent=txt; sel.appendChild(o); }
+  function pad(n){ return (n<10?'0':'')+n; }
+  opt(mSel,'','Hónap'); MONTHS.forEach(function(m,i){ opt(mSel, i+1, m); });
+  opt(dSel,'','Nap'); for(var d=1; d<=31; d++) opt(dSel, d, d+'.');
+  opt(hSel,'','Óra'); for(var h=0; h<24; h++) opt(hSel, h, pad(h)+' óra');
+  opt(mnSel,'','Perc'); for(var mn=0; mn<60; mn++) opt(mnSel, mn, pad(mn)+' perc');
+
+  // A kalapban lévő összeg (csak a tippek számát kérjük le, a tippeket nem).
+  function fmtFt(n){ var s=String(n), o=''; for(var i=0;i<s.length;i++){ if(i>0 && (s.length-i)%3===0) o+=' '; o+=s.charAt(i); } return o+' Ft'; }
+  fetch('/api/bella?count=1').then(function(r){ return r.json(); }).then(function(d){
+    if(d && typeof d.count === 'number'){
+      document.getElementById('potv').textContent = fmtFt(d.count * 1000);
+      document.getElementById('pot').style.display = 'inline-flex';
+    }
+  }).catch(function(){});
+
+  var form=document.getElementById('f'), msg=document.getElementById('msg'), btn=document.getElementById('submit');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    msg.className='msg'; msg.textContent='';
+    var name=document.getElementById('name').value.trim();
+    var month=mSel.value, day=dSel.value, hour=hSel.value, minute=mnSel.value;
+    var message=document.getElementById('message').value.trim();
+    if(name.length<2){ msg.className='msg err'; msg.textContent='Kérlek add meg a neved 🙏'; return; }
+    if(!month||!day||hour===''||minute===''){ msg.className='msg err'; msg.textContent='Válaszd ki a hónapot, napot, órát és percet 🗓️'; return; }
+
+    btn.disabled=true; btn.textContent='Küldés…';
+    fetch('/api/bella', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name:name, month:Number(month), day:Number(day), hour:Number(hour), minute:Number(minute), message:message })
+    }).then(function(r){ return r.json().then(function(j){ return {status:r.status, j:j}; }); })
+      .then(function(res){
+        if(res.status===200 && res.j.ok){
+          document.getElementById('doneGuess').textContent =
+            name + ' tippje: ' + MONTHS[Number(month)-1] + ' ' + Number(day) + '., ' + pad(Number(hour)) + ':' + pad(Number(minute));
+          document.getElementById('form-view').style.display='none';
+          document.getElementById('done').style.display='block';
+          // A köszönő üzenet kint marad, majd átirányítunk az eredményekhez.
+          setTimeout(function(){ window.location.href = '/bella_result'; }, 4400);
+        } else if(res.status===409 || res.j.error==='duplicate'){
+          msg.className='msg err'; msg.textContent='Ezzel a névvel már leadtál egy tippet 🙈';
+          btn.disabled=false; btn.textContent='Leadom a tippem 💕';
+        } else if(res.status===404){
+          msg.className='msg err'; msg.textContent='A szavazás még nem aktív — kérlek próbáld kicsit később! 🌷';
+          btn.disabled=false; btn.textContent='Leadom a tippem 💕';
+        } else {
+          var det = (res.j && (res.j.detail || res.j.error)) ? (' (' + (res.j.detail || res.j.error) + ')') : '';
+          msg.className='msg err'; msg.textContent='Hoppá, valami hiba történt' + det + ' 🌷';
+          btn.disabled=false; btn.textContent='Leadom a tippem 💕';
+        }
+      }).catch(function(){
+        msg.className='msg err'; msg.textContent='Nincs kapcsolat. Próbáld újra! 🌷';
+        btn.disabled=false; btn.textContent='Leadom a tippem 💕';
+      });
+  });
+})();
+</script>
+</body>
+</html>

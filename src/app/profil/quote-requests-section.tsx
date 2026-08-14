@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, Send, Trash2, Star, Info } from "lucide-react";
+import { ArrowLeft, Send, Trash2, Star, Heart, Info, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -54,7 +54,13 @@ export interface ProviderRequest {
   last_message_sender_id?: string | null;
 }
 
-interface MatchingProvider { id: string; full_name: string; average_rating: number | null; }
+interface MatchingProvider {
+  id: string;
+  full_name: string;
+  average_rating: number | null;
+  avatar_url?: string | null;
+  is_favorite?: boolean;
+}
 
 interface Props {
   isProvider: boolean;
@@ -105,57 +111,9 @@ function StarRating({ rating }: { rating: number | null }) {
   );
 }
 
-// ── CategorySelect ────────────────────────────────────────────────────────────
-
-function CategorySelect({ value, onChange }: { value: string; onChange: (val: string) => void }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const selectedLabel = value ? CATEGORY_LABELS[value as keyof typeof CATEGORY_LABELS] : null;
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen(v => !v)}
-        className="w-full h-12 border rounded-xl px-4 text-sm outline-none bg-white flex items-center justify-between gap-2 transition-colors"
-        style={{ borderColor: open ? "#84AAA6" : "#D1D5DB" }}
-      >
-        <span style={{ color: selectedLabel ? "#111827" : "#9CA3AF" }}>
-          {selectedLabel ?? "Válassz kategóriát..."} <span className="text-[1.2em] font-bold leading-none align-middle">*</span>
-        </span>
-        <ArrowLeft className="h-4 w-4 shrink-0 -rotate-90 transition-transform" style={{ color: "#9CA3AF", transform: open ? "rotate(90deg)" : "rotate(-90deg)" }} />
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-30 max-h-60 overflow-y-auto">
-          {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => { onChange(key); setOpen(false); }}
-              className="w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"
-              style={{ color: value === key ? "#84AAA6" : "#111827" }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── SendForm ──────────────────────────────────────────────────────────────────
 
-function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => void }) {
+function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?: () => void; userId?: string }) {
   const [subject, setSubject] = useState("");
   const [category, setCategory] = useState("");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
@@ -174,7 +132,8 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
       .then(d => {
         const map: Record<string, number> = {};
         for (const c of geographicCounties) map[c] = 0;
-        for (const p of (d.providers ?? []) as Array<{ counties?: string[] }>) {
+        const providers = (d.providers ?? []) as Array<{ counties?: string[] }>;
+        for (const p of providers) {
           if (p.counties?.includes("Országosan")) {
             for (const c of geographicCounties) map[c]++;
           } else {
@@ -191,15 +150,17 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
   useEffect(() => {
     if (!category || selectedCounties.length === 0) { setMatchingProviders(null); setCheckedIds(new Set()); return; }
     const params = new URLSearchParams({ category, counties: selectedCounties.join(",") });
+    if (userId) params.set("userId", userId);
     fetch(`/api/providers/matching-count?${params}`)
       .then(r => r.json())
       .then(d => {
         const providers: MatchingProvider[] = d.providers ?? [];
         setMatchingProviders(providers);
-        setCheckedIds(new Set(providers.map(p => p.id)));
+        // By default nobody is selected — the user picks the recipients explicitly.
+        setCheckedIds(new Set());
       })
       .catch(() => {});
-  }, [category, selectedCounties]);
+  }, [category, selectedCounties, userId]);
 
   const toggleCounty = (county: string) => {
     setSelectedCounties(prev =>
@@ -236,40 +197,129 @@ function SendForm({ onSent, onCancel }: { onSent: () => void; onCancel?: () => v
 
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
-      <h3 className="text-sm font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
-      <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} compact />
-      <CategorySelect value={category} onChange={setCategory} />
+      <h3 className="text-base font-semibold text-gray-900">Új ajánlatkérés küldése</h3>
+      {/* text-base (16px) on mobile prevents iOS from zooming when the field is focused */}
+      <FloatingInput id="qs-subject" label="Tárgy *" value={subject} onChange={e => setSubject(e.target.value)} compact className="text-base sm:text-sm" />
+
+      {/* Kategória – pill választó, mint a regisztrációnál (egyet választhatsz) */}
       <div>
-        <p className="text-xs text-gray-600 mb-2">Megye(k) <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
-          {geographicCounties.map(county => (
-            <label key={county} className="flex items-center gap-1.5 cursor-pointer select-none">
-              <input type="checkbox" checked={selectedCounties.includes(county)} onChange={() => toggleCounty(county)} className="rounded accent-[#84AAA6]" />
-              <span className="text-xs text-gray-700">
-                {county}{countyCountMap[county] != null && category && (
-                  <span className="ml-1 opacity-60 font-normal">({countyCountMap[county]})</span>
-                )}
-              </span>
-            </label>
-          ))}
+        <p className="text-xs text-gray-600 mb-2">Válassz kategóriát! <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
+            const isSelected = category === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setCategory(isSelected ? "" : key)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
+                  isSelected
+                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
-      <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} compact />
+
+      {/* Megye(k) – pill választó, mint a regisztrációnál, az Országosannal együtt */}
+      <div>
+        <p className="text-xs text-gray-600 mb-2">Jelöld ki a megyé(ke)t! <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
+        <div className="flex flex-wrap gap-2">
+          {geographicCounties.map(county => {
+            const isSelected = selectedCounties.includes(county);
+            const count = category && countyCountMap[county] != null
+              ? countyCountMap[county]
+              : null;
+            return (
+              <button
+                key={county}
+                type="button"
+                onClick={() => toggleCounty(county)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
+                  isSelected
+                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                }`}
+              >
+                {county}{count != null && <span className="ml-1 opacity-70 font-normal">({count})</span>}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} compact className="text-base sm:text-sm" />
       {matchingProviders !== null && (
         <div className="space-y-2">
           {matchingProviders.length === 0 ? (
             <p className="text-xs text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
           ) : (
             <div>
-              <p className="text-xs text-gray-600 mb-2">Ezek a szolgáltatók kapják meg az ajánlatkérést — vedd ki a pipát, akit ki szeretnél hagyni:</p>
+              <p className="text-xs text-gray-600 mb-2">Válaszd ki, hogy ki kapja meg az ajánlatkérést. <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                {(() => {
+                  const allSelected = checkedIds.size === matchingProviders.length;
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => setCheckedIds(allSelected ? new Set() : new Set(matchingProviders.map(p => p.id)))}
+                      className="text-xs font-medium px-3 py-1.5 rounded-full border border-[#84AAA6] text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer"
+                    >
+                      {allSelected ? "Kijelölés törlése" : "Összes kijelölése"}
+                    </button>
+                  );
+                })()}
+                {matchingProviders.some(p => p.is_favorite) && (
+                  <button
+                    type="button"
+                    onClick={() => setCheckedIds(new Set(matchingProviders.filter(p => p.is_favorite).map(p => p.id)))}
+                    className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full border border-rose-300 text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer"
+                  >
+                    <Heart className="h-3 w-3 fill-rose-400 stroke-rose-400" />
+                    Kedvencek kijelölése
+                  </button>
+                )}
+              </div>
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
-                {matchingProviders.map(p => (
-                  <label key={p.id} className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors">
-                    <input type="checkbox" checked={checkedIds.has(p.id)} onChange={() => { setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; }); }} className="rounded accent-[#84AAA6] shrink-0" />
-                    <span className="flex-1 text-xs font-medium text-gray-900 truncate">{p.full_name}</span>
-                    <StarRating rating={p.average_rating} />
-                  </label>
-                ))}
+                {[...matchingProviders]
+                  .sort((a, b) => (b.is_favorite ? 1 : 0) - (a.is_favorite ? 1 : 0))
+                  .map(p => {
+                    const selected = checkedIds.has(p.id);
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; })}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors cursor-pointer ${selected ? "bg-[#84AAA6]/10" : "hover:bg-gray-50"}`}
+                      >
+                        {/* Avatar + kedvenc jelölés */}
+                        <div className="relative shrink-0">
+                          <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
+                            {p.avatar_url
+                              // eslint-disable-next-line @next/next/no-img-element
+                              ? <img src={p.avatar_url} alt={p.full_name} className="w-full h-full object-cover" />
+                              : <span className="text-xs font-bold text-gray-500">{p.full_name.charAt(0)}</span>}
+                          </div>
+                          {p.is_favorite && (
+                            <span className="absolute -bottom-0.5 -right-0.5 bg-white rounded-full p-0.5 shadow-sm">
+                              <Heart className="h-3 w-3 fill-rose-400 stroke-rose-400" />
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-semibold truncate ${selected ? "text-[#5C8480]" : "text-gray-900"}`}>{p.full_name}</p>
+                          <StarRating rating={p.average_rating} />
+                        </div>
+                        {/* Kijelölés jelző */}
+                        <span className={`flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors ${selected ? "bg-[#84AAA6] border-[#84AAA6]" : "border-gray-300 bg-white"}`}>
+                          {selected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+                        </span>
+                      </button>
+                    );
+                  })}
               </div>
               <p className="text-[10px] text-gray-400 mt-1.5">{checkedIds.size} / {matchingProviders.length} szolgáltató kijelölve</p>
             </div>
@@ -380,6 +430,13 @@ export function QuoteChat({
 
   const hasSystemMessage = messages.some((m) => isSystemMsg(m.body));
 
+  // Two messages belong to the same visual group if same sender and sent within
+  // 5 minutes of each other (so consecutive bursts share one timestamp + avatar).
+  const inSameGroup = (a?: QuoteMessage, b?: QuoteMessage) =>
+    !!a && !!b && !isSystemMsg(a.body) && !isSystemMsg(b.body) &&
+    a.sender_id === b.sender_id &&
+    Math.abs(new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) <= 5 * 60 * 1000;
+
   // Lock body scroll on mobile
   useEffect(() => {
     document.body.classList.add("chat-mode");
@@ -428,6 +485,7 @@ export function QuoteChat({
     }).then(() => {
       onUnreadMarked(unread.length);
       window.dispatchEvent(new CustomEvent("quotes-unread-count-refresh"));
+      window.dispatchEvent(new CustomEvent("quotes-read")); // navbar badge frissítése
     }).catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
@@ -587,47 +645,86 @@ export function QuoteChat({
       </div>
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
-        {/* Original request message shown as first chat bubble */}
+      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 bg-gray-50">
+        {/* Original request message shown as first chat bubble (standalone block) */}
         {requestContext?.message && (
           <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
-            <div className={`flex flex-col gap-1 max-w-[75%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
-              <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
-                requestMsgIsOwn
-                  ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
-                  : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
-              }`}>
-                {requestContext.message}
+            <div className={`flex flex-col gap-1 max-w-[80%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
+              <div className="flex items-end gap-2">
+                {!requestMsgIsOwn && (
+                  <div className="w-7 h-7 shrink-0">
+                    <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">
+                      {otherAvatarUrl
+                        ? <img src={otherAvatarUrl} alt={otherName} className="w-full h-full object-cover" />
+                        : otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+                    </div>
+                  </div>
+                )}
+                <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line rounded-2xl ${
+                  requestMsgIsOwn
+                    ? "bg-gray-200 text-gray-900"
+                    : "bg-white border border-gray-200 text-gray-900"
+                }`}>
+                  {requestContext.message}
+                </div>
               </div>
             </div>
           </div>
         )}
-        {messages.map((msg) =>
-          isSystemMsg(msg.body) ? (
-            <div key={msg.id} className="flex justify-center">
-              <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
-                <Info className="h-3 w-3 text-amber-500 shrink-0" />
-                <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
-              </div>
-            </div>
-          ) : (
-            <div key={msg.id} className={`flex ${msg.sender_id === userId ? "justify-end" : "justify-start"}`}>
-              <div className={`flex flex-col gap-1 max-w-[75%] ${msg.sender_id === userId ? "items-end" : "items-start"}`}>
-                <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
-                  msg.sender_id === userId
-                    ? "bg-gray-200 text-gray-900 rounded-2xl rounded-tr-sm"
-                    : "bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-tl-sm"
-                }`}>
-                  {msg.body}
+        {messages.map((msg, i) => {
+          if (isSystemMsg(msg.body)) {
+            return (
+              <div key={msg.id} className={`flex justify-center ${i === 0 && !requestContext?.message ? "" : "mt-4"}`}>
+                <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
+                  <Info className="h-3 w-3 text-amber-500 shrink-0" />
+                  <p className="text-xs text-amber-700">{systemText(msg.body)}</p>
                 </div>
-                <span className="text-[10px] text-gray-400 px-1">{formatDate(msg.created_at)}</span>
+              </div>
+            );
+          }
+          const isOwn = msg.sender_id === userId;
+          const prev = messages[i - 1];
+          const next = messages[i + 1];
+          const isStart = !inSameGroup(prev, msg);
+          const isEnd = !inSameGroup(msg, next);
+          const showAvatar = !isOwn && isEnd;
+          const corners = isOwn
+            ? `rounded-2xl ${!isStart ? "rounded-tr-sm" : ""} ${!isEnd ? "rounded-br-sm" : ""}`
+            : `rounded-2xl ${!isStart ? "rounded-tl-sm" : ""} ${!isEnd ? "rounded-bl-sm" : ""}`;
+          const firstInList = i === 0 && !requestContext?.message;
+          return (
+            <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"} ${firstInList ? "" : isStart ? "mt-4" : "mt-0.5"}`}>
+              <div className={`flex flex-col gap-1 max-w-[80%] ${isOwn ? "items-end" : "items-start"}`}>
+                <div className="flex items-end gap-2">
+                  {!isOwn && (
+                    <div className="w-7 h-7 shrink-0">
+                      {showAvatar && (
+                        <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">
+                          {otherAvatarUrl
+                            ? <img src={otherAvatarUrl} alt={otherName} className="w-full h-full object-cover" />
+                            : otherName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
+                    isOwn
+                      ? `bg-gray-200 text-gray-900 ${corners}`
+                      : `bg-white border border-gray-200 text-gray-900 ${corners}`
+                  }`}>
+                    {msg.body}
+                  </div>
+                </div>
+                {isEnd && (
+                  <span className={`text-[10px] text-gray-400 px-1 ${!isOwn ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
+                )}
                 {msg.id === lastReadOwnId && msg.read_at && (
-                  <span className="text-[10px] text-[#84AAA6] px-1">Elolvasva: {formatDate(msg.read_at)}</span>
+                  <span className={`text-[10px] text-[#84AAA6] px-1 ${!isOwn ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
                 )}
               </div>
             </div>
-          )
-        )}
+          );
+        })}
         <div ref={bottomRef} />
       </div>
 
@@ -707,7 +804,7 @@ export function ProviderChatLoader({
 
 // ── Main section ──────────────────────────────────────────────────────────────
 
-export function QuoteRequestsSection({ onUnreadChange }: Pick<Props, "onUnreadChange">) {
+export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "onUnreadChange" | "userId">) {
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
@@ -731,5 +828,12 @@ export function QuoteRequestsSection({ onUnreadChange }: Pick<Props, "onUnreadCh
     );
   }
 
-  return <SendForm onSent={() => setSent(true)} />;
+  return (
+    <div className="space-y-3">
+      <p className="text-base text-gray-700">
+        Kategória és megyeválasztás után egyenként ki tudod választani, hogy melyik szolgáltató kapja meg az ajánlatkérést.
+      </p>
+      <SendForm onSent={() => setSent(true)} userId={userId} />
+    </div>
+  );
 }

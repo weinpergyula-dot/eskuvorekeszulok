@@ -95,8 +95,8 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
           <div className="md:col-span-3 space-y-6">
             {(provider.detailed_description || provider.description) ? (
               <section>
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">Bemutatkozás</h2>
-                <p className="text-gray-900 leading-relaxed whitespace-pre-line">
+                {/* A cím a tabon van, itt nem ismételjük. Mobilon 2px-el kisebb betű. */}
+                <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[15px] sm:text-[17px]">
                   {provider.detailed_description || provider.description}
                 </p>
               </section>
@@ -186,7 +186,8 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
         <div className="space-y-6">
           {provider.pricing_text && (
             <div className="prose prose-gray max-w-none">
-              <p className="text-gray-900 leading-relaxed whitespace-pre-line">{provider.pricing_text}</p>
+              {/* mobilon 4px-el kisebb betűméret (17px -> 13px), desktopon változatlan */}
+              <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[13px] sm:text-[17px]">{provider.pricing_text}</p>
             </div>
           )}
           {provider.pricing_pdf_url && (

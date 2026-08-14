@@ -235,11 +235,11 @@ export function ProviderForm({
     if (provider) {
       setToggling(true); setToggleError(null);
       try {
-        const { error: updateError, count } = await supabase
-          .from("providers").update({ active: newVal }, { count: "exact" }).eq("user_id", userId);
+        const { error: updateError } = await supabase
+          .from("providers").update({ active: newVal }).eq("user_id", userId);
         if (updateError) throw updateError;
-        if (count === 0) throw new Error("A módosítás nem mentődött el. Ellenőrizd a jogosultságokat.");
         onActiveChange(newVal);
+        window.dispatchEvent(new CustomEvent("provider-active-changed", { detail: newVal }));
       } catch (err: unknown) {
         setToggleError(
           err instanceof Error ? err.message
@@ -358,6 +358,7 @@ export function ProviderForm({
           pricing_pdf_url: finalPricingPdfUrl || null,
           pricing_text: pricingText || null,
           approval_status: "pending",
+          featured: null,
         });
         if (insertError) throw insertError;
         if (role === "visitor") {
@@ -646,7 +647,7 @@ export function ProviderForm({
                         <button
                           type="button"
                           onClick={() => removeGalleryUrl(url)}
-                          className="absolute top-1 right-1 w-5 h-5 bg-[#F06C6C] text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-1 right-1 w-5 h-5 bg-[#F06C6C] text-white rounded-full flex items-center justify-center shadow-sm"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -659,7 +660,7 @@ export function ProviderForm({
                         <button
                           type="button"
                           onClick={() => removeGalleryFile(i)}
-                          className="absolute top-1 right-1 w-5 h-5 bg-[#F06C6C] text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-1 right-1 w-5 h-5 bg-[#F06C6C] text-white rounded-full flex items-center justify-center shadow-sm"
                         >
                           <X className="h-3 w-3" />
                         </button>

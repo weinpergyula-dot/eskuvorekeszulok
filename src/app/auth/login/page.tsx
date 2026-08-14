@@ -62,10 +62,11 @@ function LoginForm() {
       .eq("user_id", user?.id)
       .single();
 
+    window.scrollTo({ top: 0, behavior: "instant" });
     if (profile?.role === "admin") {
       router.push("/admin");
     } else if (profile?.role === "provider") {
-      router.push("/profil?tab=dashboard");
+      router.push("/");
     } else {
       router.push(next || "/");
     }
@@ -144,7 +145,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div>
-      <PageHeader title="Bejelentkezés" icon={LogIn} description="A látogatók számára a szolgáltatók értékeléséhez, a szolgáltatók számára pedig a profiljuk menedzseléséhez szükséges a bejelentkezés." />
+      <PageHeader title="Bejelentkezés" icon={LogIn} description="Az oldalon bizonyos funkciók eléréséhez kérjük, jelentkezz be." />
       <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-lg bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           <Suspense>

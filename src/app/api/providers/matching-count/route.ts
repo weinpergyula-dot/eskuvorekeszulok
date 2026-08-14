@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
   const countiesParam = searchParams.get("counties");
+  const userId = searchParams.get("userId");
 
   if (!category) return NextResponse.json({ providers: [] });
 
@@ -29,16 +30,20 @@ export async function GET(request: NextRequest) {
   }
 
   const counties = countiesParam.split(",").filter(Boolean);
-  const searchCounties = [...counties, "Országosan"];
+  const nationwide = counties.includes("Országosan");
 
-  // Fetch matching providers
-  const { data: rawProviders } = await admin
+  // Fetch matching providers. "Országosan" means the visitor wants every provider
+  // in the category regardless of county, so we skip the county overlap filter.
+  let providersQuery = admin
     .from("providers")
-    .select("id, user_id, full_name")
+    .select("id, user_id, full_name, avatar_url")
     .eq("approval_status", "approved")
     .or("active.is.null,active.eq.true")
-    .contains("categories", [category])
-    .overlaps("counties", searchCounties);
+    .contains("categories", [category]);
+  if (!nationwide) {
+    providersQuery = providersQuery.overlaps("counties", [...counties, "Országosan"]);
+  }
+  const { data: rawProviders } = await providersQuery;
 
   if (!rawProviders || rawProviders.length === 0) {
     return NextResponse.json({ providers: [] });
@@ -66,6 +71,16 @@ export async function GET(request: NextRequest) {
     ratingMap.set(r.provider_id, { sum: curr.sum + r.rating, count: curr.count + 1 });
   });
 
+  // Fetch all favorites for the user, filter in JS
+  let favoriteSet = new Set<string>();
+  if (userId) {
+    const { data: favRows } = await admin
+      .from("favorites")
+      .select("provider_id")
+      .eq("user_id", userId);
+    favoriteSet = new Set((favRows ?? []).map((f: { provider_id: string }) => f.provider_id));
+  }
+
   return NextResponse.json({
     providers: unique.map((p) => {
       const agg = ratingMap.get(p.id);
@@ -74,6 +89,8 @@ export async function GET(request: NextRequest) {
         id: p.id,
         full_name: p.full_name ?? "Ismeretlen szolgáltató",
         average_rating: avg,
+        avatar_url: p.avatar_url ?? null,
+        is_favorite: favoriteSet.has(p.id),
       };
     }),
   });

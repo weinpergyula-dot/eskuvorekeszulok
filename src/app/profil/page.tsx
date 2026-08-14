@@ -28,12 +28,13 @@ export default async function ProfilPage() {
     .eq("user_id", user.id)
     .single();
 
-  // providers_with_stats is a view created before detailed_description was
-  // added to the base table, so it may not include that column. Fetch it
-  // explicitly from the base table and merge.
+  // providers_with_stats is a view created before some columns (detailed_description,
+  // active, …) were added to the base table. A `select p.*` view freezes its column
+  // list at creation time, so those newer columns are missing from the view. Fetch
+  // them explicitly from the base table and merge.
   const { data: providerBase } = await supabase
     .from("providers")
-    .select("detailed_description, gallery_urls, pending_changes, pricing_pdf_url, pricing_text")
+    .select("detailed_description, gallery_urls, pending_changes, pricing_pdf_url, pricing_text, active")
     .eq("user_id", user.id)
     .single();
 
@@ -45,6 +46,7 @@ export default async function ProfilPage() {
         pending_changes: providerBase?.pending_changes ?? providerStats.pending_changes ?? null,
         pricing_pdf_url: providerBase?.pricing_pdf_url ?? null,
         pricing_text: providerBase?.pricing_text ?? null,
+        active: providerBase?.active ?? null,
       }
     : null;
 

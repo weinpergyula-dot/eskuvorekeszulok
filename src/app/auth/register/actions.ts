@@ -3,7 +3,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/resend";
 import { ConfirmEmail } from "@/emails/confirm-email";
+import { NewProviderRegistrationEmail } from "@/emails/new-provider-registration";
 import React from "react";
+
+const ADMIN_EMAIL = "weinper.gyula@gmail.com";
 
 /**
  * Creates a new user via the Supabase Admin API.
@@ -111,6 +114,8 @@ interface ProviderData {
   website: string | null;
   avatar_url: string | null;
   gallery_urls: string[];
+  pricing_text?: string | null;
+  pricing_pdf_url?: string | null;
 }
 
 /**
@@ -128,6 +133,7 @@ export async function createProviderProfileAction(
       user_id: userId,
       ...providerData,
       approval_status: "pending",
+      featured: null,
     });
 
     if (providerError) return { error: providerError.message };
@@ -137,6 +143,24 @@ export async function createProviderProfileAction(
       accepted_tos_at: now,
       accepted_privacy_at: now,
     }).eq("user_id", userId);
+
+    // Admin értesítő email — nem blokkolja a folyamatot ha sikertelen
+    try {
+      await sendEmail({
+        to: ADMIN_EMAIL,
+        subject: `Új szolgáltatói regisztráció: ${providerData.full_name}`,
+        template: React.createElement(NewProviderRegistrationEmail, {
+          name: providerData.full_name,
+          email: providerData.email,
+          categories: providerData.categories,
+          counties: providerData.counties,
+          pricingText: providerData.pricing_text ?? null,
+          pricingPdfUrl: providerData.pricing_pdf_url ?? null,
+        }),
+      });
+    } catch (emailErr) {
+      console.error("[createProviderProfileAction] admin email hiba:", emailErr);
+    }
 
     return { error: null };
   } catch (err) {

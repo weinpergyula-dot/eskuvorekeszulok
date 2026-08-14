@@ -38,10 +38,8 @@ export function ProviderUserActions({ providerId, providerUserId, variant }: Pro
   }, [providerId, providerUserId]);
 
   if (state === "loading") {
-    // Same size as the rendered button so layout doesn't shift
-    return variant === "mobile"
-      ? <div className="w-8 h-8" />
-      : <div className="w-[120px] h-8" />;
+    // Same size as the rendered icon-only favorite button so layout doesn't shift
+    return <div className="w-8 h-8" />;
   }
 
   if (state === "owner") {
@@ -63,10 +61,6 @@ export function ProviderUserActions({ providerId, providerUserId, variant }: Pro
     );
   }
 
-  // guest or liked
-  return variant === "mobile" ? (
-    <FavoriteButton providerId={providerId} initialLiked={state === "liked"} hideTextOnMobile />
-  ) : (
-    <FavoriteButton providerId={providerId} initialLiked={state === "liked"} />
-  );
+  // guest or liked — icon-only heart, just like on the category pages (no label)
+  return <FavoriteButton providerId={providerId} initialLiked={state === "liked"} iconOnly />;
 }

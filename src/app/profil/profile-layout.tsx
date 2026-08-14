@@ -34,7 +34,7 @@ const SECTION_TITLES: Record<Section, string> = {
   provider:        "Szolgáltatói profil",
   dashboard:       "Dashboard",
   favorites:       "Kedvencek",
-  quotes:          "Ajánlatot kérek",
+  quotes:          "Ajánlatkérés",
   messages:        "Üzenetek",
   chat:            "Chat",
 };
@@ -228,7 +228,7 @@ function MobileMenuDropdown({
   const isAccountSettings = ACCOUNT_SETTINGS_SECTIONS.includes(active);
   const activeAccountItem = isAccountSettings ? ACCOUNT_SETTINGS_ITEMS.find((i) => i.id === active) : undefined;
   const activeItem = active === "quotes"
-    ? { id: "quotes" as Section, label: "Ajánlatot kérek", icon: <FileText className="h-4 w-4" /> }
+    ? { id: "quotes" as Section, label: "Ajánlatkérés", icon: <FileText className="h-4 w-4" /> }
     : active === "admin"
     ? { id: "admin" as Section, label: "Admin", icon: <ShieldCheck className="h-4 w-4" /> }
     : activeAccountItem
@@ -245,6 +245,7 @@ function MobileMenuDropdown({
   return (
     <div ref={ref} className="sm:hidden relative mb-4 z-20">
       <button
+        data-tour="mobile-menu-btn"
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-white border border-gray-200 rounded-xl text-base font-semibold text-gray-900 shadow-sm cursor-pointer"
       >
@@ -281,7 +282,7 @@ function MobileMenuDropdown({
             )}
           >
             <FileText className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left">Ajánlatot kérek</span>
+            <span className="flex-1 text-left">Ajánlatkérés</span>
           </button>
 
           {/* Admin */}
@@ -528,6 +529,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
       <div className="flex flex-col sm:flex-row gap-6 sm:gap-0">
 
         {/* Sidebar */}
@@ -552,11 +554,12 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             {/* Ajánlatkérések CTA */}
             <div className="border-b border-gray-100 pb-1 mb-1">
               <button
+                data-tour="sidebar-quotes"
                 onClick={() => switchTo("quotes")}
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
               >
                 <FileText className="h-4 w-4 shrink-0" />
-                <span>Ajánlatot kérek</span>
+                <span>Ajánlatkérés</span>
               </button>
             </div>
 
@@ -616,6 +619,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
             {/* Szolgáltatói profil */}
             <a
+              data-tour="sidebar-provider"
               href="?tab=provider"
               onClick={(e) => { e.preventDefault(); switchTo("provider"); }}
               className={navItemClass("provider")}
@@ -632,6 +636,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             {/* Dashboard (provider + admin only, hidden when provider is inactive) */}
             {(role === "admin" || (role === "provider" && isProviderActive)) && (
               <a
+                data-tour="sidebar-dashboard"
                 href="?tab=dashboard"
                 onClick={(e) => { e.preventDefault(); switchTo("dashboard"); }}
                 className={navItemClass("dashboard")}
@@ -643,6 +648,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
             {/* Kedvencek */}
             <a
+              data-tour="sidebar-favorites"
               href="?tab=favorites"
               onClick={(e) => { e.preventDefault(); switchTo("favorites"); }}
               className={navItemClass("favorites")}
@@ -653,6 +659,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
             {/* Chat */}
             <a
+              data-tour="sidebar-chat"
               href="?tab=chat"
               onClick={(e) => { e.preventDefault(); switchTo("chat"); }}
               className={navItemClass("chat")}
@@ -712,6 +719,10 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
             <div className="space-y-5">
               {provider ? (
                 <StatusCard provider={provider} isProviderActive={isProviderActive} />
+              ) : role === "visitor" ? (
+                <p className="text-base text-gray-700">
+                  Ha szeretnél szolgáltatóként is regisztrálni, akkor azt ebben a menüpontban teheted meg.
+                </p>
               ) : (
                 <p className="text-base text-gray-700">
                   Töltsd ki az adatlapot és aktiváld a szolgáltatói profilodat.
@@ -802,7 +813,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 
           {active === "quotes" && (
             <div className="section-larger-text">
-              <QuoteRequestsSection key={quotesKey} onUnreadChange={setUnreadQuotes} />
+              <QuoteRequestsSection key={quotesKey} onUnreadChange={setUnreadQuotes} userId={userId} />
             </div>
           )}
 
