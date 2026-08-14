@@ -105,7 +105,7 @@ export default function YettelWebPage() {
             <div className="relative w-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/yettel/hero-family.svg"
+                src="/yettel/hero-family.png"
                 alt="Család együtt böngészik a laptopon"
                 className="block w-full"
               />
@@ -273,7 +273,7 @@ export default function YettelWebPage() {
             <div className="md:justify-self-end">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/yettel/app-home.svg"
+                src="/yettel/app-home.png"
                 alt="Yettel app a telefon kezdőképernyőjén"
                 className="mx-auto block h-80 w-auto drop-shadow-[0_20px_40px_rgba(0,35,64,0.20)]"
               />
