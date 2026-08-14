@@ -81,17 +81,17 @@ export default function YettelWebPage() {
                 Mobil, internet és TV – nincs kisbetűs meglepetés. Válaszd ki a hozzád illő csomagot konkrét árakkal, és
                 pár perc alatt megrendeled.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <a
                   href="#ajanlatok"
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36] sm:w-auto"
                 >
                   Ajánlott csomagok
                   <ArrowRight className="h-4 w-4" />
                 </a>
                 <a
                   href="#internet"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-[#002340]/25 bg-white px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340]"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#002340]/25 bg-white px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] sm:w-auto"
                 >
                   Otthoni internet
                 </a>
@@ -110,7 +110,7 @@ export default function YettelWebPage() {
                 className="block w-full md:w-[118%] md:max-w-none md:-mr-6 lg:-mr-14"
               />
               {/* Az ár a gyerek keze körül, sosem az arcokon */}
-              <div className="mx-auto mt-4 w-full max-w-[230px] rounded-[20px] border border-white/60 bg-white/65 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:absolute md:bottom-12 md:-left-8 md:mt-0">
+              <div className="mx-auto -mt-14 w-[86%] max-w-[280px] rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:mt-0 md:w-full md:max-w-[230px] md:bg-white/65 md:absolute md:bottom-12 md:-left-8">
                 <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
                   A hét ajánlata
                 </span>
@@ -154,7 +154,7 @@ export default function YettelWebPage() {
         <section id="ajanlatok" className="scroll-mt-16 bg-[#E4F2F7]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             <div className="mb-8 max-w-2xl">
-              <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Ajánljuk neked</span>
+              <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Tarifák és szolgáltatások</span>
               <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">
                 A legjobb csomagok, kategóriánként
               </h2>
@@ -185,46 +185,51 @@ export default function YettelWebPage() {
                 Összes készülék <ArrowRight className="h-4 w-4" />
               </a>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {DEVICES.map((device) => (
-                <div
-                  key={device.id}
-                  className="flex flex-col rounded-[20px] border border-[#CDE0EA] p-5 transition-shadow hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]"
-                >
-                  <div className="mb-4 h-72 overflow-hidden rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white p-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/yettel/${device.img}`} alt={device.name} className="h-full w-full object-contain" />
-                  </div>
-                  <h3 className="text-xl font-extrabold text-[#002340]">{device.name}</h3>
-                  <p className="text-xs text-[#2D466C]">{device.note}</p>
-                  <div className="mt-3 flex items-end gap-1">
-                    <span className="text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(device.monthly)}</span>
-                    <span className="pb-1 text-sm text-[#2D466C]">/ hó</span>
-                  </div>
-                  <p className="text-xs font-semibold text-[#2D466C]">{device.upfront}</p>
-                  <button
-                    type="button"
-                    className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7]"
-                  >
-                    Részletek <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
+            {/* Végtelenített, körbeforgó készülék-slideshow (marquee) */}
+            <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_4%,#000_96%,transparent)]">
+              <div className="carousel-track flex w-max gap-4 hover:[animation-play-state:paused]">
+                {Array.from({ length: 8 })
+                  .flatMap(() => DEVICES)
+                  .map((device, i) => (
+                    <div
+                      key={i}
+                      className="flex w-[260px] shrink-0 flex-col rounded-[20px] border border-[#CDE0EA] bg-white p-5"
+                    >
+                      <div className="mb-4 h-60 overflow-hidden rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white p-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={`/yettel/${device.img}`} alt={device.name} className="h-full w-full object-contain" />
+                      </div>
+                      <h3 className="text-xl font-extrabold text-[#002340]">{device.name}</h3>
+                      <p className="text-xs text-[#2D466C]">{device.note}</p>
+                      <div className="mt-3 flex items-end gap-1">
+                        <span className="text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(device.monthly)}</span>
+                        <span className="pb-1 text-sm text-[#2D466C]">/ hó</span>
+                      </div>
+                      <p className="text-xs font-semibold text-[#2D466C]">{device.upfront}</p>
+                      <button
+                        type="button"
+                        className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7]"
+                      >
+                        Részletek <ArrowRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
         </section>
 
         {/* ── Miért a Yettel? ──────────────────────────────── */}
-        <section className="bg-[#E4F2F7]">
+        <section className="bg-[#002340]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-            <h2 className="mb-8 text-center text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">
+            <h2 className="mb-8 text-center text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
               Miért a Yettel?
             </h2>
             <div className="flex flex-wrap justify-center gap-5">
               {VALUE_PROPS.map((vp) => (
                 <div
                   key={vp.title}
-                  className="flex w-full max-w-[260px] flex-col items-center rounded-[20px] border border-[#CDE0EA] bg-white p-5 text-center"
+                  className="flex w-full flex-col items-center rounded-[20px] border border-[#CDE0EA] bg-white p-5 text-center sm:w-[260px]"
                 >
                   <span className="mb-3 grid h-12 w-12 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
                     <vp.icon className="h-6 w-6" strokeWidth={1.9} />
