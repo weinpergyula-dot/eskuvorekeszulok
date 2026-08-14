@@ -21,7 +21,7 @@ function OfferCard({ offer }: { offer: Offer }) {
         offer.best
           ? "border-[#B4FF00] shadow-[0_10px_34px_rgba(0,35,64,0.10)] ring-2 ring-[#B4FF00]"
           : isFast
-            ? "border-[#3B6FFF] shadow-[0_10px_34px_rgba(0,35,64,0.10)] ring-2 ring-[#3B6FFF]"
+            ? "border-[#002340] shadow-[0_10px_34px_rgba(0,35,64,0.10)] ring-2 ring-[#002340]"
             : "border-[#CDE0EA] hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
       ].join(" ")}
     >
@@ -32,7 +32,7 @@ function OfferCard({ offer }: { offer: Offer }) {
             offer.best
               ? "border-[#B4FF00] bg-[#B4FF00] text-[#002340]"
               : isFast
-                ? "border-[#3B6FFF] bg-[#002340] text-[#B4FF00]"
+                ? "border-[#002340] bg-[#002340] text-[#B4FF00]"
                 : "border-[#E4F2F7] bg-[#E4F2F7] text-[#2D466C]",
           ].join(" ")}
         >
