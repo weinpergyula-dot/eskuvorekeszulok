@@ -67,11 +67,11 @@ export default function YettelWebPage() {
 
       <main>
         {/* ── Hero (lime, mint a /yettel_light_asis) ────────── */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-[#B4FF00] from-70% via-[#AEF500] via-88% to-[#9FE000]">
+        <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#9FE000_0%,#B4FF00_30%,#B4FF00_70%,#9FE000_100%)]">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
             <div className="pb-10 md:pb-20">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2D466C]">
-                <Sparkles className="h-3.5 w-3.5" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-base font-bold text-[#2D466C]">
+                <Sparkles className="h-4 w-4" />
                 Új ügyfeleknek: online kedvezmény minden csomagra
               </span>
               <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-[#002340] sm:text-[2.6rem]">
@@ -97,7 +97,7 @@ export default function YettelWebPage() {
                 </a>
               </div>
               <p className="mt-4 text-xs font-semibold text-[#002340]/70">
-                Hűségidő nélkül is választható · Ingyenes bekötés · 14 napos elállás
+                Ingyenes bekötés · 30 napos elállás
               </p>
             </div>
 
@@ -137,13 +137,13 @@ export default function YettelWebPage() {
                 <a
                   key={cat.label}
                   href={cat.href}
-                  className="group flex w-[150px] flex-col items-center gap-2 rounded-[18px] border border-[#CDE0EA] p-4 text-center transition-colors hover:border-[#B4FF00] hover:bg-[#F4FFDB]"
+                  className="group flex w-[186px] flex-col items-center gap-2.5 rounded-[20px] border border-[#CDE0EA] p-6 text-center transition-colors hover:border-[#B4FF00] hover:bg-[#F4FFDB]"
                 >
-                  <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-                    <cat.icon className="h-6 w-6" strokeWidth={1.9} />
+                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[#B4FF00] text-[#002340]">
+                    <cat.icon className="h-7 w-7" strokeWidth={1.9} />
                   </span>
-                  <span className="text-sm font-bold text-[#002340]">{cat.label}</span>
-                  <span className="text-xs text-[#2D466C]">{cat.desc}</span>
+                  <span className="text-base font-bold text-[#002340]">{cat.label}</span>
+                  <span className="text-sm text-[#2D466C]">{cat.desc}</span>
                 </a>
               ))}
             </div>
@@ -173,7 +173,7 @@ export default function YettelWebPage() {
 
         {/* ── Készülékek ───────────────────────────────────── */}
         <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14">
-          <div className="mx-auto max-w-[1760px] px-4 sm:px-6">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Készülékek</span>
