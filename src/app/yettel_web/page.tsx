@@ -131,7 +131,7 @@ export default function YettelWebPage() {
 
         {/* ── Gyors kategóriák ─────────────────────────────── */}
         <section className="border-b border-[#CDE0EA] bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+          <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6">
             <div className="flex flex-wrap justify-center gap-3">
               {CATEGORIES.map((cat) => (
                 <a
