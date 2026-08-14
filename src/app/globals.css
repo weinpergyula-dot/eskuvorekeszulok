@@ -248,6 +248,36 @@ html.a11y-underline a { text-decoration: underline !important; }
   animation: carousel-scroll 35s linear infinite;
 }
 
+/* ── Yettel bemutató oldal (/yettel_web) ──────────────── */
+/* A Yettel lime + navy dizájnrendszere (a /yettel_light_asis alapján). */
+/* Felülírja az esküvős oldal serif (BloomSpeak) betűit és színeit. */
+.yettel-root {
+  --y-lime: #C6F24E;
+  --y-lime2: #DAFF6E;
+  --y-lime3: #A4D82E;
+  --y-limed: #4F7A00;
+  --y-navy: #14245E;
+  --y-ink: #0B1330;
+  --y-page: #F1F5FC;
+  --y-card: #FFFFFF;
+  --y-line: #E6EAF2;
+  --y-mid: #5B6684;
+  --y-low: #9AA3BC;
+  --y-red: #D6453F;
+  --y-amber: #E39A25;
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--y-ink);
+}
+.yettel-root h1,
+.yettel-root h2,
+.yettel-root h3,
+.yettel-root h4,
+.yettel-root h5,
+.yettel-root h6 {
+  font-family: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--y-navy);
+}
+
 
 
 /* ── Desktop chat: cím + frissítés gomb elrejtése chat nézetben ─────── */
