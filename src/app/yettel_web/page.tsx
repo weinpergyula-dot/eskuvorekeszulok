@@ -66,84 +66,21 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Hero (lime, mint a /yettel_light_asis) ────────── */}
-        <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#9FE000_0%,#B4FF00_30%,#B4FF00_70%,#9FE000_100%)]">
-          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
-            <div className="pb-10 md:pb-20">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-base font-bold text-[#2D466C]">
-                <Sparkles className="h-4 w-4" />
-                Új ügyfeleknek: online kedvezmény minden csomagra
-              </span>
-              <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-[#002340] sm:text-[2.6rem]">
-                Minden szolgáltatásod egy helyen.
-              </h1>
-              <p className="mt-3 max-w-md text-base text-[#2D466C]">
-                Mobil, internet és TV – nincs kisbetűs meglepetés. Válaszd ki a hozzád illő csomagot konkrét árakkal, és
-                pár perc alatt megrendeled.
-              </p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a
-                  href="#ajanlatok"
-                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36] sm:w-auto"
-                >
-                  Ajánlott csomagok
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
-                  href="#internet"
-                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#002340]/25 bg-white px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] sm:w-auto"
-                >
-                  Otthoni internet
-                </a>
-              </div>
-              <p className="mt-4 text-xs font-semibold text-[#002340]/70">
-                Ingyenes bekötés · 30 napos elállás
-              </p>
-            </div>
-
-            {/* Hero kép (család laptoppal) + lebegő ajánlatkártya – aljáig ér */}
-            <div className="relative w-full self-end pb-8 md:pb-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/yettel/hero-family.png"
-                alt="Család együtt böngészik a laptopon"
-                className="block w-full md:w-[118%] md:max-w-none md:-mr-6 lg:-mr-14"
-              />
-              {/* Az ár a gyerek keze körül, sosem az arcokon */}
-              <div className="mx-auto -mt-14 w-[86%] max-w-[280px] rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:mt-0 md:w-full md:max-w-[230px] md:bg-white/65 md:absolute md:bottom-12 md:-left-8">
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
-                  A hét ajánlata
-                </span>
-                <h2 className="mt-2 text-base font-extrabold text-[#002340]">Teljes csomag</h2>
-                <p className="text-xs text-[#2D466C]">Net 500 + TV Extra + Yettel M</p>
-                <div className="mt-2 flex items-baseline gap-1.5 whitespace-nowrap">
-                  <span className="shrink-0 text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(14990)}</span>
-                  <span className="shrink-0 text-xs text-[#2D466C]">/ hó</span>
-                </div>
-                <p className="text-xs text-[#7E93B0]">
-                  <span className="line-through">{formatFt(17470)}</span> helyett
-                </p>
-                <p className="mt-1 text-xs font-bold text-[#2D466C]">Havi ~2 480 Ft megtakarítás.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* ── Gyors kategóriák ─────────────────────────────── */}
-        <section className="border-b border-[#CDE0EA] bg-white">
-          <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6">
+        <section className="bg-[#002340]">
+          <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6">
             <div className="flex flex-wrap justify-center gap-3">
               {CATEGORIES.map((cat) => (
                 <a
                   key={cat.label}
                   href={cat.href}
-                  className="group flex w-[186px] flex-col items-center gap-2.5 rounded-[20px] border border-[#CDE0EA] p-6 text-center transition-colors hover:border-[#B4FF00] hover:bg-[#F4FFDB]"
+                  className="group flex w-[186px] flex-col items-center gap-2.5 rounded-[20px] border border-white/15 bg-white/[0.06] p-6 text-center transition-colors hover:border-[#B4FF00] hover:bg-white/10"
                 >
                   <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[#B4FF00] text-[#002340]">
                     <cat.icon className="h-7 w-7" strokeWidth={1.9} />
                   </span>
-                  <span className="text-base font-bold text-[#002340]">{cat.label}</span>
-                  <span className="text-sm text-[#2D466C]">{cat.desc}</span>
+                  <span className="text-base font-bold text-white">{cat.label}</span>
+                  <span className="text-sm text-[#BBD3E4]">{cat.desc}</span>
                 </a>
               ))}
             </div>
@@ -216,6 +153,69 @@ export default function YettelWebPage() {
                       </button>
                     </div>
                   ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Hero (lime, mint a /yettel_light_asis) ────────── */}
+        <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#9FE000_0%,#B4FF00_30%,#B4FF00_70%,#9FE000_100%)]">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
+            <div className="pb-10 md:pb-20">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-base font-bold text-[#2D466C]">
+                <Sparkles className="h-4 w-4" />
+                Új ügyfeleknek: online kedvezmény minden csomagra
+              </span>
+              <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-[#002340] sm:text-[2.6rem]">
+                Minden szolgáltatásod egy helyen.
+              </h1>
+              <p className="mt-3 max-w-md text-base text-[#2D466C]">
+                Mobil, internet és TV – nincs kisbetűs meglepetés. Válaszd ki a hozzád illő csomagot konkrét árakkal, és
+                pár perc alatt megrendeled.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <a
+                  href="#ajanlatok"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36] sm:w-auto"
+                >
+                  Ajánlott csomagok
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <a
+                  href="#internet"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#002340]/25 bg-white px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] sm:w-auto"
+                >
+                  Otthoni internet
+                </a>
+              </div>
+              <p className="mt-4 text-xs font-semibold text-[#002340]/70">
+                Ingyenes bekötés · 30 napos elállás
+              </p>
+            </div>
+
+            {/* Hero kép (család laptoppal) + lebegő ajánlatkártya – aljáig ér */}
+            <div className="relative w-full self-end pb-8 md:pb-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/yettel/hero-family.png"
+                alt="Család együtt böngészik a laptopon"
+                className="block w-full md:w-[118%] md:max-w-none md:-mr-6 lg:-mr-14"
+              />
+              {/* Az ár a gyerek keze körül, sosem az arcokon */}
+              <div className="mx-auto -mt-14 w-[86%] max-w-[280px] rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:mt-0 md:w-full md:max-w-[230px] md:bg-white/65 md:absolute md:bottom-12 md:-left-8">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
+                  A hét ajánlata
+                </span>
+                <h2 className="mt-2 text-base font-extrabold text-[#002340]">Teljes csomag</h2>
+                <p className="text-xs text-[#2D466C]">Net 500 + TV Extra + Yettel M</p>
+                <div className="mt-2 flex items-baseline gap-1.5 whitespace-nowrap">
+                  <span className="shrink-0 text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(14990)}</span>
+                  <span className="shrink-0 text-xs text-[#2D466C]">/ hó</span>
+                </div>
+                <p className="text-xs text-[#7E93B0]">
+                  <span className="line-through">{formatFt(17470)}</span> helyett
+                </p>
+                <p className="mt-1 text-xs font-bold text-[#2D466C]">Havi ~2 480 Ft megtakarítás.</p>
               </div>
             </div>
           </div>
