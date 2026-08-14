@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { Smartphone, Wifi, Tv, CreditCard, Briefcase, type LucideIcon } from "lucide-react";
 import type { OfferCategory } from "../_data/offers";
 
@@ -10,6 +10,12 @@ const HASH_TO_CAT: Record<string, OfferCategory> = {
   ajanlatok: "havidijas",
   internet: "net",
   tv: "tv",
+};
+const CAT_TO_HASH: Record<OfferCategory, string> = {
+  havidijas: "havidijas",
+  net: "internet",
+  tv: "tv",
+  csomag: "csomag",
 };
 
 type Tile = { icon: LucideIcon; label: string; desc: string; href: string; cat?: OfferCategory };
@@ -49,10 +55,22 @@ export function CategoryTiles() {
       <div className="flex flex-wrap justify-center gap-3">
         {CATEGORIES.map((cat) => {
           const isActive = cat.cat !== undefined && cat.cat === activeCat;
+          // A tarifakategóriáknál (mobil/net/tv) csak a tartalom váltson, ne görgessen.
+          const onClick =
+            cat.cat !== undefined
+              ? (e: MouseEvent) => {
+                  e.preventDefault();
+                  const hash = CAT_TO_HASH[cat.cat!];
+                  setActiveCat(cat.cat!);
+                  window.history.replaceState(null, "", `#${hash}`);
+                  window.dispatchEvent(new CustomEvent("yettel:section", { detail: hash }));
+                }
+              : undefined;
           return (
             <a
               key={cat.label}
               href={cat.href}
+              onClick={onClick}
               aria-current={isActive ? "true" : undefined}
               className={[
                 "group flex w-[186px] flex-col items-center gap-2.5 rounded-[20px] border p-6 text-center transition-colors",

@@ -20,18 +20,20 @@ function OfferCard({ offer }: { offer: Offer }) {
         "relative flex flex-col rounded-[20px] border bg-white p-5 transition-shadow",
         offer.best
           ? "border-[#B4FF00] shadow-[0_10px_34px_rgba(0,35,64,0.10)] ring-2 ring-[#B4FF00]"
-          : "border-[#CDE0EA] hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
+          : isFast
+            ? "border-[#3B6FFF] shadow-[0_10px_34px_rgba(0,35,64,0.10)] ring-2 ring-[#3B6FFF]"
+            : "border-[#CDE0EA] hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
       ].join(" ")}
     >
       {offer.badge && (
         <span
           className={[
-            "absolute -top-3 left-5 inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold",
+            "absolute -top-3 left-5 inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-bold",
             offer.best
-              ? "bg-[#B4FF00] text-[#002340]"
+              ? "border-[#B4FF00] bg-[#B4FF00] text-[#002340]"
               : isFast
-                ? "bg-[#002340] text-[#B4FF00]"
-                : "bg-[#E4F2F7] text-[#2D466C]",
+                ? "border-[#3B6FFF] bg-[#002340] text-[#B4FF00]"
+                : "border-[#E4F2F7] bg-[#E4F2F7] text-[#2D466C]",
           ].join(" ")}
         >
           {offer.best && <Sparkles className="h-3 w-3" />}
@@ -40,10 +42,12 @@ function OfferCard({ offer }: { offer: Offer }) {
         </span>
       )}
 
-      <div className="mb-3">
-        <h3 className="text-lg font-extrabold text-[#002340]">{offer.name}</h3>
-        <p className="text-sm text-[#2D466C]">{offer.tagline}</p>
+      <div className="mb-4">
+        <h3 className="text-2xl font-extrabold text-[#002340]">{offer.name}</h3>
+        <p className="text-base text-[#2D466C]">{offer.tagline}</p>
       </div>
+
+      <div className="mb-4 border-t border-[#CDE0EA]" />
 
       <div className="mb-4 flex items-end gap-2">
         <span className="text-3xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
@@ -91,9 +95,18 @@ export function OffersExplorer() {
       const cat = HASH_TO_CAT[window.location.hash.slice(1)];
       if (cat) setActive(cat);
     }
+    // A csempékről görgetés nélkül érkező váltás.
+    function onSection(e: Event) {
+      const cat = HASH_TO_CAT[(e as CustomEvent<string>).detail];
+      if (cat) setActive(cat);
+    }
     fromHash();
     window.addEventListener("hashchange", fromHash);
-    return () => window.removeEventListener("hashchange", fromHash);
+    window.addEventListener("yettel:section", onSection);
+    return () => {
+      window.removeEventListener("hashchange", fromHash);
+      window.removeEventListener("yettel:section", onSection);
+    };
   }, []);
 
   return (
