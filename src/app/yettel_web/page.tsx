@@ -110,7 +110,7 @@ export default function YettelWebPage() {
                 className="block w-full md:w-[118%] md:max-w-none md:-mr-6 lg:-mr-14"
               />
               {/* Az ár a gyerek keze körül, sosem az arcokon */}
-              <div className="mx-auto mt-4 w-full max-w-[230px] rounded-[20px] border border-[#CDE0EA] bg-white p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] md:absolute md:bottom-12 md:left-2 md:mt-0">
+              <div className="mx-auto mt-4 w-full max-w-[230px] rounded-[20px] border border-white/60 bg-white/65 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:absolute md:bottom-12 md:-left-8 md:mt-0">
                 <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
                   A hét ajánlata
                 </span>
@@ -191,9 +191,9 @@ export default function YettelWebPage() {
                   key={device.id}
                   className="flex flex-col rounded-[20px] border border-[#CDE0EA] p-5 transition-shadow hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]"
                 >
-                  <div className="mb-4 grid h-72 place-items-center rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white">
+                  <div className="mb-4 grid h-72 place-items-center rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white p-4">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/yettel/device-${device.id}.svg`} alt={device.name} className="h-64 w-auto" />
+                    <img src={`/yettel/${device.img}`} alt={device.name} className="max-h-full w-auto object-contain" />
                   </div>
                   <h3 className="text-base font-extrabold text-[#002340]">{device.name}</h3>
                   <p className="text-xs text-[#2D466C]">{device.note}</p>

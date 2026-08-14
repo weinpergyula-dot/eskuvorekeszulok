@@ -191,12 +191,14 @@ export type Device = {
   monthly: number;
   upfront: string;
   note: string;
+  /** Kép fájlnév a public/yettel/ mappában. */
+  img: string;
 };
 
 export const DEVICES: Device[] = [
-  { id: "iphone-15", name: "iPhone 15 128 GB", monthly: 9990, upfront: "0 Ft előleg", note: "Yettel L mellé" },
-  { id: "galaxy-s24", name: "Samsung Galaxy S24", monthly: 7490, upfront: "0 Ft előleg", note: "24 havi részlet" },
-  { id: "redmi-note-13", name: "Xiaomi Redmi Note 13", monthly: 2490, upfront: "0 Ft előleg", note: "24 havi részlet" },
+  { id: "iphone-15", name: "iPhone 15 128 GB", monthly: 9990, upfront: "0 Ft előleg", note: "Yettel L mellé", img: "iphone.png" },
+  { id: "galaxy-s24", name: "Samsung Galaxy S24", monthly: 7490, upfront: "0 Ft előleg", note: "24 havi részlet", img: "samsung.png" },
+  { id: "redmi-note-13", name: "Xiaomi Redmi Note 13", monthly: 2490, upfront: "0 Ft előleg", note: "24 havi részlet", img: "xiaomi.png" },
 ];
 
 export function formatFt(value: number): string {
