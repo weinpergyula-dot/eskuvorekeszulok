@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, ShoppingCart, User, MapPin } from "lucide-react";
 
 const NAV = [
@@ -27,6 +27,20 @@ function Logo() {
 
 export function YettelHeader() {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("");
+
+  // Aktív menüpont: a hash-ből és a fülváltásból (yettel:section esemény).
+  useEffect(() => {
+    const fromHash = () => setActive(window.location.hash.slice(1));
+    const onSection = (e: Event) => setActive((e as CustomEvent<string>).detail);
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    window.addEventListener("yettel:section", onSection);
+    return () => {
+      window.removeEventListener("hashchange", fromHash);
+      window.removeEventListener("yettel:section", onSection);
+    };
+  }, []);
 
   return (
     <header id="top" className="sticky top-0 z-50 border-b border-[#CDE0EA] bg-white/95 backdrop-blur">
@@ -34,15 +48,26 @@ export function YettelHeader() {
         <div className="flex items-center gap-8">
           <Logo />
           <nav className="hidden items-center gap-6 lg:flex" aria-label="Fő menü">
-            {NAV.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-sm font-semibold text-[#2D466C] transition-colors hover:text-[#002340]"
-              >
-                {item.label}
-              </a>
-            ))}
+            {NAV.map((item) => {
+              const isActive = active === item.href.slice(1);
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`relative text-sm font-semibold transition-colors ${
+                    isActive ? "text-[#002340]" : "text-[#2D466C] hover:text-[#002340]"
+                  }`}
+                >
+                  {item.label}
+                  <span
+                    className={`pointer-events-none absolute -bottom-1 left-0 h-0.5 w-full rounded bg-[#B4FF00] transition-opacity ${
+                      isActive ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                </a>
+              );
+            })}
           </nav>
         </div>
 
@@ -84,16 +109,22 @@ export function YettelHeader() {
       {open && (
         <nav className="border-t border-[#CDE0EA] bg-white lg:hidden" aria-label="Mobil menü">
           <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6">
-            {NAV.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="block rounded-lg px-2 py-2.5 text-sm font-semibold text-[#002340] hover:bg-[#E4F2F7]"
-              >
-                {item.label}
-              </a>
-            ))}
+            {NAV.map((item) => {
+              const isActive = active === item.href.slice(1);
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`block rounded-lg border-l-4 px-2 py-2.5 text-sm font-semibold text-[#002340] ${
+                    isActive ? "border-[#B4FF00] bg-[#E4F2F7]" : "border-transparent hover:bg-[#E4F2F7]"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
         </nav>
       )}

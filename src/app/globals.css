@@ -275,7 +275,8 @@ html.a11y-underline a { text-decoration: underline !important; }
 .yettel-root h5,
 .yettel-root h6 {
   font-family: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  color: var(--y-navy);
+  /* A szín szándékosan nem itt dől el – a Tailwind text-* osztályok adják
+     (navy a világos háttéren, fehér a sötét szekciókban). */
 }
 
 

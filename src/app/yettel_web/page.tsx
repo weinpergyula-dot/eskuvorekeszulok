@@ -67,7 +67,7 @@ export default function YettelWebPage() {
 
       <main>
         {/* ── Hero (lime, mint a /yettel_light_asis) ────────── */}
-        <section className="relative overflow-hidden bg-[#B4FF00]">
+        <section className="relative overflow-hidden bg-gradient-to-b from-[#B4FF00] to-[#9FE000]">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
             <div className="pb-10 md:pb-20">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2D466C]">
@@ -191,9 +191,9 @@ export default function YettelWebPage() {
                   key={device.id}
                   className="flex flex-col rounded-[20px] border border-[#CDE0EA] p-5 transition-shadow hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]"
                 >
-                  <div className="mb-4 grid h-72 place-items-center rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white p-4">
+                  <div className="mb-4 h-72 overflow-hidden rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white p-4">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/yettel/${device.img}`} alt={device.name} className="max-h-full w-auto object-contain" />
+                    <img src={`/yettel/${device.img}`} alt={device.name} className="h-full w-full object-contain" />
                   </div>
                   <h3 className="text-base font-extrabold text-[#002340]">{device.name}</h3>
                   <p className="text-xs text-[#2D466C]">{device.note}</p>

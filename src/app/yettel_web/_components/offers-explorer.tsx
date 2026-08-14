@@ -1,8 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, ArrowRight, Sparkles, Smartphone, Wifi, Tv, Package, type LucideIcon } from "lucide-react";
 import { OFFERS, OFFER_TABS, formatFt, type OfferCategory, type Offer } from "../_data/offers";
+
+// A menü hash-ei ↔ a fülek kategóriái.
+const HASH_TO_CAT: Record<string, OfferCategory> = {
+  havidijas: "havidijas",
+  ajanlatok: "havidijas",
+  internet: "net",
+  tv: "tv",
+};
+const CAT_TO_HASH: Record<OfferCategory, string> = {
+  havidijas: "havidijas",
+  net: "internet",
+  tv: "tv",
+  csomag: "csomag",
+};
 
 const TAB_ICONS: Record<OfferCategory, LucideIcon> = {
   havidijas: Smartphone,
@@ -77,6 +91,23 @@ export function OffersExplorer() {
   const [active, setActive] = useState<OfferCategory>("havidijas");
   const activeTab = OFFER_TABS.find((t) => t.id === active);
 
+  // A menüből (hash) érkező váltás követése.
+  useEffect(() => {
+    function fromHash() {
+      const cat = HASH_TO_CAT[window.location.hash.slice(1)];
+      if (cat) setActive(cat);
+    }
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    return () => window.removeEventListener("hashchange", fromHash);
+  }, []);
+
+  // Fülre kattintáskor a fejléc is kövesse a kijelölést.
+  function selectTab(id: OfferCategory) {
+    setActive(id);
+    window.dispatchEvent(new CustomEvent("yettel:section", { detail: CAT_TO_HASH[id] }));
+  }
+
   return (
     <div>
       {/* Tab választó – nagyobb, ikonokkal kiemelve */}
@@ -89,7 +120,7 @@ export function OffersExplorer() {
               key={tab.id}
               role="tab"
               aria-selected={selected}
-              onClick={() => setActive(tab.id)}
+              onClick={() => selectTab(tab.id)}
               className={[
                 "group relative flex items-center gap-3 rounded-2xl border px-4 py-4 text-left transition-all",
                 selected
