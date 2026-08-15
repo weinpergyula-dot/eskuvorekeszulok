@@ -71,7 +71,7 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── Készülékek ───────────────────────────────────── */}
-        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14">
+        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14 shadow-[inset_0_7px_6px_-6px_rgba(0,35,64,0.13)]">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
               <div>
@@ -124,8 +124,8 @@ export default function YettelWebPage() {
         <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#9FE000_0%,#B4FF00_30%,#B4FF00_70%,#9FE000_100%)]">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
             <div className="pb-10 md:pb-20">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-base font-bold text-[#2D466C]">
-                <Sparkles className="h-4 w-4" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-sm font-bold text-[#2D466C]">
+                <Sparkles className="h-3.5 w-3.5" />
                 Új ügyfeleknek: online kedvezmény minden csomagra
               </span>
               <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-[#002340] sm:text-[2.6rem]">
@@ -155,8 +155,9 @@ export default function YettelWebPage() {
               </p>
             </div>
 
-            {/* Hero kép (család laptoppal) + lebegő ajánlatkártya – aljáig ér */}
-            <div className="relative w-full self-end pb-8 md:pb-0">
+            {/* Hero kép (család laptoppal) + lebegő ajánlatkártya – aljáig ér.
+                Mobilon a kép a dividerig ér, a glassos kártya pedig fölé lebeg. */}
+            <div className="relative w-full self-end">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/yettel/hero-family.png"
@@ -164,7 +165,7 @@ export default function YettelWebPage() {
                 className="block w-full md:w-[118%] md:max-w-none md:-mr-6 lg:-mr-14"
               />
               {/* Az ár a gyerek keze körül, sosem az arcokon */}
-              <div className="mx-auto -mt-14 w-[86%] max-w-[280px] rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:mt-0 md:w-full md:max-w-[230px] md:bg-white/65 md:absolute md:bottom-12 md:-left-8">
+              <div className="absolute bottom-4 left-1/2 w-[86%] max-w-[280px] -translate-x-1/2 rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:bottom-12 md:left-[-3.5rem] md:w-full md:max-w-[230px] md:translate-x-0 md:bg-white/65">
                 <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
                   A hét ajánlata
                 </span>
@@ -207,7 +208,7 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── MyYettel app ─────────────────────────────────── */}
-        <section className="relative overflow-hidden border-t border-[#CDE0EA] bg-white">
+        <section className="relative overflow-hidden border-t border-[#CDE0EA] bg-white shadow-[inset_0_7px_6px_-6px_rgba(0,35,64,0.13)]">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-14 sm:px-6 md:grid-cols-2">
             <div className="pb-14 md:pb-16">
               <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">MyYettel alkalmazás</span>

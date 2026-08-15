@@ -15,6 +15,8 @@ export type Offer = {
   features: string[];
   /** Kiemelt "legjobb választás" kártya. */
   best?: boolean;
+  /** A kategória legdrágább, prémium csomagja – teljes lime kiemeléssel. */
+  premium?: boolean;
   /** Rövid, a fejlécen megjelenő címke. */
   badge?: string;
   cta: string;
@@ -91,6 +93,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
         "5G prémium sebesség",
         "EU + Nyugat-Balkán roaming",
       ],
+      premium: true,
       badge: "Leggyorsabb",
       cta: "Megrendelem",
     },
@@ -129,6 +132,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       price: 8990,
       unit: "Ft/hó",
       features: ["1000 Mbit/s letöltés", "Alacsony késleltetés", "Wi‑Fi 6 mesh csomag", "Kiemelt támogatás"],
+      premium: true,
       badge: "Leggyorsabb",
       cta: "Igénylem",
     },
@@ -167,6 +171,8 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       price: 6990,
       unit: "Ft/hó",
       features: ["180+ csatorna", "Összes prémium csomag", "4K + 200 óra felvétel", "Egyszerre 6 eszköz"],
+      premium: true,
+      badge: "Prémium",
       cta: "Előfizetek",
     },
   ],
