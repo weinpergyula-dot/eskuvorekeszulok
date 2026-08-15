@@ -86,9 +86,7 @@ export function CategoryTiles() {
               <span
                 className={[
                   "grid h-14 w-14 place-items-center rounded-2xl",
-                  isActive
-                    ? "bg-[#002340] text-[#B4FF00]"
-                    : "bg-[linear-gradient(to_bottom,#002340_0%,#B4FF00_20%,#B4FF00_80%,#002340_100%)] text-[#002340]",
+                  isActive ? "bg-[#002340] text-[#B4FF00]" : "bg-[#B4FF00] text-[#002340]",
                 ].join(" ")}
               >
                 <cat.icon className="h-7 w-7" strokeWidth={1.9} />

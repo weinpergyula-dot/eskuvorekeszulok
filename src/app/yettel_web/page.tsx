@@ -10,6 +10,7 @@ import {
   MapPin,
   Download,
   HelpCircle,
+  Globe,
 } from "lucide-react";
 import { OffersExplorer } from "./_components/offers-explorer";
 import { CategoryTiles } from "./_components/category-tiles";
@@ -36,6 +37,7 @@ const SUPPORT_LINKS = [
   { icon: Phone, label: "Számlabefizetés" },
   { icon: MapPin, label: "Üzletkereső" },
   { icon: ShieldCheck, label: "SIM aktiválás" },
+  { icon: Globe, label: "Roaming információk" },
   { icon: HelpCircle, label: "Gyakori kérdések" },
 ];
 
@@ -54,8 +56,8 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Üdvözlő + gyors kategóriák (sötétkék sáv) ────── */}
-        <section className="bg-[#002340]">
+        {/* ── Üdvözlő + gyors kategóriák (sötétkék sáv, alul-felül sötétebb gradient) ────── */}
+        <section className="bg-[linear-gradient(to_bottom,#00182D_0%,#002340_16%,#002340_84%,#00182D_100%)]">
           <CategoryTiles />
         </section>
 
@@ -162,7 +164,7 @@ export default function YettelWebPage() {
               <img
                 src="/yettel/hero-family.png"
                 alt="Család együtt böngészik a laptopon"
-                className="block w-full md:w-[118%] md:max-w-none md:-mr-6 lg:-mr-14"
+                className="block w-full md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
               />
               {/* Az ár a gyerek keze körül, sosem az arcokon */}
               <div className="absolute bottom-4 left-1/2 w-[86%] max-w-[280px] -translate-x-1/2 rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:bottom-12 md:left-[-3.5rem] md:w-full md:max-w-[230px] md:translate-x-0 md:bg-white/65">
@@ -239,6 +241,19 @@ export default function YettelWebPage() {
                   <Download className="h-4 w-4" /> Google Play
                 </span>
               </div>
+              {/* QR-kód – csak desktopon; az eskuvorekeszulok.hu oldalra vezet */}
+              <div className="mt-6 hidden items-center gap-4 md:flex">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/yettel/qr-eskuvorekeszulok.svg"
+                  alt="QR-kód az eskuvorekeszulok.hu oldalra"
+                  className="h-24 w-24 rounded-xl border border-[#CDE0EA] bg-white p-2"
+                />
+                <div>
+                  <p className="text-sm font-bold text-[#002340]">Olvasd be a QR-kódot</p>
+                  <p className="text-sm text-[#2D466C]">Ugrás az eskuvorekeszulok.hu oldalra</p>
+                </div>
+              </div>
             </div>
             <div className="self-end md:justify-self-end">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -260,7 +275,7 @@ export default function YettelWebPage() {
                 Miben segíthetünk?
               </h2>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {SUPPORT_LINKS.map((link) => (
                 <a
                   key={link.label}

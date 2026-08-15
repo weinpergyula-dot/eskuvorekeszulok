@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, ShoppingCart, User, MapPin } from "lucide-react";
+import { Menu, X, User, MapPin } from "lucide-react";
 
 const NAV = [
   { label: "Mobil", href: "#havidijas" },
@@ -80,17 +80,10 @@ export function YettelHeader() {
           </a>
           <a
             href="#belepes"
-            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-[#002340] hover:bg-[#E4F2F7]"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#B4FF00] px-3 py-2 text-sm font-bold text-[#002340] transition-colors hover:bg-[#9BE000]"
           >
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">Belépés</span>
-          </a>
-          <a
-            href="#ajanlatok"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#B4FF00] px-3 py-2 text-sm font-bold text-[#002340] transition-colors hover:bg-[#9BE000]"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            <span className="hidden sm:inline">Vásárlás</span>
           </a>
           <button
             type="button"
