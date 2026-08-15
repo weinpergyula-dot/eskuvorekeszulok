@@ -13,13 +13,10 @@ const NAV = [
 
 function Logo() {
   return (
-    <a href="#top" className="flex items-baseline gap-0.5" aria-label="Yettel főoldal">
-      <span className="text-xl font-extrabold tracking-tight text-[#002340]">Yettel</span>
-      {/* Yettel jellegű kis háromszög-akcentus */}
-      <span
-        aria-hidden
-        className="inline-block h-0 w-0 border-x-[5px] border-b-[8px] border-x-transparent border-b-[#B4FF00]"
-      />
+    <a href="#top" className="flex items-end gap-1" aria-label="Yettel főoldal">
+      <span className="text-2xl font-extrabold leading-none tracking-tight text-[#002340]">Yettel</span>
+      {/* Yettel jellegű lime pont-akcentus */}
+      <span aria-hidden className="mb-0.5 inline-block h-2.5 w-2.5 rounded-full bg-[#B4FF00]" />
     </a>
   );
 }

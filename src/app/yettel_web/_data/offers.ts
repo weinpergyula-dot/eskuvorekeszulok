@@ -1,7 +1,7 @@
 // Kiemelt ajánlatok adatai a Yettel bemutató főoldalhoz.
 // Az árak tájékoztató jellegűek, egy letisztult bemutató (redesign) koncepcióhoz.
 
-export type OfferCategory = "havidijas" | "net" | "tv" | "csomag";
+export type OfferCategory = "havidijas" | "net" | "tv" | "csomag" | "feltolto";
 
 export type Offer = {
   id: string;
@@ -26,6 +26,7 @@ export const OFFER_TABS: { id: OfferCategory; label: string; hint: string; soon?
   { id: "havidijas", label: "Havidíjas mobil", hint: "Korlátlan hívás, 5G net" },
   { id: "net", label: "Otthoni internet", hint: "Optikai & 5G, Wi‑Fi 6" },
   { id: "tv", label: "Yettel TV", hint: "Élő adás & felvétel" },
+  { id: "feltolto", label: "Feltöltőkártya", hint: "Kötöttség nélkül" },
   { id: "csomag", label: "Internet + TV", hint: "Csomagban, egy számlán", soon: true },
 ];
 
@@ -45,6 +46,11 @@ export const CATEGORY_META: Record<OfferCategory, { title: string; blurb: string
     title: "Yettel TV",
     blurb:
       "Kedvenc csatornáid élőben és visszanézve, akár 4K-ban, bármelyik eszközödön. Sport, film, sorozat – mind egy helyen, felvétellel.",
+  },
+  feltolto: {
+    title: "Feltöltőkártya",
+    blurb:
+      "Kötöttség és havidíj nélkül – csak akkor fizetsz, amikor feltöltesz. Rugalmas opciók net-tel és korlátlan hívással, bármikor válthatsz.",
   },
   csomag: {
     title: "Internet + TV",
@@ -174,6 +180,39 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       premium: true,
       badge: "Prémium",
       cta: "Előfizetek",
+    },
+  ],
+  feltolto: [
+    {
+      id: "feltolto-start",
+      name: "Feltöltő Start",
+      tagline: "Alkalmi használatra",
+      price: 1990,
+      unit: "Ft/feltöltés",
+      features: [
+        "5 GB adat a feltöltéshez",
+        "100 perc + 100 SMS",
+        "30 napig felhasználható",
+        "Nincs havidíj, nincs kötöttség",
+      ],
+      cta: "Feltöltöm",
+    },
+    {
+      id: "feltolto-plusz",
+      name: "Feltöltő Plusz",
+      tagline: "Ha többre van szükség",
+      price: 3990,
+      oldPrice: 4490,
+      unit: "Ft/feltöltés",
+      features: [
+        "20 GB adat a feltöltéshez",
+        "Korlátlan hívás Yettelen belül",
+        "30 napig felhasználható",
+        "Automatikus feltöltés kérhető",
+      ],
+      best: true,
+      badge: "Legnépszerűbb",
+      cta: "Feltöltöm",
     },
   ],
   csomag: [

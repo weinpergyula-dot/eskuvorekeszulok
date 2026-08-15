@@ -10,11 +10,14 @@ const HASH_TO_CAT: Record<string, OfferCategory> = {
   ajanlatok: "havidijas",
   internet: "net",
   tv: "tv",
+  feltoltokartya: "feltolto",
 };
 
 function OfferCard({ offer }: { offer: Offer }) {
   const isPremium = !!offer.premium;
   const isFast = offer.badge === "Leggyorsabb";
+  // Az ár mögötti egység a kategóriától függ (pl. "hó" vagy "feltöltés").
+  const priceUnit = offer.unit.replace(/^Ft\s*\/\s*/, "").trim() || "hó";
   return (
     <div
       className={[
@@ -52,7 +55,9 @@ function OfferCard({ offer }: { offer: Offer }) {
 
       <div className="mb-4 flex items-end gap-2">
         <span className="text-3xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
-        <span className={["pb-1 text-sm", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>/ hó</span>
+        <span className={["pb-1 text-sm", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>
+          / {priceUnit}
+        </span>
         {offer.oldPrice && (
           <span className="pb-1 text-sm text-[#7E93B0] line-through">{formatFt(offer.oldPrice)}</span>
         )}
@@ -148,7 +153,7 @@ export function OffersExplorer() {
           </a>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-7 px-3 sm:grid-cols-2 sm:gap-5 sm:px-0 lg:grid-cols-3">
           {OFFERS[active].map((offer) => (
             <OfferCard key={offer.id} offer={offer} />
           ))}

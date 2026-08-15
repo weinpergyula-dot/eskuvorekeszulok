@@ -37,7 +37,7 @@ const SUPPORT_LINKS = [
   { icon: Phone, label: "Számlabefizetés" },
   { icon: MapPin, label: "Üzletkereső" },
   { icon: ShieldCheck, label: "SIM aktiválás" },
-  { icon: Globe, label: "Roaming információk" },
+  { icon: Globe, label: "Roaming" },
   { icon: HelpCircle, label: "Gyakori kérdések" },
 ];
 
@@ -62,12 +62,13 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── Ajánlott csomagok (a kiemelt szekció) ────────── */}
-        <section id="ajanlatok" className="scroll-mt-16 bg-[#E4F2F7]">
+        <section id="ajanlatok" className="scroll-mt-16 bg-[#E4F2F7] shadow-[inset_0_7px_6px_-6px_rgba(0,35,64,0.13)]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             {/* Anchor célok az egyes fülekhez */}
             <span id="havidijas" className="block -mt-16 pt-16" aria-hidden />
             <span id="internet" className="block -mt-16 pt-16" aria-hidden />
             <span id="tv" className="block -mt-16 pt-16" aria-hidden />
+            <span id="feltoltokartya" className="block -mt-16 pt-16" aria-hidden />
             <OffersExplorer />
           </div>
         </section>
@@ -126,8 +127,8 @@ export default function YettelWebPage() {
         <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#9FE000_0%,#B4FF00_30%,#B4FF00_70%,#9FE000_100%)]">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
             <div className="pb-10 md:pb-20">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-sm font-bold text-[#2D466C]">
-                <Sparkles className="h-3.5 w-3.5" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2D466C]">
+                <Sparkles className="h-3 w-3" />
                 Új ügyfeleknek: online kedvezmény minden csomagra
               </span>
               <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-[#002340] sm:text-[2.6rem]">
@@ -267,7 +268,7 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── Ügyfélszolgálat ──────────────────────────────── */}
-        <section id="ugyfelszolgalat" className="scroll-mt-16 bg-[#E4F2F7]">
+        <section id="ugyfelszolgalat" className="scroll-mt-16 bg-[#E4F2F7] shadow-[inset_0_7px_6px_-6px_rgba(0,35,64,0.13)]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             <div className="mb-6">
               <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Gyors ügyintézés</span>

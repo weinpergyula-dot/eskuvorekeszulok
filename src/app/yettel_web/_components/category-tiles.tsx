@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type MouseEvent } from "react";
-import { Smartphone, Wifi, Tv, CreditCard, Briefcase, type LucideIcon } from "lucide-react";
+import { Smartphone, Wifi, Tv, CreditCard, FileText, type LucideIcon } from "lucide-react";
 import type { OfferCategory } from "../_data/offers";
 
 // A menü/hash ↔ tarifakategória (az OffersExplorer-rel megegyező logika).
@@ -10,12 +10,14 @@ const HASH_TO_CAT: Record<string, OfferCategory> = {
   ajanlatok: "havidijas",
   internet: "net",
   tv: "tv",
+  feltoltokartya: "feltolto",
 };
 const CAT_TO_HASH: Record<OfferCategory, string> = {
   havidijas: "havidijas",
   net: "internet",
   tv: "tv",
   csomag: "csomag",
+  feltolto: "feltoltokartya",
 };
 
 type Tile = { icon: LucideIcon; label: string; desc: string; href: string; cat?: OfferCategory };
@@ -25,8 +27,8 @@ const CATEGORIES: Tile[] = [
   { icon: Wifi, label: "Otthoni internet", desc: "Optikai & 5G", href: "#internet", cat: "net" },
   { icon: Tv, label: "Yettel TV", desc: "Élő adás & felvétel", href: "#tv", cat: "tv" },
   { icon: Smartphone, label: "Készülékek", desc: "Telefon részletre", href: "#keszulekek" },
-  { icon: CreditCard, label: "Feltöltőkártya", desc: "Kötöttség nélkül", href: "#ajanlatok" },
-  { icon: Briefcase, label: "Üzleti", desc: "Céges megoldások", href: "#ajanlatok" },
+  { icon: CreditCard, label: "Feltöltőkártya", desc: "Kötöttség nélkül", href: "#feltoltokartya", cat: "feltolto" },
+  { icon: FileText, label: "Ügyintézés", desc: "Online, egyszerűen", href: "#ugyfelszolgalat" },
 ];
 
 export function CategoryTiles() {
