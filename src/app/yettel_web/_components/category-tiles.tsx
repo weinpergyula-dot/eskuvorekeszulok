@@ -24,10 +24,10 @@ type Tile = { icon: LucideIcon; label: string; desc: string; href: string; cat?:
 
 const CATEGORIES: Tile[] = [
   { icon: Smartphone, label: "Havidíjas mobil", desc: "Korlátlan hívás, 5G", href: "#havidijas", cat: "havidijas" },
+  { icon: CreditCard, label: "Feltöltőkártya", desc: "Kötöttség nélkül", href: "#feltoltokartya", cat: "feltolto" },
   { icon: Wifi, label: "Otthoni internet", desc: "Optikai & 5G", href: "#internet", cat: "net" },
   { icon: Tv, label: "Yettel TV", desc: "Élő adás & felvétel", href: "#tv", cat: "tv" },
   { icon: Smartphone, label: "Készülékek", desc: "Telefon részletre", href: "#keszulekek" },
-  { icon: CreditCard, label: "Feltöltőkártya", desc: "Kötöttség nélkül", href: "#feltoltokartya", cat: "feltolto" },
   { icon: FileText, label: "Ügyintézés", desc: "Online, egyszerűen", href: "#ugyfelszolgalat" },
 ];
 
@@ -50,28 +50,32 @@ export function CategoryTiles() {
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Üdv a Yettel.hu-n :)</h2>
+        <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Üdv a Yettelnél :)</h2>
         <p className="mt-1 text-[#BBD3E4]">Melyik kategória érdekel?</p>
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
         {CATEGORIES.map((cat) => {
           const isActive = cat.cat !== undefined && cat.cat === activeCat;
-          // A tarifakategóriáknál (mobil/net/tv) csak a tartalom váltson, ne görgessen.
-          const onClick =
-            cat.cat !== undefined
-              ? (e: MouseEvent) => {
-                  e.preventDefault();
-                  const hash = CAT_TO_HASH[cat.cat!];
-                  setActiveCat(cat.cat!);
-                  window.history.replaceState(null, "", `#${hash}`);
-                  window.dispatchEvent(new CustomEvent("yettel:section", { detail: hash }));
-                  // Mobilon görgessünk le a tarifákhoz, mert felül nem látszik a váltás.
-                  if (window.matchMedia("(max-width: 767px)").matches) {
-                    document.getElementById("ajanlatok")?.scrollIntoView({ behavior: "smooth" });
-                  }
-                }
-              : undefined;
+          const onClick = (e: MouseEvent) => {
+            e.preventDefault();
+            if (cat.cat !== undefined) {
+              // Tarifakategória: váltsuk a tartalmat…
+              const hash = CAT_TO_HASH[cat.cat];
+              setActiveCat(cat.cat);
+              window.history.replaceState(null, "", `#${hash}`);
+              window.dispatchEvent(new CustomEvent("yettel:section", { detail: hash }));
+              // …és mobilon görgessünk le a tarifákhoz, mert felül nem látszik a váltás.
+              if (window.matchMedia("(max-width: 767px)").matches) {
+                document.getElementById("ajanlatok")?.scrollIntoView({ behavior: "smooth" });
+              }
+            } else {
+              // Egyéb csempe (Készülékek, Ügyintézés): sima szekcióhoz görgetés – desktopon is.
+              const id = cat.href.slice(1);
+              document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+              window.history.replaceState(null, "", cat.href);
+            }
+          };
           return (
             <a
               key={cat.label}

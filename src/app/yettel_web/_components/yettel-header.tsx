@@ -8,7 +8,7 @@ const NAV = [
   { label: "Internet", href: "#internet" },
   { label: "TV", href: "#tv" },
   { label: "Készülékek", href: "#keszulekek" },
-  { label: "Ügyfélszolgálat", href: "#ugyfelszolgalat" },
+  { label: "Ügyintézés", href: "#ugyfelszolgalat" },
 ];
 
 function Logo() {

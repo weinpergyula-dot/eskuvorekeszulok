@@ -62,7 +62,7 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── Ajánlott csomagok (a kiemelt szekció) ────────── */}
-        <section id="ajanlatok" className="scroll-mt-16 bg-[#E4F2F7] shadow-[inset_0_7px_6px_-6px_rgba(0,35,64,0.13)]">
+        <section id="ajanlatok" className="scroll-mt-16 bg-[#E4F2F7] shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             {/* Anchor célok az egyes fülekhez */}
             <span id="havidijas" className="block -mt-16 pt-16" aria-hidden />
@@ -74,7 +74,7 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── Készülékek ───────────────────────────────────── */}
-        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14 shadow-[inset_0_7px_6px_-6px_rgba(0,35,64,0.13)]">
+        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14 shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
               <div>
@@ -158,9 +158,10 @@ export default function YettelWebPage() {
               </p>
             </div>
 
-            {/* Hero kép (család laptoppal) + lebegő ajánlatkártya – aljáig ér.
-                Mobilon a kép a dividerig ér, a glassos kártya pedig fölé lebeg. */}
-            <div className="relative w-full self-end">
+            {/* Hero kép (család laptoppal) + lebegő ajánlatkártya.
+                Mobilon egymás alatt: fent a glassos kártya, alatta lejjebb a kép
+                (nem lóg rá a családra); desktopon a kártya a képre lebeg. */}
+            <div className="relative flex w-full flex-col-reverse items-center gap-4 self-end md:block">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/yettel/hero-family.png"
@@ -168,7 +169,7 @@ export default function YettelWebPage() {
                 className="block w-full md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
               />
               {/* Az ár a gyerek keze körül, sosem az arcokon */}
-              <div className="absolute bottom-4 left-1/2 w-[86%] max-w-[280px] -translate-x-1/2 rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:bottom-12 md:left-[-3.5rem] md:w-full md:max-w-[230px] md:translate-x-0 md:bg-white/65">
+              <div className="w-[86%] max-w-[280px] rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:absolute md:bottom-12 md:left-[-3.5rem] md:w-full md:max-w-[230px] md:bg-white/65">
                 <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
                   A hét ajánlata
                 </span>
@@ -211,7 +212,7 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── MyYettel app ─────────────────────────────────── */}
-        <section className="relative overflow-hidden border-t border-[#CDE0EA] bg-white shadow-[inset_0_7px_6px_-6px_rgba(0,35,64,0.13)]">
+        <section className="relative overflow-hidden border-t border-[#CDE0EA] bg-white shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-14 sm:px-6 md:grid-cols-2">
             <div className="pb-14 md:pb-16">
               <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">MyYettel alkalmazás</span>
@@ -268,7 +269,7 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── Ügyfélszolgálat ──────────────────────────────── */}
-        <section id="ugyfelszolgalat" className="scroll-mt-16 bg-[#E4F2F7] shadow-[inset_0_7px_6px_-6px_rgba(0,35,64,0.13)]">
+        <section id="ugyfelszolgalat" className="scroll-mt-16 bg-[#E4F2F7] shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             <div className="mb-6">
               <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Gyors ügyintézés</span>
