@@ -280,14 +280,16 @@ html.a11y-underline a { text-decoration: underline !important; }
   background: linear-gradient(
     130deg,
     #00182d 0%,
-    #002340 22%,
-    #073a5e 42%,
-    #1c5f95 60%,
-    #05314f 78%,
+    #001f36 18%,
+    #00263f 34%,
+    #043050 48%,
+    #073653 58%,
+    #043050 68%,
+    #001d33 84%,
     #00182d 100%
   );
-  background-size: 220% 220%;
-  animation: yettel-wshift 16s ease-in-out infinite;
+  background-size: 260% 260%;
+  animation: yettel-wshift 20s ease-in-out infinite;
 }
 @keyframes yettel-wshift {
   0%   { background-position: 0% 50%; }
