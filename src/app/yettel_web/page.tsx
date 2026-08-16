@@ -56,8 +56,8 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Üdvözlő + gyors kategóriák (sötétkék sáv, alul-felül sötétebb gradient) ────── */}
-        <section className="bg-[linear-gradient(to_bottom,#00182D_0%,#002340_16%,#002340_84%,#00182D_100%)]">
+        {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ────── */}
+        <section className="yettel-welcome-bg">
           <CategoryTiles />
         </section>
 

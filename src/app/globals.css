@@ -273,6 +273,31 @@ html.a11y-underline a { text-decoration: underline !important; }
   animation-duration: 55s;
 }
 
+/* A gyorskategória-sáv animált, mozgó kék gradiense – a /yettel_dark welcome
+   oldal mozgása alapján, de a lime akcentus helyett a navy egy kicsit
+   világosabb árnyalatával (tone-on-tone). */
+.yettel-root .yettel-welcome-bg {
+  background: linear-gradient(
+    130deg,
+    #00182d 0%,
+    #002340 22%,
+    #073a5e 42%,
+    #1c5f95 60%,
+    #05314f 78%,
+    #00182d 100%
+  );
+  background-size: 220% 220%;
+  animation: yettel-wshift 16s ease-in-out infinite;
+}
+@keyframes yettel-wshift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .yettel-root .yettel-welcome-bg { animation: none; }
+}
+
 .yettel-root h1,
 .yettel-root h2,
 .yettel-root h3,
