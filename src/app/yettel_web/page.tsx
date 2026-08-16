@@ -16,6 +16,7 @@ import { OffersExplorer } from "./_components/offers-explorer";
 import { CategoryTiles } from "./_components/category-tiles";
 import { YettelHeader } from "./_components/yettel-header";
 import { YettelFooter } from "./_components/yettel-footer";
+import { InternetFlow } from "./_components/internet-flow";
 import { DEVICES, formatFt } from "./_data/offers";
 
 export const metadata: Metadata = {
@@ -325,6 +326,9 @@ export default function YettelWebPage() {
       </main>
 
       <YettelFooter />
+
+      {/* Teljes oldalas, hash-vezérelt otthoni internet igénylési folyamat */}
+      <InternetFlow />
     </div>
   );
 }
