@@ -76,8 +76,10 @@ const MONTHS_HU = [
 ];
 const DOW = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
 
-// A stepper 6 fő lépése (az extráktól az összefoglalóig).
+// A folyamatábra 8 lépése – a címellenőrzéstől az összefoglalóig.
 const STEPPER: { key: Step; label: string }[] = [
+  { key: "address", label: "Címellenőrzés" },
+  { key: "offers", label: "Ajánlatok" },
   { key: "extras", label: "Extrák" },
   { key: "personal", label: "Személyes adatok" },
   { key: "address2", label: "Lakcím" },
@@ -86,14 +88,17 @@ const STEPPER: { key: Step; label: string }[] = [
   { key: "summary", label: "Összefoglaló" },
 ];
 const STEP_TO_STEPPER: Partial<Record<Step, number>> = {
-  extras: 0,
-  personal: 1,
-  personalCheck: 1,
-  address2: 2,
-  address2Check: 2,
-  consent: 3,
-  appointment: 4,
-  summary: 5,
+  address: 0,
+  checking: 0,
+  offers: 1,
+  extras: 2,
+  personal: 3,
+  personalCheck: 3,
+  address2: 4,
+  address2Check: 4,
+  consent: 5,
+  appointment: 6,
+  summary: 7,
 };
 
 function pad(n: number) {
@@ -171,7 +176,6 @@ export function InternetFlow() {
 
   const stepperIdx = STEP_TO_STEPPER[step];
   const isLoader = step === "checking" || step === "personalCheck" || step === "address2Check";
-  const wide = step === "offers" || step === "appointment" || step === "summary";
 
   const back: Partial<Record<Step, Step>> = {
     offers: "address",
@@ -215,22 +219,19 @@ export function InternetFlow() {
             </button>
           </div>
         </div>
-        {/* Folyamatábra sáv: teljes hosszban sötétkék */}
+        {/* Folyamatábra sáv: teljes hosszban sötétkék, a tartalom a kerettel egy szélességben */}
         {stepperIdx !== undefined && (
           <div className="bg-[#002340]">
-            <Stepper current={stepperIdx} />
+            <div className="mx-auto max-w-5xl px-4 sm:px-6">
+              <Stepper current={stepperIdx} />
+            </div>
           </div>
         )}
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-        {/* Lekerekített, világoskék keret mélységgel; körülötte fehér */}
-        <div
-          className={[
-            "mx-auto rounded-[32px] border border-[#CDE0EA] bg-[#E4F2F7] p-6 shadow-[0_30px_80px_-40px_rgba(0,35,64,0.45)] sm:p-10 lg:p-12",
-            wide ? "max-w-5xl" : "max-w-3xl",
-          ].join(" ")}
-        >
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
+        {/* Lekerekített, világoskék keret; fix szélesség – a step1-től a step8-ig ér */}
+        <div className="rounded-[32px] border border-[#CDE0EA] bg-[#E4F2F7] p-6 shadow-[0_30px_80px_-40px_rgba(0,35,64,0.45)] sm:p-10 lg:p-12">
           {step === "address" && <AddressStep onNext={() => go("checking")} />}
         {isLoader && (
           <Loader
@@ -300,36 +301,47 @@ export function InternetFlow() {
   );
 }
 
-// ── Folyamatábra a sötétkék sávon (webes: számozott + felirat, mobil: sáv) ──
+// ── Folyamatábra a sötétkék sávon (webes: 8 lépés felirattal, mobil: sáv) ──
 function Stepper({ current }: { current: number }) {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 sm:py-3.5">
-      {/* Desktop: számozott lépések felirattal */}
-      <ol className="hidden items-center gap-1 sm:flex">
+    <div className="py-3 sm:py-4">
+      {/* Desktop: 8 számozott lépés, felirat a kör alatt */}
+      <ol className="hidden items-start sm:flex">
         {STEPPER.map((s, i) => {
           const done = i < current;
           const active = i === current;
           return (
-            <li key={s.key} className="flex flex-1 items-center gap-2 last:flex-none">
+            <li key={s.key} className="flex flex-1 flex-col items-center">
+              <div className="flex w-full items-center">
+                <span
+                  className={[
+                    "h-0.5 flex-1 rounded",
+                    i === 0 ? "opacity-0" : i <= current ? "bg-[#B4FF00]" : "bg-white/20",
+                  ].join(" ")}
+                />
+                <span
+                  className={[
+                    "grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold transition-colors",
+                    done ? "bg-[#B4FF00] text-[#002340]" : active ? "bg-white text-[#002340]" : "bg-white/15 text-white/70",
+                  ].join(" ")}
+                >
+                  {done ? <Check className="h-4 w-4" strokeWidth={3} /> : i + 1}
+                </span>
+                <span
+                  className={[
+                    "h-0.5 flex-1 rounded",
+                    i === STEPPER.length - 1 ? "opacity-0" : i < current ? "bg-[#B4FF00]" : "bg-white/20",
+                  ].join(" ")}
+                />
+              </div>
               <span
                 className={[
-                  "grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold transition-colors",
-                  done ? "bg-[#B4FF00] text-[#002340]" : active ? "bg-white text-[#002340]" : "bg-white/15 text-white/70",
-                ].join(" ")}
-              >
-                {done ? <Check className="h-4 w-4" strokeWidth={3} /> : i + 1}
-              </span>
-              <span
-                className={[
-                  "whitespace-nowrap text-xs font-bold",
+                  "mt-1.5 px-1 text-center text-[11px] font-bold leading-tight",
                   active ? "text-white" : done ? "text-white/90" : "text-white/50",
                 ].join(" ")}
               >
                 {s.label}
               </span>
-              {i < STEPPER.length - 1 && (
-                <span className={["mx-1 h-0.5 flex-1 rounded", done ? "bg-[#B4FF00]" : "bg-white/20"].join(" ")} />
-              )}
             </li>
           );
         })}
@@ -451,8 +463,10 @@ function AddressStep({ onNext }: { onNext: () => void }) {
         sub="Add meg a címed, és mutatjuk az elérhető ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért."
       />
       <Card>
-        <div className="space-y-4">
-          <Field label="Település vagy irányítószám" placeholder="1097" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <Field label="Település vagy irányítószám" placeholder="1097" />
+          </div>
           <Field label="Közterület" placeholder="Deák Ferenc utca" />
           <Field label="Házszám" placeholder="6" />
         </div>
