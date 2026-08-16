@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, ArrowRight, Sparkles, Zap, Crown } from "lucide-react";
+import { Check, ArrowRight, Sparkles, Zap, Crown, Wifi, MapPin } from "lucide-react";
 import { OFFERS, OFFER_TABS, CATEGORY_META, formatFt, type OfferCategory, type Offer } from "../_data/offers";
+import { InternetFlow } from "./internet-flow";
 
 // A menü/csempe hash-ei ↔ a tarifakategóriák.
 const HASH_TO_CAT: Record<string, OfferCategory> = {
@@ -13,7 +14,7 @@ const HASH_TO_CAT: Record<string, OfferCategory> = {
   feltoltokartya: "feltolto",
 };
 
-function OfferCard({ offer }: { offer: Offer }) {
+function OfferCard({ offer, onOrder }: { offer: Offer; onOrder?: () => void }) {
   const isPremium = !!offer.premium;
   const isFast = offer.badge === "Leggyorsabb";
   // Az ár mögötti egység a kategóriától függ (pl. "hó" vagy "feltöltés").
@@ -84,6 +85,7 @@ function OfferCard({ offer }: { offer: Offer }) {
 
       <button
         type="button"
+        onClick={onOrder}
         className={[
           "mt-auto inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
           offer.best || isPremium
@@ -101,6 +103,7 @@ function OfferCard({ offer }: { offer: Offer }) {
 export function OffersExplorer() {
   // A kategóriát a felső csempék / menü választja ki (hash alapján); alapból "havidijas".
   const [active, setActive] = useState<OfferCategory>("havidijas");
+  const [flowOpen, setFlowOpen] = useState(false);
   const activeTab = OFFER_TABS.find((t) => t.id === active);
   const meta = CATEGORY_META[active];
 
@@ -153,12 +156,40 @@ export function OffersExplorer() {
           </a>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-7 px-3 sm:grid-cols-2 sm:gap-5 sm:px-0 lg:grid-cols-3">
-          {OFFERS[active].map((offer) => (
-            <OfferCard key={offer.id} offer={offer} />
-          ))}
-        </div>
+        <>
+          {/* Otthoni internet: címellenőrzés indító sáv (a /yettel_light_asis folyamat) */}
+          {active === "net" && (
+            <div className="mb-6 flex flex-col gap-4 rounded-[20px] bg-[#002340] px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <div className="flex items-start gap-3">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
+                  <Wifi className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="font-extrabold text-white">Otthoni internet szuper áron</p>
+                  <p className="mt-0.5 text-sm text-[#BBD3E4]">
+                    Már 6 990 Ft / hó-tól, díjmentes telepítéssel. Nézd meg, elérhető-e a címeden!
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setFlowOpen(true)}
+                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#B4FF00] px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:bg-[#9BE000]"
+              >
+                <MapPin className="h-4 w-4" /> Címellenőrzés
+              </button>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 gap-7 px-3 sm:grid-cols-2 sm:gap-5 sm:px-0 lg:grid-cols-3">
+            {OFFERS[active].map((offer) => (
+              <OfferCard key={offer.id} offer={offer} onOrder={active === "net" ? () => setFlowOpen(true) : undefined} />
+            ))}
+          </div>
+        </>
       )}
+
+      <InternetFlow open={flowOpen} onClose={() => setFlowOpen(false)} />
 
       <p className="mt-5 text-xs text-[#7E93B0]">
         A feltüntetett árak online kedvezménnyel, tájékoztató jelleggel értendők. A pontos feltételekért nézd meg az
