@@ -185,39 +185,48 @@ export function InternetFlow() {
   const backTarget = back[step];
 
   return (
-    <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#E4F2F7]">
-      {/* Felső sáv: vissza · márka · bezárás */}
-      <header className="sticky top-0 z-10 border-b border-[#CDE0EA] bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
-          <button
-            type="button"
-            onClick={() => (backTarget ? go(backTarget) : closeFlow())}
-            className={[
-              "inline-flex items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-semibold text-[#2D466C] transition-colors hover:bg-[#E4F2F7]",
-              step === "success" ? "invisible" : "",
-            ].join(" ")}
-          >
-            <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Vissza</span>
-          </button>
-          <span className="flex items-end gap-1" aria-label="Yettel – Otthoni internet igénylése">
-            <span className="text-lg font-extrabold tracking-tight text-[#002340]">Yettel</span>
-            <span aria-hidden className="mb-0.5 inline-block h-2 w-2 rounded-full bg-[#B4FF00]" />
-            <span className="ml-2 hidden text-sm font-semibold text-[#2D466C] sm:inline">Otthoni internet</span>
-          </span>
-          <button
-            type="button"
-            onClick={closeFlow}
-            className="grid h-9 w-9 place-items-center rounded-lg text-[#2D466C] transition-colors hover:bg-[#E4F2F7]"
-            aria-label="Kilépés"
-          >
-            <X className="h-5 w-5" />
-          </button>
+    <div className="fixed inset-0 z-[70] overflow-y-auto bg-white">
+      <header className="sticky top-0 z-10">
+        {/* Felső sáv (fehér): vissza · márka · bezárás */}
+        <div className="border-b border-[#CDE0EA] bg-white">
+          <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
+            <button
+              type="button"
+              onClick={() => (backTarget ? go(backTarget) : closeFlow())}
+              className={[
+                "inline-flex items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-semibold text-[#2D466C] transition-colors hover:bg-[#E4F2F7]",
+                step === "success" ? "invisible" : "",
+              ].join(" ")}
+            >
+              <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Vissza</span>
+            </button>
+            <span className="flex items-end gap-1" aria-label="Yettel – Otthoni internet igénylése">
+              <span className="text-lg font-extrabold tracking-tight text-[#002340]">Yettel</span>
+              <span aria-hidden className="mb-0.5 inline-block h-2 w-2 rounded-full bg-[#B4FF00]" />
+              <span className="ml-2 hidden text-sm font-semibold text-[#2D466C] sm:inline">Otthoni internet</span>
+            </span>
+            <button
+              type="button"
+              onClick={closeFlow}
+              className="grid h-9 w-9 place-items-center rounded-lg text-[#2D466C] transition-colors hover:bg-[#E4F2F7]"
+              aria-label="Kilépés"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
-        {stepperIdx !== undefined && <Stepper current={stepperIdx} />}
+        {/* Folyamatábra sáv: teljes hosszban sötétkék */}
+        {stepperIdx !== undefined && (
+          <div className="bg-[#002340]">
+            <Stepper current={stepperIdx} />
+          </div>
+        )}
       </header>
 
-      <main className={["mx-auto px-4 py-8 sm:px-6 sm:py-10", wide ? "max-w-4xl" : "max-w-2xl"].join(" ")}>
-        {step === "address" && <AddressStep onNext={() => go("checking")} />}
+      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+        {/* Lekerekített, világoskék keret; körülötte fehér */}
+        <div className={["mx-auto rounded-[24px] bg-[#E4F2F7] p-5 sm:p-8", wide ? "max-w-4xl" : "max-w-2xl"].join(" ")}>
+          {step === "address" && <AddressStep onNext={() => go("checking")} />}
         {isLoader && (
           <Loader
             title={step === "checking" ? "Elérhetőség ellenőrzése…" : "Adatok ellenőrzése folyamatban…"}
@@ -279,16 +288,17 @@ export function InternetFlow() {
             onFinish={() => go("success")}
           />
         )}
-        {step === "success" && <SuccessStep apptWhen={apptWhen} onHome={goHome} />}
+          {step === "success" && <SuccessStep apptWhen={apptWhen} onHome={goHome} />}
+        </div>
       </main>
     </div>
   );
 }
 
-// ── Stepper (webes: számozott + felirat, mobil: sáv + "X / 6") ─────────────
+// ── Folyamatábra a sötétkék sávon (webes: számozott + felirat, mobil: sáv) ──
 function Stepper({ current }: { current: number }) {
   return (
-    <div className="mx-auto max-w-4xl px-4 pb-3 pt-1 sm:px-6">
+    <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 sm:py-3.5">
       {/* Desktop: számozott lépések felirattal */}
       <ol className="hidden items-center gap-1 sm:flex">
         {STEPPER.map((s, i) => {
@@ -299,7 +309,7 @@ function Stepper({ current }: { current: number }) {
               <span
                 className={[
                   "grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold transition-colors",
-                  done ? "bg-[#B4FF00] text-[#002340]" : active ? "bg-[#002340] text-white" : "bg-[#CDE0EA] text-[#2D466C]",
+                  done ? "bg-[#B4FF00] text-[#002340]" : active ? "bg-white text-[#002340]" : "bg-white/15 text-white/70",
                 ].join(" ")}
               >
                 {done ? <Check className="h-4 w-4" strokeWidth={3} /> : i + 1}
@@ -307,13 +317,13 @@ function Stepper({ current }: { current: number }) {
               <span
                 className={[
                   "whitespace-nowrap text-xs font-bold",
-                  active ? "text-[#002340]" : "text-[#2D466C]",
+                  active ? "text-white" : done ? "text-white/90" : "text-white/50",
                 ].join(" ")}
               >
                 {s.label}
               </span>
               {i < STEPPER.length - 1 && (
-                <span className={["mx-1 h-0.5 flex-1 rounded", done ? "bg-[#B4FF00]" : "bg-[#CDE0EA]"].join(" ")} />
+                <span className={["mx-1 h-0.5 flex-1 rounded", done ? "bg-[#B4FF00]" : "bg-white/20"].join(" ")} />
               )}
             </li>
           );
@@ -322,8 +332,8 @@ function Stepper({ current }: { current: number }) {
       {/* Mobil: sáv + aktuális lépés */}
       <div className="sm:hidden">
         <div className="mb-1.5 flex items-center justify-between">
-          <span className="text-xs font-bold text-[#002340]">{STEPPER[current].label}</span>
-          <span className="text-xs font-semibold text-[#7E93B0]">
+          <span className="text-xs font-bold text-white">{STEPPER[current].label}</span>
+          <span className="text-xs font-semibold text-white/60">
             {current + 1} / {STEPPER.length}. lépés
           </span>
         </div>
@@ -333,7 +343,7 @@ function Stepper({ current }: { current: number }) {
               key={s.key}
               className={[
                 "h-1.5 flex-1 rounded-full",
-                i < current ? "bg-[#B4FF00]" : i === current ? "bg-[#002340]" : "bg-[#CDE0EA]",
+                i < current ? "bg-[#B4FF00]" : i === current ? "bg-white" : "bg-white/20",
               ].join(" ")}
             />
           ))}
@@ -533,6 +543,46 @@ function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => 
   );
 }
 
+type Extra = {
+  key: "child" | "netpajzs";
+  title: string;
+  icon: ElementType;
+  priceLabel: string;
+  desc: string;
+  features: string[];
+};
+
+const EXTRAS: Extra[] = [
+  {
+    key: "child",
+    title: "Gyermekvédelmi tartalomszűrő",
+    icon: ShieldCheck,
+    priceLabel: "Díjmentes",
+    desc: "A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.",
+    features: [
+      "Hatósági lista alapján blokkolja a felnőtt tartalmú oldalakat",
+      "Automatikusan frissülő szűrőlista, karbantartás nélkül",
+      "Hálózati szintű védelem – minden otthoni eszközre vonatkozik",
+      "Bármikor be- és kikapcsolható a MyYettel alkalmazásban",
+      "Díjmentes, kötöttség és hűségidő nélkül",
+    ],
+  },
+  {
+    key: "netpajzs",
+    title: "NetPajzs",
+    icon: ShieldAlert,
+    priceLabel: "490 Ft / hó",
+    desc: "Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen, a hálózat szintjén.",
+    features: [
+      "Valós idejű védelem vírusok, adathalászat és csaló oldalak ellen",
+      "Hálózati szintű szűrés – nem kell külön alkalmazás az eszközökre",
+      "Automatikusan frissülő fenyegetés-adatbázis",
+      "Havi jelentés a blokkolt fenyegetésekről",
+      "490 Ft / hó, bármikor lemondható",
+    ],
+  },
+];
+
 function ExtrasStep({
   childFilter,
   netPajzs,
@@ -546,49 +596,126 @@ function ExtrasStep({
   setNetPajzs: (v: boolean) => void;
   onNext: () => void;
 }) {
+  const [details, setDetails] = useState<Extra | null>(null);
+  const valueOf = (k: Extra["key"]) => (k === "child" ? childFilter : netPajzs);
+  // Egyszerre csak az egyik kérhető: az egyik bekapcsolása kikapcsolja a másikat.
+  const setValue = (k: Extra["key"], v: boolean) => {
+    if (k === "child") {
+      setChildFilter(v);
+      if (v) setNetPajzs(false);
+    } else {
+      setNetPajzs(v);
+      if (v) setChildFilter(false);
+    }
+  };
+
   return (
     <div>
-      <StepHead title="Extrák választása" sub="Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé." />
+      <StepHead
+        title="Extrák választása"
+        sub="Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé. Egyszerre egy csomag kérhető."
+      />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Card>
-          <div className="flex gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-              <ShieldCheck className="h-5 w-5" />
-            </span>
-            <div>
-              <p className="font-extrabold text-[#002340]">Gyermekvédelmi tartalomszűrő</p>
-              <span className="mt-1 inline-block rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">Díjmentes</span>
+        {EXTRAS.map((x) => (
+          <Card key={x.key} className="flex h-full flex-col">
+            <div className="flex gap-3">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
+                <x.icon className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="font-extrabold text-[#002340]">{x.title}</p>
+                <span className="mt-1 inline-block rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">
+                  {x.priceLabel}
+                </span>
+              </div>
             </div>
-          </div>
-          <p className="mt-3 text-sm text-[#2D466C]">
-            A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.
-            Később is igényelheted és bármikor lemondhatod.
-          </p>
-          <YesNo value={childFilter} onChange={setChildFilter} />
-        </Card>
-
-        <Card>
-          <div className="flex gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-              <ShieldAlert className="h-5 w-5" />
-            </span>
-            <div>
-              <p className="font-extrabold text-[#002340]">NetPajzs</p>
-              <span className="mt-1 inline-block rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">490 Ft / hó</span>
+            {/* Fix magasságú leírás, hogy mindkét kártya egyforma legyen */}
+            <p className="mt-3 min-h-[3rem] text-sm text-[#2D466C]">{x.desc}</p>
+            <button
+              type="button"
+              onClick={() => setDetails(x)}
+              className="mt-2 inline-flex items-center gap-1 self-start text-sm font-bold text-[#002340] hover:underline"
+            >
+              Részletek <ChevronRight className="h-4 w-4" />
+            </button>
+            <div className="mt-auto">
+              <YesNo value={valueOf(x.key)} onChange={(v) => setValue(x.key, v)} />
             </div>
-          </div>
-          <p className="mt-3 text-sm text-[#2D466C]">
-            Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen — a hálózat szintjén, minden
-            otthoni eszközödön.
-          </p>
-          <YesNo value={netPajzs} onChange={setNetPajzs} />
-        </Card>
+          </Card>
+        ))}
       </div>
       <Footer>
         <PrimaryButton onClick={onNext}>
           Tovább <ArrowRight className="h-4 w-4" />
         </PrimaryButton>
       </Footer>
+
+      {details && <DetailsModal extra={details} onClose={() => setDetails(null)} />}
+    </div>
+  );
+}
+
+// Részletek popup az extra csomag tulajdonságaival.
+function DetailsModal({ extra, onClose }: { extra: Extra; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-[#002340]/55 p-4 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${extra.title} részletei`}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md rounded-[24px] bg-white p-6 shadow-[0_30px_80px_rgba(0,35,64,0.35)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
+              <extra.icon className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="text-lg font-extrabold text-[#002340]">{extra.title}</h3>
+              <span className="mt-1 inline-block rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">
+                {extra.priceLabel}
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[#2D466C] transition-colors hover:bg-[#E4F2F7]"
+            aria-label="Bezárás"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <ul className="mt-4 space-y-2.5">
+          {extra.features.map((f) => (
+            <li key={f} className="flex items-start gap-2.5 text-sm text-[#2D466C]">
+              <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#B4FF00]">
+                <Check className="h-3 w-3 text-[#002340]" strokeWidth={3} />
+              </span>
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+        >
+          Értem
+        </button>
+      </div>
     </div>
   );
 }
