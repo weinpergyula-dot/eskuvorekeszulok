@@ -223,9 +223,14 @@ export function InternetFlow() {
         )}
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
-        {/* Lekerekített, világoskék keret; körülötte fehér */}
-        <div className={["mx-auto rounded-[24px] bg-[#E4F2F7] p-5 sm:p-8", wide ? "max-w-4xl" : "max-w-2xl"].join(" ")}>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+        {/* Lekerekített, világoskék keret mélységgel; körülötte fehér */}
+        <div
+          className={[
+            "mx-auto rounded-[32px] border border-[#CDE0EA] bg-[#E4F2F7] p-6 shadow-[0_30px_80px_-40px_rgba(0,35,64,0.45)] sm:p-10 lg:p-12",
+            wide ? "max-w-5xl" : "max-w-3xl",
+          ].join(" ")}
+        >
           {step === "address" && <AddressStep onNext={() => go("checking")} />}
         {isLoader && (
           <Loader
@@ -364,7 +369,16 @@ function StepHead({ title, sub }: { title: string; sub?: string }) {
 }
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={["rounded-[20px] border border-[#CDE0EA] bg-white p-5 sm:p-6", className].join(" ")}>{children}</div>;
+  return (
+    <div
+      className={[
+        "rounded-[20px] border border-[#CDE0EA] bg-white p-5 shadow-[0_10px_30px_-20px_rgba(0,35,64,0.35)] sm:p-6",
+        className,
+      ].join(" ")}
+    >
+      {children}
+    </div>
+  );
 }
 
 function Field({
@@ -473,7 +487,10 @@ function OffersStep({ onSelect }: { onSelect: (p: Pkg) => void }) {
       <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">Internet</p>
       <div className="grid gap-4 sm:grid-cols-2">
         {PACKAGES.map((p) => (
-          <div key={p.name} className="relative flex flex-col rounded-[20px] border border-[#CDE0EA] bg-white p-5 sm:p-6">
+          <div
+            key={p.name}
+            className="relative flex flex-col rounded-[20px] border border-[#CDE0EA] bg-white p-5 shadow-[0_10px_30px_-20px_rgba(0,35,64,0.35)] sm:p-6"
+          >
             <span className="absolute -top-3 left-5 inline-flex items-center gap-1 rounded-full bg-[#B4FF00] px-3 py-1 text-xs font-bold text-[#002340]">
               30 nap díjmentes
             </span>
