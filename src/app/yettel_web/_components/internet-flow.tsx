@@ -493,9 +493,11 @@ function OffersStep({ onSelect }: { onSelect: (o: Offer) => void }) {
       <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">Internet</p>
       {/* Ugyanaz az OfferCard, mint a főoldali szekcióban; csak a gomb szövege más. */}
       <div className="grid gap-5 sm:grid-cols-2">
-        {OFFERS.net.map((o) => (
-          <OfferCard key={o.id} offer={o} ctaLabel="Megrendelem" onOrder={() => onSelect(o)} />
-        ))}
+        {[...OFFERS.net]
+          .sort((a, b) => b.price - a.price)
+          .map((o) => (
+            <OfferCard key={o.id} offer={o} ctaLabel="Megrendelem" onOrder={() => onSelect(o)} />
+          ))}
       </div>
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] bg-white px-3 py-2.5 text-sm font-bold text-[#002340]">

@@ -76,9 +76,12 @@ export function OffersExplorer() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-7 px-3 sm:grid-cols-2 sm:gap-5 sm:px-0 lg:grid-cols-3">
-          {OFFERS[active].map((offer) => (
-            <OfferCard key={offer.id} offer={offer} onOrder={active === "net" ? startInternetFlow : undefined} />
-          ))}
+          {/* Balról jobbra ár szerint csökkenő sorrend */}
+          {[...OFFERS[active]]
+            .sort((a, b) => b.price - a.price)
+            .map((offer) => (
+              <OfferCard key={offer.id} offer={offer} onOrder={active === "net" ? startInternetFlow : undefined} />
+            ))}
         </div>
       )}
 
