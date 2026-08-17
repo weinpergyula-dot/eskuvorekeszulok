@@ -58,13 +58,18 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ────── */}
-        <section className="yettel-welcome-bg">
+        {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ──────
+            Az alsó extra térköz alá csúszik be az ajánlatok szekció, hogy annak
+            lekerekített felső sarkainál ez a sötétkék háttér látsszon ki. */}
+        <section className="yettel-welcome-bg pb-10">
           <CategoryTiles />
         </section>
 
         {/* ── Ajánlott csomagok (a kiemelt szekció) ────────── */}
-        <section id="ajanlatok" className="scroll-mt-16 bg-[#E4F2F7] shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
+        <section
+          id="ajanlatok"
+          className="relative -mt-10 scroll-mt-16 rounded-t-[32px] bg-[#E4F2F7] shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]"
+        >
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             {/* Anchor célok az egyes fülekhez */}
             <span id="havidijas" className="block -mt-16 pt-16" aria-hidden />

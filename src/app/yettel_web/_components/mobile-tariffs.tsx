@@ -73,7 +73,8 @@ export function MobileTariffs() {
           Nincs a szűrésnek megfelelő tarifa. Próbálj más szűrőt!
         </div>
       ) : (
-        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-6 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-0 sm:pb-0 lg:grid-cols-3">
+        // Weben is kell térköz a szűrő és a kártyák (illetve a kilógó címkéik) közé.
+        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-6 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-9 sm:pb-0 lg:grid-cols-3">
           {tariffs.map((t, i) => (
             <OfferCard
               key={t.id}
