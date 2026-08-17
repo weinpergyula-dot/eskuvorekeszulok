@@ -1,9 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type ReactNode, type ElementType } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+  type ElementType,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   X,
   CheckCircle2,
   ShieldCheck,
@@ -20,8 +31,8 @@ import {
   BookOpen,
   Loader2,
   ArrowRight,
-  Trophy,
-  Tv,
+  MonitorPlay,
+  ShoppingCart,
   User,
 } from "lucide-react";
 import { OFFERS, formatFt, type Offer, type OfferCategory } from "../_data/offers";
@@ -59,24 +70,32 @@ type FlowConfig = {
   service: Extract<OfferCategory, "net" | "tv">;
   hashBase: string;
   brand: string;
+  orderLabel: string; // a fejlécben: "mit rendel" (pl. "Internet megrendelés")
   closeHash: string; // ide tér vissza kilépéskor (a főoldali kategória)
   addressTitle: string;
   addressSub: string;
   availTitle: string;
   offersLabel: string;
   extras: FlowExtra[];
+  /** Az extráknál egyszerre több is választható (pl. TV streaming). */
+  extrasMultiSelect?: boolean;
+  extrasTitle: string;
+  extrasSub: string;
 };
 
 const NET_CONFIG: FlowConfig = {
   service: "net",
   hashBase: "otthoni-internet",
   brand: "Otthoni internet",
+  orderLabel: "Internet megrendelés",
   closeHash: "internet",
   addressTitle: "Hova szeretnél otthoni internetet?",
   addressSub:
     "Add meg a címed, és mutatjuk az elérhető ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.",
   availTitle: "Elérhetőség ellenőrzése…",
   offersLabel: "Internet",
+  extrasTitle: "Extrák választása",
+  extrasSub: "Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé. Egyszerre egy csomag kérhető.",
   extras: [
     {
       key: "child",
@@ -115,39 +134,57 @@ const TV_CONFIG: FlowConfig = {
   service: "tv",
   hashBase: "yettel-tv",
   brand: "Yettel TV",
+  orderLabel: "TV megrendelés",
   closeHash: "tv",
   addressTitle: "Hova szeretnél Yettel TV-t?",
   addressSub:
     "Add meg a címed, és mutatjuk az elérhető TV-csomagokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.",
   availTitle: "Elérhetőség ellenőrzése…",
   offersLabel: "TV-csomagok",
+  extrasMultiSelect: true,
+  extrasTitle: "Streaming szolgáltatások",
+  extrasSub: "Válaszd ki, mely streaming szolgáltatásokat szeretnéd a TV mellé – akár többet is.",
   extras: [
     {
-      key: "sport",
-      title: "Sport csomag",
-      icon: Trophy,
-      price: 1490,
-      priceLabel: "1 490 Ft / hó",
-      desc: "Élő közvetítések, bajnokságok és prémium sportcsatornák egy csomagban.",
+      key: "rtlplus",
+      title: "RTL+",
+      icon: MonitorPlay,
+      price: 1590,
+      priceLabel: "1 590 Ft / hó",
+      desc: "Az RTL+ teljes kínálata: filmek, sorozatok és exkluzív műsorok.",
       details: [
-        "Hazai és nemzetközi bajnokságok élőben",
-        "10+ sportcsatorna, több HD minőségben",
-        "Visszanézés és mérkőzés-összefoglalók",
+        "RTL csatornák műsorai és exkluzív tartalmak",
+        "Több ezer óra film és sorozat",
+        "Reklámmentes lejátszás",
         "Bármikor lemondható",
       ],
     },
     {
-      key: "multiroom",
-      title: "Multiroom – 2. beltéri egység",
-      icon: Tv,
-      price: 990,
-      priceLabel: "990 Ft / hó",
-      desc: "Nézz különböző műsorokat egyszerre két tévén, külön beltéri egységgel.",
+      key: "hbomax",
+      title: "HBO Max",
+      icon: MonitorPlay,
+      price: 2990,
+      priceLabel: "2 990 Ft / hó",
+      desc: "Prémium sorozatok, filmek és exkluzív HBO tartalmak egy helyen.",
       details: [
-        "Második beltéri egység a nappalin kívül is",
-        "Párhuzamos, független nézés két készüléken",
-        "Közös felvételtár mindkét egységen",
-        "Bármikor bővíthető további egységgel",
+        "A HBO Max teljes kínálata",
+        "Exkluzív sorozatok és sikerfilmek",
+        "Akár 4K minőségben",
+        "Bármikor lemondható",
+      ],
+    },
+    {
+      key: "netflix",
+      title: "Netflix",
+      icon: MonitorPlay,
+      price: 3490,
+      priceLabel: "3 490 Ft / hó",
+      desc: "A Netflix filmek, sorozatok és saját gyártású tartalmak.",
+      details: [
+        "A Netflix teljes kínálata",
+        "Filmek, sorozatok és saját gyártású tartalmak",
+        "Több eszközön elérhető",
+        "Bármikor lemondható",
       ],
     },
   ],
@@ -226,11 +263,20 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
     return m;
   }, [STEP_HASH]);
 
-  const defaultExtra = useMemo(() => config.extras.find((e) => e.price === 0)?.key ?? null, [config.extras]);
+  const defaultExtras = useMemo(
+    () =>
+      config.extrasMultiSelect
+        ? []
+        : config.extras
+            .filter((e) => e.price === 0)
+            .map((e) => e.key)
+            .slice(0, 1),
+    [config.extras, config.extrasMultiSelect]
+  );
 
   const [step, setStep] = useState<Step | null>(null);
   const [pkg, setPkg] = useState<Offer | null>(null);
-  const [selectedExtra, setSelectedExtra] = useState<string | null>(defaultExtra);
+  const [selectedExtras, setSelectedExtras] = useState<string[]>(defaultExtras);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
   const [apptDate, setApptDate] = useState<Date | null>(null);
   const [apptSlot, setApptSlot] = useState<string | null>(null);
@@ -286,14 +332,18 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
   }, [step, goReplace]);
 
   const requiredOk = !!consents.aszf && !!consents.egyedi && !!consents.adat;
-  const extra = config.extras.find((e) => e.key === selectedExtra) ?? null;
-  const total = (pkg?.price ?? 0) + (extra?.price ?? 0);
+  const chosenExtras = config.extras.filter((e) => selectedExtras.includes(e.key));
+  const total = (pkg?.price ?? 0) + chosenExtras.reduce((s, e) => s + e.price, 0);
   const apptWhen = apptDate && apptSlot ? `${formatDateHu(apptDate)} · ${apptSlot}` : "—";
 
   if (step === null) return null;
 
   const stepperIdx = STEP_TO_STEPPER[step];
   const isLoader = step === "checking" || step === "personalCheck" || step === "address2Check";
+  // A lebegő kosár-összegző: amint van kiválasztott csomag, az összefoglalóig.
+  const showCart =
+    pkg !== null &&
+    ["extras", "personal", "personalCheck", "address2", "address2Check", "consent", "appointment"].includes(step);
 
   const back: Partial<Record<Step, Step>> = {
     offers: "address",
@@ -322,10 +372,9 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
             >
               <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Vissza</span>
             </button>
-            <span className="flex items-end gap-1" aria-label={`Yettel – ${config.brand} igénylése`}>
-              <span className="text-lg font-extrabold tracking-tight text-[#002340]">Yettel</span>
-              <span aria-hidden className="mb-0.5 inline-block h-2 w-2 rounded-full bg-[#B4FF00]" />
-              <span className="ml-2 hidden text-sm font-semibold text-[#2D466C] sm:inline">{config.brand}</span>
+            {/* A Yettel logó helyett: mit rendel a felhasználó */}
+            <span className="text-sm font-extrabold uppercase tracking-[0.04em] text-[#002340] sm:text-base">
+              {config.orderLabel}
             </span>
             <button
               type="button"
@@ -381,8 +430,11 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
           {step === "extras" && (
             <ExtrasStep
               extras={config.extras}
-              selected={selectedExtra}
-              setSelected={setSelectedExtra}
+              multiSelect={!!config.extrasMultiSelect}
+              title={config.extrasTitle}
+              sub={config.extrasSub}
+              selected={selectedExtras}
+              setSelected={setSelectedExtras}
               onNext={() => go("personal")}
             />
           )}
@@ -409,7 +461,7 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
           {step === "summary" && (
             <SummaryStep
               pkg={pkg}
-              extra={extra}
+              extras={chosenExtras}
               total={total}
               apptWhen={apptWhen}
               contactName={contactName}
@@ -422,6 +474,65 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
           {step === "success" && <SuccessStep apptWhen={apptWhen} onHome={goHome} />}
         </div>
       </main>
+
+      {showCart && pkg && <CartSummary pkg={pkg} extras={chosenExtras} total={total} />}
+    </div>
+  );
+}
+
+// ── Lebegő kosár-összegző ──────────────────────────────────
+function CartSummary({ pkg, extras, total }: { pkg: Offer; extras: FlowExtra[]; total: number }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="fixed bottom-4 right-4 z-40 w-[calc(100%-2rem)] max-w-xs sm:bottom-6 sm:right-6">
+      {open ? (
+        <div className="overflow-hidden rounded-2xl border border-[#CDE0EA] bg-white shadow-[0_24px_60px_-20px_rgba(0,35,64,0.45)]">
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="flex w-full items-center justify-between gap-2 bg-[#002340] px-4 py-3 text-white"
+          >
+            <span className="inline-flex items-center gap-2 text-sm font-bold">
+              <ShoppingCart className="h-4 w-4 text-[#B4FF00]" /> A kosarad
+            </span>
+            <ChevronDown className="h-4 w-4" />
+          </button>
+          <div className="max-h-[45vh] overflow-y-auto p-4">
+            <div className="flex items-start justify-between gap-3 border-b border-[#CDE0EA] pb-2.5">
+              <div>
+                <p className="text-sm font-bold text-[#002340]">{pkg.name}</p>
+                <p className="text-xs text-[#7E93B0]">{pkg.features[0]}</p>
+              </div>
+              <span className="whitespace-nowrap text-sm font-bold text-[#002340]">{formatFt(pkg.price)}</span>
+            </div>
+            {extras.map((e) => (
+              <div key={e.key} className="flex items-center justify-between gap-3 border-b border-[#CDE0EA] py-2.5">
+                <p className="text-sm text-[#002340]">{e.title}</p>
+                <span className={["whitespace-nowrap text-sm", e.price === 0 ? "font-semibold text-[#2D466C]" : "font-bold text-[#002340]"].join(" ")}>
+                  {e.price === 0 ? "Díjmentes" : formatFt(e.price)}
+                </span>
+              </div>
+            ))}
+            <div className="flex items-center justify-between gap-3 pt-3">
+              <span className="text-sm font-extrabold uppercase tracking-[0.04em] text-[#2D466C]">Összesen</span>
+              <span className="text-lg font-extrabold tracking-tight text-[#002340]">
+                {formatFt(total)}
+                <span className="text-xs font-semibold text-[#2D466C]"> / hó</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="ml-auto flex items-center gap-2 rounded-full bg-[#002340] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_40px_-16px_rgba(0,35,64,0.6)]"
+        >
+          <ShoppingCart className="h-4 w-4 text-[#B4FF00]" />
+          <span>{formatFt(total)} / hó</span>
+          <ChevronUp className="h-4 w-4" />
+        </button>
+      )}
     </div>
   );
 }
@@ -595,7 +706,7 @@ function AddressStep({ config, onNext, onLogin }: { config: FlowConfig; onNext: 
         <button
           type="button"
           onClick={onLogin}
-          className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+          className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#B4FF00] px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:bg-[#9BE000]"
         >
           <User className="h-4 w-4" /> Bejelentkezés
         </button>
@@ -691,25 +802,39 @@ function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => 
 
 function ExtrasStep({
   extras,
+  multiSelect,
+  title,
+  sub,
   selected,
   setSelected,
   onNext,
 }: {
   extras: FlowExtra[];
-  selected: string | null;
-  setSelected: (v: string | null) => void;
+  multiSelect: boolean;
+  title: string;
+  sub: string;
+  selected: string[];
+  setSelected: Dispatch<SetStateAction<string[]>>;
   onNext: () => void;
 }) {
   const [details, setDetails] = useState<FlowExtra | null>(null);
+  const toggle = (key: string, v: boolean) => {
+    setSelected((prev) => {
+      if (multiSelect) {
+        // Több is választható: egymástól függetlenül be/ki.
+        return v ? [...prev.filter((k) => k !== key), key] : prev.filter((k) => k !== key);
+      }
+      // Csak egy választható: a bekapcsolás kikapcsolja a többit.
+      return v ? [key] : prev.filter((k) => k !== key);
+    });
+  };
+  const gridCols = extras.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2";
   return (
     <div>
-      <StepHead
-        title="Extrák választása"
-        sub="Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé. Egyszerre egy csomag kérhető."
-      />
-      <div className="grid gap-4 sm:grid-cols-2">
+      <StepHead title={title} sub={sub} />
+      <div className={["grid gap-4", gridCols].join(" ")}>
         {extras.map((x) => {
-          const on = selected === x.key;
+          const on = selected.includes(x.key);
           return (
             <Card key={x.key} className="flex h-full flex-col">
               <div className="flex gap-3">
@@ -732,7 +857,7 @@ function ExtrasStep({
                 Részletek <ChevronRight className="h-4 w-4" />
               </button>
               <div className="mt-auto">
-                <YesNo value={on} onChange={(v) => setSelected(v ? x.key : selected === x.key ? null : selected)} />
+                <YesNo value={on} onChange={(v) => toggle(x.key, v)} />
               </div>
             </Card>
           );
@@ -1144,7 +1269,7 @@ function KRow({ k, v, strong }: { k: string; v: string; strong?: boolean }) {
 
 function SummaryStep({
   pkg,
-  extra,
+  extras,
   total,
   apptWhen,
   contactName,
@@ -1154,7 +1279,7 @@ function SummaryStep({
   onFinish,
 }: {
   pkg: Offer | null;
-  extra: FlowExtra | null;
+  extras: FlowExtra[];
   total: number;
   apptWhen: string;
   contactName: string;
@@ -1171,7 +1296,12 @@ function SummaryStep({
           <p className="mb-2 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">Megrendelt szolgáltatások</p>
           <Card className="!p-4 sm:!p-5">
             {pkg && (
-              <div className="flex items-center justify-between gap-3 border-b border-[#CDE0EA] py-2.5">
+              <div
+                className={[
+                  "flex items-center justify-between gap-3 py-2.5",
+                  extras.length > 0 ? "border-b border-[#CDE0EA]" : "",
+                ].join(" ")}
+              >
                 <div>
                   <p className="text-sm font-bold text-[#002340]">{pkg.name}</p>
                   <p className="text-xs text-[#2D466C]">{pkg.features[0]}</p>
@@ -1179,14 +1309,20 @@ function SummaryStep({
                 <span className="text-sm font-bold text-[#002340]">{formatFt(pkg.price)}</span>
               </div>
             )}
-            {extra && (
-              <div className="flex items-center justify-between gap-3 py-2.5">
+            {extras.map((extra, i) => (
+              <div
+                key={extra.key}
+                className={[
+                  "flex items-center justify-between gap-3 py-2.5",
+                  i < extras.length - 1 ? "border-b border-[#CDE0EA]" : "",
+                ].join(" ")}
+              >
                 <p className="text-sm text-[#002340]">{extra.title}</p>
                 <span className={["text-sm", extra.price === 0 ? "font-semibold text-[#2D466C]" : "font-bold text-[#002340]"].join(" ")}>
                   {extra.price === 0 ? "Díjmentes" : formatFt(extra.price)}
                 </span>
               </div>
-            )}
+            ))}
           </Card>
 
           <div className="mb-2 mt-5 flex items-center justify-between">
