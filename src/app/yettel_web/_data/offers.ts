@@ -113,8 +113,9 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       price: 7990,
       unit: "Ft/hó",
       features: ["1000 Mbit/s letöltés", "Optikai internet", "WiFi 7 router ajándékba", "Díjmentes telepítés"],
+      premium: true,
       badge: "30 nap díjmentes",
-      cta: "Címellenőrzés",
+      cta: "Címkeresés",
     },
     {
       id: "hipernet-m",
@@ -123,8 +124,9 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       price: 6990,
       unit: "Ft/hó",
       features: ["500 Mbit/s letöltés", "Optikai internet", "WiFi 7 router ajándékba", "Díjmentes telepítés"],
+      best: true,
       badge: "30 nap díjmentes",
-      cta: "Címellenőrzés",
+      cta: "Címkeresés",
     },
   ],
   tv: [

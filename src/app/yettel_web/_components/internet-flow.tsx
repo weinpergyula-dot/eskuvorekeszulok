@@ -5,8 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Globe,
-  Router,
   CheckCircle2,
   ShieldCheck,
   ShieldAlert,
@@ -23,7 +21,8 @@ import {
   Loader2,
   ArrowRight,
 } from "lucide-react";
-import { formatFt } from "../_data/offers";
+import { OFFERS, formatFt, type Offer } from "../_data/offers";
+import { OfferCard } from "./offer-card";
 
 // ── A /yettel_light_asis otthoni internet folyamata, teljes oldalas webes
 //    dizájnnal. Minden lépés saját URL-hash-t kap (#otthoni-internet/<lépés>),
@@ -61,13 +60,6 @@ const STEP_HASH: Record<Step, string> = {
 const HASH_TO_STEP: Record<string, Step> = Object.fromEntries(
   Object.entries(STEP_HASH).map(([k, v]) => [v, k as Step])
 ) as Record<string, Step>;
-
-type Pkg = { name: string; bw: string; price: number; note: string };
-
-const PACKAGES: Pkg[] = [
-  { name: "HiperNet L", bw: "1000 Mbit/s", price: 7990, note: "e-Komfort, 12 hó hűséggel" },
-  { name: "HiperNet M", bw: "500 Mbit/s", price: 6990, note: "e-Komfort, 12 hó hűséggel" },
-];
 
 const SLOTS = ["08:00 – 12:00", "12:00 – 16:00", "16:00 – 20:00"];
 const MONTHS_HU = [
@@ -110,7 +102,7 @@ function formatDateHu(d: Date) {
 
 export function InternetFlow() {
   const [step, setStep] = useState<Step | null>(null);
-  const [pkg, setPkg] = useState<Pkg | null>(null);
+  const [pkg, setPkg] = useState<Offer | null>(null);
   const [childFilter, setChildFilter] = useState(true);
   const [netPajzs, setNetPajzs] = useState(false);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
@@ -487,54 +479,25 @@ function AddressStep({ onNext }: { onNext: () => void }) {
   );
 }
 
-// ── 3. Ajánlatok a címeden (weben 2 oszlop) ────────────────
-function OffersStep({ onSelect }: { onSelect: (p: Pkg) => void }) {
+// ── 3. Ajánlatok a címeden – ugyanazok a kártyák, mint a főoldalon ─────────
+function OffersStep({ onSelect }: { onSelect: (o: Offer) => void }) {
   return (
     <div>
       <StepHead title="Ajánlatok a címeden" />
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white px-4 py-3 ring-1 ring-[#CDE0EA]">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white px-4 py-3 ring-1 ring-[#CDE0EA]">
         <p className="text-sm font-semibold text-[#002340]">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
         <span className="inline-flex items-center gap-1 rounded-full bg-[#B4FF00]/25 px-3 py-1 text-xs font-bold text-[#002340]">
           <CheckCircle2 className="h-3.5 w-3.5" /> Elérhető a címeden
         </span>
       </div>
       <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">Internet</p>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {PACKAGES.map((p) => (
-          <div
-            key={p.name}
-            className="relative flex flex-col rounded-[20px] border border-[#CDE0EA] bg-white p-5 shadow-[0_10px_30px_-20px_rgba(0,35,64,0.35)] sm:p-6"
-          >
-            <span className="absolute -top-3 left-5 inline-flex items-center gap-1 rounded-full bg-[#B4FF00] px-3 py-1 text-xs font-bold text-[#002340]">
-              30 nap díjmentes
-            </span>
-            <div className="mb-1 flex items-baseline justify-between gap-2">
-              <h3 className="text-xl font-extrabold text-[#002340]">{p.name}</h3>
-              <span className="text-xs text-[#7E93B0]">{p.note}</span>
-            </div>
-            <p className="text-3xl font-extrabold tracking-tight text-[#002340]">{p.bw}</p>
-            <ul className="mt-4 space-y-2 text-sm text-[#2D466C]">
-              <li className="flex items-center gap-2"><Globe className="h-4 w-4 text-[#002340]" /> Optikai internet</li>
-              <li className="flex items-center gap-2"><Router className="h-4 w-4 text-[#002340]" /> WiFi 7 router</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#002340]" /> Díjmentes telepítés</li>
-            </ul>
-            <div className="mt-5 flex items-end justify-between gap-3">
-              <span className="text-2xl font-extrabold tracking-tight text-[#002340]">
-                {formatFt(p.price)}
-                <span className="text-sm font-semibold text-[#2D466C]"> / hó</span>
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => onSelect(p)}
-              className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
-            >
-              Kiválasztom <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
+      {/* Ugyanaz az OfferCard, mint a főoldali szekcióban; csak a gomb szövege más. */}
+      <div className="grid gap-5 sm:grid-cols-2">
+        {OFFERS.net.map((o) => (
+          <OfferCard key={o.id} offer={o} ctaLabel="Megrendelem" onOrder={() => onSelect(o)} />
         ))}
       </div>
-      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] bg-white px-3 py-2.5 text-sm font-bold text-[#002340]">
           <MessageCircle className="h-4 w-4" /> Chat
         </span>
@@ -1092,7 +1055,7 @@ function SummaryStep({
   onEditAppt,
   onFinish,
 }: {
-  pkg: Pkg | null;
+  pkg: Offer | null;
   childFilter: boolean;
   netPajzs: boolean;
   total: number;
@@ -1115,7 +1078,7 @@ function SummaryStep({
               <div className="flex items-center justify-between gap-3 border-b border-[#CDE0EA] py-2.5">
                 <div>
                   <p className="text-sm font-bold text-[#002340]">{pkg.name}</p>
-                  <p className="text-xs text-[#2D466C]">{pkg.bw} · optikai</p>
+                  <p className="text-xs text-[#2D466C]">{pkg.features[0]}</p>
                 </div>
                 <span className="text-sm font-bold text-[#002340]">{formatFt(pkg.price)}</span>
               </div>
