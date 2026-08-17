@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, ArrowRight, Sparkles, Zap, Crown, ChevronRight, X } from "lucide-react";
 import { formatFt, type Offer } from "../_data/offers";
+import { EKomfortModal } from "./ekomfort-info";
 
 // Egységes tarifakártya – ugyanez jelenik meg a főoldali "Otthoni internet"
 // szekcióban (címkeresés előtt) és az igénylési folyamat ajánlatok lépésében
@@ -17,6 +18,7 @@ export function OfferCard({
   ctaLabel?: string;
 }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [ekOpen, setEkOpen] = useState(false);
   const isPremium = !!offer.premium;
   const isFast = offer.badge === "Leggyorsabb";
   // Az ár mögötti egység a kategóriától függ (pl. "hó" vagy "feltöltés").
@@ -52,7 +54,23 @@ export function OfferCard({
 
       <div className="mb-4">
         <h3 className="text-2xl font-extrabold text-[#002340]">{offer.name}</h3>
-        <p className={["text-base", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>{offer.tagline}</p>
+        <p className={["text-base", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>
+          {offer.tagline.includes("e-Komfort") ? (
+            <>
+              {offer.tagline.split("e-Komfort")[0]}
+              <button
+                type="button"
+                onClick={() => setEkOpen(true)}
+                className="font-bold text-[#002340] underline decoration-dotted underline-offset-2 hover:decoration-solid"
+              >
+                e-Komfort
+              </button>
+              {offer.tagline.split("e-Komfort")[1]}
+            </>
+          ) : (
+            offer.tagline
+          )}
+        </p>
       </div>
 
       <div className={["mb-4 border-t", isPremium ? "border-[#002340]/20" : "border-[#CDE0EA]"].join(" ")} />
@@ -108,6 +126,7 @@ export function OfferCard({
       </div>
 
       {detailsOpen && <OfferDetailsModal offer={offer} priceUnit={priceUnit} onClose={() => setDetailsOpen(false)} />}
+      {ekOpen && <EKomfortModal onClose={() => setEkOpen(false)} />}
     </div>
   );
 }

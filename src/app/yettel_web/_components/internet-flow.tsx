@@ -34,11 +34,11 @@ import {
   MonitorPlay,
   ShoppingCart,
   User,
-  CalendarCheck,
-  Leaf,
+  Wifi,
 } from "lucide-react";
 import { OFFERS, formatFt, type Offer, type OfferCategory } from "../_data/offers";
 import { OfferCard } from "./offer-card";
+import { EKomfortCard } from "./ekomfort-info";
 
 // ── Teljes oldalas, hash-vezérelt igénylési folyamat (a /yettel_light_asis
 //    mintájára). Ugyanaz a folyamat szolgálja ki az otthoni internetet és a
@@ -68,6 +68,8 @@ type FlowExtra = {
   details: string[];
 };
 
+type ExtraSection = { title?: string; items: FlowExtra[] };
+
 type FlowConfig = {
   service: Extract<OfferCategory, "net" | "tv">;
   hashBase: string;
@@ -78,9 +80,7 @@ type FlowConfig = {
   addressSub: string;
   availTitle: string;
   offersLabel: string;
-  extras: FlowExtra[];
-  /** Az extráknál egyszerre több is választható (pl. TV streaming). */
-  extrasMultiSelect?: boolean;
+  extraSections: ExtraSection[];
   extrasTitle: string;
   extrasSub: string;
   /** e-Komfort tájékoztató megjelenítése a folyamatban (pl. internetnél). */
@@ -99,37 +99,61 @@ const NET_CONFIG: FlowConfig = {
   availTitle: "Elérhetőség ellenőrzése…",
   offersLabel: "Internet",
   extrasTitle: "Extrák választása",
-  extrasSub: "Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé. Egyszerre egy csomag kérhető.",
+  extrasSub: "Válaszd ki, milyen kiegészítőket szeretnél a szolgáltatásod mellé.",
   eKomfort: true,
-  extras: [
+  extraSections: [
     {
-      key: "child",
-      title: "Gyermekvédelmi tartalomszűrő",
-      icon: ShieldCheck,
-      price: 0,
-      priceLabel: "Díjmentes",
-      desc: "A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.",
-      details: [
-        "Hatósági lista alapján blokkolja a felnőtt tartalmú oldalakat",
-        "Automatikusan frissülő szűrőlista, karbantartás nélkül",
-        "Hálózati szintű védelem – minden otthoni eszközre vonatkozik",
-        "Bármikor be- és kikapcsolható a MyYettel alkalmazásban",
-        "Díjmentes, kötöttség és hűségidő nélkül",
+      title: "Internetvédelem",
+      items: [
+        {
+          key: "child",
+          title: "Gyermekvédelmi tartalomszűrő",
+          icon: ShieldCheck,
+          price: 0,
+          priceLabel: "Díjmentes",
+          desc: "A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.",
+          details: [
+            "Hatósági lista alapján blokkolja a felnőtt tartalmú oldalakat",
+            "Automatikusan frissülő szűrőlista, karbantartás nélkül",
+            "Hálózati szintű védelem – minden otthoni eszközre vonatkozik",
+            "Bármikor be- és kikapcsolható a MyYettel alkalmazásban",
+            "Díjmentes, kötöttség és hűségidő nélkül",
+          ],
+        },
+        {
+          key: "netpajzs",
+          title: "NetPajzs",
+          icon: ShieldAlert,
+          price: 490,
+          priceLabel: "490 Ft / hó",
+          desc: "Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen, a hálózat szintjén.",
+          details: [
+            "Valós idejű védelem vírusok, adathalászat és csaló oldalak ellen",
+            "Hálózati szintű szűrés – nem kell külön alkalmazás az eszközökre",
+            "Automatikusan frissülő fenyegetés-adatbázis",
+            "Havi jelentés a blokkolt fenyegetésekről",
+            "490 Ft / hó, bármikor lemondható",
+          ],
+        },
       ],
     },
     {
-      key: "netpajzs",
-      title: "NetPajzs",
-      icon: ShieldAlert,
-      price: 490,
-      priceLabel: "490 Ft / hó",
-      desc: "Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen, a hálózat szintjén.",
-      details: [
-        "Valós idejű védelem vírusok, adathalászat és csaló oldalak ellen",
-        "Hálózati szintű szűrés – nem kell külön alkalmazás az eszközökre",
-        "Automatikusan frissülő fenyegetés-adatbázis",
-        "Havi jelentés a blokkolt fenyegetésekről",
-        "490 Ft / hó, bármikor lemondható",
+      title: "Otthoni WiFi",
+      items: [
+        {
+          key: "mesh",
+          title: "Mesh WiFi rendszer",
+          icon: Wifi,
+          price: 1290,
+          priceLabel: "1 290 Ft / hó",
+          desc: "Erős, egyenletes WiFi lefedettség a lakás minden pontján, akár több szinten is.",
+          details: [
+            "Egységes WiFi hálózat az egész otthonban",
+            "Nincs holttér – zökkenőmentes váltás a helyiségek között",
+            "Akár 2 mesh egység, igény szerint bővíthető",
+            "Bérleti díjban, díjmentes telepítéssel",
+          ],
+        },
       ],
     },
   ],
@@ -146,10 +170,11 @@ const TV_CONFIG: FlowConfig = {
     "Add meg a címed, és mutatjuk az elérhető TV-csomagokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.",
   availTitle: "Elérhetőség ellenőrzése…",
   offersLabel: "TV-csomagok",
-  extrasMultiSelect: true,
   extrasTitle: "Streaming szolgáltatások",
   extrasSub: "Válaszd ki, mely streaming szolgáltatásokat szeretnéd a TV mellé – akár többet is.",
-  extras: [
+  extraSections: [
+    {
+      items: [
     {
       key: "rtlplus",
       title: "RTL+",
@@ -190,6 +215,8 @@ const TV_CONFIG: FlowConfig = {
         "Filmek, sorozatok és saját gyártású tartalmak",
         "Több eszközön elérhető",
         "Bármikor lemondható",
+      ],
+    },
       ],
     },
   ],
@@ -268,20 +295,11 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
     return m;
   }, [STEP_HASH]);
 
-  const defaultExtras = useMemo(
-    () =>
-      config.extrasMultiSelect
-        ? []
-        : config.extras
-            .filter((e) => e.price === 0)
-            .map((e) => e.key)
-            .slice(0, 1),
-    [config.extras, config.extrasMultiSelect]
-  );
+  const allExtras = useMemo(() => config.extraSections.flatMap((s) => s.items), [config.extraSections]);
 
   const [step, setStep] = useState<Step | null>(null);
   const [pkg, setPkg] = useState<Offer | null>(null);
-  const [selectedExtras, setSelectedExtras] = useState<string[]>(defaultExtras);
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
   const [apptDate, setApptDate] = useState<Date | null>(null);
   const [apptSlot, setApptSlot] = useState<string | null>(null);
@@ -337,7 +355,7 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
   }, [step, goReplace]);
 
   const requiredOk = !!consents.aszf && !!consents.egyedi && !!consents.adat;
-  const chosenExtras = config.extras.filter((e) => selectedExtras.includes(e.key));
+  const chosenExtras = allExtras.filter((e) => selectedExtras.includes(e.key));
   const total = (pkg?.price ?? 0) + chosenExtras.reduce((s, e) => s + e.price, 0);
   const apptWhen = apptDate && apptSlot ? `${formatDateHu(apptDate)} · ${apptSlot}` : "—";
 
@@ -434,8 +452,7 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
           )}
           {step === "extras" && (
             <ExtrasStep
-              extras={config.extras}
-              multiSelect={!!config.extrasMultiSelect}
+              sections={config.extraSections}
               title={config.extrasTitle}
               sub={config.extrasSub}
               selected={selectedExtras}
@@ -784,44 +801,49 @@ function OffersStep({ config, onSelect }: { config: FlowConfig; onSelect: (o: Of
 }
 
 // ── 4. Extrák ──────────────────────────────────────────────
-function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+// Rádiógombos választás: kéri vagy nem kéri az adott extrát.
+function RadioChoice({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+  const opts: { v: boolean; label: string }[] = [
+    { v: true, label: "Kérem" },
+    { v: false, label: "Nem kérem" },
+  ];
   return (
-    <div className="grid grid-cols-2 gap-2.5">
-      <button
-        type="button"
-        onClick={() => onChange(true)}
-        className={[
-          "inline-flex items-center justify-center gap-1.5 rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors",
-          value ? "border-[#002340] bg-[#002340] text-white" : "border-[#CDE0EA] text-[#002340] hover:border-[#002340]",
-        ].join(" ")}
-      >
-        <Check className="h-4 w-4" /> Kérem
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange(false)}
-        className={[
-          "inline-flex items-center justify-center gap-1.5 rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors",
-          !value ? "border-[#002340] bg-[#002340] text-white" : "border-[#CDE0EA] text-[#002340] hover:border-[#002340]",
-        ].join(" ")}
-      >
-        <X className="h-4 w-4" /> Nem kérem
-      </button>
+    <div className="flex gap-5">
+      {opts.map((o) => {
+        const selected = value === o.v;
+        return (
+          <button
+            key={o.label}
+            type="button"
+            onClick={() => onChange(o.v)}
+            aria-pressed={selected}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#002340]"
+          >
+            <span
+              className={[
+                "grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 transition-colors",
+                selected ? "border-[#002340]" : "border-[#CDE0EA]",
+              ].join(" ")}
+            >
+              {selected && <span className="h-2.5 w-2.5 rounded-full bg-[#002340]" />}
+            </span>
+            {o.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
 
 function ExtrasStep({
-  extras,
-  multiSelect,
+  sections,
   title,
   sub,
   selected,
   setSelected,
   onNext,
 }: {
-  extras: FlowExtra[];
-  multiSelect: boolean;
+  sections: ExtraSection[];
   title: string;
   sub: string;
   selected: string[];
@@ -829,48 +851,49 @@ function ExtrasStep({
   onNext: () => void;
 }) {
   const [details, setDetails] = useState<FlowExtra | null>(null);
-  const toggle = (key: string, v: boolean) => {
-    setSelected((prev) => {
-      if (multiSelect) {
-        // Több is választható: egymástól függetlenül be/ki.
-        return v ? [...prev.filter((k) => k !== key), key] : prev.filter((k) => k !== key);
-      }
-      // Csak egy választható: a bekapcsolás kikapcsolja a többit.
-      return v ? [key] : prev.filter((k) => k !== key);
-    });
-  };
+  // Minden extra függetlenül kérhető / nem kérhető.
+  const toggle = (key: string, v: boolean) =>
+    setSelected((prev) => (v ? [...prev.filter((k) => k !== key), key] : prev.filter((k) => k !== key)));
   return (
     <div>
       <StepHead title={title} sub={sub} />
-      {/* Horizontális sorok: minden extra egy teljes szélességű sáv */}
-      <div className="space-y-4">
-        {extras.map((x) => {
-          const on = selected.includes(x.key);
-          return (
-            <Card key={x.key} className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-                <x.icon className="h-6 w-6" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-extrabold text-[#002340]">{x.title}</p>
-                  <span className="rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">{x.priceLabel}</span>
-                </div>
-                <p className="mt-1 text-sm text-[#2D466C]">{x.desc}</p>
-                <button
-                  type="button"
-                  onClick={() => setDetails(x)}
-                  className="mt-1.5 inline-flex items-center gap-1 text-sm font-bold text-[#002340] hover:underline"
-                >
-                  Részletek <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="w-full shrink-0 sm:w-[240px]">
-                <YesNo value={on} onChange={(v) => toggle(x.key, v)} />
-              </div>
-            </Card>
-          );
-        })}
+      <div className="space-y-8">
+        {sections.map((sec, si) => (
+          <div key={si}>
+            {sec.title && (
+              <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">{sec.title}</p>
+            )}
+            <div className="space-y-4">
+              {sec.items.map((x) => {
+                const on = selected.includes(x.key);
+                return (
+                  <Card key={x.key} className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
+                      <x.icon className="h-6 w-6" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-extrabold text-[#002340]">{x.title}</p>
+                        <span className="rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">{x.priceLabel}</span>
+                      </div>
+                      <p className="mt-1 text-sm text-[#2D466C]">{x.desc}</p>
+                      <button
+                        type="button"
+                        onClick={() => setDetails(x)}
+                        className="mt-1.5 inline-flex items-center gap-1 text-sm font-bold text-[#002340] hover:underline"
+                      >
+                        Részletek <ChevronRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="w-full shrink-0 sm:w-[210px]">
+                      <RadioChoice value={on} onChange={(v) => toggle(x.key, v)} />
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
       <Footer>
         <PrimaryButton onClick={onNext}>
@@ -1048,41 +1071,6 @@ const CONSENTS = [
   { id: "mkt", req: false, t: "Marketing megkeresés", s: "Hozzájárulok, hogy a Yettel elektronikus úton személyre szabott ajánlatokat és hírlevelet küldjön." },
   { id: "partner", req: false, t: "Adatátadás partnereknek", s: "Hozzájárulok adataim marketingcélú átadásához partnervállalatoknak." },
 ];
-
-function EKomfortCard() {
-  const items = [
-    { icon: FileText, t: "Elektronikus számla", s: "Papíralapú helyett e-számlát kapsz, SMS/e-mail értesítéssel." },
-    { icon: CreditCard, t: "Elektronikus fizetés", s: "App, csoportos beszedés, banki átutalás vagy ATM befizetés." },
-    { icon: CalendarCheck, t: "Határidőre fizetés", s: "A számlát a feltüntetett fizetési határidőig rendezed." },
-  ];
-  return (
-    <div className="mb-6 rounded-2xl border border-[#CDE0EA] bg-white p-5 shadow-[0_10px_30px_-20px_rgba(0,35,64,0.35)] sm:p-6">
-      <div className="flex items-start gap-3">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-          <Leaf className="h-5 w-5" />
-        </span>
-        <div>
-          <p className="font-extrabold text-[#002340]">A választott csomag e-Komfort csomaggal érhető el</p>
-          <p className="mt-1 text-sm text-[#2D466C]">
-            A beépített díjkedvezmény megtartásához teljesítened kell az alábbi 3 feltételt. Ha nem teljesülnek, a kedvezmény
-            visszavonásra és a következő számládban felszámításra kerül.
-          </p>
-        </div>
-      </div>
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        {items.map((it) => (
-          <div key={it.t} className="rounded-xl border border-[#CDE0EA] bg-[#E4F2F7] p-4">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-white text-[#002340]">
-              <it.icon className="h-5 w-5" />
-            </span>
-            <p className="mt-2.5 text-sm font-bold text-[#002340]">{it.t}</p>
-            <p className="mt-1 text-xs leading-relaxed text-[#2D466C]">{it.s}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function ConsentStep({
   consents,
