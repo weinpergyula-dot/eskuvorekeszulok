@@ -12,10 +12,12 @@ export function OfferCard({
   offer,
   onOrder,
   ctaLabel,
+  className = "",
 }: {
   offer: Offer;
   onOrder?: () => void;
   ctaLabel?: string;
+  className?: string;
 }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [ekOpen, setEkOpen] = useState(false);
@@ -33,6 +35,7 @@ export function OfferCard({
           : offer.best
             ? "border-[#B4FF00] bg-white shadow-[0_10px_34px_rgba(0,35,64,0.10)] ring-2 ring-[#B4FF00]"
             : "border-[#CDE0EA] bg-white hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
+        className,
       ].join(" ")}
     >
       {offer.badge && (
