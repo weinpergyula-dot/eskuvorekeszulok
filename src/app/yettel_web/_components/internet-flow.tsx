@@ -20,13 +20,16 @@ import {
   BookOpen,
   Loader2,
   ArrowRight,
+  Trophy,
+  Tv,
+  User,
 } from "lucide-react";
-import { OFFERS, formatFt, type Offer } from "../_data/offers";
+import { OFFERS, formatFt, type Offer, type OfferCategory } from "../_data/offers";
 import { OfferCard } from "./offer-card";
 
-// ── A /yettel_light_asis otthoni internet folyamata, teljes oldalas webes
-//    dizájnnal. Minden lépés saját URL-hash-t kap (#otthoni-internet/<lépés>),
-//    hogy később analitika épülhessen rá. ──────────────────────────────────
+// ── Teljes oldalas, hash-vezérelt igénylési folyamat (a /yettel_light_asis
+//    mintájára). Ugyanaz a folyamat szolgálja ki az otthoni internetet és a
+//    Yettel TV-t – csak a konfiguráció (ajánlatok, extrák, feliratok) tér el. ──
 
 type Step =
   | "address"
@@ -42,24 +45,113 @@ type Step =
   | "summary"
   | "success";
 
-const HASH_BASE = "otthoni-internet";
-const STEP_HASH: Record<Step, string> = {
-  address: `${HASH_BASE}/cim`,
-  checking: `${HASH_BASE}/elerhetoseg`,
-  offers: `${HASH_BASE}/ajanlatok`,
-  extras: `${HASH_BASE}/extrak`,
-  personal: `${HASH_BASE}/szemelyes-adatok`,
-  personalCheck: `${HASH_BASE}/szemelyes-adatok-ellenorzes`,
-  address2: `${HASH_BASE}/lakcim`,
-  address2Check: `${HASH_BASE}/lakcim-ellenorzes`,
-  consent: `${HASH_BASE}/hozzajarulasok`,
-  appointment: `${HASH_BASE}/idopont`,
-  summary: `${HASH_BASE}/osszefoglalo`,
-  success: `${HASH_BASE}/kesz`,
+type FlowExtra = {
+  key: string;
+  title: string;
+  icon: ElementType;
+  price: number;
+  priceLabel: string;
+  desc: string;
+  details: string[];
 };
-const HASH_TO_STEP: Record<string, Step> = Object.fromEntries(
-  Object.entries(STEP_HASH).map(([k, v]) => [v, k as Step])
-) as Record<string, Step>;
+
+type FlowConfig = {
+  service: Extract<OfferCategory, "net" | "tv">;
+  hashBase: string;
+  brand: string;
+  closeHash: string; // ide tér vissza kilépéskor (a főoldali kategória)
+  addressTitle: string;
+  addressSub: string;
+  availTitle: string;
+  offersLabel: string;
+  extras: FlowExtra[];
+};
+
+const NET_CONFIG: FlowConfig = {
+  service: "net",
+  hashBase: "otthoni-internet",
+  brand: "Otthoni internet",
+  closeHash: "internet",
+  addressTitle: "Hova szeretnél otthoni internetet?",
+  addressSub:
+    "Add meg a címed, és mutatjuk az elérhető ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.",
+  availTitle: "Elérhetőség ellenőrzése…",
+  offersLabel: "Internet",
+  extras: [
+    {
+      key: "child",
+      title: "Gyermekvédelmi tartalomszűrő",
+      icon: ShieldCheck,
+      price: 0,
+      priceLabel: "Díjmentes",
+      desc: "A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.",
+      details: [
+        "Hatósági lista alapján blokkolja a felnőtt tartalmú oldalakat",
+        "Automatikusan frissülő szűrőlista, karbantartás nélkül",
+        "Hálózati szintű védelem – minden otthoni eszközre vonatkozik",
+        "Bármikor be- és kikapcsolható a MyYettel alkalmazásban",
+        "Díjmentes, kötöttség és hűségidő nélkül",
+      ],
+    },
+    {
+      key: "netpajzs",
+      title: "NetPajzs",
+      icon: ShieldAlert,
+      price: 490,
+      priceLabel: "490 Ft / hó",
+      desc: "Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen, a hálózat szintjén.",
+      details: [
+        "Valós idejű védelem vírusok, adathalászat és csaló oldalak ellen",
+        "Hálózati szintű szűrés – nem kell külön alkalmazás az eszközökre",
+        "Automatikusan frissülő fenyegetés-adatbázis",
+        "Havi jelentés a blokkolt fenyegetésekről",
+        "490 Ft / hó, bármikor lemondható",
+      ],
+    },
+  ],
+};
+
+const TV_CONFIG: FlowConfig = {
+  service: "tv",
+  hashBase: "yettel-tv",
+  brand: "Yettel TV",
+  closeHash: "tv",
+  addressTitle: "Hova szeretnél Yettel TV-t?",
+  addressSub:
+    "Add meg a címed, és mutatjuk az elérhető TV-csomagokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.",
+  availTitle: "Elérhetőség ellenőrzése…",
+  offersLabel: "TV-csomagok",
+  extras: [
+    {
+      key: "sport",
+      title: "Sport csomag",
+      icon: Trophy,
+      price: 1490,
+      priceLabel: "1 490 Ft / hó",
+      desc: "Élő közvetítések, bajnokságok és prémium sportcsatornák egy csomagban.",
+      details: [
+        "Hazai és nemzetközi bajnokságok élőben",
+        "10+ sportcsatorna, több HD minőségben",
+        "Visszanézés és mérkőzés-összefoglalók",
+        "Bármikor lemondható",
+      ],
+    },
+    {
+      key: "multiroom",
+      title: "Multiroom – 2. beltéri egység",
+      icon: Tv,
+      price: 990,
+      priceLabel: "990 Ft / hó",
+      desc: "Nézz különböző műsorokat egyszerre két tévén, külön beltéri egységgel.",
+      details: [
+        "Második beltéri egység a nappalin kívül is",
+        "Párhuzamos, független nézés két készüléken",
+        "Közös felvételtár mindkét egységen",
+        "Bármikor bővíthető további egységgel",
+      ],
+    },
+  ],
+};
 
 const SLOTS = ["08:00 – 12:00", "12:00 – 16:00", "16:00 – 20:00"];
 const MONTHS_HU = [
@@ -99,12 +191,46 @@ function pad(n: number) {
 function formatDateHu(d: Date) {
   return `${d.getFullYear()}. ${pad(d.getMonth() + 1)}. ${pad(d.getDate())}.`;
 }
+function buildStepHash(base: string): Record<Step, string> {
+  return {
+    address: `${base}/cim`,
+    checking: `${base}/elerhetoseg`,
+    offers: `${base}/ajanlatok`,
+    extras: `${base}/extrak`,
+    personal: `${base}/szemelyes-adatok`,
+    personalCheck: `${base}/szemelyes-adatok-ellenorzes`,
+    address2: `${base}/lakcim`,
+    address2Check: `${base}/lakcim-ellenorzes`,
+    consent: `${base}/hozzajarulasok`,
+    appointment: `${base}/idopont`,
+    summary: `${base}/osszefoglalo`,
+    success: `${base}/kesz`,
+  };
+}
 
+// Vékony wrapperek a két szolgáltatáshoz.
 export function InternetFlow() {
+  return <ServiceFlow config={NET_CONFIG} />;
+}
+export function TvFlow() {
+  return <ServiceFlow config={TV_CONFIG} />;
+}
+
+function ServiceFlow({ config }: { config: FlowConfig }) {
+  const STEP_HASH = useMemo(() => buildStepHash(config.hashBase), [config.hashBase]);
+  const HASH_TO_STEP = useMemo(() => {
+    const m: Record<string, Step> = {};
+    (Object.entries(STEP_HASH) as [Step, string][]).forEach(([k, v]) => {
+      m[v] = k;
+    });
+    return m;
+  }, [STEP_HASH]);
+
+  const defaultExtra = useMemo(() => config.extras.find((e) => e.price === 0)?.key ?? null, [config.extras]);
+
   const [step, setStep] = useState<Step | null>(null);
   const [pkg, setPkg] = useState<Offer | null>(null);
-  const [childFilter, setChildFilter] = useState(true);
-  const [netPajzs, setNetPajzs] = useState(false);
+  const [selectedExtra, setSelectedExtra] = useState<string | null>(defaultExtra);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
   const [apptDate, setApptDate] = useState<Date | null>(null);
   const [apptSlot, setApptSlot] = useState<string | null>(null);
@@ -116,7 +242,7 @@ export function InternetFlow() {
   useEffect(() => {
     const parse = () => {
       const h = window.location.hash.slice(1);
-      if (!h.startsWith(HASH_BASE)) {
+      if (!h.startsWith(config.hashBase)) {
         setStep(null);
         return;
       }
@@ -125,7 +251,7 @@ export function InternetFlow() {
     parse();
     window.addEventListener("hashchange", parse);
     return () => window.removeEventListener("hashchange", parse);
-  }, []);
+  }, [config.hashBase, HASH_TO_STEP]);
 
   // Háttérgörgetés zárolása, amíg a folyamat aktív.
   useEffect(() => {
@@ -139,15 +265,14 @@ export function InternetFlow() {
 
   const go = useCallback((s: Step) => {
     window.location.hash = STEP_HASH[s];
-  }, []);
-  // Töltő képernyők után lecseréljük a hash-t (a Vissza kihagyja a töltőt).
+  }, [STEP_HASH]);
   const goReplace = useCallback((s: Step) => {
     window.history.replaceState(null, "", `#${STEP_HASH[s]}`);
     setStep(s);
-  }, []);
+  }, [STEP_HASH]);
   const closeFlow = useCallback(() => {
-    window.location.hash = "internet";
-  }, []);
+    window.location.hash = config.closeHash;
+  }, [config.closeHash]);
   const goHome = useCallback(() => {
     window.location.hash = "top";
   }, []);
@@ -161,7 +286,8 @@ export function InternetFlow() {
   }, [step, goReplace]);
 
   const requiredOk = !!consents.aszf && !!consents.egyedi && !!consents.adat;
-  const total = (pkg?.price ?? 0) + (netPajzs ? 490 : 0);
+  const extra = config.extras.find((e) => e.key === selectedExtra) ?? null;
+  const total = (pkg?.price ?? 0) + (extra?.price ?? 0);
   const apptWhen = apptDate && apptSlot ? `${formatDateHu(apptDate)} · ${apptSlot}` : "—";
 
   if (step === null) return null;
@@ -196,10 +322,10 @@ export function InternetFlow() {
             >
               <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Vissza</span>
             </button>
-            <span className="flex items-end gap-1" aria-label="Yettel – Otthoni internet igénylése">
+            <span className="flex items-end gap-1" aria-label={`Yettel – ${config.brand} igénylése`}>
               <span className="text-lg font-extrabold tracking-tight text-[#002340]">Yettel</span>
               <span aria-hidden className="mb-0.5 inline-block h-2 w-2 rounded-full bg-[#B4FF00]" />
-              <span className="ml-2 hidden text-sm font-semibold text-[#2D466C] sm:inline">Otthoni internet</span>
+              <span className="ml-2 hidden text-sm font-semibold text-[#2D466C] sm:inline">{config.brand}</span>
             </span>
             <button
               type="button"
@@ -224,68 +350,75 @@ export function InternetFlow() {
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
         {/* Lekerekített, világoskék keret; fix szélesség – a step1-től a step8-ig ér */}
         <div className="rounded-[32px] border border-[#CDE0EA] bg-[#E4F2F7] p-6 shadow-[0_30px_80px_-40px_rgba(0,35,64,0.45)] sm:p-10 lg:p-12">
-          {step === "address" && <AddressStep onNext={() => go("checking")} />}
-        {isLoader && (
-          <Loader
-            title={step === "checking" ? "Elérhetőség ellenőrzése…" : "Adatok ellenőrzése folyamatban…"}
-            sub={
-              step === "checking"
-                ? "Megnézzük, elérhető-e a szolgáltatás a megadott címen. Érdemes egy picit várni."
-                : "Ez néha hosszabb időt is igénybe vehet — érdemes egy picit várni. Kérjük, ne zárd be az ablakot."
-            }
-          />
-        )}
-        {step === "offers" && (
-          <OffersStep
-            onSelect={(p) => {
-              setPkg(p);
-              go("extras");
-            }}
-          />
-        )}
-        {step === "extras" && (
-          <ExtrasStep
-            childFilter={childFilter}
-            netPajzs={netPajzs}
-            setChildFilter={setChildFilter}
-            setNetPajzs={setNetPajzs}
-            onNext={() => go("personal")}
-          />
-        )}
-        {step === "personal" && <PersonalStep onNext={() => go("personalCheck")} />}
-        {step === "address2" && <AddressDataStep onNext={() => go("address2Check")} />}
-        {step === "consent" && (
-          <ConsentStep consents={consents} setConsents={setConsents} onNext={() => go("appointment")} requiredOk={requiredOk} />
-        )}
-        {step === "appointment" && (
-          <AppointmentStep
-            apptDate={apptDate}
-            apptSlot={apptSlot}
-            setApptDate={setApptDate}
-            setApptSlot={setApptSlot}
-            contactName={contactName}
-            setContactName={setContactName}
-            contactPhone={contactPhone}
-            setContactPhone={setContactPhone}
-            contactNote={contactNote}
-            setContactNote={setContactNote}
-            onNext={() => go("summary")}
-          />
-        )}
-        {step === "summary" && (
-          <SummaryStep
-            pkg={pkg}
-            childFilter={childFilter}
-            netPajzs={netPajzs}
-            total={total}
-            apptWhen={apptWhen}
-            contactName={contactName}
-            contactPhone={contactPhone}
-            contactNote={contactNote}
-            onEditAppt={() => go("appointment")}
-            onFinish={() => go("success")}
-          />
-        )}
+          {step === "address" && (
+            <AddressStep
+              config={config}
+              onNext={() => go("checking")}
+              onLogin={() => {
+                window.location.hash = "belepes";
+              }}
+            />
+          )}
+          {isLoader && (
+            <Loader
+              title={step === "checking" ? config.availTitle : "Adatok ellenőrzése folyamatban…"}
+              sub={
+                step === "checking"
+                  ? "Megnézzük, elérhető-e a szolgáltatás a megadott címen. Érdemes egy picit várni."
+                  : "Ez néha hosszabb időt is igénybe vehet — érdemes egy picit várni. Kérjük, ne zárd be az ablakot."
+              }
+            />
+          )}
+          {step === "offers" && (
+            <OffersStep
+              config={config}
+              onSelect={(o) => {
+                setPkg(o);
+                go("extras");
+              }}
+            />
+          )}
+          {step === "extras" && (
+            <ExtrasStep
+              extras={config.extras}
+              selected={selectedExtra}
+              setSelected={setSelectedExtra}
+              onNext={() => go("personal")}
+            />
+          )}
+          {step === "personal" && <PersonalStep onNext={() => go("personalCheck")} />}
+          {step === "address2" && <AddressDataStep onNext={() => go("address2Check")} />}
+          {step === "consent" && (
+            <ConsentStep consents={consents} setConsents={setConsents} onNext={() => go("appointment")} requiredOk={requiredOk} />
+          )}
+          {step === "appointment" && (
+            <AppointmentStep
+              apptDate={apptDate}
+              apptSlot={apptSlot}
+              setApptDate={setApptDate}
+              setApptSlot={setApptSlot}
+              contactName={contactName}
+              setContactName={setContactName}
+              contactPhone={contactPhone}
+              setContactPhone={setContactPhone}
+              contactNote={contactNote}
+              setContactNote={setContactNote}
+              onNext={() => go("summary")}
+            />
+          )}
+          {step === "summary" && (
+            <SummaryStep
+              pkg={pkg}
+              extra={extra}
+              total={total}
+              apptWhen={apptWhen}
+              contactName={contactName}
+              contactPhone={contactPhone}
+              contactNote={contactNote}
+              onEditAppt={() => go("appointment")}
+              onFinish={() => go("success")}
+            />
+          )}
           {step === "success" && <SuccessStep apptWhen={apptWhen} onHome={goHome} />}
         </div>
       </main>
@@ -297,7 +430,6 @@ export function InternetFlow() {
 function Stepper({ current }: { current: number }) {
   return (
     <div className="py-3 sm:py-4">
-      {/* Desktop: 8 számozott lépés, felirat a kör alatt */}
       <ol className="hidden items-start sm:flex">
         {STEPPER.map((s, i) => {
           const done = i < current;
@@ -338,7 +470,6 @@ function Stepper({ current }: { current: number }) {
           );
         })}
       </ol>
-      {/* Mobil: sáv + aktuális lépés */}
       <div className="sm:hidden">
         <div className="mb-1.5 flex items-center justify-between">
           <span className="text-xs font-bold text-white">{STEPPER[current].label}</span>
@@ -392,7 +523,6 @@ function Field({
   value,
   onChange,
   type = "text",
-  optional,
 }: {
   label: string;
   placeholder?: string;
@@ -400,13 +530,10 @@ function Field({
   value?: string;
   onChange?: (v: string) => void;
   type?: string;
-  optional?: boolean;
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-semibold text-[#002340]">
-        {label} {optional && <span className="font-medium text-[#7E93B0]">(opcionális)</span>}
-      </span>
+      <span className="mb-1.5 block text-sm font-semibold text-[#002340]">{label}</span>
       <input
         type={type}
         placeholder={placeholder}
@@ -446,14 +573,34 @@ function Loader({ title, sub }: { title: string; sub: string }) {
   );
 }
 
-// ── 1. Címed ────────────────────────────────────────────────
-function AddressStep({ onNext }: { onNext: () => void }) {
+// ── 1. Címellenőrzés (+ meglévő ügyfél bejelentkezés) ──────
+function AddressStep({ config, onNext, onLogin }: { config: FlowConfig; onNext: () => void; onLogin: () => void }) {
   return (
     <div>
-      <StepHead
-        title="Hova szeretnél otthoni internetet?"
-        sub="Add meg a címed, és mutatjuk az elérhető ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért."
-      />
+      <StepHead title={config.addressTitle} sub={config.addressSub} />
+
+      {/* Meglévő ügyfeleknek: bejelentkezési felhívás */}
+      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-[#B4FF00] bg-white p-4 shadow-[0_10px_30px_-20px_rgba(0,35,64,0.3)] sm:flex-row sm:items-center sm:justify-between sm:p-5">
+        <div className="flex items-start gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
+            <User className="h-5 w-5" />
+          </span>
+          <div>
+            <p className="font-extrabold text-[#002340]">Már Yettel-ügyfél vagy?</p>
+            <p className="mt-0.5 text-sm text-[#2D466C]">
+              Jelentkezz be, és az adataidat automatikusan kitöltjük – így sokkal gyorsabban végzel.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onLogin}
+          className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+        >
+          <User className="h-4 w-4" /> Bejelentkezés
+        </button>
+      </div>
+
       <Card>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
@@ -480,7 +627,7 @@ function AddressStep({ onNext }: { onNext: () => void }) {
 }
 
 // ── 3. Ajánlatok a címeden – ugyanazok a kártyák, mint a főoldalon ─────────
-function OffersStep({ onSelect }: { onSelect: (o: Offer) => void }) {
+function OffersStep({ config, onSelect }: { config: FlowConfig; onSelect: (o: Offer) => void }) {
   return (
     <div>
       <StepHead title="Ajánlatok a címeden" />
@@ -490,10 +637,10 @@ function OffersStep({ onSelect }: { onSelect: (o: Offer) => void }) {
           <CheckCircle2 className="h-3.5 w-3.5" /> Elérhető a címeden
         </span>
       </div>
-      <p className="mb-7 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">Internet</p>
+      <p className="mb-7 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">{config.offersLabel}</p>
       {/* Ugyanaz az OfferCard, mint a főoldali szekcióban; csak a gomb szövege más. */}
-      <div className="grid gap-5 sm:grid-cols-2">
-        {[...OFFERS.net]
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {[...OFFERS[config.service]]
           .sort((a, b) => b.price - a.price)
           .map((o) => (
             <OfferCard key={o.id} offer={o} ctaLabel="Megrendelem" onOrder={() => onSelect(o)} />
@@ -542,72 +689,18 @@ function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => 
   );
 }
 
-type Extra = {
-  key: "child" | "netpajzs";
-  title: string;
-  icon: ElementType;
-  priceLabel: string;
-  desc: string;
-  features: string[];
-};
-
-const EXTRAS: Extra[] = [
-  {
-    key: "child",
-    title: "Gyermekvédelmi tartalomszűrő",
-    icon: ShieldCheck,
-    priceLabel: "Díjmentes",
-    desc: "A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.",
-    features: [
-      "Hatósági lista alapján blokkolja a felnőtt tartalmú oldalakat",
-      "Automatikusan frissülő szűrőlista, karbantartás nélkül",
-      "Hálózati szintű védelem – minden otthoni eszközre vonatkozik",
-      "Bármikor be- és kikapcsolható a MyYettel alkalmazásban",
-      "Díjmentes, kötöttség és hűségidő nélkül",
-    ],
-  },
-  {
-    key: "netpajzs",
-    title: "NetPajzs",
-    icon: ShieldAlert,
-    priceLabel: "490 Ft / hó",
-    desc: "Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen, a hálózat szintjén.",
-    features: [
-      "Valós idejű védelem vírusok, adathalászat és csaló oldalak ellen",
-      "Hálózati szintű szűrés – nem kell külön alkalmazás az eszközökre",
-      "Automatikusan frissülő fenyegetés-adatbázis",
-      "Havi jelentés a blokkolt fenyegetésekről",
-      "490 Ft / hó, bármikor lemondható",
-    ],
-  },
-];
-
 function ExtrasStep({
-  childFilter,
-  netPajzs,
-  setChildFilter,
-  setNetPajzs,
+  extras,
+  selected,
+  setSelected,
   onNext,
 }: {
-  childFilter: boolean;
-  netPajzs: boolean;
-  setChildFilter: (v: boolean) => void;
-  setNetPajzs: (v: boolean) => void;
+  extras: FlowExtra[];
+  selected: string | null;
+  setSelected: (v: string | null) => void;
   onNext: () => void;
 }) {
-  const [details, setDetails] = useState<Extra | null>(null);
-  const valueOf = (k: Extra["key"]) => (k === "child" ? childFilter : netPajzs);
-  // Egyszerre csak az egyik kérhető: az egyik bekapcsolása kikapcsolja a másikat.
-  const setValue = (k: Extra["key"], v: boolean) => {
-    if (k === "child") {
-      setChildFilter(v);
-      if (v) setNetPajzs(false);
-    } else {
-      setNetPajzs(v);
-      if (v) setChildFilter(false);
-    }
-  };
-
+  const [details, setDetails] = useState<FlowExtra | null>(null);
   return (
     <div>
       <StepHead
@@ -615,33 +708,35 @@ function ExtrasStep({
         sub="Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé. Egyszerre egy csomag kérhető."
       />
       <div className="grid gap-4 sm:grid-cols-2">
-        {EXTRAS.map((x) => (
-          <Card key={x.key} className="flex h-full flex-col">
-            <div className="flex gap-3">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-                <x.icon className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="font-extrabold text-[#002340]">{x.title}</p>
-                <span className="mt-1 inline-block rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">
-                  {x.priceLabel}
+        {extras.map((x) => {
+          const on = selected === x.key;
+          return (
+            <Card key={x.key} className="flex h-full flex-col">
+              <div className="flex gap-3">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
+                  <x.icon className="h-5 w-5" />
                 </span>
+                <div>
+                  <p className="font-extrabold text-[#002340]">{x.title}</p>
+                  <span className="mt-1 inline-block rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">
+                    {x.priceLabel}
+                  </span>
+                </div>
               </div>
-            </div>
-            {/* Fix magasságú leírás, hogy mindkét kártya egyforma legyen */}
-            <p className="mt-3 min-h-[3rem] text-sm text-[#2D466C]">{x.desc}</p>
-            <button
-              type="button"
-              onClick={() => setDetails(x)}
-              className="mt-2 inline-flex items-center gap-1 self-start text-sm font-bold text-[#002340] hover:underline"
-            >
-              Részletek <ChevronRight className="h-4 w-4" />
-            </button>
-            <div className="mt-auto">
-              <YesNo value={valueOf(x.key)} onChange={(v) => setValue(x.key, v)} />
-            </div>
-          </Card>
-        ))}
+              <p className="mt-3 min-h-[3rem] text-sm text-[#2D466C]">{x.desc}</p>
+              <button
+                type="button"
+                onClick={() => setDetails(x)}
+                className="mt-2 inline-flex items-center gap-1 self-start text-sm font-bold text-[#002340] hover:underline"
+              >
+                Részletek <ChevronRight className="h-4 w-4" />
+              </button>
+              <div className="mt-auto">
+                <YesNo value={on} onChange={(v) => setSelected(v ? x.key : selected === x.key ? null : selected)} />
+              </div>
+            </Card>
+          );
+        })}
       </div>
       <Footer>
         <PrimaryButton onClick={onNext}>
@@ -649,13 +744,12 @@ function ExtrasStep({
         </PrimaryButton>
       </Footer>
 
-      {details && <DetailsModal extra={details} onClose={() => setDetails(null)} />}
+      {details && <ExtraDetailsModal extra={details} onClose={() => setDetails(null)} />}
     </div>
   );
 }
 
-// Részletek popup az extra csomag tulajdonságaival.
-function DetailsModal({ extra, onClose }: { extra: Extra; onClose: () => void }) {
+function ExtraDetailsModal({ extra, onClose }: { extra: FlowExtra; onClose: () => void }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -698,7 +792,7 @@ function DetailsModal({ extra, onClose }: { extra: Extra; onClose: () => void })
           </button>
         </div>
         <ul className="mt-4 space-y-2.5">
-          {extra.features.map((f) => (
+          {extra.details.map((f) => (
             <li key={f} className="flex items-start gap-2.5 text-sm text-[#2D466C]">
               <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#B4FF00]">
                 <Check className="h-3 w-3 text-[#002340]" strokeWidth={3} />
@@ -1050,8 +1144,7 @@ function KRow({ k, v, strong }: { k: string; v: string; strong?: boolean }) {
 
 function SummaryStep({
   pkg,
-  childFilter,
-  netPajzs,
+  extra,
   total,
   apptWhen,
   contactName,
@@ -1061,8 +1154,7 @@ function SummaryStep({
   onFinish,
 }: {
   pkg: Offer | null;
-  childFilter: boolean;
-  netPajzs: boolean;
+  extra: FlowExtra | null;
   total: number;
   apptWhen: string;
   contactName: string;
@@ -1075,7 +1167,6 @@ function SummaryStep({
     <div>
       <StepHead title="Rendelés áttekintése" />
       <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
-        {/* Bal: tételek */}
         <div>
           <p className="mb-2 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">Megrendelt szolgáltatások</p>
           <Card className="!p-4 sm:!p-5">
@@ -1088,16 +1179,12 @@ function SummaryStep({
                 <span className="text-sm font-bold text-[#002340]">{formatFt(pkg.price)}</span>
               </div>
             )}
-            {childFilter && (
-              <div className="flex items-center justify-between gap-3 border-b border-[#CDE0EA] py-2.5">
-                <p className="text-sm text-[#002340]">Gyermekvédelmi tartalomszűrő</p>
-                <span className="text-sm font-semibold text-[#2D466C]">Díjmentes</span>
-              </div>
-            )}
-            {netPajzs && (
+            {extra && (
               <div className="flex items-center justify-between gap-3 py-2.5">
-                <p className="text-sm text-[#002340]">NetPajzs</p>
-                <span className="text-sm font-bold text-[#002340]">{formatFt(490)}</span>
+                <p className="text-sm text-[#002340]">{extra.title}</p>
+                <span className={["text-sm", extra.price === 0 ? "font-semibold text-[#2D466C]" : "font-bold text-[#002340]"].join(" ")}>
+                  {extra.price === 0 ? "Díjmentes" : formatFt(extra.price)}
+                </span>
               </div>
             )}
           </Card>
@@ -1129,7 +1216,6 @@ function SummaryStep({
           </div>
         </div>
 
-        {/* Jobb: összesítő + véglegesítés (weben ragadós) */}
         <div className="lg:sticky lg:top-32 lg:self-start">
           <div className="rounded-[20px] bg-[#002340] p-5 text-white sm:p-6">
             <p className="text-sm text-[#BBD3E4]">Fizetendő havidíj</p>

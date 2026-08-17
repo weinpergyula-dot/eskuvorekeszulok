@@ -5,10 +5,11 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { OFFERS, OFFER_TABS, CATEGORY_META, type OfferCategory } from "../_data/offers";
 import { OfferCard } from "./offer-card";
 
-// Az otthoni internet igénylési folyamat indítása (a folyamat hash-vezérelt,
-// és teljes oldalon jelenik meg – lásd internet-flow.tsx).
-function startInternetFlow() {
-  window.location.hash = "otthoni-internet/cim";
+// Az igénylési folyamatok indítása (hash-vezérelt, teljes oldalas – lásd
+// internet-flow.tsx). Az internet és a TV külön hash-bázison fut.
+function startFlow(service: OfferCategory) {
+  const base = service === "tv" ? "yettel-tv" : "otthoni-internet";
+  window.location.hash = `${base}/cim`;
 }
 
 // A menü/csempe hash-ei ↔ a tarifakategóriák.
@@ -80,7 +81,11 @@ export function OffersExplorer() {
           {[...OFFERS[active]]
             .sort((a, b) => b.price - a.price)
             .map((offer) => (
-              <OfferCard key={offer.id} offer={offer} onOrder={active === "net" ? startInternetFlow : undefined} />
+              <OfferCard
+                key={offer.id}
+                offer={offer}
+                onOrder={active === "net" || active === "tv" ? () => startFlow(active) : undefined}
+              />
             ))}
         </div>
       )}
