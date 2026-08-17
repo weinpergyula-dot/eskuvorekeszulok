@@ -51,7 +51,7 @@ export function OffersExplorer() {
   return (
     <div>
       {/* Dinamikus fejléc – a felül kiválasztott kategória + rövid marketing szöveg */}
-      <div className="mb-8 max-w-2xl">
+      <div className="mb-6 max-w-2xl">
         <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">
           Tarifák és szolgáltatások
         </span>
