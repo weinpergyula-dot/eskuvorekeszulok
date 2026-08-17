@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Check, ArrowRight, Sparkles, Zap, Crown, ChevronRight, X } from "lucide-react";
 import { formatFt, type Offer } from "../_data/offers";
 import { EKomfortModal } from "./ekomfort-info";
@@ -13,11 +13,14 @@ export function OfferCard({
   onOrder,
   ctaLabel,
   className = "",
+  body,
 }: {
   offer: Offer;
   onOrder?: () => void;
   ctaLabel?: string;
   className?: string;
+  /** Ha meg van adva, a jellemző-lista helyett ezt rendereli (pl. mobil grafikus keret). */
+  body?: ReactNode;
 }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [ekOpen, setEkOpen] = useState(false);
@@ -86,24 +89,28 @@ export function OfferCard({
         )}
       </div>
 
-      <ul className="mb-4 space-y-2">
-        {offer.features.map((f) => (
-          <li
-            key={f}
-            className={["flex items-start gap-2 text-sm", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}
-          >
-            <span
-              className={[
-                "mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full",
-                isPremium ? "bg-[#002340]" : "bg-[#B4FF00]",
-              ].join(" ")}
+      {body ? (
+        <div className="mb-4">{body}</div>
+      ) : (
+        <ul className="mb-4 space-y-2">
+          {offer.features.map((f) => (
+            <li
+              key={f}
+              className={["flex items-start gap-2 text-sm", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}
             >
-              <Check className={isPremium ? "h-3 w-3 text-[#B4FF00]" : "h-3 w-3 text-[#002340]"} strokeWidth={3} />
-            </span>
-            <span>{f}</span>
-          </li>
-        ))}
-      </ul>
+              <span
+                className={[
+                  "mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full",
+                  isPremium ? "bg-[#002340]" : "bg-[#B4FF00]",
+                ].join(" ")}
+              >
+                <Check className={isPremium ? "h-3 w-3 text-[#B4FF00]" : "h-3 w-3 text-[#002340]"} strokeWidth={3} />
+              </span>
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="mt-auto flex flex-col gap-2.5">
         <button

@@ -24,6 +24,8 @@ export type Offer = {
   unlimitedNet?: boolean;
   /** Szűréshez: korlátlan beszélgetés. */
   unlimitedCall?: boolean;
+  /** EU roaming keret GB-ban (a grafikus kijelzőhöz). */
+  roamingGb?: number;
   /** Kiemelt "legjobb választás" kártya. */
   best?: boolean;
   /** A kategória legdrágább, prémium csomagja – teljes lime kiemeléssel. */
@@ -74,6 +76,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
   havidijas: [
     {
       id: "prime-simple-net",
+      roamingGb: 60,
       name: "Yettel Prime Simple Net",
       tagline: "e-Komfort csomaggal, 11 hó hűséggel",
       price: 11989,
@@ -94,6 +97,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
     },
     {
       id: "prime-plus",
+      roamingGb: 69,
       name: "Yettel Prime Plus",
       tagline: "e-Komfort csomaggal, 11 hó hűséggel",
       price: 14599,
@@ -114,6 +118,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
     },
     {
       id: "prime-extra",
+      roamingGb: 83,
       name: "Yettel Prime Extra",
       tagline: "e-Komfort csomaggal, 11 hó hűséggel",
       price: 17729,
@@ -134,6 +139,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
     },
     {
       id: "start",
+      roamingGb: 2,
       name: "Yettel Start",
       tagline: "e-Komfort csomaggal, 11 hó hűséggel",
       price: 4679,
@@ -154,6 +160,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
     },
     {
       id: "prime-max",
+      roamingGb: 110,
       name: "Yettel Prime Max",
       tagline: "e-Komfort csomaggal, 11 hó hűséggel",
       price: 23999,
@@ -175,6 +182,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
     },
     {
       id: "prime",
+      roamingGb: 25,
       name: "Yettel Prime",
       tagline: "e-Komfort csomaggal, 11 hó hűséggel",
       price: 9379,
