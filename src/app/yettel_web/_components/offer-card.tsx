@@ -132,7 +132,7 @@ export function OfferCard({
 }
 
 // Részletek felugró ablak a tarifa tulajdonságaival.
-function OfferDetailsModal({
+export function OfferDetailsModal({
   offer,
   priceUnit,
   onClose,

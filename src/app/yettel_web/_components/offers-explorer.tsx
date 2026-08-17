@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { OFFERS, OFFER_TABS, CATEGORY_META, type OfferCategory } from "../_data/offers";
 import { OfferCard } from "./offer-card";
+import { MobileTariffs } from "./mobile-tariffs";
 
 // Az igénylési folyamatok indítása (hash-vezérelt, teljes oldalas – lásd
 // internet-flow.tsx). Az internet és a TV külön hash-bázison fut.
@@ -58,7 +59,9 @@ export function OffersExplorer() {
       </div>
 
       {/* Kártyák vagy "hamarosan" állapot */}
-      {activeTab?.soon ? (
+      {active === "havidijas" ? (
+        <MobileTariffs />
+      ) : activeTab?.soon ? (
         <div className="flex flex-col items-center rounded-[20px] border border-dashed border-[#B4FF00] bg-white px-6 py-12 text-center">
           <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#B4FF00]">
             <Sparkles className="h-3.5 w-3.5" /> Hamarosan

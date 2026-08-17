@@ -15,6 +15,15 @@ export type Offer = {
   features: string[];
   /** Bővebb tulajdonságok a "Részletek" felugró ablakhoz (opcionális). */
   details?: string[];
+  // ── Havidíjas mobil tarifákhoz (a mobil kártyához + szűréshez) ──
+  /** Mobilnet keret felirata, pl. "60 GB" vagy "Korlátlan". */
+  dataLabel?: string;
+  /** Beszélgetés felirata, pl. "100 perc" vagy "Korlátlan". */
+  voiceLabel?: string;
+  /** Szűréshez: korlátlan mobilnet. */
+  unlimitedNet?: boolean;
+  /** Szűréshez: korlátlan beszélgetés. */
+  unlimitedCall?: boolean;
   /** Kiemelt "legjobb választás" kártya. */
   best?: boolean;
   /** A kategória legdrágább, prémium csomagja – teljes lime kiemeléssel. */
@@ -61,49 +70,104 @@ export const CATEGORY_META: Record<OfferCategory, { title: string; blurb: string
 };
 
 export const OFFERS: Record<OfferCategory, Offer[]> = {
+  // Havidíjas mobil tarifák – a mobil kártya + szűrő + egysoros carousel.
   havidijas: [
     {
-      id: "mobil-s",
-      name: "Yettel S",
-      tagline: "A hétköznapokra",
-      price: 2990,
-      oldPrice: 3490,
+      id: "prime-simple-net",
+      name: "Yettel Prime Simple Net",
+      tagline: "Havidíjas mobiltarifa",
+      price: 11989,
       unit: "Ft/hó",
-      features: ["Korlátlan hívás és SMS", "10 GB adat", "5G hálózat", "EU-roaming alap"],
-      cta: "Megrendelem",
+      dataLabel: "60 GB",
+      voiceLabel: "100 perc",
+      unlimitedNet: false,
+      unlimitedCall: false,
+      features: [
+        "Korlátlan le- és feltöltési sebesség belföldön",
+        "60 GB EU/1. díjzóna adatroaming a belföldi adatkeretből",
+      ],
+      cta: "Kosárba rakom",
     },
     {
-      id: "mobil-m",
-      name: "Yettel M",
-      tagline: "A legtöbbek választása",
-      price: 4490,
-      oldPrice: 4990,
+      id: "prime-plus",
+      name: "Yettel Prime Plus",
+      tagline: "Havidíjas mobiltarifa",
+      price: 14599,
       unit: "Ft/hó",
+      dataLabel: "Korlátlan",
+      voiceLabel: "200 perc",
+      unlimitedNet: true,
+      unlimitedCall: false,
       features: [
-        "Korlátlan hívás és SMS",
-        "30 GB adat + éjszakai korlátlan",
-        "5G hálózat",
-        "EU-roaming benne",
+        "Korlátlan le- és feltöltési sebesség belföldön",
+        "69 GB EU/1. díjzóna adatroaming a belföldi adatkeretből",
       ],
-      best: true,
-      badge: "Legnépszerűbb",
-      cta: "Megrendelem",
+      cta: "Kosárba rakom",
     },
     {
-      id: "mobil-l",
-      name: "Yettel L",
-      tagline: "Ha semmi sem foghat vissza",
-      price: 5990,
+      id: "prime-extra",
+      name: "Yettel Prime Extra",
+      tagline: "Havidíjas mobiltarifa",
+      price: 17729,
       unit: "Ft/hó",
+      dataLabel: "Korlátlan",
+      voiceLabel: "Korlátlan",
+      unlimitedNet: true,
+      unlimitedCall: true,
       features: [
-        "Korlátlan hívás és SMS",
-        "Korlátlan adat, sávkorlát nélkül",
-        "5G prémium sebesség",
-        "EU + Nyugat-Balkán roaming",
+        "Korlátlan le- és feltöltési sebesség belföldön",
+        "83 GB EU/1. díjzóna adatroaming a belföldi adatkeretből",
       ],
-      premium: true,
-      badge: "Leggyorsabb",
-      cta: "Megrendelem",
+      cta: "Kosárba rakom",
+    },
+    {
+      id: "start",
+      name: "Yettel Start",
+      tagline: "Havidíjas mobiltarifa",
+      price: 4679,
+      unit: "Ft/hó",
+      dataLabel: "2 GB",
+      voiceLabel: "100 perc",
+      unlimitedNet: false,
+      unlimitedCall: false,
+      features: [
+        "Korlátlan le- és feltöltési sebesség belföldön",
+        "2 GB EU/1. díjzóna adatroaming a belföldi adatkeretből",
+      ],
+      cta: "Kosárba rakom",
+    },
+    {
+      id: "prime-max",
+      name: "Yettel Prime Max",
+      tagline: "Havidíjas mobiltarifa",
+      price: 23999,
+      unit: "Ft/hó",
+      dataLabel: "Korlátlan",
+      voiceLabel: "Korlátlan",
+      unlimitedNet: true,
+      unlimitedCall: true,
+      features: [
+        "Korlátlan le- és feltöltési sebesség belföldön",
+        "Korlátlan SMS belföldön és EU 1-es díjzónában",
+        "110 GB EU/1. díjzóna adatroaming a belföldi adatkeretből",
+      ],
+      cta: "Kosárba rakom",
+    },
+    {
+      id: "prime",
+      name: "Yettel Prime",
+      tagline: "Havidíjas mobiltarifa",
+      price: 9379,
+      unit: "Ft/hó",
+      dataLabel: "25 GB",
+      voiceLabel: "200 perc",
+      unlimitedNet: false,
+      unlimitedCall: false,
+      features: [
+        "Korlátlan le- és feltöltési sebesség belföldön",
+        "25 GB EU/1. díjzóna adatroaming a belföldi adatkeretből",
+      ],
+      cta: "Kosárba rakom",
     },
   ],
   // A "Címellenőrzés" folyamat után megjelenő ajánlatok (lásd internet-flow.tsx).
