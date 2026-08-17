@@ -73,12 +73,13 @@ export function MobileTariffs() {
           Nincs a szűrésnek megfelelő tarifa. Próbálj más szűrőt!
         </div>
       ) : (
-        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-3 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-0 sm:pb-0 lg:grid-cols-3">
+        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-6 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-0 sm:pb-0 lg:grid-cols-3">
           {tariffs.map((t, i) => (
             <OfferCard
               key={t.id}
               offer={t}
-              ctaLabel="Kosárba rakom"
+              ctaLabel="Csak szolgáltatás"
+              secondaryCtaLabel="Készülékkel kérem"
               body={<MobileQuotas offer={t} />}
               className={[
                 "min-w-[82%] shrink-0 snap-start sm:min-w-0 sm:shrink",

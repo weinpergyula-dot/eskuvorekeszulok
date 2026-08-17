@@ -12,12 +12,17 @@ export function OfferCard({
   offer,
   onOrder,
   ctaLabel,
+  secondaryCtaLabel,
+  onSecondary,
   className = "",
   body,
 }: {
   offer: Offer;
   onOrder?: () => void;
   ctaLabel?: string;
+  /** Opcionális második CTA (pl. "Készülékkel kérem"); ha van, két gomb jelenik meg. */
+  secondaryCtaLabel?: string;
+  onSecondary?: () => void;
   className?: string;
   /** Ha meg van adva, a jellemző-lista helyett ezt rendereli (pl. mobil grafikus keret). */
   body?: ReactNode;
@@ -120,19 +125,31 @@ export function OfferCard({
           >
             Részletek <ChevronRight className="h-4 w-4" />
           </button>
-          <button
-            type="button"
-            onClick={onOrder}
-            className={[
-              "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
-              offer.best || isPremium
-                ? "bg-[#002340] text-white hover:bg-[#001D36]"
-                : "border border-[#CDE0EA] text-[#002340] hover:border-[#002340] hover:bg-[#E4F2F7]",
-            ].join(" ")}
-          >
-            {cta}
-            <ArrowRight className="h-4 w-4" />
-          </button>
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={onOrder}
+              className={[
+                "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
+                // Két CTA esetén a fő gomb mindig sötét, hogy legyen hierarchia
+                offer.best || isPremium || secondaryCtaLabel
+                  ? "bg-[#002340] text-white hover:bg-[#001D36]"
+                  : "border border-[#CDE0EA] text-[#002340] hover:border-[#002340] hover:bg-[#E4F2F7]",
+              ].join(" ")}
+            >
+              {cta}
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            {secondaryCtaLabel && (
+              <button
+                type="button"
+                onClick={onSecondary}
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7]"
+              >
+                {secondaryCtaLabel}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
