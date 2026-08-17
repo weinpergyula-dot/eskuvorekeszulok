@@ -32,12 +32,12 @@ export function OfferCard({
   return (
     <div
       className={[
-        "relative flex flex-col rounded-[20px] border p-5 transition-shadow",
+        "relative flex flex-col rounded-[20px] bg-white transition-shadow",
         isPremium
-          ? "border-[#9BE000] bg-[linear-gradient(160deg,#CBFF4D_0%,#B4FF00_52%,#9BE000_100%)] shadow-[0_14px_40px_rgba(0,35,64,0.20)]"
+          ? "border-2 border-[#B4FF00] shadow-[0_12px_36px_rgba(0,35,64,0.16)]"
           : offer.best
-            ? "border-[#B4FF00] bg-white shadow-[0_10px_34px_rgba(0,35,64,0.10)] ring-2 ring-[#B4FF00]"
-            : "border-[#CDE0EA] bg-white hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
+            ? "border-2 border-[#B4FF00] shadow-[0_10px_34px_rgba(0,35,64,0.10)]"
+            : "border border-[#CDE0EA] hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
         className,
       ].join(" ")}
     >
@@ -58,9 +58,15 @@ export function OfferCard({
         </span>
       )}
 
-      <div className="mb-4">
+      {/* Fejléc – prémiumnál lime háttér az e-Komfort alatti dividerig, a többi lime keret */}
+      <div
+        className={[
+          "px-5 pt-6 pb-4",
+          isPremium ? "rounded-t-[18px] bg-[linear-gradient(160deg,#CBFF4D_0%,#B4FF00_60%,#9BE000_100%)]" : "",
+        ].join(" ")}
+      >
         <h3 className="text-2xl font-extrabold text-[#002340]">{offer.name}</h3>
-        <p className={["text-base", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>
+        <p className={["text-xs", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>
           {offer.tagline.includes("e-Komfort") ? (
             <>
               {offer.tagline.split("e-Komfort")[0]}
@@ -79,60 +85,55 @@ export function OfferCard({
         </p>
       </div>
 
-      <div className={["mb-4 border-t", isPremium ? "border-[#002340]/20" : "border-[#CDE0EA]"].join(" ")} />
+      <div className="border-t border-[#CDE0EA]" />
 
-      <div className="mb-4 flex items-end gap-2">
-        <span className="text-3xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
-        <span className={["pb-1 text-sm", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>/ {priceUnit}</span>
-        {offer.oldPrice && (
-          <span className="pb-1 text-sm text-[#7E93B0] line-through">{formatFt(offer.oldPrice)}</span>
+      {/* Törzs – fehér */}
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
+        <div className="mb-4 flex items-end gap-2">
+          <span className="text-3xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
+          <span className="pb-1 text-sm text-[#2D466C]">/ {priceUnit}</span>
+          {offer.oldPrice && (
+            <span className="pb-1 text-sm text-[#7E93B0] line-through">{formatFt(offer.oldPrice)}</span>
+          )}
+        </div>
+
+        {body ? (
+          <div className="mb-4">{body}</div>
+        ) : (
+          <ul className="mb-4 space-y-2">
+            {offer.features.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm text-[#2D466C]">
+                <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#B4FF00]">
+                  <Check className="h-3 w-3 text-[#002340]" strokeWidth={3} />
+                </span>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
         )}
-      </div>
 
-      {body ? (
-        <div className="mb-4">{body}</div>
-      ) : (
-        <ul className="mb-4 space-y-2">
-          {offer.features.map((f) => (
-            <li
-              key={f}
-              className={["flex items-start gap-2 text-sm", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}
-            >
-              <span
-                className={[
-                  "mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full",
-                  isPremium ? "bg-[#002340]" : "bg-[#B4FF00]",
-                ].join(" ")}
-              >
-                <Check className={isPremium ? "h-3 w-3 text-[#B4FF00]" : "h-3 w-3 text-[#002340]"} strokeWidth={3} />
-              </span>
-              <span>{f}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="mt-auto flex flex-col gap-2.5">
-        <button
-          type="button"
-          onClick={() => setDetailsOpen(true)}
-          className="inline-flex items-center justify-center gap-1 text-sm font-bold text-[#002340] hover:underline"
-        >
-          Részletek <ChevronRight className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={onOrder}
-          className={[
-            "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
-            offer.best || isPremium
-              ? "bg-[#002340] text-white hover:bg-[#001D36]"
-              : "border border-[#CDE0EA] text-[#002340] hover:border-[#002340] hover:bg-[#E4F2F7]",
-          ].join(" ")}
-        >
-          {cta}
-          <ArrowRight className="h-4 w-4" />
-        </button>
+        <div className="mt-auto flex flex-col gap-2.5">
+          <button
+            type="button"
+            onClick={() => setDetailsOpen(true)}
+            className="inline-flex items-center justify-center gap-1 text-sm font-bold text-[#002340] hover:underline"
+          >
+            Részletek <ChevronRight className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={onOrder}
+            className={[
+              "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
+              offer.best || isPremium
+                ? "bg-[#002340] text-white hover:bg-[#001D36]"
+                : "border border-[#CDE0EA] text-[#002340] hover:border-[#002340] hover:bg-[#E4F2F7]",
+            ].join(" ")}
+          >
+            {cta}
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {detailsOpen && <OfferDetailsModal offer={offer} priceUnit={priceUnit} onClose={() => setDetailsOpen(false)} />}

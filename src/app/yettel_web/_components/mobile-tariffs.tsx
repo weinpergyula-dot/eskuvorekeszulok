@@ -78,7 +78,7 @@ export function MobileTariffs() {
               key={t.id}
               offer={t}
               ctaLabel="Kosárba rakom"
-              body={<MobileQuotas offer={t} premium={!!t.premium} />}
+              body={<MobileQuotas offer={t} />}
               className={[
                 "min-w-[82%] shrink-0 snap-start sm:min-w-0 sm:shrink",
                 // Mobilon minden swipe-olható; desktopon az első sor után csak a "Még több" mutatja
@@ -107,7 +107,7 @@ export function MobileTariffs() {
 }
 
 // Grafikus keret-kijelző: Hívás / Net / Roaming, sávdiagramokkal.
-function MobileQuotas({ offer, premium }: { offer: Offer; premium?: boolean }) {
+function MobileQuotas({ offer }: { offer: Offer }) {
   const callUnlimited = !!offer.unlimitedCall;
   const dataUnlimited = !!offer.unlimitedNet;
   const callNum = parseInt(offer.voiceLabel ?? "", 10);
@@ -135,23 +135,18 @@ function MobileQuotas({ offer, premium }: { offer: Offer; premium?: boolean }) {
     },
   ];
 
-  // Prémium (teljes lime) kártyán a sáv navy, hogy jól látszódjon a lime háttéren.
-  const labelCls = premium ? "text-[#0A3A24]" : "text-[#2D466C]";
-  const trackCls = premium ? "bg-[#002340]/15" : "bg-[#E4F2F7]";
-  const fillCls = premium ? "bg-[#002340]" : "bg-[#B4FF00]";
-
   return (
     <div className="space-y-3">
       {rows.map((r) => (
         <div key={r.label}>
           <div className="mb-1 flex items-center justify-between">
-            <span className={["inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.04em]", labelCls].join(" ")}>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.04em] text-[#2D466C]">
               <r.icon className="h-3.5 w-3.5" /> {r.label}
             </span>
             <span className="text-sm font-extrabold text-[#002340]">{r.value}</span>
           </div>
-          <div className={["h-2 w-full overflow-hidden rounded-full", trackCls].join(" ")}>
-            <div className={["h-full rounded-full", fillCls].join(" ")} style={{ width: `${Math.round(r.pct * 100)}%` }} />
+          <div className="h-2 w-full overflow-hidden rounded-full bg-[#E4F2F7]">
+            <div className="h-full rounded-full bg-[#B4FF00]" style={{ width: `${Math.round(r.pct * 100)}%` }} />
           </div>
         </div>
       ))}
