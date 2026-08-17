@@ -105,7 +105,6 @@ export function DeviceMarquee() {
                   </p>
                 </div>
               </div>
-              <p className="mt-1.5 text-xs font-semibold text-[#2D466C]">{device.upfront}</p>
 
               {/* CTA-k */}
               <div className="mt-4 flex flex-col gap-2">
