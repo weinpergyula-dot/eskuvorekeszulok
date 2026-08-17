@@ -13,6 +13,8 @@ export type Offer = {
   oldPrice?: number;
   unit: string; // pl. "Ft/hó"
   features: string[];
+  /** Bővebb tulajdonságok a "Részletek" felugró ablakhoz (opcionális). */
+  details?: string[];
   /** Kiemelt "legjobb választás" kártya. */
   best?: boolean;
   /** A kategória legdrágább, prémium csomagja – teljes lime kiemeléssel. */
@@ -113,6 +115,14 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       price: 7990,
       unit: "Ft/hó",
       features: ["1000 Mbit/s letöltés", "Optikai internet", "WiFi 7 router ajándékba", "Díjmentes telepítés"],
+      details: [
+        "Letöltési sebesség akár 1000 Mbit/s",
+        "Feltöltési sebesség akár 300 Mbit/s",
+        "Ajándék WiFi 7 router, díjmentes bérlettel",
+        "Díjmentes kiszállás és szakszerű telepítés",
+        "Első 30 nap díjmentes",
+        "Hűségidő: 12 hónap, e-Komfort kedvezménnyel",
+      ],
       premium: true,
       badge: "30 nap díjmentes",
       cta: "Címkeresés",
@@ -124,6 +134,14 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       price: 6990,
       unit: "Ft/hó",
       features: ["500 Mbit/s letöltés", "Optikai internet", "WiFi 7 router ajándékba", "Díjmentes telepítés"],
+      details: [
+        "Letöltési sebesség akár 500 Mbit/s",
+        "Feltöltési sebesség akár 150 Mbit/s",
+        "Ajándék WiFi 7 router, díjmentes bérlettel",
+        "Díjmentes kiszállás és szakszerű telepítés",
+        "Első 30 nap díjmentes",
+        "Hűségidő: 12 hónap, e-Komfort kedvezménnyel",
+      ],
       best: true,
       badge: "30 nap díjmentes",
       cta: "Címkeresés",

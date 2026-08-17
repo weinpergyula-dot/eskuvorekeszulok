@@ -490,7 +490,7 @@ function OffersStep({ onSelect }: { onSelect: (o: Offer) => void }) {
           <CheckCircle2 className="h-3.5 w-3.5" /> Elérhető a címeden
         </span>
       </div>
-      <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">Internet</p>
+      <p className="mb-7 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">Internet</p>
       {/* Ugyanaz az OfferCard, mint a főoldali szekcióban; csak a gomb szövege más. */}
       <div className="grid gap-5 sm:grid-cols-2">
         {[...OFFERS.net]
@@ -499,13 +499,16 @@ function OffersStep({ onSelect }: { onSelect: (o: Offer) => void }) {
             <OfferCard key={o.id} offer={o} ctaLabel="Megrendelem" onOrder={() => onSelect(o)} />
           ))}
       </div>
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] bg-white px-3 py-2.5 text-sm font-bold text-[#002340]">
-          <MessageCircle className="h-4 w-4" /> Chat
-        </span>
-        <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] bg-white px-3 py-2.5 text-sm font-bold text-[#002340]">
-          <Phone className="h-4 w-4" /> Visszahívást kérek
-        </span>
+      <div className="mt-8">
+        <p className="mb-2 text-sm font-semibold text-[#2D466C]">Elakadtál? Kérj segítséget:</p>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] bg-white px-3 py-2.5 text-sm font-bold text-[#002340]">
+            <MessageCircle className="h-4 w-4" /> Chat
+          </span>
+          <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] bg-white px-3 py-2.5 text-sm font-bold text-[#002340]">
+            <Phone className="h-4 w-4" /> Visszahívást kérek
+          </span>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
-import { Check, ArrowRight, Sparkles, Zap, Crown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, ArrowRight, Sparkles, Zap, Crown, ChevronRight, X } from "lucide-react";
 import { formatFt, type Offer } from "../_data/offers";
 
 // Egységes tarifakártya – ugyanez jelenik meg a főoldali "Otthoni internet"
@@ -15,6 +16,7 @@ export function OfferCard({
   onOrder?: () => void;
   ctaLabel?: string;
 }) {
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const isPremium = !!offer.premium;
   const isFast = offer.badge === "Leggyorsabb";
   // Az ár mögötti egység a kategóriától függ (pl. "hó" vagy "feltöltés").
@@ -63,7 +65,7 @@ export function OfferCard({
         )}
       </div>
 
-      <ul className="mb-5 space-y-2">
+      <ul className="mb-4 space-y-2">
         {offer.features.map((f) => (
           <li
             key={f}
@@ -82,19 +84,113 @@ export function OfferCard({
         ))}
       </ul>
 
-      <button
-        type="button"
-        onClick={onOrder}
-        className={[
-          "mt-auto inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
-          offer.best || isPremium
-            ? "bg-[#002340] text-white hover:bg-[#001D36]"
-            : "border border-[#CDE0EA] text-[#002340] hover:border-[#002340] hover:bg-[#E4F2F7]",
-        ].join(" ")}
+      <div className="mt-auto flex flex-col gap-2.5">
+        <button
+          type="button"
+          onClick={() => setDetailsOpen(true)}
+          className="inline-flex items-center justify-center gap-1 text-sm font-bold text-[#002340] hover:underline"
+        >
+          Részletek <ChevronRight className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={onOrder}
+          className={[
+            "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
+            offer.best || isPremium
+              ? "bg-[#002340] text-white hover:bg-[#001D36]"
+              : "border border-[#CDE0EA] text-[#002340] hover:border-[#002340] hover:bg-[#E4F2F7]",
+          ].join(" ")}
+        >
+          {cta}
+          <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      {detailsOpen && <OfferDetailsModal offer={offer} priceUnit={priceUnit} onClose={() => setDetailsOpen(false)} />}
+    </div>
+  );
+}
+
+// Részletek felugró ablak a tarifa tulajdonságaival.
+function OfferDetailsModal({
+  offer,
+  priceUnit,
+  onClose,
+}: {
+  offer: Offer;
+  priceUnit: string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const items = offer.details ?? offer.features;
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-[#002340]/55 p-4 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${offer.name} részletei`}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md rounded-[24px] bg-white p-6 shadow-[0_30px_80px_rgba(0,35,64,0.35)]"
+        onClick={(e) => e.stopPropagation()}
       >
-        {cta}
-        <ArrowRight className="h-4 w-4" />
-      </button>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h3 className="text-xl font-extrabold text-[#002340]">{offer.name}</h3>
+            <p className="text-sm text-[#2D466C]">{offer.tagline}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[#2D466C] transition-colors hover:bg-[#E4F2F7]"
+            aria-label="Bezárás"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="mt-3 flex items-end gap-2 border-y border-[#CDE0EA] py-3">
+          <span className="text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
+          <span className="pb-0.5 text-sm text-[#2D466C]">/ {priceUnit}</span>
+          {offer.oldPrice && (
+            <span className="pb-0.5 text-sm text-[#7E93B0] line-through">{formatFt(offer.oldPrice)}</span>
+          )}
+        </div>
+
+        <ul className="mt-4 space-y-2.5">
+          {items.map((f) => (
+            <li key={f} className="flex items-start gap-2.5 text-sm text-[#2D466C]">
+              <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#B4FF00]">
+                <Check className="h-3 w-3 text-[#002340]" strokeWidth={3} />
+              </span>
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-4 text-xs text-[#7E93B0]">
+          A feltüntetett ár online kedvezménnyel, tájékoztató jelleggel értendő. A pontos feltételekért keresd
+          ügyfélszolgálatunkat.
+        </p>
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+        >
+          Értem
+        </button>
+      </div>
     </div>
   );
 }
