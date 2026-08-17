@@ -34,6 +34,8 @@ import {
   MonitorPlay,
   ShoppingCart,
   User,
+  CalendarCheck,
+  Leaf,
 } from "lucide-react";
 import { OFFERS, formatFt, type Offer, type OfferCategory } from "../_data/offers";
 import { OfferCard } from "./offer-card";
@@ -81,6 +83,8 @@ type FlowConfig = {
   extrasMultiSelect?: boolean;
   extrasTitle: string;
   extrasSub: string;
+  /** e-Komfort tájékoztató megjelenítése a folyamatban (pl. internetnél). */
+  eKomfort?: boolean;
 };
 
 const NET_CONFIG: FlowConfig = {
@@ -96,6 +100,7 @@ const NET_CONFIG: FlowConfig = {
   offersLabel: "Internet",
   extrasTitle: "Extrák választása",
   extrasSub: "Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé. Egyszerre egy csomag kérhető.",
+  eKomfort: true,
   extras: [
     {
       key: "child",
@@ -441,7 +446,13 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
           {step === "personal" && <PersonalStep onNext={() => go("personalCheck")} />}
           {step === "address2" && <AddressDataStep onNext={() => go("address2Check")} />}
           {step === "consent" && (
-            <ConsentStep consents={consents} setConsents={setConsents} onNext={() => go("appointment")} requiredOk={requiredOk} />
+            <ConsentStep
+              consents={consents}
+              setConsents={setConsents}
+              onNext={() => go("appointment")}
+              requiredOk={requiredOk}
+              eKomfort={!!config.eKomfort}
+            />
           )}
           {step === "appointment" && (
             <AppointmentStep
@@ -775,7 +786,7 @@ function OffersStep({ config, onSelect }: { config: FlowConfig; onSelect: (o: Of
 // ── 4. Extrák ──────────────────────────────────────────────
 function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="mt-4 grid grid-cols-2 gap-2.5">
+    <div className="grid grid-cols-2 gap-2.5">
       <button
         type="button"
         onClick={() => onChange(true)}
@@ -828,35 +839,33 @@ function ExtrasStep({
       return v ? [key] : prev.filter((k) => k !== key);
     });
   };
-  const gridCols = extras.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2";
   return (
     <div>
       <StepHead title={title} sub={sub} />
-      <div className={["grid gap-4", gridCols].join(" ")}>
+      {/* Horizontális sorok: minden extra egy teljes szélességű sáv */}
+      <div className="space-y-4">
         {extras.map((x) => {
           const on = selected.includes(x.key);
           return (
-            <Card key={x.key} className="flex h-full flex-col">
-              <div className="flex gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-                  <x.icon className="h-5 w-5" />
-                </span>
-                <div>
+            <Card key={x.key} className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
+                <x.icon className="h-6 w-6" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
                   <p className="font-extrabold text-[#002340]">{x.title}</p>
-                  <span className="mt-1 inline-block rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">
-                    {x.priceLabel}
-                  </span>
+                  <span className="rounded-full bg-[#E4F2F7] px-3 py-1 text-xs font-bold text-[#002340]">{x.priceLabel}</span>
                 </div>
+                <p className="mt-1 text-sm text-[#2D466C]">{x.desc}</p>
+                <button
+                  type="button"
+                  onClick={() => setDetails(x)}
+                  className="mt-1.5 inline-flex items-center gap-1 text-sm font-bold text-[#002340] hover:underline"
+                >
+                  Részletek <ChevronRight className="h-4 w-4" />
+                </button>
               </div>
-              <p className="mt-3 min-h-[3rem] text-sm text-[#2D466C]">{x.desc}</p>
-              <button
-                type="button"
-                onClick={() => setDetails(x)}
-                className="mt-2 inline-flex items-center gap-1 self-start text-sm font-bold text-[#002340] hover:underline"
-              >
-                Részletek <ChevronRight className="h-4 w-4" />
-              </button>
-              <div className="mt-auto">
+              <div className="w-full shrink-0 sm:w-[240px]">
                 <YesNo value={on} onChange={(v) => toggle(x.key, v)} />
               </div>
             </Card>
@@ -1040,20 +1049,58 @@ const CONSENTS = [
   { id: "partner", req: false, t: "Adatátadás partnereknek", s: "Hozzájárulok adataim marketingcélú átadásához partnervállalatoknak." },
 ];
 
+function EKomfortCard() {
+  const items = [
+    { icon: FileText, t: "Elektronikus számla", s: "Papíralapú helyett e-számlát kapsz, SMS/e-mail értesítéssel." },
+    { icon: CreditCard, t: "Elektronikus fizetés", s: "App, csoportos beszedés, banki átutalás vagy ATM befizetés." },
+    { icon: CalendarCheck, t: "Határidőre fizetés", s: "A számlát a feltüntetett fizetési határidőig rendezed." },
+  ];
+  return (
+    <div className="mb-6 rounded-2xl border border-[#CDE0EA] bg-white p-5 shadow-[0_10px_30px_-20px_rgba(0,35,64,0.35)] sm:p-6">
+      <div className="flex items-start gap-3">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
+          <Leaf className="h-5 w-5" />
+        </span>
+        <div>
+          <p className="font-extrabold text-[#002340]">A választott csomag e-Komfort csomaggal érhető el</p>
+          <p className="mt-1 text-sm text-[#2D466C]">
+            A beépített díjkedvezmény megtartásához teljesítened kell az alábbi 3 feltételt. Ha nem teljesülnek, a kedvezmény
+            visszavonásra és a következő számládban felszámításra kerül.
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        {items.map((it) => (
+          <div key={it.t} className="rounded-xl border border-[#CDE0EA] bg-[#E4F2F7] p-4">
+            <span className="grid h-9 w-9 place-items-center rounded-lg bg-white text-[#002340]">
+              <it.icon className="h-5 w-5" />
+            </span>
+            <p className="mt-2.5 text-sm font-bold text-[#002340]">{it.t}</p>
+            <p className="mt-1 text-xs leading-relaxed text-[#2D466C]">{it.s}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ConsentStep({
   consents,
   setConsents,
   onNext,
   requiredOk,
+  eKomfort,
 }: {
   consents: Record<string, boolean>;
   setConsents: (v: Record<string, boolean>) => void;
   onNext: () => void;
   requiredOk: boolean;
+  eKomfort?: boolean;
 }) {
   return (
     <div>
       <StepHead title="Hozzájárulások és nyilatkozatok" sub="A megrendelés véglegesítéséhez fogadd el az alábbi kötelező nyilatkozatokat." />
+      {eKomfort && <EKomfortCard />}
       <div className="space-y-3">
         {CONSENTS.map((c) => {
           const on = !!consents[c.id];
