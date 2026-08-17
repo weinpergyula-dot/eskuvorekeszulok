@@ -222,6 +222,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       name: "HiperNet L",
       tagline: "e-Komfort, 12 hó hűséggel",
       price: 7990,
+      oldPrice: 10990,
       unit: "Ft/hó",
       features: ["1000 Mbit/s letöltés", "Optikai internet", "WiFi 7 router ajándékba", "Díjmentes telepítés"],
       details: [

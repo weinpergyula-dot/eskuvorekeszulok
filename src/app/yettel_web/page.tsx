@@ -18,7 +18,11 @@ import { YettelHeader } from "./_components/yettel-header";
 import { YettelFooter } from "./_components/yettel-footer";
 import { InternetFlow, TvFlow } from "./_components/internet-flow";
 import { DeviceMarquee } from "./_components/device-marquee";
-import { formatFt } from "./_data/offers";
+import { OFFERS, formatFt } from "./_data/offers";
+
+/** "A hét ajánlata" a hero-ban – ugyanaz a tarifa, mint az internet szekcióban,
+ *  hogy az ár és a kedvezmény ne csúszhasson el a kettő között. */
+const WEEKLY = OFFERS.net.find((o) => o.id === "hipernet-l")!;
 
 export const metadata: Metadata = {
   title: "Yettel – Mobil, internet és TV egy helyen",
@@ -60,8 +64,11 @@ export default function YettelWebPage() {
       <main>
         {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ──────
             Az alsó extra térköz alá csúszik be az ajánlatok szekció, hogy annak
-            lekerekített felső sarkainál ez a sötétkék háttér látsszon ki. */}
-        <section className="yettel-welcome-bg pb-10">
+            lekerekített felső sarkainál ez a sötétkék háttér látsszon ki.
+            A negatív felső margó a fejléc mögé húzza a hátteret (a tartalmat a
+            vele azonos pt tartja a helyén), hogy a fejléc lekerekített alsó
+            sarkai az oldal tetején is erre a háttérre vágódjanak ki. */}
+        <section className="yettel-welcome-bg -mt-14 pt-14 pb-10">
           <CategoryTiles />
         </section>
 
@@ -85,8 +92,8 @@ export default function YettelWebPage() {
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
               <div>
-                <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Készülékek</span>
-                <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">
+                <span className="text-sm font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Készülékek</span>
+                <h2 className="mt-1 text-[1.375rem] font-extrabold tracking-tight text-[#002340] sm:text-[1.75rem]">
                   Új telefon, 0 Ft előleggel
                 </h2>
               </div>
@@ -108,26 +115,20 @@ export default function YettelWebPage() {
                 <Sparkles className="h-3 w-3" />
                 Új ügyfeleknek: online kedvezmény minden csomagra
               </span>
-              <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-[#002340] sm:text-[2.6rem]">
-                Minden szolgáltatásod egy helyen.
+              <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-[2.6rem]">
+                <span className="text-white">Szupergyors</span> <span className="text-[#002340]">internet</span>
               </h1>
               <p className="mt-3 max-w-md text-base text-[#2D466C]">
-                Mobil, internet és TV – nincs kisbetűs meglepetés. Válaszd ki a hozzád illő csomagot konkrét árakkal, és
-                pár perc alatt megrendeled.
+                1000 Mbit/s optikai net az egész családnak – ajándék WiFi 7 routerrel, díjmentes telepítéssel és az
+                első 30 nappal díjmentesen.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <a
-                  href="#ajanlatok"
+                  href="#internet"
                   className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36] sm:w-auto"
                 >
-                  Ajánlott csomagok
+                  Érdekel
                   <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
-                  href="#internet"
-                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#002340]/25 bg-white px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] sm:w-auto"
-                >
-                  Otthoni internet
                 </a>
               </div>
               <p className="mt-4 text-xs font-semibold text-[#002340]/70">
@@ -150,16 +151,20 @@ export default function YettelWebPage() {
                 <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
                   A hét ajánlata
                 </span>
-                <h2 className="mt-2 text-base font-extrabold text-[#002340]">Teljes csomag</h2>
-                <p className="text-xs text-[#2D466C]">Net 500 + TV Extra + Yettel M</p>
+                <h2 className="mt-2 text-base font-extrabold text-[#002340]">{WEEKLY.name}</h2>
+                <p className="text-xs text-[#2D466C]">{WEEKLY.features[0]} · optikai internet</p>
                 <div className="mt-2 flex items-baseline gap-1.5 whitespace-nowrap">
-                  <span className="shrink-0 text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(14990)}</span>
+                  <span className="shrink-0 text-2xl font-extrabold tracking-tight text-[#002340]">
+                    {formatFt(WEEKLY.price)}
+                  </span>
                   <span className="shrink-0 text-xs text-[#2D466C]">/ hó</span>
                 </div>
                 <p className="text-xs text-[#7E93B0]">
-                  <span className="line-through">{formatFt(17470)}</span> helyett
+                  <span className="line-through">{formatFt(WEEKLY.oldPrice!)}</span> helyett
                 </p>
-                <p className="mt-1 text-xs font-bold text-[#2D466C]">Havi ~2 480 Ft megtakarítás.</p>
+                <p className="mt-1 text-xs font-bold text-[#2D466C]">
+                  Havi {formatFt(WEEKLY.oldPrice! - WEEKLY.price)} megtakarítás.
+                </p>
               </div>
             </div>
           </div>

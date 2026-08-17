@@ -52,10 +52,12 @@ export function OffersExplorer() {
     <div>
       {/* Dinamikus fejléc – a felül kiválasztott kategória + rövid marketing szöveg */}
       <div className="mb-6 max-w-2xl">
-        <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">
+        <span className="text-sm font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">
           Tarifák és szolgáltatások
         </span>
-        <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">{meta.title}</h2>
+        <h2 className="mt-1 text-[1.375rem] font-extrabold tracking-tight text-[#002340] sm:text-[1.75rem]">
+          {meta.title}
+        </h2>
         <p className="mt-2 text-base text-[#2D466C]">{meta.blurb}</p>
       </div>
 

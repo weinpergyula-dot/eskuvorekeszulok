@@ -101,7 +101,9 @@ export function OfferCard({
           <span className="text-3xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
           <span className="pb-1 text-sm text-[#2D466C]">/ {priceUnit}</span>
           {offer.oldPrice && (
-            <span className="pb-1 text-sm text-[#7E93B0] line-through">{formatFt(offer.oldPrice)}</span>
+            <span className="pb-1 text-sm text-[#7E93B0]">
+              <span className="line-through">{formatFt(offer.oldPrice)}</span> helyett
+            </span>
           )}
         </div>
 
