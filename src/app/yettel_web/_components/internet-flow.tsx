@@ -381,7 +381,7 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
   const backTarget = back[step];
 
   return (
-    <div className="fixed inset-0 z-[70] overflow-y-auto bg-white">
+    <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#E4F2F7] sm:bg-white">
       <header className="sticky top-0 z-10">
         {/* Felső sáv (fehér): vissza · márka · bezárás */}
         <div className="border-b border-[#CDE0EA] bg-white">
@@ -421,8 +421,9 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
       </header>
 
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
-        {/* Lekerekített, világoskék keret; fix szélesség – a step1-től a step8-ig ér */}
-        <div className="rounded-[32px] border border-[#CDE0EA] bg-[#E4F2F7] p-6 shadow-[0_30px_80px_-40px_rgba(0,35,64,0.45)] sm:p-10 lg:p-12">
+        {/* Lekerekített, világoskék keret desktopon; mobilon keret nélkül,
+            minden a világoskék háttéren fut. */}
+        <div className="rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-[32px] sm:border sm:border-[#CDE0EA] sm:bg-[#E4F2F7] sm:p-10 sm:shadow-[0_30px_80px_-40px_rgba(0,35,64,0.45)] lg:p-12">
           {step === "address" && (
             <AddressStep
               config={config}

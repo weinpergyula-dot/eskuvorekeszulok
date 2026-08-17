@@ -1,6 +1,6 @@
 "use client";
 
-import { PhoneCall, Globe, Plane, Tv, MonitorPlay, type LucideIcon } from "lucide-react";
+import { PhoneCall, Globe, Plane, Tv, MonitorPlay, PlayCircle, type LucideIcon } from "lucide-react";
 import { type Offer } from "../_data/offers";
 
 // Egy sávdiagramos keret-sor (ikon + felirat + érték + arányos sáv).
@@ -63,10 +63,12 @@ export function MobileQuotas({ offer }: { offer: Offer }) {
   return <QuotaBars rows={rows} />;
 }
 
-// Grafikus keret-kijelző TV csomaghoz: teljes csatornaszám / HD csatornaszám.
+// Grafikus keret-kijelző TV csomaghoz: teljes csatornaszám / HD csatornaszám,
+// alatta az elérhető streaming szolgáltatások.
 export function TvQuotas({ offer }: { offer: Offer }) {
   const total = offer.channelsTotal ?? 0;
   const hd = offer.hdChannels ?? 0;
+  const streaming = offer.streaming ?? [];
 
   const rows: QuotaRow[] = [
     {
@@ -83,5 +85,26 @@ export function TvQuotas({ offer }: { offer: Offer }) {
     },
   ];
 
-  return <QuotaBars rows={rows} />;
+  return (
+    <div className="space-y-3">
+      <QuotaBars rows={rows} />
+      {streaming.length > 0 && (
+        <div>
+          <p className="mb-1.5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.04em] text-[#2D466C]">
+            <PlayCircle className="h-3.5 w-3.5" /> Streaming
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {streaming.map((s) => (
+              <span
+                key={s}
+                className="inline-flex items-center rounded-full border border-[#CDE0EA] bg-[#E4F2F7] px-2.5 py-1 text-xs font-bold text-[#002340]"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

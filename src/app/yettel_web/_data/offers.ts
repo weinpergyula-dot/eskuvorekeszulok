@@ -33,6 +33,8 @@ export type Offer = {
   channelsTotal?: number;
   /** HD csatornák száma. */
   hdChannels?: number;
+  /** Elérhető streaming szolgáltatások a csomagban (pl. "RTL+", "HBO Max"). */
+  streaming?: string[];
   /** Kiemelt "legjobb választás" kártya. */
   best?: boolean;
   /** A kategória legdrágább, prémium csomagja – teljes lime kiemeléssel. */
@@ -265,6 +267,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       channelsLabel: "42+3",
       channelsTotal: 45,
       hdChannels: 27,
+      streaming: ["RTL+"],
       features: ["42+3 csatorna", "ebből 27 HD", "RTL+ csatornacsomag", "Akár 3 TV Box"],
       details: [
         "42+3 csatorna, ebből 27 HD",
@@ -284,6 +287,7 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       channelsLabel: "100+3",
       channelsTotal: 103,
       hdChannels: 56,
+      streaming: ["RTL+", "HBO Max", "Netflix"],
       features: ["100+3 csatorna", "ebből 56 HD", "RTL+ csatornacsomag", "Akár 3 TV Box"],
       details: [
         "100+3 csatorna, ebből 56 HD",
