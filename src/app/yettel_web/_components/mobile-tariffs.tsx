@@ -29,8 +29,6 @@ export function MobileTariffs() {
     .filter((t) => (!filters.has("net") || t.unlimitedNet) && (!filters.has("call") || t.unlimitedCall))
     .sort((a, b) => b.price - a.price);
 
-  const shown = showAll ? tariffs : tariffs.slice(0, INITIAL);
-
   const chips: { key: FilterKey | "all"; label: string }[] = [
     { key: "all", label: "Összes" },
     { key: "net", label: "Korlátlan internet" },
@@ -74,20 +72,30 @@ export function MobileTariffs() {
           Nincs a szűrésnek megfelelő tarifa. Próbálj más szűrőt!
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-7 px-3 sm:grid-cols-2 sm:gap-5 sm:px-0 lg:grid-cols-3">
-          {shown.map((t) => (
-            <OfferCard key={t.id} offer={t} ctaLabel="Kosárba rakom" body={<MobileQuotas offer={t} />} />
+        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
+          {tariffs.map((t, i) => (
+            <OfferCard
+              key={t.id}
+              offer={t}
+              ctaLabel="Kosárba rakom"
+              body={<MobileQuotas offer={t} premium={!!t.premium} />}
+              className={[
+                "min-w-[82%] shrink-0 snap-start sm:min-w-0 sm:shrink",
+                // Mobilon minden swipe-olható; desktopon az első sor után csak a "Még több" mutatja
+                i >= INITIAL && !showAll ? "sm:hidden" : "",
+              ].join(" ")}
+            />
           ))}
         </div>
       )}
 
-      {/* Még több… / Kevesebb gomb */}
+      {/* Még több… / Kevesebb – kompakt, csak nagyobb kijelzőn (mobilon swipe) */}
       {tariffs.length > INITIAL && (
-        <div className="mt-8 flex justify-center">
+        <div className="mt-4 hidden justify-center sm:flex">
           <button
             type="button"
             onClick={() => setShowAll((v) => !v)}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-[#002340] px-6 py-3 text-sm font-bold text-[#002340] transition-colors hover:bg-[#002340] hover:text-white"
+            className="inline-flex items-center gap-1 text-sm font-bold text-[#002340] hover:underline"
           >
             {showAll ? "Kevesebb" : "Még több…"}
             <ChevronDown className={["h-4 w-4 transition-transform", showAll ? "rotate-180" : ""].join(" ")} />
@@ -99,7 +107,7 @@ export function MobileTariffs() {
 }
 
 // Grafikus keret-kijelző: Hívás / Net / Roaming, sávdiagramokkal.
-function MobileQuotas({ offer }: { offer: Offer }) {
+function MobileQuotas({ offer, premium }: { offer: Offer; premium?: boolean }) {
   const callUnlimited = !!offer.unlimitedCall;
   const dataUnlimited = !!offer.unlimitedNet;
   const callNum = parseInt(offer.voiceLabel ?? "", 10);
@@ -127,18 +135,23 @@ function MobileQuotas({ offer }: { offer: Offer }) {
     },
   ];
 
+  // Prémium (teljes lime) kártyán a sáv navy, hogy jól látszódjon a lime háttéren.
+  const labelCls = premium ? "text-[#0A3A24]" : "text-[#2D466C]";
+  const trackCls = premium ? "bg-[#002340]/15" : "bg-[#E4F2F7]";
+  const fillCls = premium ? "bg-[#002340]" : "bg-[#B4FF00]";
+
   return (
     <div className="space-y-3">
       {rows.map((r) => (
         <div key={r.label}>
           <div className="mb-1 flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.04em] text-[#2D466C]">
+            <span className={["inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.04em]", labelCls].join(" ")}>
               <r.icon className="h-3.5 w-3.5" /> {r.label}
             </span>
             <span className="text-sm font-extrabold text-[#002340]">{r.value}</span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-[#E4F2F7]">
-            <div className="h-full rounded-full bg-[#B4FF00]" style={{ width: `${Math.round(r.pct * 100)}%` }} />
+          <div className={["h-2 w-full overflow-hidden rounded-full", trackCls].join(" ")}>
+            <div className={["h-full rounded-full", fillCls].join(" ")} style={{ width: `${Math.round(r.pct * 100)}%` }} />
           </div>
         </div>
       ))}

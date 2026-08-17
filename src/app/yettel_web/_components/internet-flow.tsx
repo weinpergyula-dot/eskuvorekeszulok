@@ -778,11 +778,17 @@ function OffersStep({ config, onSelect }: { config: FlowConfig; onSelect: (o: Of
       </div>
       <p className="mb-7 text-sm font-extrabold uppercase tracking-[0.05em] text-[#2D466C]">{config.offersLabel}</p>
       {/* Ugyanaz az OfferCard, mint a főoldali szekcióban; csak a gomb szövege más. */}
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
         {[...OFFERS[config.service]]
           .sort((a, b) => b.price - a.price)
           .map((o) => (
-            <OfferCard key={o.id} offer={o} ctaLabel="Megrendelem" onOrder={() => onSelect(o)} />
+            <OfferCard
+              key={o.id}
+              offer={o}
+              ctaLabel="Megrendelem"
+              onOrder={() => onSelect(o)}
+              className="min-w-[82%] shrink-0 snap-start sm:min-w-0 sm:shrink"
+            />
           ))}
       </div>
       <div className="mt-8">

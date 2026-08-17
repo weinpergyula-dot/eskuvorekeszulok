@@ -114,6 +114,8 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
         "69 GB EU/1. díjzóna adatroaming a belföldi keretből",
         "5G hálózat",
       ],
+      best: true,
+      badge: "Legnépszerűbb",
       cta: "Kosárba rakom",
     },
     {
@@ -178,6 +180,8 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
         "110 GB EU/1. díjzóna adatroaming a belföldi keretből",
         "5G hálózat",
       ],
+      premium: true,
+      badge: "Prémium",
       cta: "Kosárba rakom",
     },
     {
