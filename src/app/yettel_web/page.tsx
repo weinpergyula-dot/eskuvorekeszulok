@@ -89,10 +89,11 @@ export default function YettelWebPage() {
               </a>
             </div>
           </div>
-          {/* Végtelenített, körbeforgó készülék-slideshow (marquee) – szélesebb sáv */}
+          {/* Végtelenített, körbeforgó készülék-slideshow (marquee) – szélesebb sáv.
+              Egérrel fölé állva megáll (group-hover a teljes sávon). */}
           <div className="mx-auto max-w-[1760px] px-4 sm:px-6">
-            <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_4%,#000_96%,transparent)]">
-              <div className="carousel-track flex w-max gap-5 hover:[animation-play-state:paused]">
+            <div className="group overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_4%,#000_96%,transparent)]">
+              <div className="carousel-track flex w-max gap-5 py-1 group-hover:[animation-play-state:paused]">
                 {Array.from({ length: 8 })
                   .flatMap(() => DEVICES)
                   .map((device, i) => (
@@ -100,23 +101,43 @@ export default function YettelWebPage() {
                       key={i}
                       className="flex w-[320px] shrink-0 flex-col rounded-[20px] border border-[#CDE0EA] bg-white p-5"
                     >
-                      <div className="mb-4 h-60 overflow-hidden rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white p-4">
+                      <div className="mb-4 h-56 overflow-hidden rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white p-4">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={`/yettel/${device.img}`} alt={device.name} className="h-full w-full object-contain" />
                       </div>
                       <h3 className="text-xl font-extrabold text-[#002340]">{device.name}</h3>
-                      <p className="text-xs text-[#2D466C]">{device.note}</p>
-                      <div className="mt-3 flex items-end gap-1">
-                        <span className="text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(device.monthly)}</span>
-                        <span className="pb-1 text-sm text-[#2D466C]">/ hó</span>
+
+                      {/* Árak: teljes ár + havidíjas konstrukció */}
+                      <div className="mt-3 flex items-stretch gap-2">
+                        <div className="flex-1 rounded-xl border border-[#CDE0EA] bg-white px-3 py-2">
+                          <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#7E93B0]">Teljes ár</p>
+                          <p className="text-lg font-extrabold tracking-tight text-[#002340]">{formatFt(device.fullPrice)}</p>
+                        </div>
+                        <div className="flex-1 rounded-xl border border-[#B4FF00] bg-[#B4FF00]/12 px-3 py-2">
+                          <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#2D466C]">Havidíjas</p>
+                          <p className="text-lg font-extrabold tracking-tight text-[#002340]">
+                            {formatFt(device.monthly)}
+                            <span className="text-xs font-semibold text-[#2D466C]"> / hó</span>
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-xs font-semibold text-[#2D466C]">{device.upfront}</p>
-                      <button
-                        type="button"
-                        className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7]"
-                      >
-                        Részletek <ArrowRight className="h-4 w-4" />
-                      </button>
+                      <p className="mt-1.5 text-xs font-semibold text-[#2D466C]">{device.upfront}</p>
+
+                      {/* CTA-k */}
+                      <div className="mt-4 flex flex-col gap-2">
+                        <button
+                          type="button"
+                          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+                        >
+                          Mobil szolgáltatással <ArrowRight className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7]"
+                        >
+                          Csak készülék
+                        </button>
+                      </div>
                     </div>
                   ))}
               </div>

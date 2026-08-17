@@ -26,6 +26,13 @@ export type Offer = {
   unlimitedCall?: boolean;
   /** EU roaming keret GB-ban (a grafikus kijelzőhöz). */
   roamingGb?: number;
+  // ── Yettel TV csomagokhoz (grafikus csatorna-kijelző) ──
+  /** Csatornaszám felirata, pl. "42+3". */
+  channelsLabel?: string;
+  /** Teljes csatornaszám (sávhoz). */
+  channelsTotal?: number;
+  /** HD csatornák száma. */
+  hdChannels?: number;
   /** Kiemelt "legjobb választás" kártya. */
   best?: boolean;
   /** A kategória legdrágább, prémium csomagja – teljes lime kiemeléssel. */
@@ -247,62 +254,44 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       cta: "Címkeresés",
     },
   ],
+  // TV csomagok – a grafikus kijelző a teljes és a HD csatornaszámot mutatja.
   tv: [
     {
-      id: "tv-alap",
-      name: "TV Alap",
-      tagline: "A kedvencek",
-      price: 3490,
+      id: "tv-basic",
+      name: "Yettel TV Basic",
+      tagline: "Akár 3 TV Box, hűségvállalás nélkül",
+      price: 4500,
       unit: "Ft/hó",
-      features: ["60+ csatorna", "4 eszközön nézhető", "20 óra felhőfelvétel", "MyTV app"],
+      channelsLabel: "42+3",
+      channelsTotal: 45,
+      hdChannels: 27,
+      features: ["42+3 csatorna", "ebből 27 HD", "RTL+ csatornacsomag", "Akár 3 TV Box"],
       details: [
-        "60+ csatorna, köztük 20+ HD minőségben",
-        "Egyszerre 4 eszközön nézhető",
-        "20 óra felhőalapú felvétel",
-        "MyTV alkalmazás iOS és Android eszközökre",
+        "42+3 csatorna, ebből 27 HD",
+        "RTL+ csatornacsomag",
+        "Prémium csatornák elérhetők",
+        "Akár 3 TV Box, hűségvállalás nélkül",
+        "Élő adás és visszanézés",
       ],
       cta: "Címkeresés",
     },
     {
-      id: "tv-extra",
-      name: "TV Extra",
-      tagline: "Sport, film, sorozat",
-      price: 4990,
-      oldPrice: 5490,
+      id: "tv-plus",
+      name: "Yettel TV Plus",
+      tagline: "Akár 3 TV Box, hűségvállalás nélkül",
+      price: 6500,
       unit: "Ft/hó",
-      features: [
-        "120+ csatorna",
-        "Sport & prémium film csomag",
-        "100 óra felvétel",
-        "Visszatekerés 7 napra",
-      ],
+      channelsLabel: "100+3",
+      channelsTotal: 103,
+      hdChannels: 56,
+      features: ["100+3 csatorna", "ebből 56 HD", "RTL+ csatornacsomag", "Akár 3 TV Box"],
       details: [
-        "120+ csatorna",
-        "Sport és prémium film csomag",
-        "100 óra felhőalapú felvétel",
-        "7 napos visszatekerés (catch-up)",
-        "Egyszerre 4 eszközön nézhető",
+        "100+3 csatorna, ebből 56 HD",
+        "RTL+ és prémium csatornacsomag",
+        "Sport- és filmcsatornák",
+        "Akár 3 TV Box, hűségvállalás nélkül",
+        "Élő adás és visszanézés",
       ],
-      best: true,
-      badge: "Ajánljuk",
-      cta: "Címkeresés",
-    },
-    {
-      id: "tv-premium",
-      name: "TV Prémium",
-      tagline: "Minden, 4K-ban",
-      price: 6990,
-      unit: "Ft/hó",
-      features: ["180+ csatorna", "Összes prémium csomag", "4K + 200 óra felvétel", "Egyszerre 6 eszköz"],
-      details: [
-        "180+ csatorna",
-        "Összes prémium és sport csomag",
-        "4K minőség a támogatott csatornákon",
-        "200 óra felhőalapú felvétel",
-        "Egyszerre 6 eszközön nézhető",
-      ],
-      premium: true,
-      badge: "Prémium",
       cta: "Címkeresés",
     },
   ],
@@ -382,7 +371,10 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
 export type Device = {
   id: string;
   name: string;
+  /** Havidíjas konstrukció ára (Ft/hó). */
   monthly: number;
+  /** Teljes (egyösszegű) vételár Ft-ban. */
+  fullPrice: number;
   upfront: string;
   note: string;
   /** Kép fájlnév a public/yettel/ mappában. */
@@ -390,9 +382,9 @@ export type Device = {
 };
 
 export const DEVICES: Device[] = [
-  { id: "iphone-15", name: "iPhone 15 128 GB", monthly: 9990, upfront: "0 Ft előleg", note: "Yettel L mellé", img: "iphone.png" },
-  { id: "galaxy-s24", name: "Samsung Galaxy S24", monthly: 7490, upfront: "0 Ft előleg", note: "24 havi részlet", img: "samsung.png" },
-  { id: "redmi-note-13", name: "Xiaomi Redmi Note 13", monthly: 2490, upfront: "0 Ft előleg", note: "24 havi részlet", img: "xiaomi.png" },
+  { id: "iphone-15", name: "iPhone 15 128 GB", monthly: 9990, fullPrice: 349900, upfront: "0 Ft előleg", note: "24 havi részlet", img: "iphone.png" },
+  { id: "galaxy-s24", name: "Samsung Galaxy S24", monthly: 7490, fullPrice: 269900, upfront: "0 Ft előleg", note: "24 havi részlet", img: "samsung.png" },
+  { id: "redmi-note-13", name: "Xiaomi Redmi Note 13", monthly: 2490, fullPrice: 89900, upfront: "0 Ft előleg", note: "24 havi részlet", img: "xiaomi.png" },
 ];
 
 export function formatFt(value: number): string {

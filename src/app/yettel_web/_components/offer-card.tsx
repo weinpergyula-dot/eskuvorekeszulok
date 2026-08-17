@@ -34,10 +34,10 @@ export function OfferCard({
       className={[
         "relative flex flex-col rounded-[20px] bg-white transition-shadow",
         isPremium
-          ? "border-2 border-[#B4FF00] shadow-[0_12px_36px_rgba(0,35,64,0.16)]"
+          ? "border-2 border-[#B4FF00] sm:shadow-[0_12px_36px_rgba(0,35,64,0.16)]"
           : offer.best
-            ? "border-2 border-[#B4FF00] shadow-[0_10px_34px_rgba(0,35,64,0.10)]"
-            : "border border-[#CDE0EA] hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
+            ? "border-2 border-[#B4FF00] sm:shadow-[0_10px_34px_rgba(0,35,64,0.10)]"
+            : "border border-[#CDE0EA] sm:hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
         className,
       ].join(" ")}
     >

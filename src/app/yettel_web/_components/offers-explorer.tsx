@@ -5,6 +5,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { OFFERS, OFFER_TABS, CATEGORY_META, type OfferCategory } from "../_data/offers";
 import { OfferCard } from "./offer-card";
 import { MobileTariffs } from "./mobile-tariffs";
+import { TvQuotas } from "./quota-bars";
 
 // Az igénylési folyamatok indítása (hash-vezérelt, teljes oldalas – lásd
 // internet-flow.tsx). Az internet és a TV külön hash-bázison fut.
@@ -79,7 +80,7 @@ export function OffersExplorer() {
           </a>
         </div>
       ) : (
-        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
+        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-3 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-0 sm:pb-0 lg:grid-cols-3">
           {/* Balról jobbra ár szerint csökkenő sorrend; mobilon oldalra swipe-olható */}
           {[...OFFERS[active]]
             .sort((a, b) => b.price - a.price)
@@ -88,6 +89,7 @@ export function OffersExplorer() {
                 key={offer.id}
                 offer={offer}
                 onOrder={active === "net" || active === "tv" ? () => startFlow(active) : undefined}
+                body={active === "tv" ? <TvQuotas offer={offer} /> : undefined}
                 className="min-w-[82%] shrink-0 snap-start sm:min-w-0 sm:shrink"
               />
             ))}

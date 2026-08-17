@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, PhoneCall, Globe, Plane } from "lucide-react";
-import { OFFERS, type Offer } from "../_data/offers";
+import { ChevronDown } from "lucide-react";
+import { OFFERS } from "../_data/offers";
 import { OfferCard } from "./offer-card";
+import { MobileQuotas } from "./quota-bars";
 
 type FilterKey = "net" | "call";
 const INITIAL = 3; // egy sor (weben)
@@ -72,7 +73,7 @@ export function MobileTariffs() {
           Nincs a szűrésnek megfelelő tarifa. Próbálj más szűrőt!
         </div>
       ) : (
-        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
+        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-3 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-0 sm:pb-0 lg:grid-cols-3">
           {tariffs.map((t, i) => (
             <OfferCard
               key={t.id}
@@ -102,54 +103,6 @@ export function MobileTariffs() {
           </button>
         </div>
       )}
-    </div>
-  );
-}
-
-// Grafikus keret-kijelző: Hívás / Net / Roaming, sávdiagramokkal.
-function MobileQuotas({ offer }: { offer: Offer }) {
-  const callUnlimited = !!offer.unlimitedCall;
-  const dataUnlimited = !!offer.unlimitedNet;
-  const callNum = parseInt(offer.voiceLabel ?? "", 10);
-  const dataNum = parseInt(offer.dataLabel ?? "", 10);
-  const roam = offer.roamingGb ?? 0;
-
-  const rows = [
-    {
-      icon: PhoneCall,
-      label: "Hívás",
-      value: callUnlimited ? "Korlátlan" : `${callNum} perc`,
-      pct: callUnlimited ? 1 : Math.min(callNum / 300, 1),
-    },
-    {
-      icon: Globe,
-      label: "Net",
-      value: dataUnlimited ? "Korlátlan" : `${dataNum} GB`,
-      pct: dataUnlimited ? 1 : Math.min(dataNum / 100, 1),
-    },
-    {
-      icon: Plane,
-      label: "Roaming",
-      value: `${roam} GB`,
-      pct: Math.min(roam / 120, 1),
-    },
-  ];
-
-  return (
-    <div className="space-y-3">
-      {rows.map((r) => (
-        <div key={r.label}>
-          <div className="mb-1 flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.04em] text-[#2D466C]">
-              <r.icon className="h-3.5 w-3.5" /> {r.label}
-            </span>
-            <span className="text-sm font-extrabold text-[#002340]">{r.value}</span>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-[#E4F2F7]">
-            <div className="h-full rounded-full bg-[#B4FF00]" style={{ width: `${Math.round(r.pct * 100)}%` }} />
-          </div>
-        </div>
-      ))}
     </div>
   );
 }
