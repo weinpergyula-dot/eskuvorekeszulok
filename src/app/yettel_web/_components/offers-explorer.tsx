@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, ArrowRight, Sparkles, Zap, Crown, Wifi, MapPin } from "lucide-react";
+import { Check, ArrowRight, Sparkles, Zap, Crown } from "lucide-react";
 import { OFFERS, OFFER_TABS, CATEGORY_META, formatFt, type OfferCategory, type Offer } from "../_data/offers";
 
 // Az otthoni internet igénylési folyamat indítása (a folyamat hash-vezérelt,
@@ -160,37 +160,11 @@ export function OffersExplorer() {
           </a>
         </div>
       ) : (
-        <>
-          {/* Otthoni internet: címellenőrzés indító sáv (a /yettel_light_asis folyamat) */}
-          {active === "net" && (
-            <div className="mb-6 flex flex-col gap-4 rounded-[20px] bg-[#002340] px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-              <div className="flex items-start gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-                  <Wifi className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="font-extrabold text-white">Otthoni internet szuper áron</p>
-                  <p className="mt-0.5 text-sm text-[#BBD3E4]">
-                    Már 6 990 Ft / hó-tól, díjmentes telepítéssel. Nézd meg, elérhető-e a címeden!
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={startInternetFlow}
-                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#B4FF00] px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:bg-[#9BE000]"
-              >
-                <MapPin className="h-4 w-4" /> Címellenőrzés
-              </button>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 gap-7 px-3 sm:grid-cols-2 sm:gap-5 sm:px-0 lg:grid-cols-3">
-            {OFFERS[active].map((offer) => (
-              <OfferCard key={offer.id} offer={offer} onOrder={active === "net" ? startInternetFlow : undefined} />
-            ))}
-          </div>
-        </>
+        <div className="grid grid-cols-1 gap-7 px-3 sm:grid-cols-2 sm:gap-5 sm:px-0 lg:grid-cols-3">
+          {OFFERS[active].map((offer) => (
+            <OfferCard key={offer.id} offer={offer} onOrder={active === "net" ? startInternetFlow : undefined} />
+          ))}
+        </div>
       )}
 
       <p className="mt-5 text-xs text-[#7E93B0]">
