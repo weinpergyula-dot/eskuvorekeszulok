@@ -505,65 +505,108 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
         </div>
       </main>
 
+      {/* Hely a mobil, alul ragadó kosársávnak, hogy ne takarja a gombokat */}
+      {showCart && pkg && <div aria-hidden className="h-24 sm:hidden" />}
       {showCart && pkg && <CartSummary pkg={pkg} extras={chosenExtras} total={total} />}
     </div>
   );
 }
 
-// ── Lebegő kosár-összegző ──────────────────────────────────
-function CartSummary({ pkg, extras, total }: { pkg: Offer; extras: FlowExtra[]; total: number }) {
-  const [open, setOpen] = useState(true);
+// ── Kosár-összegző: mobilon alul ragadó sáv, weben lebegő kártya ─────────
+function CartLines({ pkg, extras, total }: { pkg: Offer; extras: FlowExtra[]; total: number }) {
   return (
-    <div className="fixed bottom-4 right-4 z-40 w-[calc(100%-2rem)] max-w-xs sm:bottom-6 sm:right-6">
-      {open ? (
-        <div className="overflow-hidden rounded-2xl border border-[#CDE0EA] bg-white shadow-[0_24px_60px_-20px_rgba(0,35,64,0.45)]">
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="flex w-full items-center justify-between gap-2 bg-[#002340] px-4 py-3 text-white"
-          >
-            <span className="inline-flex items-center gap-2 text-sm font-bold">
-              <ShoppingCart className="h-4 w-4 text-[#B4FF00]" /> A kosarad
-            </span>
-            <ChevronDown className="h-4 w-4" />
-          </button>
-          <div className="max-h-[45vh] overflow-y-auto p-4">
-            <div className="flex items-start justify-between gap-3 border-b border-[#CDE0EA] pb-2.5">
-              <div>
-                <p className="text-sm font-bold text-[#002340]">{pkg.name}</p>
-                <p className="text-xs text-[#7E93B0]">{pkg.features[0]}</p>
-              </div>
-              <span className="whitespace-nowrap text-sm font-bold text-[#002340]">{formatFt(pkg.price)}</span>
-            </div>
-            {extras.map((e) => (
-              <div key={e.key} className="flex items-center justify-between gap-3 border-b border-[#CDE0EA] py-2.5">
-                <p className="text-sm text-[#002340]">{e.title}</p>
-                <span className={["whitespace-nowrap text-sm", e.price === 0 ? "font-semibold text-[#2D466C]" : "font-bold text-[#002340]"].join(" ")}>
-                  {e.price === 0 ? "Díjmentes" : formatFt(e.price)}
-                </span>
-              </div>
-            ))}
-            <div className="flex items-center justify-between gap-3 pt-3">
-              <span className="text-sm font-extrabold uppercase tracking-[0.04em] text-[#2D466C]">Összesen</span>
-              <span className="text-lg font-extrabold tracking-tight text-[#002340]">
-                {formatFt(total)}
-                <span className="text-xs font-semibold text-[#2D466C]"> / hó</span>
-              </span>
-            </div>
-          </div>
+    <>
+      <div className="flex items-start justify-between gap-3 border-b border-[#CDE0EA] pb-2.5">
+        <div>
+          <p className="text-sm font-bold text-[#002340]">{pkg.name}</p>
+          <p className="text-xs text-[#7E93B0]">{pkg.features[0]}</p>
         </div>
-      ) : (
+        <span className="whitespace-nowrap text-sm font-bold text-[#002340]">{formatFt(pkg.price)}</span>
+      </div>
+      {extras.map((e) => (
+        <div key={e.key} className="flex items-center justify-between gap-3 border-b border-[#CDE0EA] py-2.5">
+          <p className="text-sm text-[#002340]">{e.title}</p>
+          <span className={["whitespace-nowrap text-sm", e.price === 0 ? "font-semibold text-[#2D466C]" : "font-bold text-[#002340]"].join(" ")}>
+            {e.price === 0 ? "Díjmentes" : formatFt(e.price)}
+          </span>
+        </div>
+      ))}
+      <div className="flex items-center justify-between gap-3 pt-3">
+        <span className="text-sm font-extrabold uppercase tracking-[0.04em] text-[#2D466C]">Összesen</span>
+        <span className="text-lg font-extrabold tracking-tight text-[#002340]">
+          {formatFt(total)}
+          <span className="text-xs font-semibold text-[#2D466C]"> / hó</span>
+        </span>
+      </div>
+    </>
+  );
+}
+
+function CartSummary({ pkg, extras, total }: { pkg: Offer; extras: FlowExtra[]; total: number }) {
+  // A két nézetnek külön nyitott-állapota van: mobilon alapból csak az összeg
+  // látszik (hogy ne takarja a tartalmat), weben a teljes kártya nyitva marad.
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [open, setOpen] = useState(true);
+
+  return (
+    <>
+      {/* Mobil: a képernyő aljára ragadó összesítő sáv */}
+      <div className="fixed inset-x-0 bottom-0 z-40 sm:hidden">
+        {mobileOpen && (
+          <div className="max-h-[45vh] overflow-y-auto border-t border-[#CDE0EA] bg-white px-4 py-3 shadow-[0_-18px_40px_-24px_rgba(0,35,64,0.45)]">
+            <CartLines pkg={pkg} extras={extras} total={total} />
+          </div>
+        )}
         <button
           type="button"
-          onClick={() => setOpen(true)}
-          className="ml-auto flex items-center gap-2 rounded-full bg-[#002340] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_40px_-16px_rgba(0,35,64,0.6)]"
+          onClick={() => setMobileOpen((v) => !v)}
+          aria-expanded={mobileOpen}
+          className="flex w-full items-center justify-between gap-3 bg-[#002340] px-4 pt-3.5 pb-[calc(0.875rem+env(safe-area-inset-bottom))] text-white shadow-[0_-14px_34px_-20px_rgba(0,35,64,0.7)]"
         >
-          <ShoppingCart className="h-4 w-4 text-[#B4FF00]" />
-          <span>{formatFt(total)} / hó</span>
-          <ChevronUp className="h-4 w-4" />
+          <span className="inline-flex items-center gap-2 text-sm font-bold">
+            <ShoppingCart className="h-4 w-4 text-[#B4FF00]" /> A kosarad
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="text-base font-extrabold tracking-tight">
+              {formatFt(total)}
+              <span className="text-xs font-semibold text-[#BBD3E4]"> / hó</span>
+            </span>
+            {mobileOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+          </span>
         </button>
-      )}
-    </div>
+      </div>
+
+      {/* Web: lebegő kártya jobb alul */}
+      <div className="fixed bottom-6 right-6 z-40 hidden w-full max-w-xs sm:block">
+        {open ? (
+          <div className="overflow-hidden rounded-2xl border border-[#CDE0EA] bg-white shadow-[0_24px_60px_-20px_rgba(0,35,64,0.45)]">
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center justify-between gap-2 bg-[#002340] px-4 py-3 text-white"
+            >
+              <span className="inline-flex items-center gap-2 text-sm font-bold">
+                <ShoppingCart className="h-4 w-4 text-[#B4FF00]" /> A kosarad
+              </span>
+              <ChevronDown className="h-4 w-4" />
+            </button>
+            <div className="max-h-[45vh] overflow-y-auto p-4">
+              <CartLines pkg={pkg} extras={extras} total={total} />
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="ml-auto flex items-center gap-2 rounded-full bg-[#002340] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_40px_-16px_rgba(0,35,64,0.6)]"
+          >
+            <ShoppingCart className="h-4 w-4 text-[#B4FF00]" />
+            <span>{formatFt(total)} / hó</span>
+            <ChevronUp className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+    </>
   );
 }
 

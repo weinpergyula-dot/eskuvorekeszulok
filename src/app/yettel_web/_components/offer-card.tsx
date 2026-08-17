@@ -37,12 +37,14 @@ export function OfferCard({
   return (
     <div
       className={[
+        // A kártyák alja mindenhol (mobilon és weben is) kap egy finom vetett árnyékot,
+        // hogy elemelkedjenek a háttértől.
         "relative flex flex-col rounded-[20px] bg-white transition-shadow",
         isPremium
-          ? "border-2 border-[#B4FF00] sm:shadow-[0_12px_36px_rgba(0,35,64,0.16)]"
+          ? "border-2 border-[#B4FF00] shadow-[0_14px_22px_-12px_rgba(0,35,64,0.40)] sm:shadow-[0_18px_38px_-16px_rgba(0,35,64,0.45)]"
           : offer.best
-            ? "border-2 border-[#B4FF00] sm:shadow-[0_10px_34px_rgba(0,35,64,0.10)]"
-            : "border border-[#CDE0EA] sm:hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]",
+            ? "border-2 border-[#B4FF00] shadow-[0_12px_20px_-12px_rgba(0,35,64,0.34)] sm:shadow-[0_16px_34px_-16px_rgba(0,35,64,0.38)]"
+            : "border border-[#CDE0EA] shadow-[0_10px_18px_-12px_rgba(0,35,64,0.30)] sm:shadow-[0_12px_24px_-14px_rgba(0,35,64,0.30)] sm:hover:shadow-[0_16px_30px_-14px_rgba(0,35,64,0.38)]",
         className,
       ].join(" ")}
     >
