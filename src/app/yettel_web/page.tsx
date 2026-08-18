@@ -178,11 +178,14 @@ export default function YettelWebPage() {
             <h2 className="mb-8 text-center text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
               Miért a Yettel?
             </h2>
-            <div className="flex flex-wrap justify-center gap-5">
+            {/* Rács, nem fix szélességű kártyák: így a négy elem minden
+                nézetben egy sorba fér (a fix px-szélesség nem skálázódott
+                együtt a konténerrel, ezért esett a 4. kártya új sorba). */}
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {VALUE_PROPS.map((vp) => (
                 <div
                   key={vp.title}
-                  className="flex w-full flex-col items-center rounded-[20px] border border-[#CDE0EA] bg-white p-5 text-center sm:w-[260px]"
+                  className="flex flex-col items-center rounded-[20px] border border-[#CDE0EA] bg-white p-5 text-center"
                 >
                   <span className="mb-3 grid h-12 w-12 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
                     <vp.icon className="h-6 w-6" strokeWidth={1.9} />
