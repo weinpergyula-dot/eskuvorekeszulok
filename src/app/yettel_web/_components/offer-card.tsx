@@ -41,11 +41,13 @@ export function OfferCard({
         // hogy elemelkedjenek a háttértől.
         "relative flex flex-col rounded-[20px] bg-white transition-shadow",
         // Az árnyék mindhárom változatnál azonosan visszafogott – a keretes
-        // (prémium/kiemelt) kártyákat a lime keret emeli ki, nem az árnyék.
+        // kártyákat a keret emeli ki (prémium: sötétkék, kiemelt: lime).
         "shadow-[0_10px_18px_-12px_rgba(0,35,64,0.30)] sm:shadow-[0_12px_24px_-14px_rgba(0,35,64,0.30)]",
-        isPremium || offer.best
-          ? "border-2 border-[#B4FF00]"
-          : "border border-[#CDE0EA] sm:hover:shadow-[0_16px_30px_-14px_rgba(0,35,64,0.38)]",
+        isPremium
+          ? "border-2 border-[#002340]"
+          : offer.best
+            ? "border-2 border-[#B4FF00]"
+            : "border border-[#CDE0EA] sm:hover:shadow-[0_16px_30px_-14px_rgba(0,35,64,0.38)]",
         className,
       ].join(" ")}
     >
@@ -66,15 +68,15 @@ export function OfferCard({
         </span>
       )}
 
-      {/* Fejléc – prémiumnál lime háttér az e-Komfort alatti dividerig, a többi lime keret */}
+      {/* Fejléc – prémiumnál lime háttér az e-Komfort alatti dividerig */}
       <div
         className={[
-          "px-5 pt-6 pb-4",
+          "px-5 pt-6 pb-5",
           isPremium ? "rounded-t-[18px] bg-[linear-gradient(160deg,#CBFF4D_0%,#B4FF00_60%,#9BE000_100%)]" : "",
         ].join(" ")}
       >
-        <h3 className="text-2xl font-extrabold text-[#002340]">{offer.name}</h3>
-        <p className={["text-xs", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>
+        <h3 className="text-[1.375rem] font-extrabold text-[#002340] sm:text-2xl">{offer.name}</h3>
+        <p className={["mt-0.5 text-[0.625rem] sm:text-xs", isPremium ? "text-[#0A3A24]" : "text-[#2D466C]"].join(" ")}>
           {offer.tagline.includes("e-Komfort") ? (
             <>
               {offer.tagline.split("e-Komfort")[0]}
@@ -96,26 +98,28 @@ export function OfferCard({
       <div className="border-t border-[#CDE0EA]" />
 
       {/* Törzs – fehér */}
-      <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-5">
         {/* Az akciós ár külön sorban, hogy keskeny kártyán se törjön szét a főár. */}
-        <div className="mb-4">
+        <div className="mb-5">
           <div className="flex items-end gap-2 whitespace-nowrap">
-            <span className="text-3xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
-            <span className="pb-1 text-sm text-[#2D466C]">/ {priceUnit}</span>
+            <span className="text-[1.75rem] font-extrabold tracking-tight text-[#002340] sm:text-3xl">
+              {formatFt(offer.price)}
+            </span>
+            <span className="pb-1 text-xs text-[#2D466C] sm:text-sm">/ {priceUnit}</span>
           </div>
           {offer.oldPrice && (
-            <p className="text-sm text-[#7E93B0]">
+            <p className="text-xs text-[#7E93B0] sm:text-sm">
               <span className="line-through">{formatFt(offer.oldPrice)}</span> helyett
             </p>
           )}
         </div>
 
         {body ? (
-          <div className="mb-4">{body}</div>
+          <div className="mb-5">{body}</div>
         ) : (
-          <ul className="mb-4 space-y-2">
+          <ul className="mb-5 space-y-3">
             {offer.features.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm text-[#2D466C]">
+              <li key={f} className="flex items-start gap-2.5 text-xs text-[#2D466C] sm:text-sm">
                 <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#B4FF00]">
                   <Check className="h-3 w-3 text-[#002340]" strokeWidth={3} />
                 </span>
@@ -125,11 +129,11 @@ export function OfferCard({
           </ul>
         )}
 
-        <div className="mt-auto flex flex-col gap-2.5">
+        <div className="mt-auto flex flex-col gap-3">
           <button
             type="button"
             onClick={() => setDetailsOpen(true)}
-            className="inline-flex items-center justify-center gap-1 text-sm font-bold text-[#002340] hover:underline"
+            className="inline-flex items-center justify-center gap-1 text-xs font-bold text-[#002340] hover:underline sm:text-sm"
           >
             Részletek <ChevronRight className="h-4 w-4" />
           </button>
@@ -138,7 +142,7 @@ export function OfferCard({
               type="button"
               onClick={onOrder}
               className={[
-                "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
+                "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm",
                 // Két CTA esetén a fő gomb mindig sötét, hogy legyen hierarchia
                 offer.best || isPremium || secondaryCtaLabel
                   ? "bg-[#002340] text-white hover:bg-[#001D36]"
@@ -152,7 +156,7 @@ export function OfferCard({
               <button
                 type="button"
                 onClick={onSecondary}
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7]"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-xs font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7] sm:text-sm"
               >
                 {secondaryCtaLabel}
               </button>

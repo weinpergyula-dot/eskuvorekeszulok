@@ -13,14 +13,14 @@ type QuotaRow = {
 
 function QuotaBars({ rows }: { rows: QuotaRow[] }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {rows.map((r) => (
         <div key={r.label}>
-          <div className="mb-1 flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.04em] text-[#2D466C]">
+          <div className="mb-1.5 flex items-center justify-between">
+            <span className="inline-flex items-center gap-1.5 text-[0.625rem] font-bold uppercase tracking-[0.04em] text-[#2D466C] sm:text-xs">
               <r.icon className="h-3.5 w-3.5" /> {r.label}
             </span>
-            <span className="text-sm font-extrabold text-[#002340]">{r.value}</span>
+            <span className="text-xs font-extrabold text-[#002340] sm:text-sm">{r.value}</span>
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-[#E4F2F7]">
             <div className="h-full rounded-full bg-[#B4FF00]" style={{ width: `${Math.round(r.pct * 100)}%` }} />
@@ -86,18 +86,18 @@ export function TvQuotas({ offer }: { offer: Offer }) {
   ];
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <QuotaBars rows={rows} />
       {streaming.length > 0 && (
         <div>
-          <p className="mb-1.5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.04em] text-[#2D466C]">
+          <p className="mb-1.5 inline-flex items-center gap-1.5 text-[0.625rem] font-bold uppercase tracking-[0.04em] text-[#2D466C] sm:text-xs">
             <PlayCircle className="h-3.5 w-3.5" /> Streaming
           </p>
           <div className="flex flex-wrap gap-1.5">
             {streaming.map((s) => (
               <span
                 key={s}
-                className="inline-flex items-center rounded-full border border-[#CDE0EA] bg-[#E4F2F7] px-2.5 py-1 text-xs font-bold text-[#002340]"
+                className="inline-flex items-center rounded-full border border-[#CDE0EA] bg-[#E4F2F7] px-2.5 py-1 text-[0.625rem] font-bold text-[#002340] sm:text-xs"
               >
                 {s}
               </span>
