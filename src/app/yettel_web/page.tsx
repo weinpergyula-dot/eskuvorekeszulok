@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import {
-  Smartphone,
-  Wifi,
-  Tv,
   Phone,
   CreditCard,
-  Briefcase,
   ArrowRight,
   ShieldCheck,
   Gift,
@@ -14,11 +10,19 @@ import {
   MapPin,
   Download,
   HelpCircle,
+  Globe,
 } from "lucide-react";
 import { OffersExplorer } from "./_components/offers-explorer";
+import { CategoryTiles } from "./_components/category-tiles";
 import { YettelHeader } from "./_components/yettel-header";
 import { YettelFooter } from "./_components/yettel-footer";
-import { DEVICES, formatFt } from "./_data/offers";
+import { InternetFlow, TvFlow } from "./_components/internet-flow";
+import { DeviceMarquee } from "./_components/device-marquee";
+import { OFFERS, formatFt } from "./_data/offers";
+
+/** "A hét ajánlata" a hero-ban – ugyanaz a tarifa, mint az internet szekcióban,
+ *  hogy az ár és a kedvezmény ne csúszhasson el a kettő között. */
+const WEEKLY = OFFERS.net.find((o) => o.id === "hipernet-l")!;
 
 export const metadata: Metadata = {
   title: "Yettel – Mobil, internet és TV egy helyen",
@@ -26,15 +30,6 @@ export const metadata: Metadata = {
     "Átlátható csomagok és konkrét ajánlatok: havidíjas mobil, otthoni internet és TV. Válaszd ki a hozzád illő legjobb csomagot pár perc alatt.",
   robots: { index: false, follow: false },
 };
-
-const CATEGORIES = [
-  { icon: Smartphone, label: "Havidíjas mobil", desc: "Korlátlan hívás, 5G", href: "#havidijas" },
-  { icon: Wifi, label: "Otthoni internet", desc: "Optikai & 5G", href: "#internet" },
-  { icon: Tv, label: "Yettel TV", desc: "Élő adás & felvétel", href: "#tv" },
-  { icon: Smartphone, label: "Készülékek", desc: "Telefon részletre", href: "#keszulekek" },
-  { icon: CreditCard, label: "Feltöltőkártya", desc: "Kötöttség nélkül", href: "#ajanlatok" },
-  { icon: Briefcase, label: "Üzleti", desc: "Céges megoldások", href: "#ajanlatok" },
-];
 
 const VALUE_PROPS = [
   { icon: ShieldCheck, title: "Megbízható 5G hálózat", desc: "Az ország 99%-át lefedő hálózat, stabil sebesség otthon és úton." },
@@ -48,6 +43,7 @@ const SUPPORT_LINKS = [
   { icon: Phone, label: "Számlabefizetés" },
   { icon: MapPin, label: "Üzletkereső" },
   { icon: ShieldCheck, label: "SIM aktiválás" },
+  { icon: Globe, label: "Roaming" },
   { icon: HelpCircle, label: "Gyakori kérdések" },
 ];
 
@@ -66,118 +62,102 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Hero (lime, mint a /yettel_light_asis) ────────── */}
-        <section className="bg-[#B4FF00]">
-          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 md:grid-cols-2 md:py-16">
-            <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2D466C]">
-                <Sparkles className="h-3.5 w-3.5" />
-                Új ügyfeleknek: online kedvezmény minden csomagra
-              </span>
-              <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-[#002340] sm:text-[2.6rem]">
-                Minden szolgáltatásod egy helyen.
+        {/* ── Banner / hero – közvetlenül a fejléc alatt ──────
+            A háttér a /yettel_light welcome képernyőjének mozgó gradiense
+            (130°-os sweep + két lebegő, elmosott folt) – lásd globals.css.
+            A negatív felső margó a fejléc mögé húzza a hátteret (a tartalmat a
+            vele azonos pt tartja a helyén). A két alsó sarok lekerekített: a
+            z-10 miatt a banner a következő szekció fölé rajzolódik, így a
+            sarkoknál az alábújó gyorsikonos sötétkék háttér látszik ki. */}
+        <section className="yettel-hero-bg relative z-10 -mt-14 overflow-hidden rounded-b-[32px] pt-14">
+          <span aria-hidden className="yettel-blob yettel-blob-1" />
+          <span aria-hidden className="yettel-blob yettel-blob-2" />
+          <div className="relative mx-auto grid max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:grid-cols-2 md:gap-8 md:pt-10">
+            <div className="pb-0 md:pb-10">
+              <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-[2.6rem]">
+                <span className="text-white">Szupergyors</span> <span className="text-[#002340]">internet</span>
               </h1>
               <p className="mt-3 max-w-md text-base text-[#2D466C]">
-                Mobil, internet és TV – nincs kisbetűs meglepetés. Válaszd ki a hozzád illő csomagot konkrét árakkal, és
-                pár perc alatt megrendeled.
+                1000 Mbit/s optikai net az egész családnak – ajándék WiFi 7 routerrel, díjmentes telepítéssel és az
+                első 30 nappal díjmentesen.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href="#ajanlatok"
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
-                >
-                  Ajánlott csomagok
-                  <ArrowRight className="h-4 w-4" />
-                </a>
+
+              {/* A hét ajánlata. Mobilon kiemeljük a szövegfolyamból: a banner bal
+                  alsó sarkába kerül, a jobbra igazított képre lógva (z-10 miatt
+                  a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
+              <div className="absolute bottom-4 left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/85 p-3 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:bg-white/70 md:p-4">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-2.5 py-0.5 text-[0.625rem] font-bold text-white md:px-3 md:py-1 md:text-xs">
+                  A hét ajánlata
+                </span>
+                <h2 className="mt-1.5 text-sm font-extrabold text-[#002340] md:mt-2 md:text-base">{WEEKLY.name}</h2>
+                <p className="text-[0.625rem] text-[#2D466C] md:text-xs">{WEEKLY.features[0]} · optikai internet</p>
+                <div className="mt-1.5 flex items-baseline gap-1.5 whitespace-nowrap md:mt-2">
+                  <span className="shrink-0 text-xl font-extrabold tracking-tight text-[#002340] md:text-2xl">
+                    {formatFt(WEEKLY.price)}
+                  </span>
+                  <span className="shrink-0 text-[0.625rem] text-[#2D466C] md:text-xs">/ hó</span>
+                </div>
+                <p className="text-[0.625rem] text-[#7E93B0] md:text-xs">
+                  <span className="line-through">{formatFt(WEEKLY.oldPrice!)}</span> helyett
+                </p>
+                <p className="mt-0.5 hidden text-[0.625rem] font-bold text-[#2D466C] md:mt-1 md:block md:text-xs">
+                  Havi {formatFt(WEEKLY.oldPrice! - WEEKLY.price)} megtakarítás.
+                </p>
                 <a
                   href="#internet"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-[#002340]/25 bg-white px-5 py-3 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340]"
+                  className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#002340] px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-[#001D36] md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-sm"
                 >
-                  Otthoni internet
+                  Érdekel
+                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 </a>
               </div>
-              <p className="mt-4 text-xs font-semibold text-[#002340]/70">
-                Hűségidő nélkül is választható · Ingyenes bekötés · 14 napos elállás
+              <p className="mt-3 mb-10 text-xs font-semibold text-[#002340]/70 sm:mt-4 md:mb-0">
+                Ingyenes bekötés · 30 napos elállás
               </p>
             </div>
 
-            {/* Hero kép (család laptoppal) + lebegő ajánlatkártya */}
-            <div className="relative w-full">
+            {/* Hero kép (család laptoppal) – az ajánlatkártya a bal oszlopba került. */}
+            <div className="w-full self-end">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/yettel/hero-family.svg"
+                src="/yettel/hero-family.png"
                 alt="Család együtt böngészik a laptopon"
-                className="block w-full"
+                className="-mr-4 ml-auto block w-[80%] md:mr-0 md:ml-0 md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
               />
-              {/* Az ár a gyerek keze körül, sosem az arcokon */}
-              <div className="mx-auto mt-4 w-full max-w-[230px] rounded-[20px] border border-[#CDE0EA] bg-white p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] md:absolute md:bottom-4 md:left-4 md:mt-0">
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
-                  A hét ajánlata
-                </span>
-                <h2 className="mt-2 text-base font-extrabold text-[#002340]">Teljes csomag</h2>
-                <p className="text-xs text-[#2D466C]">Net 500 + TV Extra + Yettel M</p>
-                <div className="mt-2 flex items-baseline gap-1.5 whitespace-nowrap">
-                  <span className="shrink-0 text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(14990)}</span>
-                  <span className="shrink-0 text-xs text-[#2D466C]">/ hó</span>
-                </div>
-                <p className="text-xs text-[#7E93B0]">
-                  <span className="line-through">{formatFt(17470)}</span> helyett
-                </p>
-                <p className="mt-1 text-xs font-bold text-[#2D466C]">Havi ~2 480 Ft megtakarítás.</p>
-              </div>
             </div>
           </div>
         </section>
 
-        {/* ── Gyors kategóriák ─────────────────────────────── */}
-        <section className="border-b border-[#CDE0EA] bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-            <div className="flex flex-wrap justify-center gap-3">
-              {CATEGORIES.map((cat) => (
-                <a
-                  key={cat.label}
-                  href={cat.href}
-                  className="group flex w-[150px] flex-col items-center gap-2 rounded-[18px] border border-[#CDE0EA] p-4 text-center transition-colors hover:border-[#B4FF00] hover:bg-[#F4FFDB]"
-                >
-                  <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
-                    <cat.icon className="h-6 w-6" strokeWidth={1.9} />
-                  </span>
-                  <span className="text-sm font-bold text-[#002340]">{cat.label}</span>
-                  <span className="text-xs text-[#2D466C]">{cat.desc}</span>
-                </a>
-              ))}
-            </div>
-          </div>
+        {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ──────
+            Az alsó extra térköz alá csúszik be az ajánlatok szekció, hogy annak
+            lekerekített felső sarkainál ez a sötétkék háttér látsszon ki, a
+            felső pedig a banner lekerekített alja alá bújik be. */}
+        <section className="yettel-welcome-bg -mt-8 pt-8 pb-10">
+          <CategoryTiles />
         </section>
 
         {/* ── Ajánlott csomagok (a kiemelt szekció) ────────── */}
-        <section id="ajanlatok" className="scroll-mt-16 bg-[#E4F2F7]">
+        <section
+          id="ajanlatok"
+          className="relative -mt-10 scroll-mt-16 rounded-t-[32px] bg-[#E4F2F7] shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]"
+        >
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-            <div className="mb-8 max-w-2xl">
-              <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Ajánljuk neked</span>
-              <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">
-                A legjobb csomagok, kategóriánként
-              </h2>
-              <p className="mt-2 text-base text-[#2D466C]">
-                Összeválogattuk a legnépszerűbb havidíjas mobil, otthoni internet és TV csomagokat – konkrét árakkal,
-                hogy könnyen összehasonlíthasd őket.
-              </p>
-            </div>
             {/* Anchor célok az egyes fülekhez */}
             <span id="havidijas" className="block -mt-16 pt-16" aria-hidden />
             <span id="internet" className="block -mt-16 pt-16" aria-hidden />
             <span id="tv" className="block -mt-16 pt-16" aria-hidden />
+            <span id="feltoltokartya" className="block -mt-16 pt-16" aria-hidden />
             <OffersExplorer />
           </div>
         </section>
 
         {/* ── Készülékek ───────────────────────────────────── */}
-        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14 shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
               <div>
-                <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Készülékek</span>
-                <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">
+                <span className="text-sm font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Készülékek</span>
+                <h2 className="mt-1 text-[1.375rem] font-extrabold tracking-tight text-[#002340] sm:text-[1.75rem]">
                   Új telefon, 0 Ft előleggel
                 </h2>
               </div>
@@ -185,46 +165,27 @@ export default function YettelWebPage() {
                 Összes készülék <ArrowRight className="h-4 w-4" />
               </a>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {DEVICES.map((device) => (
-                <div
-                  key={device.id}
-                  className="flex flex-col rounded-[20px] border border-[#CDE0EA] p-5 transition-shadow hover:shadow-[0_8px_24px_rgba(0,35,64,0.08)]"
-                >
-                  <div className="mb-4 grid h-72 place-items-center rounded-2xl bg-gradient-to-b from-[#E4F2F7] to-white">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/yettel/device-${device.id}.svg`} alt={device.name} className="h-64 w-auto" />
-                  </div>
-                  <h3 className="text-base font-extrabold text-[#002340]">{device.name}</h3>
-                  <p className="text-xs text-[#2D466C]">{device.note}</p>
-                  <div className="mt-3 flex items-end gap-1">
-                    <span className="text-2xl font-extrabold tracking-tight text-[#002340]">{formatFt(device.monthly)}</span>
-                    <span className="pb-1 text-sm text-[#2D466C]">/ hó</span>
-                  </div>
-                  <p className="text-xs font-semibold text-[#2D466C]">{device.upfront}</p>
-                  <button
-                    type="button"
-                    className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7]"
-                  >
-                    Részletek <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
           </div>
+          {/* Végtelenített, automatikusan görgő készülék-sáv – egérrel megáll,
+              mobilon ujjal csúsztatható (lásd DeviceMarquee). */}
+          <DeviceMarquee />
         </section>
 
+
         {/* ── Miért a Yettel? ──────────────────────────────── */}
-        <section className="bg-[#E4F2F7]">
+        <section className="bg-[#002340]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-            <h2 className="mb-8 text-center text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">
+            <h2 className="mb-8 text-center text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
               Miért a Yettel?
             </h2>
-            <div className="flex flex-wrap justify-center gap-5">
+            {/* Rács, nem fix szélességű kártyák: így a négy elem minden
+                nézetben egy sorba fér (a fix px-szélesség nem skálázódott
+                együtt a konténerrel, ezért esett a 4. kártya új sorba). */}
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {VALUE_PROPS.map((vp) => (
                 <div
                   key={vp.title}
-                  className="flex w-full max-w-[260px] flex-col items-center rounded-[20px] border border-[#CDE0EA] bg-white p-5 text-center"
+                  className="flex flex-col items-center rounded-[20px] border border-[#CDE0EA] bg-white p-5 text-center"
                 >
                   <span className="mb-3 grid h-12 w-12 place-items-center rounded-xl bg-[#B4FF00] text-[#002340]">
                     <vp.icon className="h-6 w-6" strokeWidth={1.9} />
@@ -238,9 +199,9 @@ export default function YettelWebPage() {
         </section>
 
         {/* ── MyYettel app ─────────────────────────────────── */}
-        <section className="border-t border-[#CDE0EA] bg-white">
-          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-14 sm:px-6 md:grid-cols-2">
-            <div>
+        <section className="relative overflow-hidden border-t border-[#CDE0EA] bg-white shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-14 sm:px-6 md:grid-cols-2">
+            <div className="pb-14 md:pb-16">
               <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">MyYettel alkalmazás</span>
               <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#002340] sm:text-3xl">
                 Az egész előfizetésed a zsebedben
@@ -269,20 +230,33 @@ export default function YettelWebPage() {
                   <Download className="h-4 w-4" /> Google Play
                 </span>
               </div>
+              {/* QR-kód – csak desktopon; az eskuvorekeszulok.hu oldalra vezet */}
+              <div className="mt-6 hidden items-center gap-4 md:flex">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/yettel/qr-eskuvorekeszulok.svg"
+                  alt="QR-kód az eskuvorekeszulok.hu oldalra"
+                  className="h-24 w-24 rounded-xl border border-[#CDE0EA] bg-white p-2"
+                />
+                <div>
+                  <p className="text-sm font-bold text-[#002340]">Olvasd be a QR-kódot</p>
+                  <p className="text-sm text-[#2D466C]">Ugrás az eskuvorekeszulok.hu oldalra</p>
+                </div>
+              </div>
             </div>
-            <div className="md:justify-self-end">
+            <div className="self-end md:justify-self-end">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/yettel/app-home.svg"
+                src="/yettel/app-home.png"
                 alt="Yettel app a telefon kezdőképernyőjén"
-                className="mx-auto block h-80 w-auto drop-shadow-[0_20px_40px_rgba(0,35,64,0.20)]"
+                className="mx-auto block h-[360px] w-auto md:h-[440px]"
               />
             </div>
           </div>
         </section>
 
         {/* ── Ügyfélszolgálat ──────────────────────────────── */}
-        <section id="ugyfelszolgalat" className="scroll-mt-16 bg-[#E4F2F7]">
+        <section id="ugyfelszolgalat" className="scroll-mt-16 bg-[#E4F2F7] shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             <div className="mb-6">
               <span className="text-base font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Gyors ügyintézés</span>
@@ -290,7 +264,7 @@ export default function YettelWebPage() {
                 Miben segíthetünk?
               </h2>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {SUPPORT_LINKS.map((link) => (
                 <a
                   key={link.label}
@@ -338,6 +312,10 @@ export default function YettelWebPage() {
       </main>
 
       <YettelFooter />
+
+      {/* Teljes oldalas, hash-vezérelt igénylési folyamatok (internet + TV) */}
+      <InternetFlow />
+      <TvFlow />
     </div>
   );
 }

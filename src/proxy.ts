@@ -2,9 +2,9 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Basic-Auth gate for the standalone Yettel mockup previews
+ * Basic-Auth gate for the Yettel mockup previews: the standalone static pages
  * (/yettel_dark, /yettel_light and their _eng and _cz pairs — served as static
- * HTML from /public).
+ * HTML from /public) and the /yettel_web Next route (including its subpaths).
  *
  * Any username is accepted; only the shared preview password is checked.
  * Handled at the very top of `proxy` so the Supabase session logic below is
@@ -70,7 +70,12 @@ export async function proxy(request: NextRequest) {
   }
 
   // --- Password-gated Yettel mockup previews ---
-  if (PREVIEW_PATHS.has(pathname)) {
+  const isStaticPreview = PREVIEW_PATHS.has(pathname);
+  // The /yettel_web mockup is a Next route (not static HTML), so it is gated
+  // with the same password but served as-is instead of being rewritten.
+  const isWebPreview =
+    pathname === "/yettel_web" || pathname.startsWith("/yettel_web/");
+  if (isStaticPreview || isWebPreview) {
     if (
       previewPasswordFromHeader(request.headers.get("authorization")) !==
       PREVIEW_PASSWORD
@@ -78,14 +83,14 @@ export async function proxy(request: NextRequest) {
       return previewUnauthorized();
     }
     // Rewrite the clean URLs to the static HTML files in /public.
-    if (!pathname.endsWith(".html")) {
+    if (isStaticPreview && !pathname.endsWith(".html")) {
       const url = request.nextUrl.clone();
       url.pathname = `${pathname}.html`;
       const res = NextResponse.rewrite(url);
       res.headers.set("X-Robots-Tag", "noindex, nofollow");
       return res;
     }
-    // Direct .html access (already authenticated above).
+    // Direct .html access and the /yettel_web route (already authenticated).
     const res = NextResponse.next();
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
     return res;
