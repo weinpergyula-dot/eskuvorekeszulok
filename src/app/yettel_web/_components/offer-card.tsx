@@ -140,7 +140,7 @@ export function OfferCard({
               type="button"
               onClick={onOrder}
               className={[
-                "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm",
+                "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors",
                 // Két CTA esetén a fő gomb mindig sötét, hogy legyen hierarchia
                 offer.best || isPremium || secondaryCtaLabel
                   ? "bg-[#002340] text-white hover:bg-[#001D36]"
@@ -154,7 +154,7 @@ export function OfferCard({
               <button
                 type="button"
                 onClick={onSecondary}
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-xs font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7] sm:text-sm"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#CDE0EA] px-4 py-2.5 text-sm font-bold text-[#002340] transition-colors hover:border-[#002340] hover:bg-[#E4F2F7]"
               >
                 {secondaryCtaLabel}
               </button>
