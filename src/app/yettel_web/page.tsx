@@ -85,7 +85,7 @@ export default function YettelWebPage() {
               {/* A hét ajánlata. Mobilon kiemeljük a szövegfolyamból: a banner bal
                   alsó sarkába kerül, a jobbra igazított képre lógva (z-10 miatt
                   a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
-              <div className="absolute bottom-4 left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/85 p-3 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:bg-white/70 md:p-4">
+              <div className="absolute bottom-10 left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/70 bg-white/55 p-3 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-xl sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:bg-white/60 md:p-4">
                 <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-2.5 py-0.5 text-[0.625rem] font-bold text-white md:px-3 md:py-1 md:text-xs">
                   A hét ajánlata
                 </span>
@@ -111,7 +111,7 @@ export default function YettelWebPage() {
                   <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 </a>
               </div>
-              <p className="mt-3 mb-10 text-xs font-semibold text-[#002340]/70 sm:mt-4 md:mb-0">
+              <p className="mt-3 mb-2 text-xs font-semibold text-[#002340]/70 sm:mt-4 md:mb-0">
                 Ingyenes bekötés · 30 napos elállás
               </p>
             </div>
