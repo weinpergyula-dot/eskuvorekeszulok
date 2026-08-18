@@ -77,10 +77,12 @@ export function CategoryTiles() {
               onClick={onClick}
               aria-current={isActive ? "true" : undefined}
               className={[
-                "group flex w-[186px] flex-col items-center gap-2.5 rounded-[20px] border p-6 text-center transition-colors",
+                // Mindkét állapot finom, világos→sötét irányú gradienst kap
+                // (ugyanaz a 160°-os irány, mint a prémium tarifakártya fejlécén).
+                "group flex w-[186px] flex-col items-center gap-2.5 rounded-[20px] border p-6 text-center transition-all",
                 isActive
-                  ? "border-[#B4FF00] bg-[#B4FF00]"
-                  : "border-white/15 bg-white/[0.06] hover:border-[#B4FF00] hover:bg-white/10",
+                  ? "border-[#B4FF00] bg-[linear-gradient(160deg,#CBFF4D_0%,#B4FF00_55%,#9FE000_100%)]"
+                  : "border-white/15 bg-[linear-gradient(160deg,rgba(255,255,255,0.11)_0%,rgba(255,255,255,0.06)_55%,rgba(255,255,255,0.025)_100%)] hover:border-[#B4FF00] hover:bg-[linear-gradient(160deg,rgba(255,255,255,0.17)_0%,rgba(255,255,255,0.10)_55%,rgba(255,255,255,0.05)_100%)]",
               ].join(" ")}
             >
               <span
