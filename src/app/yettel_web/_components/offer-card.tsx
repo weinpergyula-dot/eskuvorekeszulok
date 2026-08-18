@@ -41,13 +41,11 @@ export function OfferCard({
         // hogy elemelkedjenek a háttértől.
         "relative flex flex-col rounded-[20px] bg-white transition-shadow",
         // Az árnyék mindhárom változatnál azonosan visszafogott – a keretes
-        // kártyákat a keret emeli ki (prémium: sötétkék, kiemelt: lime).
+        // (prémium/kiemelt) kártyákat a lime keret emeli ki, nem az árnyék.
         "shadow-[0_10px_18px_-12px_rgba(0,35,64,0.30)] sm:shadow-[0_12px_24px_-14px_rgba(0,35,64,0.30)]",
-        isPremium
-          ? "border-2 border-[#002340]"
-          : offer.best
-            ? "border-2 border-[#B4FF00]"
-            : "border border-[#CDE0EA] sm:hover:shadow-[0_16px_30px_-14px_rgba(0,35,64,0.38)]",
+        isPremium || offer.best
+          ? "border-2 border-[#B4FF00]"
+          : "border border-[#CDE0EA] sm:hover:shadow-[0_16px_30px_-14px_rgba(0,35,64,0.38)]",
         className,
       ].join(" ")}
     >
