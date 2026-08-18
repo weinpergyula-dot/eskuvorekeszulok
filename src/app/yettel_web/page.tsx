@@ -84,32 +84,9 @@ export default function YettelWebPage() {
                 1000 Mbit/s optikai net az egész családnak – ajándék WiFi 7 routerrel, díjmentes telepítéssel és az
                 első 30 nappal díjmentesen.
               </p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a
-                  href="#internet"
-                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36] sm:w-auto"
-                >
-                  Érdekel
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-              </div>
-              <p className="mt-4 text-xs font-semibold text-[#002340]/70">
-                Ingyenes bekötés · 30 napos elállás
-              </p>
-            </div>
 
-            {/* Hero kép (család laptoppal) + lebegő ajánlatkártya.
-                Mobilon egymás alatt: fent a glassos kártya, alatta lejjebb a kép
-                (nem lóg rá a családra); desktopon a kártya a képre lebeg. */}
-            <div className="relative flex w-full flex-col-reverse items-center gap-4 self-end md:block">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/yettel/hero-family.png"
-                alt="Család együtt böngészik a laptopon"
-                className="block w-full md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
-              />
-              {/* Az ár a gyerek keze körül, sosem az arcokon */}
-              <div className="w-[86%] max-w-[280px] rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md md:absolute md:bottom-12 md:left-[-3.5rem] md:w-full md:max-w-[230px] md:bg-white/65">
+              {/* A hét ajánlata – a bal oldalon, a szöveg alatt; a CTA a kártyán van. */}
+              <div className="mt-6 w-full max-w-[320px] rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md">
                 <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
                   A hét ajánlata
                 </span>
@@ -127,7 +104,27 @@ export default function YettelWebPage() {
                 <p className="mt-1 text-xs font-bold text-[#2D466C]">
                   Havi {formatFt(WEEKLY.oldPrice! - WEEKLY.price)} megtakarítás.
                 </p>
+                <a
+                  href="#internet"
+                  className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+                >
+                  Érdekel
+                  <ArrowRight className="h-4 w-4" />
+                </a>
               </div>
+              <p className="mt-4 text-xs font-semibold text-[#002340]/70">
+                Ingyenes bekötés · 30 napos elállás
+              </p>
+            </div>
+
+            {/* Hero kép (család laptoppal) – az ajánlatkártya a bal oszlopba került. */}
+            <div className="w-full self-end">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/yettel/hero-family.png"
+                alt="Család együtt böngészik a laptopon"
+                className="block w-full md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
+              />
             </div>
           </div>
         </section>
