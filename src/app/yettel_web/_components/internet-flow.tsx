@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
   type ElementType,
@@ -299,6 +300,10 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
   const allExtras = useMemo(() => config.extraSections.flatMap((s) => s.items), [config.extraSections]);
 
   const [step, setStep] = useState<Step | null>(null);
+  // A folyamat saját görgethető konténerben fut (fixed overlay), ezért a
+  // lépésváltás magától nem viszi vissza a nézetet a tetejére – mobilon a
+  // felhasználó a következő lépés közepén találná magát.
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [pkg, setPkg] = useState<Offer | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
@@ -347,6 +352,11 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
     window.location.hash = "top";
   }, []);
 
+  // Lépésváltáskor mindig a folyamat tetejére ugrunk.
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [step]);
+
   // Töltő képernyők automatikus továbblépése.
   useEffect(() => {
     if (step !== "checking" && step !== "personalCheck" && step !== "address2Check") return;
@@ -381,7 +391,7 @@ function ServiceFlow({ config }: { config: FlowConfig }) {
   const backTarget = back[step];
 
   return (
-    <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#E4F2F7] sm:bg-white">
+    <div ref={scrollRef} className="fixed inset-0 z-[70] overflow-y-auto bg-[#E4F2F7] sm:bg-white">
       <header className="sticky top-0 z-10">
         {/* Felső sáv (fehér): vissza · márka · bezárás */}
         <div className="border-b border-[#CDE0EA] bg-white">
