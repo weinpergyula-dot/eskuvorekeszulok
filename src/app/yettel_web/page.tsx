@@ -116,14 +116,17 @@ export default function YettelWebPage() {
               </p>
             </div>
 
-            {/* Hero kép (család laptoppal) – az ajánlatkártya a bal oszlopba került. */}
+            {/* Hero kép: mobilon az álló, kivágott portré, md-től a családi kép.
+                A <picture> miatt a böngésző csak a szükséges fájlt tölti le. */}
             <div className="w-full self-end">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/yettel/hero-family.png"
-                alt="Család együtt böngészik a laptopon"
-                className="-mr-4 ml-auto block w-[80%] md:mr-0 md:ml-0 md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
-              />
+              <picture>
+                <source media="(min-width: 768px)" srcSet="/yettel/hero-family.png" />
+                <img
+                  src="/yettel/hero-man.png"
+                  alt="Yettel ügyfél"
+                  className="-mr-4 ml-auto block w-[62%] md:ml-0 md:-mr-6 md:w-[118%] md:max-w-none md:translate-x-6 lg:-mr-14 lg:translate-x-12"
+                />
+              </picture>
             </div>
           </div>
         </section>
