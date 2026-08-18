@@ -71,13 +71,9 @@ export default function YettelWebPage() {
         <section className="yettel-hero-bg relative -mt-14 overflow-hidden pt-14">
           <span aria-hidden className="yettel-blob yettel-blob-1" />
           <span aria-hidden className="yettel-blob yettel-blob-2" />
-          <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
-            <div className="pb-10 md:pb-20">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2D466C]">
-                <Sparkles className="h-3 w-3" />
-                Új ügyfeleknek: online kedvezmény minden csomagra
-              </span>
-              <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-[2.6rem]">
+          <div className="relative mx-auto grid max-w-6xl items-end gap-4 px-4 pt-8 sm:px-6 md:grid-cols-2 md:gap-8 md:pt-10">
+            <div className="pb-0 md:pb-10">
+              <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-[2.6rem]">
                 <span className="text-white">Szupergyors</span> <span className="text-[#002340]">internet</span>
               </h1>
               <p className="mt-3 max-w-md text-base text-[#2D466C]">
