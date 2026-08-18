@@ -72,7 +72,7 @@ export default function YettelWebPage() {
         <section className="yettel-hero-bg relative z-10 -mt-14 overflow-hidden rounded-b-[32px] pt-14">
           <span aria-hidden className="yettel-blob yettel-blob-1" />
           <span aria-hidden className="yettel-blob yettel-blob-2" />
-          <div className="relative mx-auto grid max-w-6xl items-end gap-4 px-4 pt-8 sm:px-6 md:grid-cols-2 md:gap-8 md:pt-10">
+          <div className="relative mx-auto grid max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:grid-cols-2 md:gap-8 md:pt-10">
             <div className="pb-0 md:pb-10">
               <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-[2.6rem]">
                 <span className="text-white">Szupergyors</span> <span className="text-[#002340]">internet</span>
@@ -83,7 +83,7 @@ export default function YettelWebPage() {
               </p>
 
               {/* A hét ajánlata – a bal oldalon, a szöveg alatt; a CTA a kártyán van. */}
-              <div className="mt-6 w-full max-w-[320px] rounded-[20px] border border-white/60 bg-white/70 p-4 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md">
+              <div className="mt-3 w-full max-w-[270px] rounded-[20px] border border-white/60 bg-white/70 p-3.5 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md sm:mt-6 sm:max-w-[320px] sm:p-4">
                 <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
                   A hét ajánlata
                 </span>
@@ -103,13 +103,13 @@ export default function YettelWebPage() {
                 </p>
                 <a
                   href="#internet"
-                  className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36]"
+                  className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36] sm:mt-4"
                 >
                   Érdekel
                   <ArrowRight className="h-4 w-4" />
                 </a>
               </div>
-              <p className="mt-4 text-xs font-semibold text-[#002340]/70">
+              <p className="mt-3 text-xs font-semibold text-[#002340]/70 sm:mt-4">
                 Ingyenes bekötés · 30 napos elállás
               </p>
             </div>
@@ -120,7 +120,7 @@ export default function YettelWebPage() {
               <img
                 src="/yettel/hero-family.png"
                 alt="Család együtt böngészik a laptopon"
-                className="block w-full md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
+                className="ml-auto block w-[70%] md:ml-0 md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
               />
             </div>
           </div>
