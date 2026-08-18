@@ -82,34 +82,36 @@ export default function YettelWebPage() {
                 első 30 nappal díjmentesen.
               </p>
 
-              {/* A hét ajánlata – a bal oldalon, a szöveg alatt; a CTA a kártyán van. */}
-              <div className="mt-3 w-full max-w-[270px] rounded-[20px] border border-white/60 bg-white/70 p-3.5 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md sm:mt-6 sm:max-w-[320px] sm:p-4">
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-3 py-1 text-xs font-bold text-white">
+              {/* A hét ajánlata. Mobilon kiemeljük a szövegfolyamból: a banner bal
+                  alsó sarkába kerül, a jobbra igazított képre lógva (z-10 miatt
+                  a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
+              <div className="absolute bottom-4 left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/85 p-3 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:bg-white/70 md:p-4">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-2.5 py-0.5 text-[0.625rem] font-bold text-white md:px-3 md:py-1 md:text-xs">
                   A hét ajánlata
                 </span>
-                <h2 className="mt-2 text-base font-extrabold text-[#002340]">{WEEKLY.name}</h2>
-                <p className="text-xs text-[#2D466C]">{WEEKLY.features[0]} · optikai internet</p>
-                <div className="mt-2 flex items-baseline gap-1.5 whitespace-nowrap">
-                  <span className="shrink-0 text-2xl font-extrabold tracking-tight text-[#002340]">
+                <h2 className="mt-1.5 text-sm font-extrabold text-[#002340] md:mt-2 md:text-base">{WEEKLY.name}</h2>
+                <p className="text-[0.625rem] text-[#2D466C] md:text-xs">{WEEKLY.features[0]} · optikai internet</p>
+                <div className="mt-1.5 flex items-baseline gap-1.5 whitespace-nowrap md:mt-2">
+                  <span className="shrink-0 text-xl font-extrabold tracking-tight text-[#002340] md:text-2xl">
                     {formatFt(WEEKLY.price)}
                   </span>
-                  <span className="shrink-0 text-xs text-[#2D466C]">/ hó</span>
+                  <span className="shrink-0 text-[0.625rem] text-[#2D466C] md:text-xs">/ hó</span>
                 </div>
-                <p className="text-xs text-[#7E93B0]">
+                <p className="text-[0.625rem] text-[#7E93B0] md:text-xs">
                   <span className="line-through">{formatFt(WEEKLY.oldPrice!)}</span> helyett
                 </p>
-                <p className="mt-1 text-xs font-bold text-[#2D466C]">
+                <p className="mt-0.5 hidden text-[0.625rem] font-bold text-[#2D466C] md:mt-1 md:block md:text-xs">
                   Havi {formatFt(WEEKLY.oldPrice! - WEEKLY.price)} megtakarítás.
                 </p>
                 <a
                   href="#internet"
-                  className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#002340] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#001D36] sm:mt-4"
+                  className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#002340] px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-[#001D36] md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-sm"
                 >
                   Érdekel
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 </a>
               </div>
-              <p className="mt-3 text-xs font-semibold text-[#002340]/70 sm:mt-4">
+              <p className="mt-3 mb-10 text-xs font-semibold text-[#002340]/70 sm:mt-4 md:mb-0">
                 Ingyenes bekötés · 30 napos elállás
               </p>
             </div>
@@ -120,7 +122,7 @@ export default function YettelWebPage() {
               <img
                 src="/yettel/hero-family.png"
                 alt="Család együtt böngészik a laptopon"
-                className="ml-auto block w-[70%] md:ml-0 md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
+                className="-mr-4 ml-auto block w-[80%] md:mr-0 md:ml-0 md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
               />
             </div>
           </div>
