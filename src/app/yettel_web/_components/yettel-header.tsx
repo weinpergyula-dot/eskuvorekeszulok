@@ -59,11 +59,8 @@ export function YettelHeader() {
     entry.href ? isLinkActive(entry.href) : !!entry.items?.some((i) => isLinkActive(i.href));
 
   return (
-    // A fejléc maga átlátszó: a fehér sáv két lekerekített alsó sarkán mindig
-    // az látszik át, ami épp alatta gördül – így a sarkok színe automatikusan
-    // követi az aktuális szekció hátterét (sötétkék, világoskék, fehér, lime).
     <header id="top" className="sticky top-0 z-50">
-      <div className="rounded-b-[24px] border-b border-[#CDE0EA] bg-white/95 backdrop-blur">
+      <div className="border-b border-[#CDE0EA] bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-8">
             <Logo />
@@ -161,10 +158,9 @@ export function YettelHeader() {
           </div>
         </div>
 
-        {/* Mobil menü – a legördülős menüpontok csoportcímmel, alatta az al-linkek.
-            Az alsó lekerekítés itt is kell, mert ez a fehér blokk alja. */}
+        {/* Mobil menü – a legördülős menüpontok csoportcímmel, alatta az al-linkek. */}
         {open && (
-          <nav className="rounded-b-[24px] border-t border-[#CDE0EA] bg-white lg:hidden" aria-label="Mobil menü">
+          <nav className="border-t border-[#CDE0EA] bg-white lg:hidden" aria-label="Mobil menü">
             <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6">
               {NAV.map((entry) => {
                 const link = (item: NavLink) => (
