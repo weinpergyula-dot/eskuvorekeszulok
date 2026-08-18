@@ -351,6 +351,62 @@ html.a11y-underline a { text-decoration: underline !important; }
   }
 }
 
+/* ── /yettel_web banner: mozgó gradiens háttér ──────────────────────────
+   A /yettel_light welcome képernyőjének effektje: 130°-os, 220%-osra
+   nagyított gradiens, ami 15s alatt átsöpör, plusz két lebegő, elmosott
+   folt. Ott a paletta fehér→lime; itt a banner lime palettáján fut,
+   különben a fehér "Szupergyors" felirat eltűnne a világos szakaszokon. */
+.yettel-root .yettel-hero-bg {
+  background: linear-gradient(
+    130deg,
+    #9FE000 0%,
+    #A8F000 32%,
+    #C9FF4D 44%,
+    #EAFFB0 50%,
+    #C9FF4D 56%,
+    #A8F000 68%,
+    #9FE000 100%
+  );
+  background-size: 220% 220%;
+  animation: yettel-wshift 15s ease-in-out infinite;
+}
+.yettel-root .yettel-blob {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.yettel-root .yettel-blob-1 {
+  width: 280px;
+  height: 280px;
+  top: -70px;
+  right: -80px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85), transparent 65%);
+  animation: yettel-wfloat1 9s ease-in-out infinite;
+}
+.yettel-root .yettel-blob-2 {
+  width: 240px;
+  height: 240px;
+  bottom: 120px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(120, 160, 255, 0.55), transparent 65%);
+  animation: yettel-wfloat2 12s ease-in-out infinite;
+}
+@keyframes yettel-wfloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-34px, 44px); }
+}
+@keyframes yettel-wfloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(40px, -34px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .yettel-root .yettel-hero-bg,
+  .yettel-root .yettel-blob { animation: none; }
+}
+
 /* ── /yettel_web: a méret a viewport szélességéhez igazodik ─────────────
    A Windows 125%/150% nagyítás nem "nagyobbra rajzol": a böngésző kisebb
    CSS-viewportot ad (1920 fizikai px → 1536, ill. 1280 CSS px), ezért a fix

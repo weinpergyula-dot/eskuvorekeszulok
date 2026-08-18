@@ -65,10 +65,9 @@ export function CategoryTiles() {
               setActiveCat(cat.cat);
               window.history.replaceState(null, "", `#${hash}`);
               window.dispatchEvent(new CustomEvent("yettel:section", { detail: hash }));
-              // …és mobilon görgessünk le a tarifákhoz, mert felül nem látszik a váltás.
-              if (window.matchMedia("(max-width: 767px)").matches) {
-                document.getElementById("ajanlatok")?.scrollIntoView({ behavior: "smooth" });
-              }
+              // …és görgessünk le a tarifákhoz (desktopon is), hogy a csempe
+              // kattintása mindig a kiválasztott szekcióhoz vigyen.
+              document.getElementById("ajanlatok")?.scrollIntoView({ behavior: "smooth" });
             } else {
               // Egyéb csempe (Készülékek, Ügyintézés): sima szekcióhoz görgetés – desktopon is.
               const id = cat.href.slice(1);

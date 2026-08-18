@@ -62,54 +62,16 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ──────
-            Az alsó extra térköz alá csúszik be az ajánlatok szekció, hogy annak
-            lekerekített felső sarkainál ez a sötétkék háttér látsszon ki.
+        {/* ── Banner / hero – közvetlenül a fejléc alatt ──────
+            A háttér a /yettel_light welcome képernyőjének mozgó gradiense
+            (130°-os sweep + két lebegő, elmosott folt) – lásd globals.css.
             A negatív felső margó a fejléc mögé húzza a hátteret (a tartalmat a
             vele azonos pt tartja a helyén), hogy a fejléc lekerekített alsó
-            sarkai az oldal tetején is erre a háttérre vágódjanak ki. */}
-        <section className="yettel-welcome-bg -mt-14 pt-14 pb-10">
-          <CategoryTiles />
-        </section>
-
-        {/* ── Ajánlott csomagok (a kiemelt szekció) ────────── */}
-        <section
-          id="ajanlatok"
-          className="relative -mt-10 scroll-mt-16 rounded-t-[32px] bg-[#E4F2F7] shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]"
-        >
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-            {/* Anchor célok az egyes fülekhez */}
-            <span id="havidijas" className="block -mt-16 pt-16" aria-hidden />
-            <span id="internet" className="block -mt-16 pt-16" aria-hidden />
-            <span id="tv" className="block -mt-16 pt-16" aria-hidden />
-            <span id="feltoltokartya" className="block -mt-16 pt-16" aria-hidden />
-            <OffersExplorer />
-          </div>
-        </section>
-
-        {/* ── Készülékek ───────────────────────────────────── */}
-        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14 shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <span className="text-sm font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Készülékek</span>
-                <h2 className="mt-1 text-[1.375rem] font-extrabold tracking-tight text-[#002340] sm:text-[1.75rem]">
-                  Új telefon, 0 Ft előleggel
-                </h2>
-              </div>
-              <a href="#" className="inline-flex items-center gap-1 text-sm font-bold text-[#2D466C] hover:underline">
-                Összes készülék <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-          {/* Végtelenített, automatikusan görgő készülék-sáv – egérrel megáll,
-              mobilon ujjal csúsztatható (lásd DeviceMarquee). */}
-          <DeviceMarquee />
-        </section>
-
-        {/* ── Hero (lime, mint a /yettel_light_asis) ────────── */}
-        <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#9FE000_0%,#B4FF00_30%,#B4FF00_70%,#9FE000_100%)]">
-          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
+            sarkai erre vágódjanak ki. */}
+        <section className="yettel-hero-bg relative -mt-14 overflow-hidden pt-14">
+          <span aria-hidden className="yettel-blob yettel-blob-1" />
+          <span aria-hidden className="yettel-blob yettel-blob-2" />
+          <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-2 md:pt-16">
             <div className="pb-10 md:pb-20">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2D466C]">
                 <Sparkles className="h-3 w-3" />
@@ -169,6 +131,49 @@ export default function YettelWebPage() {
             </div>
           </div>
         </section>
+
+        {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ──────
+            Az alsó extra térköz alá csúszik be az ajánlatok szekció, hogy annak
+            lekerekített felső sarkainál ez a sötétkék háttér látsszon ki. */}
+        <section className="yettel-welcome-bg pb-10">
+          <CategoryTiles />
+        </section>
+
+        {/* ── Ajánlott csomagok (a kiemelt szekció) ────────── */}
+        <section
+          id="ajanlatok"
+          className="relative -mt-10 scroll-mt-16 rounded-t-[32px] bg-[#E4F2F7] shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]"
+        >
+          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+            {/* Anchor célok az egyes fülekhez */}
+            <span id="havidijas" className="block -mt-16 pt-16" aria-hidden />
+            <span id="internet" className="block -mt-16 pt-16" aria-hidden />
+            <span id="tv" className="block -mt-16 pt-16" aria-hidden />
+            <span id="feltoltokartya" className="block -mt-16 pt-16" aria-hidden />
+            <OffersExplorer />
+          </div>
+        </section>
+
+        {/* ── Készülékek ───────────────────────────────────── */}
+        <section id="keszulekek" className="scroll-mt-16 border-b border-t border-[#CDE0EA] bg-white py-14 shadow-[inset_0_16px_16px_-12px_rgba(0,35,64,0.22)]">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <span className="text-sm font-extrabold uppercase tracking-[0.06em] text-[#2D466C]">Készülékek</span>
+                <h2 className="mt-1 text-[1.375rem] font-extrabold tracking-tight text-[#002340] sm:text-[1.75rem]">
+                  Új telefon, 0 Ft előleggel
+                </h2>
+              </div>
+              <a href="#" className="inline-flex items-center gap-1 text-sm font-bold text-[#2D466C] hover:underline">
+                Összes készülék <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+          {/* Végtelenített, automatikusan görgő készülék-sáv – egérrel megáll,
+              mobilon ujjal csúsztatható (lásd DeviceMarquee). */}
+          <DeviceMarquee />
+        </section>
+
 
         {/* ── Miért a Yettel? ──────────────────────────────── */}
         <section className="bg-[#002340]">
