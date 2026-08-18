@@ -350,3 +350,21 @@ html.a11y-underline a { text-decoration: underline !important; }
     padding-bottom: 1.25rem;
   }
 }
+
+/* ── /yettel_web: a méret a viewport szélességéhez igazodik ─────────────
+   A Windows 125%/150% nagyítás nem "nagyobbra rajzol": a böngésző kisebb
+   CSS-viewportot ad (1920 fizikai px → 1536, ill. 1280 CSS px), ezért a fix
+   méretezésű oldal fizikailag nagyobbnak látszik. Az OS-nagyítást se kiolvasni,
+   se felülírni nem lehet (a devicePixelRatio nem különbözteti meg a Windows
+   125%-ot egy Retina kijelzőtől), ezért nem azt ütjük agyon, hanem a design
+   alapméretét kötjük a viewport szélességéhez: 1920 CSS px-en 16px, ennél
+   keskenyebb (értsd: nagyított) nézetnél arányosan kevesebb. Így a 125%-os
+   felhasználó fizikailag ugyanakkorának látja az oldalt, mint a 100%-os.
+   Csak a Yettel oldalra vonatkozik (:has(.yettel-root)) és csak desktopon;
+   a 12.5px-es alsó korlát a valóban keskeny laptopokat védi.
+   Kikapcsolás: ezt a blokkot kell törölni. */
+@media (min-width: 1024px) {
+  html:has(.yettel-root) {
+    font-size: clamp(12.5px, 0.8333vw, 16px);
+  }
+}

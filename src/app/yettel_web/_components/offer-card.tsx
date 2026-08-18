@@ -97,13 +97,16 @@ export function OfferCard({
 
       {/* Törzs – fehér */}
       <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
-        <div className="mb-4 flex items-end gap-2">
-          <span className="text-3xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
-          <span className="pb-1 text-sm text-[#2D466C]">/ {priceUnit}</span>
+        {/* Az akciós ár külön sorban, hogy keskeny kártyán se törjön szét a főár. */}
+        <div className="mb-4">
+          <div className="flex items-end gap-2 whitespace-nowrap">
+            <span className="text-3xl font-extrabold tracking-tight text-[#002340]">{formatFt(offer.price)}</span>
+            <span className="pb-1 text-sm text-[#2D466C]">/ {priceUnit}</span>
+          </div>
           {offer.oldPrice && (
-            <span className="pb-1 text-sm text-[#7E93B0]">
+            <p className="text-sm text-[#7E93B0]">
               <span className="line-through">{formatFt(offer.oldPrice)}</span> helyett
-            </span>
+            </p>
           )}
         </div>
 
