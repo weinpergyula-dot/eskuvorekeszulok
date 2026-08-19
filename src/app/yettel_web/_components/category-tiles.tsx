@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Smartphone, Wifi, Tv, CreditCard, FileText, type LucideIcon } from "lucide-react";
 import type { OfferCategory } from "../_data/offers";
 
@@ -34,6 +34,20 @@ const CATEGORIES: Tile[] = [
 export function CategoryTiles() {
   // Alapból a "Havidíjas mobil" a kiválasztott.
   const [activeCat, setActiveCat] = useState<OfferCategory>("havidijas");
+  const tilesRef = useRef<HTMLDivElement>(null);
+
+  // Kategóriaváltásnál nem a tarifaszekció tetejére ugrunk, hanem úgy
+  // görgetünk, hogy maga az ikonsor kerüljön a fejléc alá – így a csempék
+  // végig láthatók maradnak, alattuk pedig már a kiválasztott tarifák jönnek.
+  const scrollToTiles = () => {
+    const el = tilesRef.current;
+    if (!el) return;
+    const headerOffset = 64; // ragadó fejléc + kis levegő
+    window.scrollTo({
+      top: window.scrollY + el.getBoundingClientRect().top - headerOffset,
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
     const fromHash = () => setActiveCat(HASH_TO_CAT[window.location.hash.slice(1)] ?? "havidijas");
@@ -48,7 +62,7 @@ export function CategoryTiles() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6">
+    <div ref={tilesRef} className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6">
       <div className="flex flex-wrap justify-center gap-3">
         {CATEGORIES.map((cat) => {
           const isActive = cat.cat !== undefined && cat.cat === activeCat;
@@ -60,9 +74,8 @@ export function CategoryTiles() {
               setActiveCat(cat.cat);
               window.history.replaceState(null, "", `#${hash}`);
               window.dispatchEvent(new CustomEvent("yettel:section", { detail: hash }));
-              // …és görgessünk le a tarifákhoz (desktopon is), hogy a csempe
-              // kattintása mindig a kiválasztott szekcióhoz vigyen.
-              document.getElementById("ajanlatok")?.scrollIntoView({ behavior: "smooth" });
+              // …és görgessünk oda, hogy az ikonsor még látsszon a tarifák fölött.
+              scrollToTiles();
             } else {
               // Egyéb csempe (Készülékek, Ügyintézés): sima szekcióhoz görgetés – desktopon is.
               const id = cat.href.slice(1);
@@ -79,7 +92,7 @@ export function CategoryTiles() {
               className={[
                 // Mindkét állapot finom, világos→sötét irányú gradienst kap
                 // (ugyanaz a 160°-os irány, mint a prémium tarifakártya fejlécén).
-                "group flex w-[186px] flex-col items-center gap-2.5 rounded-[20px] border p-6 text-center transition-all",
+                "group flex w-[150px] flex-col items-center gap-2 rounded-[18px] border p-4 text-center transition-all",
                 isActive
                   ? "border-[#B4FF00] bg-[linear-gradient(160deg,#CBFF4D_0%,#B4FF00_55%,#9FE000_100%)]"
                   : "border-white/15 bg-[linear-gradient(160deg,rgba(255,255,255,0.11)_0%,rgba(255,255,255,0.06)_55%,rgba(255,255,255,0.025)_100%)] hover:border-[#B4FF00] hover:bg-[linear-gradient(160deg,rgba(255,255,255,0.17)_0%,rgba(255,255,255,0.10)_55%,rgba(255,255,255,0.05)_100%)]",
@@ -87,16 +100,16 @@ export function CategoryTiles() {
             >
               <span
                 className={[
-                  "grid h-14 w-14 place-items-center rounded-2xl",
+                  "grid h-12 w-12 place-items-center rounded-xl",
                   isActive ? "bg-[#002340] text-[#B4FF00]" : "bg-[#B4FF00] text-[#002340]",
                 ].join(" ")}
               >
-                <cat.icon className="h-7 w-7" strokeWidth={1.9} />
+                <cat.icon className="h-6 w-6" strokeWidth={1.9} />
               </span>
-              <span className={isActive ? "text-base font-bold text-[#002340]" : "text-base font-bold text-white"}>
+              <span className={isActive ? "text-sm font-bold text-[#002340]" : "text-sm font-bold text-white"}>
                 {cat.label}
               </span>
-              <span className={isActive ? "text-sm text-[#002340]/70" : "text-sm text-[#BBD3E4]"}>{cat.desc}</span>
+              <span className={isActive ? "text-xs text-[#002340]/70" : "text-xs text-[#BBD3E4]"}>{cat.desc}</span>
             </a>
           );
         })}
