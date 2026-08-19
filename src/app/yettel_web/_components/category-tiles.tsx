@@ -36,15 +36,23 @@ export function CategoryTiles() {
   const [activeCat, setActiveCat] = useState<OfferCategory>("havidijas");
   const tilesRef = useRef<HTMLDivElement>(null);
 
-  // Kategóriaváltásnál nem a tarifaszekció tetejére ugrunk, hanem úgy
-  // görgetünk, hogy maga az ikonsor kerüljön a fejléc alá – így a csempék
-  // végig láthatók maradnak, alattuk pedig már a kiválasztott tarifák jönnek.
-  const scrollToTiles = () => {
+  // Kategóriaváltás utáni görgetés. Weben úgy állunk meg, hogy az ikonsor a
+  // fejléc alá kerüljön – így a csempék végig láthatók maradnak, alattuk pedig
+  // már a kiválasztott tarifák jönnek. Mobilon viszont a csempesáv három sor
+  // magas, ott az egészet elfoglalná, ezért ott egyenesen a tarifákhoz megyünk.
+  const scrollAfterSelect = () => {
+    if (!window.matchMedia("(min-width: 768px)").matches) {
+      document.getElementById("ajanlatok")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     const el = tilesRef.current;
     if (!el) return;
-    const headerOffset = 64; // ragadó fejléc + kis levegő
+    // A csempesáv teteje pontosan a banner alja, ezért a fejléc magasságával
+    // eltolva a banner lekerekített alja is a fejléc mögé kerül – nem villan ki
+    // alóla csík. A fejléc magasságát mérjük, mert a nagyítással változik.
+    const headerHeight = document.querySelector("header")?.getBoundingClientRect().height ?? 56;
     window.scrollTo({
-      top: window.scrollY + el.getBoundingClientRect().top - headerOffset,
+      top: window.scrollY + el.getBoundingClientRect().top - headerHeight,
       behavior: "smooth",
     });
   };
@@ -74,8 +82,8 @@ export function CategoryTiles() {
               setActiveCat(cat.cat);
               window.history.replaceState(null, "", `#${hash}`);
               window.dispatchEvent(new CustomEvent("yettel:section", { detail: hash }));
-              // …és görgessünk oda, hogy az ikonsor még látsszon a tarifák fölött.
-              scrollToTiles();
+              // …és görgessünk a kiválasztott kategóriához.
+              scrollAfterSelect();
             } else {
               // Egyéb csempe (Készülékek, Ügyintézés): sima szekcióhoz görgetés – desktopon is.
               const id = cat.href.slice(1);
