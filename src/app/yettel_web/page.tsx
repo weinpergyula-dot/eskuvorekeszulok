@@ -58,18 +58,9 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Banner / hero – közvetlenül a fejléc alatt ──────
-            A háttér a /yettel_light welcome képernyőjének mozgó gradiense
-            (130°-os sweep + két lebegő, elmosott folt) – lásd globals.css.
-            A negatív felső margó a fejléc mögé húzza a hátteret (a tartalmat a
-            vele azonos pt tartja a helyén). A két alsó sarok lekerekített: a
-            z-10 miatt a banner a következő szekció fölé rajzolódik, így a
-            sarkoknál az alábújó gyorsikonos sötétkék háttér látszik ki. */}
-        <section className="yettel-hero-bg relative z-10 -mt-14 overflow-hidden rounded-b-[32px] pt-14">
-          <span aria-hidden className="yettel-blob yettel-blob-1" />
-          <span aria-hidden className="yettel-blob yettel-blob-2" />
-          <HeroSlides />
-        </section>
+        {/* ── Banner / hero – közvetlenül a fejléc alatt (diavetítés, saját
+            háttérrel és a lekerekített alsó sarkokkal: lásd HeroSlides) ── */}
+        <HeroSlides />
 
         {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ──────
             Az alsó extra térköz alá csúszik be az ajánlatok szekció, hogy annak
