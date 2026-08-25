@@ -32,17 +32,17 @@ export const metadata: Metadata = {
 
 const STORY = [
   {
-    year: "2019",
+    year: "2025",
     title: "Az első találkozás",
     text: "Egy közös baráti szülinapon, Aradon sodort össze minket az élet. Szili rossz vicceket mesélt, Zsófi mégis nevetett – innen már nem volt visszaút.",
   },
   {
-    year: "2021",
+    year: "2026 tavasza",
     title: "Összeköltöztünk",
     text: "Két bögre, egy kanapé és egy Mázli nevű macska. Kiderült, hogy együtt még a hétfő reggelek is elviselhetők.",
   },
   {
-    year: "2025",
+    year: "2026 ősze",
     title: "Az igen a hegytetőn",
     text: "Egy őszi túrán, a Retyezát csúcsán, naplementében hangzott el a kérdés. A válasz egy könnyes, hangos IGEN volt.",
   },
@@ -142,7 +142,7 @@ export default function ZsoEsSziliPage() {
         <Reveal className="mx-auto max-w-2xl text-center">
           <span className="zs-script text-4xl sm:text-5xl">Kedves Vendégünk!</span>
           <p className="mt-8 text-[17px] leading-relaxed sm:text-lg">
-            Nyolc éve együtt nevetünk, utazunk, és tervezzük a közös jövőt – most pedig
+            Két éve együtt nevetünk, utazunk, és tervezzük a közös jövőt – most pedig
             eljött a pillanat, hogy a családunk és a barátaink előtt is kimondjuk:{" "}
             <em className="zs-serif">igen, egymást választjuk egy életre.</em>
           </p>
