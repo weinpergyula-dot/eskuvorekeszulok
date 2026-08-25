@@ -83,9 +83,10 @@ export function OffersExplorer() {
         </div>
       ) : (
         <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-3 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-0 sm:pb-0 lg:grid-cols-3">
-          {/* Balról jobbra ár szerint csökkenő sorrend; mobilon oldalra swipe-olható */}
+          {/* Balról jobbra ár szerint növekvő sorrend (olcsóbbtól a drágábbig);
+              mobilon oldalra swipe-olható */}
           {[...OFFERS[active]]
-            .sort((a, b) => b.price - a.price)
+            .sort((a, b) => a.price - b.price)
             .map((offer) => (
               <OfferCard
                 key={offer.id}

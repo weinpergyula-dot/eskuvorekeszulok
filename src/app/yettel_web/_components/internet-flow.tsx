@@ -835,7 +835,7 @@ function OffersStep({ config, onSelect }: { config: FlowConfig; onSelect: (o: Of
       {/* Ugyanaz az OfferCard, mint a főoldali szekcióban; csak a gomb szövege más. */}
       <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-3 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-0 sm:pb-0 lg:grid-cols-3">
         {[...OFFERS[config.service]]
-          .sort((a, b) => b.price - a.price)
+          .sort((a, b) => a.price - b.price)
           .map((o) => (
             <OfferCard
               key={o.id}
