@@ -234,9 +234,10 @@ export function HeroSlides() {
       </div>
 
       {/* Vetítésvezérlő: pause/play és a pöttyök, amik mutatják, melyik dián
-          állunk. A tartalom bal széléhez igazítva, a banner alján. */}
+          állunk. A banner alján: mobilon a tartalom bal széléhez igazítva,
+          md-től középre zárva. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-2 z-20">
-        <div className="mx-auto flex max-w-6xl px-4 sm:px-6">
+        <div className="mx-auto flex max-w-6xl px-4 sm:px-6 md:justify-center">
           <div className="pointer-events-auto flex items-center gap-2.5">
             <button
               type="button"
