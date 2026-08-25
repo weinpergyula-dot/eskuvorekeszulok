@@ -95,8 +95,7 @@ const INTERVAL_MS = 4000;
  * A banner. A diák (otthoni internet ↔ havidíjas mobil) 4 másodpercenként
  * váltakoznak mobilon és weben is: a teljes tartalom egyben úszik be jobbról,
  * a pöttyök mutatják, melyiken állunk, a pause gombbal pedig megállítható.
- * A 2. dia sötétkék hátteret kap, alul fehér elválasztóval, hogy elkülönüljön
- * az alatta induló gyorsmenüs sávtól.
+ * A 2. dia sötétkék hátteret kap.
  */
 export function HeroSlides() {
   const [index, setIndex] = useState(0);
@@ -124,14 +123,14 @@ export function HeroSlides() {
   return (
     /* A háttér a /yettel_light welcome képernyőjének mozgó gradiense (130°-os
        sweep + két lebegő, elmosott folt) – lásd globals.css; a sötét dián sima
-       navy. A negatív felső margó a fejléc mögé húzza a hátteret (a tartalmat a
+       navy (a lekerekített alsó ív választja el az alatta induló sávtól). A negatív felső margó a fejléc mögé húzza a hátteret (a tartalmat a
        vele azonos pt tartja a helyén). A két alsó sarok lekerekített: a z-10
        miatt a banner a következő szekció fölé rajzolódik, így a sarkoknál az
        alábújó gyorsikonos sötétkék háttér látszik ki. */
     <section
       className={[
         "relative z-10 -mt-14 overflow-hidden rounded-b-[32px] pt-14",
-        dark ? "border-b border-white bg-[#002340]" : "yettel-hero-bg",
+        dark ? "bg-[#002340]" : "yettel-hero-bg",
       ].join(" ")}
     >
       <span aria-hidden className="yettel-blob yettel-blob-1" />
