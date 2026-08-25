@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { Smartphone, Wifi, Tv, CreditCard, FileText, type LucideIcon } from "lucide-react";
+import { Smartphone, Wifi, Tv, CreditCard, FileText, ChevronDown, type LucideIcon } from "lucide-react";
 import type { OfferCategory } from "../_data/offers";
 
 // A menü/hash ↔ tarifakategória (az OffersExplorer-rel megegyező logika).
@@ -92,33 +92,40 @@ export function CategoryTiles() {
             }
           };
           return (
-            <a
-              key={cat.label}
-              href={cat.href}
-              onClick={onClick}
-              aria-current={isActive ? "true" : undefined}
-              className={[
-                // Mindkét állapot finom, világos→sötét irányú gradienst kap
-                // (ugyanaz a 160°-os irány, mint a prémium tarifakártya fejlécén).
-                "group flex w-[150px] flex-col items-center gap-2 rounded-[18px] border p-4 text-center transition-all",
-                isActive
-                  ? "border-[#B4FF00] bg-[linear-gradient(160deg,#CBFF4D_0%,#B4FF00_55%,#9FE000_100%)]"
-                  : "border-white/15 bg-[linear-gradient(160deg,rgba(255,255,255,0.11)_0%,rgba(255,255,255,0.06)_55%,rgba(255,255,255,0.025)_100%)] hover:border-[#B4FF00] hover:bg-[linear-gradient(160deg,rgba(255,255,255,0.17)_0%,rgba(255,255,255,0.10)_55%,rgba(255,255,255,0.05)_100%)]",
-              ].join(" ")}
-            >
-              <span
+            // A csempe alatt lime kacsacsőr mutat lefelé a hozzá tartozó
+            // tartalomra – csak az aktív kategóriánál. A helye mindig meg van
+            // tartva, így kategóriaváltáskor nem ugrik a csempesor magassága.
+            <div key={cat.label} className="flex w-[150px] flex-col items-center">
+              <a
+                href={cat.href}
+                onClick={onClick}
+                aria-current={isActive ? "true" : undefined}
                 className={[
-                  "grid h-12 w-12 place-items-center rounded-xl",
-                  isActive ? "bg-[#002340] text-[#B4FF00]" : "bg-[#B4FF00] text-[#002340]",
+                  // Mindkét állapot finom, világos→sötét irányú gradienst kap
+                  // (ugyanaz a 160°-os irány, mint a prémium tarifakártya fejlécén).
+                  "group flex w-full flex-col items-center gap-2 rounded-[18px] border p-4 text-center transition-all",
+                  isActive
+                    ? "border-[#B4FF00] bg-[linear-gradient(160deg,#CBFF4D_0%,#B4FF00_55%,#9FE000_100%)]"
+                    : "border-white/15 bg-[linear-gradient(160deg,rgba(255,255,255,0.11)_0%,rgba(255,255,255,0.06)_55%,rgba(255,255,255,0.025)_100%)] hover:border-[#B4FF00] hover:bg-[linear-gradient(160deg,rgba(255,255,255,0.17)_0%,rgba(255,255,255,0.10)_55%,rgba(255,255,255,0.05)_100%)]",
                 ].join(" ")}
               >
-                <cat.icon className="h-6 w-6" strokeWidth={1.9} />
+                <span
+                  className={[
+                    "grid h-12 w-12 place-items-center rounded-xl",
+                    isActive ? "bg-[#002340] text-[#B4FF00]" : "bg-[#B4FF00] text-[#002340]",
+                  ].join(" ")}
+                >
+                  <cat.icon className="h-6 w-6" strokeWidth={1.9} />
+                </span>
+                <span className={isActive ? "text-sm font-bold text-[#002340]" : "text-sm font-bold text-white"}>
+                  {cat.label}
+                </span>
+                <span className={isActive ? "text-xs text-[#002340]/70" : "text-xs text-[#BBD3E4]"}>{cat.desc}</span>
+              </a>
+              <span aria-hidden className="flex h-5 items-start justify-center pt-0.5">
+                {isActive && <ChevronDown className="h-5 w-5 text-[#B4FF00]" strokeWidth={3} />}
               </span>
-              <span className={isActive ? "text-sm font-bold text-[#002340]" : "text-sm font-bold text-white"}>
-                {cat.label}
-              </span>
-              <span className={isActive ? "text-xs text-[#002340]/70" : "text-xs text-[#BBD3E4]"}>{cat.desc}</span>
-            </a>
+            </div>
           );
         })}
       </div>
