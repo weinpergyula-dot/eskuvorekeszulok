@@ -70,7 +70,7 @@ export function CategoryTiles() {
   }, []);
 
   return (
-    <div ref={tilesRef} className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6">
+    <div ref={tilesRef} className="mx-auto max-w-[1280px] px-4 pt-10 pb-4 sm:px-6">
       <div className="flex flex-wrap justify-center gap-3">
         {CATEGORIES.map((cat) => {
           const isActive = cat.cat !== undefined && cat.cat === activeCat;
@@ -93,8 +93,10 @@ export function CategoryTiles() {
           };
           return (
             // A csempe alatt lime kacsacsőr mutat lefelé a hozzá tartozó
-            // tartalomra – csak az aktív kategóriánál. A helye mindig meg van
-            // tartva, így kategóriaváltáskor nem ugrik a csempesor magassága.
+            // tartalomra – csak az aktív kategóriánál. Nagyjából félúton ül a
+            // csempe alja és a sáv alatti szekció (a "divider") között: a fölötte
+            // lévő mt-4 és a csempesáv pb-4 térköze megegyezik. A helye mindig
+            // meg van tartva, így kategóriaváltáskor nem ugrik a csempesor.
             <div key={cat.label} className="flex w-[150px] flex-col items-center">
               <a
                 href={cat.href}
@@ -122,8 +124,8 @@ export function CategoryTiles() {
                 </span>
                 <span className={isActive ? "text-xs text-[#002340]/70" : "text-xs text-[#BBD3E4]"}>{cat.desc}</span>
               </a>
-              <span aria-hidden className="flex h-5 items-start justify-center pt-0.5">
-                {isActive && <ChevronDown className="h-5 w-5 text-[#B4FF00]" strokeWidth={3} />}
+              <span aria-hidden className="mt-4 flex h-7 items-center justify-center">
+                {isActive && <ChevronDown className="h-7 w-7 text-[#B4FF00]" strokeWidth={3} />}
               </span>
             </div>
           );
