@@ -72,9 +72,10 @@ const SLIDES: Slide[] = [
     img: "/yettel/hero-man1.webp",
     imgMd: "/yettel/hero-banner-family.webp",
     // Mobilon nagyobbra véve és jobbra tolva (a jobb szélen szándékosan kilóg);
-    // md-től a keretbe illesztve, az aljára ülve.
+    // md-től nagyobbra méretezve és lejjebb csúsztatva, hogy a család jobban
+    // látszódjon – a lábuk alul szándékosan kilóg a banner alsó éle alatt.
     imgClass:
-      "absolute bottom-0 -right-10 block w-[122%] max-w-none md:right-0 md:left-0 md:h-full md:w-full md:object-contain md:object-bottom",
+      "absolute bottom-0 -right-10 block w-[122%] max-w-none md:right-auto md:bottom-0 md:left-1/2 md:h-full md:w-[82%] md:-translate-x-1/2 md:object-cover md:object-top",
     alt: "Yettel mobilos ügyfél",
     offer: {
       badge: "Legnépszerűbb tarifa",
