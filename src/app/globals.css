@@ -407,6 +407,18 @@ html.a11y-underline a { text-decoration: underline !important; }
   .yettel-root .yettel-blob { animation: none; }
 }
 
+/* A banner diáinak lágy úsztatása váltáskor (mobil slideshow). */
+.yettel-root .yettel-fade {
+  animation: yettel-fade 0.45s ease-out;
+}
+@keyframes yettel-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .yettel-root .yettel-fade { animation: none; }
+}
+
 /* ── /yettel_web: a méret a viewport szélességéhez igazodik ─────────────
    A Windows 125%/150% nagyítás nem "nagyobbra rajzol": a böngésző kisebb
    CSS-viewportot ad (1920 fizikai px → 1536, ill. 1280 CSS px), ezért a fix
