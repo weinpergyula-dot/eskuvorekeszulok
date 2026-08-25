@@ -35,16 +35,13 @@ export function CategoryTiles() {
   // Alapból a "Havidíjas mobil" a kiválasztott.
   const [activeCat, setActiveCat] = useState<OfferCategory>("havidijas");
   const tilesRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
 
-  // Kategóriaváltás utáni görgetés. Weben úgy állunk meg, hogy az ikonsor a
-  // fejléc alá kerüljön – így a csempék végig láthatók maradnak, alattuk pedig
-  // már a kiválasztott tarifák jönnek. Mobilon viszont a csempesáv három sor
-  // magas, ott az egészet elfoglalná, ezért ott egyenesen a tarifákhoz megyünk.
+  // Kategóriaváltás utáni görgetés: úgy állunk meg, hogy az ikonsor a fejléc alá
+  // kerüljön – így a csempék végig láthatók maradnak (mobilon is, ahol egyetlen
+  // csúsztatható sorban vannak), alattuk pedig a kacsacsőr által mutatott
+  // kiválasztott tarifák jönnek.
   const scrollAfterSelect = () => {
-    if (!window.matchMedia("(min-width: 768px)").matches) {
-      document.getElementById("ajanlatok")?.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
     const el = tilesRef.current;
     if (!el) return;
     // A csempesáv teteje pontosan a banner alja, ezért a fejléc magasságával
@@ -53,6 +50,19 @@ export function CategoryTiles() {
     const headerHeight = document.querySelector("header")?.getBoundingClientRect().height ?? 56;
     window.scrollTo({
       top: window.scrollY + el.getBoundingClientRect().top - headerHeight,
+      behavior: "smooth",
+    });
+  };
+
+  // Mobilon a sor vízszintesen csúsztatható: a kiválasztott csempét középre
+  // húzzuk, hogy a hozzá tartozó kacsacsőr biztosan látszódjon.
+  const centerTile = (tile: HTMLElement) => {
+    const row = rowRef.current;
+    if (!row || row.scrollWidth <= row.clientWidth) return;
+    const rowRect = row.getBoundingClientRect();
+    const tileRect = tile.getBoundingClientRect();
+    row.scrollBy({
+      left: tileRect.left - rowRect.left - (rowRect.width - tileRect.width) / 2,
       behavior: "smooth",
     });
   };
@@ -71,11 +81,17 @@ export function CategoryTiles() {
 
   return (
     <div ref={tilesRef} className="mx-auto max-w-[1280px] px-4 pt-10 pb-4 sm:px-6">
-      <div className="flex flex-wrap justify-center gap-3">
+      {/* Mobilon egyetlen, vízszintesen csúsztatható sor (a képernyő széléig
+          kifutva), sm-től felfelé a megszokott középre zárt, tördelt rács. */}
+      <div
+        ref={rowRef}
+        className="scrollbar-none -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0"
+      >
         {CATEGORIES.map((cat) => {
           const isActive = cat.cat !== undefined && cat.cat === activeCat;
           const onClick = (e: MouseEvent) => {
             e.preventDefault();
+            centerTile(e.currentTarget as HTMLElement);
             if (cat.cat !== undefined) {
               // Tarifakategória: váltsuk a tartalmat…
               const hash = CAT_TO_HASH[cat.cat];
@@ -97,7 +113,7 @@ export function CategoryTiles() {
             // csempe alja és a sáv alatti szekció (a "divider") között: a fölötte
             // lévő mt-4 és a csempesáv pb-4 térköze megegyezik. A helye mindig
             // meg van tartva, így kategóriaváltáskor nem ugrik a csempesor.
-            <div key={cat.label} className="flex w-[150px] flex-col items-center">
+            <div key={cat.label} className="flex w-[150px] shrink-0 snap-start flex-col items-center sm:shrink">
               <a
                 href={cat.href}
                 onClick={onClick}
