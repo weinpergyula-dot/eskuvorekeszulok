@@ -80,12 +80,17 @@ export function CategoryTiles() {
   }, []);
 
   return (
-    <div ref={tilesRef} className="mx-auto max-w-[1280px] px-4 pt-10 pb-4 sm:px-6">
+    <div ref={tilesRef} className="mx-auto max-w-[1280px] px-4 pt-10 pb-2 sm:px-6">
+      <h2 className="mb-4 text-xl font-extrabold tracking-tight text-white sm:text-center sm:text-2xl">
+        Válassz kategóriát!
+      </h2>
       {/* Mobilon egyetlen, vízszintesen csúsztatható sor (a képernyő széléig
-          kifutva), sm-től felfelé a megszokott középre zárt, tördelt rács. */}
+          kifutva), sm-től felfelé a megszokott középre zárt, tördelt rács.
+          A scroll-pl a snap miatt kell: enélkül az első csempe a bal élre
+          tapadna, és eltűnne alóla a pl térköz. */}
       <div
         ref={rowRef}
-        className="scrollbar-none -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0"
+        className="scrollbar-none -mx-4 flex snap-x snap-mandatory scroll-pl-5 gap-3 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0"
       >
         {CATEGORIES.map((cat) => {
           const isActive = cat.cat !== undefined && cat.cat === activeCat;
@@ -110,9 +115,8 @@ export function CategoryTiles() {
           return (
             // A csempe alatt lime kacsacsőr mutat lefelé a hozzá tartozó
             // tartalomra – csak az aktív kategóriánál. Nagyjából félúton ül a
-            // csempe alja és a sáv alatti szekció (a "divider") között: a fölötte
-            // lévő mt-4 és a csempesáv pb-4 térköze megegyezik. A helye mindig
-            // meg van tartva, így kategóriaváltáskor nem ugrik a csempesor.
+            // csempe alja és a sáv alatti szekció (a "divider") között. A helye
+            // mindig meg van tartva, így kategóriaváltáskor nem ugrik a csempesor.
             <div key={cat.label} className="flex w-[150px] shrink-0 snap-start flex-col items-center sm:shrink">
               <a
                 href={cat.href}
@@ -140,7 +144,7 @@ export function CategoryTiles() {
                 </span>
                 <span className={isActive ? "text-xs text-[#002340]/70" : "text-xs text-[#BBD3E4]"}>{cat.desc}</span>
               </a>
-              <span aria-hidden className="mt-4 flex h-7 items-center justify-center">
+              <span aria-hidden className="mt-3 flex h-7 items-center justify-center">
                 {isActive && <ChevronDown className="h-7 w-7 text-[#B4FF00]" strokeWidth={3} />}
               </span>
             </div>
