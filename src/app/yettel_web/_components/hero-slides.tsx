@@ -17,8 +17,8 @@ type Slide = {
   note: string;
   /** Mobil (portré) kép; md-től mindkét dia a családi képet mutatja. */
   img: string;
-  /** A képre kerülő osztályok – diánként más, mert az egyik kivágott PNG,
-   *  a másik fehér hátterű fotó, amit ugyanakkora portré-kivágatba teszünk. */
+  /** A képre kerülő osztályok – diánként más, mert a két kivágat aránya és
+   *  a bannerbeli elhelyezése eltér. */
   imgClass: string;
   alt: string;
   offer: {
@@ -44,8 +44,9 @@ const SLIDES: Slide[] = [
       "1000 Mbit/s optikai net az egész családnak – ajándék WiFi 7 routerrel, díjmentes telepítéssel és az első 30 nappal díjmentesen.",
     note: "Ingyenes bekötés · 30 napos elállás",
     img: "/yettel/hero-man.png",
+    // A kivágat aránya pont a kereté, így hézag nélkül kitölti.
     imgClass:
-      "-mr-4 ml-auto block w-[62%] md:ml-0 md:-mr-6 md:w-[118%] md:max-w-none md:translate-x-6 lg:-mr-14 lg:translate-x-12",
+      "absolute inset-x-0 bottom-0 block w-full md:static md:ml-0 md:-mr-6 md:w-[118%] md:max-w-none md:translate-x-6 lg:-mr-14 lg:translate-x-12",
     alt: "Yettel ügyfél",
     offer: {
       badge: "A hét ajánlata",
@@ -65,11 +66,10 @@ const SLIDES: Slide[] = [
     blurb:
       "Korlátlan 5G net és beszélgetés egész hónapban – ajándék SIM-mel, díjmentes számhordozással, és bármikor válthatsz nagyobb csomagra.",
     note: "Ingyenes SIM · Bármikor válthatsz csomagot",
-    img: "/yettel/hero-man1.jpg",
-    // Fehér hátterű, fekvő fotó: ugyanakkora álló kivágatba tesszük, mint a
-    // másik dia kivágott portréja (461/570), így nem ugrik a banner magassága.
-    imgClass:
-      "-mr-4 ml-auto block aspect-[461/570] w-[62%] rounded-[24px] object-cover object-[55%_50%] shadow-[0_18px_50px_rgba(0,35,64,0.18)]",
+    img: "/yettel/hero-man1.webp",
+    // Szélesebb (3/4-es) kivágat: a keret aljára ül, és kicsit jobbra tolva,
+    // hogy a kezében lévő telefont ne takarja ki az ajánlatkártya.
+    imgClass: "absolute bottom-0 -right-3 block w-[92%] max-w-none",
     alt: "Yettel mobilos ügyfél",
     offer: {
       badge: "Legnépszerűbb tarifa",
@@ -203,17 +203,21 @@ export function HeroSlides() {
       </div>
 
       {/* Hero kép: mobilon a diához tartozó álló, kivágott portré, md-től a
-          családi kép. A <picture> miatt a böngésző csak a szükséges fájlt tölti le. */}
+          családi kép. A <picture> miatt a böngésző csak a szükséges fájlt tölti le.
+          Mobilon a keret fix arányú, hogy a két dia bannermagassága azonos legyen
+          (különben az alsó szélre igazított ajánlatkártya a szövegre csúszna). */}
       <div className="w-full self-end">
-        <picture>
-          <source media="(min-width: 768px)" srcSet="/yettel/hero-family.png" />
-          <img
-            key={slide.key}
-            src={slide.img}
-            alt={slide.alt}
-            className={`yettel-fade ${slide.imgClass}`}
-          />
-        </picture>
+        <div className="relative -mr-4 ml-auto aspect-[461/570] w-[62%] md:mr-0 md:ml-0 md:aspect-auto md:w-full">
+          <picture>
+            <source media="(min-width: 768px)" srcSet="/yettel/hero-family.png" />
+            <img
+              key={slide.key}
+              src={slide.img}
+              alt={slide.alt}
+              className={`yettel-fade ${slide.imgClass}`}
+            />
+          </picture>
+        </div>
       </div>
     </div>
   );
