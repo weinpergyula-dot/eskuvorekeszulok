@@ -407,16 +407,17 @@ html.a11y-underline a { text-decoration: underline !important; }
   .yettel-root .yettel-blob { animation: none; }
 }
 
-/* A banner diáinak lágy úsztatása váltáskor (mobil slideshow). */
-.yettel-root .yettel-fade {
-  animation: yettel-fade 0.45s ease-out;
+/* A banner diái jobbról balra úsznak be (mobil slideshow). A dia teljes
+   tartalma egy elemen mozog, hogy a rajta ülő ajánlatkártya se ugráljon. */
+.yettel-root .yettel-slide-in {
+  animation: yettel-slide-in 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-@keyframes yettel-fade {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes yettel-slide-in {
+  from { opacity: 0; transform: translateX(28%); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .yettel-root .yettel-fade { animation: none; }
+  .yettel-root .yettel-slide-in { animation: none; }
 }
 
 /* ── /yettel_web: a méret a viewport szélességéhez igazodik ─────────────
