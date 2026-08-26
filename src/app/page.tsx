@@ -9,6 +9,7 @@ import { ProvidersContent } from "@/components/providers/providers-content";
 import { HomeProvidersCta } from "@/components/home/home-providers-cta";
 import { HeroProvidersButton } from "@/components/home/hero-providers-button";
 import { MobileCollapsible } from "@/components/home/mobile-collapsible";
+import { MobileWhyRegister } from "@/components/home/mobile-why-register";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
 
@@ -104,17 +105,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Services header – two-column */}
-      <div className="w-full relative sm:-mt-6" style={{ backgroundColor: "#84AAA6" }}>
+      {/* Mobil: prémium "Miért regisztrálj?" szekció */}
+      <MobileWhyRegister />
+
+      {/* Services header – two-column (csak sm+) */}
+      <div className="w-full relative sm:-mt-6 hidden sm:block" style={{ backgroundColor: "#84AAA6" }}>
         {/* Pink bleed: center → right edge, desktop only */}
         <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
-        {/* Teal sáv a kérdéssel — csak mobilon, fehér elválasztóval; átmenet
-            #84AAA6 (felül) → #5C8480 (alul) */}
-        <div className="sm:hidden relative z-10 border-b border-white" style={{ background: "linear-gradient(to bottom, #84AAA6, #5C8480)" }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7">
-            <h2 className="text-2xl md:text-3xl font-bold text-white text-center">Miért regisztrálj...?</h2>
-          </div>
-        </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:pt-16">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
             {/* Left – visitors */}

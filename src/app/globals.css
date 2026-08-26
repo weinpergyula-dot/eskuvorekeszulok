@@ -815,3 +815,13 @@ html.a11y-underline a { text-decoration: underline !important; }
     transition: none;
   }
 }
+
+/* ── Főoldal, mobil "Miért regisztrálj?" kártya belépő animációja ───── */
+@keyframes mwr-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.mwr-card-in { animation: mwr-in 0.35s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .mwr-card-in { animation: none; }
+}
