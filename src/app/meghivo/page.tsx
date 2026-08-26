@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Check, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
-import { HeroSlides } from "./_components/hero-slides";
 import { IntroTabs } from "./_components/intro-tabs";
 import { LivePhonePreview, PlaceholderPhonePreview } from "./_components/phone-preview";
 
@@ -80,11 +79,8 @@ export default function MeghivoPage() {
         title="Digitális meghívók"
         description="Felejtsd el a papírt! Készíttess mobilra szabott, interaktív esküvői meghívót, amit egyetlen linkkel elküldhetsz minden vendégednek – visszaszámlálóval, programmal és online visszajelzéssel."
         icon={MailOpen}
-        roundedBottom={false}
+        bottomBg="#F9F9F9"
       />
-
-      {/* ── Banner: diák a meghívó-mintákkal ─────────────── */}
-      <HeroSlides />
 
       {/* ── Csomagok ─────────────────────────────────────── */}
       <section className="bg-[#F9F9F9]">

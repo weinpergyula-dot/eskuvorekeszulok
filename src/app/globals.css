@@ -987,7 +987,7 @@ html.a11y-underline a { text-decoration: underline !important; }
   .slv-root .slv-reveal { opacity: 1; transform: none; transition: none; }
 }
 
-/* ── /meghivo banner: dia-beúszás és a megdöntött telefon ────────────── */
+/* ── Banner: dia-beúszás és a megdöntött telefon ─────────────────────── */
 .mgh-slide-in {
   animation: mgh-slide-in 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
