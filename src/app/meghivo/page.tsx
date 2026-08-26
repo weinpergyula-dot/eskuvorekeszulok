@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  Check,
-  Clock,
-  ExternalLink,
-  Heart,
-  MailOpen,
-  Palette,
-  Send,
-  Smartphone,
-  Sparkles,
-} from "lucide-react";
+import { Check, Clock, ExternalLink, Heart, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
+import { IntroTabs } from "./_components/intro-tabs";
 
 export const metadata: Metadata = {
   title: "Digitális meghívók",
@@ -91,28 +82,6 @@ const PACKAGES = [
   },
 ] as const;
 
-const STEPS = [
-  {
-    icon: Send,
-    title: "1. Ajánlatkérés",
-    text: "Írjátok meg nekünk, melyik csomag tetszik, és meséljetek pár szót az esküvőtökről.",
-  },
-  {
-    icon: Palette,
-    title: "2. Tervezés",
-    text: "Elkészítjük a meghívótok első változatát a színeitek és a stílusotok alapján.",
-  },
-  {
-    icon: Heart,
-    title: "3. Finomhangolás",
-    text: "Addig csiszoljuk közösen, amíg minden betű és szín a helyére nem kerül.",
-  },
-  {
-    icon: Smartphone,
-    title: "4. Átadás",
-    text: "Megkapjátok a saját linketeket, amit azonnal küldhettek a vendégeknek.",
-  },
-];
 
 /* ── Telefon-mockup ──────────────────────────────────────
    228px széles "kijelzőn" egy 390px-es mobilnézet fut,
@@ -121,15 +90,15 @@ const STEPS = [
 
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative mx-auto w-[248px] shrink-0 rounded-[2.6rem] bg-gray-900 p-[10px] shadow-[0_24px_50px_-16px_rgba(45,88,84,0.45)]">
+    <div className="relative mx-auto w-[216px] shrink-0 rounded-[2.4rem] bg-gray-900 p-[9px] shadow-[0_24px_50px_-16px_rgba(45,88,84,0.45)]">
       {/* oldalgombok */}
-      <div className="absolute -left-[2px] top-24 h-10 w-[3px] rounded-l bg-gray-700" aria-hidden />
-      <div className="absolute -left-[2px] top-36 h-10 w-[3px] rounded-l bg-gray-700" aria-hidden />
-      <div className="absolute -right-[2px] top-28 h-14 w-[3px] rounded-r bg-gray-700" aria-hidden />
-      <div className="relative h-[494px] w-[228px] overflow-hidden rounded-[2rem] bg-white">
+      <div className="absolute -left-[2px] top-20 h-9 w-[3px] rounded-l bg-gray-700" aria-hidden />
+      <div className="absolute -left-[2px] top-32 h-9 w-[3px] rounded-l bg-gray-700" aria-hidden />
+      <div className="absolute -right-[2px] top-24 h-12 w-[3px] rounded-r bg-gray-700" aria-hidden />
+      <div className="relative h-[428px] w-[198px] overflow-hidden rounded-[1.9rem] bg-white">
         {children}
         {/* kamera-sziget */}
-        <div className="absolute left-1/2 top-[9px] z-20 h-[16px] w-[72px] -translate-x-1/2 rounded-full bg-gray-900" aria-hidden />
+        <div className="absolute left-1/2 top-[8px] z-20 h-[14px] w-[62px] -translate-x-1/2 rounded-full bg-gray-900" aria-hidden />
       </div>
     </div>
   );
@@ -147,7 +116,9 @@ function LivePhonePreview({ href, label }: { href: string; label: string }) {
         tabIndex={-1}
         loading="lazy"
         className="pointer-events-none absolute left-0 top-0 origin-top-left select-none border-0"
-        style={{ width: 390, height: 845, transform: "scale(0.5846)" }}
+        /* 390px a látható tartalom + 20px a görgetősávnak, amit a telefon
+           kerete levág – így nem látszik csík a kijelző szélén. */
+        style={{ width: 410, height: 843, transform: "scale(0.5077)" }}
       />
       <Link
         href={href}
@@ -208,38 +179,13 @@ export default function MeghivoPage() {
         icon={MailOpen}
         ctaLabel="Ajánlatot kérek"
         ctaHref="/kapcsolat"
+        roundedBottom={false}
       />
 
-      {/* ── Miért digitális? ─────────────────────────────── */}
+      {/* ── Bevezető: Miért népszerű? / Hogyan működik? (tabok) ── */}
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <div className="grid gap-6 sm:grid-cols-3">
-            {[
-              {
-                icon: Smartphone,
-                title: "Mindig kéznél van",
-                text: "A vendégeid a telefonjukon bármikor megnézhetik – nem vész el, nem gyűrődik, és az utolsó pillanatban is frissíthető.",
-              },
-              {
-                icon: Send,
-                title: "Egy link, és kész",
-                text: "Messengeren, WhatsAppon vagy e-mailben pillanatok alatt eljut mindenkihez – a visszajelzések pedig maguktól gyűlnek.",
-              },
-              {
-                icon: Sparkles,
-                title: "Egyedi és látványos",
-                text: "Animációk, visszaszámláló, a ti történetetek – olyan meghívó, amiről még hetekkel később is beszélnek a vendégek.",
-              },
-            ].map(({ icon: Icon, title, text }) => (
-              <div key={title} className="rounded-2xl bg-[#F0F6F5] p-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#84AAA6] text-white">
-                  <Icon className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <h2 className="mt-4 text-lg font-bold text-gray-900">{title}</h2>
-                <p className="mt-1.5 text-[15px] leading-relaxed text-gray-600">{text}</p>
-              </div>
-            ))}
-          </div>
+          <IntroTabs />
         </div>
       </section>
 
@@ -247,7 +193,7 @@ export default function MeghivoPage() {
       <section className="border-t border-gray-100 bg-[#F9F9F9]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
-            Válassz csomagot
+            Válassz csomagot!
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-center text-base text-gray-600">
             Minden telefonon egy-egy valódi meghívó-minta látható. A BASIC és a SILVER mintánk már
@@ -264,7 +210,7 @@ export default function MeghivoPage() {
                 {/* fejléc */}
                 <div className="px-6 pt-6 text-center">
                   <span
-                    className="inline-block rounded-full px-4 py-1 text-sm font-bold tracking-[0.18em] text-white"
+                    className="inline-flex items-center rounded-lg px-5 py-1.5 text-[15px] font-extrabold uppercase tracking-[0.22em] text-white shadow-sm ring-1 ring-inset ring-white/25"
                     style={{ backgroundColor: pkg.accent }}
                   >
                     {pkg.name}
@@ -323,28 +269,8 @@ export default function MeghivoPage() {
         </div>
       </section>
 
-      {/* ── Hogyan működik? ──────────────────────────────── */}
-      <section className="border-t border-gray-100 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
-            Hogyan működik?
-          </h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map(({ icon: Icon, title, text }) => (
-              <div key={title} className="rounded-2xl bg-[#FAF0F7] p-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#C65EA5] text-white">
-                  <Icon className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <h3 className="mt-4 text-lg font-bold text-gray-900">{title}</h3>
-                <p className="mt-1.5 text-[15px] leading-relaxed text-gray-600">{text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── Záró CTA ─────────────────────────────────────── */}
-      <section className="relative overflow-hidden" style={{ background: "linear-gradient(120deg, #84AAA6 0%, #6B8E8A 55%, #D07AB5 130%)" }}>
+      <section className="teal-shift-bg relative overflow-hidden">
         <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-20">
           <h2 className="text-2xl font-bold text-white md:text-3xl">
             Készen álltok a saját meghívótokra?

@@ -9,11 +9,14 @@ interface PageHeaderProps {
   bgColor?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  /** Lefelé kerekedő átmenet a sáv alján. Kikapcsolható ott, ahol a
+      CTA-sorral együtt nem mutat jól (pl. /meghivo). */
+  roundedBottom?: boolean;
   /** @deprecated use backHref instead */
   breadcrumb?: { label: string; href: string }[];
 }
 
-export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref }: PageHeaderProps) {
+export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref, roundedBottom = true }: PageHeaderProps) {
   return (
     <>
       <div
@@ -34,7 +37,7 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
         </div>
         {/* CTA nélkül a sáv alja: fehér, felül lekerekített sapka – a teal
             így a sarkoknál lefelé kerekedik */}
-        {!(ctaLabel && ctaHref) && <div className="h-6 rounded-t-3xl bg-white" aria-hidden />}
+        {roundedBottom && !(ctaLabel && ctaHref) && <div className="h-6 rounded-t-3xl bg-white" aria-hidden />}
       </div>
 
       {/* CTA sora — a navbar alá tapad scrollozáskor (sticky); a gomb feletti és
@@ -44,13 +47,15 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
         <>
           <StickyCta label={ctaLabel} href={ctaHref} bgColor={bgColor} />
           {/* A CTA-sor alatti, lefelé kerekedő átmenet (nem sticky) */}
-          <div
-            className={bgColor === "#84AAA6" ? "teal-shift-bg" : ""}
-            style={bgColor === "#84AAA6" ? undefined : { backgroundColor: bgColor }}
-            aria-hidden
-          >
-            <div className="h-6 rounded-t-3xl bg-white" />
-          </div>
+          {roundedBottom && (
+            <div
+              className={bgColor === "#84AAA6" ? "teal-shift-bg" : ""}
+              style={bgColor === "#84AAA6" ? undefined : { backgroundColor: bgColor }}
+              aria-hidden
+            >
+              <div className="h-6 rounded-t-3xl bg-white" />
+            </div>
+          )}
         </>
       )}
 
