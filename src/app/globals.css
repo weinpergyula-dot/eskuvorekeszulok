@@ -986,3 +986,24 @@ html.a11y-underline a { text-decoration: underline !important; }
 @media (prefers-reduced-motion: reduce) {
   .slv-root .slv-reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* ── /meghivo banner: dia-beúszás és a megdöntött telefon ────────────── */
+.mgh-slide-in {
+  animation: mgh-slide-in 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes mgh-slide-in {
+  from { opacity: 0; transform: translateX(6%); }
+  to   { opacity: 1; transform: none; }
+}
+/* A telefon enyhén megdöntve, térhatású perspektívával. */
+.mgh-tilt {
+  transform: perspective(1200px) rotateY(-14deg) rotateX(4deg) rotate(-3deg);
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.mgh-tilt:hover {
+  transform: perspective(1200px) rotateY(-8deg) rotateX(2deg) rotate(-1.5deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mgh-slide-in { animation: none; }
+  .mgh-tilt { transition: none; }
+}
