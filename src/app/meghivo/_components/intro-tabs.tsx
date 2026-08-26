@@ -56,7 +56,11 @@ function WhyCards() {
       {WHY.map(({ icon: Icon, title, text }) => (
         <article
           key={title}
-          className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 pt-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+          className="group relative overflow-hidden rounded-2xl border p-6 pt-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+          style={{
+            borderColor: `${ACCENT.why}40`,
+            background: `linear-gradient(180deg, ${ACCENT.why}26 0%, ${ACCENT.why}0d 55%, #ffffff 100%)`,
+          }}
         >
           {/* felső élcsík, ami hoverre kiszínesedik */}
           <span
@@ -65,8 +69,8 @@ function WhyCards() {
             aria-hidden
           />
           <div
-            className="flex h-12 w-12 items-center justify-center rounded-2xl"
-            style={{ backgroundColor: `${ACCENT.why}1f`, color: ACCENT.why }}
+            className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm"
+            style={{ color: ACCENT.why }}
           >
             <Icon className="h-6 w-6" strokeWidth={1.75} />
           </div>

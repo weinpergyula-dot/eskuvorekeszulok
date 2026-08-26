@@ -83,7 +83,7 @@ export default function MeghivoPage() {
       />
 
       {/* ── Csomagok ─────────────────────────────────────── */}
-      <section className="section-top-shade bg-[#F9F9F9]">
+      <section className="bg-[#F9F9F9]">
         <div className="mx-auto max-w-7xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
             Válassz csomagot!
@@ -166,25 +166,21 @@ export default function MeghivoPage() {
               </div>
             ))}
           </div>
-
-          <p className="mt-8 text-center text-sm text-gray-500">
-            Az árak tájékoztató jellegűek – a végleges ár az egyedi igényektől függ.
-          </p>
         </div>
       </section>
 
       {/* ── Bevezető: Miért népszerű? / Hogyan működik? (tabok) ── */}
-      <section className="section-top-shade bg-white">
+      <section className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <IntroTabs />
         </div>
       </section>
 
       {/* ── Záró CTA ─────────────────────────────────────── */}
-      <section className="teal-shift-bg section-top-shade relative overflow-hidden">
+      <section className="teal-shift-bg relative overflow-hidden">
         <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-20">
           <h2 className="text-2xl font-bold text-white md:text-3xl">
-            Készen álltok a saját meghívótokra?
+            Egyedi meghívót szeretnél?
           </h2>
           <p className="mt-3 text-base leading-relaxed text-white/90">
             Írjatok nekünk pár sort az esküvőtökről, és 48 órán belül jelentkezünk

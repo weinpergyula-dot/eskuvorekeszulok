@@ -986,10 +986,3 @@ html.a11y-underline a { text-decoration: underline !important; }
 @media (prefers-reduced-motion: reduce) {
   .slv-root .slv-reveal { opacity: 1; transform: none; transition: none; }
 }
-
-/* ── Szekcióváltás: pici árnyék a következő szekció tetején ──────────
-   Belső (inset) árnyék a szekció felső élén, hogy a szomszédos sávok
-   elváljanak egymástól anélkül, hogy vonalat húznánk közéjük. */
-.section-top-shade {
-  box-shadow: inset 0 11px 14px -12px rgba(31, 41, 45, 0.34);
-}
