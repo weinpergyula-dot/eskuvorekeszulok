@@ -88,8 +88,9 @@ function Tile({
         active
           ? undefined
           : {
+              /* A korábbi áttetsző fehér, aljában egy hajszálnyi tealbe fordulva. */
               background:
-                "linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.10) 45%, rgba(28,62,58,0.26) 100%)",
+                "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.10) 55%, rgba(45,88,84,0.14) 100%)",
             }
       }
     >

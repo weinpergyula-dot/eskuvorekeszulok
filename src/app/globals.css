@@ -1055,25 +1055,13 @@ html.a11y-underline a { text-decoration: underline !important; }
   pointer-events: none;
 }
 
-/* ── /meghivo csomagok: nagyon halvány, lassan mozgó hármas gradient ─── */
+/* ── /meghivo csomagok: fehérből lefelé halvány tealbe futó háttér ───── */
 .pkg-shift-bg {
-  background:
-    linear-gradient(
-      120deg,
-      rgba(132, 170, 166, 0.10) 0%,
-      rgba(142, 153, 168, 0.08) 32%,
-      rgba(198, 94, 165, 0.07) 62%,
-      rgba(132, 170, 166, 0.10) 100%
-    ),
-    #ffffff;
-  background-size: 220% 220%, auto;
-  animation: pkg-shift 34s ease-in-out infinite;
-}
-@keyframes pkg-shift {
-  0%   { background-position: 0% 50%, 0 0; }
-  50%  { background-position: 100% 50%, 0 0; }
-  100% { background-position: 0% 50%, 0 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .pkg-shift-bg { animation: none; }
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #ffffff 28%,
+    rgba(132, 170, 166, 0.10) 62%,
+    rgba(132, 170, 166, 0.26) 100%
+  );
 }
