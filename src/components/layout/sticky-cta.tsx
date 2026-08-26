@@ -41,7 +41,7 @@ export function StickyCta({
 
   return (
     <div
-      className="sticky z-40 w-full rounded-b-3xl border-b border-white/20 transition-all duration-300 backdrop-blur-xl"
+      className="sticky z-40 w-full border-b border-white/20 transition-all duration-300 backdrop-blur-xl"
       style={{ top: "var(--nav-h, 4rem)", backgroundColor: `${bgColor}CC` }}
     >
       <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center transition-all duration-300 ${shrink ? "py-1.5" : "py-3"}`}>

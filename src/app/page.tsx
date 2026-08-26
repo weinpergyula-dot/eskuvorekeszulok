@@ -96,7 +96,7 @@ export default async function HomePage() {
       </section>
 
       {/* Rövid marketing sáv – mit talál a látogató lejjebb */}
-      <div className="teal-shift-bg w-full relative -mt-6 rounded-b-3xl">
+      <div className="teal-shift-bg w-full relative -mt-6">
         <div className="max-w-3xl mx-auto px-5 pt-12 pb-8 sm:px-6 sm:pt-16 sm:pb-9 text-center">
           <h2 className="text-xl md:text-2xl font-bold text-white">
             Az összes esküvői szolgáltató egy helyen
@@ -106,11 +106,13 @@ export default async function HomePage() {
             kategóriák és megyék szerint, és pár kattintással ajánlatot is kérhetsz.
           </p>
         </div>
+        {/* Lefelé kerekedő átmenet a fehér tartalomba */}
+        <div className="h-6 rounded-t-3xl bg-white" aria-hidden />
       </div>
 
       {/* Teljes szolgáltatói lista */}
-      <section id="szolgaltatok" className="bg-white -mt-6 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10 sm:pb-16">
+      <section id="szolgaltatok" className="bg-white scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10 sm:pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Szolgáltatók</h2>
           <Suspense>
             <ProvidersContent providers={providers} categoryCounts={categoryCounts} />

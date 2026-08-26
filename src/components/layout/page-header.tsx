@@ -17,7 +17,7 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
   return (
     <>
       <div
-        className={`w-full -mt-6 ${bgColor === "#84AAA6" ? "teal-shift-bg" : ""} ${ctaLabel && ctaHref ? "" : "rounded-b-3xl border-b border-white/20"}`}
+        className={`w-full -mt-6 ${bgColor === "#84AAA6" ? "teal-shift-bg" : ""}`}
         style={bgColor === "#84AAA6" ? undefined : { backgroundColor: bgColor }}
       >
         <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${ctaLabel && ctaHref ? "pt-14 pb-6" : "pt-14 pb-8"}`}>
@@ -32,13 +32,26 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
             </>
           )}
         </div>
+        {/* CTA nélkül a sáv alja: fehér, felül lekerekített sapka – a teal
+            így a sarkoknál lefelé kerekedik */}
+        {!(ctaLabel && ctaHref) && <div className="h-6 rounded-t-3xl bg-white" aria-hidden />}
       </div>
 
       {/* CTA sora — a navbar alá tapad scrollozáskor (sticky); a gomb feletti és
           alatti hely közel azonos, a fölötte lévő elválasztó nélkül. Scrollozáskor
           a háttere minimálisan áttetszővé válik, mint a header. */}
       {ctaLabel && ctaHref && (
-        <StickyCta label={ctaLabel} href={ctaHref} bgColor={bgColor} />
+        <>
+          <StickyCta label={ctaLabel} href={ctaHref} bgColor={bgColor} />
+          {/* A CTA-sor alatti, lefelé kerekedő átmenet (nem sticky) */}
+          <div
+            className={bgColor === "#84AAA6" ? "teal-shift-bg" : ""}
+            style={bgColor === "#84AAA6" ? undefined : { backgroundColor: bgColor }}
+            aria-hidden
+          >
+            <div className="h-6 rounded-t-3xl bg-white" />
+          </div>
+        </>
       )}
 
       {backHref && (
