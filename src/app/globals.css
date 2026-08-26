@@ -1024,9 +1024,18 @@ html.a11y-underline a { text-decoration: underline !important; }
 [data-slide-active="true"] .hero-bubble {
   animation: hero-bubble-in 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s both;
 }
-/* Mobil banner: a telefon enyhébb döntése (a .mgh-tilt-nél visszafogottabb). */
-.hero-phone-tilt {
-  transform: perspective(900px) rotateY(-12deg) rotate(-4deg);
+/* ── Banner: átlósan megdöntött telefonpár ──────────────────────────────
+   Két, egymással párhuzamosan döntött készülék: az elülső (nagyobb)
+   jobbra-fent, a hátsó (kisebb) balra-lent, egymást átfedve. Mobilon
+   csak az elülső látszik. */
+.hero-duo { perspective: 1500px; }
+.hero-duo-front {
+  transform: rotate(19deg) rotateY(-17deg) rotateX(7deg);
+  transform-style: preserve-3d;
+}
+.hero-duo-back {
+  transform: rotate(19deg) rotateY(-17deg) rotateX(7deg) scale(0.86);
+  transform-style: preserve-3d;
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-progress-fill { animation: none; transform: scaleX(1); }

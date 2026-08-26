@@ -20,6 +20,28 @@ import { ProviderRegisterButton } from "./provider-register-button";
 const SLIDE_COUNT = 2;
 const SLIDE_MS = 6000;
 
+/** Egy készülék a banneren: keret + a meghívó-minta képe. */
+function Phone({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+  return (
+    <div
+      className={`rounded-[1.5rem] bg-gray-900 p-1.5 shadow-[0_30px_55px_-20px_rgba(20,45,42,0.85)] ring-1 ring-white/20 ${className}`}
+    >
+      <div className="relative overflow-hidden rounded-[1.15rem] bg-white">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={alt} width={390} height={844} className="block h-auto w-full" />
+        <span
+          className="absolute left-1/2 top-1.5 h-2.5 w-11 -translate-x-1/2 rounded-full bg-gray-900"
+          aria-hidden
+        />
+        <span
+          className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/25"
+          aria-hidden
+        />
+      </div>
+    </div>
+  );
+}
+
 export function HeroCarousel() {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -66,20 +88,13 @@ export function HeroCarousel() {
           aria-hidden={current !== 1}
           data-slide-active={current === 1}
         >
-          {/* megdöntött telefon, jobbra tolva */}
-          <div className="hero-phone-tilt absolute right-[-4%] top-1/2 w-[48%] -translate-y-1/2">
-            <div className="rounded-[1.4rem] bg-gray-900 p-1.5 shadow-[0_26px_50px_-18px_rgba(20,45,42,0.85)] ring-1 ring-white/20">
-              <div className="overflow-hidden rounded-[1.05rem] bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/meghivo/slide-basic.webp"
-                  alt="Digitális esküvői meghívó telefonon"
-                  width={390}
-                  height={844}
-                  className="block h-auto w-full"
-                />
-              </div>
-            </div>
+          {/* megdöntött készülék jobbra (a desktop párosból az elülső) */}
+          <div className="hero-duo absolute right-[-2%] top-1/2 w-[46%] -translate-y-1/2">
+            <Phone
+              className="hero-duo-front"
+              src="/meghivo/slide-basic.webp"
+              alt="Digitális esküvői meghívó telefonon"
+            />
           </div>
 
           {/* fehér felirat-blokk balról */}
@@ -153,27 +168,22 @@ export function HeroCarousel() {
             aria-hidden
             className="pointer-events-none absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-[#2D5854]/25 blur-3xl"
           />
-          <div className="relative mx-auto grid h-full max-w-6xl items-center gap-10 px-6 py-10 md:grid-cols-[minmax(0,36%)_minmax(0,1fr)] lg:px-8">
-            <div className="mx-auto w-[170px] md:mx-0 md:w-full md:max-w-[196px]">
-              <div className="mgh-tilt relative rounded-[1.9rem] bg-gray-900 p-1.5 shadow-[0_36px_70px_-24px_rgba(20,45,42,0.75)] ring-1 ring-white/20">
-                <div className="relative overflow-hidden rounded-[1.5rem] bg-white">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/meghivo/slide-basic.webp"
-                    alt="Digitális esküvői meghívó telefonon"
-                    width={390}
-                    height={844}
-                    className="block h-auto w-full"
-                  />
-                  <span
-                    className="absolute left-1/2 top-1.5 h-3 w-12 -translate-x-1/2 rounded-full bg-gray-900"
-                    aria-hidden
-                  />
-                  <span
-                    className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/25"
-                    aria-hidden
-                  />
-                </div>
+          <div className="relative mx-auto grid h-full max-w-6xl items-center gap-10 px-6 py-10 md:grid-cols-[minmax(0,42%)_minmax(0,1fr)] lg:px-8">
+            {/* Telefonpár: elöl-jobbra a BASIC, mögötte balra-lent a SILVER */}
+            <div className="hero-duo relative mx-auto h-[360px] w-full max-w-[330px]">
+              <div className="absolute bottom-0 left-0 w-[44%]">
+                <Phone
+                  className="hero-duo-back"
+                  src="/meghivo/slide-silver.webp"
+                  alt="SILVER meghívó-minta telefonon"
+                />
+              </div>
+              <div className="absolute right-0 top-0 w-[52%]">
+                <Phone
+                  className="hero-duo-front"
+                  src="/meghivo/slide-basic.webp"
+                  alt="BASIC meghívó-minta telefonon"
+                />
               </div>
             </div>
 
