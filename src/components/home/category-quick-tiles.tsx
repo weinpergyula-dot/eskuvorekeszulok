@@ -75,29 +75,37 @@ function Tile({
   onClick: () => void;
 }) {
   return (
+    /* A /yettel_web kategória-csempéinek felépítése: finom, 160 fokos
+       világos→sötét gradiens, az ikon színes lapkán – ott lime, itt fehér.
+       Aktív állapotban a csempe és a lapka színei megcserélődnek. */
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 text-center transition-all duration-200 cursor-pointer sm:p-3.5",
+        "flex flex-col items-center gap-2 rounded-[18px] border p-3.5 text-center transition-all duration-200 cursor-pointer sm:p-4",
         active
-          ? "border-white bg-white text-[#2D5854] shadow-lg"
-          : "border-white/25 text-white hover:border-white/80 hover:brightness-110"
+          ? "border-white bg-[linear-gradient(160deg,#ffffff_0%,#f4f8f7_55%,#e8efee_100%)] shadow-lg"
+          : "border-white/15 bg-[linear-gradient(160deg,rgba(255,255,255,0.11)_0%,rgba(255,255,255,0.06)_55%,rgba(255,255,255,0.025)_100%)] hover:border-white hover:bg-[linear-gradient(160deg,rgba(255,255,255,0.17)_0%,rgba(255,255,255,0.10)_55%,rgba(255,255,255,0.05)_100%)]"
       )}
-      style={
-        active
-          ? undefined
-          : {
-              /* A korábbi áttetsző fehér, aljában egy hajszálnyi tealbe fordulva. */
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.10) 62%, rgba(45,88,84,0.06) 100%)",
-            }
-      }
     >
-      <Icon className="h-6 w-6" strokeWidth={1.75} />
-      <span className="text-[15px] font-bold leading-tight sm:text-base">{label}</span>
+      <span
+        className={cn(
+          "grid h-12 w-12 place-items-center rounded-xl transition-colors",
+          active ? "bg-[#2D5854] text-white" : "bg-white text-[#2D5854]"
+        )}
+      >
+        <Icon className="h-6 w-6" strokeWidth={1.9} />
+      </span>
+      <span
+        className={cn(
+          "text-[15px] font-bold leading-tight sm:text-base",
+          active ? "text-[#2D5854]" : "text-white"
+        )}
+      >
+        {label}
+      </span>
       {typeof count === "number" && (
-        <span className={cn("text-xs leading-none", active ? "text-[#2D5854]/60" : "text-white/70")}>
+        <span className={cn("text-xs leading-none", active ? "text-[#2D5854]/70" : "text-white/70")}>
           {count} szolgáltató
         </span>
       )}

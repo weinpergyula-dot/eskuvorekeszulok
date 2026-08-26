@@ -8,7 +8,6 @@ import { CookieBanner } from "@/components/layout/cookie-banner";
 import { ConditionalChrome } from "@/components/layout/conditional-chrome";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { BackgroundMusic } from "@/components/layout/background-music";
-import { AccessibilityWidget } from "@/components/layout/accessibility-widget";
 
 const SITE_NAME = "Esküvőre Készülök";
 const SITE_URL = "https://eskuvorekeszulok.hu";
@@ -113,10 +112,7 @@ gtag('config', '${GA_ID}');
           footer={<Footer />}
           cookie={<CookieBanner />}
           extras={
-            <>
-              <BackgroundMusic />
-              <AccessibilityWidget />
-            </>
+<BackgroundMusic />
           }
         >
           {children}
