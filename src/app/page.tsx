@@ -1,15 +1,8 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Suspense } from "react";
-import { Users, Briefcase, Check } from "lucide-react";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
-import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
-import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 import { ProvidersContent } from "@/components/providers/providers-content";
 import { HomeProvidersCta } from "@/components/home/home-providers-cta";
 import { HeroProvidersButton } from "@/components/home/hero-providers-button";
-import { MobileCollapsible } from "@/components/home/mobile-collapsible";
-import { MobileWhyRegister } from "@/components/home/mobile-why-register";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
 
@@ -57,13 +50,8 @@ export default async function HomePage() {
   return (
     <>
       {/* Mobile hero slideshow */}
-      <div className="sm:hidden -mt-6">
+      <div className="sm:hidden relative z-20 -mt-6">
         <MobileHeroSlideshow />
-        <div className="px-5 py-4 text-center">
-          <p className="text-base text-gray-900 leading-relaxed">
-            Itt megtalálsz mindent egy helyen a nagy napodra!
-          </p>
-        </div>
       </div>
 
       {/* Hero – desktop only */}
@@ -105,90 +93,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Mobil: prémium "Miért regisztrálj?" szekció */}
-      <MobileWhyRegister />
-
-      {/* Services header – two-column (csak sm+) */}
-      <div className="w-full relative sm:-mt-6 hidden sm:block" style={{ backgroundColor: "#84AAA6" }}>
-        {/* Pink bleed: center → right edge, desktop only */}
-        <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:pt-16">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
-            {/* Left – visitors */}
-            <div>
-              <MobileCollapsible
-                title={
-                  <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2.5">
-                    <Users className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
-                    <span className="sm:hidden">Látogatónak</span>
-                    <span className="hidden sm:inline">Regisztrálj látogatónak</span>
-                  </h2>
-                }
-              >
-                <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes fiók</p>
-                <hr className="border-white/30 mb-3" />
-                <p className="text-base font-semibold text-white mb-2">Lehetőséged lesz...</p>
-                <ul className="text-base text-white space-y-2 mb-5">
-                  {[
-                    "Kedvencnek jelölni szolgáltatókat",
-                    "Csoportos vagy egyéni ajánlatot kérni",
-                    "Chatelni a kiválasztott szakemberrel",
-                    "Értékelni, tapasztalatokat megosztani",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 shrink-0 text-white/80" strokeWidth={2.5} />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
-                  <Link href="#szolgaltatok">
-                    <Button size="lg" className="bg-white text-[#84AAA6] hover:bg-white/90 px-6">
-                      Megnézem a kínálatot
-                    </Button>
-                  </Link>
-                  <VisitorRegisterButton />
-                </div>
-              </MobileCollapsible>
-            </div>
-
-            {/* Right – providers */}
-            <div className="-mx-4 px-8 py-8 -mb-10 border-t border-white sm:mx-0 sm:px-0 sm:py-0 sm:mb-0 sm:border-t-0" style={{ backgroundColor: "#D07AB5" }}>
-              <MobileCollapsible
-                title={
-                  <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2.5">
-                    <Briefcase className="h-6 w-6 text-white/80 shrink-0" strokeWidth={1.5} />
-                    <span className="sm:hidden">Szolgáltatónak</span>
-                    <span className="hidden sm:inline">Regisztrálj szolgáltatónak</span>
-                  </h2>
-                }
-              >
-                <p className="text-sm text-white/70 mb-3 mt-0.5">Ingyenes profil</p>
-                <hr className="border-white/30 mb-3" />
-                <p className="text-base font-semibold text-white mb-2">Lehetőséged lesz...</p>
-                <ul className="text-base text-white space-y-2 mb-5">
-                  {[
-                    "Ingyenes szolgáltatói profilt létrehozni",
-                    "Ajánlatkéréseket fogadni a pároktól",
-                    "Chatelni az érdeklődő párokkal",
-                    "Értékeléseket kapni, válaszolni rájuk",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 shrink-0 text-white/80" strokeWidth={2.5} />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <ProviderRegisterButton />
-              </MobileCollapsible>
-            </div>
-          </div>
+      {/* Rövid marketing sáv – mit talál a látogató lejjebb */}
+      <div
+        className="w-full relative -mt-6 rounded-b-3xl"
+        style={{ background: "linear-gradient(120deg, #84AAA6 0%, #6B8E8A 70%, #5C8480 100%)" }}
+      >
+        <div className="max-w-3xl mx-auto px-5 pt-12 pb-8 sm:px-6 sm:pt-16 sm:pb-9 text-center">
+          <h2 className="text-xl md:text-2xl font-bold text-white">
+            Az összes esküvői szolgáltató egy helyen
+          </h2>
+          <p className="mt-2 text-[15px] md:text-base leading-relaxed text-white/90">
+            Fotós, zenekar, vőfély, torta vagy helyszín? Lejjebb böngészhetsz köztük
+            kategóriák és megyék szerint, és pár kattintással ajánlatot is kérhetsz.
+          </p>
         </div>
       </div>
 
       {/* Teljes szolgáltatói lista */}
-      <section id="szolgaltatok" className="bg-white border-t border-gray-200 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10 sm:pb-16">
+      <section id="szolgaltatok" className="bg-white -mt-6 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10 sm:pb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Szolgáltatók</h2>
           <Suspense>
             <ProvidersContent providers={providers} categoryCounts={categoryCounts} />

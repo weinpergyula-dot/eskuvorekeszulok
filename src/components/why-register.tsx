@@ -4,21 +4,19 @@ import { useState } from "react";
 import Link from "next/link";
 import { Briefcase, Check, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { VisitorRegisterButton } from "./visitor-register-button";
-import { ProviderRegisterButton } from "./provider-register-button";
+import { VisitorRegisterButton } from "@/components/home/visitor-register-button";
+import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 
 /**
- * Mobil "Miért regisztrálj?" szekció – prémium megjelenés.
- * A két teljes szélességű, lapos színes tömb helyett fehér háttéren egy
- * szegmens-váltó (Látogatóként / Szolgáltatóként) és egy-egy gradienses,
- * lekerekített kártya jelenik meg. Csak mobilon (<sm) látszik; desktopon
- * marad a kétoszlopos teal/pink elrendezés.
+ * "Miért regisztrálj?" szekció – prémium megjelenés minden nézetben.
+ * Fehér háttéren szegmens-váltó (Látogató / Szolgáltató) és egy gradienses,
+ * lekerekített kártya; desktopon középre zárva, kétoszlopos előnylistával.
  */
 
 const TABS = [
   {
     id: "visitor",
-    label: "Látogatóként",
+    label: "Látogató",
     icon: Users,
     title: "Regisztrálj látogatónak",
     chip: "Ingyenes fiók",
@@ -34,7 +32,7 @@ const TABS = [
   },
   {
     id: "provider",
-    label: "Szolgáltatóként",
+    label: "Szolgáltató",
     icon: Briefcase,
     title: "Regisztrálj szolgáltatónak",
     chip: "Ingyenes profil",
@@ -50,17 +48,17 @@ const TABS = [
   },
 ] as const;
 
-export function MobileWhyRegister() {
+export function WhyRegister() {
   const [active, setActive] = useState<(typeof TABS)[number]["id"]>("visitor");
   const tab = TABS.find((t) => t.id === active)!;
   const Icon = tab.icon;
 
   return (
-    <section className="sm:hidden bg-white px-5 pb-12 pt-9">
+    <section className="mx-auto max-w-2xl px-5 pb-2 pt-2 sm:px-0">
       <p className="text-center text-[11px] font-bold uppercase tracking-[0.28em] text-[#84AAA6]">
         Csatlakozz hozzánk
       </p>
-      <h2 className="mt-1.5 text-center text-[26px] font-bold text-gray-900">
+      <h2 className="mt-1.5 text-center text-[26px] font-bold text-gray-900 md:text-3xl">
         Miért regisztrálj?
       </h2>
       <div className="mx-auto mt-3 flex items-center justify-center gap-2" aria-hidden>
@@ -132,7 +130,7 @@ export function MobileWhyRegister() {
           <p className="mt-4 text-[15px] font-semibold text-white/90">
             Lehetőséged lesz…
           </p>
-          <ul className="mt-3 space-y-2.5">
+          <ul className="mt-3 grid gap-2.5 md:grid-cols-2 md:gap-x-6">
             {tab.features.map((f) => (
               <li key={f} className="flex items-start gap-2.5 text-[15px] leading-snug">
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/20">
@@ -143,10 +141,10 @@ export function MobileWhyRegister() {
             ))}
           </ul>
 
-          <div className="mt-6 space-y-3 [&_button]:w-full [&>div]:w-full">
+          <div className="mt-6 space-y-3 [&_button]:w-full [&>div]:w-full md:flex md:items-start md:gap-3 md:space-y-0 md:[&_button]:w-auto md:[&>div]:w-auto">
             {tab.id === "visitor" ? (
               <>
-                <Link href="#szolgaltatok" className="block">
+                <Link href="/services" className="block">
                   <Button size="lg" className="w-full bg-white text-[#2D5854] hover:bg-white/90">
                     Megnézem a kínálatot
                   </Button>
