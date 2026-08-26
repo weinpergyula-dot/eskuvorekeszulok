@@ -17,7 +17,7 @@ export function HeroProvidersButton() {
       size="lg"
       className="text-[15px] sm:text-[18px] px-5 bg-transparent text-[#84AAA6] border border-[#84AAA6] hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] cursor-pointer"
     >
-      Elérhető szolgáltatók
+      Mutasd az elérhető szolgáltatókat
     </Button>
   );
 }

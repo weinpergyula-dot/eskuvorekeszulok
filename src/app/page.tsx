@@ -3,6 +3,7 @@ import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { ProvidersContent } from "@/components/providers/providers-content";
 import { HomeProvidersCta } from "@/components/home/home-providers-cta";
 import { HeroProvidersButton } from "@/components/home/hero-providers-button";
+import { ProviderRegisterButton } from "@/components/home/provider-register-button";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
 
@@ -81,12 +82,13 @@ export default async function HomePage() {
                 </span>
               </h1>
               <div className="w-full lg:w-[calc(100%+3rem)] h-px mb-4" style={{ backgroundColor: "#7F7F7F" }} />
-              <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8 max-w-xs lg:max-w-none text-center">
-                Ugye mennyivel egyszerűbb lenne, ha az esküvődre mindent egy helyen el tudnál intézni?{" "}
-                <span className="block mt-1">A legjobb helyen jársz. Törekszünk arra, hogy a lehető legtöbb szolgáltató közül tudj választani.</span>
+              <p className="text-base sm:text-lg text-gray-900 mb-6 sm:mb-8 max-w-xs lg:max-w-lg text-center">
+                Böngészd az elérhető szolgáltatókat, vagy ha szolgáltatóként
+                látogattál el hozzánk, akkor regisztrálj!
               </p>
-              <div className="flex justify-center">
+              <div className="flex flex-col lg:flex-row items-center justify-center gap-3">
                 <HeroProvidersButton />
+                <ProviderRegisterButton className="text-[15px] sm:text-[18px] px-5 bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5]" />
               </div>
             </div>
           </div>
