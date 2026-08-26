@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { HeroBanner } from "@/components/home/hero-banner";
+import { HeroCarousel } from "@/components/home/hero-carousel";
 import { ProvidersContent } from "@/components/providers/providers-content";
 import { CategoryQuickTiles } from "@/components/home/category-quick-tiles";
 import { ProvidersSectionTitle } from "@/components/home/providers-section-title";
@@ -50,12 +50,12 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Banner: meghívó-minta telefonon + köszöntő */}
-      <HeroBanner />
+      {/* Banner: köszöntő és digitális meghívó diák */}
+      <HeroCarousel />
 
-      {/* Kategóriaválasztó – a bannerrel egybefüggő teal sávban */}
-      <div className="teal-shift-bg w-full relative">
-        <div className="max-w-7xl mx-auto px-5 pb-8 pt-2 sm:px-6 sm:pb-10 sm:pt-4 lg:px-8">
+      {/* Kategóriaválasztó – a banner lekerekített alja alá bújva */}
+      <div className="teal-shift-bg w-full relative -mt-6">
+        <div className="max-w-7xl mx-auto px-5 pb-8 pt-12 sm:px-6 sm:pb-10 sm:pt-14 lg:px-8">
           <h2 className="text-center text-xl md:text-2xl font-bold text-white">
             Válassz kategóriát!
           </h2>
