@@ -8,13 +8,13 @@ import { IntroTabs } from "./_components/intro-tabs";
 export const metadata: Metadata = {
   title: "Digitális meghívók",
   description:
-    "Rendelj egyedi, digitális esküvői meghívót! Mobilra szabott, interaktív meghívó visszaszámlálóval, programmal és RSVP visszajelzéssel – BASIC, SILVER, GOLD és PREMIUM csomagban.",
+    "Rendelj egyedi, digitális esküvői meghívót! Mobilra szabott, interaktív meghívó visszaszámlálóval, programmal és RSVP visszajelzéssel – BASIC, SILVER és PREMIUM csomagban.",
 };
 
 /* ── Csomagok ────────────────────────────────────────────
-   A BASIC csomaghoz élő minta tartozik (/zso-es-szili), a
-   többi csomag mintája még készül – ott üres telefon-
-   előnézet jelenik meg. */
+   A BASIC (/zso-es-szili) és a SILVER (/meghivo-silver)
+   csomaghoz élő minta tartozik; a PREMIUM mintája még
+   készül – ott üres telefon-előnézet jelenik meg. */
 
 const PACKAGES = [
   {
@@ -23,6 +23,7 @@ const PACKAGES = [
     tagline: "Minden, ami egy gyönyörű meghívóhoz kell",
     price: "14 900 Ft",
     accent: "#84AAA6",
+    accentDark: "#4F7D78",
     sampleHref: "/zso-es-szili",
     features: [
       "Egyoldalas, mobilra szabott meghívó",
@@ -39,7 +40,8 @@ const PACKAGES = [
     name: "SILVER",
     tagline: "A BASIC csomag, extrákkal megspékelve",
     price: "24 900 Ft",
-    accent: "#9AA5B1",
+    accent: "#8E99A8",
+    accentDark: "#5C6675",
     sampleHref: "/meghivo-silver",
     features: [
       "Minden a BASIC csomagból",
@@ -50,29 +52,15 @@ const PACKAGES = [
     ],
   },
   {
-    id: "gold",
-    name: "GOLD",
-    tagline: "Többoldalas meghívó, több nyelven",
-    price: "39 900 Ft",
-    accent: "#C9A227",
-    sampleHref: null,
-    features: [
-      "Minden a SILVER csomagból",
-      "Több aloldal (program, szállás, GYIK)",
-      "Kétnyelvű változat (pl. magyar–angol)",
-      "QR-kód a nyomtatott meghívóhoz",
-      "Ültetési rend és menü aloldal",
-    ],
-  },
-  {
     id: "premium",
     name: "PREMIUM",
     tagline: "Teljesen egyedi, prémium élmény",
     price: "59 900 Ft-tól",
     accent: "#C65EA5",
+    accentDark: "#8F3671",
     sampleHref: null,
     features: [
-      "Minden a GOLD csomagból",
+      "Minden a SILVER csomagból",
       "Teljesen egyedi design és animációk",
       "Élő galéria az esküvő napján",
       "Fotós- és videósanyag beépítése",
@@ -179,18 +167,10 @@ export default function MeghivoPage() {
         icon={MailOpen}
         ctaLabel="Ajánlatot kérek"
         ctaHref="/kapcsolat"
-        roundedBottom={false}
       />
 
-      {/* ── Bevezető: Miért népszerű? / Hogyan működik? (tabok) ── */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <IntroTabs />
-        </div>
-      </section>
-
       {/* ── Csomagok ─────────────────────────────────────── */}
-      <section className="border-t border-gray-100 bg-[#F9F9F9]">
+      <section className="bg-[#F9F9F9]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
             Válassz csomagot!
@@ -200,22 +180,37 @@ export default function MeghivoPage() {
             élőben megnézhető – kattints rá bátran! A többi csomag mintája hamarosan érkezik.
           </p>
 
-          <div className="mt-10 grid gap-8 sm:mt-14 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mx-auto mt-10 grid max-w-5xl gap-8 sm:mt-14 sm:grid-cols-2 lg:grid-cols-3">
             {PACKAGES.map((pkg) => (
               <div
                 key={pkg.id}
                 id={pkg.id}
                 className="flex flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-lg"
               >
-                {/* fejléc */}
-                <div className="px-6 pt-6 text-center">
+                {/* fejléc: színes sáv a csomag akcentusával */}
+                <div
+                  className="relative px-6 pb-5 pt-7 text-center"
+                  style={{
+                    background: `linear-gradient(180deg, ${pkg.accent}1f 0%, transparent 100%)`,
+                  }}
+                >
+                  {/* felső élcsík */}
                   <span
-                    className="inline-flex items-center rounded-lg px-5 py-1.5 text-[15px] font-extrabold uppercase tracking-[0.22em] text-white shadow-sm ring-1 ring-inset ring-white/25"
+                    className="absolute inset-x-0 top-0 h-1.5"
                     style={{ backgroundColor: pkg.accent }}
+                    aria-hidden
+                  />
+                  <span
+                    className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-[15px] font-extrabold uppercase tracking-[0.22em] text-white shadow-md"
+                    style={{
+                      background: `linear-gradient(135deg, ${pkg.accent} 0%, ${pkg.accentDark} 100%)`,
+                    }}
                   >
                     {pkg.name}
                   </span>
-                  <p className="mt-3 min-h-[2.5rem] text-[15px] text-gray-600">{pkg.tagline}</p>
+                  <p className="mx-auto mt-3 min-h-[2.5rem] max-w-[15rem] text-[15px] leading-snug text-gray-600">
+                    {pkg.tagline}
+                  </p>
                 </div>
 
                 {/* telefon */}
@@ -266,6 +261,13 @@ export default function MeghivoPage() {
           <p className="mt-8 text-center text-sm text-gray-500">
             Az árak tájékoztató jellegűek – a végleges ár az egyedi igényektől függ.
           </p>
+        </div>
+      </section>
+
+      {/* ── Bevezető: Miért népszerű? / Hogyan működik? (tabok) ── */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <IntroTabs />
         </div>
       </section>
 

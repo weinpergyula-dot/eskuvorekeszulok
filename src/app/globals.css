@@ -589,14 +589,14 @@ html.a11y-underline a { text-decoration: underline !important; }
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 .zs-root {
-  --zs-ivory: #faf7f1;      /* alap háttér */
-  --zs-ivory-2: #f3eee4;    /* váltakozó szekció-háttér */
-  --zs-card: #fffdf9;       /* kártyák */
-  --zs-ink: #3c3a33;        /* szöveg */
-  --zs-muted: #7c766a;      /* halvány szöveg */
-  --zs-gold: #b08d57;       /* arany akcentus */
-  --zs-gold-soft: #d8c39e;  /* halvány arany (vonalak, keretek) */
-  --zs-sage: #6d7d6a;       /* zsálya-zöld másodlagos akcentus */
+  --zs-ivory: #f7faf9;      /* alap háttér (hűvös törtfehér) */
+  --zs-ivory-2: #eaf2f0;    /* váltakozó szekció-háttér */
+  --zs-card: #fdfefe;       /* kártyák */
+  --zs-ink: #2f3a38;        /* szöveg */
+  --zs-muted: #6d7d7a;      /* halvány szöveg */
+  --zs-gold: #4f7d78;       /* teal akcentus (kontraszt-biztos a szövegre) */
+  --zs-gold-soft: #b6d0cc;  /* halvány teal (vonalak, keretek) */
+  --zs-sage: #84AAA6;       /* az oldal alap tealje, másodlagos akcentus */
 
   background: var(--zs-ivory);
   color: var(--zs-ink);

@@ -22,9 +22,9 @@ import { Reveal } from "./_components/reveal";
 import { RsvpForm } from "./_components/rsvp-form";
 
 export const metadata: Metadata = {
-  title: "Zsófi & Szilveszter – 2027. június 15. | Esküvői meghívó",
+  title: "Eszter & Bálint – 2027. június 15. | Esküvői meghívó",
   description:
-    "Kispál Zsófia és Ferencz Szilveszter szeretettel meghív az esküvőjére – 2027. június 15., Arad.",
+    "Váradi Eszter és Tóth Bálint szeretettel meghív az esküvőjére – 2027. június 15., Arad.",
   robots: { index: false, follow: false },
 };
 
@@ -34,7 +34,7 @@ const STORY = [
   {
     year: "2025",
     title: "Az első találkozás",
-    text: "Egy közös baráti szülinapon, Aradon sodort össze minket az élet. Szili rossz vicceket mesélt, Zsófi mégis nevetett – innen már nem volt visszaút.",
+    text: "Egy közös baráti szülinapon, Aradon sodort össze minket az élet. Bálint rossz vicceket mesélt, Eszter mégis nevetett – innen már nem volt visszaút.",
   },
   {
     year: "2026 tavasza",
@@ -78,7 +78,7 @@ const INFOS = [
   {
     icon: Hotel,
     title: "Szállás",
-    text: "A környékbeli vendégeknek szobákat foglaltunk a Hotel Continental Forum Aradban, kedvezményes áron – a foglaláshoz add meg a „Zsófi & Szili” jelszót.",
+    text: "A környékbeli vendégeknek szobákat foglaltunk a Hotel Continental Forum Aradban, kedvezményes áron – a foglaláshoz add meg az „Eszter & Bálint” jelszót.",
   },
   {
     icon: Baby,
@@ -103,17 +103,17 @@ export default function ZsoEsSziliPage() {
           <p className="zs-caps text-xs sm:text-sm">Örömmel tudatjuk, hogy összeházasodunk</p>
 
           <div className="zs-monogram mx-auto mt-8">
-            <span className="zs-script">Zs</span>
+            <span className="zs-script">E</span>
             <span className="zs-serif zs-amp">&</span>
-            <span className="zs-script">Sz</span>
+            <span className="zs-script">B</span>
           </div>
 
           <h1 className="zs-serif mt-8 text-4xl leading-tight sm:text-6xl">
-            Kispál Zsófia
+            Váradi Eszter
             <span className="zs-script zs-hero-amp block py-1 text-5xl sm:text-7xl" aria-hidden>
               és
             </span>
-            Ferencz Szilveszter
+            Tóth Bálint
           </h1>
 
           <div className="zs-rule mx-auto mt-10" />
@@ -276,11 +276,11 @@ export default function ZsoEsSziliPage() {
       {/* ── Lábléc ────────────────────────────────────────── */}
       <footer className="zs-footer px-4 py-14 text-center">
         <div className="zs-monogram zs-monogram-sm mx-auto">
-          <span className="zs-script">Zs</span>
+          <span className="zs-script">E</span>
           <span className="zs-serif zs-amp">&</span>
-          <span className="zs-script">Sz</span>
+          <span className="zs-script">B</span>
         </div>
-        <p className="zs-serif mt-5 text-lg">Kispál Zsófia & Ferencz Szilveszter</p>
+        <p className="zs-serif mt-5 text-lg">Váradi Eszter & Tóth Bálint</p>
         <p className="zs-caps mt-2 text-[11px]">2027. 06. 15. · Arad</p>
         <p className="zs-muted mt-6 text-xs">
           Kérdésed van? Írj a tanúknak: Bartha Emese · +40 7XX XXX XXX vagy Lengyel Bence

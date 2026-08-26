@@ -7,6 +7,8 @@ import { ChevronDown } from "lucide-react";
  * Úszó gomb a főoldalon (a zenelejátszó / akadálymentesítés gombokhoz hasonló
  * stílusban, de középen), ami legördít a szolgáltatói szekcióhoz. Amint a
  * #szolgaltatok szekció láthatóvá válik (scrollozással vagy a gombbal), eltűnik.
+ * Mobilon nem jelenik meg: ott a kategória-csempék és a lista közvetlenül a
+ * banner alatt vannak, a gomb csak takarna.
  */
 export function HomeProvidersCta() {
   const [visible, setVisible] = useState(false);
@@ -32,7 +34,7 @@ export function HomeProvidersCta() {
   return (
     <button
       onClick={scrollToProviders}
-      className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm px-5 py-2.5 text-sm font-semibold text-[#84AAA6] opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+      className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 hidden sm:flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm px-5 py-2.5 text-sm font-semibold text-[#84AAA6] opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
     >
       Megnézem a kínálatot
       <ChevronDown className="h-4 w-4 shrink-0" />
