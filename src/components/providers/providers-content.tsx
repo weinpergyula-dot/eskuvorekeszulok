@@ -156,9 +156,13 @@ function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setV
 export function ProvidersContent({
   providers,
   categoryCounts,
+  hideCategoryPills = false,
 }: {
   providers: Provider[];
   categoryCounts: Record<string, number>;
+  /** A főoldalon a kategóriaszűrés a gyorskategória-csempékről történik,
+      ott a desktop pill-sor rejtve marad. */
+  hideCategoryPills?: boolean;
 }) {
   const searchParams = useSearchParams();
   const [category, setCategory] = useState<string>(searchParams.get("category") ?? "");
@@ -173,6 +177,17 @@ export function ProvidersContent({
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
   }, []);
+
+  // A főoldali gyorskategória-csempék felől érkező szűrés fogadása, és a
+  // mindenkori kategória visszajelzése a csempéknek (kiemeléshez).
+  useEffect(() => {
+    const h = (e: Event) => setCategory((e as CustomEvent<string>).detail ?? "");
+    window.addEventListener("eskuvo:set-category", h);
+    return () => window.removeEventListener("eskuvo:set-category", h);
+  }, []);
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("eskuvo:category", { detail: category }));
+  }, [category]);
 
   // Reset to first page when the result set or page size changes.
   useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize]);
@@ -296,14 +311,16 @@ export function ProvidersContent({
       {/* Main column */}
       <div className="flex-1 min-w-0">
         {/* Desktop category filter — all categories visible & selectable (pills). */}
-        <div className="hidden lg:flex flex-wrap gap-2 mb-5">
-          <button onClick={() => setCategory("")} className={pillCls(!category)}>Összes kategória</button>
-          {categoryOptions.map((opt) => (
-            <button key={opt.value} onClick={() => setCategory(category === opt.value ? "" : opt.value)} className={pillCls(category === opt.value)}>
-              {opt.label}
-            </button>
-          ))}
-        </div>
+        {!hideCategoryPills && (
+          <div className="hidden lg:flex flex-wrap gap-2 mb-5">
+            <button onClick={() => setCategory("")} className={pillCls(!category)}>Összes kategória</button>
+            {categoryOptions.map((opt) => (
+              <button key={opt.value} onClick={() => setCategory(category === opt.value ? "" : opt.value)} className={pillCls(category === opt.value)}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* ── Controls ── */}
         <div className="mb-6">
