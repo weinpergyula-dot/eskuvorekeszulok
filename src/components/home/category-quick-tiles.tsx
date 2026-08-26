@@ -79,16 +79,16 @@ function Tile({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3.5 text-center transition-all duration-200 cursor-pointer sm:p-4",
+        "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 text-center transition-all duration-200 cursor-pointer sm:p-3.5",
         active
           ? "border-white bg-white text-[#2D5854] shadow-lg"
           : "border-white/25 bg-white/10 text-white hover:bg-white/20"
       )}
     >
       <Icon className="h-6 w-6" strokeWidth={1.75} />
-      <span className="text-[13px] font-semibold leading-tight sm:text-sm">{label}</span>
+      <span className="text-[15px] font-bold leading-tight sm:text-base">{label}</span>
       {typeof count === "number" && (
-        <span className={cn("text-xs leading-none", active ? "text-[#2D5854]/60" : "text-white/60")}>
+        <span className={cn("text-xs leading-none", active ? "text-[#2D5854]/60" : "text-white/70")}>
           {count} szolgáltató
         </span>
       )}
@@ -124,7 +124,10 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
   };
 
   return (
-    <div className="mx-auto mt-7 grid max-w-4xl grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
+    /* Desktopon (lg+) a 8 alapcsempe egyetlen sorban fér el; kisebb
+       kijelzőn 2, majd 4 oszlopba törik. Kibontáskor a további kategóriák
+       lefelé, újabb sorokban jelennek meg. */
+    <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
       <Tile icon={LayoutGrid} label="Összes" active={!active} onClick={() => select("")} />
       {top.map((c) => (
         <Tile
@@ -141,17 +144,22 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
         label={expanded ? "Kevesebb" : "Még több"}
         onClick={() => setExpanded((v) => !v)}
       />
-      {expanded &&
-        rest.map((c) => (
-          <Tile
-            key={c}
-            icon={TILE_ICONS[c]}
-            label={CATEGORY_LABELS[c]}
-            count={categoryCounts[c] ?? 0}
-            active={active === c}
-            onClick={() => select(c)}
-          />
-        ))}
+      {expanded && (
+        <>
+          {rest.map((c) => (
+            <Tile
+              key={c}
+              icon={TILE_ICONS[c]}
+              label={CATEGORY_LABELS[c]}
+              count={categoryCounts[c] ?? 0}
+              active={active === c}
+              onClick={() => select(c)}
+            />
+          ))}
+          {/* A kibontott lista végén is zárható */}
+          <Tile icon={Minus} label="Kevesebb" onClick={() => setExpanded(false)} />
+        </>
+      )}
     </div>
   );
 }

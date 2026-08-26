@@ -98,16 +98,10 @@ export default async function HomePage() {
 
       {/* Rövid marketing sáv – mit talál a látogató lejjebb */}
       <div className="teal-shift-bg w-full relative -mt-6">
-        <div className="max-w-4xl mx-auto px-5 pt-12 pb-8 sm:px-6 sm:pt-16 sm:pb-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-xl md:text-2xl font-bold text-white">
-              Az összes esküvői szolgáltató egy helyen
-            </h2>
-            <p className="mt-2 text-[15px] md:text-base leading-relaxed text-white/90">
-              Fotós, zenekar, vőfély, torta vagy helyszín? Válassz kategóriát, és
-              lejjebb rögtön a hozzá tartozó szolgáltatókat látod.
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto px-5 pt-12 pb-8 sm:px-6 sm:pt-16 sm:pb-10 lg:px-8">
+          <h2 className="text-center text-xl md:text-2xl font-bold text-white">
+            Válassz kategóriát
+          </h2>
           <CategoryQuickTiles categoryCounts={categoryCounts} />
         </div>
         {/* Lefelé kerekedő átmenet a fehér tartalomba */}
