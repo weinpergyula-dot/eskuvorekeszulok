@@ -161,9 +161,10 @@ export function HeroCarousel() {
                   Böngészd az elérhető szolgáltatókat, vagy ha szolgáltatóként
                   látogattál el hozzánk, akkor regisztrálj!
                 </p>
+                {/* Gombok a 2. dia pill-stílusában, az 1. dia színeivel */}
                 <div className="flex flex-col items-center justify-center gap-3 lg:flex-row">
-                  <HeroProvidersButton />
-                  <ProviderRegisterButton className="border border-[#C65EA5] bg-transparent px-5 text-[15px] text-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5] sm:text-[18px]" />
+                  <HeroProvidersButton className="rounded-full bg-[#84AAA6] px-6 py-3 text-[15px] font-bold text-white shadow-md hover:bg-[#6B8E8A] hover:text-white sm:text-base" />
+                  <ProviderRegisterButton className="rounded-full border border-[#C65EA5] bg-transparent px-6 py-3 text-[15px] font-bold text-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5] sm:text-base" />
                 </div>
               </div>
             </div>

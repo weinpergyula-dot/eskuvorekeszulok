@@ -1055,13 +1055,17 @@ html.a11y-underline a { text-decoration: underline !important; }
   pointer-events: none;
 }
 
-/* ── /meghivo csomagok: fehérből lefelé halvány tealbe futó háttér ───── */
+/* ── /meghivo csomagok: halvány teal felül és alul, középen fehér ─────
+   A szekció tetején ugyanaz a világos teal fut, mint amit a fejléc alatti
+   lekerekített átmenet is felvesz (#DFE9E8), így nincs törés. */
 .pkg-shift-bg {
   background: linear-gradient(
     180deg,
-    #ffffff 0%,
-    #ffffff 28%,
-    rgba(132, 170, 166, 0.10) 62%,
+    rgba(132, 170, 166, 0.26) 0%,
+    rgba(132, 170, 166, 0.09) 16%,
+    #ffffff 34%,
+    #ffffff 60%,
+    rgba(132, 170, 166, 0.10) 82%,
     rgba(132, 170, 166, 0.26) 100%
   );
 }

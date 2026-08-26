@@ -82,7 +82,7 @@ function Tile({
         "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 text-center transition-all duration-200 cursor-pointer sm:p-3.5",
         active
           ? "border-white bg-white text-[#2D5854] shadow-lg"
-          : "border-white/25 text-white hover:brightness-110"
+          : "border-white/25 text-white hover:border-white/80 hover:brightness-110"
       )}
       style={
         active
@@ -90,7 +90,7 @@ function Tile({
           : {
               /* A korábbi áttetsző fehér, aljában egy hajszálnyi tealbe fordulva. */
               background:
-                "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.10) 55%, rgba(45,88,84,0.14) 100%)",
+                "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.10) 62%, rgba(45,88,84,0.06) 100%)",
             }
       }
     >
