@@ -84,13 +84,13 @@ export default function MeghivoPage() {
 
       {/* ── Csomagok ─────────────────────────────────────── */}
       <section className="bg-[#F9F9F9]">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
             Válassz csomagot!
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-center text-base text-gray-600">
-            Minden telefonon egy-egy valódi meghívó-minta látható. A BASIC és a SILVER mintánk már
-            élőben megnézhető – kattints rá bátran! A többi csomag mintája hamarosan érkezik.
+            Minden telefonon egy-egy valódi meghívó-minta látható, kattints rá bátran,
+            hogy nagyban is lásd.
           </p>
 
           <div className="mx-auto mt-10 grid max-w-5xl gap-8 sm:mt-14 sm:grid-cols-2 lg:grid-cols-3">
@@ -98,15 +98,13 @@ export default function MeghivoPage() {
               <div
                 key={pkg.id}
                 id={pkg.id}
-                className="flex flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-lg"
+                className="mx-auto flex w-full max-w-[19rem] flex-col overflow-hidden rounded-3xl border border-gray-200 shadow-sm transition-shadow hover:shadow-lg sm:max-w-none"
+                style={{
+                  background: `linear-gradient(180deg, ${pkg.accent}66 0%, ${pkg.accent}33 18%, ${pkg.accent}00 42%), linear-gradient(0deg, ${pkg.accent}59 0%, ${pkg.accent}26 14%, ${pkg.accent}00 34%), #ffffff`,
+                }}
               >
                 {/* fejléc: színes sáv a csomag akcentusával */}
-                <div
-                  className="relative px-6 pb-6 pt-8 text-center"
-                  style={{
-                    background: `linear-gradient(180deg, ${pkg.accent}59 0%, ${pkg.accent}2e 45%, ${pkg.accent}0f 78%, transparent 100%)`,
-                  }}
-                >
+                <div className="relative px-6 pb-6 pt-8 text-center">
                   {/* felső élcsík */}
                   <span
                     className="absolute inset-x-0 top-0 h-2"
@@ -121,9 +119,7 @@ export default function MeghivoPage() {
                   >
                     {pkg.name}
                   </span>
-                  <p className="mx-auto mt-3 min-h-[2.5rem] max-w-[15rem] text-[15px] leading-snug text-gray-600">
-                    {pkg.tagline}
-                  </p>
+                  <p className="mt-3 text-sm leading-snug text-gray-700">{pkg.tagline}</p>
                 </div>
 
                 {/* telefon */}
@@ -155,7 +151,7 @@ export default function MeghivoPage() {
                 </ul>
 
                 {/* ár + CTA */}
-                <div className="border-t border-gray-100 px-6 py-5 text-center">
+                <div className="border-t border-white/60 px-6 py-5 text-center">
                   <p className="text-2xl font-bold text-gray-900">{pkg.price}</p>
                   <Link href="/kapcsolat" className="mt-3 block">
                     <Button
