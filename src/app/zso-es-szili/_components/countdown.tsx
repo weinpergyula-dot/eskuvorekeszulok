@@ -35,7 +35,7 @@ export function Countdown() {
     { value: parts ? String(parts.d) : "—", label: "nap" },
     { value: parts ? String(parts.h).padStart(2, "0") : "—", label: "óra" },
     { value: parts ? String(parts.m).padStart(2, "0") : "—", label: "perc" },
-    { value: parts ? String(parts.s).padStart(2, "0") : "—", label: "másodperc" },
+    { value: parts ? String(parts.s).padStart(2, "0") : "—", label: "mp" },
   ];
 
   return (

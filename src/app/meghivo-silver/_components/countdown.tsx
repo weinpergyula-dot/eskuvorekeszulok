@@ -21,7 +21,7 @@ const UNITS: { key: keyof Parts; label: string }[] = [
   { key: "d", label: "nap" },
   { key: "h", label: "óra" },
   { key: "m", label: "perc" },
-  { key: "s", label: "másodperc" },
+  { key: "s", label: "mp" },
 ];
 
 export function Countdown() {

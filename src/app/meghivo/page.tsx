@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check, Clock, ExternalLink, Heart, MailOpen } from "lucide-react";
+import { Check, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
 import { IntroTabs } from "./_components/intro-tabs";
+import { LivePhonePreview, PlaceholderPhonePreview } from "./_components/phone-preview";
 
 export const metadata: Metadata = {
   title: "Digitális meghívók",
@@ -71,93 +72,6 @@ const PACKAGES = [
 ] as const;
 
 
-/* ── Telefon-mockup ──────────────────────────────────────
-   228px széles "kijelzőn" egy 390px-es mobilnézet fut,
-   0.5846-os kicsinyítéssel – így printscreen-szerű, éles
-   előnézetet ad az élő oldalról. */
-
-function PhoneFrame({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative mx-auto w-[216px] shrink-0 rounded-[2.4rem] bg-gray-900 p-[9px] shadow-[0_24px_50px_-16px_rgba(45,88,84,0.45)]">
-      {/* oldalgombok */}
-      <div className="absolute -left-[2px] top-20 h-9 w-[3px] rounded-l bg-gray-700" aria-hidden />
-      <div className="absolute -left-[2px] top-32 h-9 w-[3px] rounded-l bg-gray-700" aria-hidden />
-      <div className="absolute -right-[2px] top-24 h-12 w-[3px] rounded-r bg-gray-700" aria-hidden />
-      <div className="relative h-[428px] w-[198px] overflow-hidden rounded-[1.9rem] bg-white">
-        {children}
-        {/* kamera-sziget */}
-        <div className="absolute left-1/2 top-[8px] z-20 h-[14px] w-[62px] -translate-x-1/2 rounded-full bg-gray-900" aria-hidden />
-      </div>
-    </div>
-  );
-}
-
-function LivePhonePreview({ href, label }: { href: string; label: string }) {
-  return (
-    <PhoneFrame>
-      {/* Élő, kicsinyített előnézet – nem kattintható, a fölé
-          rakott link nyitja meg az igazi oldalt. */}
-      <iframe
-        src={href}
-        title={`${label} – előnézet`}
-        aria-hidden
-        tabIndex={-1}
-        loading="lazy"
-        className="pointer-events-none absolute left-0 top-0 origin-top-left select-none border-0"
-        /* 390px a látható tartalom + 20px a görgetősávnak, amit a telefon
-           kerete levág – így nem látszik csík a kijelző szélén. */
-        style={{ width: 410, height: 843, transform: "scale(0.5077)" }}
-      />
-      <Link
-        href={href}
-        target="_blank"
-        rel="noopener"
-        className="group absolute inset-0 z-10 flex items-end justify-center rounded-[2rem] pb-5"
-        aria-label={`${label} minta megnyitása új lapon`}
-      >
-        <span className="inline-flex translate-y-1 items-center gap-1.5 rounded-full bg-gray-900/80 px-4 py-2 text-sm font-semibold text-white opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-          Minta megnyitása
-          <ExternalLink className="h-3.5 w-3.5" />
-        </span>
-      </Link>
-    </PhoneFrame>
-  );
-}
-
-function PlaceholderPhonePreview({ accent }: { accent: string }) {
-  return (
-    <PhoneFrame>
-      <div
-        className="flex h-full w-full flex-col items-center px-5 pb-6 pt-12 text-center"
-        style={{ background: `linear-gradient(180deg, ${accent}22 0%, #ffffff 55%)` }}
-      >
-        {/* vázlatos meghívó-előnézet */}
-        <div
-          className="flex h-14 w-14 items-center justify-center rounded-full border-2"
-          style={{ borderColor: accent, color: accent }}
-        >
-          <Heart className="h-6 w-6" strokeWidth={1.5} />
-        </div>
-        <div className="mt-4 h-2.5 w-32 rounded-full bg-gray-300" />
-        <div className="mt-2 h-2.5 w-24 rounded-full bg-gray-200" />
-        <div className="mt-6 h-px w-16" style={{ backgroundColor: accent }} />
-        <div className="mt-6 grid w-full grid-cols-4 gap-2">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-10 rounded-lg bg-gray-100" />
-          ))}
-        </div>
-        <div className="mt-5 h-2 w-full rounded-full bg-gray-100" />
-        <div className="mt-2 h-2 w-4/5 rounded-full bg-gray-100" />
-        <div className="mt-2 h-2 w-full rounded-full bg-gray-100" />
-        <div className="mt-auto flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold text-white" style={{ backgroundColor: accent }}>
-          <Clock className="h-3.5 w-3.5" />
-          Minta hamarosan
-        </div>
-      </div>
-    </PhoneFrame>
-  );
-}
-
 export default function MeghivoPage() {
   return (
     <>
@@ -165,8 +79,7 @@ export default function MeghivoPage() {
         title="Digitális meghívók"
         description="Felejtsd el a papírt! Készíttess mobilra szabott, interaktív esküvői meghívót, amit egyetlen linkkel elküldhetsz minden vendégednek – visszaszámlálóval, programmal és online visszajelzéssel."
         icon={MailOpen}
-        ctaLabel="Ajánlatot kérek"
-        ctaHref="/kapcsolat"
+        bottomBg="#F9F9F9"
       />
 
       {/* ── Csomagok ─────────────────────────────────────── */}
@@ -189,14 +102,14 @@ export default function MeghivoPage() {
               >
                 {/* fejléc: színes sáv a csomag akcentusával */}
                 <div
-                  className="relative px-6 pb-5 pt-7 text-center"
+                  className="relative px-6 pb-6 pt-8 text-center"
                   style={{
-                    background: `linear-gradient(180deg, ${pkg.accent}1f 0%, transparent 100%)`,
+                    background: `linear-gradient(180deg, ${pkg.accent}59 0%, ${pkg.accent}2e 45%, ${pkg.accent}0f 78%, transparent 100%)`,
                   }}
                 >
                   {/* felső élcsík */}
                   <span
-                    className="absolute inset-x-0 top-0 h-1.5"
+                    className="absolute inset-x-0 top-0 h-2"
                     style={{ backgroundColor: pkg.accent }}
                     aria-hidden
                   />

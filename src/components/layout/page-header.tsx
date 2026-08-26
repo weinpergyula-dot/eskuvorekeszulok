@@ -10,13 +10,16 @@ interface PageHeaderProps {
   ctaLabel?: string;
   ctaHref?: string;
   /** Lefelé kerekedő átmenet a sáv alján. Kikapcsolható ott, ahol a
-      CTA-sorral együtt nem mutat jól (pl. /meghivo). */
+      CTA-sorral együtt nem mutat jól. */
   roundedBottom?: boolean;
+  /** Az átmenet színe – a sáv alatt következő szekció háttere
+      (alapértelmezés: fehér). */
+  bottomBg?: string;
   /** @deprecated use backHref instead */
   breadcrumb?: { label: string; href: string }[];
 }
 
-export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref, roundedBottom = true }: PageHeaderProps) {
+export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref, roundedBottom = true, bottomBg = "#ffffff" }: PageHeaderProps) {
   return (
     <>
       <div
@@ -37,7 +40,9 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
         </div>
         {/* CTA nélkül a sáv alja: fehér, felül lekerekített sapka – a teal
             így a sarkoknál lefelé kerekedik */}
-        {roundedBottom && !(ctaLabel && ctaHref) && <div className="h-6 rounded-t-3xl bg-white" aria-hidden />}
+        {roundedBottom && !(ctaLabel && ctaHref) && (
+          <div className="h-6 rounded-t-3xl" style={{ backgroundColor: bottomBg }} aria-hidden />
+        )}
       </div>
 
       {/* CTA sora — a navbar alá tapad scrollozáskor (sticky); a gomb feletti és
@@ -53,7 +58,7 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
               style={bgColor === "#84AAA6" ? undefined : { backgroundColor: bgColor }}
               aria-hidden
             >
-              <div className="h-6 rounded-t-3xl bg-white" />
+              <div className="h-6 rounded-t-3xl" style={{ backgroundColor: bottomBg }} />
             </div>
           )}
         </>
