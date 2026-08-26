@@ -56,7 +56,7 @@ export default async function HomePage() {
   return (
     <>
       {/* Mobile hero slideshow */}
-      <div className="sm:hidden">
+      <div className="sm:hidden -mt-6">
         <MobileHeroSlideshow />
         <div className="px-5 py-4 text-center">
           <p className="text-base text-gray-900 leading-relaxed">
@@ -66,7 +66,7 @@ export default async function HomePage() {
       </div>
 
       {/* Hero – desktop only */}
-      <section className="relative overflow-hidden hidden sm:block">
+      <section className="relative z-20 -mt-6 overflow-hidden rounded-b-3xl hidden sm:block">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/hero.png"
@@ -105,7 +105,7 @@ export default async function HomePage() {
       </section>
 
       {/* Services header – two-column */}
-      <div className="w-full relative" style={{ backgroundColor: "#84AAA6" }}>
+      <div className="w-full relative sm:-mt-6" style={{ backgroundColor: "#84AAA6" }}>
         {/* Pink bleed: center → right edge, desktop only */}
         <div className="hidden sm:block absolute inset-y-0 right-0 w-1/2 border-l border-white" style={{ backgroundColor: "#D07AB5" }} />
         {/* Teal sáv a kérdéssel — csak mobilon, fehér elválasztóval; átmenet
@@ -115,7 +115,7 @@ export default async function HomePage() {
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center">Miért regisztrálj...?</h2>
           </div>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:pt-16">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
             {/* Left – visitors */}
             <div>
