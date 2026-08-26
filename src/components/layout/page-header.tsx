@@ -16,7 +16,10 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref }: PageHeaderProps) {
   return (
     <>
-      <div className={`w-full -mt-6 ${ctaLabel && ctaHref ? "" : "rounded-b-3xl border-b border-white/20"}`} style={{ backgroundColor: bgColor }}>
+      <div
+        className={`w-full -mt-6 ${bgColor === "#84AAA6" ? "teal-shift-bg" : ""} ${ctaLabel && ctaHref ? "" : "rounded-b-3xl border-b border-white/20"}`}
+        style={bgColor === "#84AAA6" ? undefined : { backgroundColor: bgColor }}
+      >
         <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${ctaLabel && ctaHref ? "pt-14 pb-6" : "pt-14 pb-8"}`}>
           <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
             {Icon && <Icon className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />}

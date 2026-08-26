@@ -94,10 +94,7 @@ export default async function HomePage() {
       </section>
 
       {/* Rövid marketing sáv – mit talál a látogató lejjebb */}
-      <div
-        className="w-full relative -mt-6 rounded-b-3xl"
-        style={{ background: "linear-gradient(120deg, #84AAA6 0%, #6B8E8A 70%, #5C8480 100%)" }}
-      >
+      <div className="teal-shift-bg w-full relative -mt-6 rounded-b-3xl">
         <div className="max-w-3xl mx-auto px-5 pt-12 pb-8 sm:px-6 sm:pt-16 sm:pb-9 text-center">
           <h2 className="text-xl md:text-2xl font-bold text-white">
             Az összes esküvői szolgáltató egy helyen

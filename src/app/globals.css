@@ -825,3 +825,29 @@ html.a11y-underline a { text-decoration: underline !important; }
 @media (prefers-reduced-motion: reduce) {
   .mwr-card-in { animation: none; }
 }
+
+/* ── Esküvős fejléc-sávok: animált, mozgó teal gradient ──────────────
+   A /yettel_web welcome-hátterének mozgása (130°-os, túlméretezett
+   gradient oda-vissza sodródással), de az oldal teal palettáján. */
+.teal-shift-bg {
+  background: linear-gradient(
+    130deg,
+    #5C8480 0%,
+    #6B8E8A 20%,
+    #84AAA6 38%,
+    #95BAB5 50%,
+    #84AAA6 62%,
+    #6B8E8A 80%,
+    #5C8480 100%
+  );
+  background-size: 260% 260%;
+  animation: teal-gshift 18s ease-in-out infinite;
+}
+@keyframes teal-gshift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .teal-shift-bg { animation: none; }
+}
