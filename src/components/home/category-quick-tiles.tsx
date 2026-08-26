@@ -82,8 +82,16 @@ function Tile({
         "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 text-center transition-all duration-200 cursor-pointer sm:p-3.5",
         active
           ? "border-white bg-white text-[#2D5854] shadow-lg"
-          : "border-white/25 bg-white/10 text-white hover:bg-white/20"
+          : "border-white/25 text-white hover:brightness-110"
       )}
+      style={
+        active
+          ? undefined
+          : {
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.10) 45%, rgba(28,62,58,0.26) 100%)",
+            }
+      }
     >
       <Icon className="h-6 w-6" strokeWidth={1.75} />
       <span className="text-[15px] font-bold leading-tight sm:text-base">{label}</span>

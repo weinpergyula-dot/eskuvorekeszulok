@@ -1041,3 +1041,39 @@ html.a11y-underline a { text-decoration: underline !important; }
   .hero-progress-fill { animation: none; transform: scaleX(1); }
   [data-slide-active="true"] .hero-bubble { animation: none; }
 }
+
+/* ── Banner: lebegő árnyék a készülékek alatt ────────────────────────── */
+.hero-float-shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -26px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(10, 28, 26, 0.62), rgba(10, 28, 26, 0) 72%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+/* ── /meghivo csomagok: nagyon halvány, lassan mozgó hármas gradient ─── */
+.pkg-shift-bg {
+  background:
+    linear-gradient(
+      120deg,
+      rgba(132, 170, 166, 0.10) 0%,
+      rgba(142, 153, 168, 0.08) 32%,
+      rgba(198, 94, 165, 0.07) 62%,
+      rgba(132, 170, 166, 0.10) 100%
+    ),
+    #ffffff;
+  background-size: 220% 220%, auto;
+  animation: pkg-shift 34s ease-in-out infinite;
+}
+@keyframes pkg-shift {
+  0%   { background-position: 0% 50%, 0 0; }
+  50%  { background-position: 100% 50%, 0 0; }
+  100% { background-position: 0% 50%, 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pkg-shift-bg { animation: none; }
+}

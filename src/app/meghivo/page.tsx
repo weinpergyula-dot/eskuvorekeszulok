@@ -79,11 +79,11 @@ export default function MeghivoPage() {
         title="Digitális meghívók"
         description="Felejtsd el a papírt! Készíttess mobilra szabott, interaktív esküvői meghívót, amit egyetlen linkkel elküldhetsz minden vendégednek – visszaszámlálóval, programmal és online visszajelzéssel."
         icon={MailOpen}
-        bottomBg="#F9F9F9"
+        bottomBg="#F7FAF9"
       />
 
       {/* ── Csomagok ─────────────────────────────────────── */}
-      <section className="bg-[#F9F9F9]">
+      <section className="pkg-shift-bg">
         <div className="mx-auto max-w-7xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
             Válassz csomagot!

@@ -67,7 +67,7 @@ export function HeroCarousel() {
 
   return (
     <section
-      className="relative z-20 -mt-6 overflow-hidden rounded-b-3xl"
+      className="relative z-20 -mt-6 overflow-hidden rounded-b-3xl border-b border-white"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       aria-roledescription="carousel"
@@ -88,13 +88,25 @@ export function HeroCarousel() {
           aria-hidden={current !== 1}
           data-slide-active={current === 1}
         >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(120% 80% at 25% 0%, rgba(255,255,255,0.32), rgba(255,255,255,0) 62%)",
+            }}
+          />
+
           {/* megdöntött készülék jobbra (a desktop párosból az elülső) */}
           <div className="hero-duo absolute right-[-2%] top-1/2 w-[46%] -translate-y-1/2">
-            <Phone
-              className="hero-duo-front"
-              src="/meghivo/slide-basic.webp"
-              alt="Digitális esküvői meghívó telefonon"
-            />
+            <div className="relative">
+              <Phone
+                className="hero-duo-front"
+                src="/meghivo/slide-basic.webp"
+                alt="Digitális esküvői meghívó telefonon"
+              />
+              <span className="hero-float-shadow" aria-hidden />
+            </div>
           </div>
 
           {/* fehér felirat-blokk balról */}
@@ -160,30 +172,45 @@ export function HeroCarousel() {
 
         {/* 2. dia – digitális meghívó */}
         <div className={`${slideCls(1)} teal-shift-bg relative`} aria-hidden={current !== 1}>
+          {/* extra fehér fátyol a gradiens fölött, hogy világosabb legyen */}
           <span
             aria-hidden
-            className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/15 blur-3xl"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(120% 90% at 30% 0%, rgba(255,255,255,0.34), rgba(255,255,255,0) 62%), radial-gradient(90% 70% at 85% 100%, rgba(255,255,255,0.18), rgba(255,255,255,0) 60%)",
+            }}
           />
           <span
             aria-hidden
-            className="pointer-events-none absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-[#2D5854]/25 blur-3xl"
+            className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/25 blur-3xl"
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-[#2D5854]/20 blur-3xl"
           />
           <div className="relative mx-auto grid h-full max-w-6xl items-center gap-10 px-6 py-10 md:grid-cols-[minmax(0,42%)_minmax(0,1fr)] lg:px-8">
             {/* Telefonpár: elöl-jobbra a BASIC, mögötte balra-lent a SILVER */}
             <div className="hero-duo relative mx-auto h-[360px] w-full max-w-[330px]">
               <div className="absolute bottom-0 left-0 w-[44%]">
-                <Phone
-                  className="hero-duo-back"
-                  src="/meghivo/slide-silver.webp"
-                  alt="SILVER meghívó-minta telefonon"
-                />
+                <div className="relative">
+                  <Phone
+                    className="hero-duo-back"
+                    src="/meghivo/slide-silver.webp"
+                    alt="SILVER meghívó-minta telefonon"
+                  />
+                  <span className="hero-float-shadow" aria-hidden />
+                </div>
               </div>
               <div className="absolute right-0 top-0 w-[52%]">
-                <Phone
-                  className="hero-duo-front"
-                  src="/meghivo/slide-basic.webp"
-                  alt="BASIC meghívó-minta telefonon"
-                />
+                <div className="relative">
+                  <Phone
+                    className="hero-duo-front"
+                    src="/meghivo/slide-basic.webp"
+                    alt="BASIC meghívó-minta telefonon"
+                  />
+                  <span className="hero-float-shadow" aria-hidden />
+                </div>
               </div>
             </div>
 
@@ -218,12 +245,12 @@ export function HeroCarousel() {
 
       {/* ── Vetítésvezérlő: haladásjelző csíkok + pause gomb ── */}
       <div className="absolute inset-x-0 bottom-5 flex justify-center">
-        <div className="flex items-center gap-3 rounded-full bg-black/20 px-3 py-2 backdrop-blur-sm">
+        <div className="flex items-center gap-3 rounded-full border border-white/60 bg-[#E7ECEC]/85 px-3 py-2 shadow-sm backdrop-blur-sm">
           <button
             type="button"
             onClick={() => setPaused((p) => !p)}
             aria-label={paused ? "Vetítés indítása" : "Vetítés megállítása"}
-            className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-white/60 text-white transition-colors hover:bg-white/20"
+            className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-[#2D5854]/40 text-[#2D5854] transition-colors hover:bg-white/70"
           >
             {paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
           </button>
@@ -238,11 +265,11 @@ export function HeroCarousel() {
                 aria-current={i === current ? "true" : undefined}
                 className="cursor-pointer py-1"
               >
-                <span className="block h-1.5 w-12 overflow-hidden rounded-full bg-white/40">
+                <span className="block h-1.5 w-12 overflow-hidden rounded-full bg-white/80">
                   {i === current && (
                     <span
                       key={current}
-                      className="hero-progress-fill block h-full w-full rounded-full bg-white"
+                      className="hero-progress-fill block h-full w-full rounded-full bg-[#2D5854]"
                       style={{
                         animationPlayState: paused ? "paused" : "running",
                         ["--hero-slide-ms" as string]: `${SLIDE_MS}ms`,
