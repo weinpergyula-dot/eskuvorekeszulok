@@ -1,34 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Pause, Play } from "lucide-react";
 import { HeroProvidersButton } from "./hero-providers-button";
 import { ProviderRegisterButton } from "./provider-register-button";
 
 /**
  * A főoldal bannere két diával: a köszöntő (menyasszonyos fotóval) és a
  * digitális meghívó ajánlója (megdöntött telefonon egy valódi meghívóval).
- * A diák 6 másodpercenként váltakoznak, pöttyökkel válthatók, mobilon
- * húzással is. Mindkét törésponton a diák egymásra vannak rétegezve, hogy
- * a banner magassága ne ugráljon; mobilon a menyasszonyos dia arányában
- * (4/5) fut mindkettő.
+ *
+ * A diaváltást a haladásjelző csík animációjának vége indítja (nem külön
+ * időzítő), így a csík mindig pontosan mutatja, mennyi van hátra az adott
+ * diából, és a pause gomb egyszerűen megállítja. Mobilon húzással is
+ * lapozható; a diák egy rácscellába vannak rétegezve, hogy a banner
+ * magassága ne ugráljon.
  */
 
 const SLIDE_COUNT = 2;
-const INTERVAL_MS = 6000;
+const SLIDE_MS = 6000;
 
 export function HeroCarousel() {
   const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = setTimeout(() => setCurrent((i) => (i + 1) % SLIDE_COUNT), INTERVAL_MS);
-    return () => clearTimeout(t);
-  }, [current]);
-
-  const goTo = (i: number) => setCurrent((i + SLIDE_COUNT) % SLIDE_COUNT);
+  const goTo = useCallback((i: number) => setCurrent((i + SLIDE_COUNT) % SLIDE_COUNT), []);
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -62,11 +59,17 @@ export function HeroCarousel() {
           <img src="/hero1_mobile.png" alt="Esküvőre készülsz?" className="h-full w-full object-cover" />
         </div>
 
-        {/* 2. dia – digitális meghívó, ugyanilyen képmezőben */}
-        <div className={`${slideCls(1)} teal-shift-bg relative`} aria-hidden={current !== 1}>
-          <div className="flex h-full flex-col items-center justify-center px-6 pb-14 pt-6 text-center">
-            <div className="mgh-tilt w-[132px] rounded-[1.5rem] bg-gray-900 p-1.5 shadow-[0_26px_50px_-20px_rgba(20,45,42,0.8)] ring-1 ring-white/20">
-              <div className="overflow-hidden rounded-[1.15rem] bg-white">
+        {/* 2. dia – digitális meghívó: jobbra a megdöntött telefon, balról
+            beúszó fehér felirat-blokk (az 1. dia buborékjának mintájára) */}
+        <div
+          className={`${slideCls(1)} teal-shift-bg relative overflow-hidden`}
+          aria-hidden={current !== 1}
+          data-slide-active={current === 1}
+        >
+          {/* megdöntött telefon, jobbra tolva */}
+          <div className="hero-phone-tilt absolute right-[-4%] top-1/2 w-[48%] -translate-y-1/2">
+            <div className="rounded-[1.4rem] bg-gray-900 p-1.5 shadow-[0_26px_50px_-18px_rgba(20,45,42,0.85)] ring-1 ring-white/20">
+              <div className="overflow-hidden rounded-[1.05rem] bg-white">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/meghivo/slide-basic.webp"
@@ -77,17 +80,25 @@ export function HeroCarousel() {
                 />
               </div>
             </div>
-            <div className="mt-5 rounded-2xl bg-white/90 px-5 py-3 backdrop-blur-sm">
-              <p className="text-[#84AAA6]" style={{ fontWeight: 950, fontSize: 22, lineHeight: 1.1 }}>
-                DIGITÁLIS
-              </p>
-              <p style={{ fontWeight: 950, fontSize: 22, lineHeight: 1.1, color: "#7F7F7F" }}>
-                MEGHÍVÓK
-              </p>
-            </div>
+          </div>
+
+          {/* fehér felirat-blokk balról */}
+          <div className="hero-bubble absolute left-0 top-[16%] max-w-[70%] rounded-r-[2rem] bg-white/95 py-5 pl-5 pr-7 shadow-[0_18px_40px_-18px_rgba(20,45,42,0.55)] backdrop-blur-sm">
+            <p
+              className="font-heading text-[#84AAA6]"
+              style={{ fontWeight: 950, fontSize: 30, lineHeight: 1.05 }}
+            >
+              DIGITÁLIS
+            </p>
+            <p
+              className="font-heading"
+              style={{ fontWeight: 950, fontSize: 30, lineHeight: 1.05, color: "#7F7F7F" }}
+            >
+              MEGHÍVÓK
+            </p>
             <Link
               href="/meghivo"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#2D5854] shadow-md"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-[#2D5854] underline-offset-4 hover:underline"
             >
               Megnézem a mintákat
               <ArrowRight className="h-4 w-4" />
@@ -175,7 +186,7 @@ export function HeroCarousel() {
                   AMIT NEM DOBNAK KI
                 </span>
               </h2>
-              <div className="mx-auto mt-4 h-px w-full max-w-md bg-white/40 md:mx-0" />
+              <div className="mx-auto mt-4 h-px w-full max-w-md bg-white md:mx-0" />
               <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-white/95 md:mx-0">
                 A ti nevetekkel, a ti történetetekkel – egyetlen linken, ami a
                 vendégek telefonján bármikor ott van.
@@ -195,27 +206,44 @@ export function HeroCarousel() {
         </div>
       </div>
 
-      {/* Pöttyök – diszkrét kapszulán, hogy világos és teal dián is látszódjanak */}
+      {/* ── Vetítésvezérlő: haladásjelző csíkok + pause gomb ── */}
       <div className="absolute inset-x-0 bottom-5 flex justify-center">
-        <div className="flex items-center gap-2 rounded-full bg-black/15 px-2.5 py-1.5 backdrop-blur-sm">
-        {Array.from({ length: SLIDE_COUNT }, (_, i) => (
+        <div className="flex items-center gap-3 rounded-full bg-black/20 px-3 py-2 backdrop-blur-sm">
           <button
-            key={i}
             type="button"
-            onClick={() => goTo(i)}
-            aria-label={`${i + 1}. dia`}
-            aria-current={i === current ? "true" : undefined}
-            className="cursor-pointer"
+            onClick={() => setPaused((p) => !p)}
+            aria-label={paused ? "Vetítés indítása" : "Vetítés megállítása"}
+            className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-white/60 text-white transition-colors hover:bg-white/20"
           >
-            <span
-              className="block h-2 rounded-full transition-all duration-300"
-              style={{
-                width: i === current ? 20 : 8,
-                backgroundColor: i === current ? "#ffffff" : "rgba(255,255,255,0.55)",
-              }}
-            />
+            {paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
           </button>
-        ))}
+
+          <div className="flex items-center gap-2">
+            {Array.from({ length: SLIDE_COUNT }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`${i + 1}. dia`}
+                aria-current={i === current ? "true" : undefined}
+                className="cursor-pointer py-1"
+              >
+                <span className="block h-1.5 w-12 overflow-hidden rounded-full bg-white/40">
+                  {i === current && (
+                    <span
+                      key={current}
+                      className="hero-progress-fill block h-full w-full rounded-full bg-white"
+                      style={{
+                        animationPlayState: paused ? "paused" : "running",
+                        ["--hero-slide-ms" as string]: `${SLIDE_MS}ms`,
+                      }}
+                      onAnimationEnd={() => goTo(current + 1)}
+                    />
+                  )}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </section>
