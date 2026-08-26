@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { MobileHeroSlideshow } from "@/components/home/mobile-hero-slideshow";
 import { ProvidersContent } from "@/components/providers/providers-content";
 import { CategoryQuickTiles } from "@/components/home/category-quick-tiles";
+import { ProvidersSectionTitle } from "@/components/home/providers-section-title";
 import { HomeProvidersCta } from "@/components/home/home-providers-cta";
 import { HeroProvidersButton } from "@/components/home/hero-providers-button";
 import { ProviderRegisterButton } from "@/components/home/provider-register-button";
@@ -100,7 +101,7 @@ export default async function HomePage() {
       <div className="teal-shift-bg w-full relative -mt-6">
         <div className="max-w-7xl mx-auto px-5 pt-12 pb-8 sm:px-6 sm:pt-16 sm:pb-10 lg:px-8">
           <h2 className="text-center text-xl md:text-2xl font-bold text-white">
-            Válassz kategóriát
+            Válassz kategóriát!
           </h2>
           <CategoryQuickTiles categoryCounts={categoryCounts} />
         </div>
@@ -111,7 +112,7 @@ export default async function HomePage() {
       {/* Teljes szolgáltatói lista */}
       <section id="szolgaltatok" className="bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10 sm:pb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Szolgáltatók</h2>
+          <ProvidersSectionTitle />
           <Suspense>
             <ProvidersContent providers={providers} categoryCounts={categoryCounts} hideCategoryPills />
           </Suspense>

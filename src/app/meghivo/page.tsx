@@ -49,7 +49,7 @@ const PACKAGES = [
     tagline: "A BASIC csomag, extrákkal megspékelve",
     price: "24 900 Ft",
     accent: "#9AA5B1",
-    sampleHref: null,
+    sampleHref: "/meghivo-silver",
     features: [
       "Minden a BASIC csomagból",
       "Fotógaléria a közös képeitekből",
@@ -250,7 +250,7 @@ export default function MeghivoPage() {
             Válassz csomagot
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-center text-base text-gray-600">
-            Minden telefonon egy-egy valódi meghívó-minta látható. A BASIC mintánk már
+            Minden telefonon egy-egy valódi meghívó-minta látható. A BASIC és a SILVER mintánk már
             élőben megnézhető – kattints rá bátran! A többi csomag mintája hamarosan érkezik.
           </p>
 

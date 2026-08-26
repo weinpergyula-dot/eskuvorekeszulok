@@ -851,3 +851,138 @@ html.a11y-underline a { text-decoration: underline !important; }
 @media (prefers-reduced-motion: reduce) {
   .teal-shift-bg { animation: none; }
 }
+
+/* ── SILVER minta meghívó (/meghivo-silver) ────────────────────────────
+   A BASIC (/zso-es-szili) ivory–arany világával szemben sötét, éjkék–
+   ezüst paletta. A betűk ugyanazok a saját hostolású készletek
+   (Cormorant Garamond + Great Vibes + Jost), amiket a .zs-root is
+   használ. Minden szabály .slv-root alá van zárva. */
+.slv-root {
+  --slv-night: #10151f;      /* alap háttér */
+  --slv-night-2: #161d2b;    /* váltakozó szekció-háttér */
+  --slv-card: #1b2434;       /* kártyák */
+  --slv-line: #33405a;       /* keretek, vonalak */
+  --slv-text: #e8ecf3;       /* szöveg */
+  --slv-muted: #9aa6bd;      /* halvány szöveg */
+  --slv-silver: #c8d2e4;     /* ezüst akcentus */
+  --slv-glow: #8fa6cc;       /* hideg fény */
+
+  font-family: 'Jost', ui-sans-serif, system-ui, sans-serif;
+  background: var(--slv-night);
+  color: var(--slv-text);
+  font-size: 16px;
+  font-weight: 400;
+}
+.slv-root .slv-serif,
+.slv-root h1,
+.slv-root h2,
+.slv-root h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--slv-text);
+}
+.slv-root .slv-script {
+  font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
+  font-weight: 400;
+  color: var(--slv-silver);
+}
+.slv-root .slv-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--slv-muted);
+  font-weight: 400;
+}
+.slv-root .slv-muted { color: var(--slv-muted); }
+.slv-root .slv-accent { color: var(--slv-silver); }
+.slv-root .slv-alt { background: var(--slv-night-2); }
+
+/* Hero: hideg fényfoltok az éjkék háttéren */
+.slv-root .slv-hero {
+  background:
+    radial-gradient(80% 55% at 50% 0%, rgba(143, 166, 204, 0.22), transparent 70%),
+    radial-gradient(60% 45% at 12% 100%, rgba(200, 210, 228, 0.10), transparent 70%),
+    var(--slv-night);
+}
+
+/* Kártyák, keretek */
+.slv-root .slv-card {
+  background: var(--slv-card);
+  border: 1px solid var(--slv-line);
+  border-radius: 1rem;
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+}
+.slv-root .slv-icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: 1px solid var(--slv-line);
+  background: rgba(200, 210, 228, 0.06);
+  color: var(--slv-silver);
+}
+.slv-root .slv-monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 9999px;
+  font-size: 2rem;
+  border: 1px solid var(--slv-line);
+  box-shadow: 0 0 0 6px var(--slv-night), 0 0 0 7px rgba(200, 210, 228, 0.22);
+}
+.slv-root .slv-rule {
+  position: relative;
+  width: 10rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--slv-line) 20%, var(--slv-line) 80%, transparent);
+}
+.slv-root .slv-rule::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--slv-silver);
+}
+
+/* Visszaszámláló */
+.slv-root .slv-count-box {
+  background: rgba(200, 210, 228, 0.06);
+  border: 1px solid var(--slv-line);
+}
+
+/* Űrlap- és vendégkönyv-elemek */
+.slv-root .slv-input {
+  width: 100%;
+  border: 1px solid var(--slv-line);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.65rem 0.9rem;
+  font-size: 15px;
+  color: var(--slv-text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.slv-root .slv-input:focus {
+  border-color: var(--slv-glow);
+  box-shadow: 0 0 0 3px rgba(143, 166, 204, 0.18);
+}
+.slv-root .slv-input::placeholder { color: #6c788f; }
+
+/* Halk belépő animáció (Reveal) */
+.slv-root .slv-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.slv-root .slv-reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .slv-root .slv-reveal { opacity: 1; transform: none; transition: none; }
+}
