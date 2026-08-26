@@ -83,7 +83,7 @@ export default function MeghivoPage() {
       />
 
       {/* ── Csomagok ─────────────────────────────────────── */}
-      <section className="bg-[#F9F9F9]">
+      <section className="section-top-shade bg-[#F9F9F9]">
         <div className="mx-auto max-w-7xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
             Válassz csomagot!
@@ -98,7 +98,7 @@ export default function MeghivoPage() {
               <div
                 key={pkg.id}
                 id={pkg.id}
-                className="mx-auto flex w-full max-w-[19rem] flex-col overflow-hidden rounded-3xl border border-gray-200 shadow-sm transition-shadow hover:shadow-lg sm:max-w-none"
+                className="mx-auto flex w-full max-w-[21rem] flex-col overflow-hidden rounded-3xl border border-gray-200 shadow-sm transition-shadow hover:shadow-lg sm:max-w-none"
                 style={{
                   background: `linear-gradient(180deg, ${pkg.accent}66 0%, ${pkg.accent}33 18%, ${pkg.accent}00 42%), linear-gradient(0deg, ${pkg.accent}59 0%, ${pkg.accent}26 14%, ${pkg.accent}00 34%), #ffffff`,
                 }}
@@ -174,14 +174,14 @@ export default function MeghivoPage() {
       </section>
 
       {/* ── Bevezető: Miért népszerű? / Hogyan működik? (tabok) ── */}
-      <section className="bg-white">
+      <section className="section-top-shade bg-white">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <IntroTabs />
         </div>
       </section>
 
       {/* ── Záró CTA ─────────────────────────────────────── */}
-      <section className="teal-shift-bg relative overflow-hidden">
+      <section className="teal-shift-bg section-top-shade relative overflow-hidden">
         <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-20">
           <h2 className="text-2xl font-bold text-white md:text-3xl">
             Készen álltok a saját meghívótokra?
