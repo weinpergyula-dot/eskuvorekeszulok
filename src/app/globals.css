@@ -848,8 +848,25 @@ html.a11y-underline a { text-decoration: underline !important; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+/* Egy árnyalattal mélyebb változat – a főoldali gyorskategória-sáv
+   használja, hogy a világos csempék jobban elváljanak a háttértől. */
+.teal-shift-bg-deep {
+  background: linear-gradient(
+    130deg,
+    #517773 0%,
+    #5F817D 20%,
+    #779D99 38%,
+    #88ADA8 50%,
+    #779D99 62%,
+    #5F817D 80%,
+    #517773 100%
+  );
+  background-size: 260% 260%;
+  animation: teal-gshift 18s ease-in-out infinite;
+}
 @media (prefers-reduced-motion: reduce) {
-  .teal-shift-bg { animation: none; }
+  .teal-shift-bg,
+  .teal-shift-bg-deep { animation: none; }
 }
 
 /* ── SILVER minta meghívó (/meghivo-silver) ────────────────────────────

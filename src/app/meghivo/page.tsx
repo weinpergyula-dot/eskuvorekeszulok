@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check, MailOpen } from "lucide-react";
+import { MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
 import { IntroTabs } from "./_components/intro-tabs";
-import { LivePhonePreview } from "./_components/phone-preview";
+import { PackageTile, type Package } from "./_components/package-tile";
 
 export const metadata: Metadata = {
   title: "Digitális meghívók",
@@ -13,27 +13,35 @@ export const metadata: Metadata = {
 };
 
 /* ── Csomagok ────────────────────────────────────────────
-   Mindhárom csomaghoz élő minta tartozik: BASIC
-   (/zso-es-szili), SILVER (/meghivo-silver) és PREMIUM
-   (/meghivo-premium). */
+   Kollázs-elrendezés: két négyzetes csempe (BASIC, SILVER)
+   és alattuk a széles PREMIUM blokk. Mindhárom csomaghoz
+   élő minta tartozik: /zso-es-szili, /meghivo-silver és
+   /meghivo-premium. */
 
-const PACKAGES = [
+const PACKAGES: Package[] = [
   {
     id: "basic",
     name: "BASIC",
     tagline: "Minden, ami egy gyönyörű meghívóhoz kell",
     price: "14 900 Ft",
-    accent: "#84AAA6",
-    accentDark: "#4F7D78",
+    from: "#9CC0BC",
+    accent: "#6E9995",
+    to: "#3F6C68",
+    ink: "#2D5854",
     sampleHref: "/zso-es-szili",
     features: [
       "Egyoldalas, mobilra szabott meghívó",
       "Visszaszámláló a nagy napig",
       "Történetetek idővonalon",
       "A nap programja óráról órára",
-      "Hasznos infók (dress code, szállás…)",
-      "RSVP – online visszajelzés a vendégektől",
+      "RSVP – online visszajelzés",
       "Saját link a neveitekkel",
+    ],
+    extras: [
+      "Saját domain név",
+      "Nyomtatható PDF-változat",
+      "Kétnyelvű meghívó",
+      "Extra oldal (pl. ajándéklista)",
     ],
   },
   {
@@ -41,8 +49,10 @@ const PACKAGES = [
     name: "SILVER",
     tagline: "A BASIC csomag, extrákkal megspékelve",
     price: "24 900 Ft",
-    accent: "#8E99A8",
-    accentDark: "#5C6675",
+    from: "#A9B3C1",
+    accent: "#77828F",
+    to: "#4B5460",
+    ink: "#4B5460",
     sampleHref: "/meghivo-silver",
     features: [
       "Minden a BASIC csomagból",
@@ -50,29 +60,46 @@ const PACKAGES = [
       "Háttérzene a kedvenc dalotokkal",
       "Vendégkönyv – üzenetek a pártól",
       "Interaktív térkép a helyszínekhez",
+      "Sötét, elegáns arculat",
+    ],
+    extras: [
+      "Galéria 100 képig",
+      "Saját háttérzene feltöltése",
+      "Menüválasztó az RSVP-ben",
+      "Vendéglista exportálása",
     ],
   },
   {
     id: "premium",
     name: "PREMIUM",
-    tagline: "Teljesen egyedi, prémium élmény",
+    tagline: "Teljesen egyedi, prémium élmény – animációkkal",
     price: "59 900 Ft-tól",
-    accent: "#C65EA5",
-    accentDark: "#8F3671",
+    priceNote: "Az ár a választott extráktól függ",
+    from: "#CE7CB0",
+    accent: "#A8437F",
+    to: "#6B2455",
+    ink: "#8F3671",
     sampleHref: "/meghivo-premium",
     features: [
       "Minden a SILVER csomagból",
-      "Teljesen egyedi design és animációk",
+      "Animált boríték-felnyitás pecséttel",
+      "Lekaparható, játékos dátumfelfedés",
       "Élő galéria az esküvő napján",
       "Fotós- és videósanyag beépítése",
       "Korlátlan módosítás az esküvőig",
-      "Személyes konzultáció",
+    ],
+    extras: [
+      "Egyedi illusztráció és monogram",
+      "Videós köszöntő beágyazása",
+      "Élő fotófal a vendégeknek",
+      "Személyes konzultáció, saját designer",
     ],
   },
-] as const;
-
+];
 
 export default function MeghivoPage() {
+  const [basic, silver, premium] = PACKAGES;
+
   return (
     <>
       <PageHeader
@@ -82,9 +109,9 @@ export default function MeghivoPage() {
         backHref="/"
       />
 
-      {/* ── Csomagok ─────────────────────────────────────── */}
+      {/* ── Csomagok kollázsban ──────────────────────────── */}
       <section className="pkg-shift-bg">
-        <div className="mx-auto max-w-7xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
             Válassz csomagot!
           </h2>
@@ -93,72 +120,10 @@ export default function MeghivoPage() {
             hogy nagyban is lásd.
           </p>
 
-          <div className="mx-auto mt-10 grid max-w-5xl gap-8 sm:mt-14 sm:grid-cols-2 lg:grid-cols-3">
-            {PACKAGES.map((pkg) => (
-              <div
-                key={pkg.id}
-                id={pkg.id}
-                className="mx-auto flex w-full max-w-[21rem] flex-col overflow-hidden rounded-3xl border border-gray-200 shadow-sm transition-shadow hover:shadow-lg sm:max-w-none"
-                style={{
-                  background: `linear-gradient(180deg, ${pkg.accent}66 0%, ${pkg.accent}33 18%, ${pkg.accent}00 42%), linear-gradient(0deg, ${pkg.accent}59 0%, ${pkg.accent}26 14%, ${pkg.accent}00 34%), #ffffff`,
-                }}
-              >
-                {/* fejléc: színes sáv a csomag akcentusával */}
-                <div className="relative px-6 pb-6 pt-8 text-center">
-                  {/* felső élcsík */}
-                  <span
-                    className="absolute inset-x-0 top-0 h-2"
-                    style={{ backgroundColor: pkg.accent }}
-                    aria-hidden
-                  />
-                  <span
-                    className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-[15px] font-extrabold uppercase tracking-[0.22em] text-white shadow-md"
-                    style={{
-                      background: `linear-gradient(135deg, ${pkg.accent} 0%, ${pkg.accentDark} 100%)`,
-                    }}
-                  >
-                    {pkg.name}
-                  </span>
-                  <p className="mt-3 text-sm leading-snug text-gray-700">{pkg.tagline}</p>
-                </div>
-
-                {/* telefon */}
-                <div className="px-6 pb-2 pt-6">
-                  <LivePhonePreview href={pkg.sampleHref} label={pkg.name} />
-                </div>
-                <p className="px-6 text-center text-xs text-gray-400">
-                  Kattints a telefonra a minta megnyitásához
-                </p>
-
-                {/* tartalom */}
-                <ul className="flex-1 space-y-2.5 px-6 pb-6 pt-5 text-[15px] text-gray-700">
-                  {pkg.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2">
-                      <Check
-                        className="mt-0.5 h-4 w-4 shrink-0"
-                        strokeWidth={2.5}
-                        style={{ color: pkg.accent }}
-                      />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* ár + CTA */}
-                <div className="border-t border-white/60 px-6 py-5 text-center">
-                  <p className="text-2xl font-bold text-gray-900">{pkg.price}</p>
-                  <Link href="/kapcsolat" className="mt-3 block">
-                    <Button
-                      size="lg"
-                      className="w-full text-white hover:opacity-90"
-                      style={{ backgroundColor: pkg.accent }}
-                    >
-                      Ajánlatot kérek
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ))}
+          <div className="mt-10 grid gap-5 sm:mt-14 lg:grid-cols-2">
+            <PackageTile pkg={basic} variant="square" />
+            <PackageTile pkg={silver} variant="square" />
+            <PackageTile pkg={premium} variant="wide" />
           </div>
         </div>
       </section>
