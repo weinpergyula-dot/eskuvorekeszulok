@@ -1082,12 +1082,9 @@ html.a11y-underline a { text-decoration: underline !important; }
   50%      { transform: translate(40px, -34px); }
 }
 
-/* Ezüstös háttérlap a kivágott menyasszony (és a telefonok) mögé: lassan
-   vándorló fém-gradiens, rajta egy át-átfutó fénycsík. */
+/* Ezüstös bannerháttér: lassan vándorló fém-gradiens. A fénycsíkot külön
+   elem (.hero-sheen) adja, hogy a szöveg fölött ne fusson át. */
 .hero-silver {
-  /* A pozicionálást és a levágást a Tailwind osztályok adják (relative/absolute
-     + overflow-hidden), itt csak a festés van – különben ez a szabály
-     felülírná a hívó helyen megadott `absolute`-ot. */
   background: linear-gradient(
     145deg,
     #FDFEFE 0%,
@@ -1100,14 +1097,16 @@ html.a11y-underline a { text-decoration: underline !important; }
   background-size: 220% 220%;
   animation: hero-silver-shift 16s ease-in-out infinite;
 }
-.hero-silver::after {
-  content: "";
+/* Át-átfutó fénycsík a banner teljes hátterén (mindkét dián). A tartalom
+   utána következik a fában, így a szöveg fölött nem világít át. */
+.hero-sheen {
   position: absolute;
   inset: -20% -60%;
+  z-index: 0;
   background: linear-gradient(
     115deg,
     rgba(255, 255, 255, 0) 38%,
-    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.55) 50%,
     rgba(255, 255, 255, 0) 62%
   );
   animation: hero-silver-sheen 7.5s ease-in-out infinite;
@@ -1128,5 +1127,5 @@ html.a11y-underline a { text-decoration: underline !important; }
   .hero-slide-in,
   .hero-blob,
   .hero-silver,
-  .hero-silver::after { animation: none; }
+  .hero-sheen { animation: none; }
 }
