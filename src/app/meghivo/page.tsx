@@ -4,7 +4,7 @@ import { Check, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
 import { IntroTabs } from "./_components/intro-tabs";
-import { LivePhonePreview, PlaceholderPhonePreview } from "./_components/phone-preview";
+import { LivePhonePreview } from "./_components/phone-preview";
 
 export const metadata: Metadata = {
   title: "Digitális meghívók",
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 };
 
 /* ── Csomagok ────────────────────────────────────────────
-   A BASIC (/zso-es-szili) és a SILVER (/meghivo-silver)
-   csomaghoz élő minta tartozik; a PREMIUM mintája még
-   készül – ott üres telefon-előnézet jelenik meg. */
+   Mindhárom csomaghoz élő minta tartozik: BASIC
+   (/zso-es-szili), SILVER (/meghivo-silver) és PREMIUM
+   (/meghivo-premium). */
 
 const PACKAGES = [
   {
@@ -59,7 +59,7 @@ const PACKAGES = [
     price: "59 900 Ft-tól",
     accent: "#C65EA5",
     accentDark: "#8F3671",
-    sampleHref: null,
+    sampleHref: "/meghivo-premium",
     features: [
       "Minden a SILVER csomagból",
       "Teljesen egyedi design és animációk",
@@ -125,16 +125,10 @@ export default function MeghivoPage() {
 
                 {/* telefon */}
                 <div className="px-6 pb-2 pt-6">
-                  {pkg.sampleHref ? (
-                    <LivePhonePreview href={pkg.sampleHref} label={pkg.name} />
-                  ) : (
-                    <PlaceholderPhonePreview accent={pkg.accent} />
-                  )}
+                  <LivePhonePreview href={pkg.sampleHref} label={pkg.name} />
                 </div>
                 <p className="px-6 text-center text-xs text-gray-400">
-                  {pkg.sampleHref
-                    ? "Kattints a telefonra a minta megnyitásához"
-                    : "A minta jelenleg készül"}
+                  Kattints a telefonra a minta megnyitásához
                 </p>
 
                 {/* tartalom */}

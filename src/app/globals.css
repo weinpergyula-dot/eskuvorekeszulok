@@ -1129,3 +1129,407 @@ html.a11y-underline a { text-decoration: underline !important; }
   .hero-silver,
   .hero-sheen { animation: none; }
 }
+
+/* ── PREMIUM meghívó (/meghivo-premium) ────────────────────────────────
+   Mély szilvakék-lila alap, magenta és rozéarany akcentusokkal – a
+   /meghivo oldalon a PREMIUM csomaghoz tartozó szín. Minden szabály a
+   .prm-root alá van zárva, nem érinti a fő oldalt. A betűk ugyanazok a
+   saját hostolású készletek, mint a másik két mintán. */
+.prm-root {
+  --prm-bg: #1A0E1E;         /* alap háttér */
+  --prm-bg-2: #22132A;       /* váltakozó szekció-háttér */
+  --prm-card: #2A1733;       /* kártyák */
+  --prm-line: #562E5B;       /* keretek, vonalak */
+  --prm-text: #F6EAF3;       /* szöveg */
+  --prm-muted: #C3A3C0;      /* halvány szöveg */
+  --prm-accent: #C65EA5;     /* a csomag színe */
+  --prm-rose: #E8B4D4;       /* rozéarany fény */
+  --prm-gold: #F0D5A8;       /* pecsét- és fénycsillanás */
+
+  font-family: 'Jost', ui-sans-serif, system-ui, sans-serif;
+  background: var(--prm-bg);
+  color: var(--prm-text);
+  font-size: 16px;
+}
+.prm-root .prm-serif,
+.prm-root h1,
+.prm-root h2,
+.prm-root h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--prm-text);
+}
+.prm-root .prm-script {
+  font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
+  font-weight: 400;
+  color: var(--prm-rose);
+}
+.prm-root .prm-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--prm-muted);
+}
+.prm-root .prm-muted { color: var(--prm-muted); }
+.prm-root .prm-accent { color: var(--prm-rose); }
+.prm-root .prm-alt { background: var(--prm-bg-2); }
+
+/* Hero: lila-magenta fényfoltok az éjszakai alapon */
+.prm-root .prm-hero {
+  background:
+    radial-gradient(75% 55% at 50% -5%, rgba(198, 94, 165, 0.30), transparent 70%),
+    radial-gradient(55% 45% at 8% 100%, rgba(240, 213, 168, 0.12), transparent 70%),
+    var(--prm-bg);
+}
+
+.prm-root .prm-card {
+  background: var(--prm-card);
+  border: 1px solid var(--prm-line);
+  border-radius: 1rem;
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+}
+.prm-root .prm-icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: 1px solid var(--prm-line);
+  background: rgba(232, 180, 212, 0.08);
+  color: var(--prm-rose);
+}
+.prm-root .prm-monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 9999px;
+  font-size: 2rem;
+  border: 1px solid var(--prm-line);
+  box-shadow: 0 0 0 6px var(--prm-bg), 0 0 0 7px rgba(232, 180, 212, 0.28);
+}
+.prm-root .prm-rule {
+  position: relative;
+  width: 10rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--prm-line) 20%, var(--prm-line) 80%, transparent);
+}
+.prm-root .prm-rule::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--prm-rose);
+}
+.prm-root .prm-count-box {
+  background: rgba(232, 180, 212, 0.07);
+  border: 1px solid var(--prm-line);
+}
+.prm-root .prm-input {
+  width: 100%;
+  border: 1px solid var(--prm-line);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.65rem 0.9rem;
+  font-size: 15px;
+  color: var(--prm-text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.prm-root .prm-input:focus {
+  border-color: var(--prm-accent);
+  box-shadow: 0 0 0 3px rgba(198, 94, 165, 0.22);
+}
+.prm-root .prm-input::placeholder { color: #8E6D8C; }
+
+.prm-root .prm-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.prm-root .prm-reveal.is-in { opacity: 1; transform: none; }
+
+/* ── Satírozott dátum ────────────────────────────────────────────────
+   A betűk körvonala „megrajzolódik”, majd a ferde vonalkás (satírozott)
+   kitöltés úszik be – mint egy ceruzával árnyékolt felirat. */
+.prm-root .prm-sketch-outline {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+}
+.prm-root .is-in .prm-sketch-outline {
+  animation: prm-draw 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.prm-root .prm-sketch-fill { opacity: 0; }
+.prm-root .is-in .prm-sketch-fill {
+  animation: prm-hatch-in 1.4s ease 1.1s forwards;
+}
+.prm-root .prm-sketch-underline {
+  stroke-dasharray: 460;
+  stroke-dashoffset: 460;
+}
+.prm-root .is-in .prm-sketch-underline {
+  animation: prm-draw-short 1.1s ease 2.1s forwards;
+}
+@keyframes prm-draw { to { stroke-dashoffset: 0; } }
+@keyframes prm-draw-short { to { stroke-dashoffset: 0; } }
+@keyframes prm-hatch-in { to { opacity: 1; } }
+
+/* ── Boríték-nyitó bevezető ──────────────────────────────────────────
+   A látogató a pecsétre kattint: a viaszpecsét széttörik, a fül kinyílik,
+   fény tör elő a borítékból, majd a kártya kiemelkedik és a réteg elúszik. */
+.prm-env-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(70% 50% at 50% 40%, rgba(198, 94, 165, 0.26), transparent 70%),
+    radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%),
+    #150B18;
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+.prm-env-layer[data-phase="done"] { opacity: 0; visibility: hidden; }
+
+.prm-env-scene { perspective: 1500px; width: min(88vw, 420px); }
+/* A felirat elhalványul, amikor a kártya kiemelkedik a borítékból */
+.prm-env-caption { transition: opacity 0.45s ease; }
+[data-phase="opening"] .prm-env-caption,
+[data-phase="card"] .prm-env-caption,
+[data-phase="done"] .prm-env-caption { opacity: 0; }
+.prm-env {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  transform-style: preserve-3d;
+  animation: prm-env-float 6s ease-in-out infinite;
+}
+@keyframes prm-env-float {
+  0%, 100% { transform: translateY(0) rotateX(6deg); }
+  50%      { transform: translateY(-10px) rotateX(6deg); }
+}
+.prm-env-back,
+.prm-env-front,
+.prm-env-flap {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+}
+.prm-env-back {
+  transform: translateZ(0);
+  background: linear-gradient(150deg, #3A1E41 0%, #2A1330 45%, #4A2450 100%);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(232, 180, 212, 0.22);
+}
+/* A boríték zsebe (elülső lap) – felül V alakú kivágással */
+.prm-env-front {
+  transform: translateZ(2px);
+  background: linear-gradient(160deg, #3C1B44 0%, #2A1230 58%, #46203F 100%);
+  clip-path: polygon(0 12%, 50% 62%, 100% 12%, 100% 100%, 0 100%);
+  box-shadow: inset 0 0 0 1px rgba(232, 180, 212, 0.18);
+}
+/* A lezáró fül – kattintásra felfelé nyílik ki */
+.prm-env-flap {
+  height: 62%;
+  transform-origin: top center;
+  transform: translateZ(3px) rotateX(0deg);
+  background: linear-gradient(180deg, #6E3875 0%, #4C2454 62%, #35163B 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  box-shadow: inset 0 0 0 1px rgba(232, 180, 212, 0.22);
+  transition: transform 1.05s cubic-bezier(0.66, 0, 0.34, 1);
+}
+[data-phase="opening"] .prm-env-flap,
+[data-phase="card"] .prm-env-flap,
+[data-phase="done"] .prm-env-flap { transform: translateZ(3px) rotateX(-172deg); }
+
+/* Viaszpecsét a fül csúcsán */
+.prm-env-seal {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 5.2rem;
+  height: 5.2rem;
+  transform: translate(-50%, -50%) translateZ(6px);
+  /* szabálytalan, viaszszerű perem */
+  border-radius: 47% 53% 51% 49% / 51% 47% 53% 49%;
+  border: none;
+  cursor: pointer;
+  color: #4A1030;
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  background: radial-gradient(circle at 34% 30%, #F6DCEB 0%, #E38FC1 32%, #B44489 66%, #7E2760 100%);
+  box-shadow: 0 12px 26px -8px rgba(0, 0, 0, 0.8), inset 0 -3px 8px rgba(90, 20, 66, 0.7),
+    inset 0 3px 8px rgba(255, 255, 255, 0.45), 0 0 0 0 rgba(232, 180, 212, 0.55);
+  animation: prm-seal-pulse 2.6s ease-in-out infinite;
+  transition: transform 0.25s ease;
+}
+.prm-env-seal::after {
+  /* belső gyűrű, mint a viaszba nyomott pecsétnyomó pereme */
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: inherit;
+  border: 1px solid rgba(74, 16, 48, 0.35);
+  pointer-events: none;
+}
+.prm-env-seal:hover { transform: translate(-50%, -50%) translateZ(6px) scale(1.06); }
+@keyframes prm-seal-pulse {
+  0%, 100% { box-shadow: 0 12px 26px -8px rgba(0,0,0,0.8), inset 0 -3px 8px rgba(90,20,66,0.7), inset 0 3px 8px rgba(255,255,255,0.45), 0 0 0 0 rgba(232,180,212,0.5); }
+  60%      { box-shadow: 0 12px 26px -8px rgba(0,0,0,0.8), inset 0 -3px 8px rgba(90,20,66,0.7), inset 0 3px 8px rgba(255,255,255,0.45), 0 0 0 18px rgba(232,180,212,0); }
+}
+[data-phase="opening"] .prm-env-seal,
+[data-phase="card"] .prm-env-seal,
+[data-phase="done"] .prm-env-seal {
+  animation: prm-seal-break 0.75s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+  pointer-events: none;
+}
+@keyframes prm-seal-break {
+  0%   { transform: translate(-50%, -50%) translateZ(6px) scale(1); opacity: 1; }
+  35%  { transform: translate(-50%, -50%) translateZ(6px) scale(1.22) rotate(-8deg); opacity: 1; }
+  100% { transform: translate(-50%, -110%) translateZ(6px) scale(0.55) rotate(-34deg); opacity: 0; }
+}
+
+/* A meghívókártya – a zseb mögül emelkedik ki */
+.prm-env-card {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 6%;
+  height: 116%;
+  transform: translateZ(1px) translateY(0);
+  border-radius: 8px;
+  padding: 1.6rem 1rem;
+  text-align: center;
+  background: linear-gradient(165deg, #FDF6FA 0%, #F3E2EE 55%, #FBEFF6 100%);
+  color: #4A1B3D;
+  box-shadow: 0 24px 50px -20px rgba(0, 0, 0, 0.8);
+  transition: transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.5s ease;
+  opacity: 0;
+}
+/* Kiemelkedéskor a kártya előre is jön, így egyértelműen a kinyílt fül elé
+   kerül (a 3D-rendezés a hajtás vonalánál különben bizonytalan). */
+[data-phase="card"] .prm-env-card,
+[data-phase="done"] .prm-env-card {
+  opacity: 1;
+  transform: translateZ(9px) translateY(-62%);
+}
+
+/* Fénykitörés a boríték szájából + forgó fénysugarak */
+.prm-env-burst {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 130%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) translateZ(5px);
+  border-radius: 9999px;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255, 240, 250, 0.95) 0%, rgba(232, 180, 212, 0.6) 26%, rgba(198, 94, 165, 0) 62%);
+}
+[data-phase="opening"] .prm-env-burst,
+[data-phase="card"] .prm-env-burst,
+[data-phase="done"] .prm-env-burst {
+  animation: prm-burst 1.9s ease-out 0.45s forwards;
+}
+@keyframes prm-burst {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translateZ(5px) scale(0.2); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) translateZ(5px) scale(1.6); }
+}
+.prm-env-rays {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 190%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) translateZ(4px);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 240, 250, 0.5) 0deg, transparent 9deg,
+    rgba(255, 240, 250, 0.32) 22deg, transparent 34deg,
+    rgba(255, 240, 250, 0.5) 52deg, transparent 62deg,
+    rgba(255, 240, 250, 0.28) 84deg, transparent 96deg,
+    rgba(255, 240, 250, 0.46) 128deg, transparent 140deg,
+    rgba(255, 240, 250, 0.3) 176deg, transparent 190deg,
+    rgba(255, 240, 250, 0.44) 232deg, transparent 244deg,
+    rgba(255, 240, 250, 0.3) 286deg, transparent 300deg,
+    rgba(255, 240, 250, 0.42) 330deg, transparent 344deg
+  );
+  mask-image: radial-gradient(circle, #000 12%, transparent 62%);
+  -webkit-mask-image: radial-gradient(circle, #000 12%, transparent 62%);
+}
+[data-phase="opening"] .prm-env-rays,
+[data-phase="card"] .prm-env-rays,
+[data-phase="done"] .prm-env-rays {
+  animation: prm-rays 2.6s ease-out 0.5s forwards;
+}
+@keyframes prm-rays {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translateZ(4px) rotate(0deg) scale(0.4); }
+  28%  { opacity: 0.95; }
+  100% { opacity: 0; transform: translate(-50%, -50%) translateZ(4px) rotate(52deg) scale(1.3); }
+}
+
+/* Végigfutó fénycsillanás a zárt borítékon */
+.prm-env-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: 10px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.prm-env-shine::after {
+  content: "";
+  position: absolute;
+  inset: -40% -60%;
+  background: linear-gradient(112deg, transparent 40%, rgba(255, 245, 252, 0.55) 50%, transparent 60%);
+  animation: prm-env-shine 4.5s ease-in-out infinite;
+}
+@keyframes prm-env-shine {
+  0%, 100% { transform: translateX(-75%); }
+  55%      { transform: translateX(75%); }
+}
+[data-phase="opening"] .prm-env-shine,
+[data-phase="card"] .prm-env-shine,
+[data-phase="done"] .prm-env-shine { opacity: 0; transition: opacity 0.4s; }
+
+/* Lebegő fénypontok a réteg hátterében */
+.prm-spark {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 244, 252, 0.95), rgba(232, 180, 212, 0) 68%);
+  animation: prm-spark-float 9s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes prm-spark-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.25; }
+  50%      { transform: translateY(-26px) scale(1.35); opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prm-root .prm-reveal { opacity: 1; transform: none; transition: none; }
+  .prm-root .prm-sketch-outline,
+  .prm-root .prm-sketch-underline { stroke-dashoffset: 0; animation: none; }
+  .prm-root .prm-sketch-fill { opacity: 1; animation: none; }
+  .prm-env,
+  .prm-env-seal,
+  .prm-env-shine::after,
+  .prm-spark { animation: none; }
+  .prm-env-flap,
+  .prm-env-card { transition: none; }
+}

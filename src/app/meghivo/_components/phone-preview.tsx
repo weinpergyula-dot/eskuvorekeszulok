@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Clock, Heart, Maximize2, X } from "lucide-react";
+import { Maximize2, X } from "lucide-react";
 
 /**
  * Telefon-mockup a csomagkártyákon. Az élő minta kicsinyítve, printscreen-
@@ -90,42 +90,5 @@ export function LivePhonePreview({ href, label }: { href: string; label: string 
         </div>
       )}
     </>
-  );
-}
-
-export function PlaceholderPhonePreview({ accent }: { accent: string }) {
-  return (
-    <PhoneFrame>
-      <div
-        className="flex h-full w-full flex-col items-center px-5 pb-6 pt-12 text-center"
-        style={{ background: `linear-gradient(180deg, ${accent}22 0%, #ffffff 55%)` }}
-      >
-        {/* vázlatos meghívó-előnézet */}
-        <div
-          className="flex h-14 w-14 items-center justify-center rounded-full border-2"
-          style={{ borderColor: accent, color: accent }}
-        >
-          <Heart className="h-6 w-6" strokeWidth={1.5} />
-        </div>
-        <div className="mt-4 h-2.5 w-32 rounded-full bg-gray-300" />
-        <div className="mt-2 h-2.5 w-24 rounded-full bg-gray-200" />
-        <div className="mt-6 h-px w-16" style={{ backgroundColor: accent }} />
-        <div className="mt-6 grid w-full grid-cols-4 gap-2">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-10 rounded-lg bg-gray-100" />
-          ))}
-        </div>
-        <div className="mt-5 h-2 w-full rounded-full bg-gray-100" />
-        <div className="mt-2 h-2 w-4/5 rounded-full bg-gray-100" />
-        <div className="mt-2 h-2 w-full rounded-full bg-gray-100" />
-        <div
-          className="mt-auto flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold text-white"
-          style={{ backgroundColor: accent }}
-        >
-          <Clock className="h-3.5 w-3.5" />
-          Minta hamarosan
-        </div>
-      </div>
-    </PhoneFrame>
   );
 }
