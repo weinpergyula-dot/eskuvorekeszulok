@@ -1008,22 +1008,6 @@ html.a11y-underline a { text-decoration: underline !important; }
   .mgh-tilt { transition: none; }
 }
 
-/* ── Főoldali banner: haladásjelző csík és a mobil felirat beúszása ──── */
-@keyframes hero-progress {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-.hero-progress-fill {
-  transform-origin: left;
-  animation: hero-progress var(--hero-slide-ms, 6000ms) linear forwards;
-}
-@keyframes hero-bubble-in {
-  from { opacity: 0; transform: translateX(-22px); }
-  to   { opacity: 1; transform: none; }
-}
-[data-slide-active="true"] .hero-bubble {
-  animation: hero-bubble-in 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s both;
-}
 /* ── Banner: átlósan megdöntött telefonpár ──────────────────────────────
    Két, egymással párhuzamosan döntött készülék: az elülső (nagyobb)
    jobbra-fent, a hátsó (kisebb) balra-lent, egymást átfedve. Mobilon
@@ -1036,23 +1020,6 @@ html.a11y-underline a { text-decoration: underline !important; }
 .hero-duo-back {
   transform: rotate(19deg) rotateY(-17deg) rotateX(7deg) scale(0.86);
   transform-style: preserve-3d;
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-progress-fill { animation: none; transform: scaleX(1); }
-  [data-slide-active="true"] .hero-bubble { animation: none; }
-}
-
-/* ── Banner: lebegő árnyék a készülékek alatt ────────────────────────── */
-.hero-float-shadow {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: -26px;
-  height: 34px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(10, 28, 26, 0.62), rgba(10, 28, 26, 0) 72%);
-  filter: blur(12px);
-  pointer-events: none;
 }
 
 /* ── /meghivo csomagok: halvány teal felül és alul, középen fehér ─────
@@ -1068,4 +1035,98 @@ html.a11y-underline a { text-decoration: underline !important; }
     rgba(132, 170, 166, 0.10) 82%,
     rgba(132, 170, 166, 0.26) 100%
   );
+}
+
+/* ── Főoldali banner: a /yettel_web bannerének mozgása és kiegészítői ──
+   A dia teljes tartalma egyben úszik be jobbról (szöveg + ajánlatkártya +
+   kép), a háttéren pedig két lebegő, elmosott folt világítja meg a teal
+   gradienst. Csak a színek térnek el a yettel-változattól. */
+.hero-slide-in {
+  animation: hero-slide-in 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes hero-slide-in {
+  from { opacity: 0; transform: translateX(28%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.hero-blob {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+.hero-blob-1 {
+  width: 280px;
+  height: 280px;
+  top: -70px;
+  right: -80px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), transparent 65%);
+  animation: hero-blob-float1 9s ease-in-out infinite;
+}
+.hero-blob-2 {
+  width: 240px;
+  height: 240px;
+  bottom: 120px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(214, 232, 230, 0.75), transparent 65%);
+  animation: hero-blob-float2 12s ease-in-out infinite;
+}
+@keyframes hero-blob-float1 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-34px, 44px); }
+}
+@keyframes hero-blob-float2 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(40px, -34px); }
+}
+
+/* Ezüstös háttérlap a kivágott menyasszony (és a telefonok) mögé: lassan
+   vándorló fém-gradiens, rajta egy át-átfutó fénycsík. */
+.hero-silver {
+  /* A pozicionálást és a levágást a Tailwind osztályok adják (relative/absolute
+     + overflow-hidden), itt csak a festés van – különben ez a szabály
+     felülírná a hívó helyen megadott `absolute`-ot. */
+  background: linear-gradient(
+    145deg,
+    #FDFEFE 0%,
+    #D2DBDF 18%,
+    #FFFFFF 34%,
+    #B4C2C9 56%,
+    #EDF2F4 76%,
+    #C3CFD5 100%
+  );
+  background-size: 220% 220%;
+  animation: hero-silver-shift 16s ease-in-out infinite;
+}
+.hero-silver::after {
+  content: "";
+  position: absolute;
+  inset: -20% -60%;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0) 62%
+  );
+  animation: hero-silver-sheen 7.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hero-silver-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes hero-silver-sheen {
+  0%       { transform: translateX(-70%); opacity: 0; }
+  18%      { opacity: 1; }
+  55%      { transform: translateX(70%); opacity: 0; }
+  100%     { transform: translateX(70%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-in,
+  .hero-blob,
+  .hero-silver,
+  .hero-silver::after { animation: none; }
 }
