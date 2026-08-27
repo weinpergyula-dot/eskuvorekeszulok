@@ -1296,7 +1296,29 @@ html.a11y-underline a { text-decoration: underline !important; }
     #150B18;
   transition: opacity 0.8s ease, visibility 0.8s;
 }
-.prm-env-layer[data-phase="done"] { opacity: 0; visibility: hidden; }
+.prm-env-layer[data-phase="done"] {
+  opacity: 0;
+  visibility: hidden;
+  /* A háttér csak azután húzódik el, hogy a boríték már eltűnt – így a
+     fehér lapról egyenesen a meghívóra érkezünk. */
+  transition: opacity 0.75s ease 0.25s, visibility 1s;
+}
+/* Záráskor a boríték, a szikrák és a felirat gyorsan elhalványulnak… */
+[data-phase="done"] .prm-env-back,
+[data-phase="done"] .prm-env-front,
+[data-phase="done"] .prm-env-flap,
+[data-phase="done"] .prm-env-foot,
+[data-phase="done"] .prm-spark {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+/* …a lap pedig utolsóként, kicsit megnőve adja át a helyét a meghívónak. */
+[data-phase="done"] .prm-env-card {
+  transform: translateZ(9px) translateY(-72%) scale(1.06);
+  opacity: 0;
+  transition: transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) 0.2s,
+    opacity 0.55s ease 0.35s;
+}
 
 .prm-env-scene { perspective: 1500px; width: min(88vw, 420px); }
 /* A felirat elhalványul, amikor a kártya kiemelkedik a borítékból */
@@ -1434,8 +1456,7 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 /* Kiemelkedéskor a kártya előre is jön, így egyértelműen a kinyílt fül elé
    kerül (a 3D-rendezés a hajtás vonalánál különben bizonytalan). */
-[data-phase="card"] .prm-env-card,
-[data-phase="done"] .prm-env-card {
+[data-phase="card"] .prm-env-card {
   opacity: 1;
   transform: translateZ(9px) translateY(-72%);
 }
@@ -1615,58 +1636,79 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 
 /* ── Időegyenes a nap programjához ───────────────────────────────────
-   Előbb a tengely „húzódik meg” felülről lefelé, majd sorban úsznak be az
-   események – mindegyik mellé kipattan egy pont a tengelyen. */
+   Középen fut a tengely, balra az időpont, jobbra az esemény. Semmi nem
+   töltődik be előre: minden sor akkor úszik be – és akkor világít ki
+   mellette a tengelyszakasz –, amikor a képernyő közepéig felér. */
 .prm-root .prm-timeline {
-  position: relative;
   margin: 0;
-  padding: 0 0 0 2.9rem;
+  padding: 0;
   list-style: none;
 }
-.prm-root .prm-timeline::before {
+.prm-root .prm-tl-item {
+  display: grid;
+  grid-template-columns: 3.4rem 1.5rem 1fr;
+  align-items: stretch;
+}
+@media (min-width: 768px) {
+  .prm-root .prm-tl-item { grid-template-columns: 1fr 2.4rem 1fr; }
+}
+
+/* Időpont – a tengely bal oldalán, jobbra zárva */
+.prm-root .prm-tl-time {
+  padding: 1.35rem 0.7rem 0 0;
+  text-align: right;
+  font-size: 1.15rem;
+  color: var(--prm-rose);
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@media (min-width: 768px) {
+  .prm-root .prm-tl-time { padding-right: 1.4rem; font-size: 1.4rem; }
+}
+.prm-root .prm-tl-item.is-in .prm-tl-time { opacity: 1; transform: none; }
+
+/* A tengely: halvány alapvonal, rajta a kivilágosodó szakasz */
+.prm-root .prm-tl-axis { position: relative; }
+.prm-root .prm-tl-axis::before,
+.prm-root .prm-tl-axis::after {
   content: "";
   position: absolute;
-  left: 0.86rem;
-  top: 0.4rem;
-  bottom: 0.4rem;
+  left: 50%;
+  top: 0;
+  bottom: 0;
   width: 2px;
+  margin-left: -1px;
   border-radius: 2px;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    var(--prm-accent) 6%,
-    var(--prm-line) 50%,
-    var(--prm-accent) 94%,
-    transparent 100%
-  );
+}
+.prm-root .prm-tl-axis::before { background: var(--prm-line); opacity: 0.5; }
+.prm-root .prm-tl-axis::after {
+  background: linear-gradient(180deg, var(--prm-accent), var(--prm-rose));
   transform: scaleY(0);
   transform-origin: top;
-  transition: transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.prm-root .prm-timeline.is-in::before { transform: scaleY(1); }
-
-.prm-root .prm-tl-item {
-  position: relative;
-  opacity: 0;
-  transform: translateX(26px);
-  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.prm-root .prm-tl-item + .prm-tl-item { margin-top: 1rem; }
-.prm-root .prm-timeline.is-in .prm-tl-item { opacity: 1; transform: none; }
+.prm-root .prm-tl-item.is-in .prm-tl-axis::after { transform: scaleY(1); }
+/* A tengely felül és alul finoman elhal */
+.prm-root .prm-tl-item:first-child .prm-tl-axis::before,
+.prm-root .prm-tl-item:first-child .prm-tl-axis::after { top: 1.6rem; }
+.prm-root .prm-tl-item:last-child .prm-tl-axis::before,
+.prm-root .prm-tl-item:last-child .prm-tl-axis::after { bottom: 1.6rem; }
 
 .prm-root .prm-tl-dot {
   position: absolute;
-  left: -2.32rem;
+  left: 50%;
   top: 1.55rem;
-  width: 0.85rem;
-  height: 0.85rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-left: -0.4rem;
   border-radius: 9999px;
   background: var(--prm-bg);
   border: 2px solid var(--prm-accent);
   transform: scale(0);
 }
-.prm-root .prm-timeline.is-in .prm-tl-dot {
-  animation: prm-dot-pop 0.55s cubic-bezier(0.34, 1.5, 0.64, 1) both;
+.prm-root .prm-tl-item.is-in .prm-tl-dot {
+  animation: prm-dot-pop 0.55s cubic-bezier(0.34, 1.5, 0.64, 1) 0.25s both;
 }
 @keyframes prm-dot-pop {
   0%   { transform: scale(0); box-shadow: 0 0 0 0 rgba(198, 94, 165, 0.5); }
@@ -1674,9 +1716,22 @@ html.a11y-underline a { text-decoration: underline !important; }
   100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(198, 94, 165, 0.14); }
 }
 
+/* Esemény – a tengely jobb oldalán */
+.prm-root .prm-tl-body {
+  padding: 0 0 1.1rem 0.9rem;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.65s ease 0.1s, transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) 0.1s;
+}
+@media (min-width: 768px) {
+  .prm-root .prm-tl-body { padding-left: 1.4rem; }
+}
+.prm-root .prm-tl-item.is-in .prm-tl-body { opacity: 1; transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
-  .prm-root .prm-timeline::before { transform: scaleY(1); transition: none; }
-  .prm-root .prm-tl-item { opacity: 1; transform: none; transition: none; }
+  .prm-root .prm-tl-axis::after { transform: scaleY(1); transition: none; }
+  .prm-root .prm-tl-time,
+  .prm-root .prm-tl-body { opacity: 1; transform: none; transition: none; }
   .prm-root .prm-tl-dot { transform: scale(1); animation: none; }
   .prm-env-date-in { animation: none; }
 }

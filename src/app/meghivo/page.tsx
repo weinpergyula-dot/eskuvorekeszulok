@@ -80,7 +80,6 @@ export default function MeghivoPage() {
         description="Felejtsd el a papírt! Készíttess mobilra szabott, interaktív esküvői meghívót, amit egyetlen linkkel elküldhetsz minden vendégednek – visszaszámlálóval, programmal és online visszajelzéssel."
         icon={MailOpen}
         backHref="/"
-        bottomBg="#DFE9E8"
       />
 
       {/* ── Csomagok ─────────────────────────────────────── */}

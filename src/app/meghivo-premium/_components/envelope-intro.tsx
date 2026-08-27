@@ -60,10 +60,11 @@ export function EnvelopeIntro({
   }, [phase]);
 
   // A kártya kiemelkedése után a satírozásra várunk: csak akkor lépünk
-  // tovább, ha mindhárom mező előbukkant.
+  // tovább, ha mindhárom mező előbukkant. A felfedett dátum még két
+  // másodpercig a lapon marad, utána a lap átadja a helyét a meghívónak.
   useEffect(() => {
     if (phase !== "card" || !scratched) return;
-    const toDone = setTimeout(() => setPhase("done"), 1900);
+    const toDone = setTimeout(() => setPhase("done"), 2000);
     return () => clearTimeout(toDone);
   }, [phase, scratched]);
 
