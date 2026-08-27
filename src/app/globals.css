@@ -1061,13 +1061,6 @@ html.a11y-underline a { text-decoration: underline !important; }
   transform: rotate(19deg) rotateY(-17deg) rotateX(7deg) scale(0.86);
   transform-style: preserve-3d;
 }
-/* Csak md-től döntött: mobilon a készülék állva marad. */
-@media (min-width: 768px) {
-  .hero-tilt-md {
-    transform: rotate(19deg) rotateY(-17deg) rotateX(7deg);
-    transform-style: preserve-3d;
-  }
-}
 
 /* ── /meghivo csomagcsempék: apró fehér fényjáték ─────────────────────
    A korábbi átlós csíkozás helyett szórt, lágy fénypontok úsznak nagyon

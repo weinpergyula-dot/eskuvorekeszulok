@@ -290,12 +290,12 @@ export function HeroCarousel() {
             {slide.key === "meghivo" ? (
               /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
                  a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
-                 Mobilon csak a PREMIUM fér el, ott állva, kis alsó túllógással. */
-              <div className="hero-duo absolute inset-x-0 bottom-[-7%] top-0 flex items-end justify-center md:bottom-[-16%]">
+                 Mobilon csak a BASIC fér el. */
+              <div className="hero-duo absolute inset-x-0 bottom-[-16%] top-0 flex items-end justify-center">
                 <Phone
-                  className="hero-duo-front hidden w-[25%] md:block"
+                  className="hero-duo-front w-[58%] md:w-[25%]"
                   src="/meghivo/slide-basic.webp"
-                  alt="BASIC digitális esküvői meghívó telefonon"
+                  alt={slide.alt}
                 />
                 <Phone
                   className="hero-duo-front hidden w-[31%] md:-ml-[5%] md:block"
@@ -303,9 +303,9 @@ export function HeroCarousel() {
                   alt="SILVER digitális esküvői meghívó telefonon"
                 />
                 <Phone
-                  className="hero-tilt-md w-[58%] md:-ml-[5%] md:w-[38%]"
+                  className="hero-duo-front hidden w-[38%] md:-ml-[5%] md:block"
                   src="/meghivo/slide-premium.webp"
-                  alt={slide.alt}
+                  alt="PREMIUM digitális esküvői meghívó telefonon"
                 />
               </div>
             ) : (
