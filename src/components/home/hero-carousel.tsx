@@ -20,6 +20,33 @@ import { ProviderRegisterButton } from "./provider-register-button";
 const SLIDE_COUNT = 2;
 const SLIDE_MS = 6000;
 
+/** A mobil diák tartalma – rövid, kétszínű cím, leírás és egy üveghatású
+    ajánlat (a /yettel_web mobil bannerének felépítése). */
+const MOBILE_SLIDES = [
+  {
+    key: "koszonto",
+    lead: "ESKÜVŐRE",
+    accent: "KÉSZÜLSZ?",
+    blurb: "Fotós, zenekar, vőfély vagy helyszín – minden szolgáltató egy helyen.",
+    badge: "Ingyenes",
+    offer: "Több száz szolgáltató",
+    offerSub: "Kategóriák és megyék szerint",
+    cta: "Megnézem",
+    href: "#szolgaltatok",
+  },
+  {
+    key: "meghivo",
+    lead: "DIGITÁLIS",
+    accent: "MEGHÍVÓK",
+    blurb: "A ti nevetekkel, egyetlen linken – a vendégek telefonján bármikor.",
+    badge: "Új",
+    offer: "Csomagok már 14 900 Ft-tól",
+    offerSub: "Élő minták, online visszajelzéssel",
+    cta: "Megnézem a mintákat",
+    href: "/meghivo",
+  },
+] as const;
+
 /** Egy készülék a banneren: keret + a meghívó-minta képe. */
 function Phone({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (
@@ -73,65 +100,84 @@ export function HeroCarousel() {
       aria-roledescription="carousel"
       aria-label="Főoldali banner"
     >
-      {/* ── Mobil: a menyasszonyos dia arányában (4/5) ── */}
-      <div className="grid sm:hidden" style={{ aspectRatio: "4/5" }}>
-        {/* 1. dia – köszöntő fotó (a felirat a képen van) */}
-        <div className={slideCls(0)} aria-hidden={current !== 0}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/hero1_mobile.png" alt="Esküvőre készülsz?" className="h-full w-full object-cover" />
-        </div>
+      {/* ── Mobil: a /yettel_web bannerének felépítése – felül kétszínű
+             rövid cím és leírás, alul balra üveghatású ajánlatkártya,
+             jobbra a kicsinyített kép, ami a banner alsó élénél kifut. ── */}
+      <div className="grid sm:hidden" style={{ aspectRatio: "5/6" }}>
+        {MOBILE_SLIDES.map((slide, i) => (
+          <div
+            key={slide.key}
+            className={`${slideCls(i)} teal-shift-bg relative overflow-hidden`}
+            aria-hidden={current !== i}
+            data-slide-active={current === i}
+          >
+            {/* fehér fátyol, hogy világosabb legyen a gradiens */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(120% 80% at 25% 0%, rgba(255,255,255,0.34), rgba(255,255,255,0) 62%)",
+              }}
+            />
 
-        {/* 2. dia – digitális meghívó: jobbra a megdöntött telefon, balról
-            beúszó fehér felirat-blokk (az 1. dia buborékjának mintájára) */}
-        <div
-          className={`${slideCls(1)} teal-shift-bg relative overflow-hidden`}
-          aria-hidden={current !== 1}
-          data-slide-active={current === 1}
-        >
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(120% 80% at 25% 0%, rgba(255,255,255,0.32), rgba(255,255,255,0) 62%)",
-            }}
-          />
+            {/* Kép: jobbra igazítva, az alsó élnél szándékosan kifut – a
+                banner overflow-hidden-je vágja el. */}
+            <div className={`absolute bottom-0 right-0 ${slide.key === "meghivo" ? "w-[42%]" : "w-[56%]"}`}>
+              {slide.key === "meghivo" ? (
+                <div className="hero-duo relative -mb-9 -mr-3">
+                  <Phone
+                    className="hero-duo-front"
+                    src="/meghivo/slide-basic.webp"
+                    alt="Digitális esküvői meghívó telefonon"
+                  />
+                  <span className="hero-float-shadow" aria-hidden />
+                </div>
+              ) : (
+                <div className="-mb-4 -mr-2 overflow-hidden rounded-tl-[1.6rem] shadow-[0_26px_50px_-20px_rgba(20,45,42,0.7)] ring-1 ring-white/40">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/hero-bride-mobile.webp"
+                    alt="Menyasszony csokorral"
+                    className="block aspect-[5/8] w-full object-cover object-top"
+                  />
+                </div>
+              )}
+            </div>
 
-          {/* megdöntött készülék jobbra (a desktop párosból az elülső) */}
-          <div className="hero-duo absolute right-[-2%] top-1/2 w-[46%] -translate-y-1/2">
-            <div className="relative">
-              <Phone
-                className="hero-duo-front"
-                src="/meghivo/slide-basic.webp"
-                alt="Digitális esküvői meghívó telefonon"
-              />
-              <span className="hero-float-shadow" aria-hidden />
+            <div className="relative flex h-full flex-col px-5 pt-7">
+              <h2 className="leading-[1.05]" style={{ fontWeight: 950 }}>
+                <span className="text-white" style={{ fontSize: 32 }}>
+                  {slide.lead}{" "}
+                </span>
+                <span className="text-[#2D5854]" style={{ fontSize: 32 }}>
+                  {slide.accent}
+                </span>
+              </h2>
+              <p className="mt-2.5 max-w-[17rem] text-[15px] leading-snug text-white/95">
+                {slide.blurb}
+              </p>
+
+              {/* Üveghatású ajánlat a bal alsó sarokban, a képre lógva */}
+              <div className="hero-bubble absolute bottom-16 left-5 z-10 w-[54%] max-w-[192px] rounded-[18px] border border-white/60 bg-white/35 p-3 shadow-[0_18px_40px_-18px_rgba(20,45,42,0.55)] backdrop-blur-md">
+                <span className="inline-flex items-center rounded-full bg-[#2D5854] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                  {slide.badge}
+                </span>
+                <p className="mt-1.5 text-sm font-extrabold leading-tight text-[#2D5854]">
+                  {slide.offer}
+                </p>
+                <p className="mt-0.5 text-[11px] leading-tight text-[#2D5854]/80">{slide.offerSub}</p>
+                <Link
+                  href={slide.href}
+                  className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-white px-3 py-2 text-xs font-bold text-[#2D5854] shadow-sm"
+                >
+                  {slide.cta}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
-
-          {/* fehér felirat-blokk balról */}
-          <div className="hero-bubble absolute left-0 top-[16%] max-w-[70%] rounded-r-[2rem] bg-white/95 py-5 pl-5 pr-7 shadow-[0_18px_40px_-18px_rgba(20,45,42,0.55)] backdrop-blur-sm">
-            <p
-              className="font-heading text-[#84AAA6]"
-              style={{ fontWeight: 950, fontSize: 30, lineHeight: 1.05 }}
-            >
-              DIGITÁLIS
-            </p>
-            <p
-              className="font-heading"
-              style={{ fontWeight: 950, fontSize: 30, lineHeight: 1.05, color: "#7F7F7F" }}
-            >
-              MEGHÍVÓK
-            </p>
-            <Link
-              href="/meghivo"
-              className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-[#2D5854] underline-offset-4 hover:underline"
-            >
-              Megnézem a mintákat
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* ── Desktop: a két dia egymásra rétegezve ── */}
@@ -245,7 +291,7 @@ export function HeroCarousel() {
       </div>
 
       {/* ── Vetítésvezérlő: haladásjelző csíkok + pause gomb ── */}
-      <div className="absolute inset-x-0 bottom-5 flex justify-center">
+      <div className="absolute inset-x-0 bottom-5 flex justify-start px-5 sm:justify-center sm:px-0">
         <div className="flex items-center gap-3 rounded-full border border-white/60 bg-[#E7ECEC]/85 px-3 py-2 shadow-sm backdrop-blur-sm">
           <button
             type="button"
