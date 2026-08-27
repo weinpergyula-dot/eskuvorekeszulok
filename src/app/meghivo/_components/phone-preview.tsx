@@ -22,10 +22,6 @@ import { Maximize2, X } from "lucide-react";
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative mx-auto w-[216px] shrink-0 rounded-[2.4rem] bg-gray-900 p-[9px] shadow-[0_24px_50px_-16px_rgba(45,88,84,0.45)]">
-      {/* oldalgombok */}
-      <div className="absolute -left-[2px] top-20 h-9 w-[3px] rounded-l bg-gray-700" aria-hidden />
-      <div className="absolute -left-[2px] top-32 h-9 w-[3px] rounded-l bg-gray-700" aria-hidden />
-      <div className="absolute -right-[2px] top-24 h-12 w-[3px] rounded-r bg-gray-700" aria-hidden />
       <div className="relative h-[428px] w-[198px] overflow-hidden rounded-[1.9rem] bg-white">
         {children}
         {/* kamera-sziget */}

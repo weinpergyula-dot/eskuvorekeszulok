@@ -134,23 +134,32 @@ const SLIDES: Slide[] = [
 
 const INTERVAL_MS = 6000;
 
-/** Egy készülék a banneren: keret + a meghívó-minta képe. */
+/**
+ * Egy készülék a banneren. A ház térbeli: a megdöntött telefonnak a
+ * vastagsága (oldalkávája) is látszik – a kávát három, 90 fokkal
+ * hátrafordított oldallap adja, amikből mindig csak a néző felé fordulók
+ * látszanak.
+ */
 function Phone({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (
-    <div
-      className={`rounded-[1.5rem] bg-gray-900 p-1.5 shadow-[0_30px_55px_-20px_rgba(20,45,42,0.85)] ring-1 ring-white/20 ${className}`}
-    >
-      <div className="relative overflow-hidden rounded-[1.15rem] bg-white">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} width={390} height={844} className="block h-auto w-full" />
-        <span
-          className="absolute left-1/2 top-1.5 h-2.5 w-11 -translate-x-1/2 rounded-full bg-gray-900"
-          aria-hidden
-        />
-        <span
-          className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/25"
-          aria-hidden
-        />
+    <div className={`hero-phone ${className}`}>
+      <span aria-hidden className="hero-phone-side hero-phone-side-l" />
+      <span aria-hidden className="hero-phone-side hero-phone-side-r" />
+      <span aria-hidden className="hero-phone-side hero-phone-side-b" />
+
+      <div className="hero-phone-face rounded-[1.5rem] bg-gray-900 p-1.5 shadow-[0_30px_55px_-20px_rgba(20,45,42,0.85)] ring-1 ring-white/20">
+        <div className="relative overflow-hidden rounded-[1.15rem] bg-white">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt={alt} width={390} height={844} className="block h-auto w-full" />
+          <span
+            className="absolute left-1/2 top-1.5 h-2.5 w-11 -translate-x-1/2 rounded-full bg-gray-900"
+            aria-hidden
+          />
+          <span
+            className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/25"
+            aria-hidden
+          />
+        </div>
       </div>
     </div>
   );

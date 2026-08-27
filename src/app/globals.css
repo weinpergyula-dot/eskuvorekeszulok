@@ -1054,12 +1054,75 @@ html.a11y-underline a { text-decoration: underline !important; }
    csak az elülső látszik. */
 .hero-duo { perspective: 1500px; }
 .hero-duo-front {
-  transform: rotate(19deg) rotateY(-17deg) rotateX(7deg);
+  transform: rotate(19deg) rotateY(-30deg) rotateX(7deg);
   transform-style: preserve-3d;
 }
 .hero-duo-back {
-  transform: rotate(19deg) rotateY(-17deg) rotateX(7deg) scale(0.86);
+  transform: rotate(19deg) rotateY(-30deg) rotateX(7deg) scale(0.86);
   transform-style: preserve-3d;
+}
+
+/* ── Banner: valódi térbeli készülékház ───────────────────────────────
+   A megdöntött telefonnak látszik a vastagsága is: a kávához három
+   oldallap tartozik (bal, jobb, alsó), amiket 90 fokkal hátrafordítunk.
+   Mindhárom kirajzolódik, de a 3D-mélységrendezés miatt csak az látszik,
+   amelyik kilóg az előlap sziluettjéből – a többit maga az előlap takarja.
+   Ezért a színátmenetük szimmetrikus: mindegy, melyik oldalról látjuk. */
+.hero-phone {
+  position: relative;
+  transform-style: preserve-3d;
+}
+.hero-phone-face {
+  position: relative;
+  transform-style: preserve-3d;
+}
+.hero-phone-side {
+  position: absolute;
+  pointer-events: none;
+  /* csiszolt fém él: sötét perem, középen fénycsík */
+  background: linear-gradient(
+    90deg,
+    #0b0b0e 0%,
+    #3c3c45 20%,
+    #8b8b97 50%,
+    #3c3c45 80%,
+    #0b0b0e 100%
+  );
+}
+.hero-phone-side-l,
+.hero-phone-side-r {
+  top: 4%;
+  bottom: 4%;
+  width: 17%;
+  border-radius: 2px;
+}
+.hero-phone-side-l {
+  left: 2px;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+.hero-phone-side-r {
+  right: 2px;
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+}
+.hero-phone-side-b {
+  left: 6%;
+  right: 6%;
+  bottom: 2px;
+  height: 7.5%;
+  border-radius: 2px;
+  transform-origin: center bottom;
+  transform: rotateX(90deg);
+  /* alul vízszintes a fénycsík iránya */
+  background: linear-gradient(
+    180deg,
+    #0b0b0e 0%,
+    #33333b 26%,
+    #6f6f7b 50%,
+    #33333b 74%,
+    #0b0b0e 100%
+  );
 }
 
 /* ── /meghivo csomagcsempék: apró fehér fényjáték ─────────────────────
