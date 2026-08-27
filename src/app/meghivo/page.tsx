@@ -110,7 +110,7 @@ export default function MeghivoPage() {
       />
 
       {/* ── Csomagok kollázsban ──────────────────────────── */}
-      <section className="pkg-shift-bg">
+      <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
             Válassz csomagot!

@@ -12,15 +12,69 @@ import { ProviderRegisterButton } from "./provider-register-button";
  *
  * Két dia váltakozik: a szolgáltatói köszöntő (kivágott menyasszony) az
  * ezüstös bannerháttéren, és a digitális meghívó ajánlója (megdöntött
- * telefonok) a megszokott mozgó teal háttéren. Mindkettőn átfut egy
- * fénycsík.
+ * telefonok) a PREMIUM csomag magenta hátterén. Mindkettőn átfut egy
+ * fénycsík; a szövegek és a gombok színét a dia témája adja.
  */
+
+/** A dia színvilága – a háttérhez igazodó szövegek, gombok, pöttyök. */
+type Theme = {
+  /** A szekció háttérosztálya. */
+  bg: string;
+  /** A főcím két fele. */
+  lead: string;
+  accent: string;
+  blurb: string;
+  /** Az ajánlatkártya sötét szövegszínei (hex, inline stílushoz). */
+  ink: string;
+  inkSoft: string;
+  inkFaint: string;
+  /** A kártyán lévő elsődleges gomb. */
+  cta: string;
+  ctaHover: string;
+  /** A vetítésvezérlő. */
+  ctrl: string;
+  dotActive: string;
+  dotIdle: string;
+};
+
+const THEMES: Record<string, Theme> = {
+  /* 1. dia: ezüstös háttér, sötét teal szövegekkel */
+  silver: {
+    bg: "hero-silver",
+    lead: "text-[#2D5854]",
+    accent: "text-[#84AAA6]",
+    blurb: "text-[#3F6A66]",
+    ink: "#2D5854",
+    inkSoft: "#3F6A66",
+    inkFaint: "#6D8E8A",
+    cta: "#2D5854",
+    ctaHover: "#24463F",
+    ctrl: "border-[#2D5854]/25 bg-white/70 text-[#2D5854]",
+    dotActive: "#2D5854",
+    dotIdle: "rgba(45,88,84,0.28)",
+  },
+  /* 2. dia: a PREMIUM csomag magentája, fehér + mélylila szövegekkel */
+  premium: {
+    bg: "premium-shift-bg",
+    lead: "text-white",
+    accent: "text-[#57173F]",
+    blurb: "text-white/95",
+    ink: "#8F3671",
+    inkSoft: "#A05C88",
+    inkFaint: "#9A5182",
+    cta: "#8F3671",
+    ctaHover: "#74295B",
+    ctrl: "border-white/70 bg-white/60 text-[#8F3671]",
+    dotActive: "#57173F",
+    dotIdle: "rgba(255,255,255,0.5)",
+  },
+};
 
 type Slide = {
   key: string;
-  /** Ezüstös hátterű dia – ilyenkor a szövegek sötét tealre váltanak. */
-  silver?: boolean;
-  /** Kétszínű főcím: két, egymástól elütő teal árnyalat. */
+  /** Melyik színvilágot használja (lásd THEMES). */
+  theme: keyof typeof THEMES;
+  /** Kétszínű főcím: két, egymástól elütő árnyalat. */
   lead: string;
   accent: string;
   blurb: string;
@@ -40,7 +94,7 @@ type Slide = {
 const SLIDES: Slide[] = [
   {
     key: "szolgaltatok",
-    silver: true,
+    theme: "silver",
     lead: "ESKÜVŐRE",
     accent: "KÉSZÜLSZ?",
     blurb:
@@ -59,6 +113,7 @@ const SLIDES: Slide[] = [
   },
   {
     key: "meghivo",
+    theme: "premium",
     lead: "DIGITÁLIS",
     accent: "MEGHÍVÓK",
     blurb:
@@ -147,20 +202,15 @@ export function HeroCarousel() {
 
   const slide = SLIDES[index];
   const { offer } = slide;
-  const silver = slide.silver === true;
-
-  /* Ezüst háttéren sötét tealek, teal háttéren fehér + sötét teal. */
-  const leadCls = silver ? "text-[#2D5854]" : "text-white";
-  const accentCls = silver ? "text-[#84AAA6]" : "text-[#2D5854]";
-  const blurbCls = silver ? "text-[#3F6A66]" : "text-white/95";
-  const dotIdle = silver ? "rgba(45,88,84,0.28)" : "rgba(255,255,255,0.5)";
+  const t = THEMES[slide.theme];
+  const silver = slide.theme === "silver";
 
   return (
     /* A háttér a fejléc mögé bújik (negatív felső margó), a két alsó sarok
        lekerekített, alul 1px fehér elválasztóval. Az 1. dia ezüstös, a 2. a
-       megszokott mozgó teal – mindkettőn átfut egy fénycsík. */
+       PREMIUM csomag magentája – mindkettőn átfut egy fénycsík. */
     <section
-      className={`${silver ? "hero-silver" : "teal-shift-bg"} relative z-20 -mt-6 overflow-hidden rounded-b-[32px] border-b border-white pt-6`}
+      className={`${t.bg} relative z-20 -mt-6 overflow-hidden rounded-b-[32px] border-b border-white pt-6`}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       aria-roledescription="carousel"
@@ -186,36 +236,37 @@ export function HeroCarousel() {
             className="font-heading text-[2.0625rem] leading-tight tracking-tight sm:text-[2.725rem]"
             style={{ fontWeight: 950 }}
           >
-            <span className={leadCls}>{slide.lead}</span>{" "}
-            <span className={accentCls}>{slide.accent}</span>
+            <span className={t.lead}>{slide.lead}</span>{" "}
+            <span className={t.accent}>{slide.accent}</span>
           </h1>
-          <p className={`mt-3 max-w-md text-[1.125rem] ${blurbCls}`}>{slide.blurb}</p>
+          <p className={`mt-3 max-w-md text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
 
           {/* A kiemelt ajánlat. Mobilon kiemeljük a szövegfolyamból: a banner
               bal alsó sarkába kerül, a jobbra igazított képre lógva (z-10
               miatt a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
           <div className={`absolute ${silver ? "bottom-24" : "bottom-32"} left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl`}>
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#2D5854] px-2.5 py-0.5 text-xs font-bold text-white md:px-3 md:py-1 md:text-sm">
+            <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold text-white md:px-3 md:py-1 md:text-sm" style={{ backgroundColor: t.ink }}>
               {offer.badge}
             </span>
-            <h2 className="mt-1.5 text-base font-extrabold text-[#2D5854] md:mt-2 md:text-[1.125rem]">
+            <h2 className="mt-1.5 text-base font-extrabold md:mt-2 md:text-[1.125rem]" style={{ color: t.ink }}>
               {offer.name}
             </h2>
-            <p className="text-xs text-[#3F6A66] md:text-sm">{offer.sub}</p>
+            <p className="text-xs md:text-sm" style={{ color: t.inkSoft }}>{offer.sub}</p>
             <div className="mt-1.5 flex items-baseline gap-1.5 whitespace-nowrap md:mt-2">
-              <span className="shrink-0 text-[1.375rem] font-extrabold tracking-tight text-[#2D5854] md:text-[1.625rem]">
+              <span className="shrink-0 text-[1.375rem] font-extrabold tracking-tight md:text-[1.625rem]" style={{ color: t.ink }}>
                 {offer.price}
               </span>
               {offer.priceUnit && (
-                <span className="shrink-0 text-xs text-[#3F6A66] md:text-sm">
+                <span className="shrink-0 text-xs md:text-sm" style={{ color: t.inkSoft }}>
                   {offer.priceUnit}
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#6D8E8A] md:text-sm">{offer.priceNote}</p>
+            <p className="text-xs md:text-sm" style={{ color: t.inkFaint }}>{offer.priceNote}</p>
             <Link
               href={offer.href}
-              className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#2D5854] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[#24463F] md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-base"
+              className="hero-offer-cta mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white transition-colors md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-base"
+              style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
             >
               {offer.cta}
               <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -237,15 +288,23 @@ export function HeroCarousel() {
         <div className="w-full self-end">
           <div className="relative -mr-8 ml-auto aspect-[461/570] w-[74%] md:-mr-6 md:ml-0 md:aspect-[620/520] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8">
             {slide.key === "meghivo" ? (
+              /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
+                 a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
+                 Mobilon csak a PREMIUM fér el. */
               <div className="hero-duo absolute inset-x-0 bottom-[-16%] top-0 flex items-end justify-center">
                 <Phone
-                  className="hero-duo-back hidden w-[34%] md:block"
+                  className="hero-duo-front hidden w-[25%] md:block"
+                  src="/meghivo/slide-basic.webp"
+                  alt="BASIC digitális esküvői meghívó telefonon"
+                />
+                <Phone
+                  className="hero-duo-front hidden w-[31%] md:-ml-[5%] md:block"
                   src="/meghivo/slide-silver.webp"
                   alt="SILVER digitális esküvői meghívó telefonon"
                 />
                 <Phone
-                  className="hero-duo-front w-[60%] md:-ml-[12%] md:w-[36%]"
-                  src="/meghivo/slide-basic.webp"
+                  className="hero-duo-front w-[60%] md:-ml-[5%] md:w-[38%]"
+                  src="/meghivo/slide-premium.webp"
                   alt={slide.alt}
                 />
               </div>
@@ -271,7 +330,7 @@ export function HeroCarousel() {
               type="button"
               onClick={() => setPaused(!paused)}
               aria-label={paused ? "Vetítés indítása" : "Vetítés megállítása"}
-              className={`grid h-7 w-7 shrink-0 cursor-pointer place-items-center rounded-full border text-[#2D5854] backdrop-blur-md ${silver ? "border-[#2D5854]/25 bg-white/70" : "border-white/70 bg-white/60"}`}
+              className={`grid h-7 w-7 shrink-0 cursor-pointer place-items-center rounded-full border backdrop-blur-md ${t.ctrl}`}
             >
               {paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
             </button>
@@ -289,7 +348,7 @@ export function HeroCarousel() {
                     className="block h-1.5 rounded-full transition-all duration-300"
                     style={{
                       width: i === index ? 18 : 6,
-                      backgroundColor: i === index ? "#2D5854" : dotIdle,
+                      backgroundColor: i === index ? t.dotActive : t.dotIdle,
                     }}
                   />
                 </button>

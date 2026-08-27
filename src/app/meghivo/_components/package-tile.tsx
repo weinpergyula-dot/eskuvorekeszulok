@@ -120,15 +120,8 @@ function Surface({ pkg }: { pkg: Package }) {
             "radial-gradient(70% 55% at 18% 0%, rgba(255,255,255,0.30), rgba(255,255,255,0) 62%), radial-gradient(60% 50% at 100% 100%, rgba(0,0,0,0.22), rgba(0,0,0,0) 65%)",
         }}
       />
-      {/* finom átlós szövet a felületen */}
-      <span
-        aria-hidden
-        className="absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(135deg, #fff 0px, #fff 1px, transparent 1px, transparent 9px)",
-        }}
-      />
+      {/* apró, halvány fehér fényjáték – lassan úszik a felületen */}
+      <span aria-hidden className="pkg-glints absolute inset-0" />
     </>
   );
 }

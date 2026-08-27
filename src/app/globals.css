@@ -864,9 +864,35 @@ html.a11y-underline a { text-decoration: underline !important; }
   background-size: 260% 260%;
   animation: teal-gshift 18s ease-in-out infinite;
 }
+/* A banner 2. diájának háttere: a PREMIUM csomag színe, ugyanazzal a lassú
+   mozgással, mint a teal sávok (a fénycsíkot a .hero-sheen adja). */
+.premium-shift-bg {
+  background: linear-gradient(
+    130deg,
+    #6B2455 0%,
+    #85305F 20%,
+    #A8437F 38%,
+    #C4629A 50%,
+    #A8437F 62%,
+    #85305F 80%,
+    #6B2455 100%
+  );
+  background-size: 260% 260%;
+  animation: teal-gshift 18s ease-in-out infinite;
+}
+/* A banner ajánlatkártyáján a gomb színét a dia témája adja (CSS változóból,
+   hogy a hover is követni tudja). */
+.hero-offer-cta { background-color: var(--cta); }
+.hero-offer-cta:hover { background-color: var(--cta-hover); }
+
+/* A lebegő folt a magenta háttéren rózsás fényt kapjon, ne mentát */
+.premium-shift-bg .hero-blob-2 {
+  background: radial-gradient(circle, rgba(255, 226, 243, 0.7), transparent 65%);
+}
 @media (prefers-reduced-motion: reduce) {
   .teal-shift-bg,
-  .teal-shift-bg-deep { animation: none; }
+  .teal-shift-bg-deep,
+  .premium-shift-bg { animation: none; }
 }
 
 /* ── SILVER minta meghívó (/meghivo-silver) ────────────────────────────
@@ -1039,19 +1065,29 @@ html.a11y-underline a { text-decoration: underline !important; }
   transform-style: preserve-3d;
 }
 
-/* ── /meghivo csomagok: halvány teal felül és alul, középen fehér ─────
-   A szekció tetején ugyanaz a világos teal fut, mint amit a fejléc alatti
-   lekerekített átmenet is felvesz (#DFE9E8), így nincs törés. */
-.pkg-shift-bg {
-  background: linear-gradient(
-    180deg,
-    rgba(132, 170, 166, 0.26) 0%,
-    rgba(132, 170, 166, 0.09) 16%,
-    #ffffff 34%,
-    #ffffff 60%,
-    rgba(132, 170, 166, 0.10) 82%,
-    rgba(132, 170, 166, 0.26) 100%
-  );
+/* ── /meghivo csomagcsempék: apró fehér fényjáték ─────────────────────
+   A korábbi átlós csíkozás helyett szórt, lágy fénypontok úsznak nagyon
+   lassan a színes felületen – közelről alig látszik, mégis megtöri az
+   egyszínű gradienst. */
+.pkg-glints {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.16), transparent 16%),
+    radial-gradient(circle at 74% 9%, rgba(255, 255, 255, 0.13), transparent 13%),
+    radial-gradient(circle at 32% 62%, rgba(255, 255, 255, 0.11), transparent 15%),
+    radial-gradient(circle at 88% 46%, rgba(255, 255, 255, 0.14), transparent 12%),
+    radial-gradient(circle at 55% 88%, rgba(255, 255, 255, 0.10), transparent 14%),
+    radial-gradient(circle at 6% 78%, rgba(255, 255, 255, 0.12), transparent 11%),
+    radial-gradient(circle at 62% 30%, rgba(255, 255, 255, 0.09), transparent 10%),
+    radial-gradient(circle at 42% 6%, rgba(255, 255, 255, 0.10), transparent 9%);
+  animation: pkg-glints-drift 24s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes pkg-glints-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.85; }
+  to   { transform: translate3d(-2%, 2%, 0) scale(1.06); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pkg-glints { animation: none; }
 }
 
 /* ── Főoldali banner: a /yettel_web bannerének mozgása és kiegészítői ──
