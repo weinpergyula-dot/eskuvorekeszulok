@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ArrowRight, Pause, Play } from "lucide-react";
 import { ProviderRegisterButton } from "./provider-register-button";
@@ -74,7 +74,7 @@ const SLIDES: Slide[] = [
       price: "14 900 Ft",
       priceUnit: "-tól",
       priceNote: "BASIC csomag",
-      cta: "Megnézem a mintákat",
+      cta: "Megnézem",
       href: "/meghivo",
     },
   },
@@ -125,6 +125,23 @@ export function HeroCarousel() {
   const paused = override ?? reduced;
   const setPaused = (v: boolean) => setOverride(v);
 
+  /* Legyintéssel (swipe) is lapozható: a vízszintes elhúzás iránya dönt,
+     40px alatti mozdulat még koppintásnak számít. */
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+    const dx = start.x - e.changedTouches[0].clientX;
+    const dy = start.y - e.changedTouches[0].clientY;
+    // Függőleges görgetést ne értelmezzünk lapozásnak.
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+    setIndex((i) => (i + (dx > 0 ? 1 : -1) + SLIDES.length) % SLIDES.length);
+  };
+
   useEffect(() => {
     if (paused) return;
     const t = setTimeout(() => setIndex((i) => (i + 1) % SLIDES.length), INTERVAL_MS);
@@ -148,6 +165,8 @@ export function HeroCarousel() {
        megszokott mozgó teal – mindkettőn átfut egy fénycsík. */
     <section
       className={`${silver ? "hero-silver" : "teal-shift-bg"} relative z-20 -mt-6 overflow-hidden rounded-b-[32px] border-b border-white pt-6`}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       aria-roledescription="carousel"
       aria-label="Főoldali banner"
     >
@@ -168,7 +187,7 @@ export function HeroCarousel() {
       >
         <div className="pb-0 md:pb-10">
           <h1
-            className="font-heading text-[2rem] leading-tight tracking-tight sm:text-[2.725rem]"
+            className="font-heading text-[2.0625rem] leading-tight tracking-tight sm:text-[2.725rem]"
             style={{ fontWeight: 950 }}
           >
             <span className={leadCls}>{slide.lead}</span>{" "}
@@ -179,7 +198,7 @@ export function HeroCarousel() {
           {/* A kiemelt ajánlat. Mobilon kiemeljük a szövegfolyamból: a banner
               bal alsó sarkába kerül, a jobbra igazított képre lógva (z-10
               miatt a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
-          <div className="absolute bottom-12 left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
+          <div className="absolute bottom-16 left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
             <span className="inline-flex items-center gap-1 rounded-full bg-[#2D5854] px-2.5 py-0.5 text-xs font-bold text-white md:px-3 md:py-1 md:text-sm">
               {offer.badge}
             </span>
