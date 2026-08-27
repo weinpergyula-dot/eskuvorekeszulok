@@ -65,7 +65,12 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
       )}
 
       {backHref && (
-        <div className="w-full bg-white border-b border-gray-100">
+        /* A Vissza-sáv a fejléc alatti szekció színét veszi fel, alatta halvány,
+           teal árnyalatú elválasztóval (fehér és színes háttéren is látszik). */
+        <div
+          className="w-full border-b"
+          style={{ backgroundColor: bottomBg, borderColor: "rgba(45, 88, 84, 0.16)" }}
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <a
               href={backHref}

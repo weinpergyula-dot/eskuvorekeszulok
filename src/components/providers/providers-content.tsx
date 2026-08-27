@@ -156,14 +156,14 @@ function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setV
 export function ProvidersContent({
   providers,
   categoryCounts,
-  hideCategoryFilter = false,
+  hideCategoryPills = false,
 }: {
   providers: Provider[];
   categoryCounts: Record<string, number>;
-  /** A főoldalon a kategóriaszűrés a gyorskategória-csempékről történik,
-      ezért a beépített kategóriaszűrők (desktop pill-sor, mobil legördülő)
-      rejtve maradnak. */
-  hideCategoryFilter?: boolean;
+  /** A főoldalon a kategóriaválasztás a gyorskategória-csempékről történik,
+      ezért a desktop pill-sor rejtve marad. A mobil legördülő megmarad – ott
+      nincs elég hely a csempékből minden kategóriára. */
+  hideCategoryPills?: boolean;
 }) {
   const searchParams = useSearchParams();
   const [category, setCategory] = useState<string>(searchParams.get("category") ?? "");
@@ -312,7 +312,7 @@ export function ProvidersContent({
       {/* Main column */}
       <div className="flex-1 min-w-0">
         {/* Desktop category filter — all categories visible & selectable (pills). */}
-        {!hideCategoryFilter && (
+        {!hideCategoryPills && (
           <div className="hidden lg:flex flex-wrap gap-2 mb-5">
             <button onClick={() => setCategory("")} className={pillCls(!category)}>Összes kategória</button>
             {categoryOptions.map((opt) => (
@@ -337,9 +337,7 @@ export function ProvidersContent({
 
           {/* Mobile: category (full), county (full), then view + sort + page size filling one row */}
           <div className="lg:hidden space-y-2">
-            {!hideCategoryFilter && (
-              <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
-            )}
+            <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
             <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
             <div className="grid grid-cols-[auto_1fr_auto] items-stretch gap-2">
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />

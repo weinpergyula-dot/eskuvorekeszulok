@@ -24,7 +24,6 @@ type Slide = {
   lead: string;
   accent: string;
   blurb: string;
-  note: string;
   alt: string;
   offer: {
     badge: string;
@@ -46,7 +45,6 @@ const SLIDES: Slide[] = [
     accent: "KÉSZÜLSZ?",
     blurb:
       "Böngészd az elérhető szolgáltatókat, vagy ha szolgáltatóként látogattál el hozzánk, akkor regisztrálj!",
-    note: "Ingyenes böngészés · Kategóriák és megyék szerint",
     alt: "Menyasszony csokorral",
     offer: {
       badge: "Egy helyen",
@@ -65,7 +63,6 @@ const SLIDES: Slide[] = [
     accent: "MEGHÍVÓK",
     blurb:
       "A ti nevetekkel, a ti történetetekkel – egyetlen linken, ami a vendégek telefonján bármikor ott van.",
-    note: "Élő minták · Online visszajelzés a vendégektől",
     alt: "Digitális esküvői meghívó telefonon",
     offer: {
       badge: "Új",
@@ -156,7 +153,6 @@ export function HeroCarousel() {
   const leadCls = silver ? "text-[#2D5854]" : "text-white";
   const accentCls = silver ? "text-[#84AAA6]" : "text-[#2D5854]";
   const blurbCls = silver ? "text-[#3F6A66]" : "text-white/95";
-  const noteCls = silver ? "text-[#2D5854]/60" : "text-white/75";
   const dotIdle = silver ? "rgba(45,88,84,0.28)" : "rgba(255,255,255,0.5)";
 
   return (
@@ -231,9 +227,6 @@ export function HeroCarousel() {
               </div>
             )}
           </div>
-          <p className={`mt-3 mb-2 text-sm font-semibold sm:mt-4 md:mb-0 ${noteCls}`}>
-            {slide.note}
-          </p>
         </div>
 
         {/* Kép: a háttér már a teljes banneren fut, itt csak a kivágott
@@ -242,16 +235,16 @@ export function HeroCarousel() {
             (különben az alsó szélre igazított ajánlatkártya elmozdulna); a
             telefonok szándékosan lelógnak az alsó élen. */}
         <div className="w-full self-end">
-          <div className="relative -mr-4 ml-auto aspect-[461/570] w-[62%] md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8">
+          <div className="relative -mr-8 ml-auto aspect-[461/570] w-[74%] md:-mr-6 md:ml-0 md:aspect-[620/520] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8">
             {slide.key === "meghivo" ? (
-              <div className="hero-duo absolute inset-x-0 bottom-[-18%] top-0 flex items-end justify-center">
+              <div className="hero-duo absolute inset-x-0 bottom-[-16%] top-0 flex items-end justify-center">
                 <Phone
                   className="hero-duo-back hidden w-[34%] md:block"
                   src="/meghivo/slide-silver.webp"
                   alt="SILVER digitális esküvői meghívó telefonon"
                 />
                 <Phone
-                  className="hero-duo-front w-[64%] md:-ml-[12%] md:w-[36%]"
+                  className="hero-duo-front w-[60%] md:-ml-[12%] md:w-[36%]"
                   src="/meghivo/slide-basic.webp"
                   alt={slide.alt}
                 />
@@ -261,7 +254,7 @@ export function HeroCarousel() {
               <img
                 src="/hero-bride-cut.webp"
                 alt={slide.alt}
-                className="absolute inset-x-0 bottom-0 mx-auto block h-full w-auto max-w-none object-contain object-bottom"
+                className="absolute inset-x-0 bottom-0 mx-auto block h-full w-auto max-w-none object-contain object-bottom md:h-[108%]"
               />
             )}
           </div>
