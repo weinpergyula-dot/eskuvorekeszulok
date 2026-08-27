@@ -126,6 +126,14 @@ export default function MeghivoPage() {
             <PackageTile pkg={premium} variant="wide" />
           </div>
         </div>
+
+        {/* Elválasztó a csomagok alatt – ugyanaz a halvány teal vonal,
+            mint a Vissza gomb alatt */}
+        <div
+          className="mx-auto max-w-6xl border-b px-4 sm:px-6 lg:px-8"
+          style={{ borderColor: "rgba(45, 88, 84, 0.16)" }}
+          aria-hidden
+        />
       </section>
 
       {/* ── Bevezető: Miért népszerű? / Hogyan működik? (tabok) ── */}

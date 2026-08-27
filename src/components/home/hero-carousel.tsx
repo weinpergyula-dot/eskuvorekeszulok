@@ -238,9 +238,12 @@ export function HeroCarousel() {
           kívül marad, az helyben áll. */}
       <div
         key={slide.key}
-        className="hero-slide-in relative mx-auto grid max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:grid-cols-2 md:gap-8 md:pt-10"
+        className={`hero-slide-in relative mx-auto grid max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:grid-cols-2 md:gap-8 md:pt-10 ${
+          /* Az 1. dián mobilon a szöveg a kép mellé tördelődik, nem alá */
+          silver ? "grid-cols-[minmax(0,1fr)_40%]" : ""
+        }`}
       >
-        <div className="pb-0 md:pb-10">
+        <div className={`md:pb-10 ${silver ? "pb-14" : "pb-0"}`}>
           <h1
             className="font-heading text-[2.0625rem] leading-tight tracking-tight sm:text-[2.725rem]"
             style={{ fontWeight: 950 }}
@@ -250,10 +253,22 @@ export function HeroCarousel() {
           </h1>
           <p className={`mt-3 max-w-md text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
 
+          {/* Az 1. dián mobilon nincs üveghatású kártya, ezért a gomb ide kerül */}
+          {silver && (
+            <Link
+              href={offer.href}
+              className="hero-offer-cta mt-4 inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-colors md:hidden"
+              style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
+            >
+              {offer.cta}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
+
           {/* A kiemelt ajánlat. Mobilon kiemeljük a szövegfolyamból: a banner
               bal alsó sarkába kerül, a jobbra igazított képre lógva (z-10
               miatt a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
-          <div className={`absolute ${silver ? "bottom-24" : "bottom-32"} left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl`}>
+          <div className={`absolute ${silver ? "hidden md:block" : "bottom-32"} left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl`}>
             <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold text-white md:px-3 md:py-1 md:text-sm" style={{ backgroundColor: t.ink }}>
               {offer.badge}
             </span>
@@ -283,7 +298,7 @@ export function HeroCarousel() {
             {/* Szolgáltatói regisztráció – csak weben, a kártya alján */}
             {slide.key === "szolgaltatok" && (
               <div className="mt-2 hidden md:block">
-                <ProviderRegisterButton className="w-full cursor-pointer rounded-xl border border-[#2D5854]/40 bg-transparent px-5 py-3 text-base font-bold text-[#2D5854] hover:bg-[#2D5854]/10 hover:text-[#2D5854]" />
+                <ProviderRegisterButton className="w-full cursor-pointer rounded-xl border border-[#C65EA5] bg-transparent px-5 py-3 text-base font-bold text-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5]" />
               </div>
             )}
           </div>
@@ -295,7 +310,7 @@ export function HeroCarousel() {
             (különben az alsó szélre igazított ajánlatkártya elmozdulna); a
             telefonok szándékosan lelógnak az alsó élen. */}
         <div className="w-full self-end">
-          <div className="relative -mr-8 ml-auto aspect-[461/570] w-[74%] md:-mr-6 md:ml-0 md:aspect-[620/520] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8">
+          <div className={`relative ml-auto aspect-[461/570] md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8 ${silver ? "-mr-6 w-[168%]" : "-mr-8 w-[74%]"}`}>
             {slide.key === "meghivo" ? (
               /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
                  a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
@@ -322,7 +337,7 @@ export function HeroCarousel() {
               <img
                 src="/hero-bride-cut.webp"
                 alt={slide.alt}
-                className="absolute inset-x-0 bottom-0 mx-auto block h-full w-auto max-w-none object-contain object-bottom md:h-[108%]"
+                className="absolute inset-x-0 bottom-0 mx-auto block h-full w-auto max-w-none object-contain object-bottom"
               />
             )}
           </div>

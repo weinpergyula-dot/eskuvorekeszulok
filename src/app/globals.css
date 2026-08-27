@@ -853,13 +853,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 .teal-shift-bg-deep {
   background: linear-gradient(
     130deg,
-    #517773 0%,
-    #5F817D 20%,
-    #779D99 38%,
-    #88ADA8 50%,
-    #779D99 62%,
-    #5F817D 80%,
-    #517773 100%
+    #456965 0%,
+    #52736F 20%,
+    #688F8B 38%,
+    #789F9A 50%,
+    #688F8B 62%,
+    #52736F 80%,
+    #456965 100%
   );
   background-size: 260% 260%;
   animation: teal-gshift 18s ease-in-out infinite;
@@ -1091,10 +1091,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 .hero-phone-side-l,
 .hero-phone-side-r {
-  top: 4%;
-  bottom: 4%;
+  /* A kávának a lekerekített sarkokon belül kell végződnie – különben a
+     szögletes vége letört saroknak látszik. Az előlap sugara 1.5rem, ami a
+     magasság ~5%-a, ezért 7%-tól indul. */
+  top: 7%;
+  bottom: 7%;
   width: 17%;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 .hero-phone-side-l {
   left: 2px;
@@ -1107,11 +1110,11 @@ html.a11y-underline a { text-decoration: underline !important; }
   transform: rotateY(-90deg);
 }
 .hero-phone-side-b {
-  left: 6%;
-  right: 6%;
+  left: 9%;
+  right: 9%;
   bottom: 2px;
   height: 7.5%;
-  border-radius: 2px;
+  border-radius: 4px;
   transform-origin: center bottom;
   transform: rotateX(90deg);
   /* alul vízszintes a fénycsík iránya */
