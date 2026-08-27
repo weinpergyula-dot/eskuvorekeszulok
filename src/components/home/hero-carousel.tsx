@@ -41,31 +41,31 @@ const THEMES: Record<string, Theme> = {
   /* 1. dia: ezüstös háttér, sötét teal szövegekkel */
   silver: {
     bg: "hero-silver",
-    lead: "text-[#2D5854]",
+    lead: "text-[#456965]",
     accent: "text-[#84AAA6]",
-    blurb: "text-[#3F6A66]",
-    ink: "#2D5854",
-    inkSoft: "#3F6A66",
-    inkFaint: "#6D8E8A",
-    cta: "#2D5854",
-    ctaHover: "#24463F",
-    ctrl: "border-[#2D5854]/25 bg-white/70 text-[#2D5854]",
-    dotActive: "#2D5854",
-    dotIdle: "rgba(45,88,84,0.28)",
+    blurb: "text-[#4E736F]",
+    ink: "#456965",
+    inkSoft: "#5A807B",
+    inkFaint: "#7C9C97",
+    cta: "#456965",
+    ctaHover: "#38564F",
+    ctrl: "border-[#456965]/25 bg-white/70 text-[#456965]",
+    dotActive: "#456965",
+    dotIdle: "rgba(69,105,101,0.28)",
   },
   /* 2. dia: a mozgó teal világosabb változata, fehér + sötét teal szövegekkel */
   teal: {
     bg: "teal-shift-bg-light",
     lead: "text-white",
-    accent: "text-[#2D5854]",
+    accent: "text-[#456965]",
     blurb: "text-white/95",
-    ink: "#2D5854",
-    inkSoft: "#3F6A66",
-    inkFaint: "#6D8E8A",
-    cta: "#2D5854",
-    ctaHover: "#24463F",
-    ctrl: "border-white/70 bg-white/60 text-[#2D5854]",
-    dotActive: "#2D5854",
+    ink: "#456965",
+    inkSoft: "#5A807B",
+    inkFaint: "#7C9C97",
+    cta: "#456965",
+    ctaHover: "#38564F",
+    ctrl: "border-white/70 bg-white/60 text-[#456965]",
+    dotActive: "#456965",
     dotIdle: "rgba(255,255,255,0.5)",
   },
 };
@@ -136,16 +136,22 @@ const INTERVAL_MS = 6000;
 
 /**
  * Egy készülék a banneren. A ház térbeli: a megdöntött telefonnak a
- * vastagsága (oldalkávája) is látszik – a kávát három, 90 fokkal
- * hátrafordított oldallap adja, amikből mindig csak a néző felé fordulók
- * látszanak.
+ * vastagsága (oldalkávája) is látszik – az előlap mögé rétegzett, azonos
+ * lekerekítésű lapok adják a peremet.
  */
 function Phone({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (
     <div className={`hero-phone ${className}`}>
-      <span aria-hidden className="hero-phone-side hero-phone-side-l" />
-      <span aria-hidden className="hero-phone-side hero-phone-side-r" />
-      <span aria-hidden className="hero-phone-side hero-phone-side-b" />
+      {/* A ház vastagsága: az előlap mögé rétegzett, azonos lekerekítésű
+          lapok – így a perem a sarkoknál is végig lekerekített marad. */}
+      {[3, 6, 9, 12, 15].map((z) => (
+        <span
+          key={z}
+          aria-hidden
+          className="hero-phone-layer"
+          style={{ transform: `translateZ(-${z}px)` }}
+        />
+      ))}
 
       <div className="hero-phone-face rounded-[1.5rem] bg-gray-900 p-1.5 shadow-[0_30px_55px_-20px_rgba(20,45,42,0.85)] ring-1 ring-white/20">
         <div className="relative overflow-hidden rounded-[1.15rem] bg-white">
@@ -238,7 +244,11 @@ export function HeroCarousel() {
           kívül marad, az helyben áll. */}
       <div
         key={slide.key}
-        className={`hero-slide-in relative mx-auto grid max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:grid-cols-2 md:gap-8 md:pt-10 ${
+        /* Mobilon mindkét dia azonos magas: a kéthasábos 1. dia magától
+           alacsonyabb lenne, ezért a dia törzse kap egy alsó korlátot, ami
+           minden telefonszélességen kicsit a 2. dia természetes magassága
+           fölött van – így mindkettő ugyanoda áll be. */
+        className={`hero-slide-in relative mx-auto grid min-h-[calc(84vw+130px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10 ${
           /* Az 1. dián mobilon a szöveg a kép mellé tördelődik, nem alá */
           silver ? "grid-cols-[minmax(0,1fr)_40%]" : ""
         }`}
@@ -310,7 +320,16 @@ export function HeroCarousel() {
             (különben az alsó szélre igazított ajánlatkártya elmozdulna); a
             telefonok szándékosan lelógnak az alsó élen. */}
         <div className="w-full self-end">
-          <div className={`relative ml-auto aspect-[461/570] md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8 ${silver ? "-mr-6 w-[168%]" : "-mr-8 w-[74%]"}`}>
+          <div
+            className={
+              /* Az 1. dián mobilon a keret a saját hasábjában marad (a
+                 menyasszony így nem lóg ki a képernyő jobb szélén), csak
+                 magasabb arányú; a 2. dián a telefon kifut jobbra. */
+              silver
+                ? "relative -mr-1 ml-auto aspect-[9/16] w-full md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                : "relative -mr-8 ml-auto aspect-[461/570] w-[62%] md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+            }
+          >
             {slide.key === "meghivo" ? (
               /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
                  a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
@@ -337,7 +356,9 @@ export function HeroCarousel() {
               <img
                 src="/hero-bride-cut.webp"
                 alt={slide.alt}
-                className="absolute inset-x-0 bottom-0 mx-auto block h-full w-auto max-w-none object-contain object-bottom"
+                className={`absolute inset-x-0 bottom-0 mx-auto block h-full w-auto object-contain object-bottom ${
+                  silver ? "max-w-full md:max-w-none" : "max-w-none"
+                }`}
               />
             )}
           </div>

@@ -23,8 +23,8 @@ export type Package = {
   ink: string;
   sampleHref: string;
   features: readonly string[];
-  /** Felárért kérhető kiegészítők – csomagonként négy példa. */
-  extras: readonly string[];
+  /** Felárért kérhető kiegészítők: a felár a sor jobb szélén jelenik meg. */
+  extras: readonly { label: string; price: string }[];
 };
 
 function Head({ pkg }: { pkg: Package }) {
@@ -58,7 +58,7 @@ function Features({ items }: { items: readonly string[] }) {
   );
 }
 
-function Extras({ items }: { items: readonly string[] }) {
+function Extras({ items }: { items: Package["extras"] }) {
   return (
     <div>
       <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/70">
@@ -67,11 +67,12 @@ function Extras({ items }: { items: readonly string[] }) {
       <ul className="mt-2.5 grid gap-2">
         {items.map((x) => (
           <li
-            key={x}
+            key={x.label}
             className="flex items-center gap-2 rounded-xl border border-white/25 bg-white/12 px-3 py-2 text-[13px] leading-tight text-white/95 backdrop-blur-sm"
           >
             <Plus className="h-3.5 w-3.5 shrink-0 text-white/70" strokeWidth={2.5} />
-            {x}
+            <span className="min-w-0 flex-1">{x.label}</span>
+            <span className="shrink-0 whitespace-nowrap font-bold text-white/80">{x.price}</span>
           </li>
         ))}
       </ul>

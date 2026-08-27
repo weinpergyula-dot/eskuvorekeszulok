@@ -18,30 +18,34 @@ export const metadata: Metadata = {
    élő minta tartozik: /zso-es-szili, /meghivo-silver és
    /meghivo-premium. */
 
+/** Minden extra egységesen +3 000 Ft, a személyes konzultáció óradíjas. */
+const EXTRA_PRICE = "+3 000 Ft";
+
 const PACKAGES: Package[] = [
   {
     id: "basic",
     name: "BASIC",
     tagline: "Minden, ami egy gyönyörű meghívóhoz kell",
     price: "14 900 Ft",
+    priceNote: "Az ár a választott extráktól függ",
     from: "#9CC0BC",
     accent: "#6E9995",
     to: "#3F6C68",
     ink: "#2D5854",
     sampleHref: "/zso-es-szili",
     features: [
-      "Egyoldalas, mobilra szabott meghívó",
+      "Mobilra szabott meghívó",
       "Visszaszámláló a nagy napig",
       "Történetetek idővonalon",
       "A nap programja óráról órára",
-      "RSVP – online visszajelzés",
+      "Online visszajelzés",
       "Saját link a neveitekkel",
     ],
     extras: [
-      "Saját domain név",
-      "Nyomtatható PDF-változat",
-      "Kétnyelvű meghívó",
-      "Extra oldal (pl. ajándéklista)",
+      { label: "Fotógaléria rólatok (10 képig)", price: EXTRA_PRICE },
+      { label: "Választható arculati szín", price: EXTRA_PRICE },
+      { label: "Kétnyelvű meghívó", price: EXTRA_PRICE },
+      { label: "Extra oldal (pl. ajándéklista)", price: EXTRA_PRICE },
     ],
   },
   {
@@ -49,6 +53,7 @@ const PACKAGES: Package[] = [
     name: "SILVER",
     tagline: "A BASIC csomag, extrákkal megspékelve",
     price: "24 900 Ft",
+    priceNote: "Az ár a választott extráktól függ",
     from: "#A9B3C1",
     accent: "#77828F",
     to: "#4B5460",
@@ -56,24 +61,22 @@ const PACKAGES: Package[] = [
     sampleHref: "/meghivo-silver",
     features: [
       "Minden a BASIC csomagból",
-      "Fotógaléria a közös képeitekből",
+      "Fotógaléria rólatok (10 képig)",
+      "Választható arculati szín",
       "Háttérzene a kedvenc dalotokkal",
-      "Vendégkönyv – üzenetek a pártól",
+      "Vendégkönyv – üzenetek nektek",
       "Interaktív térkép a helyszínekhez",
-      "Sötét, elegáns arculat",
     ],
     extras: [
-      "Galéria 100 képig",
-      "Saját háttérzene feltöltése",
-      "Menüválasztó az RSVP-ben",
-      "Vendéglista exportálása",
+      { label: "Saját háttérzene feltöltése", price: EXTRA_PRICE },
+      { label: "Vendéglista exportálása", price: EXTRA_PRICE },
     ],
   },
   {
     id: "premium",
     name: "PREMIUM",
     tagline: "Teljesen egyedi, prémium élmény – animációkkal",
-    price: "59 900 Ft-tól",
+    price: "39 900 Ft",
     priceNote: "Az ár a választott extráktól függ",
     from: "#CE7CB0",
     accent: "#A8437F",
@@ -82,17 +85,15 @@ const PACKAGES: Package[] = [
     sampleHref: "/meghivo-premium",
     features: [
       "Minden a SILVER csomagból",
+      "Választható arculati szín",
       "Animált boríték-felnyitás pecséttel",
       "Lekaparható, játékos dátumfelfedés",
-      "Élő galéria az esküvő napján",
-      "Fotós- és videósanyag beépítése",
       "Korlátlan módosítás az esküvőig",
     ],
     extras: [
-      "Egyedi illusztráció és monogram",
-      "Videós köszöntő beágyazása",
-      "Élő fotófal a vendégeknek",
-      "Személyes konzultáció, saját designer",
+      { label: "Egyedi illusztráció és monogram", price: EXTRA_PRICE },
+      { label: "Videós köszöntő beágyazása", price: EXTRA_PRICE },
+      { label: "Személyes konzultáció, saját designer", price: "+10 000 Ft / óra" },
     ],
   },
 ];
@@ -111,7 +112,7 @@ export default function MeghivoPage() {
 
       {/* ── Csomagok kollázsban ──────────────────────────── */}
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-gray-900 md:text-3xl">
             Válassz csomagot!
           </h2>
@@ -120,7 +121,7 @@ export default function MeghivoPage() {
             hogy nagyban is lásd.
           </p>
 
-          <div className="mt-10 grid gap-5 sm:mt-14 lg:grid-cols-2">
+          <div className="mt-10 grid gap-6 sm:mt-14 lg:grid-cols-2">
             <PackageTile pkg={basic} variant="square" />
             <PackageTile pkg={silver} variant="square" />
             <PackageTile pkg={premium} variant="wide" />
