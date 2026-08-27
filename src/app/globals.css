@@ -1150,6 +1150,10 @@ html.a11y-underline a { text-decoration: underline !important; }
   background: var(--prm-bg);
   color: var(--prm-text);
   font-size: 16px;
+  /* Semmi ne lógjon ki oldalra – mobilon így nem lehet elhúzni a tartalmat.
+     A clip (a hidden helyett) nem hoz létre görgetődobozt, és a fixen
+     pozicionált boríték-réteget sem vágja el. */
+  overflow-x: clip;
 }
 .prm-root .prm-serif,
 .prm-root h1,
@@ -1287,6 +1291,7 @@ html.a11y-underline a { text-decoration: underline !important; }
   position: fixed;
   inset: 0;
   z-index: 60;
+  overflow: hidden;
   display: grid;
   place-items: center;
   padding: 1.5rem;
@@ -1629,12 +1634,6 @@ html.a11y-underline a { text-decoration: underline !important; }
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.prm-env-date-in { animation: prm-date-in 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) both; }
-@keyframes prm-date-in {
-  from { opacity: 0; transform: translateY(6px) scale(0.94); }
-  to   { opacity: 1; transform: none; }
-}
-
 /* ── Időegyenes a nap programjához ───────────────────────────────────
    Középen fut a tengely, balra az időpont, jobbra az esemény. Semmi nem
    töltődik be előre: minden sor akkor úszik be – és akkor világít ki
@@ -1646,11 +1645,15 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 .prm-root .prm-tl-item {
   display: grid;
-  grid-template-columns: 3.4rem 1.5rem 1fr;
+  grid-template-columns: 4.4rem 1.5rem minmax(0, 1fr);
   align-items: stretch;
 }
+/* A rácscellák tartalma ne feszítse szét az oszlopokat (grid min-width: auto) */
+.prm-root .prm-tl-time,
+.prm-root .prm-tl-axis,
+.prm-root .prm-tl-body { min-width: 0; }
 @media (min-width: 768px) {
-  .prm-root .prm-tl-item { grid-template-columns: 1fr 2.4rem 1fr; }
+  .prm-root .prm-tl-item { grid-template-columns: minmax(0, 1fr) 2.4rem minmax(0, 1fr); }
 }
 
 /* Időpont – a tengely bal oldalán, jobbra zárva */
@@ -1733,5 +1736,4 @@ html.a11y-underline a { text-decoration: underline !important; }
   .prm-root .prm-tl-time,
   .prm-root .prm-tl-body { opacity: 1; transform: none; transition: none; }
   .prm-root .prm-tl-dot { transform: scale(1); animation: none; }
-  .prm-env-date-in { animation: none; }
 }

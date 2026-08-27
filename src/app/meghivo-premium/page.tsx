@@ -133,7 +133,6 @@ export default function MeghivoPremiumPage() {
         monogram={COUPLE.monogram}
         names={COUPLE.names}
         dateParts={DATE_PARTS}
-        dateFull={COUPLE.dateLong}
         place={COUPLE.place}
       />
 

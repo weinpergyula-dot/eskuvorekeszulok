@@ -9,7 +9,8 @@ import { ScratchDate, type ScratchItem } from "./scratch-date";
  * viaszpecsétre kattint, mire az széttörik, a fül kinyílik, fény tör elő a
  * borítékból, és a meghívókártya kiemelkedik. A kártyán a dátum sorsjegyszerű
  * bevonat alatt bújik meg: amíg le nem satírozza mindhárom mezőt (év, hónap,
- * nap), addig nem lép tovább – utána a réteg elúszik, és alatta ott a meghívó.
+ * nap), addig nem lép tovább. A felfedett dátum még két másodpercig a lapon
+ * marad, utána a lap átadja a helyét a meghívónak.
  *
  * A fázisokat a data-phase attribútum viszi (closed → opening → card → done);
  * a CSS ezekhez köti az animációkat, így a JS csak az időzítést adja.
@@ -33,14 +34,12 @@ export function EnvelopeIntro({
   monogram,
   names,
   dateParts,
-  dateFull,
   place,
 }: {
   monogram: string;
   names: string;
   /** A lekaparható mezők: év, hónap, nap. */
   dateParts: ScratchItem[];
-  dateFull: string;
   place: string;
 }) {
   const [phase, setPhase] = useState<Phase>("closed");
@@ -133,18 +132,11 @@ export function EnvelopeIntro({
               <p className="prm-serif mt-3 text-xl leading-snug" style={{ color: "#4A1B3D" }}>
                 {names}
               </p>
-              {/* A dátum sorsjegyszerű bevonat alatt – ezt kell lesatírozni */}
+              {/* A dátum sorsjegyszerű bevonat alatt – ezt kell lesatírozni.
+                  A lekapart mezők a helyükön maradnak: a pontos időpont már a
+                  meghívón szerepel, itt csak a nap derül ki. */}
               <div className="mt-4">
-                {scratched ? (
-                  <p
-                    className="prm-env-date-in text-[11px] uppercase tracking-[0.24em]"
-                    style={{ color: "#8F3671" }}
-                  >
-                    {dateFull}
-                  </p>
-                ) : (
-                  <ScratchDate items={dateParts} onComplete={() => setScratched(true)} />
-                )}
+                <ScratchDate items={dateParts} onComplete={() => setScratched(true)} />
               </div>
               <p className="mt-3 text-[13px]" style={{ color: "#7C4468" }}>
                 {place}
