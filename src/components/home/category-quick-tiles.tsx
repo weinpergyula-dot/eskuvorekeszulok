@@ -79,20 +79,13 @@ function Tile({
       type="button"
       onClick={onClick}
       className={cn(
+        /* Egyenletes, áttetsző fehér fátyol a teal sávon – ettől lesz a
+           csempe világos teal; hoverre világosodik és a kerete erősödik. */
         "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 text-center transition-all duration-200 cursor-pointer sm:p-3.5",
         active
           ? "border-white bg-white text-[#2D5854] shadow-lg"
-          : "border-white/25 text-white hover:border-white/80 hover:brightness-110"
+          : "border-white/25 bg-white/10 text-white hover:border-white/80 hover:bg-white/20"
       )}
-      style={
-        active
-          ? undefined
-          : {
-              /* A korábbi áttetsző fehér, aljában egy hajszálnyi tealbe fordulva. */
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.10) 62%, rgba(45,88,84,0.06) 100%)",
-            }
-      }
     >
       <Icon className="h-6 w-6" strokeWidth={1.75} />
       <span className="text-[15px] font-bold leading-tight sm:text-base">{label}</span>
