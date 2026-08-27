@@ -12,7 +12,7 @@ import { ProviderRegisterButton } from "./provider-register-button";
  *
  * Két dia váltakozik: a szolgáltatói köszöntő (kivágott menyasszony) az
  * ezüstös bannerháttéren, és a digitális meghívó ajánlója (megdöntött
- * telefonok) a PREMIUM csomag magenta hátterén. Mindkettőn átfut egy
+ * telefonok) a mozgó teal világosabb változatán. Mindkettőn átfut egy
  * fénycsík; a szövegek és a gombok színét a dia témája adja.
  */
 
@@ -53,19 +53,19 @@ const THEMES: Record<string, Theme> = {
     dotActive: "#2D5854",
     dotIdle: "rgba(45,88,84,0.28)",
   },
-  /* 2. dia: a PREMIUM csomag magentája, fehér + mélylila szövegekkel */
-  premium: {
-    bg: "premium-shift-bg",
+  /* 2. dia: a mozgó teal világosabb változata, fehér + sötét teal szövegekkel */
+  teal: {
+    bg: "teal-shift-bg-light",
     lead: "text-white",
-    accent: "text-[#57173F]",
+    accent: "text-[#2D5854]",
     blurb: "text-white/95",
-    ink: "#8F3671",
-    inkSoft: "#A05C88",
-    inkFaint: "#9A5182",
-    cta: "#8F3671",
-    ctaHover: "#74295B",
-    ctrl: "border-white/70 bg-white/60 text-[#8F3671]",
-    dotActive: "#57173F",
+    ink: "#2D5854",
+    inkSoft: "#3F6A66",
+    inkFaint: "#6D8E8A",
+    cta: "#2D5854",
+    ctaHover: "#24463F",
+    ctrl: "border-white/70 bg-white/60 text-[#2D5854]",
+    dotActive: "#2D5854",
     dotIdle: "rgba(255,255,255,0.5)",
   },
 };
@@ -113,7 +113,7 @@ const SLIDES: Slide[] = [
   },
   {
     key: "meghivo",
-    theme: "premium",
+    theme: "teal",
     lead: "DIGITÁLIS",
     accent: "MEGHÍVÓK",
     blurb:
@@ -208,7 +208,7 @@ export function HeroCarousel() {
   return (
     /* A háttér a fejléc mögé bújik (negatív felső margó), a két alsó sarok
        lekerekített, alul 1px fehér elválasztóval. Az 1. dia ezüstös, a 2. a
-       PREMIUM csomag magentája – mindkettőn átfut egy fénycsík. */
+       mozgó teal világosabb változata – mindkettőn átfut egy fénycsík. */
     <section
       className={`${t.bg} relative z-20 -mt-6 overflow-hidden rounded-b-[32px] border-b border-white pt-6`}
       onTouchStart={onTouchStart}
@@ -290,8 +290,8 @@ export function HeroCarousel() {
             {slide.key === "meghivo" ? (
               /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
                  a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
-                 Mobilon csak a PREMIUM fér el. */
-              <div className="hero-duo absolute inset-x-0 bottom-[-16%] top-0 flex items-end justify-center">
+                 Mobilon csak a PREMIUM fér el, ott állva, kis alsó túllógással. */
+              <div className="hero-duo absolute inset-x-0 bottom-[-7%] top-0 flex items-end justify-center md:bottom-[-16%]">
                 <Phone
                   className="hero-duo-front hidden w-[25%] md:block"
                   src="/meghivo/slide-basic.webp"
@@ -303,7 +303,7 @@ export function HeroCarousel() {
                   alt="SILVER digitális esküvői meghívó telefonon"
                 />
                 <Phone
-                  className="hero-duo-front w-[60%] md:-ml-[5%] md:w-[38%]"
+                  className="hero-tilt-md w-[58%] md:-ml-[5%] md:w-[38%]"
                   src="/meghivo/slide-premium.webp"
                   alt={slide.alt}
                 />

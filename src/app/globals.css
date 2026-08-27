@@ -864,35 +864,32 @@ html.a11y-underline a { text-decoration: underline !important; }
   background-size: 260% 260%;
   animation: teal-gshift 18s ease-in-out infinite;
 }
-/* A banner 2. diájának háttere: a PREMIUM csomag színe, ugyanazzal a lassú
-   mozgással, mint a teal sávok (a fénycsíkot a .hero-sheen adja). */
-.premium-shift-bg {
+/* Világosabb változat – a banner 2. diája használja, hogy elváljon a fejléc
+   és a gyorskategória-sáv tealjétől. */
+.teal-shift-bg-light {
   background: linear-gradient(
     130deg,
-    #6B2455 0%,
-    #85305F 20%,
-    #A8437F 38%,
-    #C4629A 50%,
-    #A8437F 62%,
-    #85305F 80%,
-    #6B2455 100%
+    #6A928E 0%,
+    #789C98 20%,
+    #90B6B1 38%,
+    #A2C6C1 50%,
+    #90B6B1 62%,
+    #789C98 80%,
+    #6A928E 100%
   );
   background-size: 260% 260%;
   animation: teal-gshift 18s ease-in-out infinite;
 }
+
 /* A banner ajánlatkártyáján a gomb színét a dia témája adja (CSS változóból,
    hogy a hover is követni tudja). */
 .hero-offer-cta { background-color: var(--cta); }
 .hero-offer-cta:hover { background-color: var(--cta-hover); }
 
-/* A lebegő folt a magenta háttéren rózsás fényt kapjon, ne mentát */
-.premium-shift-bg .hero-blob-2 {
-  background: radial-gradient(circle, rgba(255, 226, 243, 0.7), transparent 65%);
-}
 @media (prefers-reduced-motion: reduce) {
   .teal-shift-bg,
   .teal-shift-bg-deep,
-  .premium-shift-bg { animation: none; }
+  .teal-shift-bg-light { animation: none; }
 }
 
 /* ── SILVER minta meghívó (/meghivo-silver) ────────────────────────────
@@ -1063,6 +1060,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 .hero-duo-back {
   transform: rotate(19deg) rotateY(-17deg) rotateX(7deg) scale(0.86);
   transform-style: preserve-3d;
+}
+/* Csak md-től döntött: mobilon a készülék állva marad. */
+@media (min-width: 768px) {
+  .hero-tilt-md {
+    transform: rotate(19deg) rotateY(-17deg) rotateX(7deg);
+    transform-style: preserve-3d;
+  }
 }
 
 /* ── /meghivo csomagcsempék: apró fehér fényjáték ─────────────────────

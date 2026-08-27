@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Maximize2, X } from "lucide-react";
 
 /**
@@ -11,6 +12,11 @@ import { Maximize2, X } from "lucide-react";
  * A 198px széles kijelzőn egy 390px-es mobilnézet fut ~0.51-es
  * kicsinyítéssel; az iframe 20px-szel szélesebb, így a görgetősávja a
  * kereten kívülre esik és nem látszik csík.
+ *
+ * A popup portállal a <body> alá kerül: a csempén a telefon egy megdöntött
+ * (transform-os) dobozban ül, márpedig egy transzformált ős a fixen
+ * pozicionált elemek tartalmazó blokkjává válik – a popup különben a csempén
+ * belül maradna, és a levágás miatt nem is látszana.
  */
 
 function PhoneFrame({ children }: { children: React.ReactNode }) {
@@ -73,22 +79,24 @@ export function LivePhonePreview({ href, label }: { href: string; label: string 
         </button>
       </PhoneFrame>
 
-      {open && (
-        <div className="fixed inset-0 z-[100] bg-gray-900" role="dialog" aria-modal="true" aria-label={`${label} minta`}>
-          <iframe src={href} title={`${label} minta`} className="h-full w-full border-0" />
+      {/* Csak kattintásra nyílik, tehát a portál mindig a böngészőben készül. */}
+      {open &&
+        createPortal(
+          <div className="fixed inset-0 z-[100] bg-gray-900" role="dialog" aria-modal="true" aria-label={`${label} minta`}>
+            <iframe src={href} title={`${label} minta`} className="h-full w-full border-0" />
 
-          {/* Mindig látható bezáró gomb a jobb felső sarokban */}
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Bezárás"
-            className="fixed right-4 top-4 z-10 flex h-14 w-14 items-center justify-center rounded-full border border-white/40 bg-gray-900/40 text-white backdrop-blur-md transition-colors hover:bg-gray-900/70 sm:right-6 sm:top-6"
-          >
-            <X className="h-7 w-7" strokeWidth={2} />
-          </button>
-
-        </div>
-      )}
+            {/* Mindig látható bezáró gomb a jobb felső sarokban */}
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Bezárás"
+              className="fixed right-4 top-4 z-10 flex h-14 w-14 items-center justify-center rounded-full border border-white/40 bg-gray-900/40 text-white backdrop-blur-md transition-colors hover:bg-gray-900/70 sm:right-6 sm:top-6"
+            >
+              <X className="h-7 w-7" strokeWidth={2} />
+            </button>
+          </div>,
+          document.body
+        )}
     </>
   );
 }
