@@ -14,6 +14,8 @@ export type Package = {
   name: string;
   tagline: string;
   price: string;
+  /** Korábbi ár – áthúzva, kisebben jelenik meg az aktuális ár mellett. */
+  oldPrice?: string;
   priceNote?: string;
   /** A csempe színvilága: világos → alap → sötét. */
   from: string;
@@ -83,8 +85,15 @@ function Extras({ items }: { items: Package["extras"] }) {
 function Price({ pkg }: { pkg: Package }) {
   return (
     <div>
-      <p className="text-[28px] font-bold leading-none text-white">{pkg.price}</p>
-      {pkg.priceNote && <p className="mt-1 text-xs text-white/70">{pkg.priceNote}</p>}
+      <p className="flex items-baseline gap-2 leading-none">
+        {pkg.oldPrice && (
+          <span className="text-base font-semibold text-white/60 line-through">
+            {pkg.oldPrice}
+          </span>
+        )}
+        <span className="text-[28px] font-bold text-white">{pkg.price}</span>
+      </p>
+      {pkg.priceNote && <p className="mt-1.5 text-xs text-white/70">{pkg.priceNote}</p>}
     </div>
   );
 }

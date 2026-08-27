@@ -248,12 +248,12 @@ export function HeroCarousel() {
            alacsonyabb lenne, ezért a dia törzse kap egy alsó korlátot, ami
            minden telefonszélességen kicsit a 2. dia természetes magassága
            fölött van – így mindkettő ugyanoda áll be. */
-        className={`hero-slide-in relative mx-auto grid min-h-[calc(84vw+130px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10 ${
-          /* Az 1. dián mobilon a szöveg a kép mellé tördelődik, nem alá */
-          silver ? "grid-cols-[minmax(0,1fr)_40%]" : ""
-        }`}
+        /* Az 1. dián mobilon a menyasszony abszolút pozícióban tölti ki a dia
+           magasságát, ezért ott nincs külön képhasáb – a szöveg mellette,
+           függőlegesen középen fut. */
+        className="hero-slide-in relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
       >
-        <div className={`md:pb-10 ${silver ? "pb-14" : "pb-0"}`}>
+        <div className={`md:pb-10 md:max-w-none md:self-auto ${silver ? "max-w-[58%] self-center pb-0" : "pb-0"}`}>
           <h1
             className="font-heading text-[2.0625rem] leading-tight tracking-tight sm:text-[2.725rem]"
             style={{ fontWeight: 950 }}
@@ -326,7 +326,7 @@ export function HeroCarousel() {
                  menyasszony így nem lóg ki a képernyő jobb szélén), csak
                  magasabb arányú; a 2. dián a telefon kifut jobbra. */
               silver
-                ? "relative -mr-1 ml-auto aspect-[9/16] w-full md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                ? "absolute inset-y-0 -right-[22%] w-[74%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
                 : "relative -mr-8 ml-auto aspect-[461/570] w-[62%] md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
             }
           >
@@ -356,8 +356,8 @@ export function HeroCarousel() {
               <img
                 src="/hero-bride-cut.webp"
                 alt={slide.alt}
-                className={`absolute inset-x-0 bottom-0 mx-auto block h-full w-auto object-contain object-bottom ${
-                  silver ? "max-w-full md:max-w-none" : "max-w-none"
+                className={`absolute bottom-0 block h-full w-auto max-w-none object-contain object-bottom ${
+                  silver ? "right-0 md:inset-x-0 md:mx-auto" : "inset-x-0 mx-auto"
                 }`}
               />
             )}

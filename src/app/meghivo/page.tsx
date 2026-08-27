@@ -45,7 +45,6 @@ const PACKAGES: Package[] = [
       { label: "Fotógaléria rólatok (10 képig)", price: EXTRA_PRICE },
       { label: "Választható arculati szín", price: EXTRA_PRICE },
       { label: "Kétnyelvű meghívó", price: EXTRA_PRICE },
-      { label: "Extra oldal (pl. ajándéklista)", price: EXTRA_PRICE },
     ],
   },
   {
@@ -77,6 +76,7 @@ const PACKAGES: Package[] = [
     name: "PREMIUM",
     tagline: "Teljesen egyedi, prémium élmény – animációkkal",
     price: "39 900 Ft",
+    oldPrice: "49 900 Ft",
     priceNote: "Az ár a választott extráktól függ",
     from: "#CE7CB0",
     accent: "#A8437F",
