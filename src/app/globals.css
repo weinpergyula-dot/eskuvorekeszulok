@@ -1314,12 +1314,28 @@ html.a11y-underline a { text-decoration: underline !important; }
   0%, 100% { transform: translateY(0) rotateX(6deg); }
   50%      { transform: translateY(-10px) rotateX(6deg); }
 }
+/* Amint a kártya kiemelkedik, a boríték lejjebb húzódik, hogy a lap ne
+   fusson ki a képernyő tetején. */
+[data-phase="card"] .prm-env,
+[data-phase="done"] .prm-env {
+  animation: none;
+  transform: translateY(clamp(70px, 15vh, 150px)) rotateX(6deg);
+  transition: transform 1.05s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+/* A felirat és az átugrás-link ugyanannyit csúszik, hogy a boríték ne
+   takarja ki őket. */
+.prm-env-foot { transition: transform 1.05s cubic-bezier(0.22, 0.61, 0.36, 1); }
+[data-phase="card"] .prm-env-foot,
+[data-phase="done"] .prm-env-foot { transform: translateY(clamp(70px, 15vh, 150px)); }
 .prm-env-back,
 .prm-env-front,
 .prm-env-flap {
   position: absolute;
   inset: 0;
   border-radius: 10px;
+  /* Díszítőelemek: a kinyílt fül különben elfogná a kattintást a lapon
+     lévő lekaparható mezők elől. */
+  pointer-events: none;
 }
 .prm-env-back {
   transform: translateZ(0);
@@ -1402,13 +1418,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 /* A meghívókártya – a zseb mögül emelkedik ki */
 .prm-env-card {
   position: absolute;
-  left: 8%;
-  right: 8%;
+  left: 6%;
+  right: 6%;
   bottom: 6%;
-  height: 116%;
+  height: 128%;
   transform: translateZ(1px) translateY(0);
   border-radius: 8px;
-  padding: 1.6rem 1rem;
+  padding: 1.3rem 1rem 1rem;
   text-align: center;
   background: linear-gradient(165deg, #FDF6FA 0%, #F3E2EE 55%, #FBEFF6 100%);
   color: #4A1B3D;
@@ -1421,7 +1437,7 @@ html.a11y-underline a { text-decoration: underline !important; }
 [data-phase="card"] .prm-env-card,
 [data-phase="done"] .prm-env-card {
   opacity: 1;
-  transform: translateZ(9px) translateY(-62%);
+  transform: translateZ(9px) translateY(-72%);
 }
 
 /* Fénykitörés a boríték szájából + forgó fénysugarak */
@@ -1532,4 +1548,135 @@ html.a11y-underline a { text-decoration: underline !important; }
   .prm-spark { animation: none; }
   .prm-env-flap,
   .prm-env-card { transition: none; }
+}
+
+
+/* ── Lekaparható dátum a meghívólapon ────────────────────────────────
+   Sorsjegy-logika: a mező tartalmát egy fémes bevonat (canvas) takarja, amit
+   a látogató lesatíroz. Amíg mindhárom mező elő nem bukkan, a meghívó nem
+   nyílik meg. */
+.prm-scratch-hint {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #9A5182;
+}
+.prm-scratch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 2.9rem;
+  overflow: hidden;
+  border-radius: 7px;
+  border: 1px solid rgba(143, 54, 113, 0.28);
+  background: #FBF1F7;
+}
+.prm-scratch-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #8F3671;
+  transform: scale(0.9);
+  opacity: 0.5;
+  transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.45s ease;
+}
+.prm-scratch.is-revealed .prm-scratch-value { transform: none; opacity: 1; }
+.prm-scratch-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+  transition: opacity 0.45s ease;
+}
+.prm-scratch.is-revealed .prm-scratch-cover { opacity: 0; pointer-events: none; }
+.prm-scratch-label {
+  margin-top: 0.3rem;
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #A9709A;
+}
+.prm-scratch-skip {
+  margin-top: 0.55rem;
+  font-size: 11px;
+  color: #A9709A;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.prm-env-date-in { animation: prm-date-in 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) both; }
+@keyframes prm-date-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.94); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Időegyenes a nap programjához ───────────────────────────────────
+   Előbb a tengely „húzódik meg” felülről lefelé, majd sorban úsznak be az
+   események – mindegyik mellé kipattan egy pont a tengelyen. */
+.prm-root .prm-timeline {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 2.9rem;
+  list-style: none;
+}
+.prm-root .prm-timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.86rem;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--prm-accent) 6%,
+    var(--prm-line) 50%,
+    var(--prm-accent) 94%,
+    transparent 100%
+  );
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.prm-root .prm-timeline.is-in::before { transform: scaleY(1); }
+
+.prm-root .prm-tl-item {
+  position: relative;
+  opacity: 0;
+  transform: translateX(26px);
+  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.prm-root .prm-tl-item + .prm-tl-item { margin-top: 1rem; }
+.prm-root .prm-timeline.is-in .prm-tl-item { opacity: 1; transform: none; }
+
+.prm-root .prm-tl-dot {
+  position: absolute;
+  left: -2.32rem;
+  top: 1.55rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 9999px;
+  background: var(--prm-bg);
+  border: 2px solid var(--prm-accent);
+  transform: scale(0);
+}
+.prm-root .prm-timeline.is-in .prm-tl-dot {
+  animation: prm-dot-pop 0.55s cubic-bezier(0.34, 1.5, 0.64, 1) both;
+}
+@keyframes prm-dot-pop {
+  0%   { transform: scale(0); box-shadow: 0 0 0 0 rgba(198, 94, 165, 0.5); }
+  70%  { transform: scale(1.25); box-shadow: 0 0 0 8px rgba(198, 94, 165, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(198, 94, 165, 0.14); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prm-root .prm-timeline::before { transform: scaleY(1); transition: none; }
+  .prm-root .prm-tl-item { opacity: 1; transform: none; transition: none; }
+  .prm-root .prm-tl-dot { transform: scale(1); animation: none; }
+  .prm-env-date-in { animation: none; }
 }

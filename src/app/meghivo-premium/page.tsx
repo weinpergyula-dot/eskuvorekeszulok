@@ -26,6 +26,7 @@ import { MusicToggle } from "./_components/music-toggle";
 import { Reveal } from "./_components/reveal";
 import { RsvpForm } from "./_components/rsvp-form";
 import { SketchDate } from "./_components/sketch-date";
+import { Timeline } from "./_components/timeline";
 
 export const metadata: Metadata = {
   title: "PREMIUM minta – Digitális esküvői meghívó",
@@ -43,6 +44,13 @@ const COUPLE = {
   dateLong: "2027. augusztus 21. · szombat · 16:00",
   place: "Tihany, Apátsági Kertek",
 };
+
+/* A borítékból kijövő lapon ez a három mező van bevonat alatt. */
+const DATE_PARTS = [
+  { label: "Év", value: "2027" },
+  { label: "Hónap", value: "augusztus" },
+  { label: "Nap", value: "21." },
+];
 
 const STORY = [
   {
@@ -124,7 +132,8 @@ export default function MeghivoPremiumPage() {
       <EnvelopeIntro
         monogram={COUPLE.monogram}
         names={COUPLE.names}
-        date={COUPLE.dateLong}
+        dateParts={DATE_PARTS}
+        dateFull={COUPLE.dateLong}
         place={COUPLE.place}
       />
 
@@ -225,23 +234,13 @@ export default function MeghivoPremiumPage() {
             <div className="prm-rule mx-auto mt-6" />
           </Reveal>
 
-          <div className="mt-12 space-y-4">
-            {PROGRAM.map(({ time, title, desc, icon: Icon }, i) => (
-              <Reveal key={time} delay={i * 40}>
-                <div className="prm-card flex items-start gap-4 px-5 py-4 sm:px-6">
-                  <span className="prm-icon-ring shrink-0">
-                    <Icon className="h-5 w-5" aria-hidden />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-baseline gap-x-3">
-                      <span className="prm-serif text-xl text-[var(--prm-rose)]">{time}</span>
-                      <h3 className="prm-serif text-lg">{title}</h3>
-                    </div>
-                    <p className="prm-muted mt-1 text-[15px] leading-relaxed">{desc}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+          <div className="mt-12">
+            <Timeline
+              items={PROGRAM.map(({ icon: Icon, ...rest }) => ({
+                ...rest,
+                icon: <Icon className="h-5 w-5" aria-hidden />,
+              }))}
+            />
           </div>
         </div>
       </section>

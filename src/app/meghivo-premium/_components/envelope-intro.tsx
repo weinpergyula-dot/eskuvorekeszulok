@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
+import { ScratchDate, type ScratchItem } from "./scratch-date";
 
 /**
  * PREMIUM extra: a meghívó egy lezárt borítékkal indul. A látogató a
  * viaszpecsétre kattint, mire az széttörik, a fül kinyílik, fény tör elő a
- * borítékból, és a meghívókártya kiemelkedik – utána a réteg elúszik, és
- * alatta ott a meghívó.
+ * borítékból, és a meghívókártya kiemelkedik. A kártyán a dátum sorsjegyszerű
+ * bevonat alatt bújik meg: amíg le nem satírozza mindhárom mezőt (év, hónap,
+ * nap), addig nem lép tovább – utána a réteg elúszik, és alatta ott a meghívó.
  *
  * A fázisokat a data-phase attribútum viszi (closed → opening → card → done);
  * a CSS ezekhez köti az animációkat, így a JS csak az időzítést adja.
@@ -30,15 +32,19 @@ const SPARKS = [
 export function EnvelopeIntro({
   monogram,
   names,
-  date,
+  dateParts,
+  dateFull,
   place,
 }: {
   monogram: string;
   names: string;
-  date: string;
+  /** A lekaparható mezők: év, hónap, nap. */
+  dateParts: ScratchItem[];
+  dateFull: string;
   place: string;
 }) {
   const [phase, setPhase] = useState<Phase>("closed");
+  const [scratched, setScratched] = useState(false);
 
   const open = useCallback(() => {
     setPhase((p) => (p === "closed" ? "opening" : p));
@@ -53,11 +59,13 @@ export function EnvelopeIntro({
     return () => clearTimeout(toCard);
   }, [phase]);
 
+  // A kártya kiemelkedése után a satírozásra várunk: csak akkor lépünk
+  // tovább, ha mindhárom mező előbukkant.
   useEffect(() => {
-    if (phase !== "card") return;
-    const toDone = setTimeout(() => setPhase("done"), 2100);
+    if (phase !== "card" || !scratched) return;
+    const toDone = setTimeout(() => setPhase("done"), 1900);
     return () => clearTimeout(toDone);
-  }, [phase]);
+  }, [phase, scratched]);
 
   // Amíg a boríték látszik, ne lehessen görgetni alatta.
   useEffect(() => {
@@ -124,13 +132,20 @@ export function EnvelopeIntro({
               <p className="prm-serif mt-3 text-xl leading-snug" style={{ color: "#4A1B3D" }}>
                 {names}
               </p>
-              <p
-                className="mt-3 text-[10px] uppercase tracking-[0.26em]"
-                style={{ color: "#9A5182" }}
-              >
-                {date}
-              </p>
-              <p className="mt-1 text-[13px]" style={{ color: "#7C4468" }}>
+              {/* A dátum sorsjegyszerű bevonat alatt – ezt kell lesatírozni */}
+              <div className="mt-4">
+                {scratched ? (
+                  <p
+                    className="prm-env-date-in text-[11px] uppercase tracking-[0.24em]"
+                    style={{ color: "#8F3671" }}
+                  >
+                    {dateFull}
+                  </p>
+                ) : (
+                  <ScratchDate items={dateParts} onComplete={() => setScratched(true)} />
+                )}
+              </div>
+              <p className="mt-3 text-[13px]" style={{ color: "#7C4468" }}>
                 {place}
               </p>
             </div>
@@ -150,18 +165,25 @@ export function EnvelopeIntro({
           </div>
         </div>
 
-        <p className="prm-muted mt-10 flex items-center gap-2 text-sm">
-          <Sparkles className="h-4 w-4" aria-hidden />
-          {phase === "closed" ? "Nyomd meg a pecsétet a felnyitáshoz" : "Felnyitás…"}
-        </p>
+        {/* A boríték nyitáskor lejjebb csúszik, ezért a lábrész is vele mozog */}
+        <div className="prm-env-foot flex flex-col items-center">
+          <p className="prm-muted mt-10 flex items-center gap-2 text-sm">
+            <Sparkles className="h-4 w-4" aria-hidden />
+            {phase === "closed"
+              ? "Nyomd meg a pecsétet a felnyitáshoz"
+              : scratched
+                ? "Készen vagy – jöhet a meghívó!"
+                : "Kaparj le a lapon a dátumot!"}
+          </p>
 
-        <button
-          type="button"
-          onClick={skip}
-          className="prm-muted mt-4 text-xs underline-offset-4 transition-colors hover:text-[var(--prm-rose)] hover:underline"
-        >
-          Átugrom a meghívóra
-        </button>
+          <button
+            type="button"
+            onClick={skip}
+            className="prm-muted mt-4 text-xs underline-offset-4 transition-colors hover:text-[var(--prm-rose)] hover:underline"
+          >
+            Átugrom a meghívóra
+          </button>
+        </div>
       </div>
     </div>
   );
