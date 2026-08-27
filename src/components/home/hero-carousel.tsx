@@ -86,6 +86,8 @@ type Slide = {
     price: string;
     priceUnit: string;
     priceNote: string;
+    /** Mobilon ez az egyetlen sor jelenik meg a kártyán. */
+    short: string;
     cta: string;
     href: string;
   };
@@ -107,6 +109,7 @@ const SLIDES: Slide[] = [
       price: "Ingyenes",
       priceUnit: "",
       priceNote: "böngészés és kapcsolatfelvétel",
+      short: "Több száz szolgáltató egy helyen",
       cta: "Megnézem",
       href: "#szolgaltatok",
     },
@@ -126,6 +129,7 @@ const SLIDES: Slide[] = [
       price: "14 900 Ft",
       priceUnit: "-tól",
       priceNote: "BASIC csomag",
+      short: "Csomagok már 14\u00a0900\u00a0Ft\u2011tól",
       cta: "Megnézem",
       href: "/meghivo",
     },
@@ -251,42 +255,41 @@ export function HeroCarousel() {
         /* Az 1. dián mobilon a menyasszony abszolút pozícióban tölti ki a dia
            magasságát, ezért ott nincs külön képhasáb – a szöveg mellette,
            függőlegesen középen fut. */
-        className="hero-slide-in relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
+        className="hero-slide-in relative mx-auto grid min-h-[calc(84vw+228px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
       >
-        <div className={`relative z-10 md:pb-10 md:max-w-none md:self-auto ${silver ? "max-w-[58%] self-center pb-0" : "pb-0"}`}>
-          <h1
-            className="font-heading text-[2.0625rem] leading-tight tracking-tight sm:text-[2.725rem]"
-            style={{ fontWeight: 950 }}
-          >
-            <span className={t.lead}>{slide.lead}</span>{" "}
-            <span className={t.accent}>{slide.accent}</span>
-          </h1>
-          <p className={`mt-3 max-w-md text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
-
-          {/* Az 1. dián mobilon nincs üveghatású kártya, ezért a gomb ide kerül */}
-          {silver && (
-            <Link
-              href={offer.href}
-              className="hero-offer-cta mt-4 inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-colors md:hidden"
-              style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
+        <div className={`md:pb-10 md:max-w-none md:self-auto ${silver ? "max-w-[58%] self-center pb-0" : "pb-0"}`}>
+          {/* A cím és a leírás a képre kerül, ha átfednek */}
+          <div className="relative z-10">
+            <h1
+              className="font-heading text-[2.0625rem] leading-tight tracking-tight sm:text-[2.725rem]"
+              style={{ fontWeight: 950 }}
             >
-              {offer.cta}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          )}
+              <span className={t.lead}>{slide.lead}</span>{" "}
+              <span className={t.accent}>{slide.accent}</span>
+            </h1>
+            <p className={`mt-3 max-w-md text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
+          </div>
 
           {/* A kiemelt ajánlat. Mobilon kiemeljük a szövegfolyamból: a banner
               bal alsó sarkába kerül, a jobbra igazított képre lógva (z-10
               miatt a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
-          <div className={`absolute ${silver ? "hidden md:block" : "bottom-32"} left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl`}>
-            <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold text-white md:px-3 md:py-1 md:text-sm" style={{ backgroundColor: t.ink }}>
+          <div className={`absolute ${silver ? "hidden md:block" : "bottom-32"} left-4 z-10 w-[56%] max-w-[208px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl`}>
+            {/* Mobilon csak egyetlen ajánlatsor fér el, weben a teljes kártya */}
+            <p
+              className="text-[15px] font-extrabold leading-snug md:hidden"
+              style={{ color: t.ink }}
+            >
+              {offer.short}
+            </p>
+
+            <span className="hidden items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold text-white md:inline-flex md:px-3 md:py-1 md:text-sm" style={{ backgroundColor: t.ink }}>
               {offer.badge}
             </span>
-            <h2 className="mt-1.5 text-base font-extrabold md:mt-2 md:text-[1.125rem]" style={{ color: t.ink }}>
+            <h2 className="mt-1.5 hidden text-base font-extrabold md:mt-2 md:block md:text-[1.125rem]" style={{ color: t.ink }}>
               {offer.name}
             </h2>
-            <p className="text-xs md:text-sm" style={{ color: t.inkSoft }}>{offer.sub}</p>
-            <div className="mt-1.5 flex items-baseline gap-1.5 whitespace-nowrap md:mt-2">
+            <p className="hidden text-xs md:block md:text-sm" style={{ color: t.inkSoft }}>{offer.sub}</p>
+            <div className="mt-1.5 hidden items-baseline gap-1.5 whitespace-nowrap md:mt-2 md:flex">
               <span className="shrink-0 text-[1.375rem] font-extrabold tracking-tight md:text-[1.625rem]" style={{ color: t.ink }}>
                 {offer.price}
               </span>
@@ -296,7 +299,7 @@ export function HeroCarousel() {
                 </span>
               )}
             </div>
-            <p className="text-xs md:text-sm" style={{ color: t.inkFaint }}>{offer.priceNote}</p>
+            <p className="hidden text-xs md:block md:text-sm" style={{ color: t.inkFaint }}>{offer.priceNote}</p>
             <Link
               href={offer.href}
               className="hero-offer-cta mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white transition-colors md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-base"
@@ -327,16 +330,16 @@ export function HeroCarousel() {
                  magasabb arányú; a 2. dián a telefon kifut jobbra. */
               silver
                 ? "absolute inset-y-0 right-[6%] w-[74%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
-                : "relative -mr-8 ml-auto aspect-[461/570] w-[62%] md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                : "relative -mr-12 ml-auto aspect-[461/570] w-[80%] md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
             }
           >
             {slide.key === "meghivo" ? (
               /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
                  a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
                  Mobilon csak a BASIC fér el. */
-              <div className="hero-duo absolute inset-x-0 bottom-[-16%] top-0 flex items-end justify-center">
+              <div className="hero-duo absolute inset-x-0 bottom-[-22%] top-0 flex items-end justify-center md:bottom-[-16%]">
                 <Phone
-                  className="hero-duo-front w-[58%] md:w-[25%]"
+                  className="hero-duo-front w-[74%] md:w-[25%]"
                   src="/meghivo/slide-basic.webp"
                   alt={slide.alt}
                 />
@@ -358,7 +361,7 @@ export function HeroCarousel() {
                 alt={slide.alt}
                 className={`absolute bottom-0 block w-auto max-w-none object-contain object-bottom ${
                   silver
-                    ? "right-0 h-[80%] md:inset-x-0 md:mx-auto md:h-full"
+                    ? "right-0 h-[69%] md:inset-x-0 md:mx-auto md:h-full"
                     : "inset-x-0 mx-auto h-full"
                 }`}
               />
