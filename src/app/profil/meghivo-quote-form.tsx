@@ -200,12 +200,16 @@ export function MeghivoQuoteForm({
       {/* Gyorsabb út: telefon */}
       <div className="flex items-start gap-3 rounded-xl border border-[#84AAA6]/40 bg-[#F0F6F5] px-4 py-3">
         <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#84AAA6]" strokeWidth={1.75} />
+        {/* Mobilon a vessző után törik a sor, nagyobb kijelzőn egyben fut. */}
         <p className="text-sm leading-relaxed text-gray-700">
-          Ha gyorsabb ajánlatkérést szeretnél, azt a{" "}
-          <a href={PHONE_HREF} className="font-bold text-[#84AAA6] hover:underline">
-            {PHONE_DISPLAY}
-          </a>{" "}
-          telefonszámon teheted meg.
+          <span className="block sm:inline">Ha gyorsabb ajánlatkérést szeretnél,</span>{" "}
+          <span>
+            azt a{" "}
+            <a href={PHONE_HREF} className="font-bold text-[#84AAA6] hover:underline">
+              {PHONE_DISPLAY}
+            </a>{" "}
+            telefonszámon teheted meg.
+          </span>
         </p>
       </div>
 
