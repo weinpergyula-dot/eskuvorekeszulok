@@ -162,6 +162,28 @@ const HOUSE_ACCOUNT_EMAIL = process.env.HOUSE_ACCOUNT_EMAIL ?? "weinper.gyula@gm
 type HouseProvider = { id: string; user_id: string };
 
 /**
+ * A ház szolgáltatói profilja, ha még nem létezik. Csak a beszélgetés
+ * horgonya: a címzett a providers táblán keresztül kötődik az
+ * ajánlatkéréshez, ezért kell hozzá egy sor.
+ *
+ * `active: false`, ezért sehol nem jelenik meg nyilvánosan – sem a főoldali
+ * listában, sem a kategóriaszámokban, sem az általános ajánlatkérő
+ * címzettválasztójában (ezek mind a jóváhagyott ÉS aktív sorokat kérik le).
+ * Az `approval_status` viszont "approved", hogy ne kerüljön az admin
+ * jóváhagyásra váró listájába.
+ */
+const HOUSE_PROVIDER_DEFAULTS = {
+  full_name: "Esküvőre Készülök – Digitális meghívó",
+  phone: "+36 70 788 8787",
+  description:
+    "A saját digitális esküvői meghívó szolgáltatásunk. Ezen a profilon keresztül érkeznek be a meghívós ajánlatkérések.",
+  categories: ["meghivo"],
+  counties: ["Országosan"],
+  approval_status: "approved",
+  active: false,
+};
+
+/**
  * A ház szolgáltatói profilja – ide megy a meghívós ajánlatkérés.
  *
  * A keresés szándékosan engedékeny: a cím kis-nagybetűtől függetlenül
@@ -194,13 +216,30 @@ async function findHouseProvider(admin: any): Promise<{ provider: HouseProvider 
   if (providerError) return { provider: null, reason: `providers query failed: ${providerError.message}` };
 
   const provider = (providers ?? [])[0] as HouseProvider | undefined;
-  if (!provider) {
-    return {
-      provider: null,
-      reason: `a(z) ${email} fiókhoz nincs szolgáltatói profil (providers.user_id = ${userId})`,
-    };
-  }
-  return { provider, reason: "ok" };
+  if (provider) return { provider, reason: "ok" };
+
+  // Még nincs profil: elsőre létrehozzuk. A user_id egyedi, ezért egyidejű
+  // kérésnél a vesztes ág is megtalálja a másik által beszúrt sort.
+  const { data: created, error: insertError } = await admin
+    .from("providers")
+    .insert({ ...HOUSE_PROVIDER_DEFAULTS, user_id: userId, email })
+    .select("id, user_id")
+    .maybeSingle();
+
+  if (created) return { provider: created as HouseProvider, reason: "created" };
+
+  const { data: retry } = await admin
+    .from("providers")
+    .select("id, user_id")
+    .eq("user_id", userId)
+    .limit(1);
+  const existing = (retry ?? [])[0] as HouseProvider | undefined;
+  if (existing) return { provider: existing, reason: "ok" };
+
+  return {
+    provider: null,
+    reason: `a(z) ${email} fiókhoz nem sikerült szolgáltatói profilt létrehozni: ${insertError?.message ?? "ismeretlen hiba"}`,
+  };
 }
 
 export async function POST(request: NextRequest) {
@@ -219,6 +258,10 @@ export async function POST(request: NextRequest) {
   if (houseOnly) {
     const found = await findHouseProvider(admin);
     houseProvider = found.provider;
+    if (found.reason === "created" && houseProvider) {
+      // Egyszeri esemény: jó, ha nyoma marad, mikor jött létre a fogadó profil.
+      await logError("api/quote-requests POST", `house provider created (${houseProvider.id})`, { email: HOUSE_ACCOUNT_EMAIL });
+    }
     if (!houseProvider) {
       await logError("api/quote-requests POST", `house provider not found: ${found.reason}`, { user: user.id, category });
       return NextResponse.json(
