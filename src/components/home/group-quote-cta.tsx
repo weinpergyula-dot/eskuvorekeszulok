@@ -23,9 +23,9 @@ export function GroupQuoteCta() {
           <div className="flex items-start gap-4">
             <span
               aria-hidden
-              className="hidden h-11 w-11 shrink-0 place-items-center rounded-full bg-[#456965]/12 sm:grid"
+              className="hidden h-11 w-11 shrink-0 place-items-center rounded-full bg-[#84AAA6]/15 sm:grid"
             >
-              <Send className="h-5 w-5 text-[#456965]" strokeWidth={1.75} />
+              <Send className="h-5 w-5 text-[#6B8E8A]" strokeWidth={1.75} />
             </span>
             <div>
               <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
@@ -40,7 +40,7 @@ export function GroupQuoteCta() {
 
           <Link
             href="/profil?tab=quotes"
-            className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#456965] px-6 py-3 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#38564F] sm:self-auto"
+            className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#84AAA6] px-6 py-3 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:self-auto"
           >
             Csoportos ajánlatkérés
             <ArrowRight className="h-4 w-4" />

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
-import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
+import { CATEGORY_LABELS } from "@/lib/types";
+import { displayCount, HOUSE_CATEGORY, orderedCategories } from "@/lib/categories";
 
 export async function Footer() {
   let counts: Record<string, number> = {};
@@ -15,9 +16,8 @@ export async function Footer() {
     }
   } catch { /* non-critical */ }
 
-  const footerCategories = (Object.keys(CATEGORY_LABELS) as ServiceCategory[])
-    .filter((key) => (counts[key] ?? 0) > 0)
-    .sort((a, b) => (counts[b] ?? 0) - (counts[a] ?? 0))
+  const footerCategories = orderedCategories(counts)
+    .filter((key) => key === HOUSE_CATEGORY || displayCount(key, counts) > 0)
     .slice(0, 5)
     .map((key) => ({ href: `/?category=${key}#szolgaltatok`, key, label: CATEGORY_LABELS[key] }));
   return (

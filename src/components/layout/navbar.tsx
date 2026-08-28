@@ -471,7 +471,7 @@ export function Navbar() {
                   <Button className="text-base bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5]">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button className="text-base bg-[#52736F] hover:bg-[#456965]">Bejelentkezés</Button>
+                  <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
                 </Link>
               </>
             )}
@@ -535,7 +535,7 @@ export function Navbar() {
               <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-[#C65EA5] border border-[#C65EA5] rounded-lg py-2 hover:bg-[#C65EA5]/10 transition-colors">
                 Regisztráció
               </Link>
-              <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white bg-[#52736F] rounded-lg py-2 hover:bg-[#456965] transition-colors">
+              <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white bg-[#84AAA6] rounded-lg py-2 hover:bg-[#6B8E8A] transition-colors">
                 Bejelentkezés
               </Link>
             </div>

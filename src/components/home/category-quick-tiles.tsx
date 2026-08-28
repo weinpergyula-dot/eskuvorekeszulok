@@ -27,6 +27,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
+import { displayCount, orderedCategories } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 
 /**
@@ -109,13 +110,7 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
     return () => window.removeEventListener("eskuvo:category", h);
   }, []);
 
-  const sorted = useMemo(
-    () =>
-      (Object.keys(CATEGORY_LABELS) as ServiceCategory[]).sort(
-        (a, b) => (categoryCounts[b] ?? 0) - (categoryCounts[a] ?? 0)
-      ),
-    [categoryCounts]
-  );
+  const sorted = useMemo(() => orderedCategories(categoryCounts), [categoryCounts]);
   const top = sorted.slice(0, 6);
   const rest = sorted.slice(6);
 
@@ -136,7 +131,7 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
           key={c}
           icon={TILE_ICONS[c]}
           label={CATEGORY_LABELS[c]}
-          count={categoryCounts[c] ?? 0}
+          count={displayCount(c, categoryCounts)}
           active={active === c}
           onClick={() => select(c)}
         />
@@ -153,7 +148,7 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
               key={c}
               icon={TILE_ICONS[c]}
               label={CATEGORY_LABELS[c]}
-              count={categoryCounts[c] ?? 0}
+              count={displayCount(c, categoryCounts)}
               active={active === c}
               onClick={() => select(c)}
             />

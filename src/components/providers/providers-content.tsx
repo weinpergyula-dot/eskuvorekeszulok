@@ -4,8 +4,10 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, Star } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
+import { MeghivoPromoCard } from "./meghivo-promo-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+import { displayCount, HOUSE_CATEGORY, orderedCategories } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -216,10 +218,9 @@ export function ProvidersContent({
 
   const categoryOptions = useMemo(
     () =>
-      (Object.keys(CATEGORY_LABELS) as ServiceCategory[])
-        .filter((c) => (categoryCounts[c] ?? 0) > 0)
-        .sort((a, b) => (categoryCounts[b] ?? 0) - (categoryCounts[a] ?? 0))
-        .map((c) => ({ value: c, label: `${CATEGORY_LABELS[c]} (${categoryCounts[c] ?? 0})` })),
+      orderedCategories(categoryCounts)
+        .filter((c) => c === HOUSE_CATEGORY || displayCount(c, categoryCounts) > 0)
+        .map((c) => ({ value: c, label: `${CATEGORY_LABELS[c]} (${displayCount(c, categoryCounts)})` })),
     [categoryCounts],
   );
 
@@ -266,6 +267,11 @@ export function ProvidersContent({
       );
 
   const countyOptions = geoCounties.map((c) => ({ value: c, label: `${c} (${countyCounts[c] ?? 0})` }));
+
+  /* A Meghívók között a saját digitális meghívónk is ott van: a lista élére
+     kerül egy kiemelt sávként, és a darabszám is számol vele. */
+  const showHouseOffer = category === HOUSE_CATEGORY;
+  const resultCount = filtered.length + (showHouseOffer ? 1 : 0);
   const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5";
 
   // Pagination counts featured + normal together; featured stay at the front.
@@ -275,6 +281,10 @@ export function ProvidersContent({
   const pageItems = combined.slice((page - 1) * pageSize, page * pageSize);
   const pageFeatured = pageItems.filter((p) => p.featured);
   const pageNormal = pageItems.filter((p) => !p.featured);
+  /* A sáv az első oldal legelső helyén áll: ha van kiemelt szolgáltató, annak
+     a rácsában, különben a normál lista élén. */
+  const houseOfferInFeatured = showHouseOffer && page === 1 && pageFeatured.length > 0;
+  const houseOfferHere = showHouseOffer && page === 1 && pageFeatured.length === 0;
   const pageNumbers = ((): (number | "…")[] => {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
     const pages: (number | "…")[] = [1];
@@ -350,7 +360,7 @@ export function ProvidersContent({
         <div className="mb-6">
           {/* Desktop: count left, page size + view + sort right */}
           <div className="hidden lg:flex items-center justify-between gap-3">
-            <p className="text-lg text-gray-900">{filtered.length} szolgáltató</p>
+            <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>
             <div className="flex items-stretch gap-2">
               <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
@@ -374,7 +384,7 @@ export function ProvidersContent({
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {resultCount === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
@@ -383,7 +393,7 @@ export function ProvidersContent({
         ) : (
           <>
             {/* Mobile: result count above the list */}
-            <p className="lg:hidden text-lg text-gray-900 mb-4">{filtered.length} szolgáltató</p>
+            <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>
             {/* Featured (on this page) on top */}
             {pageFeatured.length > 0 && (
               <section className="mb-6">
@@ -392,6 +402,7 @@ export function ProvidersContent({
                   Kiemelt szolgáltatók
                 </h2>
                 <div className={gridCls}>
+                  {houseOfferInFeatured && <MeghivoPromoCard listView={viewMode === "list"} />}
                   {pageFeatured.map((p) => (
                     <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
                   ))}
@@ -405,8 +416,9 @@ export function ProvidersContent({
               </div>
             )}
 
-            {pageNormal.length > 0 && (
+            {(pageNormal.length > 0 || houseOfferHere) && (
               <div className={gridCls}>
+                {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
                 {pageNormal.map((p) => (
                   <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
                 ))}
