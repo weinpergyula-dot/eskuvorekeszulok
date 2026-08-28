@@ -54,7 +54,7 @@ export default async function HomePage() {
       <HeroCarousel />
 
       {/* Kategóriaválasztó – a banner lekerekített alja alá bújva */}
-      <div className="teal-shift-bg-deep w-full relative -mt-6">
+      <div id="kategoriak" className="teal-shift-bg-deep w-full relative -mt-6 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-5 pb-8 pt-12 sm:px-6 sm:pb-10 sm:pt-14 lg:px-8">
           <h2 className="text-center text-xl md:text-2xl font-bold text-white">
             Válassz kategóriát!

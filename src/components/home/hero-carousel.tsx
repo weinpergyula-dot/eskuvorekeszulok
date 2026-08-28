@@ -109,7 +109,7 @@ const SLIDES: Slide[] = [
       packages: "Fotós · zenekar · vőfély · helyszín",
       short: "Több száz szolgáltató egy helyen",
       cta: "Megnézem",
-      href: "#szolgaltatok",
+      href: "#kategoriak",
     },
     secondaryCta: true,
   },
@@ -251,15 +251,15 @@ export function HeroCarousel() {
         className="hero-slide-in relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
       >
         <div
-          className={`max-w-[54%] self-center pb-0 md:max-w-none md:self-auto ${
-            silver ? "md:translate-x-10 md:pb-4" : "pb-48 md:pb-10"
+          className={`max-w-[54%] self-center pb-0 md:max-w-none ${
+            silver ? "md:-translate-y-8 md:translate-x-10" : "pb-48 md:self-auto md:pb-10"
           }`}
         >
           {/* A cím és a leírás a képre kerül, ha átfednek */}
           <div className="relative z-10">
             <h1
-              className={`font-heading text-[2.0625rem] leading-tight tracking-tight sm:text-[2.725rem] ${
-                silver ? "md:text-[4.6rem]" : ""
+              className={`font-heading leading-tight tracking-tight sm:text-[2.725rem] ${
+                silver ? "text-[2.3125rem] md:text-[4.6rem]" : "text-[2.0625rem]"
               }`}
               style={{ fontWeight: 950 }}
             >
@@ -272,7 +272,7 @@ export function HeroCarousel() {
                 mobilon egymás alatt (a keskeny hasábnál kicsit szélesebben),
                 weben egymás mellett. A színek mindkét méretben azonosak. */}
             {slide.secondaryCta && (
-              <div className="mt-5 flex w-[58vw] max-w-[240px] flex-col gap-2.5 md:mt-8 md:w-auto md:max-w-none md:flex-row md:items-start md:gap-3">
+              <div className="mt-5 flex w-fit flex-col gap-2.5 md:mt-8 md:w-auto md:flex-row md:items-start md:gap-3">
                 <Link
                   href={offer.href}
                   className="hero-offer-cta inline-flex h-10 items-center justify-center gap-1.5 rounded-xl px-4 text-[13px] font-bold text-white transition-colors md:h-11 md:px-8 md:text-base"
