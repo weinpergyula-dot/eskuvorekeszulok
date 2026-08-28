@@ -252,7 +252,7 @@ export function HeroCarousel() {
            magasságot), ezért a dia magasságát ez az alsó korlát adja – épp
            annyi, hogy a menyasszony feje fölött maradjon egy kis levegő. A
            szöveg mellette, függőlegesen középen fut. */
-        className="hero-slide-in relative mx-auto grid min-h-[calc(84vw+70px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
+        className="hero-slide-in relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
       >
         <div className={`max-w-[54%] self-center pb-0 md:max-w-none md:self-auto md:pb-10 ${silver ? "" : "pb-24 md:pb-10"}`}>
           {/* A cím és a leírás a képre kerül, ha átfednek */}
@@ -270,7 +270,7 @@ export function HeroCarousel() {
           {/* A kiemelt ajánlat. Mobilon kiemeljük a szövegfolyamból: a banner
               bal alsó sarkába kerül, a jobbra igazított képre lógva (z-10
               miatt a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
-          <div className={`absolute ${silver ? "hidden md:block" : "bottom-6"} left-4 z-10 w-[56%] max-w-[208px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl`}>
+          <div className={`absolute ${silver ? "hidden md:block" : "bottom-14"} left-4 z-10 w-[56%] max-w-[208px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl`}>
             {/* Mobilon csak egyetlen ajánlatsor fér el, weben a teljes kártya */}
             <p
               className="text-[15px] font-extrabold leading-snug md:hidden"
