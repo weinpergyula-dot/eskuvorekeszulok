@@ -276,9 +276,10 @@ function MobileMenuDropdown({
           {/* Ajánlatkérések */}
           <button
             onClick={() => { onQuotesCta(); setOpen(false); }}
+            /* A fejléc Regisztráció gombjának színe – kiemelt, de nem tömör. */
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-3 text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer border-b border-gray-100",
-              active === "quotes" && "bg-[#84AAA6]/10"
+              "w-full flex items-center gap-3 px-4 py-3 text-base font-semibold text-[#C65EA5] hover:bg-[#C65EA5]/10 transition-colors cursor-pointer border-b border-gray-100",
+              active === "quotes" && "bg-[#C65EA5]/10"
             )}
           >
             <FileText className="h-4 w-4 shrink-0" />
@@ -556,7 +557,8 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
               <button
                 data-tour="sidebar-quotes"
                 onClick={() => switchTo("quotes")}
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
+                /* A fejléc Regisztráció gombjának színe. */
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#C65EA5] hover:bg-[#C65EA5]/10 transition-colors cursor-pointer w-full text-left"
               >
                 <FileText className="h-4 w-4 shrink-0" />
                 <span>Ajánlatkérés</span>
