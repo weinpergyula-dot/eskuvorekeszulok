@@ -155,7 +155,7 @@ export default function MeghivoPage() {
             egy személyre szabott ajánlattal.
           </p>
           <div className="mt-7 flex justify-center">
-            <Link href="/kapcsolat">
+            <Link href="/profil?tab=quotes&form=meghivo">
               <Button size="lg" className="bg-white px-8 text-[#2D5854] hover:bg-white/90">
                 Ajánlatot kérek
               </Button>

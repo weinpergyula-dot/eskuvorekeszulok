@@ -101,7 +101,7 @@ function Price({ pkg }: { pkg: Package }) {
 function Cta({ pkg }: { pkg: Package }) {
   return (
     <Link
-      href="/kapcsolat"
+      href={`/profil?tab=quotes&form=meghivo&csomag=${pkg.name}`}
       className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-[15px] font-bold shadow-md transition-transform hover:scale-[1.03]"
       style={{ color: pkg.ink }}
     >
