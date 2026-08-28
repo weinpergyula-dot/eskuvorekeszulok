@@ -151,16 +151,52 @@ export async function GET() {
   return NextResponse.json(visitorChats);
 }
 
+/**
+ * A saját (meghívós) ajánlatkéréseket nem a regisztrált szolgáltatók kapják,
+ * hanem kizárólag az itteni fiók szolgáltatói profilja. A cím környezeti
+ * változóval felülírható, hogy staging/dev alatt is a megfelelő fiókhoz
+ * fusson be.
+ */
+const HOUSE_ACCOUNT_EMAIL = process.env.HOUSE_ACCOUNT_EMAIL ?? "weinper.gyula@gmail.com";
+
+/** A ház szolgáltatói profilja – ide megy a meghívós ajánlatkérés. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function findHouseProvider(admin: any) {
+  const { data: profile } = await admin
+    .from("profiles")
+    .select("user_id")
+    .eq("email", HOUSE_ACCOUNT_EMAIL)
+    .maybeSingle();
+  if (!profile?.user_id) return null;
+
+  const { data: provider } = await admin
+    .from("providers")
+    .select("id, user_id")
+    .eq("user_id", profile.user_id)
+    .maybeSingle();
+  return provider ?? null;
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { subject, category, counties, message, selectedProviderIds } = await request.json();
+  const { subject, category, counties, message, selectedProviderIds, houseOnly } = await request.json();
   if (!subject?.trim() || !category || !counties?.length || !message?.trim())
     return NextResponse.json({ error: "Hiányzó mezők." }, { status: 400 });
 
   const admin = createAdminClient();
+
+  // A ház ajánlatkérése: csak a saját profil kapja meg, szolgáltatókeresés nélkül.
+  const houseProvider = houseOnly ? await findHouseProvider(admin) : null;
+  if (houseOnly && !houseProvider) {
+    await logError("api/quote-requests POST", `house provider not found for ${HOUSE_ACCOUNT_EMAIL}`, { user: user.id, category });
+    return NextResponse.json(
+      { error: "Az ajánlatkérés címzettje jelenleg nem elérhető. Kérlek, hívj minket telefonon!" },
+      { status: 503 },
+    );
+  }
 
   const { data: qr, error: qrError } = await admin
     .from("quote_requests")
@@ -169,6 +205,23 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (qrError || !qr) { await logError("api/quote-requests POST", qrError?.message ?? "insert returned null", { user: user.id, subject, category }); return NextResponse.json({ error: "Hiba az ajánlatkérés létrehozásakor." }, { status: 500 }); }
+
+  if (houseProvider) {
+    await admin.from("quote_request_recipients").insert({
+      quote_request_id: qr.id,
+      provider_id: houseProvider.id,
+      provider_user_id: houseProvider.user_id,
+    });
+    notifyNewQuoteRequest({
+      providerUserId: houseProvider.user_id,
+      visitorUserId: user.id,
+      subject,
+      category,
+      message,
+      origin: request.nextUrl.origin,
+    }).catch(() => {});
+    return NextResponse.json({ id: qr.id, recipient_count: 1 });
+  }
 
   // "Országosan" means every provider in the category, regardless of county.
   const nationwide = Array.isArray(counties) && counties.includes("Országosan");

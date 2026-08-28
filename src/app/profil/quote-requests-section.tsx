@@ -748,12 +748,11 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
       {mode === "meghivo" ? (
         <>
           <p className="text-base text-gray-700">
-            Jelöld be, melyik csomag és milyen extrák érdekelnek – a válaszokat ugyanúgy
+            Jelöld be, melyik csomag és milyen extrák érdekelnek – a válaszokat
             a Chat menüpontban találod.
           </p>
           <MeghivoQuoteForm
             onSent={() => setSent(true)}
-            userId={userId}
             initialPackage={searchParams.get("csomag") ?? undefined}
           />
         </>

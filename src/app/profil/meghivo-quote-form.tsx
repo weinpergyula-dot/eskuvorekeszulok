@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Check, MailOpen, Phone, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingTextarea } from "@/components/ui/floating-input";
-import { RecipientPicker } from "./quote-recipient-picker";
 
 /**
- * Digitális meghívó ajánlatkérés. Ugyanúgy működik, mint az általános
- * ajánlatkérő űrlap – ugyanarra a végpontra megy, és a válaszok is ugyanoda,
- * a Chat menüpontba érkeznek –, csak a mezői a meghívóra vannak szabva: a
- * csomagot és a kért extrákat bejelöléssel lehet megadni.
+ * Digitális meghívó ajánlatkérés. Ugyanarra a végpontra megy, mint az
+ * általános ajánlatkérő űrlap, és a válaszok is ugyanoda, a Chat menüpontba
+ * érkeznek – csak a mezői a meghívóra vannak szabva (a csomagot és a kért
+ * extrákat bejelöléssel lehet megadni), és nem kell címzettet választani:
+ * ezt az ajánlatkérést kizárólag mi kapjuk meg.
  */
 
 /** Gyors ajánlatkéréshez ezen a számon vagyunk elérhetők. */
@@ -82,12 +82,10 @@ function Choice({
 export function MeghivoQuoteForm({
   onSent,
   onCancel,
-  userId,
   initialPackage,
 }: {
   onSent: () => void;
   onCancel?: () => void;
-  userId?: string;
   initialPackage?: string;
 }) {
   const [pkg, setPkg] = useState<string>(
@@ -97,7 +95,6 @@ export function MeghivoQuoteForm({
   const [weddingDate, setWeddingDate] = useState("");
   const [names, setNames] = useState("");
   const [note, setNote] = useState("");
-  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -121,7 +118,6 @@ export function MeghivoQuoteForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!pkg) { setError("Válassz csomagot!"); return; }
-    if (checkedIds.size === 0) { setError("Legalább egy szolgáltatót jelölj be."); return; }
     setSending(true);
     setError(null);
     try {
@@ -133,7 +129,8 @@ export function MeghivoQuoteForm({
           category: CATEGORY,
           counties: COUNTIES,
           message: buildMessage(),
-          selectedProviderIds: [...checkedIds],
+          // Ezt az ajánlatkérést nem a regisztrált szolgáltatók kapják.
+          houseOnly: true,
         }),
       });
       const data = await res.json();
@@ -235,13 +232,9 @@ export function MeghivoQuoteForm({
         className="text-base sm:text-sm"
       />
 
-      <RecipientPicker
-        category={CATEGORY}
-        counties={COUNTIES}
-        userId={userId}
-        checkedIds={checkedIds}
-        setCheckedIds={setCheckedIds}
-      />
+      <p className="text-xs text-gray-500">
+        Ezt az ajánlatkérést közvetlenül mi kapjuk meg – nem megy ki más szolgáltatóhoz.
+      </p>
 
       {error && (
         <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-xs px-4 py-3 rounded-xl border border-[#F06C6C]/30">
