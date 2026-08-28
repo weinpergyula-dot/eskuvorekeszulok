@@ -1166,6 +1166,20 @@ html.a11y-underline a { text-decoration: underline !important; }
 
 /* Ezüstös bannerháttér: lassan vándorló fém-gradiens. A fénycsíkot külön
    elem (.hero-sheen) adja, hogy a szöveg fölött ne fusson át. */
+/* Álló ezüst: a hero-silver csendes rokona – nincs mozgás, és a színek
+   teljesen semlegesek (R=G=B), tehát nincs benne kékes-teal beütés.
+   Világosabb is: a legsötétebb pontja #E4E4E6 a hero-silver #B4C2C9-e helyett. */
+.silver-still {
+  background: linear-gradient(
+    145deg,
+    #FFFFFF 0%,
+    #F2F2F3 18%,
+    #FFFFFF 34%,
+    #E4E4E6 56%,
+    #FAFAFB 76%,
+    #EDEDEF 100%
+  );
+}
 .hero-silver {
   background: linear-gradient(
     145deg,
