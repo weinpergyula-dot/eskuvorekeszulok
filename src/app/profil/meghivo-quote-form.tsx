@@ -22,25 +22,44 @@ const CATEGORY = "meghivo";
 const COUNTIES = ["Országosan"];
 
 const PACKAGES = [
-  { id: "BASIC", label: "BASIC", note: "14 900 Ft-tól" },
-  { id: "SILVER", label: "SILVER", note: "24 900 Ft-tól" },
-  { id: "PREMIUM", label: "PREMIUM", note: "39 900 Ft-tól" },
+  { id: "BASIC", label: "BASIC", note: "14 900 Ft" },
+  { id: "SILVER", label: "SILVER", note: "24 900 Ft" },
+  { id: "PREMIUM", label: "PREMIUM", note: "39 900 Ft" },
   { id: "NEM_TUDOM", label: "Még nem tudom", note: "Segítsetek választani" },
 ] as const;
 
 /** Minden extra egységesen +3 000 Ft, a személyes konzultáció óradíjas. */
 const EXTRA_PRICE = "+3 000 Ft";
 
-const EXTRAS = [
-  { label: "Fotógaléria rólatok (10 képig)", price: EXTRA_PRICE },
-  { label: "Választható arculati szín", price: EXTRA_PRICE },
-  { label: "Kétnyelvű meghívó", price: EXTRA_PRICE },
-  { label: "Saját háttérzene feltöltése", price: EXTRA_PRICE },
-  { label: "Vendéglista exportálása", price: EXTRA_PRICE },
-  { label: "Egyedi illusztráció és monogram", price: EXTRA_PRICE },
-  { label: "Videós köszöntő beágyazása", price: EXTRA_PRICE },
-  { label: "Személyes konzultáció, saját designer", price: "+10 000 Ft / óra" },
-] as const;
+type Extra = { label: string; price: string };
+
+/**
+ * Csomagonként más extra kérhető – ugyanaz a felosztás, mint a /meghivo
+ * oldal csomagcsempéin. A "Még nem tudom" választásnál mindet felkínáljuk,
+ * hiszen ilyenkor épp a csomagválasztásban segítünk.
+ */
+const EXTRAS_BY_PACKAGE: Record<string, readonly Extra[]> = {
+  BASIC: [
+    { label: "Fotógaléria rólatok (10 képig)", price: EXTRA_PRICE },
+    { label: "Választható arculati szín", price: EXTRA_PRICE },
+    { label: "Kétnyelvű meghívó", price: EXTRA_PRICE },
+  ],
+  SILVER: [
+    { label: "Saját háttérzene feltöltése", price: EXTRA_PRICE },
+    { label: "Vendéglista exportálása", price: EXTRA_PRICE },
+  ],
+  PREMIUM: [
+    { label: "Egyedi illusztráció és monogram", price: EXTRA_PRICE },
+    { label: "Videós köszöntő beágyazása", price: EXTRA_PRICE },
+    { label: "Személyes konzultáció, saját designer", price: "+10 000 Ft / óra" },
+  ],
+};
+
+EXTRAS_BY_PACKAGE.NEM_TUDOM = [
+  ...EXTRAS_BY_PACKAGE.BASIC,
+  ...EXTRAS_BY_PACKAGE.SILVER,
+  ...EXTRAS_BY_PACKAGE.PREMIUM,
+];
 
 /** Bejelölhető sor – csomagnál egyválasztós, extráknál többválasztós. */
 function Choice({
@@ -109,11 +128,22 @@ export function MeghivoQuoteForm({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /** A választott csomaghoz kérhető extrák. */
+  const availableExtras = EXTRAS_BY_PACKAGE[pkg] ?? [];
+
   const toggleExtra = (x: string) =>
     setExtras(prev => (prev.includes(x) ? prev.filter(e => e !== x) : [...prev, x]));
 
+  /** Csomagváltáskor a másik csomaghoz tartozó bejelölések elesnek. */
+  const choosePackage = (id: string) => {
+    const next = pkg === id ? "" : id;
+    const allowed = new Set((EXTRAS_BY_PACKAGE[next] ?? []).map(x => x.label));
+    setPkg(next);
+    setExtras(prev => prev.filter(x => allowed.has(x)));
+  };
+
   /** Az üzenetben az extra mellé a felára is odakerül. */
-  const extraPrice = (label: string) => EXTRAS.find(x => x.label === label)?.price ?? "";
+  const extraPrice = (label: string) => availableExtras.find(x => x.label === label)?.price ?? "";
 
   /** A bejelölésekből összeáll az az üzenet, amit a szolgáltató megkap. */
   const buildMessage = () => {
@@ -189,28 +219,34 @@ export function MeghivoQuoteForm({
               label={p.label}
               note={p.note}
               selected={pkg === p.id}
-              onClick={() => setPkg(pkg === p.id ? "" : p.id)}
+              onClick={() => choosePackage(p.id)}
             />
           ))}
         </div>
       </div>
 
-      {/* Extrák – többet is bejelölhetsz */}
+      {/* Extrák – a választott csomaghoz kérhetők közül többet is bejelölhetsz */}
       <div>
         <p className="text-xs text-gray-600 mb-2">
           Milyen extrákat kérnél? (többet is bejelölhetsz) – a felár a csomag árához adódik
         </p>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {EXTRAS.map(x => (
-            <Choice
-              key={x.label}
-              label={x.label}
-              price={x.price}
-              selected={extras.includes(x.label)}
-              onClick={() => toggleExtra(x.label)}
-            />
-          ))}
-        </div>
+        {availableExtras.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-gray-300 px-4 py-3 text-sm text-gray-500">
+            Válassz csomagot, és itt megjelennek a hozzá kérhető extrák.
+          </p>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">
+            {availableExtras.map(x => (
+              <Choice
+                key={x.label}
+                label={x.label}
+                price={x.price}
+                selected={extras.includes(x.label)}
+                onClick={() => toggleExtra(x.label)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
