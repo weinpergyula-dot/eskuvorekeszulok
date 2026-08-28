@@ -21,12 +21,16 @@ const PHONE_HREF = "tel:+36707888787";
 const CATEGORY = "meghivo";
 const COUNTIES = ["Országosan"];
 
-const PACKAGES = [
-  { id: "BASIC", label: "BASIC", note: "14 900 Ft" },
-  { id: "SILVER", label: "SILVER", note: "24 900 Ft" },
-  { id: "PREMIUM", label: "PREMIUM", note: "39 900 Ft" },
-  { id: "NEM_TUDOM", label: "Még nem tudom", note: "Segítsetek választani" },
-] as const;
+type Package = { id: string; label: string; note?: string; subject: string };
+
+const PACKAGES: readonly Package[] = [
+  { id: "BASIC", label: "BASIC", note: "14 900 Ft", subject: "BASIC" },
+  { id: "SILVER", label: "SILVER", note: "24 900 Ft", subject: "SILVER" },
+  { id: "PREMIUM", label: "PREMIUM", note: "39 900 Ft", subject: "PREMIUM" },
+  /* Egyedi igény: itt nincs előre kötött extra-lista, a részleteket a
+     megjegyzésben írja le a látogató. */
+  { id: "EGYEDI", label: "Egyedi ajánlatot kérek", subject: "egyedi ajánlat" },
+];
 
 /** Minden extra egységesen +3 000 Ft, a személyes konzultáció óradíjas. */
 const EXTRA_PRICE = "+3 000 Ft";
@@ -35,8 +39,8 @@ type Extra = { label: string; price: string };
 
 /**
  * Csomagonként más extra kérhető – ugyanaz a felosztás, mint a /meghivo
- * oldal csomagcsempéin. A "Még nem tudom" választásnál mindet felkínáljuk,
- * hiszen ilyenkor épp a csomagválasztásban segítünk.
+ * oldal csomagcsempéin. Egyedi ajánlatnál nincs lista: ott a megjegyzésben
+ * írja le a látogató, mire van szüksége.
  */
 const EXTRAS_BY_PACKAGE: Record<string, readonly Extra[]> = {
   BASIC: [
@@ -54,12 +58,6 @@ const EXTRAS_BY_PACKAGE: Record<string, readonly Extra[]> = {
     { label: "Személyes konzultáció, saját designer", price: "+10 000 Ft / óra" },
   ],
 };
-
-EXTRAS_BY_PACKAGE.NEM_TUDOM = [
-  ...EXTRAS_BY_PACKAGE.BASIC,
-  ...EXTRAS_BY_PACKAGE.SILVER,
-  ...EXTRAS_BY_PACKAGE.PREMIUM,
-];
 
 /** Bejelölhető sor – csomagnál egyválasztós, extráknál többválasztós. */
 function Choice({
@@ -128,6 +126,8 @@ export function MeghivoQuoteForm({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /** Egyedi ajánlatnál nincs extra-választó, csak a többi mező. */
+  const customOffer = pkg === "EGYEDI";
   /** A választott csomaghoz kérhető extrák. */
   const availableExtras = EXTRAS_BY_PACKAGE[pkg] ?? [];
 
@@ -147,21 +147,24 @@ export function MeghivoQuoteForm({
 
   /** A bejelölésekből összeáll az az üzenet, amit a szolgáltató megkap. */
   const buildMessage = () => {
-    const lines = [
-      `Csomag: ${PACKAGES.find(p => p.id === pkg)?.label ?? "—"}`,
-      extras.length > 0
-        ? `Kért extrák:\n${extras.map(x => `• ${x} (${extraPrice(x)})`).join("\n")}`
-        : "Kért extrák: nincs megjelölve",
-    ];
+    const lines = [`Csomag: ${PACKAGES.find(p => p.id === pkg)?.label ?? "—"}`];
+    if (!customOffer) {
+      lines.push(
+        extras.length > 0
+          ? `Kért extrák:\n${extras.map(x => `• ${x} (${extraPrice(x)})`).join("\n")}`
+          : "Kért extrák: nincs megjelölve",
+      );
+    }
     if (weddingDate) lines.push(`Az esküvő időpontja: ${weddingDate}`);
     if (names.trim()) lines.push(`A pár neve: ${names.trim()}`);
-    if (note.trim()) lines.push(`Megjegyzés:\n${note.trim()}`);
+    lines.push(`Megjegyzés:\n${note.trim()}`);
     return lines.join("\n\n");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!pkg) { setError("Válassz csomagot!"); return; }
+    if (!note.trim()) { setError("Írd le pár sorban, mire van szükségetek!"); return; }
     setSending(true);
     setError(null);
     try {
@@ -169,7 +172,7 @@ export function MeghivoQuoteForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          subject: `Digitális meghívó – ${PACKAGES.find(p => p.id === pkg)?.label ?? "ajánlatkérés"}`,
+          subject: `Digitális meghívó – ${PACKAGES.find(p => p.id === pkg)?.subject ?? "ajánlatkérés"}`,
           category: CATEGORY,
           counties: COUNTIES,
           message: buildMessage(),
@@ -225,34 +228,39 @@ export function MeghivoQuoteForm({
         </div>
       </div>
 
-      {/* Extrák – a választott csomaghoz kérhetők közül többet is bejelölhetsz */}
-      <div>
-        <p className="text-xs text-gray-600 mb-2">
-          Milyen extrákat kérnél? (többet is bejelölhetsz) – a felár a csomag árához adódik
-        </p>
-        {availableExtras.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-gray-300 px-4 py-3 text-sm text-gray-500">
-            Válassz csomagot, és itt megjelennek a hozzá kérhető extrák.
-          </p>
-        ) : (
-          <div className="grid gap-2 sm:grid-cols-2">
-            {availableExtras.map(x => (
-              <Choice
-                key={x.label}
-                label={x.label}
-                price={x.price}
-                selected={extras.includes(x.label)}
-                onClick={() => toggleExtra(x.label)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        {/* A dátummezőnek saját címkéje van: a natív date input mindig mutat
-            valamit, így a lebegő címke ráúszna. */}
+      {/* Extrák – a választott csomaghoz kérhetők közül többet is bejelölhetsz.
+          Egyedi ajánlatnál ez a rész elmarad. */}
+      {!customOffer && (
         <div>
+          <p className="text-xs text-gray-600 mb-2">
+            Milyen extrákat kérnél? (többet is bejelölhetsz) – a felár a csomag árához adódik
+          </p>
+          {availableExtras.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-gray-300 px-4 py-3 text-sm text-gray-500">
+              Válassz csomagot, és itt megjelennek a hozzá kérhető extrák.
+            </p>
+          ) : (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {availableExtras.map(x => (
+                <Choice
+                  key={x.label}
+                  label={x.label}
+                  price={x.price}
+                  selected={extras.includes(x.label)}
+                  onClick={() => toggleExtra(x.label)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        {/* A dátummezőnek saját címkéje van: a natív date input mindig mutat
+            valamit, így a lebegő címke ráúszna. A böngésző saját, a hasábnál
+            szélesebb alapméretet ad neki, ezért a cellát és a mezőt is
+            zsugoríthatóra állítjuk. */}
+        <div className="min-w-0">
           <label htmlFor="mq-date" className="mb-1 block text-xs text-gray-600">
             Az esküvő időpontja
           </label>
@@ -261,10 +269,10 @@ export function MeghivoQuoteForm({
             type="date"
             value={weddingDate}
             onChange={e => setWeddingDate(e.target.value)}
-            className="h-12 w-full rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 outline-none transition-colors focus:border-[#84AAA6] focus:ring-1 focus:ring-[#84AAA6] sm:text-sm"
+            className="h-12 w-full min-w-0 max-w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 outline-none transition-colors focus:border-[#84AAA6] focus:ring-1 focus:ring-[#84AAA6] sm:text-sm"
           />
         </div>
-        <div>
+        <div className="min-w-0">
           <label htmlFor="mq-names" className="mb-1 block text-xs text-gray-600">
             A pár neve
           </label>
@@ -273,14 +281,14 @@ export function MeghivoQuoteForm({
             value={names}
             onChange={e => setNames(e.target.value)}
             placeholder="pl. Eszter és Bálint"
-            className="h-12 w-full rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 placeholder:text-gray-400 outline-none transition-colors focus:border-[#84AAA6] focus:ring-1 focus:ring-[#84AAA6] sm:text-sm"
+            className="h-12 w-full min-w-0 rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 placeholder:text-gray-400 outline-none transition-colors focus:border-[#84AAA6] focus:ring-1 focus:ring-[#84AAA6] sm:text-sm"
           />
         </div>
       </div>
 
       <FloatingTextarea
         id="mq-note"
-        label="Megjegyzés"
+        label="Megjegyzés *"
         value={note}
         onChange={e => setNote(e.target.value)}
         rows={3}
