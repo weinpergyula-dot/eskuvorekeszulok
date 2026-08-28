@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, Star } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -161,11 +161,12 @@ export function ProvidersContent({
   providers: Provider[];
   categoryCounts: Record<string, number>;
   /** A főoldalon a kategóriaválasztás a gyorskategória-csempékről történik,
-      ezért a desktop pill-sor rejtve marad. A mobil legördülő megmarad – ott
-      nincs elég hely a csempékből minden kategóriára. */
+      ezért itt sem a desktop pill-sor, sem a mobil legördülő nem jelenik meg –
+      a bevezető szöveg is csak a megyeszűrésről szól. */
   hideCategoryPills?: boolean;
 }) {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [category, setCategory] = useState<string>(searchParams.get("category") ?? "");
   const [county, setCounty] = useState<string>(searchParams.get("county") ?? "");
   const [sortBy, setSortBy] = useState<SortOption>("default");
@@ -192,6 +193,26 @@ export function ProvidersContent({
 
   // Reset to first page when the result set or page size changes.
   useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize]);
+
+  /* A listázás aktuális állapota. A szűrők a címsorba is bekerülnek, és a
+     szolgáltatói kártyák linkjei is magukkal viszik – így a részletes
+     profilról a Vissza gomb pontosan ide hoz vissza. A főoldalon a lista
+     lentebb van, ezért oda horgonnyal térünk vissza. */
+  const listQuery = useMemo(() => {
+    const qs = new URLSearchParams();
+    if (category) qs.set("category", category);
+    if (county) qs.set("county", county);
+    return qs.toString();
+  }, [category, county]);
+
+  const listUrl = `${pathname}${listQuery ? `?${listQuery}` : ""}${pathname === "/" ? "#szolgaltatok" : ""}`;
+
+  useEffect(() => {
+    // Csak a query stringet írjuk át – nincs újratöltés, a görgetés sem ugrik.
+    const { pathname: path, search, hash } = window.location;
+    const next = `${path}${listQuery ? `?${listQuery}` : ""}${hash}`;
+    if (next !== `${path}${search}${hash}`) window.history.replaceState(null, "", next);
+  }, [listQuery]);
 
   const categoryOptions = useMemo(
     () =>
@@ -272,7 +293,9 @@ export function ProvidersContent({
 
   return (
     <div>
-      <p className="text-base text-gray-700 mb-5">Válassz kategóriát és szűrj megyék szerint</p>
+      <p className="text-base text-gray-700 mb-5">
+        {hideCategoryPills ? "Szűrj megyék szerint" : "Válassz kategóriát és szűrj megyék szerint"}
+      </p>
       <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
       {/* Desktop county sidebar (left, full height) */}
       <aside className="hidden lg:block lg:w-64 shrink-0">
@@ -335,9 +358,13 @@ export function ProvidersContent({
             </div>
           </div>
 
-          {/* Mobile: category (full), county (full), then view + sort + page size filling one row */}
+          {/* Mobile: county (full), then view + sort + page size filling one row.
+              A kategóriát a főoldalon a gyorskategória-csempék adják, ezért ott
+              a legördülő is elmarad. */}
           <div className="lg:hidden space-y-2">
-            <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
+            {!hideCategoryPills && (
+              <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
+            )}
             <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
             <div className="grid grid-cols-[auto_1fr_auto] items-stretch gap-2">
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
@@ -366,7 +393,7 @@ export function ProvidersContent({
                 </h2>
                 <div className={gridCls}>
                   {pageFeatured.map((p) => (
-                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
+                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
                   ))}
                 </div>
               </section>
@@ -381,7 +408,7 @@ export function ProvidersContent({
             {pageNormal.length > 0 && (
               <div className={gridCls}>
                 {pageNormal.map((p) => (
-                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
+                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
                 ))}
               </div>
             )}

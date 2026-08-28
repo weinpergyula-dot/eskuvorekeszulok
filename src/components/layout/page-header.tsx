@@ -1,10 +1,13 @@
 import { ArrowLeft, type LucideIcon } from "lucide-react";
+import { BackLink } from "./back-link";
 import { StickyCta } from "./sticky-cta";
 
 interface PageHeaderProps {
   title: string;
   description?: string;
   backHref?: string;
+  /** A Vissza gomb célja, ha a listázás nem küldött `from` paramétert. */
+  backFallbackHref?: string;
   icon?: LucideIcon;
   bgColor?: string;
   ctaLabel?: string;
@@ -19,7 +22,7 @@ interface PageHeaderProps {
   breadcrumb?: { label: string; href: string }[];
 }
 
-export function PageHeader({ title, description, backHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref, roundedBottom = true, bottomBg = "#ffffff" }: PageHeaderProps) {
+export function PageHeader({ title, description, backHref, backFallbackHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref, roundedBottom = true, bottomBg = "#ffffff" }: PageHeaderProps) {
   return (
     <>
       <div
@@ -64,7 +67,7 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
         </>
       )}
 
-      {backHref && (
+      {(backHref || backFallbackHref) && (
         /* A Vissza-sáv a fejléc alatti szekció színét veszi fel, alatta halvány,
            teal árnyalatú elválasztóval (fehér és színes háttéren is látszik). */
         <div
@@ -72,14 +75,18 @@ export function PageHeader({ title, description, backHref, icon: Icon, bgColor =
           style={{ backgroundColor: bottomBg, borderColor: "rgba(45, 88, 84, 0.16)" }}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <a
-              href={backHref}
-              className="inline-flex items-center gap-1.5 text-[15px] font-medium transition-colors"
-              style={{ color: "#84AAA6" }}
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Vissza
-            </a>
+            {backFallbackHref ? (
+              <BackLink fallbackHref={backFallbackHref} />
+            ) : (
+              <a
+                href={backHref}
+                className="inline-flex items-center gap-1.5 text-[15px] font-medium transition-colors"
+                style={{ color: "#84AAA6" }}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Vissza
+              </a>
+            )}
           </div>
         </div>
       )}

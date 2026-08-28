@@ -144,7 +144,7 @@ export function WhyRegister() {
           <div className="mt-6 space-y-3 [&_button]:w-full [&>div]:w-full md:flex md:items-start md:gap-3 md:space-y-0 md:[&_button]:w-auto md:[&>div]:w-auto">
             {tab.id === "visitor" ? (
               <>
-                <Link href="/services" className="block">
+                <Link href="/#szolgaltatok" className="block">
                   <Button size="lg" className="w-full bg-white text-[#2D5854] hover:bg-white/90">
                     Megnézem a kínálatot
                   </Button>

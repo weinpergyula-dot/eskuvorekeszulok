@@ -24,7 +24,7 @@ export function WelcomeEmail({ name }: WelcomeEmailProps) {
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: "28px auto" }}>
         <tr>
           <td style={s.btnCell}>
-            <a href="https://eskuvorekeszulok.hu/services" style={s.btn}>
+            <a href="https://eskuvorekeszulok.hu/#szolgaltatok" style={s.btn}>
               Szolgáltatók böngészése
             </a>
           </td>

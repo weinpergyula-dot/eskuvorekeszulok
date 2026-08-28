@@ -83,7 +83,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       <PageHeader
         icon={User}
         title="Szolgáltatói profil"
-        backHref={firstCategory ? `/services?category=${firstCategory}` : "/services"}
+        /* A Vissza gomb a listázás `from` paraméterét követi (a szűrőkkel
+           együtt); ha nincs, a szolgáltató kategóriájára nyitott főoldalra visz. */
+        backFallbackHref={firstCategory ? `/?category=${firstCategory}#szolgaltatok` : "/#szolgaltatok"}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <ViewTracker providerId={provider.id} />
