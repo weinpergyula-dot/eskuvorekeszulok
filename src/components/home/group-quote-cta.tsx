@@ -6,19 +6,13 @@ import { ArrowRight, Send } from "lucide-react";
  * főoldalon. Egy üzenettel több szolgáltató is megszólítható, ezért érdemes
  * még a böngészés előtt felkínálni.
  *
- * A háttér csendes: álló, semleges ezüst–fehér átmenet (se szín, se
- * mozgás), sötét szöveggel; a hangsúlyt a teal gomb viszi.
+ * A háttér ugyanaz az ezüst, mint a banner első diáján a menyasszony
+ * mögött (`hero-silver`), sötét szöveggel és teal gombbal.
  */
-const SILVER_BG =
-  "linear-gradient(145deg, #FFFFFF 0%, #F1F1F2 30%, #DCDCDE 60%, #F6F6F7 100%)";
-
 export function GroupQuoteCta() {
   return (
     <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
-      <div
-        className="relative isolate overflow-hidden rounded-2xl px-5 py-6 shadow-[0_18px_50px_-30px_rgba(45,88,84,0.35)] ring-1 ring-black/5 sm:px-7 sm:py-7"
-        style={{ background: SILVER_BG }}
-      >
+      <div className="hero-silver relative isolate overflow-hidden rounded-2xl px-5 py-6 shadow-[0_18px_50px_-30px_rgba(45,88,84,0.35)] ring-1 ring-black/5 sm:px-7 sm:py-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
           <div className="flex items-start gap-4">
             <span
