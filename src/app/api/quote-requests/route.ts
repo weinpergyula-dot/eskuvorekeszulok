@@ -159,22 +159,48 @@ export async function GET() {
  */
 const HOUSE_ACCOUNT_EMAIL = process.env.HOUSE_ACCOUNT_EMAIL ?? "weinper.gyula@gmail.com";
 
-/** A ház szolgáltatói profilja – ide megy a meghívós ajánlatkérés. */
+type HouseProvider = { id: string; user_id: string };
+
+/**
+ * A ház szolgáltatói profilja – ide megy a meghívós ajánlatkérés.
+ *
+ * A keresés szándékosan engedékeny: a cím kis-nagybetűtől függetlenül
+ * illeszkedik, és ha több találat is van (pl. régi, törölt fiók ugyanazzal a
+ * címmel, vagy több szolgáltatói rekord), az elsőt vesszük – a maybeSingle()
+ * ilyenkor hibát adna, és a címzett „nem elérhető” lenne. A visszaadott ok
+ * bekerül a naplóba, hogy a beállítás hiánya azonnal látszódjon.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function findHouseProvider(admin: any) {
-  const { data: profile } = await admin
+async function findHouseProvider(admin: any): Promise<{ provider: HouseProvider | null; reason: string }> {
+  const email = HOUSE_ACCOUNT_EMAIL.trim();
+
+  const { data: profiles, error: profileError } = await admin
     .from("profiles")
     .select("user_id")
-    .eq("email", HOUSE_ACCOUNT_EMAIL)
-    .maybeSingle();
-  if (!profile?.user_id) return null;
+    .ilike("email", email)
+    .limit(1);
 
-  const { data: provider } = await admin
+  if (profileError) return { provider: null, reason: `profiles query failed: ${profileError.message}` };
+
+  const userId = (profiles ?? [])[0]?.user_id;
+  if (!userId) return { provider: null, reason: `nincs profil ezzel a címmel: ${email}` };
+
+  const { data: providers, error: providerError } = await admin
     .from("providers")
     .select("id, user_id")
-    .eq("user_id", profile.user_id)
-    .maybeSingle();
-  return provider ?? null;
+    .eq("user_id", userId)
+    .limit(1);
+
+  if (providerError) return { provider: null, reason: `providers query failed: ${providerError.message}` };
+
+  const provider = (providers ?? [])[0] as HouseProvider | undefined;
+  if (!provider) {
+    return {
+      provider: null,
+      reason: `a(z) ${email} fiókhoz nincs szolgáltatói profil (providers.user_id = ${userId})`,
+    };
+  }
+  return { provider, reason: "ok" };
 }
 
 export async function POST(request: NextRequest) {
@@ -189,13 +215,17 @@ export async function POST(request: NextRequest) {
   const admin = createAdminClient();
 
   // A ház ajánlatkérése: csak a saját profil kapja meg, szolgáltatókeresés nélkül.
-  const houseProvider = houseOnly ? await findHouseProvider(admin) : null;
-  if (houseOnly && !houseProvider) {
-    await logError("api/quote-requests POST", `house provider not found for ${HOUSE_ACCOUNT_EMAIL}`, { user: user.id, category });
-    return NextResponse.json(
-      { error: "Az ajánlatkérés címzettje jelenleg nem elérhető. Kérlek, hívj minket telefonon!" },
-      { status: 503 },
-    );
+  let houseProvider: HouseProvider | null = null;
+  if (houseOnly) {
+    const found = await findHouseProvider(admin);
+    houseProvider = found.provider;
+    if (!houseProvider) {
+      await logError("api/quote-requests POST", `house provider not found: ${found.reason}`, { user: user.id, category });
+      return NextResponse.json(
+        { error: "Az ajánlatkérés címzettje jelenleg nem elérhető. Kérlek, hívj minket telefonon!" },
+        { status: 503 },
+      );
+    }
   }
 
   const { data: qr, error: qrError } = await admin
