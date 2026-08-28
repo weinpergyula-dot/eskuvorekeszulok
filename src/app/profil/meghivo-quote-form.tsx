@@ -28,26 +28,32 @@ const PACKAGES = [
   { id: "NEM_TUDOM", label: "Még nem tudom", note: "Segítsetek választani" },
 ] as const;
 
+/** Minden extra egységesen +3 000 Ft, a személyes konzultáció óradíjas. */
+const EXTRA_PRICE = "+3 000 Ft";
+
 const EXTRAS = [
-  "Fotógaléria rólatok (10 képig)",
-  "Választható arculati szín",
-  "Kétnyelvű meghívó",
-  "Saját háttérzene feltöltése",
-  "Vendéglista exportálása",
-  "Egyedi illusztráció és monogram",
-  "Videós köszöntő beágyazása",
-  "Személyes konzultáció, saját designer",
+  { label: "Fotógaléria rólatok (10 képig)", price: EXTRA_PRICE },
+  { label: "Választható arculati szín", price: EXTRA_PRICE },
+  { label: "Kétnyelvű meghívó", price: EXTRA_PRICE },
+  { label: "Saját háttérzene feltöltése", price: EXTRA_PRICE },
+  { label: "Vendéglista exportálása", price: EXTRA_PRICE },
+  { label: "Egyedi illusztráció és monogram", price: EXTRA_PRICE },
+  { label: "Videós köszöntő beágyazása", price: EXTRA_PRICE },
+  { label: "Személyes konzultáció, saját designer", price: "+10 000 Ft / óra" },
 ] as const;
 
 /** Bejelölhető sor – csomagnál egyválasztós, extráknál többválasztós. */
 function Choice({
   label,
   note,
+  price,
   selected,
   onClick,
 }: {
   label: string;
   note?: string;
+  /** Felár – a sor jobb szélén, mint a csomagoknál. */
+  price?: string;
   selected: boolean;
   onClick: () => void;
 }) {
@@ -69,12 +75,17 @@ function Choice({
       >
         {selected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
       </span>
-      <span className="min-w-0">
+      <span className="min-w-0 flex-1">
         <span className={`block text-sm font-semibold ${selected ? "text-[#5C8480]" : "text-gray-900"}`}>
           {label}
         </span>
         {note && <span className="block text-xs text-gray-500">{note}</span>}
       </span>
+      {price && (
+        <span className={`shrink-0 whitespace-nowrap text-sm font-bold ${selected ? "text-[#5C8480]" : "text-gray-500"}`}>
+          {price}
+        </span>
+      )}
     </button>
   );
 }
@@ -101,12 +112,15 @@ export function MeghivoQuoteForm({
   const toggleExtra = (x: string) =>
     setExtras(prev => (prev.includes(x) ? prev.filter(e => e !== x) : [...prev, x]));
 
+  /** Az üzenetben az extra mellé a felára is odakerül. */
+  const extraPrice = (label: string) => EXTRAS.find(x => x.label === label)?.price ?? "";
+
   /** A bejelölésekből összeáll az az üzenet, amit a szolgáltató megkap. */
   const buildMessage = () => {
     const lines = [
       `Csomag: ${PACKAGES.find(p => p.id === pkg)?.label ?? "—"}`,
       extras.length > 0
-        ? `Kért extrák:\n${extras.map(x => `• ${x}`).join("\n")}`
+        ? `Kért extrák:\n${extras.map(x => `• ${x} (${extraPrice(x)})`).join("\n")}`
         : "Kért extrák: nincs megjelölve",
     ];
     if (weddingDate) lines.push(`Az esküvő időpontja: ${weddingDate}`);
@@ -184,11 +198,17 @@ export function MeghivoQuoteForm({
       {/* Extrák – többet is bejelölhetsz */}
       <div>
         <p className="text-xs text-gray-600 mb-2">
-          Milyen extrákat kérnél? (többet is bejelölhetsz)
+          Milyen extrákat kérnél? (többet is bejelölhetsz) – a felár a csomag árához adódik
         </p>
         <div className="grid gap-2 sm:grid-cols-2">
           {EXTRAS.map(x => (
-            <Choice key={x} label={x} selected={extras.includes(x)} onClick={() => toggleExtra(x)} />
+            <Choice
+              key={x.label}
+              label={x.label}
+              price={x.price}
+              selected={extras.includes(x.label)}
+              onClick={() => toggleExtra(x.label)}
+            />
           ))}
         </div>
       </div>
