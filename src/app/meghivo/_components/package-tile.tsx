@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { ArrowRight, Check, Plus } from "lucide-react";
 import { LivePhonePreview } from "./phone-preview";
+import { MeghivoQuoteCta } from "./quote-cta";
 
 /**
  * Egy csomag a kollázsban. Két elrendezés van: a "square" a két négyzetes
@@ -100,14 +100,14 @@ function Price({ pkg }: { pkg: Package }) {
 
 function Cta({ pkg }: { pkg: Package }) {
   return (
-    <Link
+    <MeghivoQuoteCta
       href={`/profil?tab=quotes&form=meghivo&csomag=${pkg.name}`}
       className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-[15px] font-bold shadow-md transition-transform hover:scale-[1.03]"
       style={{ color: pkg.ink }}
     >
       Ajánlatot kérek
       <ArrowRight className="h-4 w-4" />
-    </Link>
+    </MeghivoQuoteCta>
   );
 }
 

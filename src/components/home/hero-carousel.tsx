@@ -119,7 +119,7 @@ const SLIDES: Slide[] = [
     lead: "DIGITÁLIS",
     accent: "MEGHÍVÓK",
     blurb:
-      "A ti nevetekkel, a ti történetetekkel – egyetlen linken, ami a vendégek telefonján bármikor ott van.",
+      "Ti nevetekkel és történetetekkel – egyetlen linken, ami a vendégek telefonján bármikor ott van.",
     alt: "Digitális esküvői meghívó telefonon",
     offer: {
       badge: "Új",

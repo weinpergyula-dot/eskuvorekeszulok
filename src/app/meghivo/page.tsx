@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { MailOpen } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
 import { IntroTabs } from "./_components/intro-tabs";
 import { PackageTile, type Package } from "./_components/package-tile";
+import { VisitTracker } from "@/components/home/visit-tracker";
+import { MeghivoQuoteCta } from "./_components/quote-cta";
 
 export const metadata: Metadata = {
   title: "Digitális meghívók",
@@ -103,6 +103,9 @@ export default function MeghivoPage() {
 
   return (
     <>
+      {/* Látogatás rögzítése (napi/heti egyedi IP statisztika az adminban) */}
+      <VisitTracker path="/meghivo" />
+
       <PageHeader
         title="Digitális meghívók"
         description="Felejtsd el a papírt! Készíttess mobilra szabott, interaktív esküvői meghívót, amit egyetlen linkkel elküldhetsz minden vendégednek – visszaszámlálóval, programmal és online visszajelzéssel."
@@ -155,11 +158,12 @@ export default function MeghivoPage() {
             egy személyre szabott ajánlattal.
           </p>
           <div className="mt-7 flex justify-center">
-            <Link href="/profil?tab=quotes&form=meghivo">
-              <Button size="lg" className="bg-white px-8 text-[#2D5854] hover:bg-white/90">
-                Ajánlatot kérek
-              </Button>
-            </Link>
+            <MeghivoQuoteCta
+              href="/profil?tab=quotes&form=meghivo"
+              className="inline-flex h-11 items-center justify-center rounded-md bg-white px-8 text-[15px] font-bold text-[#2D5854] shadow transition-colors hover:bg-white/90"
+            >
+              Ajánlatot kérek
+            </MeghivoQuoteCta>
           </div>
         </div>
       </section>

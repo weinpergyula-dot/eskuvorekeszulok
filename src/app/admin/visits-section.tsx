@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DEFAULT_TRACKED_PATH, TRACKED_PAGES } from "@/lib/tracked-paths";
 
 interface DailyPoint { date: string; uniqueIps: number; hits: number }
 interface WeeklyPoint { weekStart: string; uniqueIps: number; hits: number }
@@ -56,17 +57,19 @@ function Bars({ points }: { points: { key: string; label: string; value: number;
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4">
-      <div className="flex items-end gap-1 h-40">
+      {/* A hasáb tetején mindig ott a nap értéke; a hasáb maga a keret 88%-át
+          használhatja, hogy a szám elférjen fölötte. */}
+      <div className="flex items-end gap-1 h-44">
         {points.map((p) => (
           <div key={p.key} className="flex-1 h-full flex flex-col justify-end items-center group" title={p.title}>
-            <span className="text-[10px] font-semibold text-gray-700 mb-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            <span className="text-[10px] font-semibold leading-none text-gray-600 mb-1 whitespace-nowrap tabular-nums">
               {p.value}
             </span>
             <div
               className={`w-full rounded-t transition-colors ${
                 p.current ? "bg-[#D07AB5]" : p.muted ? "bg-[#84AAA6]/40" : "bg-[#84AAA6]"
               } group-hover:bg-[#6B8E8A]`}
-              style={{ height: `${Math.max((p.value / max) * 100, p.value > 0 ? 3 : 1)}%` }}
+              style={{ height: `${Math.max((p.value / max) * 88, p.value > 0 ? 3 : 1)}%` }}
             />
           </div>
         ))}
@@ -83,13 +86,14 @@ function Bars({ points }: { points: { key: string; label: string; value: number;
 }
 
 export function VisitsSection() {
+  const [path, setPath] = useState<string>(DEFAULT_TRACKED_PATH);
   const [stats, setStats] = useState<VisitStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDailyTable, setShowDailyTable] = useState(false);
 
   const fetchStats = useCallback(
-    (): Promise<VisitStats | null> =>
-      fetch("/api/admin/visits")
+    (p: string): Promise<VisitStats | null> =>
+      fetch(`/api/admin/visits?path=${encodeURIComponent(p)}`)
         .then((r) => (r.ok ? (r.json() as Promise<VisitStats>) : null))
         .catch(() => null),
     []
@@ -97,40 +101,77 @@ export function VisitsSection() {
 
   useEffect(() => {
     let alive = true;
-    fetchStats().then((data) => {
+    fetchStats(path).then((data) => {
       if (!alive) return;
       if (data) setStats(data);
       setLoading(false);
     });
     return () => { alive = false; };
-  }, [fetchStats]);
+  }, [fetchStats, path]);
+
+  const selectPath = (next: string) => {
+    if (next === path) return;
+    setLoading(true);
+    setStats(null);
+    setPath(next);
+  };
 
   const refresh = () => {
     setLoading(true);
-    fetchStats().then((data) => {
+    fetchStats(path).then((data) => {
       if (data) setStats(data);
       setLoading(false);
     });
   };
 
+  const tabs = (
+    <div className="flex flex-wrap gap-1 rounded-full border border-gray-200 bg-white p-1">
+      {TRACKED_PAGES.map((page) => (
+        <button
+          key={page.path}
+          onClick={() => selectPath(page.path)}
+          className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
+            path === page.path
+              ? "bg-[#84AAA6] text-white"
+              : "text-gray-600 hover:bg-[#84AAA6]/10 hover:text-[#5C8480]"
+          }`}
+        >
+          {page.label}
+          <span className="ml-1.5 font-mono text-[11px] opacity-70">{page.path}</span>
+        </button>
+      ))}
+    </div>
+  );
+
   if (loading && !stats) return (
-    <div className="flex items-center justify-center py-12">
-      <div className="w-8 h-8 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
+    <div className="space-y-6">
+      {tabs}
+      <div className="flex items-center justify-center py-12">
+        <div className="w-8 h-8 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
+      </div>
     </div>
   );
 
   if (stats && !stats.available) return (
-    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-      <p className="text-sm text-gray-900 font-medium mb-1">A látogatottság-statisztika még nincs bekapcsolva.</p>
-      <p className="text-sm text-gray-600">
-        Futtasd le a <code className="bg-white px-1.5 py-0.5 rounded font-mono text-xs">supabase/migrations/20260830_home_page_visits.sql</code> fájlt
-        a Supabase SQL Editorban, utána itt már látszani fognak a számok.
-      </p>
-      {stats.error && <p className="text-xs text-gray-400 mt-2 font-mono break-words">{stats.error}</p>}
+    <div className="space-y-6">
+      {tabs}
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <p className="text-sm text-gray-900 font-medium mb-1">A látogatottság-statisztika még nincs bekapcsolva.</p>
+        <p className="text-sm text-gray-600">
+          Futtasd le a <code className="bg-white px-1.5 py-0.5 rounded font-mono text-xs">supabase/migrations/20260831_page_visits_path.sql</code> fájlt
+          a Supabase SQL Editorban, utána itt már látszani fognak a számok.
+        </p>
+        {stats.error && <p className="text-xs text-gray-400 mt-2 font-mono break-words">{stats.error}</p>}
+      </div>
     </div>
   );
 
-  if (!stats) return <p className="text-gray-500 text-sm">A statisztika nem tölthető be.</p>;
+  if (!stats) return (
+    <div className="space-y-6">
+      {tabs}
+      <p className="text-gray-500 text-sm">A statisztika nem tölthető be.</p>
+    </div>
+  );
 
   const daily = stats.daily ?? [];
   const weekly = stats.weekly ?? [];
@@ -148,10 +189,14 @@ export function VisitsSection() {
 
   return (
     <div className="space-y-6">
+      {tabs}
+
       <div className="flex items-start justify-between gap-4">
         <p className="text-sm text-gray-500 max-w-2xl">
-          Hány különböző IP-címről nyitották meg a főoldalt. Az IP-címeket nem tároljuk, csak azok
-          visszafejthetetlen lenyomatát – naponta és IP-nként egyszer, 12 hónapig. Összes megnyitás:{" "}
+          Hány különböző IP-címről nyitották meg a(z){" "}
+          <span className="font-mono text-gray-700">{path}</span> oldalt. Az IP-címeket nem tároljuk,
+          csak azok visszafejthetetlen lenyomatát – naponta és IP-nként egyszer, 12 hónapig.
+          Összes megnyitás:{" "}
           <span className="font-semibold text-gray-700">{stats.summary.totalHits}</span>.
         </p>
         <Button size="sm" variant="outline" onClick={refresh} disabled={loading} className="gap-1.5 cursor-pointer h-8 text-xs shrink-0">

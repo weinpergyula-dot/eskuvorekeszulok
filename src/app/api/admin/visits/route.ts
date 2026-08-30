@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin-guard";
+import { DEFAULT_TRACKED_PATH, TRACKED_PATHS } from "@/lib/tracked-paths";
 
 export const dynamic = "force-dynamic";
 
@@ -25,23 +26,27 @@ const EMPTY_SUMMARY: SummaryRow = {
 };
 
 /**
- * Főoldal-látogatottság: napi és heti bontású egyedi IP számok.
- * A számolás az adatbázisban történik (SQL függvények), így a
- * nyers látogatási sorok soha nem hagyják el a Supabase-t.
+ * Látogatottság: napi és heti bontású egyedi IP számok a kért oldalra
+ * (?path=/ vagy /meghivo). A számolás az adatbázisban történik (SQL
+ * függvények), így a nyers látogatási sorok soha nem hagyják el a
+ * Supabase-t.
  */
-export async function GET() {
+export async function GET(req: Request) {
   const { error: forbidden } = await requireAdmin();
   if (forbidden) return forbidden;
+
+  const requested = new URL(req.url).searchParams.get("path");
+  const path = requested && TRACKED_PATHS.includes(requested) ? requested : DEFAULT_TRACKED_PATH;
   const admin = createAdminClient();
 
   // Megőrzési idő (12 hónap) betartatása – az admin ritkán nyitja meg,
   // és a törlés a visit_date indexen fut, ezért olcsó.
-  admin.rpc("prune_home_page_visits").then(() => {}, () => {});
+  admin.rpc("prune_page_visits").then(() => {}, () => {});
 
   const [daily, weekly, summary] = await Promise.all([
-    admin.rpc("home_page_visit_daily_stats", { days_back: DAYS_BACK }),
-    admin.rpc("home_page_visit_weekly_stats", { weeks_back: WEEKS_BACK }),
-    admin.rpc("home_page_visit_summary"),
+    admin.rpc("page_visit_daily_stats", { p_path: path, days_back: DAYS_BACK }),
+    admin.rpc("page_visit_weekly_stats", { p_path: path, weeks_back: WEEKS_BACK }),
+    admin.rpc("page_visit_summary", { p_path: path }),
   ]);
 
   const error = daily.error ?? weekly.error ?? summary.error;
@@ -55,6 +60,7 @@ export async function GET() {
 
   return NextResponse.json({
     available: true,
+    path,
     daily: ((daily.data ?? []) as DailyRow[]).map((r) => ({
       date: r.day,
       uniqueIps: Number(r.unique_ips ?? 0),
