@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -18,7 +18,6 @@ interface ProviderCardProps {
   hideCategories?: boolean;
   disableLink?: boolean;
   isOwner?: boolean;
-  nameFontSize?: string;
   /** Carousel mode: fixed name height, no collapsible content, Részletek button */
   inCarousel?: boolean;
   /** List row mode: horizontal compact layout */
@@ -27,7 +26,7 @@ interface ProviderCardProps {
   backTo?: string;
 }
 
-export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px", inCarousel = false, listView = false, backTo }: ProviderCardProps) {
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, inCarousel = false, listView = false, backTo }: ProviderCardProps) {
   /* A profil linkje magával viszi, hova vezessen onnan a Vissza gomb. */
   const detailHref = backTo
     ? `/providers/${provider.id}?from=${encodeURIComponent(backTo)}`
@@ -440,7 +439,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {galleryOpen && hasGallery && createPortal(
         <div
           className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
-          onClick={(e) => {
+          onClick={() => {
             if (didSwipe.current) { didSwipe.current = false; return; }
             setGalleryOpen(false);
           }}

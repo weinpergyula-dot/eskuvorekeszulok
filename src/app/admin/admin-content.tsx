@@ -656,7 +656,6 @@ function ProviderRow({ provider, type }: { provider: Provider; type: "registrati
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">Galéria ({(header.gallery_urls as string[]).length} kép)</p>
                 <div className="flex flex-wrap gap-2">
                   {(header.gallery_urls as string[]).map((url, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <a key={i} href={url} target="_blank" rel="noopener noreferrer">
                       <img src={url} alt={`Galéria ${i + 1}`} className="w-16 h-16 object-cover rounded border border-gray-200 hover:opacity-80 transition-opacity" />
                     </a>

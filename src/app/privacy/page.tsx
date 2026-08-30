@@ -11,7 +11,7 @@ export default function PrivacyPage() {
 
       <LegalSection title="1. Bevezetés">
         <LegalP>
-          Üdvözlünk az <strong>Esküvőre Készülök</strong> weboldalon (a továbbiakban: „Weboldal", „Szolgáltatás"), amely a{" "}
+          Üdvözlünk az <strong>Esküvőre Készülök</strong> weboldalon (a továbbiakban: „Weboldal&rdquo;, „Szolgáltatás&rdquo;), amely a{" "}
           <a href="https://eskuvorekeszulok.hu" className="text-[#84AAA6] underline">https://eskuvorekeszulok.hu</a> címen érhető el.
         </LegalP>
         <LegalP>
@@ -137,12 +137,12 @@ export default function PrivacyPage() {
         <LegalUl>
           <li><strong>Hozzáférési jog:</strong> tájékoztatást kérhetsz arról, hogy milyen adatokat kezelünk rólad.</li>
           <li><strong>Helyesbítéshez való jog:</strong> kérheted a pontatlan adatok javítását.</li>
-          <li><strong>Törléshez való jog („elfeledtetéshez való jog"):</strong> kérheted az adataid törlését.</li>
+          <li><strong>Törléshez való jog („elfeledtetéshez való jog&rdquo;):</strong> kérheted az adataid törlését.</li>
           <li><strong>Adatkezelés korlátozásához való jog.</strong></li>
           <li><strong>Adathordozhatósághoz való jog:</strong> kérheted az adataid másik szolgáltatóhoz való átvitelét.</li>
           <li><strong>Tiltakozási jog:</strong> tiltakozhatsz az adataid kezelése ellen.</li>
         </LegalUl>
-        <LegalP><strong>Saját kezűleg a Weboldalon:</strong> a profil beállításaidban a „Fiók törlése" gombbal teljes adattörlést kezdeményezhetsz.</LegalP>
+        <LegalP><strong>Saját kezűleg a Weboldalon:</strong> a profil beállításaidban a „Fiók törlése&rdquo; gombbal teljes adattörlést kezdeményezhetsz.</LegalP>
         <LegalP><strong>Email útján:</strong> küldd el a kérésedet az{" "}
           <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] underline">info@eskuvorekeszulok.hu</a> címre.
           A GDPR előírásainak megfelelően 30 napon belül válaszolunk.

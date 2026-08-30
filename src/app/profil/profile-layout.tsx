@@ -75,8 +75,7 @@ type SidebarIndicator = { color: string; tooltip: string };
 
 function deriveSidebarIndicator(
   provider: Provider | null,
-  isProviderActive: boolean,
-  showApprovalDot: boolean
+  isProviderActive: boolean
 ): SidebarIndicator | null {
   if (!provider) return null;
 
@@ -468,7 +467,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
     }
   }, [provider, userId]);
 
-  const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive, showApprovalDot);
+  const sidebarIndicator = deriveSidebarIndicator(provider, isProviderActive);
 
   const switchTo = (section: Section) => {
     if (section === "admin") {

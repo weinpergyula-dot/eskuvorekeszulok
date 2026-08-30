@@ -69,7 +69,6 @@ export function BackgroundMusic() {
   return (
     <>
       {/* loop = folyamatos ismétlés */}
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} src={SRC} loop preload="auto" />
 
       <button

@@ -76,7 +76,6 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
   const firstCategory = (provider.categories ?? [])[0] as ServiceCategory | undefined;
-  const firstCategoryLabel = firstCategory ? CATEGORY_LABELS[firstCategory] ?? firstCategory : "Szolgáltatók";
 
   return (
     <div>

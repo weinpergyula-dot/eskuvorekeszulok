@@ -226,57 +226,6 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
   );
 }
 
-// ── Inbox list item ───────────────────────────────────────────────────────────
-
-function QuoteListItem({
-  subject,
-  categoryLabel,
-  recipientName,
-  avatarUrl,
-  date,
-  unread,
-  onSelect,
-}: {
-  subject: string;
-  categoryLabel: string;
-  recipientName: string;
-  avatarUrl?: string | null;
-  date: string;
-  unread: number;
-  onSelect: () => void;
-}) {
-  const initials = recipientName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
-  return (
-    <button
-      onClick={onSelect}
-      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
-    >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
-          {avatarUrl
-            ? <img src={avatarUrl ?? ""} alt={recipientName} className="w-full h-full object-cover" />
-            : initials}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2 mb-0.5">
-            <p className={`text-sm font-bold truncate ${unread > 0 ? "text-gray-900" : "text-gray-700"}`}>
-              {recipientName}
-            </p>
-            <span className="text-xs text-gray-400 shrink-0">{formatShort(date)}</span>
-          </div>
-          <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>
-          <p className={`text-xs truncate ${unread > 0 ? "font-semibold text-gray-700" : "text-gray-500"}`}>{subject}</p>
-        </div>
-        {unread > 0 && (
-          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
-            {unread > 9 ? "9+" : unread}
-          </span>
-        )}
-      </div>
-    </button>
-  );
-}
-
 // ── Unified quote chat view ───────────────────────────────────────────────────
 
 export function QuoteChat({
@@ -413,7 +362,6 @@ export function QuoteChat({
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestId, providerId, userId]);
 
   const handleReply = async (e: React.FormEvent) => {

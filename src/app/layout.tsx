@@ -66,7 +66,6 @@ gtag('consent', 'default', {
           }}
         />
         {/* Google Analytics 4 */}
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
         <script
           dangerouslySetInnerHTML={{

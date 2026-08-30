@@ -180,7 +180,6 @@ function ChatSelect({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Keresés..."
-                  // eslint-disable-next-line jsx-a11y/no-autofocus
                   autoFocus
                   className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#84AAA6]"
                 />
@@ -573,7 +572,6 @@ function ChatView({
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider.user_id, userId]);
 
   const handleSend = async (e: React.FormEvent) => {
@@ -936,7 +934,6 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
       hasAutoOpened.current = true;
       if (prov) setSelectedView({ kind: "chat", provider: prov });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [withProviderUserId, providers, loading]);
 
   // Reload when a message is read or new messages arrive (window events from ChatView)

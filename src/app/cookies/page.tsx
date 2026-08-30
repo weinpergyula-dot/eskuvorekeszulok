@@ -10,7 +10,7 @@ export default function CookiesPage() {
     <LegalPageLayout title="Cookie szabályzat" lastUpdated="2026. május 19.">
 
       <LegalSection title="1. Mi a cookie (süti)?">
-        <LegalP>A cookie (magyarul: „süti") egy kis adatcsomag, amelyet a weboldal a böngésződ tárhelyén helyez el, amikor meglátogatod az oldalt. A cookie-k segítségével a weboldal felismeri a böngésződet, megjegyzi a beállításaidat és biztosítja a működéshez szükséges funkciókat.</LegalP>
+        <LegalP>A cookie (magyarul: „süti&rdquo;) egy kis adatcsomag, amelyet a weboldal a böngésződ tárhelyén helyez el, amikor meglátogatod az oldalt. A cookie-k segítségével a weboldal felismeri a böngésződet, megjegyzi a beállításaidat és biztosítja a működéshez szükséges funkciókat.</LegalP>
       </LegalSection>
 
       <LegalSection title="2. A jelen Weboldalon használt cookie-k">

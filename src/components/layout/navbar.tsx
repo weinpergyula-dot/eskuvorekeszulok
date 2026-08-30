@@ -30,7 +30,6 @@ export function Navbar() {
   const [unreadQuotes, setUnreadQuotes] = useState(0);
   const [providerDot, setProviderDot] = useState<"amber" | "red" | "green" | "gray" | null>(null);
   const [hasProvider, setHasProvider] = useState(false);
-  const [providerIsActive, setProviderIsActive] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
@@ -175,9 +174,8 @@ export function Navbar() {
       });
     supabase.from("providers").select("approval_status, pending_changes, active, avatar_url").eq("user_id", user.id).maybeSingle()
       .then(({ data: p }) => {
-        if (!p) { setProviderDot(null); setHasProvider(false); setProviderIsActive(true); return; }
+        if (!p) { setProviderDot(null); setHasProvider(false); return; }
         setHasProvider(true);
-        setProviderIsActive(p.active !== false);
         if (p.avatar_url) setNavAvatarUrl(p.avatar_url as string);
         if (p.approval_status === "rejected") { setProviderDot("red"); return; }
         if (p.approval_status === "pending" || !!p.pending_changes) { setProviderDot("amber"); return; }
