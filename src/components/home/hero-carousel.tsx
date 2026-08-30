@@ -281,14 +281,14 @@ export function HeroCarousel() {
       >
         <div
           className={`max-w-[54%] self-center pb-0 md:max-w-none ${
-            silver ? "md:-translate-y-8 md:translate-x-10" : "pb-48 md:self-auto md:pb-10"
+            silver ? "md:-translate-y-8 md:translate-x-10" : "hero-text-col pb-48 md:self-auto md:pb-10"
           }`}
         >
           {/* A cím és a leírás a képre kerül, ha átfednek */}
           <div className="relative z-10">
             <h1
               className={`hero-title font-heading leading-tight tracking-tight sm:text-[2.725rem] ${
-                silver ? "text-[2.3125rem] md:text-[4.6rem]" : "text-[2.0625rem]"
+                silver ? "text-[2.3125rem] md:text-[4.6rem]" : "hero-title-boost text-[2.0625rem]"
               }`}
               style={{
                 fontWeight: 950,
@@ -319,12 +319,13 @@ export function HeroCarousel() {
             )}
           </div>
 
-          {/* A kiemelt ajánlat – csak a 2. dián. Mobilon kiemeljük a
+          {/* A kiemelt ajánlat – csak a 2. dián. Kis telefonon kiemeljük a
               szövegfolyamból: a banner bal alsó sarkába kerül, a jobbra
-              igazított képre lógva (z-10 miatt a kép fölött). Weben (md-től)
-              visszatér a szöveg alá. */}
+              igazított képre lógva (z-10 miatt a kép fölött). A nagyobb
+              telefonokon (380px-től) és weben (md-től) visszatér a szöveg
+              alá, különben elszakadna a címtől a magas banner alján. */}
           {!silver && (
-            <div className="absolute bottom-[136px] left-4 z-10 w-[56%] max-w-[208px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
+            <div className="hero-offer-card absolute bottom-[136px] left-4 z-10 w-[56%] max-w-[208px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
               {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
                   ajánlat és alatta a csomagok felsorolása */}
               <p

@@ -1172,6 +1172,33 @@ html.a11y-underline a { text-decoration: underline !important; }
   }
 }
 
+/* A 2. dia (digitális meghívók) a közepes és nagy telefonokon:
+   – a főcím még egy lépcsővel nagyobb (a rövidebb alapméret miatt itt
+     több hely marad, mint az 1. dián),
+   – az ajánlat "üvegkerete" a szöveg alá kerül a banner alja helyett.
+     Fixen megadott magasság nem működne: a banner magassága a készüléktől
+     és a figyelmeztető csík meglététől is függ, a szövegblokk pedig
+     függőlegesen középen áll – a szövegfolyamban viszont mindig a cím
+     alatt marad. */
+@media (min-width: 380px) and (max-width: 639px) {
+  .hero-title-boost {
+    font-size: calc(var(--hero-title-base) * var(--hero-grow) * 1.2);
+  }
+
+  .hero-offer-card {
+    position: static;
+    /* Kicsit szélesebb a szövegoszlopnál, hogy az ajánlat egy sorban
+       maradjon – a jobb oldalán úgyis üres a hely. */
+    width: 13.5rem;
+    max-width: none;
+    margin-top: 1.375rem;
+  }
+
+  /* A kártyának fenntartott alsó bélés már nem kell, ha a kártya
+     visszakerült a szövegfolyamba. */
+  .hero-text-col { padding-bottom: 0; }
+}
+
 .hero-blob {
   position: absolute;
   z-index: 0;
