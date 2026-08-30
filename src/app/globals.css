@@ -1151,6 +1151,27 @@ html.a11y-underline a { text-decoration: underline !important; }
   }
 }
 
+/* A nagyobb telefonokon a banner főcíme és képe is nagyobb: a közepes
+   készülékeken (kb. 390px széles) 20%-kal, a nagyokon (414px-től) 30%-kal.
+   Kis telefonon (375px alatt) marad a korábbi méret, mert ott már nincs
+   hely. 640px fölött (tablet, web) semmi nem változik. */
+:root { --hero-grow: 1; }
+@media (min-width: 380px) and (max-width: 413px) { :root { --hero-grow: 1.2; } }
+@media (min-width: 414px) and (max-width: 639px) { :root { --hero-grow: 1.3; } }
+
+@media (max-width: 639px) {
+  /* A dia adja az alapméretet (--hero-title-base), ezt szorozzuk fel. */
+  .hero-title { font-size: calc(var(--hero-title-base) * var(--hero-grow)); }
+
+  /* A kép a bal alsó sarkából nő, tehát jobbra és felfelé: a szöveg melletti
+     bal széle marad a helyén, a jobb oldalon nyugodtan kilóg a képernyőből
+     (a szekció overflow-hiddenje vágja le). */
+  .hero-art {
+    transform: scale(var(--hero-grow));
+    transform-origin: left bottom;
+  }
+}
+
 .hero-blob {
   position: absolute;
   z-index: 0;

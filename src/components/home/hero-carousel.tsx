@@ -287,10 +287,14 @@ export function HeroCarousel() {
           {/* A cím és a leírás a képre kerül, ha átfednek */}
           <div className="relative z-10">
             <h1
-              className={`font-heading leading-tight tracking-tight sm:text-[2.725rem] ${
+              className={`hero-title font-heading leading-tight tracking-tight sm:text-[2.725rem] ${
                 silver ? "text-[2.3125rem] md:text-[4.6rem]" : "text-[2.0625rem]"
               }`}
-              style={{ fontWeight: 950 }}
+              style={{
+                fontWeight: 950,
+                // Mobilon ebből az alapméretből számol a .hero-title szabály
+                ["--hero-title-base" as string]: silver ? "2.3125rem" : "2.0625rem",
+              }}
             >
               <span className={t.lead}>{slide.lead}</span>{" "}
               <span className={t.accent}>{slide.accent}</span>
@@ -369,8 +373,8 @@ export function HeroCarousel() {
                  menyasszony így nem lóg ki a képernyő jobb szélén), csak
                  magasabb arányú; a 2. dián a telefon kifut jobbra. */
               silver
-                ? "absolute inset-y-0 right-[6%] w-[74%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
-                : "absolute inset-y-0 -right-[14%] w-[62%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                ? "hero-art absolute inset-y-0 right-[6%] w-[74%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                : "hero-art absolute inset-y-0 -right-[14%] w-[62%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
             }
           >
             {slide.key === "meghivo" ? (
