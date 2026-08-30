@@ -23,7 +23,7 @@ export function GroupQuoteCta() {
             </span>
             <div>
               <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-                Nem akarsz egyenként végigírni mindenkinek?
+                Nem akarsz egyesével ajánlatot kérni?
               </h2>
               <p className="mt-1.5 text-base leading-relaxed text-gray-800">
                 Küldj egyetlen ajánlatkérést az általad választott szolgáltatóknak –
