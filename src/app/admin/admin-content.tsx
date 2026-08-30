@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle, Send, Check, ChartColumn } from "lucide-react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle, Send, Check, ChartColumn, ChartPie } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
@@ -184,6 +184,18 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
 
   const [filter, setFilter] = useState<Filter>(defaultFilter);
 
+  /* Mobilon a stat-kártyák alatt kezdődő tartalom a képernyőn kívül van,
+     ezért kártyaválasztás után odagördítünk. A kártyarács magassága nem
+     változik a szűrőtől, így a célpont már a újrarajzolás előtt a helyén van
+     – nem kell megvárni a szekció megjelenését. Weben nincs görgetés, ott
+     a tartalom amúgy is látszik. */
+  const contentRef = useRef<HTMLDivElement>(null);
+  const selectFilter = (target: Filter) => {
+    setFilter(target);
+    if (window.innerWidth >= 768) return;
+    contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const markRead = async (id: string) => {
     await fetch(`/api/admin/contact-messages/${id}`, { method: "PATCH" });
     setContactMessages((prev) => prev.map((m) => m.id === id ? { ...m, read: true } : m));
@@ -222,7 +234,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
         {stats.map((s) => (
           <button
             key={s.label}
-            onClick={() => setFilter(s.target)}
+            onClick={() => selectFilter(s.target)}
             className={`text-left rounded-lg p-4 border transition-all cursor-pointer ${
               filter === s.target
                 ? "border-[#84AAA6] bg-[#84AAA6]/5 ring-1 ring-[#84AAA6]"
@@ -237,9 +249,13 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
           </button>
         ))}
 
-        {/* Summary tile */}
-        <div className="rounded-lg p-4 border border-gray-200 bg-white">
-          <dl className="space-y-1">
+        {/* Summary tile — mobilon teljes szélességben, két hasábban */}
+        <div className="col-span-2 md:col-span-1 rounded-lg border border-[#84AAA6]/30 bg-gradient-to-br from-[#84AAA6]/12 via-[#84AAA6]/5 to-white p-4 shadow-sm">
+          <div className="mb-2 flex items-center gap-1.5 text-[#5C8480]">
+            <ChartPie className="h-4 w-4 shrink-0" strokeWidth={1.75} />
+            <span className="text-sm font-semibold uppercase tracking-wide">Összesítő</span>
+          </div>
+          <dl className="grid grid-cols-2 gap-x-5 md:grid-cols-1">
             {[
               { label: "Összes felhasználó",        value: liveStats.totalUsers },
               { label: "Jóváhagyott szolgáltató",   value: liveStats.totalApproved },
@@ -247,16 +263,27 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
               { label: "Előregisztráció",            value: preRegistrations.length },
               { label: "Látogató",                   value: liveStats.totalVisitors },
               { label: "Kapcsolati üzenetek",        value: contactMessages.length },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex items-center justify-between gap-2">
-                <span className="text-sm text-gray-500 leading-tight">{label}</span>
-                <span className="text-sm font-bold text-gray-900 shrink-0">{value}</span>
-              </div>
-            ))}
+            ].map(({ label, value }, i, rows) => {
+              /* Az elválasztó vonal az utolsó sorok alól elmarad: mobilon két
+                 hasáb van, ezért az utolsó kettő alól, md-től egy hasáb, ott
+                 csak a legutolsó alól. */
+              const border =
+                i < rows.length - 2 ? "border-b" : i === rows.length - 1 ? "" : "md:border-b";
+              return (
+                <div
+                  key={label}
+                  className={`flex items-center justify-between gap-2 border-[#84AAA6]/15 py-1 ${border}`}
+                >
+                  <dt className="text-sm text-[#5C8480] leading-tight">{label}</dt>
+                  <dd className="text-sm font-bold text-gray-900 shrink-0">{value}</dd>
+                </div>
+              );
+            })}
           </dl>
         </div>
       </div>
 
+      <div ref={contentRef} className="scroll-mt-20">
       {/* Pending (registrations + edits combined) */}
       {filter === "pending" && (
         <section>
@@ -471,6 +498,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
           )}
         </section>
       )}
+      </div>
     </>
   );
 }
