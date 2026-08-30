@@ -145,7 +145,7 @@ function PhoneSlot({ pkg }: { pkg: Package }) {
         className="absolute -inset-6 rounded-full opacity-60 blur-2xl"
         style={{ background: `radial-gradient(circle, ${pkg.from}, transparent 68%)` }}
       />
-      <div className="relative -rotate-2 transition-transform duration-500 hover:rotate-0">
+      <div className="relative">
         <LivePhonePreview href={pkg.sampleHref} label={pkg.name} />
       </div>
       <p className="relative mt-3 text-center text-[11px] text-white/70">
