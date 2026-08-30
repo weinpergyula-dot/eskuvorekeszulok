@@ -5,6 +5,7 @@ import { CategoryQuickTiles } from "@/components/home/category-quick-tiles";
 import { ProvidersSectionTitle } from "@/components/home/providers-section-title";
 import { GroupQuoteCta } from "@/components/home/group-quote-cta";
 import { HomeProvidersCta } from "@/components/home/home-providers-cta";
+import { HomeVisitTracker } from "@/components/home/home-visit-tracker";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
 
@@ -51,6 +52,9 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* Látogatás rögzítése (napi/heti egyedi IP statisztika az adminban) */}
+      <HomeVisitTracker />
+
       {/* Banner: köszöntő és digitális meghívó diák */}
       <HeroCarousel />
 

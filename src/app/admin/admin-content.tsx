@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle, Send, Check } from "lucide-react";
+import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle, Send, Check, ChartColumn } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
 import { LogsSection } from "./logs-section";
+import { VisitsSection } from "./visits-section";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-type Filter = "pending" | "users" | "contact" | "prereg" | "logs";
+type Filter = "pending" | "users" | "contact" | "prereg" | "logs" | "visits";
 
 interface Provider {
   id: string;
@@ -122,6 +123,15 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
     fetch("/api/admin/logs").then(r => r.ok ? r.json() : []).then(data => setLogCount(Array.isArray(data) ? data.length : 0)).catch(() => {});
   }, []);
 
+  // Főoldal-látogatottság: a stat-kártyán a mai egyedi IP-k száma
+  const [uniqueIpsToday, setUniqueIpsToday] = useState(0);
+  useEffect(() => {
+    fetch("/api/admin/visits")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.available) setUniqueIpsToday(data.summary?.today ?? 0); })
+      .catch(() => {});
+  }, []);
+
   const [liveStats, setLiveStats] = useState({ totalUsers, totalApproved, totalVisitors });
 
   const refreshLiveStats = useCallback(async () => {
@@ -202,12 +212,13 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
     { label: "Előregisztráció",      value: preRegistrations.length,  icon: <UserX className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,         target: "prereg",  highlight: preRegistrations.length > 0 },
     { label: "Kapcsolati üzenetek",  value: contactMessages.length,   icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,          target: "contact", highlight: unreadContact > 0 },
     { label: "Hibanapló",            value: logCount,                  icon: <AlertTriangle className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "logs",    highlight: logCount > 0 },
+    { label: "Egyedi IP ma",         value: uniqueIpsToday,           icon: <ChartColumn className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "visits",  highlight: false },
   ];
 
   return (
     <>
       {/* Stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-10">
         {stats.map((s) => (
           <button
             key={s.label}
@@ -366,6 +377,15 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
               })}
             </div>
           )}
+        </section>
+      )}
+
+      {/* Home page visits */}
+      {filter === "visits" && (
+        <section>
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">Főoldal látogatottsága</h2>
+          <p className="text-sm text-gray-400 mb-4">Egyedi IP-címek napi és heti bontásban.</p>
+          <VisitsSection />
         </section>
       )}
 
