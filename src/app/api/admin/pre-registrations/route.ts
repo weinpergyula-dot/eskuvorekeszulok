@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/admin-guard";
 
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
 export async function GET() {
   try {
+    // Ez a végpont a service-role kulccsal olvassa ki a még meg nem erősített
+    // regisztrálók nevét és e-mail-címét, ezért admin-jogosultsághoz kötött.
+    const { error: forbidden } = await requireAdmin();
+    if (forbidden) return forbidden;
+
     const adminSupabase = createAdminClient();
     const now = Date.now();
 

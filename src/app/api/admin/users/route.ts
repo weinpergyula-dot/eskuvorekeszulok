@@ -1,22 +1,14 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/admin-guard";
 import { logError } from "@/lib/log-error";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const { data: self } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("user_id", user.id)
-      .single();
-    if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const { error: forbidden, supabase } = await requireAdmin();
+    if (forbidden) return forbidden;
 
     const [{ data: profiles, error }, { data: providers }, { data: deletedRows }] = await Promise.all([
       supabase.from("profiles").select("id, user_id, email, full_name, role, created_at").order("created_at", { ascending: false }),
@@ -50,16 +42,8 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const { data: self } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("user_id", user.id)
-      .single();
-    if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const { error: forbidden, user, supabase } = await requireAdmin();
+    if (forbidden) return forbidden;
 
     const body = await request.json();
     const { userId, role, setFeaturedTier, providerId } = body;
@@ -96,16 +80,8 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const { data: self } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("user_id", user.id)
-      .single();
-    if (self?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const { error: forbidden, user, supabase } = await requireAdmin();
+    if (forbidden) return forbidden;
 
     const { userId } = await request.json();
     if (!userId) return NextResponse.json({ error: "userId hiányzik." }, { status: 400 });
