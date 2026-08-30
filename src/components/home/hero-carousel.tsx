@@ -241,6 +241,19 @@ export function HeroCarousel() {
     };
   }, []);
 
+  /* A horgonyra mutató gomb (1. dia: „Megnézem" → #kategoriak) ne ugorjon,
+     hanem gördüljön oda. A célelem scroll-mt-20-at visel, így a ragadós
+     fejléc nem takarja el a szekció címét. A /meghivo-ra mutató gombnál a
+     függvény nem csinál semmit, marad a szokásos navigáció. */
+  const scrollToAnchor = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (!href.startsWith("#")) return;
+    const target = document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  };
+
   const slide = SLIDES[index];
   const { offer } = slide;
   const t = THEMES[slide.theme];
@@ -308,6 +321,7 @@ export function HeroCarousel() {
               <div className="mt-5 flex w-fit flex-col gap-2.5 md:mt-8 md:w-auto md:flex-row md:items-start md:gap-3">
                 <Link
                   href={offer.href}
+                  onClick={(e) => scrollToAnchor(e, offer.href)}
                   className="hero-offer-cta inline-flex h-10 items-center justify-center gap-1.5 rounded-xl px-4 text-[13px] font-bold text-white transition-colors md:h-11 md:px-8 md:text-base"
                   style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                 >
@@ -352,6 +366,7 @@ export function HeroCarousel() {
               </p>
               <Link
                 href={offer.href}
+                onClick={(e) => scrollToAnchor(e, offer.href)}
                 className="hero-offer-cta mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white transition-colors md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-base"
                 style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
               >
