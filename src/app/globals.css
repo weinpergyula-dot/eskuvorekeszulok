@@ -1131,6 +1131,26 @@ html.a11y-underline a { text-decoration: underline !important; }
   to   { opacity: 1; transform: translateX(0); }
 }
 
+/* Álló telefonon a banner pontosan a képernyőt tölti ki: betöltéskor csak
+   a banner látszik, alatta semmi – akármekkora a készülék. A levonandó rész
+   a banner fölötti sáv (figyelmeztető csík + fejléc): ezt a HeroCarousel
+   méri és teszi a --hero-top változóba. Az alapérték a figyelmeztető csík
+   nélküli eset (4rem fejléc, amiből a szekció -mt-6-tal 1.5rem-et visszavesz).
+   A további 1.5rem a szekció felső bélése, az 1px pedig az alsó szegélye.
+
+   Fekvő tájolásban marad a korábbi, szélességhez kötött magasság: ott a
+   képernyő olyan alacsony, hogy a kivágott menyasszony nem férne el benne. */
+:root { --hero-top: 2.5rem; }
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .hero-slide-fullscreen {
+    /* Tartalék a svh-t nem ismerő böngészőknek */
+    min-height: calc(100vh - var(--hero-top) - 1.5rem - 1px);
+    /* A ténylegesen látható terület (a böngésző címsorával együtt) */
+    min-height: calc(100svh - var(--hero-top) - 1.5rem - 1px);
+  }
+}
+
 .hero-blob {
   position: absolute;
   z-index: 0;

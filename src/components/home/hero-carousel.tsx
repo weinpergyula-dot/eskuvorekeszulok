@@ -215,6 +215,32 @@ export function HeroCarousel() {
     return () => clearTimeout(t);
   }, [paused, index]);
 
+  /* Mobilon a banner a teljes telefonképernyőt kitölti, ezért tudnia kell,
+     mekkora sáv van fölötte (figyelmeztető csík + fejléc). A szekció saját
+     dokumentumbeli pozíciója pont ezt adja meg – a méret változását (a
+     csík megjelenése, eltüntetése, elforgatás) figyeljük. */
+  const sectionRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    /* Csak a lap tetején mérünk: lejjebb görgetve a fejléc összehúzódik,
+       az abból számolt magasság pedig görgetés közben ugráltatná a bannert. */
+    const publish = () => {
+      if (window.scrollY > 0) return;
+      el.style.setProperty("--hero-top", `${Math.max(el.getBoundingClientRect().top, 0)}px`);
+    };
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(document.body);
+    window.addEventListener("resize", publish);
+    window.addEventListener("scroll", publish, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", publish);
+      window.removeEventListener("scroll", publish);
+    };
+  }, []);
+
   const slide = SLIDES[index];
   const { offer } = slide;
   const t = THEMES[slide.theme];
@@ -225,6 +251,7 @@ export function HeroCarousel() {
        lekerekített, alul 1px fehér elválasztóval. Az 1. dia ezüstös, a 2. a
        mozgó teal világosabb változata – mindkettőn átfut egy fénycsík. */
     <section
+      ref={sectionRef}
       className={`${t.bg} relative z-20 -mt-6 overflow-hidden rounded-b-[32px] border-b border-white pt-6`}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -245,10 +272,12 @@ export function HeroCarousel() {
       <div
         key={slide.key}
         /* Mobilon mindkét dián a kép abszolút pozícióban ül (nem az húzza a
-           magasságot), ezért a dia magasságát ez az alsó korlát adja – épp
-           annyi, hogy a menyasszony feje fölött maradjon egy kis levegő. A
-           szöveg mellette, függőlegesen középen fut. */
-        className="hero-slide-in relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
+           magasságot), ezért a dia magasságát alsó korlát adja. Álló
+           telefonon ez a képernyő magassága a banner fölötti sáv nélkül
+           (.hero-slide-fullscreen), így betöltéskor csak a banner látszik;
+           fekvőben marad a szélességhez kötött érték. A szöveg mellette,
+           függőlegesen középen fut. */
+        className="hero-slide-in hero-slide-fullscreen relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
       >
         <div
           className={`max-w-[54%] self-center pb-0 md:max-w-none ${

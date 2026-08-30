@@ -212,7 +212,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
     { label: "Előregisztráció",      value: preRegistrations.length,  icon: <UserX className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,         target: "prereg",  highlight: preRegistrations.length > 0 },
     { label: "Kapcsolati üzenetek",  value: contactMessages.length,   icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,          target: "contact", highlight: unreadContact > 0 },
     { label: "Hibanapló",            value: logCount,                  icon: <AlertTriangle className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "logs",    highlight: logCount > 0 },
-    { label: "Egyedi IP ma",         value: uniqueIpsToday,           icon: <ChartColumn className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "visits",  highlight: false },
+    { label: "Látogatottság",        value: uniqueIpsToday,           icon: <ChartColumn className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "visits",  highlight: false },
   ];
 
   return (
