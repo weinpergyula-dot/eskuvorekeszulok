@@ -69,14 +69,13 @@ export function BackgroundMusic() {
   return (
     <>
       {/* loop = folyamatos ismétlés */}
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} src={SRC} loop preload="auto" />
 
       <button
         onClick={toggle}
         aria-label={playing ? "Zene kikapcsolása" : "Zene bekapcsolása"}
         title={playing ? "Zene kikapcsolása" : "Zene bekapcsolása"}
-        className="fixed bottom-5 left-5 z-40 flex items-center justify-center w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm text-[#84AAA6] opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+        className="fixed bottom-5 right-5 z-40 flex items-center justify-center w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm text-[#84AAA6] opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
       >
         <span className="relative inline-flex">
           <Music2 className="h-5 w-5" strokeWidth={2} />

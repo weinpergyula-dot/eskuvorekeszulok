@@ -35,7 +35,7 @@ export function MobileHeroSlideshow() {
 
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden rounded-b-3xl"
       style={{ aspectRatio: "4/5" }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}

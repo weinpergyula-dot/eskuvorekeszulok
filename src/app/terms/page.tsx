@@ -11,7 +11,7 @@ export default function TermsPage() {
 
       <LegalSection title="1. Bevezető rendelkezések">
         <LegalSubSection title="1.1 A jelen ÁSZF tárgya">
-          <LegalP>A jelen Általános Szerződési Feltételek (a továbbiakban: „ÁSZF") a{" "}
+          <LegalP>A jelen Általános Szerződési Feltételek (a továbbiakban: „ÁSZF&rdquo;) a{" "}
             <a href="https://eskuvorekeszulok.hu" className="text-[#84AAA6] underline">https://eskuvorekeszulok.hu</a>{" "}
             weboldalon elérhető szolgáltatás igénybevételének feltételeit szabályozza.
           </LegalP>
@@ -136,7 +136,7 @@ export default function TermsPage() {
 
       <LegalSection title="8. Felelősség">
         <LegalSubSection title="8.1 Az Üzemeltető felelősségének korlátozása">
-          <LegalP>Az Üzemeltető a Weboldalt a „best effort" elv alapján, az elérhetőség és a tartalom hibátlanságára való garanciavállalás nélkül üzemelteti. Az Üzemeltető nem felel a Weboldal elérhetetlenségéből, adatvesztésből, a Felhasználók közötti közvetlen ügyletekből, a feltöltött tartalmak valóságtartalmából, vagy harmadik fél (Supabase, Vercel) kieséséből eredő károkért.</LegalP>
+          <LegalP>Az Üzemeltető a Weboldalt a „best effort&rdquo; elv alapján, az elérhetőség és a tartalom hibátlanságára való garanciavállalás nélkül üzemelteti. Az Üzemeltető nem felel a Weboldal elérhetetlenségéből, adatvesztésből, a Felhasználók közötti közvetlen ügyletekből, a feltöltött tartalmak valóságtartalmából, vagy harmadik fél (Supabase, Vercel) kieséséből eredő károkért.</LegalP>
         </LegalSubSection>
 
         <LegalSubSection title="8.2 Felhasználók felelőssége">

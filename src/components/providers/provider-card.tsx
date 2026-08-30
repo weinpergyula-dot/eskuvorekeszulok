@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, Images, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
@@ -18,14 +18,19 @@ interface ProviderCardProps {
   hideCategories?: boolean;
   disableLink?: boolean;
   isOwner?: boolean;
-  nameFontSize?: string;
   /** Carousel mode: fixed name height, no collapsible content, Részletek button */
   inCarousel?: boolean;
   /** List row mode: horizontal compact layout */
   listView?: boolean;
+  /** Ide vezet a profilon a Vissza gomb – a listázás aktuális szűrőivel. */
+  backTo?: string;
 }
 
-export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, nameFontSize = "22px", inCarousel = false, listView = false }: ProviderCardProps) {
+export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, inCarousel = false, listView = false, backTo }: ProviderCardProps) {
+  /* A profil linkje magával viszi, hova vezessen onnan a Vissza gomb. */
+  const detailHref = backTo
+    ? `/providers/${provider.id}?from=${encodeURIComponent(backTo)}`
+    : `/providers/${provider.id}`;
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
@@ -137,7 +142,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             <MessageCircle className="h-3.5 w-3.5" />
             Chat indítása
           </a>
-          <a href={`/providers/${provider.id}`} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+          <a href={detailHref} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
             Részletek
           </a>
         </div>
@@ -191,7 +196,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               "w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-md mb-4 bg-gray-100 flex items-center justify-center shrink-0",
               provider.avatar_url && "cursor-zoom-in"
             )}
-            onClick={() => { window.location.href = `/providers/${provider.id}`; }}
+            onClick={() => { window.location.href = detailHref; }}
           >
             {provider.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -282,7 +287,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {/* Info: name, counties, stars */}
           <div className="flex-1 min-w-0 pr-14">
             {!disableLink ? (
-              <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className="block">
+              <a href={detailHref} onClick={(e) => e.stopPropagation()} className="block">
                 <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
                   {provider.full_name}
                 </h3>
@@ -306,7 +311,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               </span>
             </div>
             {!disableLink ? (
-              <a href={`/providers/${provider.id}#reviews`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 mt-0.5 hover:opacity-70 transition-opacity">
+              <a href={`${detailHref}#reviews`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 mt-0.5 hover:opacity-70 transition-opacity">
                 {ratingContent}
               </a>
             ) : (
@@ -423,7 +428,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               <MessageCircle className="h-3.5 w-3.5" />
               Chat indítása
             </a>
-            <a href={`/providers/${provider.id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+            <a href={detailHref} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               Részletek
             </a>
           </div>
@@ -434,7 +439,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {galleryOpen && hasGallery && createPortal(
         <div
           className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
-          onClick={(e) => {
+          onClick={() => {
             if (didSwipe.current) { didSwipe.current = false; return; }
             setGalleryOpen(false);
           }}

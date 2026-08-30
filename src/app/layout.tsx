@@ -8,7 +8,6 @@ import { CookieBanner } from "@/components/layout/cookie-banner";
 import { ConditionalChrome } from "@/components/layout/conditional-chrome";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { BackgroundMusic } from "@/components/layout/background-music";
-import { AccessibilityWidget } from "@/components/layout/accessibility-widget";
 
 const SITE_NAME = "Esküvőre Készülök";
 const SITE_URL = "https://eskuvorekeszulok.hu";
@@ -67,7 +66,6 @@ gtag('consent', 'default', {
           }}
         />
         {/* Google Analytics 4 */}
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
         <script
           dangerouslySetInnerHTML={{
@@ -99,7 +97,7 @@ gtag('config', '${GA_ID}');
               inLanguage: "hu-HU",
               potentialAction: {
                 "@type": "SearchAction",
-                target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/services?q={search_term_string}` },
+                target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/?q={search_term_string}` },
                 "query-input": "required name=search_term_string",
               },
             }),
@@ -113,10 +111,7 @@ gtag('config', '${GA_ID}');
           footer={<Footer />}
           cookie={<CookieBanner />}
           extras={
-            <>
-              <BackgroundMusic />
-              <AccessibilityWidget />
-            </>
+<BackgroundMusic />
           }
         >
           {children}

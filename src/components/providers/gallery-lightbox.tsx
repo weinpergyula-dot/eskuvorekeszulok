@@ -27,7 +27,7 @@ export function GalleryLightbox({ urls, alt }: { urls: string[]; alt: string }) 
   const onTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+    if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
     touchStartX.current = null;
   };
 

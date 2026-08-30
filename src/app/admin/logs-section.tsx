@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Trash2, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -18,17 +18,35 @@ export function LogsSection() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [clearing, setClearing] = useState(false);
 
-  const fetchLogs = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/admin/logs");
-      if (res.ok) setLogs(await res.json());
-    } catch { /* ignore */ } finally {
-      setLoading(false);
-    }
-  };
+  /* A lekérés maga nem állít állapotot, csak visszaadja az eredményt: a
+     betöltésjelzőt a frissítés gomb kapcsolja, a beolvasott adatot pedig a
+     promise visszahívása teszi be. Így az effekt nem indít azonnali
+     újrarajzolást (react-hooks/set-state-in-effect). */
+  const fetchLogs = useCallback(
+    (): Promise<ErrorLog[] | null> =>
+      fetch("/api/admin/logs")
+        .then((r) => (r.ok ? (r.json() as Promise<ErrorLog[]>) : null))
+        .catch(() => null),
+    []
+  );
 
-  useEffect(() => { fetchLogs(); }, []);
+  useEffect(() => {
+    let alive = true;
+    fetchLogs().then((data) => {
+      if (!alive) return;
+      if (data) setLogs(data);
+      setLoading(false);
+    });
+    return () => { alive = false; };
+  }, [fetchLogs]);
+
+  const refresh = () => {
+    setLoading(true);
+    fetchLogs().then((data) => {
+      if (data) setLogs(data);
+      setLoading(false);
+    });
+  };
 
   const clearAll = async () => {
     if (!confirm("Biztosan törlöd az összes logot?")) return;
@@ -49,7 +67,7 @@ export function LogsSection() {
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-gray-500">{logs.length} bejegyzés (max 200)</p>
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" onClick={fetchLogs} className="gap-1.5 cursor-pointer h-8 text-xs">
+          <Button size="sm" variant="outline" onClick={refresh} className="gap-1.5 cursor-pointer h-8 text-xs">
             <RefreshCw className="h-3.5 w-3.5" /> Frissítés
           </Button>
           {logs.length > 0 && (

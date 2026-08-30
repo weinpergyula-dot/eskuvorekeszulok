@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, Send, Trash2, Star, Heart, Info, Check } from "lucide-react";
+import { ArrowLeft, Send, Trash2, Info, MailOpen, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+import { RecipientPicker } from "./quote-recipient-picker";
+import { MeghivoQuoteForm } from "./meghivo-quote-form";
 
 const SYSTEM_PREFIX = "__SYSTEM__:";
 const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
@@ -54,14 +57,6 @@ export interface ProviderRequest {
   last_message_sender_id?: string | null;
 }
 
-interface MatchingProvider {
-  id: string;
-  full_name: string;
-  average_rating: number | null;
-  avatar_url?: string | null;
-  is_favorite?: boolean;
-}
-
 interface Props {
   isProvider: boolean;
   userId: string;
@@ -89,28 +84,6 @@ function formatShort(iso: string) {
     : d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
 }
 
-// ── StarRating ────────────────────────────────────────────────────────────────
-
-function StarRating({ rating }: { rating: number | null }) {
-  if (!rating) return <span className="text-xs text-gray-400">Nincs értékelés</span>;
-  const full = Math.floor(rating);
-  const half = rating - full >= 0.5;
-  return (
-    <span className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map(i => (
-        <Star
-          key={i}
-          className="h-3 w-3"
-          fill={i <= full ? "#f59e0b" : i === full + 1 && half ? "url(#half)" : "none"}
-          stroke="#f59e0b"
-          strokeWidth={1.5}
-        />
-      ))}
-      <span className="text-xs text-gray-500 ml-1">{rating.toFixed(1)}</span>
-    </span>
-  );
-}
-
 // ── SendForm ──────────────────────────────────────────────────────────────────
 
 function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?: () => void; userId?: string }) {
@@ -118,7 +91,6 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
   const [category, setCategory] = useState("");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
   const [message, setMessage] = useState("");
-  const [matchingProviders, setMatchingProviders] = useState<MatchingProvider[] | null>(null);
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -146,21 +118,6 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
       })
       .catch(() => {});
   }, [category]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!category || selectedCounties.length === 0) { setMatchingProviders(null); setCheckedIds(new Set()); return; }
-    const params = new URLSearchParams({ category, counties: selectedCounties.join(",") });
-    if (userId) params.set("userId", userId);
-    fetch(`/api/providers/matching-count?${params}`)
-      .then(r => r.json())
-      .then(d => {
-        const providers: MatchingProvider[] = d.providers ?? [];
-        setMatchingProviders(providers);
-        // By default nobody is selected — the user picks the recipients explicitly.
-        setCheckedIds(new Set());
-      })
-      .catch(() => {});
-  }, [category, selectedCounties, userId]);
 
   const toggleCounty = (county: string) => {
     setSelectedCounties(prev =>
@@ -252,80 +209,13 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
         </div>
       </div>
       <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} compact className="text-base sm:text-sm" />
-      {matchingProviders !== null && (
-        <div className="space-y-2">
-          {matchingProviders.length === 0 ? (
-            <p className="text-xs text-gray-400">Nincs egyező szolgáltató a kiválasztott feltételekre.</p>
-          ) : (
-            <div>
-              <p className="text-xs text-gray-600 mb-2">Válaszd ki, hogy ki kapja meg az ajánlatkérést. <span className="text-[1.2em] font-bold leading-none align-middle">*</span></p>
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                {(() => {
-                  const allSelected = checkedIds.size === matchingProviders.length;
-                  return (
-                    <button
-                      type="button"
-                      onClick={() => setCheckedIds(allSelected ? new Set() : new Set(matchingProviders.map(p => p.id)))}
-                      className="text-xs font-medium px-3 py-1.5 rounded-full border border-[#84AAA6] text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer"
-                    >
-                      {allSelected ? "Kijelölés törlése" : "Összes kijelölése"}
-                    </button>
-                  );
-                })()}
-                {matchingProviders.some(p => p.is_favorite) && (
-                  <button
-                    type="button"
-                    onClick={() => setCheckedIds(new Set(matchingProviders.filter(p => p.is_favorite).map(p => p.id)))}
-                    className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full border border-rose-300 text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer"
-                  >
-                    <Heart className="h-3 w-3 fill-rose-400 stroke-rose-400" />
-                    Kedvencek kijelölése
-                  </button>
-                )}
-              </div>
-              <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
-                {[...matchingProviders]
-                  .sort((a, b) => (b.is_favorite ? 1 : 0) - (a.is_favorite ? 1 : 0))
-                  .map(p => {
-                    const selected = checkedIds.has(p.id);
-                    return (
-                      <button
-                        key={p.id}
-                        type="button"
-                        onClick={() => setCheckedIds(prev => { const next = new Set(prev); if (next.has(p.id)) next.delete(p.id); else next.add(p.id); return next; })}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors cursor-pointer ${selected ? "bg-[#84AAA6]/10" : "hover:bg-gray-50"}`}
-                      >
-                        {/* Avatar + kedvenc jelölés */}
-                        <div className="relative shrink-0">
-                          <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
-                            {p.avatar_url
-                              // eslint-disable-next-line @next/next/no-img-element
-                              ? <img src={p.avatar_url} alt={p.full_name} className="w-full h-full object-cover" />
-                              : <span className="text-xs font-bold text-gray-500">{p.full_name.charAt(0)}</span>}
-                          </div>
-                          {p.is_favorite && (
-                            <span className="absolute -bottom-0.5 -right-0.5 bg-white rounded-full p-0.5 shadow-sm">
-                              <Heart className="h-3 w-3 fill-rose-400 stroke-rose-400" />
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-semibold truncate ${selected ? "text-[#5C8480]" : "text-gray-900"}`}>{p.full_name}</p>
-                          <StarRating rating={p.average_rating} />
-                        </div>
-                        {/* Kijelölés jelző */}
-                        <span className={`flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors ${selected ? "bg-[#84AAA6] border-[#84AAA6]" : "border-gray-300 bg-white"}`}>
-                          {selected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
-                        </span>
-                      </button>
-                    );
-                  })}
-              </div>
-              <p className="text-[10px] text-gray-400 mt-1.5">{checkedIds.size} / {matchingProviders.length} szolgáltató kijelölve</p>
-            </div>
-          )}
-        </div>
-      )}
+      <RecipientPicker
+        category={category}
+        counties={selectedCounties}
+        userId={userId}
+        checkedIds={checkedIds}
+        setCheckedIds={setCheckedIds}
+      />
       {error && <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-xs px-4 py-3 rounded-xl border border-[#F06C6C]/30">{error}</div>}
       <div className="flex gap-3">
         <Button type="submit" size="sm" disabled={sending}><Send className="h-3.5 w-3.5 mr-1.5" />{sending ? "Küldés..." : "Elküld"}</Button>
@@ -333,57 +223,6 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
       </div>
       <p className="text-xs text-gray-500"><span className="text-sm font-bold align-middle">*</span> A csillaggal megjelöltek kitöltése kötelező.</p>
     </form>
-  );
-}
-
-// ── Inbox list item ───────────────────────────────────────────────────────────
-
-function QuoteListItem({
-  subject,
-  categoryLabel,
-  recipientName,
-  avatarUrl,
-  date,
-  unread,
-  onSelect,
-}: {
-  subject: string;
-  categoryLabel: string;
-  recipientName: string;
-  avatarUrl?: string | null;
-  date: string;
-  unread: number;
-  onSelect: () => void;
-}) {
-  const initials = recipientName.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
-  return (
-    <button
-      onClick={onSelect}
-      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
-    >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
-          {avatarUrl
-            ? <img src={avatarUrl ?? ""} alt={recipientName} className="w-full h-full object-cover" />
-            : initials}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2 mb-0.5">
-            <p className={`text-sm font-bold truncate ${unread > 0 ? "text-gray-900" : "text-gray-700"}`}>
-              {recipientName}
-            </p>
-            <span className="text-xs text-gray-400 shrink-0">{formatShort(date)}</span>
-          </div>
-          <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>
-          <p className={`text-xs truncate ${unread > 0 ? "font-semibold text-gray-700" : "text-gray-500"}`}>{subject}</p>
-        </div>
-        {unread > 0 && (
-          <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#F06C6C] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
-            {unread > 9 ? "9+" : unread}
-          </span>
-        )}
-      </div>
-    </button>
   );
 }
 
@@ -523,7 +362,6 @@ export function QuoteChat({
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestId, providerId, userId]);
 
   const handleReply = async (e: React.FormEvent) => {
@@ -805,7 +643,14 @@ export function ProviderChatLoader({
 // ── Main section ──────────────────────────────────────────────────────────────
 
 export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "onUnreadChange" | "userId">) {
+  const searchParams = useSearchParams();
   const [sent, setSent] = useState(false);
+  /* Két űrlap közül lehet választani: az általános szolgáltatói ajánlatkérés
+     és a digitális meghívóra szabott. A /meghivo oldalról érkezve rögtön a
+     meghívós nyílik meg (?form=meghivo), a csomag pedig előre kijelölve. */
+  const [mode, setMode] = useState<"general" | "meghivo">(
+    searchParams.get("form") === "meghivo" ? "meghivo" : "general"
+  );
 
   useEffect(() => {
     onUnreadChange(0);
@@ -828,12 +673,45 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
     );
   }
 
+  const tabCls = (on: boolean) =>
+    `flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors cursor-pointer ${
+      on
+        ? "border-[#84AAA6] bg-[#84AAA6] text-white"
+        : "border-gray-300 bg-white text-gray-700 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+    }`;
+
   return (
     <div className="space-y-3">
-      <p className="text-base text-gray-700">
-        Kategória és megyeválasztás után egyenként ki tudod választani, hogy melyik szolgáltató kapja meg az ajánlatkérést.
-      </p>
-      <SendForm onSent={() => setSent(true)} userId={userId} />
+      <div className="flex flex-wrap gap-2">
+        <button type="button" onClick={() => setMode("general")} className={tabCls(mode === "general")}>
+          <Users className="h-4 w-4" strokeWidth={1.75} />
+          Szolgáltatók
+        </button>
+        <button type="button" onClick={() => setMode("meghivo")} className={tabCls(mode === "meghivo")}>
+          <MailOpen className="h-4 w-4" strokeWidth={1.75} />
+          Digitális meghívó
+        </button>
+      </div>
+
+      {mode === "meghivo" ? (
+        <>
+          <p className="text-base text-gray-700">
+            Jelöld be, melyik csomag és milyen extrák érdekelnek – a válaszokat
+            a Chat menüpontban találod.
+          </p>
+          <MeghivoQuoteForm
+            onSent={() => setSent(true)}
+            initialPackage={searchParams.get("csomag") ?? undefined}
+          />
+        </>
+      ) : (
+        <>
+          <p className="text-base text-gray-700">
+            Kategória és megyeválasztás után egyenként ki tudod választani, hogy melyik szolgáltató kapja meg az ajánlatkérést.
+          </p>
+          <SendForm onSent={() => setSent(true)} userId={userId} />
+        </>
+      )}
     </div>
   );
 }

@@ -151,16 +151,125 @@ export async function GET() {
   return NextResponse.json(visitorChats);
 }
 
+/**
+ * A saját (meghívós) ajánlatkéréseket nem a regisztrált szolgáltatók kapják,
+ * hanem kizárólag az itteni fiók szolgáltatói profilja. A cím környezeti
+ * változóval felülírható, hogy staging/dev alatt is a megfelelő fiókhoz
+ * fusson be.
+ */
+const HOUSE_ACCOUNT_EMAIL = process.env.HOUSE_ACCOUNT_EMAIL ?? "weinper.gyula@gmail.com";
+
+type HouseProvider = { id: string; user_id: string };
+
+/**
+ * A ház szolgáltatói profilja, ha még nem létezik. Csak a beszélgetés
+ * horgonya: a címzett a providers táblán keresztül kötődik az
+ * ajánlatkéréshez, ezért kell hozzá egy sor.
+ *
+ * `active: false`, ezért sehol nem jelenik meg nyilvánosan – sem a főoldali
+ * listában, sem a kategóriaszámokban, sem az általános ajánlatkérő
+ * címzettválasztójában (ezek mind a jóváhagyott ÉS aktív sorokat kérik le).
+ * Az `approval_status` viszont "approved", hogy ne kerüljön az admin
+ * jóváhagyásra váró listájába.
+ */
+const HOUSE_PROVIDER_DEFAULTS = {
+  full_name: "Esküvőre Készülök – Digitális meghívó",
+  phone: "+36 70 788 8787",
+  description:
+    "A saját digitális esküvői meghívó szolgáltatásunk. Ezen a profilon keresztül érkeznek be a meghívós ajánlatkérések.",
+  categories: ["meghivo"],
+  counties: ["Országosan"],
+  approval_status: "approved",
+  active: false,
+};
+
+/**
+ * A ház szolgáltatói profilja – ide megy a meghívós ajánlatkérés.
+ *
+ * A keresés szándékosan engedékeny: a cím kis-nagybetűtől függetlenül
+ * illeszkedik, és ha több találat is van (pl. régi, törölt fiók ugyanazzal a
+ * címmel, vagy több szolgáltatói rekord), az elsőt vesszük – a maybeSingle()
+ * ilyenkor hibát adna, és a címzett „nem elérhető” lenne. A visszaadott ok
+ * bekerül a naplóba, hogy a beállítás hiánya azonnal látszódjon.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function findHouseProvider(admin: any): Promise<{ provider: HouseProvider | null; reason: string }> {
+  const email = HOUSE_ACCOUNT_EMAIL.trim();
+
+  const { data: profiles, error: profileError } = await admin
+    .from("profiles")
+    .select("user_id")
+    .ilike("email", email)
+    .limit(1);
+
+  if (profileError) return { provider: null, reason: `profiles query failed: ${profileError.message}` };
+
+  const userId = (profiles ?? [])[0]?.user_id;
+  if (!userId) return { provider: null, reason: `nincs profil ezzel a címmel: ${email}` };
+
+  const { data: providers, error: providerError } = await admin
+    .from("providers")
+    .select("id, user_id")
+    .eq("user_id", userId)
+    .limit(1);
+
+  if (providerError) return { provider: null, reason: `providers query failed: ${providerError.message}` };
+
+  const provider = (providers ?? [])[0] as HouseProvider | undefined;
+  if (provider) return { provider, reason: "ok" };
+
+  // Még nincs profil: elsőre létrehozzuk. A user_id egyedi, ezért egyidejű
+  // kérésnél a vesztes ág is megtalálja a másik által beszúrt sort.
+  const { data: created, error: insertError } = await admin
+    .from("providers")
+    .insert({ ...HOUSE_PROVIDER_DEFAULTS, user_id: userId, email })
+    .select("id, user_id")
+    .maybeSingle();
+
+  if (created) return { provider: created as HouseProvider, reason: "created" };
+
+  const { data: retry } = await admin
+    .from("providers")
+    .select("id, user_id")
+    .eq("user_id", userId)
+    .limit(1);
+  const existing = (retry ?? [])[0] as HouseProvider | undefined;
+  if (existing) return { provider: existing, reason: "ok" };
+
+  return {
+    provider: null,
+    reason: `a(z) ${email} fiókhoz nem sikerült szolgáltatói profilt létrehozni: ${insertError?.message ?? "ismeretlen hiba"}`,
+  };
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { subject, category, counties, message, selectedProviderIds } = await request.json();
+  const { subject, category, counties, message, selectedProviderIds, houseOnly } = await request.json();
   if (!subject?.trim() || !category || !counties?.length || !message?.trim())
     return NextResponse.json({ error: "Hiányzó mezők." }, { status: 400 });
 
   const admin = createAdminClient();
+
+  // A ház ajánlatkérése: csak a saját profil kapja meg, szolgáltatókeresés nélkül.
+  let houseProvider: HouseProvider | null = null;
+  if (houseOnly) {
+    const found = await findHouseProvider(admin);
+    houseProvider = found.provider;
+    if (found.reason === "created" && houseProvider) {
+      // Egyszeri esemény: jó, ha nyoma marad, mikor jött létre a fogadó profil.
+      await logError("api/quote-requests POST", `house provider created (${houseProvider.id})`, { email: HOUSE_ACCOUNT_EMAIL });
+    }
+    if (!houseProvider) {
+      await logError("api/quote-requests POST", `house provider not found: ${found.reason}`, { user: user.id, category });
+      return NextResponse.json(
+        { error: "Az ajánlatkérés címzettje jelenleg nem elérhető. Kérlek, hívj minket telefonon!" },
+        { status: 503 },
+      );
+    }
+  }
 
   const { data: qr, error: qrError } = await admin
     .from("quote_requests")
@@ -169,6 +278,23 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (qrError || !qr) { await logError("api/quote-requests POST", qrError?.message ?? "insert returned null", { user: user.id, subject, category }); return NextResponse.json({ error: "Hiba az ajánlatkérés létrehozásakor." }, { status: 500 }); }
+
+  if (houseProvider) {
+    await admin.from("quote_request_recipients").insert({
+      quote_request_id: qr.id,
+      provider_id: houseProvider.id,
+      provider_user_id: houseProvider.user_id,
+    });
+    notifyNewQuoteRequest({
+      providerUserId: houseProvider.user_id,
+      visitorUserId: user.id,
+      subject,
+      category,
+      message,
+      origin: request.nextUrl.origin,
+    }).catch(() => {});
+    return NextResponse.json({ id: qr.id, recipient_count: 1 });
+  }
 
   // "Országosan" means every provider in the category, regardless of county.
   const nationwide = Array.isArray(counties) && counties.includes("Országosan");

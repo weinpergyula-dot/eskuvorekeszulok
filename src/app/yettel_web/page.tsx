@@ -14,15 +14,11 @@ import {
 } from "lucide-react";
 import { OffersExplorer } from "./_components/offers-explorer";
 import { CategoryTiles } from "./_components/category-tiles";
+import { HeroSlides } from "./_components/hero-slides";
 import { YettelHeader } from "./_components/yettel-header";
 import { YettelFooter } from "./_components/yettel-footer";
 import { InternetFlow, TvFlow } from "./_components/internet-flow";
 import { DeviceMarquee } from "./_components/device-marquee";
-import { OFFERS, formatFt } from "./_data/offers";
-
-/** "A hét ajánlata" a hero-ban – ugyanaz a tarifa, mint az internet szekcióban,
- *  hogy az ár és a kedvezmény ne csúszhasson el a kettő között. */
-const WEEKLY = OFFERS.net.find((o) => o.id === "hipernet-l")!;
 
 export const metadata: Metadata = {
   title: "Yettel – Mobil, internet és TV egy helyen",
@@ -62,71 +58,9 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Banner / hero – közvetlenül a fejléc alatt ──────
-            A háttér a /yettel_light welcome képernyőjének mozgó gradiense
-            (130°-os sweep + két lebegő, elmosott folt) – lásd globals.css.
-            A negatív felső margó a fejléc mögé húzza a hátteret (a tartalmat a
-            vele azonos pt tartja a helyén). A két alsó sarok lekerekített: a
-            z-10 miatt a banner a következő szekció fölé rajzolódik, így a
-            sarkoknál az alábújó gyorsikonos sötétkék háttér látszik ki. */}
-        <section className="yettel-hero-bg relative z-10 -mt-14 overflow-hidden rounded-b-[32px] pt-14">
-          <span aria-hidden className="yettel-blob yettel-blob-1" />
-          <span aria-hidden className="yettel-blob yettel-blob-2" />
-          <div className="relative mx-auto grid max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:grid-cols-2 md:gap-8 md:pt-10">
-            <div className="pb-0 md:pb-10">
-              <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-[2.6rem]">
-                <span className="text-white">Szupergyors</span> <span className="text-[#002340]">internet</span>
-              </h1>
-              <p className="mt-3 max-w-md text-base text-[#2D466C]">
-                1000 Mbit/s optikai net az egész családnak – ajándék WiFi 7 routerrel, díjmentes telepítéssel és az
-                első 30 nappal díjmentesen.
-              </p>
-
-              {/* A hét ajánlata. Mobilon kiemeljük a szövegfolyamból: a banner bal
-                  alsó sarkába kerül, a jobbra igazított képre lógva (z-10 miatt
-                  a kép fölött). Weben (md-től) visszatér a szöveg alá. */}
-              <div className="absolute bottom-4 left-4 z-10 w-[52%] max-w-[188px] rounded-[18px] border border-white/60 bg-white/85 p-3 shadow-[0_18px_50px_rgba(0,35,64,0.22)] backdrop-blur-md sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:bg-white/70 md:p-4">
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#002340] px-2.5 py-0.5 text-[0.625rem] font-bold text-white md:px-3 md:py-1 md:text-xs">
-                  A hét ajánlata
-                </span>
-                <h2 className="mt-1.5 text-sm font-extrabold text-[#002340] md:mt-2 md:text-base">{WEEKLY.name}</h2>
-                <p className="text-[0.625rem] text-[#2D466C] md:text-xs">{WEEKLY.features[0]} · optikai internet</p>
-                <div className="mt-1.5 flex items-baseline gap-1.5 whitespace-nowrap md:mt-2">
-                  <span className="shrink-0 text-xl font-extrabold tracking-tight text-[#002340] md:text-2xl">
-                    {formatFt(WEEKLY.price)}
-                  </span>
-                  <span className="shrink-0 text-[0.625rem] text-[#2D466C] md:text-xs">/ hó</span>
-                </div>
-                <p className="text-[0.625rem] text-[#7E93B0] md:text-xs">
-                  <span className="line-through">{formatFt(WEEKLY.oldPrice!)}</span> helyett
-                </p>
-                <p className="mt-0.5 hidden text-[0.625rem] font-bold text-[#2D466C] md:mt-1 md:block md:text-xs">
-                  Havi {formatFt(WEEKLY.oldPrice! - WEEKLY.price)} megtakarítás.
-                </p>
-                <a
-                  href="#internet"
-                  className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#002340] px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-[#001D36] md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-sm"
-                >
-                  Érdekel
-                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                </a>
-              </div>
-              <p className="mt-3 mb-10 text-xs font-semibold text-[#002340]/70 sm:mt-4 md:mb-0">
-                Ingyenes bekötés · 30 napos elállás
-              </p>
-            </div>
-
-            {/* Hero kép (család laptoppal) – az ajánlatkártya a bal oszlopba került. */}
-            <div className="w-full self-end">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/yettel/hero-family.png"
-                alt="Család együtt böngészik a laptopon"
-                className="-mr-4 ml-auto block w-[80%] md:mr-0 md:ml-0 md:w-[118%] md:max-w-none md:-mr-6 md:translate-x-6 lg:-mr-14 lg:translate-x-12"
-              />
-            </div>
-          </div>
-        </section>
+        {/* ── Banner / hero – közvetlenül a fejléc alatt (diavetítés, saját
+            háttérrel és a lekerekített alsó sarkokkal: lásd HeroSlides) ── */}
+        <HeroSlides />
 
         {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ──────
             Az alsó extra térköz alá csúszik be az ajánlatok szekció, hogy annak

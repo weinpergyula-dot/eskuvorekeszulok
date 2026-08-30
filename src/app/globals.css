@@ -407,6 +407,19 @@ html.a11y-underline a { text-decoration: underline !important; }
   .yettel-root .yettel-blob { animation: none; }
 }
 
+/* A banner diái jobbról balra úsznak be (mobil slideshow). A dia teljes
+   tartalma egy elemen mozog, hogy a rajta ülő ajánlatkártya se ugráljon. */
+.yettel-root .yettel-slide-in {
+  animation: yettel-slide-in 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes yettel-slide-in {
+  from { opacity: 0; transform: translateX(28%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .yettel-root .yettel-slide-in { animation: none; }
+}
+
 /* ── /yettel_web: a méret a viewport szélességéhez igazodik ─────────────
    A Windows 125%/150% nagyítás nem "nagyobbra rajzol": a böngésző kisebb
    CSS-viewportot ad (1920 fizikai px → 1536, ill. 1280 CSS px), ezért a fix
@@ -423,4 +436,1476 @@ html.a11y-underline a { text-decoration: underline !important; }
   html:has(.yettel-root) {
     font-size: clamp(12.5px, 0.8333vw, 16px);
   }
+}
+
+/* ── Zsófi & Szili esküvői meghívó (/zso-es-szili) ─────────────────────
+   Önálló, elegáns meghívó-oldal – saját paletta és tipográfia.
+   A betűk (Cormorant Garamond + Great Vibes + Jost) saját hostolásúak
+   (public/fonts/zs), mint a BloomSpeak készlet. Minden szabály .zs-root
+   alá van zárva, nem érinti a fő oldalt. */
+
+/* Cormorant Garamond 400 italic latin-ext */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/zs/CormorantGaramond-400i-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Cormorant Garamond 400 italic latin */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/zs/CormorantGaramond-400i-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Cormorant Garamond 400 normal latin-ext */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/zs/CormorantGaramond-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Cormorant Garamond 400 normal latin */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/zs/CormorantGaramond-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Cormorant Garamond 500 normal latin-ext */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/zs/CormorantGaramond-500-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Cormorant Garamond 500 normal latin */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/zs/CormorantGaramond-500-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Cormorant Garamond 600 normal latin-ext */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/zs/CormorantGaramond-600-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Cormorant Garamond 600 normal latin */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/zs/CormorantGaramond-600-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Great Vibes 400 normal latin-ext */
+@font-face {
+  font-family: 'Great Vibes';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/zs/GreatVibes-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Great Vibes 400 normal latin */
+@font-face {
+  font-family: 'Great Vibes';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/zs/GreatVibes-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Jost 300 normal latin-ext */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/zs/Jost-300-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Jost 300 normal latin */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/zs/Jost-300-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Jost 400 normal latin-ext */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/zs/Jost-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Jost 400 normal latin */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/zs/Jost-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Jost 500 normal latin-ext */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/zs/Jost-500-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Jost 500 normal latin */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/zs/Jost-500-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+.zs-root {
+  --zs-ivory: #f7faf9;      /* alap háttér (hűvös törtfehér) */
+  --zs-ivory-2: #eaf2f0;    /* váltakozó szekció-háttér */
+  --zs-card: #fdfefe;       /* kártyák */
+  --zs-ink: #2f3a38;        /* szöveg */
+  --zs-muted: #6d7d7a;      /* halvány szöveg */
+  --zs-gold: #4f7d78;       /* teal akcentus (kontraszt-biztos a szövegre) */
+  --zs-gold-soft: #b6d0cc;  /* halvány teal (vonalak, keretek) */
+  --zs-sage: #84AAA6;       /* az oldal alap tealje, másodlagos akcentus */
+
+  background: var(--zs-ivory);
+  color: var(--zs-ink);
+  font-family: "Jost", "BloomSpeakBody", Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.zs-root .zs-serif,
+.zs-root h1,
+.zs-root h2,
+.zs-root h3 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  color: var(--zs-ink);
+}
+.zs-root .zs-script {
+  font-family: "Great Vibes", "Cormorant Garamond", cursive;
+  font-weight: 400;
+  color: var(--zs-gold);
+  line-height: 1.15;
+}
+.zs-root .zs-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--zs-muted);
+  font-weight: 500;
+}
+.zs-root .zs-muted { color: var(--zs-muted); }
+.zs-root .zs-accent { color: var(--zs-gold); }
+
+/* Hero */
+.zs-root .zs-hero {
+  background:
+    radial-gradient(1100px 500px at 50% -10%, #fdf9ef 0%, transparent 60%),
+    radial-gradient(700px 420px at 12% 108%, rgba(109, 125, 106, 0.10) 0%, transparent 60%),
+    radial-gradient(700px 420px at 88% 108%, rgba(176, 141, 87, 0.10) 0%, transparent 60%),
+    var(--zs-ivory);
+}
+.zs-root .zs-ornament { color: var(--zs-gold-soft); }
+.zs-root .zs-hero-amp { color: var(--zs-gold); }
+
+/* Monogram medál */
+.zs-root .zs-monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--zs-gold-soft);
+  box-shadow: 0 0 0 6px var(--zs-ivory), 0 0 0 7px var(--zs-gold-soft);
+  background: var(--zs-card);
+  font-size: 2.4rem;
+}
+.zs-root .zs-monogram .zs-amp {
+  font-size: 1.4rem;
+  color: var(--zs-muted);
+  transform: translateY(-0.2rem);
+}
+.zs-root .zs-monogram-sm {
+  width: 5rem;
+  height: 5rem;
+  font-size: 1.6rem;
+  box-shadow: 0 0 0 4px var(--zs-ivory), 0 0 0 5px var(--zs-gold-soft);
+}
+.zs-root .zs-monogram-sm .zs-amp { font-size: 1rem; }
+
+/* Díszes elválasztó vonal */
+.zs-root .zs-rule {
+  position: relative;
+  width: 10rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--zs-gold-soft) 20%, var(--zs-gold-soft) 80%, transparent);
+}
+.zs-root .zs-rule::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--zs-gold);
+}
+
+/* Szekciók, kártyák */
+.zs-root .zs-alt { background: var(--zs-ivory-2); }
+.zs-root .zs-card {
+  background: var(--zs-card);
+  border: 1px solid rgba(176, 141, 87, 0.22);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px -18px rgba(60, 58, 51, 0.25);
+}
+.zs-root .zs-icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: 1px solid var(--zs-gold-soft);
+  background: var(--zs-ivory);
+  color: var(--zs-gold);
+}
+
+/* Visszaszámláló */
+.zs-root .zs-count-box {
+  background: rgba(255, 253, 249, 0.8);
+  border: 1px solid var(--zs-gold-soft);
+  backdrop-filter: blur(2px);
+}
+
+/* Idővonal */
+.zs-root .zs-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding-left: 2rem;
+}
+.zs-root .zs-timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.4rem;
+  top: 0.6rem;
+  bottom: 0.6rem;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--zs-gold-soft) 8%, var(--zs-gold-soft) 92%, transparent);
+}
+.zs-root .zs-tl-item { position: relative; }
+.zs-root .zs-tl-dot {
+  position: absolute;
+  left: -2rem;
+  top: 0.9rem;
+  width: 11px;
+  height: 11px;
+  transform: translateX(-1px) rotate(45deg);
+  background: var(--zs-gold);
+  outline: 4px solid var(--zs-ivory-2);
+}
+
+/* Űrlap-elemek */
+.zs-root .zs-input {
+  width: 100%;
+  border: 1px solid var(--zs-gold-soft);
+  border-radius: 0.6rem;
+  background: var(--zs-ivory);
+  padding: 0.65rem 0.9rem;
+  font-size: 15px;
+  color: var(--zs-ink);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.zs-root .zs-input:focus {
+  border-color: var(--zs-gold);
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.18);
+}
+.zs-root .zs-input::placeholder { color: #b3ac9e; }
+
+.zs-root .zs-choice {
+  border: 1px solid var(--zs-gold-soft);
+  border-radius: 0.6rem;
+  background: var(--zs-ivory);
+  padding: 0.6rem 0.5rem;
+  font-size: 14px;
+  color: var(--zs-muted);
+  transition: all 0.15s;
+}
+.zs-root .zs-choice-active {
+  background: var(--zs-gold);
+  border-color: var(--zs-gold);
+  color: #fffdf9;
+  font-weight: 500;
+}
+
+.zs-root .zs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: var(--zs-gold);
+  color: #fffdf9;
+  padding: 0.8rem 1.6rem;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.15s, transform 0.15s;
+}
+.zs-root .zs-btn:hover { background: #997747; }
+.zs-root .zs-btn:active { transform: scale(0.98); }
+
+/* Lábléc */
+.zs-root .zs-footer {
+  background: var(--zs-ivory-2);
+  border-top: 1px solid rgba(176, 141, 87, 0.25);
+}
+
+/* Belépő animáció */
+.zs-root .zs-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.zs-root .zs-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .zs-root .zs-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Főoldal, mobil "Miért regisztrálj?" kártya belépő animációja ───── */
+@keyframes mwr-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.mwr-card-in { animation: mwr-in 0.35s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .mwr-card-in { animation: none; }
+}
+
+/* ── Esküvős fejléc-sávok: animált, mozgó teal gradient ──────────────
+   A /yettel_web welcome-hátterének mozgása (130°-os, túlméretezett
+   gradient oda-vissza sodródással), de az oldal teal palettáján. */
+.teal-shift-bg {
+  background: linear-gradient(
+    130deg,
+    #5C8480 0%,
+    #6B8E8A 20%,
+    #84AAA6 38%,
+    #95BAB5 50%,
+    #84AAA6 62%,
+    #6B8E8A 80%,
+    #5C8480 100%
+  );
+  background-size: 260% 260%;
+  animation: teal-gshift 18s ease-in-out infinite;
+}
+@keyframes teal-gshift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/* Egy árnyalattal mélyebb változat – a főoldali gyorskategória-sáv
+   használja, hogy a világos csempék jobban elváljanak a háttértől. */
+.teal-shift-bg-deep {
+  background: linear-gradient(
+    130deg,
+    #456965 0%,
+    #52736F 20%,
+    #688F8B 38%,
+    #789F9A 50%,
+    #688F8B 62%,
+    #52736F 80%,
+    #456965 100%
+  );
+  background-size: 260% 260%;
+  animation: teal-gshift 18s ease-in-out infinite;
+}
+/* Világosabb változat – a banner 2. diája használja, hogy elváljon a fejléc
+   és a gyorskategória-sáv tealjétől. */
+.teal-shift-bg-light {
+  background: linear-gradient(
+    130deg,
+    #6A928E 0%,
+    #789C98 20%,
+    #90B6B1 38%,
+    #A2C6C1 50%,
+    #90B6B1 62%,
+    #789C98 80%,
+    #6A928E 100%
+  );
+  background-size: 260% 260%;
+  animation: teal-gshift 18s ease-in-out infinite;
+}
+
+/* A banner ajánlatkártyáján a gomb színét a dia témája adja (CSS változóból,
+   hogy a hover is követni tudja). */
+.hero-offer-cta { background-color: var(--cta); }
+.hero-offer-cta:hover { background-color: var(--cta-hover); }
+
+@media (prefers-reduced-motion: reduce) {
+  .teal-shift-bg,
+  .teal-shift-bg-deep,
+  .teal-shift-bg-light { animation: none; }
+}
+
+/* ── SILVER minta meghívó (/meghivo-silver) ────────────────────────────
+   A BASIC (/zso-es-szili) ivory–arany világával szemben sötét, éjkék–
+   ezüst paletta. A betűk ugyanazok a saját hostolású készletek
+   (Cormorant Garamond + Great Vibes + Jost), amiket a .zs-root is
+   használ. Minden szabály .slv-root alá van zárva. */
+.slv-root {
+  --slv-night: #10151f;      /* alap háttér */
+  --slv-night-2: #161d2b;    /* váltakozó szekció-háttér */
+  --slv-card: #1b2434;       /* kártyák */
+  --slv-line: #33405a;       /* keretek, vonalak */
+  --slv-text: #e8ecf3;       /* szöveg */
+  --slv-muted: #9aa6bd;      /* halvány szöveg */
+  --slv-silver: #c8d2e4;     /* ezüst akcentus */
+  --slv-glow: #8fa6cc;       /* hideg fény */
+
+  font-family: 'Jost', ui-sans-serif, system-ui, sans-serif;
+  background: var(--slv-night);
+  color: var(--slv-text);
+  font-size: 16px;
+  font-weight: 400;
+}
+.slv-root .slv-serif,
+.slv-root h1,
+.slv-root h2,
+.slv-root h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--slv-text);
+}
+.slv-root .slv-script {
+  font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
+  font-weight: 400;
+  color: var(--slv-silver);
+}
+.slv-root .slv-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--slv-muted);
+  font-weight: 400;
+}
+.slv-root .slv-muted { color: var(--slv-muted); }
+.slv-root .slv-accent { color: var(--slv-silver); }
+.slv-root .slv-alt { background: var(--slv-night-2); }
+
+/* Hero: hideg fényfoltok az éjkék háttéren */
+.slv-root .slv-hero {
+  background:
+    radial-gradient(80% 55% at 50% 0%, rgba(143, 166, 204, 0.22), transparent 70%),
+    radial-gradient(60% 45% at 12% 100%, rgba(200, 210, 228, 0.10), transparent 70%),
+    var(--slv-night);
+}
+
+/* Kártyák, keretek */
+.slv-root .slv-card {
+  background: var(--slv-card);
+  border: 1px solid var(--slv-line);
+  border-radius: 1rem;
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+}
+.slv-root .slv-icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: 1px solid var(--slv-line);
+  background: rgba(200, 210, 228, 0.06);
+  color: var(--slv-silver);
+}
+.slv-root .slv-monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 9999px;
+  font-size: 2rem;
+  border: 1px solid var(--slv-line);
+  box-shadow: 0 0 0 6px var(--slv-night), 0 0 0 7px rgba(200, 210, 228, 0.22);
+}
+.slv-root .slv-rule {
+  position: relative;
+  width: 10rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--slv-line) 20%, var(--slv-line) 80%, transparent);
+}
+.slv-root .slv-rule::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--slv-silver);
+}
+
+/* Visszaszámláló */
+.slv-root .slv-count-box {
+  background: rgba(200, 210, 228, 0.06);
+  border: 1px solid var(--slv-line);
+}
+
+/* Űrlap- és vendégkönyv-elemek */
+.slv-root .slv-input {
+  width: 100%;
+  border: 1px solid var(--slv-line);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.65rem 0.9rem;
+  font-size: 15px;
+  color: var(--slv-text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.slv-root .slv-input:focus {
+  border-color: var(--slv-glow);
+  box-shadow: 0 0 0 3px rgba(143, 166, 204, 0.18);
+}
+.slv-root .slv-input::placeholder { color: #6c788f; }
+
+/* Halk belépő animáció (Reveal) */
+.slv-root .slv-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.slv-root .slv-reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .slv-root .slv-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ── Banner: dia-beúszás és a megdöntött telefon ─────────────────────── */
+.mgh-slide-in {
+  animation: mgh-slide-in 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes mgh-slide-in {
+  from { opacity: 0; transform: translateX(6%); }
+  to   { opacity: 1; transform: none; }
+}
+/* A telefon enyhén megdöntve, térhatású perspektívával. */
+.mgh-tilt {
+  transform: perspective(1200px) rotateY(-14deg) rotateX(4deg) rotate(-3deg);
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.mgh-tilt:hover {
+  transform: perspective(1200px) rotateY(-8deg) rotateX(2deg) rotate(-1.5deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mgh-slide-in { animation: none; }
+  .mgh-tilt { transition: none; }
+}
+
+/* ── Banner: átlósan megdöntött telefonpár ──────────────────────────────
+   Két, egymással párhuzamosan döntött készülék: az elülső (nagyobb)
+   jobbra-fent, a hátsó (kisebb) balra-lent, egymást átfedve. Mobilon
+   csak az elülső látszik. */
+.hero-duo { perspective: 1500px; }
+.hero-duo-front {
+  transform: rotate(19deg) rotateY(-30deg) rotateX(7deg);
+  transform-style: preserve-3d;
+}
+.hero-duo-back {
+  transform: rotate(19deg) rotateY(-30deg) rotateX(7deg) scale(0.86);
+  transform-style: preserve-3d;
+}
+
+/* ── Banner: valódi térbeli készülékház ───────────────────────────────
+   A megdöntött telefonnak látszik a vastagsága is. A kávát nem lapos
+   oldallapok adják (azok szögletes vége letört saroknak látszott a
+   lekerekített sarkoknál), hanem az előlap mögé rétegzett, ugyanolyan
+   lekerekítésű lapok: együtt tömör, végig lekerekített peremű házat
+   alkotnak. */
+.hero-phone {
+  position: relative;
+  transform-style: preserve-3d;
+}
+.hero-phone-face {
+  position: relative;
+  transform-style: preserve-3d;
+}
+.hero-phone-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.5rem;
+  pointer-events: none;
+  /* csiszolt fém perem – a szimmetrikus átmenet miatt mindegy, melyik
+     oldalról látjuk */
+  background: linear-gradient(
+    100deg,
+    #0b0b0e 0%,
+    #3a3a43 26%,
+    #82828e 50%,
+    #3a3a43 74%,
+    #0b0b0e 100%
+  );
+}
+
+
+/* ── /meghivo csomagcsempék: apró fehér fényjáték ─────────────────────
+   A korábbi átlós csíkozás helyett szórt, lágy fénypontok úsznak nagyon
+   lassan a színes felületen – közelről alig látszik, mégis megtöri az
+   egyszínű gradienst. */
+.pkg-glints {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.16), transparent 16%),
+    radial-gradient(circle at 74% 9%, rgba(255, 255, 255, 0.13), transparent 13%),
+    radial-gradient(circle at 32% 62%, rgba(255, 255, 255, 0.11), transparent 15%),
+    radial-gradient(circle at 88% 46%, rgba(255, 255, 255, 0.14), transparent 12%),
+    radial-gradient(circle at 55% 88%, rgba(255, 255, 255, 0.10), transparent 14%),
+    radial-gradient(circle at 6% 78%, rgba(255, 255, 255, 0.12), transparent 11%),
+    radial-gradient(circle at 62% 30%, rgba(255, 255, 255, 0.09), transparent 10%),
+    radial-gradient(circle at 42% 6%, rgba(255, 255, 255, 0.10), transparent 9%);
+  animation: pkg-glints-drift 24s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes pkg-glints-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.85; }
+  to   { transform: translate3d(-2%, 2%, 0) scale(1.06); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pkg-glints { animation: none; }
+}
+
+/* ── Főoldali banner: a /yettel_web bannerének mozgása és kiegészítői ──
+   A dia teljes tartalma egyben úszik be jobbról (szöveg + ajánlatkártya +
+   kép), a háttéren pedig két lebegő, elmosott folt világítja meg a teal
+   gradienst. Csak a színek térnek el a yettel-változattól. */
+.hero-slide-in {
+  animation: hero-slide-in 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes hero-slide-in {
+  from { opacity: 0; transform: translateX(28%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Álló telefonon a banner pontosan a képernyőt tölti ki: betöltéskor csak
+   a banner látszik, alatta semmi – akármekkora a készülék. A levonandó rész
+   a banner fölötti sáv (figyelmeztető csík + fejléc): ezt a HeroCarousel
+   méri és teszi a --hero-top változóba. Az alapérték a figyelmeztető csík
+   nélküli eset (4rem fejléc, amiből a szekció -mt-6-tal 1.5rem-et visszavesz).
+   A további 1.5rem a szekció felső bélése, az 1px pedig az alsó szegélye.
+
+   Fekvő tájolásban marad a korábbi, szélességhez kötött magasság: ott a
+   képernyő olyan alacsony, hogy a kivágott menyasszony nem férne el benne. */
+:root { --hero-top: 2.5rem; }
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .hero-slide-fullscreen {
+    /* Tartalék a svh-t nem ismerő böngészőknek */
+    min-height: calc(100vh - var(--hero-top) - 1.5rem - 1px);
+    /* A ténylegesen látható terület (a böngésző címsorával együtt) */
+    min-height: calc(100svh - var(--hero-top) - 1.5rem - 1px);
+  }
+}
+
+/* A nagyobb telefonokon a banner főcíme és képe is nagyobb: a közepes
+   készülékeken (kb. 390px széles) 20%-kal, a nagyokon (414px-től) 30%-kal.
+   Kis telefonon (375px alatt) marad a korábbi méret, mert ott már nincs
+   hely. 640px fölött (tablet, web) semmi nem változik. */
+/* A kép a legkisebb telefonon is nagyobb (--hero-art-grow), a főcím ott
+   marad az eredeti méretben – arra ugyanis nincs hely. */
+:root { --hero-grow: 1; --hero-art-grow: 1.2; }
+@media (min-width: 380px) and (max-width: 413px) { :root { --hero-grow: 1.2; --hero-art-grow: 1.2; } }
+@media (min-width: 414px) and (max-width: 639px) { :root { --hero-grow: 1.3; --hero-art-grow: 1.3; } }
+
+@media (max-width: 639px) {
+  /* A dia adja az alapméretet (--hero-title-base), ezt szorozzuk fel. */
+  .hero-title { font-size: calc(var(--hero-title-base) * var(--hero-grow)); }
+
+  /* A kép a bal alsó sarkából nő, tehát jobbra és felfelé: a szöveg melletti
+     bal széle marad a helyén, a jobb oldalon nyugodtan kilóg a képernyőből
+     (a szekció overflow-hiddenje vágja le). */
+  .hero-art {
+    transform: translateX(var(--hero-art-shift, 0)) scale(var(--hero-art-grow));
+    transform-origin: left bottom;
+  }
+}
+
+/* A legkisebb telefonokon a megnövelt kép egy kicsit jobbra is tolódik,
+   hogy a gomboktól elhúzódjon – jobb oldalt úgyis kilóg a képernyőből. */
+@media (max-width: 379px) {
+  :root { --hero-art-shift: 1rem; }
+}
+
+/* A 2. dia (digitális meghívók) a közepes és nagy telefonokon:
+   – a főcím még egy lépcsővel nagyobb (a rövidebb alapméret miatt itt
+     több hely marad, mint az 1. dián),
+   – az ajánlat "üvegkerete" a szöveg alá kerül a banner alja helyett.
+     Fixen megadott magasság nem működne: a banner magassága a készüléktől
+     és a figyelmeztető csík meglététől is függ, a szövegblokk pedig
+     függőlegesen középen áll – a szövegfolyamban viszont mindig a cím
+     alatt marad. */
+@media (min-width: 380px) and (max-width: 639px) {
+  .hero-title-boost {
+    font-size: calc(var(--hero-title-base) * var(--hero-grow) * 1.2);
+  }
+
+  .hero-offer-card {
+    position: static;
+    /* Kicsit szélesebb a szövegoszlopnál, hogy az ajánlat egy sorban
+       maradjon – a jobb oldalán úgyis üres a hely. */
+    width: 13.5rem;
+    max-width: none;
+    margin-top: 1.375rem;
+  }
+
+  /* A kártyának fenntartott alsó bélés már nem kell, ha a kártya
+     visszakerült a szövegfolyamba. */
+  .hero-text-col { padding-bottom: 0; }
+}
+
+.hero-blob {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+.hero-blob-1 {
+  width: 280px;
+  height: 280px;
+  top: -70px;
+  right: -80px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), transparent 65%);
+  animation: hero-blob-float1 9s ease-in-out infinite;
+}
+.hero-blob-2 {
+  width: 240px;
+  height: 240px;
+  bottom: 120px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(214, 232, 230, 0.75), transparent 65%);
+  animation: hero-blob-float2 12s ease-in-out infinite;
+}
+@keyframes hero-blob-float1 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-34px, 44px); }
+}
+@keyframes hero-blob-float2 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(40px, -34px); }
+}
+
+/* Ezüstös bannerháttér: lassan vándorló fém-gradiens. A fénycsíkot külön
+   elem (.hero-sheen) adja, hogy a szöveg fölött ne fusson át. */
+/* Álló ezüst: a hero-silver csendes rokona – nincs mozgás, és a színek
+   teljesen semlegesek (R=G=B), tehát nincs benne kékes-teal beütés.
+   Világosabb is: a legsötétebb pontja #E4E4E6 a hero-silver #B4C2C9-e helyett. */
+.silver-still {
+  background: linear-gradient(
+    145deg,
+    #FFFFFF 0%,
+    #F2F2F3 18%,
+    #FFFFFF 34%,
+    #E4E4E6 56%,
+    #FAFAFB 76%,
+    #EDEDEF 100%
+  );
+}
+.hero-silver {
+  background: linear-gradient(
+    145deg,
+    #FDFEFE 0%,
+    #D2DBDF 18%,
+    #FFFFFF 34%,
+    #B4C2C9 56%,
+    #EDF2F4 76%,
+    #C3CFD5 100%
+  );
+  background-size: 220% 220%;
+  animation: hero-silver-shift 16s ease-in-out infinite;
+}
+/* Át-átfutó fénycsík a banner teljes hátterén (mindkét dián). A tartalom
+   utána következik a fában, így a szöveg fölött nem világít át. */
+.hero-sheen {
+  position: absolute;
+  inset: -20% -60%;
+  z-index: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 62%
+  );
+  animation: hero-silver-sheen 7.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hero-silver-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes hero-silver-sheen {
+  0%       { transform: translateX(-70%); opacity: 0; }
+  18%      { opacity: 1; }
+  55%      { transform: translateX(70%); opacity: 0; }
+  100%     { transform: translateX(70%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-in,
+  .hero-blob,
+  .hero-silver,
+  .hero-sheen { animation: none; }
+}
+
+/* ── PREMIUM meghívó (/meghivo-premium) ────────────────────────────────
+   Mély szilvakék-lila alap, magenta és rozéarany akcentusokkal – a
+   /meghivo oldalon a PREMIUM csomaghoz tartozó szín. Minden szabály a
+   .prm-root alá van zárva, nem érinti a fő oldalt. A betűk ugyanazok a
+   saját hostolású készletek, mint a másik két mintán. */
+.prm-root {
+  --prm-bg: #1A0E1E;         /* alap háttér */
+  --prm-bg-2: #22132A;       /* váltakozó szekció-háttér */
+  --prm-card: #2A1733;       /* kártyák */
+  --prm-line: #562E5B;       /* keretek, vonalak */
+  --prm-text: #F6EAF3;       /* szöveg */
+  --prm-muted: #C3A3C0;      /* halvány szöveg */
+  --prm-accent: #C65EA5;     /* a csomag színe */
+  --prm-rose: #E8B4D4;       /* rozéarany fény */
+  --prm-gold: #F0D5A8;       /* pecsét- és fénycsillanás */
+
+  font-family: 'Jost', ui-sans-serif, system-ui, sans-serif;
+  background: var(--prm-bg);
+  color: var(--prm-text);
+  font-size: 16px;
+  /* Semmi ne lógjon ki oldalra – mobilon így nem lehet elhúzni a tartalmat.
+     A clip (a hidden helyett) nem hoz létre görgetődobozt, és a fixen
+     pozicionált boríték-réteget sem vágja el. */
+  overflow-x: clip;
+}
+.prm-root .prm-serif,
+.prm-root h1,
+.prm-root h2,
+.prm-root h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--prm-text);
+}
+.prm-root .prm-script {
+  font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
+  font-weight: 400;
+  color: var(--prm-rose);
+}
+.prm-root .prm-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--prm-muted);
+}
+.prm-root .prm-muted { color: var(--prm-muted); }
+.prm-root .prm-accent { color: var(--prm-rose); }
+.prm-root .prm-alt { background: var(--prm-bg-2); }
+
+/* Hero: lila-magenta fényfoltok az éjszakai alapon */
+.prm-root .prm-hero {
+  background:
+    radial-gradient(75% 55% at 50% -5%, rgba(198, 94, 165, 0.30), transparent 70%),
+    radial-gradient(55% 45% at 8% 100%, rgba(240, 213, 168, 0.12), transparent 70%),
+    var(--prm-bg);
+}
+
+.prm-root .prm-card {
+  background: var(--prm-card);
+  border: 1px solid var(--prm-line);
+  border-radius: 1rem;
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+}
+.prm-root .prm-icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: 1px solid var(--prm-line);
+  background: rgba(232, 180, 212, 0.08);
+  color: var(--prm-rose);
+}
+.prm-root .prm-monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 9999px;
+  font-size: 2rem;
+  border: 1px solid var(--prm-line);
+  box-shadow: 0 0 0 6px var(--prm-bg), 0 0 0 7px rgba(232, 180, 212, 0.28);
+}
+.prm-root .prm-rule {
+  position: relative;
+  width: 10rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--prm-line) 20%, var(--prm-line) 80%, transparent);
+}
+.prm-root .prm-rule::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--prm-rose);
+}
+.prm-root .prm-count-box {
+  background: rgba(232, 180, 212, 0.07);
+  border: 1px solid var(--prm-line);
+}
+.prm-root .prm-input {
+  width: 100%;
+  border: 1px solid var(--prm-line);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.65rem 0.9rem;
+  font-size: 15px;
+  color: var(--prm-text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.prm-root .prm-input:focus {
+  border-color: var(--prm-accent);
+  box-shadow: 0 0 0 3px rgba(198, 94, 165, 0.22);
+}
+.prm-root .prm-input::placeholder { color: #8E6D8C; }
+
+.prm-root .prm-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.prm-root .prm-reveal.is-in { opacity: 1; transform: none; }
+
+/* ── Satírozott dátum ────────────────────────────────────────────────
+   A betűk körvonala „megrajzolódik”, majd a ferde vonalkás (satírozott)
+   kitöltés úszik be – mint egy ceruzával árnyékolt felirat. */
+.prm-root .prm-sketch-outline {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+}
+.prm-root .is-in .prm-sketch-outline {
+  animation: prm-draw 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.prm-root .prm-sketch-fill { opacity: 0; }
+.prm-root .is-in .prm-sketch-fill {
+  animation: prm-hatch-in 1.4s ease 1.1s forwards;
+}
+.prm-root .prm-sketch-underline {
+  stroke-dasharray: 460;
+  stroke-dashoffset: 460;
+}
+.prm-root .is-in .prm-sketch-underline {
+  animation: prm-draw-short 1.1s ease 2.1s forwards;
+}
+@keyframes prm-draw { to { stroke-dashoffset: 0; } }
+@keyframes prm-draw-short { to { stroke-dashoffset: 0; } }
+@keyframes prm-hatch-in { to { opacity: 1; } }
+
+/* ── Boríték-nyitó bevezető ──────────────────────────────────────────
+   A látogató a pecsétre kattint: a viaszpecsét széttörik, a fül kinyílik,
+   fény tör elő a borítékból, majd a kártya kiemelkedik és a réteg elúszik. */
+.prm-env-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(70% 50% at 50% 40%, rgba(198, 94, 165, 0.26), transparent 70%),
+    radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%),
+    #150B18;
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+.prm-env-layer[data-phase="done"] {
+  opacity: 0;
+  visibility: hidden;
+  /* A háttér csak azután húzódik el, hogy a boríték már eltűnt – így a
+     fehér lapról egyenesen a meghívóra érkezünk. */
+  transition: opacity 0.75s ease 0.25s, visibility 1s;
+}
+/* Záráskor a boríték, a szikrák és a felirat gyorsan elhalványulnak… */
+[data-phase="done"] .prm-env-back,
+[data-phase="done"] .prm-env-front,
+[data-phase="done"] .prm-env-flap,
+[data-phase="done"] .prm-env-foot,
+[data-phase="done"] .prm-spark {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+/* …a lap pedig utolsóként, kicsit megnőve adja át a helyét a meghívónak. */
+[data-phase="done"] .prm-env-card {
+  transform: translateZ(9px) translateY(-72%) scale(1.06);
+  opacity: 0;
+  transition: transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) 0.2s,
+    opacity 0.55s ease 0.35s;
+}
+
+.prm-env-scene { perspective: 1500px; width: min(88vw, 420px); }
+/* A felirat elhalványul, amikor a kártya kiemelkedik a borítékból */
+.prm-env-caption { transition: opacity 0.45s ease; }
+[data-phase="opening"] .prm-env-caption,
+[data-phase="card"] .prm-env-caption,
+[data-phase="done"] .prm-env-caption { opacity: 0; }
+.prm-env {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  transform-style: preserve-3d;
+  animation: prm-env-float 6s ease-in-out infinite;
+}
+@keyframes prm-env-float {
+  0%, 100% { transform: translateY(0) rotateX(6deg); }
+  50%      { transform: translateY(-10px) rotateX(6deg); }
+}
+/* Amint a kártya kiemelkedik, a boríték lejjebb húzódik, hogy a lap ne
+   fusson ki a képernyő tetején. */
+[data-phase="card"] .prm-env,
+[data-phase="done"] .prm-env {
+  animation: none;
+  transform: translateY(clamp(70px, 15vh, 150px)) rotateX(6deg);
+  transition: transform 1.05s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+/* A felirat és az átugrás-link ugyanannyit csúszik, hogy a boríték ne
+   takarja ki őket. */
+.prm-env-foot { transition: transform 1.05s cubic-bezier(0.22, 0.61, 0.36, 1); }
+[data-phase="card"] .prm-env-foot,
+[data-phase="done"] .prm-env-foot { transform: translateY(clamp(70px, 15vh, 150px)); }
+.prm-env-back,
+.prm-env-front,
+.prm-env-flap {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  /* Díszítőelemek: a kinyílt fül különben elfogná a kattintást a lapon
+     lévő lekaparható mezők elől. */
+  pointer-events: none;
+}
+.prm-env-back {
+  transform: translateZ(0);
+  background: linear-gradient(150deg, #3A1E41 0%, #2A1330 45%, #4A2450 100%);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(232, 180, 212, 0.22);
+}
+/* A boríték zsebe (elülső lap) – felül V alakú kivágással */
+.prm-env-front {
+  transform: translateZ(2px);
+  background: linear-gradient(160deg, #3C1B44 0%, #2A1230 58%, #46203F 100%);
+  clip-path: polygon(0 12%, 50% 62%, 100% 12%, 100% 100%, 0 100%);
+  box-shadow: inset 0 0 0 1px rgba(232, 180, 212, 0.18);
+}
+/* A lezáró fül – kattintásra felfelé nyílik ki */
+.prm-env-flap {
+  height: 62%;
+  transform-origin: top center;
+  transform: translateZ(3px) rotateX(0deg);
+  background: linear-gradient(180deg, #6E3875 0%, #4C2454 62%, #35163B 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  box-shadow: inset 0 0 0 1px rgba(232, 180, 212, 0.22);
+  transition: transform 1.05s cubic-bezier(0.66, 0, 0.34, 1);
+}
+[data-phase="opening"] .prm-env-flap,
+[data-phase="card"] .prm-env-flap,
+[data-phase="done"] .prm-env-flap { transform: translateZ(3px) rotateX(-172deg); }
+
+/* Viaszpecsét a fül csúcsán */
+.prm-env-seal {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 5.2rem;
+  height: 5.2rem;
+  transform: translate(-50%, -50%) translateZ(6px);
+  /* szabálytalan, viaszszerű perem */
+  border-radius: 47% 53% 51% 49% / 51% 47% 53% 49%;
+  border: none;
+  cursor: pointer;
+  color: #4A1030;
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  background: radial-gradient(circle at 34% 30%, #F6DCEB 0%, #E38FC1 32%, #B44489 66%, #7E2760 100%);
+  box-shadow: 0 12px 26px -8px rgba(0, 0, 0, 0.8), inset 0 -3px 8px rgba(90, 20, 66, 0.7),
+    inset 0 3px 8px rgba(255, 255, 255, 0.45), 0 0 0 0 rgba(232, 180, 212, 0.55);
+  animation: prm-seal-pulse 2.6s ease-in-out infinite;
+  transition: transform 0.25s ease;
+}
+.prm-env-seal::after {
+  /* belső gyűrű, mint a viaszba nyomott pecsétnyomó pereme */
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: inherit;
+  border: 1px solid rgba(74, 16, 48, 0.35);
+  pointer-events: none;
+}
+.prm-env-seal:hover { transform: translate(-50%, -50%) translateZ(6px) scale(1.06); }
+@keyframes prm-seal-pulse {
+  0%, 100% { box-shadow: 0 12px 26px -8px rgba(0,0,0,0.8), inset 0 -3px 8px rgba(90,20,66,0.7), inset 0 3px 8px rgba(255,255,255,0.45), 0 0 0 0 rgba(232,180,212,0.5); }
+  60%      { box-shadow: 0 12px 26px -8px rgba(0,0,0,0.8), inset 0 -3px 8px rgba(90,20,66,0.7), inset 0 3px 8px rgba(255,255,255,0.45), 0 0 0 18px rgba(232,180,212,0); }
+}
+[data-phase="opening"] .prm-env-seal,
+[data-phase="card"] .prm-env-seal,
+[data-phase="done"] .prm-env-seal {
+  animation: prm-seal-break 0.75s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+  pointer-events: none;
+}
+@keyframes prm-seal-break {
+  0%   { transform: translate(-50%, -50%) translateZ(6px) scale(1); opacity: 1; }
+  35%  { transform: translate(-50%, -50%) translateZ(6px) scale(1.22) rotate(-8deg); opacity: 1; }
+  100% { transform: translate(-50%, -110%) translateZ(6px) scale(0.55) rotate(-34deg); opacity: 0; }
+}
+
+/* A meghívókártya – a zseb mögül emelkedik ki */
+.prm-env-card {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 6%;
+  height: 128%;
+  transform: translateZ(1px) translateY(0);
+  border-radius: 8px;
+  padding: 1.3rem 1rem 1rem;
+  text-align: center;
+  background: linear-gradient(165deg, #FDF6FA 0%, #F3E2EE 55%, #FBEFF6 100%);
+  color: #4A1B3D;
+  box-shadow: 0 24px 50px -20px rgba(0, 0, 0, 0.8);
+  transition: transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.5s ease;
+  opacity: 0;
+}
+/* Kiemelkedéskor a kártya előre is jön, így egyértelműen a kinyílt fül elé
+   kerül (a 3D-rendezés a hajtás vonalánál különben bizonytalan). */
+[data-phase="card"] .prm-env-card {
+  opacity: 1;
+  transform: translateZ(9px) translateY(-72%);
+}
+
+/* Fénykitörés a boríték szájából + forgó fénysugarak */
+.prm-env-burst {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 130%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) translateZ(5px);
+  border-radius: 9999px;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255, 240, 250, 0.95) 0%, rgba(232, 180, 212, 0.6) 26%, rgba(198, 94, 165, 0) 62%);
+}
+[data-phase="opening"] .prm-env-burst,
+[data-phase="card"] .prm-env-burst,
+[data-phase="done"] .prm-env-burst {
+  animation: prm-burst 1.9s ease-out 0.45s forwards;
+}
+@keyframes prm-burst {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translateZ(5px) scale(0.2); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) translateZ(5px) scale(1.6); }
+}
+.prm-env-rays {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 190%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) translateZ(4px);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 240, 250, 0.5) 0deg, transparent 9deg,
+    rgba(255, 240, 250, 0.32) 22deg, transparent 34deg,
+    rgba(255, 240, 250, 0.5) 52deg, transparent 62deg,
+    rgba(255, 240, 250, 0.28) 84deg, transparent 96deg,
+    rgba(255, 240, 250, 0.46) 128deg, transparent 140deg,
+    rgba(255, 240, 250, 0.3) 176deg, transparent 190deg,
+    rgba(255, 240, 250, 0.44) 232deg, transparent 244deg,
+    rgba(255, 240, 250, 0.3) 286deg, transparent 300deg,
+    rgba(255, 240, 250, 0.42) 330deg, transparent 344deg
+  );
+  mask-image: radial-gradient(circle, #000 12%, transparent 62%);
+  -webkit-mask-image: radial-gradient(circle, #000 12%, transparent 62%);
+}
+[data-phase="opening"] .prm-env-rays,
+[data-phase="card"] .prm-env-rays,
+[data-phase="done"] .prm-env-rays {
+  animation: prm-rays 2.6s ease-out 0.5s forwards;
+}
+@keyframes prm-rays {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translateZ(4px) rotate(0deg) scale(0.4); }
+  28%  { opacity: 0.95; }
+  100% { opacity: 0; transform: translate(-50%, -50%) translateZ(4px) rotate(52deg) scale(1.3); }
+}
+
+/* Végigfutó fénycsillanás a zárt borítékon */
+.prm-env-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: 10px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.prm-env-shine::after {
+  content: "";
+  position: absolute;
+  inset: -40% -60%;
+  background: linear-gradient(112deg, transparent 40%, rgba(255, 245, 252, 0.55) 50%, transparent 60%);
+  animation: prm-env-shine 4.5s ease-in-out infinite;
+}
+@keyframes prm-env-shine {
+  0%, 100% { transform: translateX(-75%); }
+  55%      { transform: translateX(75%); }
+}
+[data-phase="opening"] .prm-env-shine,
+[data-phase="card"] .prm-env-shine,
+[data-phase="done"] .prm-env-shine { opacity: 0; transition: opacity 0.4s; }
+
+/* Lebegő fénypontok a réteg hátterében */
+.prm-spark {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 244, 252, 0.95), rgba(232, 180, 212, 0) 68%);
+  animation: prm-spark-float 9s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes prm-spark-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.25; }
+  50%      { transform: translateY(-26px) scale(1.35); opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prm-root .prm-reveal { opacity: 1; transform: none; transition: none; }
+  .prm-root .prm-sketch-outline,
+  .prm-root .prm-sketch-underline { stroke-dashoffset: 0; animation: none; }
+  .prm-root .prm-sketch-fill { opacity: 1; animation: none; }
+  .prm-env,
+  .prm-env-seal,
+  .prm-env-shine::after,
+  .prm-spark { animation: none; }
+  .prm-env-flap,
+  .prm-env-card { transition: none; }
+}
+
+
+/* ── Lekaparható dátum a meghívólapon ────────────────────────────────
+   Sorsjegy-logika: a mező tartalmát egy fémes bevonat (canvas) takarja, amit
+   a látogató lesatíroz. Amíg mindhárom mező elő nem bukkan, a meghívó nem
+   nyílik meg. */
+.prm-scratch-hint {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #9A5182;
+}
+.prm-scratch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 2.9rem;
+  overflow: hidden;
+  border-radius: 7px;
+  border: 1px solid rgba(143, 54, 113, 0.28);
+  background: #FBF1F7;
+}
+.prm-scratch-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #8F3671;
+  transform: scale(0.9);
+  opacity: 0.5;
+  transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.45s ease;
+}
+.prm-scratch.is-revealed .prm-scratch-value { transform: none; opacity: 1; }
+.prm-scratch-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+  transition: opacity 0.45s ease;
+}
+.prm-scratch.is-revealed .prm-scratch-cover { opacity: 0; pointer-events: none; }
+.prm-scratch-label {
+  margin-top: 0.3rem;
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #A9709A;
+}
+.prm-scratch-skip {
+  margin-top: 0.55rem;
+  font-size: 11px;
+  color: #A9709A;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+/* ── Időegyenes a nap programjához ───────────────────────────────────
+   Középen fut a tengely, balra az időpont, jobbra az esemény. Semmi nem
+   töltődik be előre: minden sor akkor úszik be – és akkor világít ki
+   mellette a tengelyszakasz –, amikor a képernyő közepéig felér. */
+.prm-root .prm-timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.prm-root .prm-tl-item {
+  display: grid;
+  grid-template-columns: 4.4rem 1.5rem minmax(0, 1fr);
+  align-items: stretch;
+}
+/* A rácscellák tartalma ne feszítse szét az oszlopokat (grid min-width: auto) */
+.prm-root .prm-tl-time,
+.prm-root .prm-tl-axis,
+.prm-root .prm-tl-body { min-width: 0; }
+@media (min-width: 768px) {
+  .prm-root .prm-tl-item { grid-template-columns: minmax(0, 1fr) 2.4rem minmax(0, 1fr); }
+}
+
+/* Időpont – a tengely bal oldalán, jobbra zárva */
+.prm-root .prm-tl-time {
+  padding: 1.35rem 0.7rem 0 0;
+  text-align: right;
+  font-size: 1.15rem;
+  color: var(--prm-rose);
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@media (min-width: 768px) {
+  .prm-root .prm-tl-time { padding-right: 1.4rem; font-size: 1.4rem; }
+}
+.prm-root .prm-tl-item.is-in .prm-tl-time { opacity: 1; transform: none; }
+
+/* A tengely: halvány alapvonal, rajta a kivilágosodó szakasz */
+.prm-root .prm-tl-axis { position: relative; }
+.prm-root .prm-tl-axis::before,
+.prm-root .prm-tl-axis::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+}
+.prm-root .prm-tl-axis::before { background: var(--prm-line); opacity: 0.5; }
+.prm-root .prm-tl-axis::after {
+  background: linear-gradient(180deg, var(--prm-accent), var(--prm-rose));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.prm-root .prm-tl-item.is-in .prm-tl-axis::after { transform: scaleY(1); }
+/* A tengely felül és alul finoman elhal */
+.prm-root .prm-tl-item:first-child .prm-tl-axis::before,
+.prm-root .prm-tl-item:first-child .prm-tl-axis::after { top: 1.6rem; }
+.prm-root .prm-tl-item:last-child .prm-tl-axis::before,
+.prm-root .prm-tl-item:last-child .prm-tl-axis::after { bottom: 1.6rem; }
+
+.prm-root .prm-tl-dot {
+  position: absolute;
+  left: 50%;
+  top: 1.55rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-left: -0.4rem;
+  border-radius: 9999px;
+  background: var(--prm-bg);
+  border: 2px solid var(--prm-accent);
+  transform: scale(0);
+}
+.prm-root .prm-tl-item.is-in .prm-tl-dot {
+  animation: prm-dot-pop 0.55s cubic-bezier(0.34, 1.5, 0.64, 1) 0.25s both;
+}
+@keyframes prm-dot-pop {
+  0%   { transform: scale(0); box-shadow: 0 0 0 0 rgba(198, 94, 165, 0.5); }
+  70%  { transform: scale(1.25); box-shadow: 0 0 0 8px rgba(198, 94, 165, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(198, 94, 165, 0.14); }
+}
+
+/* Esemény – a tengely jobb oldalán */
+.prm-root .prm-tl-body {
+  padding: 0 0 1.1rem 0.9rem;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.65s ease 0.1s, transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) 0.1s;
+}
+@media (min-width: 768px) {
+  .prm-root .prm-tl-body { padding-left: 1.4rem; }
+}
+.prm-root .prm-tl-item.is-in .prm-tl-body { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .prm-root .prm-tl-axis::after { transform: scaleY(1); transition: none; }
+  .prm-root .prm-tl-time,
+  .prm-root .prm-tl-body { opacity: 1; transform: none; transition: none; }
+  .prm-root .prm-tl-dot { transform: scale(1); animation: none; }
 }

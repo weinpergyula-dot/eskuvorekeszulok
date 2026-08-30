@@ -169,7 +169,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
               key={`${provider.id}-${i}`}
               className="w-[calc(50vw+20px)] sm:w-[400px] flex-shrink-0"
             >
-              <ProviderCard provider={provider} nameFontSize="20px" inCarousel />
+              <ProviderCard provider={provider} inCarousel />
             </div>
           ))}
         </div>

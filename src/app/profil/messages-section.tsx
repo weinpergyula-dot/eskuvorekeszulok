@@ -188,7 +188,6 @@ function ThreadChat({
   const otherName = isOutgoing
     ? (firstMsg?.recipient_name ?? "Névtelen")
     : (otherParticipant?.sender_name ?? "Névtelen");
-  const otherProviderId = thread.otherProviderId;
 
   // ── Mark as read on mount ──────────────────────────────────────────────────
   useEffect(() => {
@@ -266,7 +265,6 @@ function ThreadChat({
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, thread.key, thread.subject, recipientId]);
 
   // ── Reply ──────────────────────────────────────────────────────────────────

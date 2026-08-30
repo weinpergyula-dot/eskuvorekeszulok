@@ -26,6 +26,14 @@ const NAV: NavEntry[] = [
   { label: "Ügyintézés", href: "#ugyfelszolgalat" },
 ];
 
+// Ügyfélszegmensek a fejléc fölötti vékony sávban. A mockup a lakossági
+// oldalt mutatja, ezért az van kiemelve; a másik kettő egyelőre placeholder.
+const SEGMENTS: { label: string; href: string; current?: boolean }[] = [
+  { label: "Lakossági", href: "#top", current: true },
+  { label: "Kisvállalkozói", href: "#" },
+  { label: "Vállalati", href: "#" },
+];
+
 function Logo() {
   return (
     <a href="#top" className="flex items-end gap-1" aria-label="Yettel főoldal">
@@ -59,9 +67,33 @@ export function YettelHeader() {
     entry.href ? isLinkActive(entry.href) : !!entry.items?.some((i) => isLinkActive(i.href));
 
   return (
-    // A fejléc maga átlátszó: a fehér sáv két lekerekített alsó sarkán mindig
-    // az látszik át, ami épp alatta gördül – így a sarkok színe automatikusan
-    // követi az aktuális szekció hátterét.
+    <>
+      {/* Szegmensválasztó: a fejléc magasságának kb. harmada, jobbra zárva.
+          Szándékosan a sticky fejlécen kívül van, így felgörgetéskor eltűnik
+          és nem eszi a helyet – a fejléc eltolásai (banner, anchor) sem
+          csúsznak el tőle. */}
+      <div className="border-b border-[#CDE0EA] bg-[#E4F2F7]">
+        <div className="mx-auto flex h-5 max-w-6xl items-center justify-end gap-4 px-4 sm:px-6">
+          {SEGMENTS.map((seg) => (
+            <a
+              key={seg.label}
+              href={seg.href}
+              aria-current={seg.current ? "page" : undefined}
+              className={`text-[11px] leading-none transition-colors ${
+                seg.current
+                  ? "font-bold text-[#002340]"
+                  : "font-medium text-[#2D466C] hover:text-[#002340]"
+              }`}
+            >
+              {seg.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+    {/* A fejléc maga átlátszó: a fehér sáv két lekerekített alsó sarkán mindig
+        az látszik át, ami épp alatta gördül – így a sarkok színe automatikusan
+        követi az aktuális szekció hátterét. */}
     <header id="top" className="sticky top-0 z-50">
       <div className="rounded-b-[24px] border-b border-[#CDE0EA] bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
@@ -198,5 +230,6 @@ export function YettelHeader() {
         )}
       </div>
     </header>
+    </>
   );
 }

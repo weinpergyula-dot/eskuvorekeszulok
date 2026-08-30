@@ -25,10 +25,10 @@ export function MobileTariffs() {
     setShowAll(false);
   };
 
-  // Drágától az olcsóig; a kijelölt szűrők együtt (ÉS kapcsolat).
+  // Olcsótól a drágáig; a kijelölt szűrők együtt (ÉS kapcsolat).
   const tariffs = [...OFFERS.havidijas]
     .filter((t) => (!filters.has("net") || t.unlimitedNet) && (!filters.has("call") || t.unlimitedCall))
-    .sort((a, b) => b.price - a.price);
+    .sort((a, b) => a.price - b.price);
 
   const chips: { key: FilterKey | "all"; label: string }[] = [
     { key: "all", label: "Összes" },

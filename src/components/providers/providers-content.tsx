@@ -2,10 +2,12 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, Star } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
+import { MeghivoPromoCard } from "./meghivo-promo-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+import { displayCount, HOUSE_CATEGORY, orderedCategories } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -156,11 +158,17 @@ function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setV
 export function ProvidersContent({
   providers,
   categoryCounts,
+  hideCategoryPills = false,
 }: {
   providers: Provider[];
   categoryCounts: Record<string, number>;
+  /** A főoldalon a kategóriaválasztás a gyorskategória-csempékről történik,
+      ezért itt sem a desktop pill-sor, sem a mobil legördülő nem jelenik meg –
+      a bevezető szöveg is csak a megyeszűrésről szól. */
+  hideCategoryPills?: boolean;
 }) {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [category, setCategory] = useState<string>(searchParams.get("category") ?? "");
   const [county, setCounty] = useState<string>(searchParams.get("county") ?? "");
   const [sortBy, setSortBy] = useState<SortOption>("default");
@@ -174,15 +182,45 @@ export function ProvidersContent({
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
   }, []);
 
+  // A főoldali gyorskategória-csempék felől érkező szűrés fogadása, és a
+  // mindenkori kategória visszajelzése a csempéknek (kiemeléshez).
+  useEffect(() => {
+    const h = (e: Event) => setCategory((e as CustomEvent<string>).detail ?? "");
+    window.addEventListener("eskuvo:set-category", h);
+    return () => window.removeEventListener("eskuvo:set-category", h);
+  }, []);
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("eskuvo:category", { detail: category }));
+  }, [category]);
+
   // Reset to first page when the result set or page size changes.
   useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize]);
 
+  /* A listázás aktuális állapota. A szűrők a címsorba is bekerülnek, és a
+     szolgáltatói kártyák linkjei is magukkal viszik – így a részletes
+     profilról a Vissza gomb pontosan ide hoz vissza. A főoldalon a lista
+     lentebb van, ezért oda horgonnyal térünk vissza. */
+  const listQuery = useMemo(() => {
+    const qs = new URLSearchParams();
+    if (category) qs.set("category", category);
+    if (county) qs.set("county", county);
+    return qs.toString();
+  }, [category, county]);
+
+  const listUrl = `${pathname}${listQuery ? `?${listQuery}` : ""}${pathname === "/" ? "#szolgaltatok" : ""}`;
+
+  useEffect(() => {
+    // Csak a query stringet írjuk át – nincs újratöltés, a görgetés sem ugrik.
+    const { pathname: path, search, hash } = window.location;
+    const next = `${path}${listQuery ? `?${listQuery}` : ""}${hash}`;
+    if (next !== `${path}${search}${hash}`) window.history.replaceState(null, "", next);
+  }, [listQuery]);
+
   const categoryOptions = useMemo(
     () =>
-      (Object.keys(CATEGORY_LABELS) as ServiceCategory[])
-        .filter((c) => (categoryCounts[c] ?? 0) > 0)
-        .sort((a, b) => (categoryCounts[b] ?? 0) - (categoryCounts[a] ?? 0))
-        .map((c) => ({ value: c, label: `${CATEGORY_LABELS[c]} (${categoryCounts[c] ?? 0})` })),
+      orderedCategories(categoryCounts)
+        .filter((c) => c === HOUSE_CATEGORY || displayCount(c, categoryCounts) > 0)
+        .map((c) => ({ value: c, label: `${CATEGORY_LABELS[c]} (${displayCount(c, categoryCounts)})` })),
     [categoryCounts],
   );
 
@@ -229,6 +267,11 @@ export function ProvidersContent({
       );
 
   const countyOptions = geoCounties.map((c) => ({ value: c, label: `${c} (${countyCounts[c] ?? 0})` }));
+
+  /* A Meghívók között a saját digitális meghívónk is ott van: a lista élére
+     kerül egy kiemelt sávként, és a darabszám is számol vele. */
+  const showHouseOffer = category === HOUSE_CATEGORY;
+  const resultCount = filtered.length + (showHouseOffer ? 1 : 0);
   const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5";
 
   // Pagination counts featured + normal together; featured stay at the front.
@@ -238,6 +281,10 @@ export function ProvidersContent({
   const pageItems = combined.slice((page - 1) * pageSize, page * pageSize);
   const pageFeatured = pageItems.filter((p) => p.featured);
   const pageNormal = pageItems.filter((p) => !p.featured);
+  /* A sáv az első oldal legelső helyén áll: ha van kiemelt szolgáltató, annak
+     a rácsában, különben a normál lista élén. */
+  const houseOfferInFeatured = showHouseOffer && page === 1 && pageFeatured.length > 0;
+  const houseOfferHere = showHouseOffer && page === 1 && pageFeatured.length === 0;
   const pageNumbers = ((): (number | "…")[] => {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
     const pages: (number | "…")[] = [1];
@@ -256,7 +303,9 @@ export function ProvidersContent({
 
   return (
     <div>
-      <p className="text-base text-gray-700 mb-5">Válassz kategóriát és szűrj megyék szerint</p>
+      <p className="text-base text-gray-700 mb-5">
+        {hideCategoryPills ? "Szűrj megyék szerint" : "Válassz kategóriát és szűrj megyék szerint"}
+      </p>
       <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
       {/* Desktop county sidebar (left, full height) */}
       <aside className="hidden lg:block lg:w-64 shrink-0">
@@ -296,20 +345,22 @@ export function ProvidersContent({
       {/* Main column */}
       <div className="flex-1 min-w-0">
         {/* Desktop category filter — all categories visible & selectable (pills). */}
-        <div className="hidden lg:flex flex-wrap gap-2 mb-5">
-          <button onClick={() => setCategory("")} className={pillCls(!category)}>Összes kategória</button>
-          {categoryOptions.map((opt) => (
-            <button key={opt.value} onClick={() => setCategory(category === opt.value ? "" : opt.value)} className={pillCls(category === opt.value)}>
-              {opt.label}
-            </button>
-          ))}
-        </div>
+        {!hideCategoryPills && (
+          <div className="hidden lg:flex flex-wrap gap-2 mb-5">
+            <button onClick={() => setCategory("")} className={pillCls(!category)}>Összes kategória</button>
+            {categoryOptions.map((opt) => (
+              <button key={opt.value} onClick={() => setCategory(category === opt.value ? "" : opt.value)} className={pillCls(category === opt.value)}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* ── Controls ── */}
         <div className="mb-6">
           {/* Desktop: count left, page size + view + sort right */}
           <div className="hidden lg:flex items-center justify-between gap-3">
-            <p className="text-lg text-gray-900">{filtered.length} szolgáltató</p>
+            <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>
             <div className="flex items-stretch gap-2">
               <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
@@ -317,9 +368,13 @@ export function ProvidersContent({
             </div>
           </div>
 
-          {/* Mobile: category (full), county (full), then view + sort + page size filling one row */}
+          {/* Mobile: county (full), then view + sort + page size filling one row.
+              A kategóriát a főoldalon a gyorskategória-csempék adják, ezért ott
+              a legördülő is elmarad. */}
           <div className="lg:hidden space-y-2">
-            <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
+            {!hideCategoryPills && (
+              <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
+            )}
             <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
             <div className="grid grid-cols-[auto_1fr_auto] items-stretch gap-2">
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
@@ -329,7 +384,7 @@ export function ProvidersContent({
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {resultCount === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
@@ -338,7 +393,7 @@ export function ProvidersContent({
         ) : (
           <>
             {/* Mobile: result count above the list */}
-            <p className="lg:hidden text-lg text-gray-900 mb-4">{filtered.length} szolgáltató</p>
+            <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>
             {/* Featured (on this page) on top */}
             {pageFeatured.length > 0 && (
               <section className="mb-6">
@@ -347,8 +402,9 @@ export function ProvidersContent({
                   Kiemelt szolgáltatók
                 </h2>
                 <div className={gridCls}>
+                  {houseOfferInFeatured && <MeghivoPromoCard listView={viewMode === "list"} />}
                   {pageFeatured.map((p) => (
-                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
+                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
                   ))}
                 </div>
               </section>
@@ -360,10 +416,11 @@ export function ProvidersContent({
               </div>
             )}
 
-            {pageNormal.length > 0 && (
+            {(pageNormal.length > 0 || houseOfferHere) && (
               <div className={gridCls}>
+                {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
                 {pageNormal.map((p) => (
-                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} />
+                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
                 ))}
               </div>
             )}
