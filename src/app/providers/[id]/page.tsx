@@ -136,9 +136,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 </div>
               </div>
             </div>
-            {/* Kategóriák középre, profilkép alá */}
+            {/* Kategóriák a fejlécsor alatt, balra zártan */}
             {(provider.categories ?? []).length > 0 && (
-              <div className="flex flex-wrap justify-center gap-1.5 mt-3">
+              <div className="flex flex-wrap gap-1.5 mt-3">
                 {(provider.categories as ServiceCategory[]).map((cat) => (
                   <span key={cat} className="text-xs font-medium px-2.5 py-1 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]">
                     {CATEGORY_LABELS[cat] ?? cat}
