@@ -6,6 +6,20 @@ import { logError } from "@/lib/log-error";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Igaz, ha a beszúrás azért bukott el, mert az image_url oszlop nincs meg a
+ * PostgREST sémagyorsítótárában – tipikusan mert a migráció még nem futott le
+ * a deploy után. A kódot (PGRST204) és a hibaszöveget is nézzük, hogy a
+ * tartalék ág akkor is lefusson, ha a kód idővel változik.
+ *
+ * A lekérdezéseknél ezért kérünk `*`-ot: azok így nem tudnak elhasalni egy új
+ * oszlopon, csak azt adják vissza, ami épp létezik.
+ */
+function isMissingImageColumn(error: { code?: string; message?: string } | null): boolean {
+  if (!error) return false;
+  return error.code === "PGRST204" || /image_url/.test(error.message ?? "");
+}
+
 // ── Visitor chat helper ───────────────────────────────────────────────────────
 
 type RawReq = { id: string; subject: string; category: string; counties: string[]; message: string; image_url: string | null; created_at: string };
@@ -14,11 +28,16 @@ type RawMsg = { id: string; quote_request_id: string; provider_id: string; sende
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetchVisitorChats(admin: any, userId: string) {
-  const { data: requests } = await admin
+  const { data: requests, error: reqError } = await admin
     .from("quote_requests")
-    .select("id, subject, category, counties, message, image_url, created_at")
+    .select("*")
     .eq("visitor_id", userId)
     .eq("deleted_by_visitor", false);
+
+  /* A hibát eddig elnyeltük, és a hívó üres listát kapott – vagyis a
+     látogató úgy látta, egyetlen ajánlatkérése sincs. Így legalább nyoma
+     marad a hibanaplóban. */
+  if (reqError) await logError("api/quote-requests GET", reqError.message, { user: userId });
 
   if (!requests || requests.length === 0) return [];
 
@@ -117,7 +136,7 @@ export async function GET() {
     const [providerRequests, visitorChats] = await Promise.all([
       Promise.all((recipients ?? []).map(async (rec) => {
         const [{ data: qr }, { data: unreadMsgs }, { data: lastMsgRows }] = await Promise.all([
-          admin.from("quote_requests").select("subject, category, counties, message, image_url, created_at, visitor_id").eq("id", rec.quote_request_id).single(),
+          admin.from("quote_requests").select("*").eq("id", rec.quote_request_id).single(),
           admin.from("quote_messages").select("id").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).neq("sender_id", user.id).eq("read", false),
           admin.from("quote_messages").select("id, sender_id, body, created_at").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).order("created_at", { ascending: false }).limit(1),
         ]);
@@ -289,11 +308,21 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const { data: qr, error: qrError } = await admin
+  const row = { visitor_id: user.id, subject, category, counties, message };
+
+  let { data: qr, error: qrError } = await admin
     .from("quote_requests")
-    .insert({ visitor_id: user.id, subject, category, counties, message, image_url: safeImageUrl })
+    .insert({ ...row, image_url: safeImageUrl })
     .select("id")
     .single();
+
+  /* Ha az image_url oszlop még nincs meg (a migráció a deploy után fut le),
+     a kérés kép nélkül is menjen el: a melléklet elvesztése kellemetlen, az
+     egész ajánlatkérésé viszont adatvesztés. A migráció után ez sosem fut. */
+  if (isMissingImageColumn(qrError)) {
+    await logError("api/quote-requests POST", "image_url oszlop hiányzik, az ajánlatkérés kép nélkül ment el (futtatandó migráció: 20260831_quote_request_image.sql)", { user: user.id, subject, category });
+    ({ data: qr, error: qrError } = await admin.from("quote_requests").insert(row).select("id").single());
+  }
 
   if (qrError || !qr) { await logError("api/quote-requests POST", qrError?.message ?? "insert returned null", { user: user.id, subject, category }); return NextResponse.json({ error: "Hiba az ajánlatkérés létrehozásakor." }, { status: 500 }); }
 

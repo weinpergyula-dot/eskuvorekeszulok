@@ -30,7 +30,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
   if (providerData && rec) {
     const [{ data: qr }, { data: messages }] = await Promise.all([
-      admin.from("quote_requests").select("id, subject, category, counties, message, image_url, created_at, visitor_id").eq("id", id).maybeSingle(),
+      admin.from("quote_requests").select("*").eq("id", id).maybeSingle(),
       admin.from("quote_messages")
         .select("id, sender_id, body, read, read_at, created_at")
         .eq("quote_request_id", id)
@@ -57,7 +57,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   // Küldői nézet: a saját ajánlatkérése, minden címzettel és üzenettel.
   const { data: qr } = await admin
     .from("quote_requests")
-    .select("id, subject, category, counties, message, image_url, created_at")
+    .select("*")
     .eq("id", id)
     .eq("visitor_id", user.id)
     .maybeSingle();
