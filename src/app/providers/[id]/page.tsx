@@ -109,7 +109,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
             </div>
             <div className="flex items-center gap-3">
               <div className="ml-1">
-                <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-16 h-16" />
+                <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-24 h-24" />
               </div>
               <div className="flex-1 min-w-0 pr-10">
                 <h1 className="font-bold text-gray-900 text-[18px] leading-snug truncate">
@@ -134,23 +134,26 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                     <span className="text-sm text-gray-500">({reviewCount})</span>
                   )}
                 </div>
+                {/* Kategóriák az értékelés alatt, a névvel egy vonalban. A
+                    -mr-10 visszaveszi a jobb oldali bélést: az csak a felső
+                    sarokban ülő megosztás gombnak kell, itt lejjebb üres a
+                    hely, így a címkék egy sorban maradnak. */}
+                {(provider.categories ?? []).length > 0 && (
+                  <div className="-mr-10 flex flex-wrap gap-1.5 mt-2">
+                    {(provider.categories as ServiceCategory[]).map((cat) => (
+                      <span key={cat} className="text-xs font-medium px-2.5 py-1 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]">
+                        {CATEGORY_LABELS[cat] ?? cat}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-            {/* Kategóriák a fejlécsor alatt, balra zártan */}
-            {(provider.categories ?? []).length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {(provider.categories as ServiceCategory[]).map((cat) => (
-                  <span key={cat} className="text-xs font-medium px-2.5 py-1 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]">
-                    {CATEGORY_LABELS[cat] ?? cat}
-                  </span>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* ── Desktop: eredeti elrendezés ── */}
           <div className="hidden sm:flex px-8 py-10 flex-row gap-6 items-start">
-            <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-28 h-28" />
+            <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-36 h-36" />
             <div className="flex-1 text-left">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                 {provider.full_name}
@@ -182,6 +185,16 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                   {viewCount} megtekintés
                 </span>
               </div>
+              {/* Kategóriák az értékelés alatt – mobilon és weben egyformán */}
+              {(provider.categories ?? []).length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {(provider.categories as ServiceCategory[]).map((cat) => (
+                    <span key={cat} className="text-xs font-medium px-2.5 py-1 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]">
+                      {CATEGORY_LABELS[cat] ?? cat}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

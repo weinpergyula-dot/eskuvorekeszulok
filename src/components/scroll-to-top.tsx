@@ -18,7 +18,13 @@ export function ScrollToTop() {
         if (cancelled) return;
         const el = document.getElementById(decodeURIComponent(hash));
         if (el) { el.scrollIntoView({ behavior: "instant", block: "start" }); return; }
-        if (tries++ < 30) requestAnimationFrame(go);
+        if (tries++ < 30) { requestAnimationFrame(go); return; }
+        /* A megcímzett elem nem került elő (pl. a kártya a listázás másik
+           oldalán van): ilyenkor a listázás elejére, végső soron a lap
+           tetejére állunk. */
+        const list = document.getElementById("szolgaltatok");
+        if (list) list.scrollIntoView({ behavior: "instant", block: "start" });
+        else window.scrollTo({ top: 0, behavior: "instant" });
       };
       go();
       return () => { cancelled = true; };

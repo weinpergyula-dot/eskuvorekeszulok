@@ -27,9 +27,15 @@ interface ProviderCardProps {
 }
 
 export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, inCarousel = false, listView = false, backTo }: ProviderCardProps) {
-  /* A profil linkje magával viszi, hova vezessen onnan a Vissza gomb. */
-  const detailHref = backTo
-    ? `/providers/${provider.id}?from=${encodeURIComponent(backTo)}`
+  /* A profil linkje magával viszi, hova vezessen onnan a Vissza gomb: a
+     listázás címét a szűrőivel együtt, de a lista teteje helyett erre a
+     kártyára mutató horgonnyal – így a látogató oda tér vissza, ahonnan
+     elindult. A horgony csak a listázásból nyíló kártyákon van (a
+     karusszel és a saját profil előnézete nem küld `backTo`-t). */
+  const anchorId = backTo ? `provider-${provider.id}` : undefined;
+  const backHref = backTo ? `${backTo.replace(/#.*$/, "")}#${anchorId}` : undefined;
+  const detailHref = backHref
+    ? `/providers/${provider.id}?from=${encodeURIComponent(backHref)}`
     : `/providers/${provider.id}`;
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
@@ -71,7 +77,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
     return (
-      <div className={cn("flex items-center gap-3 bg-[#FCFCFC] rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", tc.borderBase, tc.borderHover)}>
+      <div id={anchorId} className={cn("flex items-center gap-3 scroll-mt-24 bg-[#FCFCFC] rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", tc.borderBase, tc.borderHover)}>
         {/* Avatar */}
         <button
           type="button"
@@ -171,7 +177,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const headerBg = provider.featured === "gold" ? "#FFFBEB" : provider.featured === "silver" ? "#F8FAFC" : provider.featured === "teal" ? "#EDF4F3" : "#F0F6F5";
 
   return (
-    <div className={cn("relative h-full", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
+    <div id={anchorId} className={cn("relative h-full scroll-mt-24", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
       {showFeaturedBadge && (
         <span className={cn(
           "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
