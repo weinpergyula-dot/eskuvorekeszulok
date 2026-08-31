@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 // ── Visitor chat helper ───────────────────────────────────────────────────────
 
-type RawReq = { id: string; subject: string; category: string; counties: string[]; message: string; created_at: string };
+type RawReq = { id: string; subject: string; category: string; counties: string[]; message: string; image_url: string | null; created_at: string };
 type RawRec = { id: string; quote_request_id: string; provider_id: string; provider_user_id: string };
 type RawMsg = { id: string; quote_request_id: string; provider_id: string; sender_id: string; body: string; read: boolean; created_at: string };
 
@@ -16,7 +16,7 @@ type RawMsg = { id: string; quote_request_id: string; provider_id: string; sende
 async function fetchVisitorChats(admin: any, userId: string) {
   const { data: requests } = await admin
     .from("quote_requests")
-    .select("id, subject, category, counties, message, created_at")
+    .select("id, subject, category, counties, message, image_url, created_at")
     .eq("visitor_id", userId)
     .eq("deleted_by_visitor", false);
 
@@ -81,6 +81,7 @@ async function fetchVisitorChats(admin: any, userId: string) {
       category: req?.category ?? "",
       counties: req?.counties ?? [],
       message: req?.message ?? "",
+      image_url: req?.image_url ?? null,
       provider_id: rec.provider_id,
       provider_full_name: profileMap.get(rec.provider_user_id) ?? "Ismeretlen",
       provider_avatar_url: providerAvatarMap.get(rec.provider_id) ?? null,
@@ -116,7 +117,7 @@ export async function GET() {
     const [providerRequests, visitorChats] = await Promise.all([
       Promise.all((recipients ?? []).map(async (rec) => {
         const [{ data: qr }, { data: unreadMsgs }, { data: lastMsgRows }] = await Promise.all([
-          admin.from("quote_requests").select("subject, category, counties, message, created_at, visitor_id").eq("id", rec.quote_request_id).single(),
+          admin.from("quote_requests").select("subject, category, counties, message, image_url, created_at, visitor_id").eq("id", rec.quote_request_id).single(),
           admin.from("quote_messages").select("id").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).neq("sender_id", user.id).eq("read", false),
           admin.from("quote_messages").select("id, sender_id, body, created_at").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).order("created_at", { ascending: false }).limit(1),
         ]);
@@ -130,6 +131,7 @@ export async function GET() {
           category: qr?.category ?? "",
           counties: qr?.counties ?? [],
           message: qr?.message ?? "",
+          image_url: qr?.image_url ?? null,
           created_at: qr?.created_at ?? rec.created_at,
           read: rec.read,
           visitor_name: visitorProfile?.full_name || "Ismeretlen látogató",
@@ -242,14 +244,30 @@ async function findHouseProvider(admin: any): Promise<{ provider: HouseProvider 
   };
 }
 
+/**
+ * A csatolt kép hivatkozását a kliens küldi, ezért csak a saját Supabase
+ * tárhelyünkre mutató, nyilvános URL-t fogadunk el – így nem lehet idegen
+ * (követő vagy kártékony) címet becsempészni a chatbe.
+ */
+function ownStorageUrl(value: unknown): string | null {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/+$/, "");
+  if (!base) return null;
+  return value.startsWith(`${base}/storage/v1/object/public/`) ? value : null;
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { subject, category, counties, message, selectedProviderIds, houseOnly } = await request.json();
+  const { subject, category, counties, message, selectedProviderIds, houseOnly, imageUrl } = await request.json();
   if (!subject?.trim() || !category || !counties?.length || !message?.trim())
     return NextResponse.json({ error: "Hiányzó mezők." }, { status: 400 });
+
+  // A csatolt kép csak az általános ajánlatkéréshez tartozik – a meghívósnál
+  // nincs feltöltés, ezért ott a hivatkozást akkor sem vesszük át, ha megjön.
+  const safeImageUrl = houseOnly ? null : ownStorageUrl(imageUrl);
 
   const admin = createAdminClient();
 
@@ -273,7 +291,7 @@ export async function POST(request: NextRequest) {
 
   const { data: qr, error: qrError } = await admin
     .from("quote_requests")
-    .insert({ visitor_id: user.id, subject, category, counties, message })
+    .insert({ visitor_id: user.id, subject, category, counties, message, image_url: safeImageUrl })
     .select("id")
     .single();
 

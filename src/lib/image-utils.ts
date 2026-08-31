@@ -79,6 +79,9 @@ export async function compressImage(
  *
  * Use this only for thumbnail display sizes — full-size lightboxes should
  * use the original URL directly.
+ *
+ * A minőség fixen 75: a Next 16 csak az `images.qualities` listán szereplő
+ * értékeket engedi, ami beállítás nélkül épp `[75]` – bármi más 400-at ad.
  */
 export function optimizedImageUrl(
   url: string | null | undefined,
@@ -87,7 +90,7 @@ export function optimizedImageUrl(
   if (!url) return "";
   // Skip non-storage URLs and already-optimized URLs
   if (!url.includes("supabase") || url.startsWith("/_next/image")) return url;
-  return `/_next/image?url=${encodeURIComponent(url)}&w=${nextImageWidth(displayWidth)}&q=80`;
+  return `/_next/image?url=${encodeURIComponent(url)}&w=${nextImageWidth(displayWidth)}&q=75`;
 }
 
 /** Round up to the nearest Next.js allowed image width (deviceSizes / imageSizes). */
