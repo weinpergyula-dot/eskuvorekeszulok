@@ -6,6 +6,7 @@ export type ServiceCategory =
   | "fotosok-videosok"
   | "elo-zene-dj"
   | "vofely"
+  | "szertartasvezeto"
   | "torta-sutemeny"
   | "menyasszonyi-ruha"
   | "oltonya-szmoking"
@@ -116,6 +117,7 @@ export const CATEGORY_LABELS: Record<ServiceCategory, string> = {
   "fotosok-videosok": "Fotósok, Videósok",
   "elo-zene-dj": "Élőzene, DJ",
   vofely: "Vőfélyek, Ceremóniamesterek",
+  szertartasvezeto: "Szertartásvezetők",
   "torta-sutemeny": "Torták, Sütemények",
   "menyasszonyi-ruha": "Menyasszonyi ruhák",
   "oltonya-szmoking": "Öltönyök, Szmoking",
@@ -139,6 +141,7 @@ export const CATEGORY_ICONS: Record<ServiceCategory, string> = {
   "fotosok-videosok": "📷",
   "elo-zene-dj": "🎵",
   vofely: "🎤",
+  szertartasvezeto: "💒",
   "torta-sutemeny": "🎂",
   "menyasszonyi-ruha": "👗",
   "oltonya-szmoking": "🤵",
@@ -165,6 +168,8 @@ export const CATEGORY_SEO_DESCRIPTIONS: Record<ServiceCategory, string> = {
     "Élőzene vagy DJ – a tökéletes hangulat a legjobb zenén múlik. Esküvői zenekarok, szólisták és DJ-k széles választékából találhatod meg azt, aki igazán táncra perdíti a vendégeket. Nézz körül kínálatunkban, és foglald le a nagy nap hangulatfelelősét!",
   vofely:
     "A vőfély és a ceremóniamester a lakodalom lelke: ő vezeti végig a ceremóniát, tartja a hangulatot és gondoskodik arról, hogy minden a tervek szerint menjen. Tapasztalt vőfélyeink és ceremóniamestereink Magyarország-szerte vállalnak esküvőket – keresd meg azt, aki a legjobban illik az elképzeléseitekhez.",
+  szertartasvezeto:
+    "A szertartásvezető a ceremónia hangja: veletek együtt írja meg a szertartás szövegét, és úgy vezeti végig az esküt, hogy az rólatok szóljon. Polgári és szimbolikus szertartásokhoz egyaránt találsz nálunk szertartásvezetőt az ország egész területén – nézd meg az ajánlatokat, és válaszd azt, akinek a stílusa a tiétekhez illik.",
   "torta-sutemeny":
     "Az esküvői torta nemcsak finomság, hanem az ünnep egyik legszebb dísze is. Egyedi tervezésű, kézzel készített esküvői torták és sütemények széles kínálatából választhatsz: romantikustól a modernig, kis csapatnak és nagy lagzira egyaránt. Találd meg az álomcukrászodat nálunk!",
   "menyasszonyi-ruha":
@@ -217,9 +222,16 @@ export const CATEGORY_SYNONYMS: Record<ServiceCategory, string[]> = {
   ],
   vofely: [
     "ceremóniamester", "mc", "műsorvezető", "konferanszié", "vőfej",
-    "szertartásvezető", "köszöntő", "tósztmester", "lagzi vezető", "lagzi",
-    "esküvővezető", "esküvői műsorvezető", "rendezvényvezető", "host",
+    "köszöntő", "tósztmester", "lagzi vezető", "lagzi",
+    "esküvői műsorvezető", "rendezvényvezető", "host",
     "ünnepi köszöntő", "versek", "rigmusok", "humor", "szórakoztató",
+  ],
+  szertartasvezeto: [
+    "szertartásvezető", "anyakönyvvezető", "celebráns", "esküvővezető",
+    "polgári szertartás", "szimbolikus szertartás", "kézfogó", "eskü",
+    "esküszöveg", "fogadalom", "gyűrűváltás", "ceremónia", "szertartás",
+    "esküvői szertartás", "szabadtéri szertartás", "kétnyelvű szertartás",
+    "celebrant", "officiant",
   ],
   "torta-sutemeny": [
     "cukrász", "süti", "tortakészítő", "cukrászda", "édességek", "desszert",
@@ -350,6 +362,7 @@ export const CATEGORY_DESCRIPTIONS: Record<ServiceCategory, string> = {
   "fotosok-videosok": "Örök emlékek minden pillanatból.",
   "elo-zene-dj": "A jó zene mindenkit táncra perdít.",
   vofely: "Tökéletes nap, profi kezekben.",
+  szertartasvezeto: "A ti szavaitokkal, a ti szertartásotok.",
   "torta-sutemeny": "Ettől lesz igazán édes a napotok.",
   "menyasszonyi-ruha": "Az álomruha, ami csak rád vár.",
   "oltonya-szmoking": "Az elegancia döntés kérdése.",
