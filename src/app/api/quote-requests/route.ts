@@ -356,33 +356,58 @@ export async function POST(request: NextRequest) {
   }
   const { data: allProviders } = await providersQuery;
 
-  const seenUserIds = new Set<string>();
-  const uniqueProviders = (allProviders ?? []).filter((p) => {
-    if (!p.user_id || seenUserIds.has(p.user_id)) return false;
-    seenUserIds.add(p.user_id);
-    return true;
-  });
+  const hasSelection = Array.isArray(selectedProviderIds) && selectedProviderIds.length > 0;
 
-  const targetProviders = Array.isArray(selectedProviderIds) && selectedProviderIds.length > 0
-    ? uniqueProviders.filter((p) => selectedProviderIds.includes(p.id))
-    : uniqueProviders;
+  /* Ha a látogató név szerint kijelölte a címzetteket, pontosan azokat a
+     sorokat vesszük. Az azonos user_id-jű duplikátumok kiszűrése csak akkor
+     kell, ha mindenkinek megy: a lekérdezésen nincs rendezés, ezért a szűrés
+     más sort tarthat meg, mint amit a címzettválasztó mutatott – így a
+     kijelölt szolgáltató kieshetne a listából. */
+  const targetProviders = hasSelection
+    ? (allProviders ?? []).filter((p) => p.user_id && selectedProviderIds.includes(p.id))
+    : (() => {
+        const seenUserIds = new Set<string>();
+        return (allProviders ?? []).filter((p) => {
+          if (!p.user_id || seenUserIds.has(p.user_id)) return false;
+          seenUserIds.add(p.user_id);
+          return true;
+        });
+      })();
 
-  let insertedCount = 0;
-  if (targetProviders.length > 0) {
-    const results = await Promise.allSettled(
-      targetProviders.map((p) =>
-        admin.from("quote_request_recipients").insert({
-          quote_request_id: qr.id,
-          provider_id: p.id,
-          provider_user_id: p.user_id,
-        })
-      )
+  if (hasSelection && targetProviders.length === 0) {
+    await logError("api/quote-requests POST", "a kijelölt szolgáltatók egyike sem szerepel a találatok közt", { user: user.id, category, counties, selectedProviderIds });
+  }
+
+  /* A supabase-js adatbázishibánál nem dob kivételt, hanem `error`-ral tér
+     vissza – a Promise tehát akkor is "fulfilled", ha a beszúrás elhasalt.
+     Ezért a hibát külön kell megnézni, különben a hívó sikert lát, közben
+     egyetlen címzett sem jött létre, és a naplóban sincs nyoma. */
+  const results = await Promise.all(
+    targetProviders.map(async (p) => {
+      const { error } = await admin.from("quote_request_recipients").insert({
+        quote_request_id: qr.id,
+        provider_id: p.id,
+        provider_user_id: p.user_id,
+      });
+      if (error) await logError("api/quote-requests POST", `címzett beszúrása sikertelen: ${error.message}`, { quoteRequestId: qr.id, provider_id: p.id });
+      return { provider: p, ok: !error };
+    })
+  );
+
+  const delivered = results.filter((r) => r.ok).map((r) => r.provider);
+
+  /* Címzett nélkül az ajánlatkérés sehol nem látszik – sem a küldőnél, sem a
+     szolgáltatónál –, ezért ilyenkor ne mondjunk sikert. */
+  if (delivered.length === 0) {
+    await logError("api/quote-requests POST", "az ajánlatkérés egyetlen címzetthez sem jutott el", { quoteRequestId: qr.id, user: user.id, category, targets: targetProviders.length });
+    return NextResponse.json(
+      { error: "Az ajánlatkérés egyetlen szolgáltatóhoz sem jutott el. Kérlek, próbáld újra, vagy jelezd nekünk!" },
+      { status: 500 },
     );
-    insertedCount = results.filter((r) => r.status === "fulfilled").length;
   }
 
   const origin = request.nextUrl.origin;
-  for (const p of targetProviders) {
+  for (const p of delivered) {
     if (p.user_id) {
       notifyNewQuoteRequest({
         providerUserId: p.user_id,
@@ -395,5 +420,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ id: qr.id, recipient_count: insertedCount });
+  return NextResponse.json({ id: qr.id, recipient_count: delivered.length });
 }
