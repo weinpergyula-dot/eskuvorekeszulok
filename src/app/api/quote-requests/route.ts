@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyNewQuoteRequest } from "@/lib/notifications";
 import { logError } from "@/lib/log-error";
+import { filterReachableProviders } from "@/lib/quote-recipients";
 
 export const dynamic = "force-dynamic";
 
@@ -347,7 +348,7 @@ export async function POST(request: NextRequest) {
   const nationwide = Array.isArray(counties) && counties.includes("Országosan");
   let providersQuery = admin
     .from("providers")
-    .select("id, user_id")
+    .select("id, user_id, full_name")
     .eq("approval_status", "approved")
     .or("active.is.null,active.eq.true")
     .contains("categories", [category]);
@@ -363,7 +364,7 @@ export async function POST(request: NextRequest) {
      kell, ha mindenkinek megy: a lekérdezésen nincs rendezés, ezért a szűrés
      más sort tarthat meg, mint amit a címzettválasztó mutatott – így a
      kijelölt szolgáltató kieshetne a listából. */
-  const targetProviders = hasSelection
+  const selectedProviders = hasSelection
     ? (allProviders ?? []).filter((p) => p.user_id && selectedProviderIds.includes(p.id))
     : (() => {
         const seenUserIds = new Set<string>();
@@ -374,8 +375,13 @@ export async function POST(request: NextRequest) {
         });
       })();
 
+  /* Akinek nincs profilja, annak a címzett sora idegenkulcs-hibára fut, és az
+     egész ajánlatkérés láthatatlan marad. Inkább kihagyjuk – a többiekhez így
+     is eljut –, a hiányt pedig a helper naplózza. */
+  const targetProviders = await filterReachableProviders(admin, selectedProviders, "api/quote-requests POST");
+
   if (hasSelection && targetProviders.length === 0) {
-    await logError("api/quote-requests POST", "a kijelölt szolgáltatók egyike sem szerepel a találatok közt", { user: user.id, category, counties, selectedProviderIds });
+    await logError("api/quote-requests POST", "a kijelölt szolgáltatók egyike sem tud ajánlatkérést fogadni", { user: user.id, category, counties, selectedProviderIds });
   }
 
   /* A supabase-js adatbázishibánál nem dob kivételt, hanem `error`-ral tér

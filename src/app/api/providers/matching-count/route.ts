@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { filterReachableProviders } from "@/lib/quote-recipients";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -26,7 +27,10 @@ export async function GET(request: NextRequest) {
       seen.add(key);
       return true;
     });
-    return NextResponse.json({ providers: unique });
+    /* Csak az számít bele, aki ajánlatkérést is tud fogadni – különben a
+       megyénkénti szám többet ígérne, mint ahány címzett valóban elérhető. */
+    const reachable = await filterReachableProviders(admin, unique, "api/providers/matching-count", false);
+    return NextResponse.json({ providers: reachable });
   }
 
   const counties = countiesParam.split(",").filter(Boolean);
@@ -58,8 +62,13 @@ export async function GET(request: NextRequest) {
     return true;
   });
 
+  /* A címzettválasztó csak olyat kínálhat fel, akinek a címzett sora
+     létre is jön – lásd filterReachableProviders. */
+  const reachable = await filterReachableProviders(admin, unique, "api/providers/matching-count", false);
+  if (reachable.length === 0) return NextResponse.json({ providers: [] });
+
   // Fetch reviews for these providers and compute live average (same as listing page)
-  const providerIds = unique.map((p) => p.id);
+  const providerIds = reachable.map((p) => p.id);
   const { data: reviews } = await admin
     .from("reviews")
     .select("provider_id, rating")
@@ -82,7 +91,7 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.json({
-    providers: unique.map((p) => {
+    providers: reachable.map((p) => {
       const agg = ratingMap.get(p.id);
       const avg = agg && agg.count > 0 ? Math.round((agg.sum / agg.count) * 10) / 10 : null;
       return {
