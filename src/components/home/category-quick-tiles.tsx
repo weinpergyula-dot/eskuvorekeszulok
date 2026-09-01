@@ -36,8 +36,9 @@ import { cn } from "@/lib/utils";
  * gyorskategória-sávjának mintájára. A csempék egyben szűrnek is: kattintásra
  * eseményt küldenek a ProvidersContent-nek, ami a listát szűri (és vissza is
  * jelez, így a kiemelés akkor is követi a szűrőt, ha azt máshol állítják át).
- * Első csempe: Összes; utolsó: Még több, ami lefelé nyitja ki a maradék
- * kategóriát.
+ * Első csempe: Összes. Összecsukott állapotban az utolsó a "Még több", ami
+ * lefelé nyitja ki a maradék kategóriát; kibontva a helyére is kategória
+ * kerül, a "Kevesebb" pedig a sor legvégére.
  */
 
 const TILE_ICONS: Record<ServiceCategory, LucideIcon> = {
@@ -138,13 +139,10 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
           onClick={() => select(c)}
         />
       ))}
-      <Tile
-        icon={expanded ? Minus : Plus}
-        label={expanded ? "Kevesebb" : "Még több"}
-        onClick={() => setExpanded((v) => !v)}
-      />
-      {expanded && (
+      {expanded ? (
         <>
+          {/* Kibontva a "Még több" helyét is kategória foglalja el, hogy ne
+              maradjon lyuk a rácsban – a bezárás a legutolsó csempe. */}
           {rest.map((c) => (
             <Tile
               key={c}
@@ -155,9 +153,10 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
               onClick={() => select(c)}
             />
           ))}
-          {/* A kibontott lista végén is zárható */}
           <Tile icon={Minus} label="Kevesebb" onClick={() => setExpanded(false)} />
         </>
+      ) : (
+        <Tile icon={Plus} label="Még több" onClick={() => setExpanded(true)} />
       )}
     </div>
   );

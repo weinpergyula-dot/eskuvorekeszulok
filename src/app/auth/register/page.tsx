@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { PageHeader } from "@/components/layout/page-header";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { UserRound, Briefcase, ImagePlus, X, CheckCircle2, Link2Off, ArrowLeft, FileText } from "lucide-react";
+import { UserRound, Briefcase, ImagePlus, X, CheckCircle2, Link2Off, ArrowLeft, ChevronRight, FileText, type LucideIcon } from "lucide-react";
 import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils"
 
 function GoogleIcon({ size = 18 }: { size?: number }) {
@@ -25,6 +25,68 @@ function GoogleIcon({ size = 18 }: { size?: number }) {
     </svg>
   );
 }
+
+/**
+ * Fióktípus-választó kártya. Ugyanez a két kártya jelenik meg a sima
+ * regisztráció elején és a Google-fiókkal érkezőknél is.
+ *
+ * Mobilon szándékosan alacsony, vízszintes sor: korábban két magas kártya
+ * állt egymás alatt, és a szolgáltatói a hajtás alá esett – volt, aki észre
+ * sem vette, hogy egyáltalán van ilyen. Így mindkettő látszik nyitáskor; a
+ * részletes felsorolás sm-től jön elő, ahol elfér.
+ */
+function RoleCard({
+  icon: Icon,
+  title,
+  subtitle,
+  summary,
+  benefits,
+  onClick,
+}: {
+  icon: LucideIcon;
+  title: string;
+  subtitle: string;
+  summary: string;
+  benefits: string[];
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group flex w-full items-center gap-4 rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-[#84AAA6] hover:shadow-md sm:flex-col sm:items-start sm:gap-0 sm:p-6"
+    >
+      <Icon className="h-9 w-9 shrink-0 text-[#84AAA6] sm:mb-3 sm:h-10 sm:w-10" strokeWidth={1.5} />
+      <span className="min-w-0 flex-1 sm:w-full sm:flex-none">
+        <span className="block text-lg font-semibold text-gray-900 group-hover:text-[#84AAA6] sm:mb-0.5 sm:text-xl">{title}</span>
+        <span className="block text-sm text-gray-400 sm:mb-4">{subtitle}</span>
+        <span className="mt-0.5 block text-sm text-gray-700 sm:hidden">{summary}</span>
+        <span className="hidden sm:block">
+          {benefits.map((b) => (
+            <span key={b} className="mt-2 flex items-start gap-2 text-sm text-gray-700">
+              <span className="shrink-0 font-bold text-[#84AAA6]">✓</span> {b}
+            </span>
+          ))}
+        </span>
+      </span>
+      <ChevronRight className="h-5 w-5 shrink-0 text-[#84AAA6] sm:hidden" strokeWidth={2} />
+    </button>
+  );
+}
+
+const VISITOR_BENEFITS = [
+  "Kedvencnek jelölni szolgáltatókat",
+  "Csoportos vagy egyéni ajánlatot kérni",
+  "Chatelni a kiválasztott szakemberrel",
+  "Értékelni, tapasztalatokat megosztani",
+];
+
+const PROVIDER_BENEFITS = [
+  "Ingyenes szolgáltatói profilt létrehozni",
+  "Ajánlatkéréseket fogadni a pároktól",
+  "Chatelni az érdeklődő párokkal",
+  "Értékeléseket kapni, válaszolni rájuk",
+];
 
 type Step = "role" | "basic" | "provider-details";
 
@@ -566,7 +628,7 @@ function RegisterContent() {
     return (
       <div>
         <PageHeader icon={UserRound} title="Regisztráció" description="Google fiókod össze van kötve. Válaszd ki, milyen fiókot szeretnél létrehozni." bgColor="#84AAA6" />
-        <div className="flex items-center justify-center py-12 px-4">
+        <div className="flex items-center justify-center px-4 py-6 sm:py-12">
           <div className="w-full max-w-2xl">
             <div className="flex items-center gap-3 px-4 py-3 bg-green-50 border border-green-200 rounded-xl mb-6">
               <GoogleIcon size={20} />
@@ -575,42 +637,24 @@ function RegisterContent() {
                 <p className="text-sm text-green-700">{email}</p>
               </div>
             </div>
-            <p className="text-gray-900 text-center mb-6" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
+            <p className="mb-5 text-center text-lg text-gray-900 sm:mb-6 sm:text-[22px]">Melyik típusú fiókot szeretnéd létrehozni?</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button
+              <RoleCard
+                icon={UserRound}
+                title="Látogató"
+                subtitle="Ingyenes fiók"
+                summary="Ajánlatkérés, kedvencek, chat, értékelés"
+                benefits={VISITOR_BENEFITS}
                 onClick={() => { setRole("visitor"); setPrefillRoleSelect(false); setStep("basic"); }}
-                className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
-              >
-                <UserRound className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
-                <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Látogató</span>
-                <span className="text-sm text-gray-400 mb-4">Ingyenes fiók</span>
-                <ul className="space-y-2 text-sm text-gray-700 flex-1">
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Kedvencnek jelölni szolgáltatókat</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos vagy egyéni ajánlatot kérni</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Chatelni a kiválasztott szakemberrel</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékelni, tapasztalatokat megosztani</li>
-                </ul>
-                <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
-                  Regisztrálok
-                </span>
-              </button>
-              <button
+              />
+              <RoleCard
+                icon={Briefcase}
+                title="Szolgáltató"
+                subtitle="Ingyenes profil"
+                summary="Saját profil, ajánlatkérések, chat"
+                benefits={PROVIDER_BENEFITS}
                 onClick={() => { setRole("provider"); setPrefillRoleSelect(false); setStep("basic"); }}
-                className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
-              >
-                <Briefcase className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
-                <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Szolgáltató</span>
-                <span className="text-sm text-gray-400 mb-4">Ingyenes profil</span>
-                <ul className="space-y-2 text-sm text-gray-700 flex-1">
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ingyenes szolgáltatói profilt létrehozni</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkéréseket fogadni a pároktól</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Chatelni az érdeklődő párokkal</li>
-                  <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékeléseket kapni, válaszolni rájuk</li>
-                </ul>
-                <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
-                  Regisztrálok
-                </span>
-              </button>
+              />
             </div>
           </div>
         </div>
@@ -623,45 +667,27 @@ function RegisterContent() {
     return (
       <div>
         <PageHeader icon={UserRound} title="Regisztráció" description="Csatlakozz az Esküvőre Készülök közösséghez – látogatóként vagy szolgáltatóként, ingyenesen." bgColor="#84AAA6" />
-        <div className="flex items-center justify-center py-12 px-4">
+        <div className="flex items-center justify-center px-4 py-6 sm:py-12">
         <div className="w-full max-w-2xl">
-          <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Melyik típusú fiókot szeretnéd létrehozni?</p>
+          <p className="mb-5 text-center text-lg text-gray-900 sm:mb-8 sm:text-[22px]">Melyik típusú fiókot szeretnéd létrehozni?</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            <button
-              onClick={() => { setRole("visitor"); setStep("basic"); router.replace("/auth/register?type=visitor"); }}
-              className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
-            >
-              <UserRound className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
-              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Látogató</span>
-              <span className="text-sm text-gray-400 mb-4">Ingyenes fiók</span>
-              <ul className="space-y-2 text-sm text-gray-700 flex-1">
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Kedvencnek jelölni szolgáltatókat</li>
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Csoportos vagy egyéni ajánlatot kérni</li>
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Chatelni a kiválasztott szakemberrel</li>
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékelni, tapasztalatokat megosztani</li>
-              </ul>
-              <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
-                Regisztrálok
-              </span>
-            </button>
-            <button
-              onClick={() => { setRole("provider"); setStep("basic"); router.replace("/auth/register?type=provider"); }}
-              className="flex flex-col items-start p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#84AAA6] hover:shadow-md transition-all group text-left"
-            >
-              <Briefcase className="h-10 w-10 mb-3 text-[#84AAA6]" strokeWidth={1.5} />
-              <span className="font-semibold text-gray-900 group-hover:text-[#84AAA6] text-xl mb-0.5">Szolgáltató</span>
-              <span className="text-sm text-gray-400 mb-4">Ingyenes profil</span>
-              <ul className="space-y-2 text-sm text-gray-700 flex-1">
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ingyenes szolgáltatói profilt létrehozni</li>
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Ajánlatkéréseket fogadni a pároktól</li>
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Chatelni az érdeklődő párokkal</li>
-                <li className="flex items-start gap-2"><span className="text-[#84AAA6] font-bold shrink-0">✓</span> Értékeléseket kapni, válaszolni rájuk</li>
-              </ul>
-              <span className="sm:hidden mt-4 w-full text-center py-2 border border-[#84AAA6] rounded-lg text-[#84AAA6] font-semibold block">
-                Regisztrálok
-              </span>
-            </button>
+            <RoleCard
+                icon={UserRound}
+                title="Látogató"
+                subtitle="Ingyenes fiók"
+                summary="Ajánlatkérés, kedvencek, chat, értékelés"
+                benefits={VISITOR_BENEFITS}
+                onClick={() => { setRole("visitor"); setStep("basic"); router.replace("/auth/register?type=visitor"); }}
+              />
+            <RoleCard
+                icon={Briefcase}
+                title="Szolgáltató"
+                subtitle="Ingyenes profil"
+                summary="Saját profil, ajánlatkérések, chat"
+                benefits={PROVIDER_BENEFITS}
+                onClick={() => { setRole("provider"); setStep("basic"); router.replace("/auth/register?type=provider"); }}
+              />
           </div>
 
           <p className="text-center text-lg text-gray-900 mt-4">
