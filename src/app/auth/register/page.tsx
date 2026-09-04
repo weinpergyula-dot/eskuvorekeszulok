@@ -164,12 +164,63 @@ function PillSelect<T extends string>({
   );
 }
 
+const NETWORK_ERROR_MESSAGE = "A kapcsolat megszakadt a szerverrel. Ellenőrizd az internetkapcsolatod, és próbáld újra.";
+
+/**
+ * Recognises the browser-specific wording for "the request never reached the
+ * server": Chrome says "Failed to fetch", Safari "Load failed", Firefox
+ * "NetworkError when attempting to fetch resource". These are worth retrying;
+ * a validation or conflict answer from the server is not.
+ */
+function isTransientError(err: unknown): boolean {
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  return (
+    msg.includes("failed to fetch") ||
+    msg.includes("load failed") ||
+    msg.includes("loading failed") ||
+    msg.includes("networkerror") ||
+    msg.includes("network error") ||
+    msg.includes("network request failed") ||
+    msg.includes("fetch failed") ||
+    msg.includes("connection") ||
+    msg.includes("timeout") ||
+    msg.includes("timed out")
+  );
+}
+
+/**
+ * Runs `fn` again — with a short, growing pause — when it fails on a dropped
+ * connection. Every step of the registration is a separate round-trip, so on a
+ * patchy mobile network a single hiccup used to abort the whole form.
+ * Each step is idempotent server-side, so a repeat is safe.
+ */
+async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastError = err;
+      if (attempt === attempts - 1 || !isTransientError(err)) throw err;
+      await new Promise((resolve) => setTimeout(resolve, 800 * 2 ** attempt));
+    }
+  }
+  throw lastError;
+}
+
 function translateError(msg: string): string {
-  if (msg.includes("User already registered") || msg.includes("already registered")) return "Ez az e-mail cím már regisztrálva van.";
+  const lower = msg.toLowerCase();
+  if (lower.includes("already registered") || lower.includes("already been registered")) return "Ez az e-mail cím már regisztrálva van.";
   if (msg.includes("Password should be at least")) return "A jelszónak legalább 6 karakter hosszúnak kell lennie.";
   if (msg.includes("Unable to validate email address") || msg.includes("Invalid email")) return "Érvénytelen e-mail cím.";
-  if (msg.includes("rate limit") || msg.includes("too many")) return "Túl sok próbálkozás. Kérjük, várj egy kicsit.";
-  if (msg.toLowerCase().includes("failed to fetch") || msg.toLowerCase().includes("network") || msg.toLowerCase().includes("fetch")) return "A szerver átmenetileg nem elérhető. Kérjük, próbáld újra néhány perc múlva.";
+  if (lower.includes("rate limit") || lower.includes("too many")) return "Túl sok próbálkozás. Kérjük, várj egy kicsit.";
+  if (lower.includes("resource already exists") || lower.includes("duplicate")) {
+    if (lower.includes("providers_user_id")) return "Ehhez a fiókhoz már tartozik szolgáltatói profil. Nézd meg a Profilom oldalon!";
+    return "A feltöltött fájl mentése nem sikerült. Kérjük, próbáld újra.";
+  }
+  if (lower.includes("payload too large") || lower.includes("entity too large")) return "A feltöltött fájl túl nagy. Válassz kisebb képet!";
+  if (isTransientError(msg)) return NETWORK_ERROR_MESSAGE;
+  if (lower.includes("fetch")) return NETWORK_ERROR_MESSAGE;
   return msg;
 }
 
@@ -409,14 +460,23 @@ function RegisterContent() {
     router.replace(`/auth/register?type=${role}`);
   };
 
-  const uploadFile = async (file: File, bucket: string, path: string) => {
-    const result = await getSignedUploadUrlAction(bucket, path);
-    if ("error" in result) throw new Error(result.error);
-    const { error } = await supabase.storage.from(bucket).uploadToSignedUrl(result.path, result.token, file);
-    if (error) throw error;
-    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-    return data.publicUrl;
-  };
+  /**
+   * A regisztráció fix útvonalakra tölt fel, ezért felülírásra (upsert) megy:
+   * egy megismételt próbálkozás így nem ütközik a már ott lévő fájllal.
+   * A publikus URL cache-törő paramétert kap, hogy a felülírt kép ne a
+   * korábbi, CDN-ben ragadt változatával jelenjen meg.
+   */
+  const uploadFile = (file: File, bucket: string, path: string) =>
+    withRetry(async () => {
+      const result = await getSignedUploadUrlAction(bucket, path);
+      if ("error" in result) throw new Error(result.error);
+      const { error } = await supabase.storage
+        .from(bucket)
+        .uploadToSignedUrl(result.path, result.token, file, { upsert: true });
+      if (error) throw error;
+      const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+      return `${data.publicUrl}?v=${Date.now()}`;
+    });
 
   const handleBasicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -440,6 +500,7 @@ function RegisterContent() {
     if (!supabase) { setError("Supabase nincs konfigurálva."); return; }
     setLoading(true);
     setError(null);
+    let alreadyLogged = false;
 
     try {
       // ── OAuth prefill flow: user signed in via Google, just finalise registration ──
@@ -453,7 +514,7 @@ function RegisterContent() {
             galleryUrls.push(await uploadFile(galleryFiles[i], "gallery", `${oauthUserId}/gallery-${i}`));
           }
           if (pricingPdfFile) pricingPdfUrl = await uploadFile(pricingPdfFile, "avatars", `${oauthUserId}/pricing/pricing.pdf`);
-          const { error: providerError } = await createProviderProfileAction(oauthUserId, {
+          const { error: providerError } = await withRetry(() => createProviderProfileAction(oauthUserId, {
             full_name: providerDisplayName,
             email,
             phone,
@@ -466,17 +527,17 @@ function RegisterContent() {
             gallery_urls: galleryUrls,
             pricing_text: pricingText || null,
             pricing_pdf_url: pricingPdfUrl,
-          });
+          }));
           if (providerError) throw new Error(providerError);
           // createProviderProfileAction handles TOS; also update role + metadata
-          await updateOAuthProfileAction(oauthUserId, fullName, "provider");
+          await withRetry(() => updateOAuthProfileAction(oauthUserId, fullName, "provider"));
         } else {
-          const { error: oauthError } = await updateOAuthProfileAction(oauthUserId, fullName, "visitor");
+          const { error: oauthError } = await withRetry(() => updateOAuthProfileAction(oauthUserId, fullName, "visitor"));
           if (oauthError) throw new Error(oauthError);
           if (visitorAvatarFile) {
             try {
               const avatarUrl = await uploadFile(visitorAvatarFile, "avatars", `${oauthUserId}/visitor-avatar`);
-              await setProfileAvatarAction(oauthUserId, avatarUrl);
+              await withRetry(() => setProfileAvatarAction(oauthUserId, avatarUrl));
             } catch {
               // non-fatal
             }
@@ -500,37 +561,46 @@ function RegisterContent() {
         }
         if (pricingPdfFile) upgradePricingPdfUrl = await uploadFile(pricingPdfFile, "avatars", `${currentUser.id}/pricing/pricing.pdf`);
 
-        const { error: providerError } = await supabase.from("providers").insert({
-          user_id: currentUser.id,
-          full_name: fullName,
-          email: currentUser.email,
-          phone,
-          counties,
-          categories,
-          description,
-          detailed_description: detailedDescription || null,
-          website: website || null,
-          avatar_url: avatarUrl || null,
-          gallery_urls: galleryUrls,
-          pricing_text: pricingText || null,
-          pricing_pdf_url: upgradePricingPdfUrl,
-          approval_status: "pending",
-          featured: null,
+        // upsert: a providers.user_id egyedi, így egy megismételt próbálkozás
+        // (pl. megszakadt hálózat után) frissít, nem egyedi-kulcs hibára fut.
+        // A supabase kliens a hálózati hibát is `error`-ként adja vissza dobás
+        // helyett, ezért itt dobjuk el — így látja az újrapróbálkozás.
+        await withRetry(async () => {
+          const { error: providerError } = await supabase.from("providers").upsert({
+            user_id: currentUser.id,
+            full_name: fullName,
+            email: currentUser.email,
+            phone,
+            counties,
+            categories,
+            description,
+            detailed_description: detailedDescription || null,
+            website: website || null,
+            avatar_url: avatarUrl || null,
+            gallery_urls: galleryUrls,
+            pricing_text: pricingText || null,
+            pricing_pdf_url: upgradePricingPdfUrl,
+            approval_status: "pending",
+            featured: null,
+          }, { onConflict: "user_id" });
+          if (providerError) throw providerError;
         });
-        if (providerError) throw providerError;
 
-        await supabase.auth.updateUser({ data: { role: "provider" } });
+        await withRetry(async () => {
+          const { error: roleError } = await supabase.auth.updateUser({ data: { role: "provider" } });
+          if (roleError) throw roleError;
+        });
         router.push("/auth/register/success?provider=true");
         return;
       }
 
       // Normal registration flow – Supabase creates the user (email sending disabled on Supabase)
-      const { userId: newUserId, error: signUpError } = await signUpAction(
+      const { userId: newUserId, error: signUpError } = await withRetry(() => signUpAction(
         email,
         password,
         `${window.location.origin}/auth/callback`,
         { full_name: fullName, role }
-      );
+      ));
 
       if (signUpError) throw new Error(signUpError);
       if (!newUserId) throw new Error("Ismeretlen hiba történt.");
@@ -553,7 +623,7 @@ function RegisterContent() {
             newPricingPdfUrl = await uploadFile(pricingPdfFile, "avatars", `${newUserId}/pricing/pricing.pdf`);
           }
 
-          const { error: providerError } = await createProviderProfileAction(newUserId, {
+          const { error: providerError } = await withRetry(() => createProviderProfileAction(newUserId, {
             full_name: providerDisplayName,
             email,
             phone,
@@ -566,31 +636,44 @@ function RegisterContent() {
             gallery_urls: galleryUrls,
             pricing_text: pricingText || null,
             pricing_pdf_url: newPricingPdfUrl,
-          });
+          }));
           if (providerError) throw new Error(providerError);
 
-          const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
+          const { error: confirmError } = await withRetry(
+            () => sendConfirmationEmailAction(email, fullName, window.location.origin),
+            2, // két levél kevésbé zavaró, mint egy elakadt regisztráció
+          );
           if (confirmError) throw new Error(confirmError);
         } catch (innerErr) {
           const msg = innerErr instanceof Error ? innerErr.message : String(innerErr);
-          await logError("registration/provider", msg, { email });
-          await deleteUserAction(newUserId);
+          // A visszagörgetés hibája ne nyomja el az eredeti okot. Ha a törlés
+          // nem sikerül, a megerősítetlen fiókot az újbóli regisztráció átveszi.
+          try {
+            await logError("registration/provider", msg, { email });
+            alreadyLogged = true;
+            await withRetry(() => deleteUserAction(newUserId));
+          } catch (rollbackErr) {
+            console.error("[register] visszagörgetés sikertelen:", rollbackErr);
+          }
           throw innerErr;
         }
       } else {
-        const { error: tosError } = await acceptTosAction(newUserId);
+        const { error: tosError } = await withRetry(() => acceptTosAction(newUserId));
         if (tosError) throw new Error(tosError);
 
         if (visitorAvatarFile) {
           try {
             const avatarUrl = await uploadFile(visitorAvatarFile, "avatars", `${newUserId}/visitor-avatar`);
-            await setProfileAvatarAction(newUserId, avatarUrl);
+            await withRetry(() => setProfileAvatarAction(newUserId, avatarUrl));
           } catch {
             // non-fatal — avatar upload failure does not block registration
           }
         }
 
-        const { error: confirmError } = await sendConfirmationEmailAction(email, fullName, window.location.origin);
+        const { error: confirmError } = await withRetry(
+          () => sendConfirmationEmailAction(email, fullName, window.location.origin),
+          2, // két levél kevésbé zavaró, mint egy elakadt regisztráció
+        );
         if (confirmError) throw new Error(confirmError);
       }
 
@@ -601,6 +684,17 @@ function RegisterContent() {
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Hiba történt a regisztráció során.";
+      if (!alreadyLogged) {
+        // Hogy az adminban látszódjon, min bukott el élesben egy regisztráció.
+        try {
+          await logError(`registration/${role}`, msg, {
+            email,
+            mode: prefillMode ? "oauth" : isUpgrade ? "upgrade" : "password",
+          });
+        } catch {
+          // a naplózás sosem nyomhatja el a felhasználónak szánt hibaüzenetet
+        }
+      }
       setError(translateError(msg));
     } finally {
       setLoading(false);

@@ -16,7 +16,16 @@ export async function GET(request: NextRequest) {
       .maybeSingle();
 
     if (error) throw error;
-    return NextResponse.json({ exists: !!data });
+    if (!data) return NextResponse.json({ exists: false });
+
+    // Egy soha meg nem erősített fiók félbemaradt regisztráció: nem lehet vele
+    // belépni, és az újbóli regisztráció átveszi (lásd signUpAction). Ezért nem
+    // jelezzük foglaltnak – különben a felhasználó végleg kizárná magát.
+    const { data: existing } = await adminClient.auth.admin.getUserById(data.user_id);
+    const user = existing?.user;
+    const confirmed = !!(user?.email_confirmed_at || user?.confirmed_at);
+
+    return NextResponse.json({ exists: confirmed });
   } catch (e) {
     return NextResponse.json({ exists: false, error: String(e) }, { status: 500 });
   }
