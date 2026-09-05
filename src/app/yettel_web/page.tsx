@@ -15,6 +15,7 @@ import {
 import { OffersExplorer } from "./_components/offers-explorer";
 import { CategoryTiles } from "./_components/category-tiles";
 import { HeroSlides } from "./_components/hero-slides";
+import { HeroBanners } from "./_components/hero-banners";
 import { YettelHeader } from "./_components/yettel-header";
 import { YettelFooter } from "./_components/yettel-footer";
 import { InternetFlow, TvFlow } from "./_components/internet-flow";
@@ -58,9 +59,16 @@ export default function YettelWebPage() {
       <YettelHeader />
 
       <main>
-        {/* ── Banner / hero – közvetlenül a fejléc alatt (diavetítés, saját
-            háttérrel és a lekerekített alsó sarkokkal: lásd HeroSlides) ── */}
-        <HeroSlides />
+        {/* ── Banner / hero – közvetlenül a fejléc alatt ──────────────────
+            Mobilon a Yettel Prime kampánybannerek futnak (négyzetes kreatív,
+            lásd HeroBanners), md-től a szélesvásznú diavetítés (HeroSlides).
+            A váltás CSS-sel történik, hogy ne legyen hidratálási villanás. */}
+        <div className="md:hidden">
+          <HeroBanners />
+        </div>
+        <div className="hidden md:block">
+          <HeroSlides />
+        </div>
 
         {/* ── Üdvözlő + gyors kategóriák (animált, mozgó sötétkék gradient sáv) ──────
             Az alsó extra térköz alá csúszik be az ajánlatok szekció, hogy annak

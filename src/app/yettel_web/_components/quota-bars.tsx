@@ -1,6 +1,6 @@
 "use client";
 
-import { PhoneCall, Globe, Plane, Tv, MonitorPlay, PlayCircle, type LucideIcon } from "lucide-react";
+import { Tv, MonitorPlay, PlayCircle, type LucideIcon } from "lucide-react";
 import { type Offer } from "../_data/offers";
 
 // Egy sávdiagramos keret-sor (ikon + felirat + érték + arányos sáv).
@@ -29,38 +29,6 @@ function QuotaBars({ rows }: { rows: QuotaRow[] }) {
       ))}
     </div>
   );
-}
-
-// Grafikus keret-kijelző mobil tarifához: Hívás / Net / Roaming.
-export function MobileQuotas({ offer }: { offer: Offer }) {
-  const callUnlimited = !!offer.unlimitedCall;
-  const dataUnlimited = !!offer.unlimitedNet;
-  const callNum = parseInt(offer.voiceLabel ?? "", 10);
-  const dataNum = parseInt(offer.dataLabel ?? "", 10);
-  const roam = offer.roamingGb ?? 0;
-
-  const rows: QuotaRow[] = [
-    {
-      icon: PhoneCall,
-      label: "Hívás",
-      value: callUnlimited ? "Korlátlan" : `${callNum} perc`,
-      pct: callUnlimited ? 1 : Math.min(callNum / 300, 1),
-    },
-    {
-      icon: Globe,
-      label: "Net",
-      value: dataUnlimited ? "Korlátlan" : `${dataNum} GB`,
-      pct: dataUnlimited ? 1 : Math.min(dataNum / 100, 1),
-    },
-    {
-      icon: Plane,
-      label: "Roaming",
-      value: `${roam} GB`,
-      pct: Math.min(roam / 120, 1),
-    },
-  ];
-
-  return <QuotaBars rows={rows} />;
 }
 
 // Grafikus keret-kijelző TV csomaghoz: teljes csatornaszám / HD csatornaszám,
