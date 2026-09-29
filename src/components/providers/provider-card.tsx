@@ -9,6 +9,12 @@ import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
 
+/* Galéria-csík: fix pixelméretek, hogy a Safari ne az aspect-ratio / lusta
+   betöltés alapján számolja utólag a sáv szélességét (az iOS 27 óta ettől
+   üres maradt, illetve ugrált a sebessége). */
+const GALLERY_THUMB_W = 112; // 84px magas, 4:3
+const GALLERY_MIN_ROUND_W = 640; // legszélesebb kártyánál is szélesebb
+const GALLERY_SPEED_PX_S = 16;
 
 interface ProviderCardProps {
   provider: Provider;
@@ -53,6 +59,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const viewCount = provider.view_count ?? 0;
   const galleryUrls = provider.gallery_urls ?? [];
   const hasGallery = galleryUrls.length > 0;
+  /* A csík egy „köre” legalább a kártya szélességét lefedi (kevés kép esetén
+     ismételjük a sort), különben a végtelenített mozgásnál fehér rés látszik.
+     A kör kétszer szerepel, így -50%-nál varratmentesen ugrik vissza. */
+  const galleryRound: string[] = [];
+  if (galleryUrls.length > 1) {
+    while (galleryRound.length * GALLERY_THUMB_W < GALLERY_MIN_ROUND_W) galleryRound.push(...galleryUrls);
+  }
+  const galleryLoop = [...galleryRound, ...galleryRound];
 
   // Keyboard navigation for gallery lightbox
   useEffect(() => {
@@ -362,22 +376,22 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </button>
           ) : (
             <div
-              className="flex"
+              className="gallery-strip-track flex"
               style={{
-                width: "max-content",
-                animation: `carousel-scroll ${galleryUrls.length * 5 + 10}s linear infinite`,
+                width: `${galleryLoop.length * GALLERY_THUMB_W}px`,
+                animationDuration: `${(galleryLoop.length / 2) * GALLERY_THUMB_W / GALLERY_SPEED_PX_S}s`,
               }}
             >
-              {[...galleryUrls, ...galleryUrls].map((url, i) => (
+              {galleryLoop.map((url, i) => (
                 <button
                   key={i}
                   type="button"
                   className="h-[84px] flex-shrink-0 overflow-hidden focus:outline-none px-[2.5px] py-[5px]"
-                  style={{ aspectRatio: "4/3" }}
+                  style={{ width: `${GALLERY_THUMB_W}px` }}
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="w-full h-full object-cover" draggable={false} loading="lazy" />
+                  <img src={url} alt="" className="block w-full h-full object-cover" draggable={false} decoding="async" />
                 </button>
               ))}
             </div>

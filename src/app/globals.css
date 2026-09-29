@@ -248,6 +248,25 @@ html.a11y-underline a { text-decoration: underline !important; }
   animation: carousel-scroll 35s linear infinite;
 }
 
+/* Szolgáltatói kártyák galéria-csíkja (a hossz inline, a képszámból) */
+@keyframes gallery-strip-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+.gallery-strip-track {
+  animation-name: gallery-strip-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-strip-track { animation-play-state: paused; }
+}
+
 /* ── Yettel bemutató oldal (/yettel_web) ──────────────── */
 /* A Yettel lime + navy dizájnrendszere (a /yettel_light_asis alapján). */
 /* Felülírja az esküvős oldal serif (BloomSpeak) betűit és színeit. */
