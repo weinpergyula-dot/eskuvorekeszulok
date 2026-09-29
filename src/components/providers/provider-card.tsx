@@ -67,6 +67,64 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     while (galleryRound.length * GALLERY_THUMB_W < GALLERY_MIN_ROUND_W) galleryRound.push(...galleryUrls);
   }
   const galleryLoop = [...galleryRound, ...galleryRound];
+  const galleryHalfW = (galleryLoop.length / 2) * GALLERY_THUMB_W;
+  const galleryDuration = galleryHalfW / GALLERY_SPEED_PX_S;
+
+  /* Érintéssel (és egérrel) csúsztatható galéria-csík. Húzás közben az
+     animáció áll, elengedéskor onnan folytatódik, ahol a sáv van. A
+     függőleges mozdulat az oldal görgetése marad (touch-action: pan-y). */
+  const stripTrackRef = useRef<HTMLDivElement>(null);
+  const stripDrag = useRef<{ id: number; x: number; y: number; startX: number; dx: number; active: boolean } | null>(null);
+  const stripSuppressClick = useRef(false);
+
+  const stripCurrentX = (): number => {
+    const track = stripTrackRef.current;
+    if (!track) return 0;
+    return new DOMMatrix(window.getComputedStyle(track).transform).m41;
+  };
+
+  const stripResume = (x: number) => {
+    const track = stripTrackRef.current;
+    if (!track || galleryHalfW <= 0) return;
+    let nx = x % galleryHalfW;
+    if (nx > 0) nx -= galleryHalfW;
+    const progress = -nx / galleryHalfW;
+    track.style.transform = "";
+    track.style.animation = `gallery-strip-scroll ${galleryDuration}s ${(-progress * galleryDuration).toFixed(3)}s linear infinite`;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) track.style.animationPlayState = "paused";
+  };
+
+  const onStripPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    stripSuppressClick.current = false;
+    stripDrag.current = { id: e.pointerId, x: e.clientX, y: e.clientY, startX: stripCurrentX(), dx: 0, active: false };
+  };
+
+  const onStripPointerMove = (e: React.PointerEvent) => {
+    const drag = stripDrag.current;
+    const track = stripTrackRef.current;
+    if (!drag || drag.id !== e.pointerId || !track) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    if (!drag.active) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      if (Math.abs(dy) > Math.abs(dx)) { stripDrag.current = null; return; }
+      drag.active = true;
+      stripSuppressClick.current = true;
+      drag.startX = stripCurrentX();
+      track.style.animation = "none";
+      try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
+    }
+    drag.dx = dx;
+    track.style.transform = `translate3d(${drag.startX + dx}px, 0, 0)`;
+  };
+
+  const onStripPointerEnd = (e: React.PointerEvent) => {
+    const drag = stripDrag.current;
+    if (!drag || drag.id !== e.pointerId) return;
+    stripDrag.current = null;
+    if (drag.active) stripResume(drag.startX + drag.dx);
+  };
 
   // Keyboard navigation for gallery lightbox
   useEffect(() => {
@@ -364,7 +422,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── Gallery strip — slowly scrolling right→left (non-carousel only) */}
       {hasGallery && !inCarousel && (
-        <div className="overflow-hidden border-t border-b border-gray-200" style={{ height: "84px", backgroundColor: "white" }}>
+        <div
+          className={cn("overflow-hidden border-t border-b border-gray-200", galleryUrls.length > 1 && "select-none")}
+          style={{ height: "84px", backgroundColor: "white", touchAction: galleryUrls.length > 1 ? "pan-y" : undefined }}
+          onPointerDown={galleryUrls.length > 1 ? onStripPointerDown : undefined}
+          onPointerMove={galleryUrls.length > 1 ? onStripPointerMove : undefined}
+          onPointerUp={galleryUrls.length > 1 ? onStripPointerEnd : undefined}
+          onPointerCancel={galleryUrls.length > 1 ? onStripPointerEnd : undefined}
+          onClickCapture={(e) => {
+            if (stripSuppressClick.current) { e.preventDefault(); e.stopPropagation(); stripSuppressClick.current = false; }
+          }}
+        >
           {galleryUrls.length === 1 ? (
             <button
               type="button"
@@ -376,10 +444,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </button>
           ) : (
             <div
+              ref={stripTrackRef}
               className="gallery-strip-track flex"
               style={{
                 width: `${galleryLoop.length * GALLERY_THUMB_W}px`,
-                animationDuration: `${(galleryLoop.length / 2) * GALLERY_THUMB_W / GALLERY_SPEED_PX_S}s`,
+                animationDuration: `${galleryDuration}s`,
               }}
             >
               {galleryLoop.map((url, i) => (
