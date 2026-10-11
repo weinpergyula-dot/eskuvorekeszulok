@@ -329,7 +329,7 @@ export function HeroCarousel() {
       >
         <div
           className={`max-w-[54%] self-center md:max-w-none ${
-            silver ? "md:-translate-y-8 md:translate-x-10" : "hero-text-col pb-48 md:self-auto md:pb-10"
+            silver ? "md:-translate-y-8 md:translate-x-10" : "md:self-auto md:pb-10"
           }`}
         >
           {/* A cím és a leírás a képre kerül, ha átfednek */}
@@ -376,13 +376,11 @@ export function HeroCarousel() {
             )}
           </div>
 
-          {/* A kiemelt ajánlat – csak a 2. dián. Kis telefonon kiemeljük a
-              szövegfolyamból: a banner bal alsó sarkába kerül, a jobbra
-              igazított képre lógva (z-10 miatt a kép fölött). A nagyobb
-              telefonokon (380px-től) és weben (md-től) visszatér a szöveg
-              alá, különben elszakadna a címtől a magas banner alján. */}
+          {/* A kiemelt ajánlat – csak a 2. dián. Mindig közvetlenül az alcím
+              alatt áll; mobilon szélesebb a szövegoszlopnál, így ha odaér,
+              rálóg a jobbra igazított képre (z-10 miatt a kép előtt). */}
           {!silver && (
-            <div className="hero-offer-card absolute bottom-12 left-4 z-10 w-[13.5rem] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
+            <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
               {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
                   ajánlat és alatta a csomagok felsorolása */}
               <p

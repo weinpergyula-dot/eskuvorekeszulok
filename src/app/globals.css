@@ -1200,9 +1200,8 @@ html.a11y-underline a { text-decoration: underline !important; }
 /* A 2. dia (digitális meghívók) a közepes és nagy telefonokon:
    – a főcím még egy lépcsővel nagyobb (a rövidebb alapméret miatt itt
      több hely marad, mint az 1. dián),
-   (Az ajánlat "üvegkerete" mobilon minden méretben a banner alján, a
-   vetítésvezérlő fölött áll, és rálóghat a telefon képére – a szöveg
-   hossza így nem tolja el.) */
+   (Az ajánlat "üvegkerete" mobilon minden méretben közvetlenül az alcím
+   alatt áll, és ha odaér, rálóghat a telefon képére.) */
 @media (min-width: 380px) and (max-width: 639px) {
   .hero-title-boost {
     font-size: calc(var(--hero-title-base) * var(--hero-grow) * 1.2);
