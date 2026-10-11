@@ -54,23 +54,23 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           }}
           onChange={handleChange}
           className={cn(
-            "w-full border rounded-xl px-4 outline-none transition-colors bg-white",
-            compact ? "h-12 text-sm" : "h-14 text-base",
+            "ios-glass-field w-full rounded-xl px-4 outline-none",
+            /* A címke a mezőn belül, felül ül (iOS-stílus), ezért a szöveg
+               lejjebb kezdődik. */
+            compact ? "h-12 text-sm pt-3.5" : "h-14 text-base pt-4",
             isPassword && "pr-11",
-            !focused && "border-gray-300",
             className
           )}
-          style={{ borderColor: focused ? accentColor : undefined }}
           placeholder=""
           {...props}
         />
         <label
           htmlFor={id}
           className={cn(
-            "absolute left-4 pointer-events-none transition-all duration-150 bg-white -translate-y-1/2",
+            "absolute left-4 pointer-events-none transition-all duration-150",
             compact
-              ? floated ? `top-0 text-xs px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 text-sm text-gray-400"
-              : floated ? `top-0 text-sm px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 text-base text-gray-400"
+              ? floated ? `top-1.5 text-[11px] ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 -translate-y-1/2 text-sm text-gray-400"
+              : floated ? `top-2 text-xs ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 -translate-y-1/2 text-base text-gray-400"
           )}
           style={{ color: focused ? accentColor : undefined }}
         >
@@ -118,22 +118,20 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
           onFocus={(e) => { setFocused(true); onFocus?.(e); }}
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
           className={cn(
-            "w-full border rounded-xl px-4 outline-none transition-colors bg-white resize-none",
+            "ios-glass-field w-full rounded-xl px-4 outline-none resize-none",
             compact ? "pt-5 pb-2 text-sm" : "pt-6 pb-2 text-base",
-            !focused && "border-gray-300",
             className
           )}
-          style={{ borderColor: focused ? accentColor : undefined }}
           placeholder=""
           {...props}
         />
         <label
           htmlFor={id}
           className={cn(
-            "absolute left-4 pointer-events-none transition-all duration-150 bg-white",
+            "absolute left-4 pointer-events-none transition-all duration-150",
             compact
-              ? floated ? `-top-2 text-[10px] px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-3.5 text-sm text-gray-400"
-              : floated ? `-top-2.5 text-xs px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-4 text-base text-gray-400"
+              ? floated ? `top-1.5 text-[10px] ${focused ? "" : "text-[#84AAA6]"}` : "top-3.5 text-sm text-gray-400"
+              : floated ? `top-2 text-xs ${focused ? "" : "text-[#84AAA6]"}` : "top-4 text-base text-gray-400"
           )}
           style={{ color: focused ? accentColor : undefined }}
         >
