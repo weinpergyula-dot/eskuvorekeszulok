@@ -170,7 +170,7 @@ function Phone({ src, alt, className = "" }: { src: string; alt: string; classNa
       <div className="hero-phone-face rounded-[1.5rem] bg-gray-900 p-1.5 shadow-[0_30px_55px_-20px_rgba(20,45,42,0.85)] ring-1 ring-white/20">
         <div className="relative overflow-hidden rounded-[1.15rem] bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={src} alt={alt} width={390} height={844} className="block h-auto w-full" />
+          <img src={src} alt={alt} width={390} height={844} decoding="sync" className="block h-auto w-full" />
           <span
             className="absolute left-1/2 top-1.5 h-2.5 w-11 -translate-x-1/2 rounded-full bg-gray-900"
             aria-hidden
@@ -301,6 +301,18 @@ export function HeroCarousel() {
         </>
       )}
       <span aria-hidden className="hero-sheen" />
+
+      {/* Diaváltáskor a dia (a képekkel együtt) újra létrejön. Az iOS Safari
+          a már nem használt kép dekódolt változatát eldobja, és az új
+          elemnél újra dekódolja – addig a kép helye üres, a szöveg után
+          villan be. Ezért a banner összes képe láthatatlanul végig az
+          oldalon marad, a dián lévő képek pedig szinkron dekódolódnak. */}
+      <div aria-hidden className="pointer-events-none absolute left-0 top-0 h-px w-px overflow-hidden opacity-0">
+        {["/hero-bride-cut.webp", ...HERO_PHONE_IMAGES].map((src) => (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img key={src} src={src} alt="" decoding="sync" />
+        ))}
+      </div>
 
       {/* A dia teljes tartalma egyben úszik be jobbról – a szöveg, az ajánlat
           és a kép együtt mozog, így semmi nem ugrál külön. A vetítésvezérlő
@@ -451,6 +463,7 @@ export function HeroCarousel() {
                 src="/hero-bride-cut.webp"
                 alt={slide.alt}
                 fetchPriority="high"
+                decoding="sync"
                 className={`absolute bottom-0 block w-auto max-w-none object-contain object-bottom ${
                   silver
                     ? "right-0 h-[98vw] md:inset-x-0 md:mx-auto md:h-full"
