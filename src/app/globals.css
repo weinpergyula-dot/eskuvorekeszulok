@@ -1158,6 +1158,13 @@ html.a11y-underline a { text-decoration: underline !important; }
     min-height: calc(100vh - var(--hero-top) - 1.5rem - 1px);
     /* A ténylegesen látható terület (a böngésző címsorával együtt) */
     min-height: calc(100svh - var(--hero-top) - 1.5rem - 1px);
+    /* Magas telefonon viszont nem töltjük ki az egészet: a menyasszony
+       feje fölött csak egy kis sáv marad (a kép 98vw magas, mobilon
+       --hero-art-grow-szor felnagyítva). */
+    min-height: min(
+      calc(100svh - var(--hero-top) - 1.5rem - 1px),
+      calc(98vw * var(--hero-art-grow) + 2.5rem)
+    );
   }
 }
 
