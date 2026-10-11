@@ -14,12 +14,11 @@ export function GroupQuoteCta() {
     <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
       <div className="chat-composer-glass relative isolate overflow-hidden px-5 py-6 sm:px-7 sm:py-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-          <div className="flex items-start gap-4">
-            {/* Figyelemfelhívó ikon: teli teal kör halvány teal gyűrűvel,
-                mobilon is. */}
+          <div className="flex flex-col items-center gap-3 text-center sm:flex-1">
+            {/* Figyelemfelhívó ikon: teli teal kör, a szöveg fölött középen. */}
             <span
               aria-hidden
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#84AAA6] shadow-[0_0_0_6px_rgba(132,170,166,0.18)]"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#84AAA6]"
             >
               <Send className="h-5 w-5 text-white" strokeWidth={2} />
             </span>
@@ -28,8 +27,7 @@ export function GroupQuoteCta() {
                 Nem akarsz egyesével ajánlatot kérni?
               </h2>
               <p className="mt-1.5 text-base leading-relaxed text-gray-800">
-                Küldj egyetlen ajánlatkérést az általad választott szolgáltatóknak –
-                ők pedig itt, az oldalon válaszolnak.
+                Küldj egyetlen ajánlatkérést az általad választott szolgáltatóknak.
               </p>
             </div>
           </div>
