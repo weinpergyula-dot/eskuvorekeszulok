@@ -327,6 +327,14 @@ export function HeroCarousel() {
                 weben egymás mellett. A színek mindkét méretben azonosak. */}
             {slide.secondaryCta && (
               <div className="mt-5 flex w-fit flex-col gap-2.5 md:mt-8 md:w-auto md:flex-row md:items-start md:gap-3">
+                {loggedIn === false && (
+                  <Link
+                    href="/auth/register"
+                    className={`${CTA_SIZE} border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10`}
+                  >
+                    Regisztráció
+                  </Link>
+                )}
                 <Link
                   href={offer.href}
                   onClick={(e) => scrollToAnchor(e, offer.href)}
@@ -337,14 +345,6 @@ export function HeroCarousel() {
                   {/* Az 1. dián a gomb lefelé, a kategóriákhoz gördít */}
                   <ArrowDown className="h-4 w-4" />
                 </Link>
-                {loggedIn === false && (
-                  <Link
-                    href="/auth/register"
-                    className={`${CTA_SIZE} border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10`}
-                  >
-                    Regisztráció
-                  </Link>
-                )}
               </div>
             )}
           </div>
