@@ -206,13 +206,29 @@ export function ProvidersContent({
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   /* Lapváltáskor a lista tetejére ugrunk, hogy az új oldal az elejétől
-     látszódjon (a lapozó a lista alján van). */
+     látszódjon (a lapozó a lista alján van). A görgetés csak az új oldal
+     kirajzolása után indul: ha a kártyák cseréje előtt kezdődne, a lap
+     magasságának változása az iOS Safarin félbeszakítaná. */
   const listTopRef = useRef<HTMLDivElement>(null);
+  const scrollToListTop = useRef(false);
   const goToPage = (n: number) => {
+    scrollToListTop.current = true;
     setCurrentPage(n);
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    listTopRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   };
+  useEffect(() => {
+    if (!scrollToListTop.current) return;
+    scrollToListTop.current = false;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const frame = requestAnimationFrame(() => {
+      const el = listTopRef.current;
+      if (!el) return;
+      /* A scroll-mt-24 helyett itt számolunk: a scrollIntoView a Safarin a
+         ragadós fejléc alá is bebújhat. */
+      const top = el.getBoundingClientRect().top + window.scrollY - 96;
+      window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [currentPage]);
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
