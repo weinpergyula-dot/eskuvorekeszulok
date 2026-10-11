@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft, Mail, Trash2, Info } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS } from "@/lib/types";
-import { ChatComposer } from "@/components/chat/chat-composer";
+import { ChatComposer, COMPOSER_SCROLL_PAD } from "@/components/chat/chat-composer";
 
 interface Message {
   id: string;
@@ -421,7 +421,7 @@ function ThreadChat({
       </div>
 
       {/* Messages */}
-      <div ref={messagesContainer} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4 bg-gray-50">
+      <div ref={messagesContainer} className={`flex-1 min-h-0 overflow-y-auto px-4 pt-5 space-y-4 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
         {localMessages.map((msg) =>
           isSystemMsg(msg.body) ? (
             <div key={msg.id} className="flex justify-center">

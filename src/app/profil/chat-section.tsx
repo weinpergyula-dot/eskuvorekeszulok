@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { ChatComposer } from "@/components/chat/chat-composer";
+import { ChatComposer, COMPOSER_SCROLL_PAD } from "@/components/chat/chat-composer";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -764,7 +764,7 @@ function ChatView({
       )}
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 bg-gray-50">
+      <div ref={scrollAreaRef} className={`flex-1 min-h-0 overflow-y-auto px-4 pt-5 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
             <MessageCircle className="h-12 w-12 mb-3 text-gray-200" strokeWidth={1} />

@@ -17,7 +17,7 @@ import {
 } from "@/lib/image-utils";
 import { RecipientPicker } from "./quote-recipient-picker";
 import { MeghivoQuoteForm } from "./meghivo-quote-form";
-import { ChatComposer } from "@/components/chat/chat-composer";
+import { ChatComposer, COMPOSER_SCROLL_PAD } from "@/components/chat/chat-composer";
 
 const SYSTEM_PREFIX = "__SYSTEM__:";
 const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
@@ -594,7 +594,7 @@ export function QuoteChat({
       </div>
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 bg-gray-50">
+      <div ref={scrollAreaRef} className={`flex-1 min-h-0 overflow-y-auto px-4 pt-5 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
         {/* Original request message shown as first chat bubble (standalone block) */}
         {(requestContext?.message || requestContext?.imageUrl) && (
           <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
