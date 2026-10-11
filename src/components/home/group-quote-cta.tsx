@@ -35,7 +35,7 @@ export function GroupQuoteCta() {
           <LoginGateLink
             href="/profil?tab=quotes"
             message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 self-end rounded-xl bg-[#84AAA6] px-6 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:self-auto"
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 self-center rounded-xl bg-[#84AAA6] px-6 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:self-auto"
           >
             Csoportos ajánlatkérés
             <ArrowRight className="h-4 w-4" />
