@@ -42,7 +42,102 @@ export type Offer = {
   /** Rövid, a fejlécen megjelenő címke. */
   badge?: string;
   cta: string;
+  // ── A tarifakártya bővebb (yettel.hu-s) megjelenítéséhez ──
+  /** Fejléc színe: lime kiemelés, sötétkék, vagy alap fehér. */
+  theme?: "promo" | "dark";
+  /** Az ár fölötti sor, pl. "4 990 Ft/hó helyett 6 hónapig". */
+  priceLead?: string;
+  /** Az ár alatti apróbetűs sorok. */
+  priceNotes?: string[];
+  /** A törzs tetején álló pirula, pl. "7 napig ingyen kipróbálható". */
+  bodyBadge?: string;
+  /** Ikonos jellemzők címmel és magyarázó sorral (a sima `features` helyett). */
+  featureItems?: FeatureItem[];
+  /** A fő gomb kontúros változata (a lime/sötét fejlécű kártyáknál). */
+  ctaOutline?: boolean;
 };
+
+/** A tarifakártya egy ikonos jellemzője: vastag cím + halvány magyarázat. */
+export type FeatureItem = {
+  /** Az ikon kulcsa – lásd FEATURE_ICONS az offer-card.tsx-ben. */
+  icon: "net" | "call" | "speed" | "gift" | "shield" | "loyalty" | "sim" | "device";
+  title: string;
+  desc?: string;
+};
+
+/**
+ * Mobil hero bannerek – a Yettel Prime kampány három kreatívja. Nem lapos
+ * képek: a fotó fölé kódból kerül a ferde lime panel és a szöveg, így a
+ * tipográfia minden kijelzőméreten éles marad és felolvasható.
+ *
+ * A `photo` a public/yettel/ mappára mutat: kampányfotó cseréjéhez elég
+ * ide másolni az új fájlt és itt átírni az útvonalat.
+ */
+export type HeroBanner = {
+  id: string;
+  /** A "Yettel" utáni rész – a kampánynév. */
+  title: string;
+  /** Az ár fölötti sor, pl. "6 hónapig". */
+  priceLead: string;
+  price: number;
+  /** Ikonos sorok: a `strong` vastagon, a `rest` normál vastagsággal. */
+  perks: { icon: "net" | "call" | "shield"; strong: string; rest?: string }[];
+  /** Alsó apróbetűs sor – a `footnoteStrong` benne vastagon jelenik meg. */
+  footnote: string;
+  footnoteStrong: string;
+  photo: string;
+  photoAlt: string;
+  href: string;
+};
+
+export const HERO_BANNERS: HeroBanner[] = [
+  {
+    id: "prime-xxl",
+    title: "Prime XXL",
+    priceLead: "6 hónapig",
+    price: 18990,
+    perks: [
+      { icon: "net", strong: "Korlátlan", rest: "mobilnet" },
+      { icon: "call", strong: "Korlátlan", rest: "beszélgetés belföldön" },
+      { icon: "shield", strong: "NetPajzs", rest: "internetvédelemmel" },
+    ],
+    footnote: "Új előfizetés esetén,",
+    footnoteStrong: "11 hónap hűséggel",
+    photo: "/yettel/hero-man.png",
+    photoAlt: "Mosolygó férfi telefonnal",
+    href: "#havidijas",
+  },
+  {
+    id: "prime-l",
+    title: "Prime L",
+    priceLead: "6 hónapig",
+    price: 14990,
+    perks: [
+      { icon: "net", strong: "Korlátlan", rest: "mobilnet" },
+      { icon: "call", strong: "Korlátlan", rest: "beszélgetés belföldön" },
+    ],
+    footnote: "Új előfizetés esetén,",
+    footnoteStrong: "11 hónap hűséggel",
+    photo: "/yettel/hero-family.png",
+    photoAlt: "Család a kanapén",
+    href: "#havidijas",
+  },
+  {
+    id: "prime-m",
+    title: "Prime M",
+    priceLead: "6 hónapig",
+    price: 12990,
+    perks: [
+      { icon: "net", strong: "Korlátlan", rest: "mobilnet" },
+      { icon: "call", strong: "250 perc", rest: "beszélgetés belföldön" },
+    ],
+    footnote: "Új előfizetés esetén,",
+    footnoteStrong: "11 hónap hűséggel",
+    photo: "/yettel/hero-banner-family.webp",
+    photoAlt: "Család mobilokkal",
+    href: "#havidijas",
+  },
+];
 
 export const OFFER_TABS: { id: OfferCategory; label: string; hint: string; soon?: boolean }[] = [
   { id: "havidijas", label: "Havidíjas mobil", hint: "Korlátlan hívás, 5G net" },
@@ -95,6 +190,11 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       unlimitedNet: false,
       unlimitedCall: false,
       features: ["60 GB mobilnet", "100 perc beszélgetés", "Korlátlan le- és feltöltés belföldön"],
+      featureItems: [
+        { icon: "net", title: "60 GB mobilnet", desc: "EU/1. díjzónában is felhasználható" },
+        { icon: "call", title: "100 perc beszéd", desc: "További perc és SMS-díj: 40 Ft belföldön" },
+        { icon: "speed", title: "Korlátlan le- és feltöltési sebesség", desc: "5G hálózaton is használható, plusz díj nélkül" },
+      ],
       details: [
         "60 GB belföldi mobilnet",
         "100 perc belföldi beszélgetés",
@@ -116,6 +216,11 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       unlimitedNet: true,
       unlimitedCall: false,
       features: ["Korlátlan mobilnet", "200 perc beszélgetés", "Korlátlan le- és feltöltés belföldön"],
+      featureItems: [
+        { icon: "net", title: "Korlátlan mobilnet", desc: "69 GB EU/1. díjzónában is felhasználható" },
+        { icon: "call", title: "200 perc beszéd", desc: "További perc és SMS-díj: 40 Ft belföldön" },
+        { icon: "speed", title: "Korlátlan le- és feltöltési sebesség", desc: "5G hálózaton is használható, plusz díj nélkül" },
+      ],
       details: [
         "Korlátlan belföldi mobilnet",
         "200 perc belföldi beszélgetés",
@@ -139,6 +244,11 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       unlimitedNet: true,
       unlimitedCall: true,
       features: ["Korlátlan mobilnet", "Korlátlan beszélgetés", "Korlátlan le- és feltöltés belföldön"],
+      featureItems: [
+        { icon: "net", title: "Korlátlan mobilnet", desc: "83 GB EU/1. díjzónában is felhasználható" },
+        { icon: "call", title: "Korlátlan beszélgetés belföldön", desc: "Belföldi hívások percdíj nélkül" },
+        { icon: "speed", title: "Korlátlan le- és feltöltési sebesség", desc: "5G hálózaton is használható, plusz díj nélkül" },
+      ],
       details: [
         "Korlátlan belföldi mobilnet",
         "Korlátlan belföldi beszélgetés",
@@ -160,6 +270,11 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       unlimitedNet: false,
       unlimitedCall: false,
       features: ["2 GB mobilnet", "100 perc beszélgetés", "Korlátlan le- és feltöltés belföldön"],
+      featureItems: [
+        { icon: "net", title: "2 GB mobilnet", desc: "EU/1. díjzónában is felhasználható" },
+        { icon: "call", title: "100 perc beszéd", desc: "További perc és SMS-díj: 40 Ft belföldön" },
+        { icon: "speed", title: "Korlátlan le- és feltöltési sebesség", desc: "5G hálózaton is használható, plusz díj nélkül" },
+      ],
       details: [
         "2 GB belföldi mobilnet",
         "100 perc belföldi beszélgetés",
@@ -181,6 +296,12 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       unlimitedNet: true,
       unlimitedCall: true,
       features: ["Korlátlan mobilnet", "Korlátlan beszélgetés", "Korlátlan SMS belföldön és EU-ban"],
+      featureItems: [
+        { icon: "net", title: "Korlátlan mobilnet", desc: "110 GB EU/1. díjzónában is felhasználható" },
+        { icon: "call", title: "Korlátlan beszélgetés belföldön", desc: "Belföldi hívások percdíj nélkül" },
+        { icon: "sim", title: "Korlátlan SMS", desc: "Belföldön és az EU 1-es díjzónájában" },
+        { icon: "speed", title: "Korlátlan le- és feltöltési sebesség", desc: "5G hálózaton is használható, plusz díj nélkül" },
+      ],
       details: [
         "Korlátlan belföldi mobilnet",
         "Korlátlan belföldi beszélgetés",
@@ -205,6 +326,11 @@ export const OFFERS: Record<OfferCategory, Offer[]> = {
       unlimitedNet: false,
       unlimitedCall: false,
       features: ["25 GB mobilnet", "200 perc beszélgetés", "Korlátlan le- és feltöltés belföldön"],
+      featureItems: [
+        { icon: "net", title: "25 GB mobilnet", desc: "EU/1. díjzónában is felhasználható" },
+        { icon: "call", title: "200 perc beszéd", desc: "További perc és SMS-díj: 40 Ft belföldön" },
+        { icon: "speed", title: "Korlátlan le- és feltöltési sebesség", desc: "5G hálózaton is használható, plusz díj nélkül" },
+      ],
       details: [
         "25 GB belföldi mobilnet",
         "200 perc belföldi beszélgetés",
@@ -393,5 +519,7 @@ export const DEVICES: Device[] = [
 ];
 
 export function formatFt(value: number): string {
-  return new Intl.NumberFormat("hu-HU").format(value) + " Ft";
+  // useGrouping "always": a hu-HU alapból nem tagolja a négyjegyű számokat
+  // ("4679"), a tarifakártyákon viszont "4 679 Ft" a megszokott alak.
+  return new Intl.NumberFormat("hu-HU", { useGrouping: "always" }).format(value) + " Ft";
 }

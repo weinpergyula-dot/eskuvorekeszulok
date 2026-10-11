@@ -8,7 +8,14 @@ import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
+import { ChatLink, MaskedContact } from "@/components/providers/masked-contact";
 
+/* Galéria-csík: fix pixelméretek, hogy a Safari ne az aspect-ratio / lusta
+   betöltés alapján számolja utólag a sáv szélességét (az iOS 27 óta ettől
+   üres maradt, illetve ugrált a sebessége). */
+const GALLERY_THUMB_W = 112; // 84px magas, 4:3
+const GALLERY_MIN_ROUND_W = 640; // legszélesebb kártyánál is szélesebb
+const GALLERY_SPEED_PX_S = 16;
 
 interface ProviderCardProps {
   provider: Provider;
@@ -27,9 +34,15 @@ interface ProviderCardProps {
 }
 
 export function ProviderCard({ provider, showStatus = false, initialLiked = false, onUnlike, hideCategories = false, disableLink = false, isOwner = false, inCarousel = false, listView = false, backTo }: ProviderCardProps) {
-  /* A profil linkje magával viszi, hova vezessen onnan a Vissza gomb. */
-  const detailHref = backTo
-    ? `/providers/${provider.id}?from=${encodeURIComponent(backTo)}`
+  /* A profil linkje magával viszi, hova vezessen onnan a Vissza gomb: a
+     listázás címét a szűrőivel együtt, de a lista teteje helyett erre a
+     kártyára mutató horgonnyal – így a látogató oda tér vissza, ahonnan
+     elindult. A horgony csak a listázásból nyíló kártyákon van (a
+     karusszel és a saját profil előnézete nem küld `backTo`-t). */
+  const anchorId = backTo ? `provider-${provider.id}` : undefined;
+  const backHref = backTo ? `${backTo.replace(/#.*$/, "")}#${anchorId}` : undefined;
+  const detailHref = backHref
+    ? `/providers/${provider.id}?from=${encodeURIComponent(backHref)}`
     : `/providers/${provider.id}`;
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
@@ -47,6 +60,72 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const viewCount = provider.view_count ?? 0;
   const galleryUrls = provider.gallery_urls ?? [];
   const hasGallery = galleryUrls.length > 0;
+  /* A csík egy „köre” legalább a kártya szélességét lefedi (kevés kép esetén
+     ismételjük a sort), különben a végtelenített mozgásnál fehér rés látszik.
+     A kör kétszer szerepel, így -50%-nál varratmentesen ugrik vissza. */
+  const galleryRound: string[] = [];
+  if (galleryUrls.length > 1) {
+    while (galleryRound.length * GALLERY_THUMB_W < GALLERY_MIN_ROUND_W) galleryRound.push(...galleryUrls);
+  }
+  const galleryLoop = [...galleryRound, ...galleryRound];
+  const galleryHalfW = (galleryLoop.length / 2) * GALLERY_THUMB_W;
+  const galleryDuration = galleryHalfW / GALLERY_SPEED_PX_S;
+
+  /* Érintéssel (és egérrel) csúsztatható galéria-csík. Húzás közben az
+     animáció áll, elengedéskor onnan folytatódik, ahol a sáv van. A
+     függőleges mozdulat az oldal görgetése marad (touch-action: pan-y). */
+  const stripTrackRef = useRef<HTMLDivElement>(null);
+  const stripDrag = useRef<{ id: number; x: number; y: number; startX: number; dx: number; active: boolean } | null>(null);
+  const stripSuppressClick = useRef(false);
+
+  const stripCurrentX = (): number => {
+    const track = stripTrackRef.current;
+    if (!track) return 0;
+    return new DOMMatrix(window.getComputedStyle(track).transform).m41;
+  };
+
+  const stripResume = (x: number) => {
+    const track = stripTrackRef.current;
+    if (!track || galleryHalfW <= 0) return;
+    let nx = x % galleryHalfW;
+    if (nx > 0) nx -= galleryHalfW;
+    const progress = -nx / galleryHalfW;
+    track.style.transform = "";
+    track.style.animation = `gallery-strip-scroll ${galleryDuration}s ${(-progress * galleryDuration).toFixed(3)}s linear infinite`;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) track.style.animationPlayState = "paused";
+  };
+
+  const onStripPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    stripSuppressClick.current = false;
+    stripDrag.current = { id: e.pointerId, x: e.clientX, y: e.clientY, startX: stripCurrentX(), dx: 0, active: false };
+  };
+
+  const onStripPointerMove = (e: React.PointerEvent) => {
+    const drag = stripDrag.current;
+    const track = stripTrackRef.current;
+    if (!drag || drag.id !== e.pointerId || !track) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    if (!drag.active) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      if (Math.abs(dy) > Math.abs(dx)) { stripDrag.current = null; return; }
+      drag.active = true;
+      stripSuppressClick.current = true;
+      drag.startX = stripCurrentX();
+      track.style.animation = "none";
+      try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
+    }
+    drag.dx = dx;
+    track.style.transform = `translate3d(${drag.startX + dx}px, 0, 0)`;
+  };
+
+  const onStripPointerEnd = (e: React.PointerEvent) => {
+    const drag = stripDrag.current;
+    if (!drag || drag.id !== e.pointerId) return;
+    stripDrag.current = null;
+    if (drag.active) stripResume(drag.startX + drag.dx);
+  };
 
   // Keyboard navigation for gallery lightbox
   useEffect(() => {
@@ -71,7 +150,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
     return (
-      <div className={cn("flex items-center gap-3 bg-[#FCFCFC] rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", tc.borderBase, tc.borderHover)}>
+      <div id={anchorId} className={cn("flex items-center gap-3 scroll-mt-24 bg-[#FCFCFC] rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", tc.borderBase, tc.borderHover)}>
         {/* Avatar */}
         <button
           type="button"
@@ -138,10 +217,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <a href={`/profil?tab=chat&with=${provider.user_id}`} className={`hidden sm:flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+          <ChatLink href={`/profil?tab=chat&with=${provider.user_id}`} className={`hidden sm:flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
             <MessageCircle className="h-3.5 w-3.5" />
             Chat indítása
-          </a>
+          </ChatLink>
           <a href={detailHref} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
             Részletek
           </a>
@@ -171,7 +250,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const headerBg = provider.featured === "gold" ? "#FFFBEB" : provider.featured === "silver" ? "#F8FAFC" : provider.featured === "teal" ? "#EDF4F3" : "#F0F6F5";
 
   return (
-    <div className={cn("relative h-full", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
+    <div id={anchorId} className={cn("relative h-full scroll-mt-24", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
       {showFeaturedBadge && (
         <span className={cn(
           "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
@@ -344,7 +423,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── Gallery strip — slowly scrolling right→left (non-carousel only) */}
       {hasGallery && !inCarousel && (
-        <div className="overflow-hidden border-t border-b border-gray-200" style={{ height: "84px", backgroundColor: "white" }}>
+        <div
+          className={cn("overflow-hidden border-t border-b border-gray-200", galleryUrls.length > 1 && "select-none")}
+          style={{ height: "84px", backgroundColor: "white", touchAction: galleryUrls.length > 1 ? "pan-y" : undefined }}
+          onPointerDown={galleryUrls.length > 1 ? onStripPointerDown : undefined}
+          onPointerMove={galleryUrls.length > 1 ? onStripPointerMove : undefined}
+          onPointerUp={galleryUrls.length > 1 ? onStripPointerEnd : undefined}
+          onPointerCancel={galleryUrls.length > 1 ? onStripPointerEnd : undefined}
+          onClickCapture={(e) => {
+            if (stripSuppressClick.current) { e.preventDefault(); e.stopPropagation(); stripSuppressClick.current = false; }
+          }}
+        >
           {galleryUrls.length === 1 ? (
             <button
               type="button"
@@ -356,22 +445,23 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </button>
           ) : (
             <div
-              className="flex"
+              ref={stripTrackRef}
+              className="gallery-strip-track flex"
               style={{
-                width: "max-content",
-                animation: `carousel-scroll ${galleryUrls.length * 5 + 10}s linear infinite`,
+                width: `${galleryLoop.length * GALLERY_THUMB_W}px`,
+                animationDuration: `${galleryDuration}s`,
               }}
             >
-              {[...galleryUrls, ...galleryUrls].map((url, i) => (
+              {galleryLoop.map((url, i) => (
                 <button
                   key={i}
                   type="button"
                   className="h-[84px] flex-shrink-0 overflow-hidden focus:outline-none px-[2.5px] py-[5px]"
-                  style={{ aspectRatio: "4/3" }}
+                  style={{ width: `${GALLERY_THUMB_W}px` }}
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="w-full h-full object-cover" draggable={false} loading="lazy" />
+                  <img src={url} alt="" className="block w-full h-full object-cover" draggable={false} decoding="async" />
                 </button>
               ))}
             </div>
@@ -396,10 +486,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Contact info */}
       {!inCarousel && (
         <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
-          <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} />
-          <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} />
+          <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} linkColor={tc.text} />
+          <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} linkColor={tc.text} fullyHidden />
           {provider.website && (
-            <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} />
+            <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} fullyHidden />
           )}
           {provider.description && (
             <div className="flex gap-2.5">
@@ -424,10 +514,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
           {/* Chat + Részletek grouped — always pushed to right */}
           <div className="flex items-center gap-2 ml-auto">
-            <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+            <ChatLink href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               <MessageCircle className="h-3.5 w-3.5" />
               Chat indítása
-            </a>
+            </ChatLink>
             <a href={detailHref} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               Részletek
             </a>
@@ -521,15 +611,18 @@ function ContactRow({
   value,
   isLink = false,
   linkColor = "text-[#84AAA6]",
+  fullyHidden = false,
 }: {
   icon: React.ReactNode;
   value: string;
   isLink?: boolean;
   linkColor?: string;
+  fullyHidden?: boolean;
 }) {
   return (
     <div className="flex items-start gap-2.5">
       <span className="shrink-0 mt-0.5">{icon}</span>
+      <MaskedContact value={value} linkColor={linkColor} fullyHidden={fullyHidden}>
       {isLink ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noopener noreferrer" className={`text-base ${linkColor} hover:underline break-all`}>
           {value}
@@ -537,6 +630,7 @@ function ContactRow({
       ) : (
         <span className="text-base text-gray-900 break-all">{value}</span>
       )}
+      </MaskedContact>
     </div>
   );
 }

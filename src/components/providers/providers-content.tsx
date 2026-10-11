@@ -154,6 +154,28 @@ function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setV
   );
 }
 
+/* A kiemeltek utáni lista alapból véletlen sorrendű. A sorrendet egy mag
+   (seed) határozza meg, nem a nyers Math.random(): így a profilról a Vissza
+   gombbal ugyanaz a sorrend fogadja a látogatót, miközben egy friss
+   megnyitás továbbra is új keverést kap. Fisher–Yates, mert a
+   `sort(() => Math.random() - 0.5)` nem ad egyenletes eloszlást. */
+function seededShuffle<T>(items: T[], seed: number): T[] {
+  let state = seed >>> 0 || 1;
+  const next = () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(next() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
 // ── Providers list ──────────────────────────────────────────────────────────
 export function ProvidersContent({
   providers,
@@ -173,6 +195,12 @@ export function ProvidersContent({
   const [county, setCounty] = useState<string>(searchParams.get("county") ?? "");
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  /* A véletlen sorrend magva. A profil-linkek `sor` paraméterként viszik
+     magukkal, így a Vissza gomb ugyanazt a sorrendet hozza vissza. */
+  const [orderSeed] = useState(() => {
+    const fromUrl = Number(searchParams.get("sor"));
+    return Number.isInteger(fromUrl) && fromUrl > 0 ? fromUrl : Math.floor(Math.random() * 1e9) + 1;
+  });
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [countyQuery, setCountyQuery] = useState("");
   const [pageSize, setPageSize] = useState(10);
@@ -207,7 +235,16 @@ export function ProvidersContent({
     return qs.toString();
   }, [category, county]);
 
-  const listUrl = `${pathname}${listQuery ? `?${listQuery}` : ""}${pathname === "/" ? "#szolgaltatok" : ""}`;
+  /* A kártyák Vissza-címe a magot is viszi – de csak akkor, ha tényleg a
+     véletlen sorrend van érvényben. A címsorba nem írjuk bele: ott a
+     szűrők maradnak, a mag a linkekben utazik. */
+  const backQuery = useMemo(() => {
+    const qs = new URLSearchParams(listQuery);
+    if (sortBy === "default") qs.set("sor", String(orderSeed));
+    return qs.toString();
+  }, [listQuery, sortBy, orderSeed]);
+
+  const listUrl = `${pathname}${backQuery ? `?${backQuery}` : ""}${pathname === "/" ? "#szolgaltatok" : ""}`;
 
   useEffect(() => {
     // Csak a query stringet írjuk át – nincs újratöltés, a görgetés sem ugrik.
@@ -257,7 +294,7 @@ export function ProvidersContent({
 
   const featured = useMemo(() => filtered.filter((p) => p.featured).sort((a, b) => tier(b.featured) - tier(a.featured)), [filtered]);
   const normal = useMemo(() => filtered.filter((p) => !p.featured), [filtered]);
-  const shuffledNormal = useMemo(() => [...normal].sort(() => Math.random() - 0.5), [normal]);
+  const shuffledNormal = useMemo(() => seededShuffle(normal, orderSeed), [normal, orderSeed]);
   const sortedNormal = sortBy === "default"
     ? shuffledNormal
     : [...normal].sort((a, b) =>

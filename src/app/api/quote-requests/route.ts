@@ -3,22 +3,42 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyNewQuoteRequest } from "@/lib/notifications";
 import { logError } from "@/lib/log-error";
+import { filterReachableProviders } from "@/lib/quote-recipients";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Igaz, ha a beszúrás azért bukott el, mert az image_url oszlop nincs meg a
+ * PostgREST sémagyorsítótárában – tipikusan mert a migráció még nem futott le
+ * a deploy után. A kódot (PGRST204) és a hibaszöveget is nézzük, hogy a
+ * tartalék ág akkor is lefusson, ha a kód idővel változik.
+ *
+ * A lekérdezéseknél ezért kérünk `*`-ot: azok így nem tudnak elhasalni egy új
+ * oszlopon, csak azt adják vissza, ami épp létezik.
+ */
+function isMissingImageColumn(error: { code?: string; message?: string } | null): boolean {
+  if (!error) return false;
+  return error.code === "PGRST204" || /image_url/.test(error.message ?? "");
+}
+
 // ── Visitor chat helper ───────────────────────────────────────────────────────
 
-type RawReq = { id: string; subject: string; category: string; counties: string[]; message: string; created_at: string };
+type RawReq = { id: string; subject: string; category: string; counties: string[]; message: string; image_url: string | null; created_at: string };
 type RawRec = { id: string; quote_request_id: string; provider_id: string; provider_user_id: string };
 type RawMsg = { id: string; quote_request_id: string; provider_id: string; sender_id: string; body: string; read: boolean; created_at: string };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetchVisitorChats(admin: any, userId: string) {
-  const { data: requests } = await admin
+  const { data: requests, error: reqError } = await admin
     .from("quote_requests")
-    .select("id, subject, category, counties, message, created_at")
+    .select("*")
     .eq("visitor_id", userId)
     .eq("deleted_by_visitor", false);
+
+  /* A hibát eddig elnyeltük, és a hívó üres listát kapott – vagyis a
+     látogató úgy látta, egyetlen ajánlatkérése sincs. Így legalább nyoma
+     marad a hibanaplóban. */
+  if (reqError) await logError("api/quote-requests GET", reqError.message, { user: userId });
 
   if (!requests || requests.length === 0) return [];
 
@@ -81,6 +101,7 @@ async function fetchVisitorChats(admin: any, userId: string) {
       category: req?.category ?? "",
       counties: req?.counties ?? [],
       message: req?.message ?? "",
+      image_url: req?.image_url ?? null,
       provider_id: rec.provider_id,
       provider_full_name: profileMap.get(rec.provider_user_id) ?? "Ismeretlen",
       provider_avatar_url: providerAvatarMap.get(rec.provider_id) ?? null,
@@ -116,7 +137,7 @@ export async function GET() {
     const [providerRequests, visitorChats] = await Promise.all([
       Promise.all((recipients ?? []).map(async (rec) => {
         const [{ data: qr }, { data: unreadMsgs }, { data: lastMsgRows }] = await Promise.all([
-          admin.from("quote_requests").select("subject, category, counties, message, created_at, visitor_id").eq("id", rec.quote_request_id).single(),
+          admin.from("quote_requests").select("*").eq("id", rec.quote_request_id).single(),
           admin.from("quote_messages").select("id").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).neq("sender_id", user.id).eq("read", false),
           admin.from("quote_messages").select("id, sender_id, body, created_at").eq("quote_request_id", rec.quote_request_id).eq("provider_id", providerData.id).order("created_at", { ascending: false }).limit(1),
         ]);
@@ -130,6 +151,7 @@ export async function GET() {
           category: qr?.category ?? "",
           counties: qr?.counties ?? [],
           message: qr?.message ?? "",
+          image_url: qr?.image_url ?? null,
           created_at: qr?.created_at ?? rec.created_at,
           read: rec.read,
           visitor_name: visitorProfile?.full_name || "Ismeretlen látogató",
@@ -242,14 +264,30 @@ async function findHouseProvider(admin: any): Promise<{ provider: HouseProvider 
   };
 }
 
+/**
+ * A csatolt kép hivatkozását a kliens küldi, ezért csak a saját Supabase
+ * tárhelyünkre mutató, nyilvános URL-t fogadunk el – így nem lehet idegen
+ * (követő vagy kártékony) címet becsempészni a chatbe.
+ */
+function ownStorageUrl(value: unknown): string | null {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/+$/, "");
+  if (!base) return null;
+  return value.startsWith(`${base}/storage/v1/object/public/`) ? value : null;
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { subject, category, counties, message, selectedProviderIds, houseOnly } = await request.json();
+  const { subject, category, counties, message, selectedProviderIds, houseOnly, imageUrl } = await request.json();
   if (!subject?.trim() || !category || !counties?.length || !message?.trim())
     return NextResponse.json({ error: "Hiányzó mezők." }, { status: 400 });
+
+  // A csatolt kép csak az általános ajánlatkéréshez tartozik – a meghívósnál
+  // nincs feltöltés, ezért ott a hivatkozást akkor sem vesszük át, ha megjön.
+  const safeImageUrl = houseOnly ? null : ownStorageUrl(imageUrl);
 
   const admin = createAdminClient();
 
@@ -271,11 +309,21 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const { data: qr, error: qrError } = await admin
+  const row = { visitor_id: user.id, subject, category, counties, message };
+
+  let { data: qr, error: qrError } = await admin
     .from("quote_requests")
-    .insert({ visitor_id: user.id, subject, category, counties, message })
+    .insert({ ...row, image_url: safeImageUrl })
     .select("id")
     .single();
+
+  /* Ha az image_url oszlop még nincs meg (a migráció a deploy után fut le),
+     a kérés kép nélkül is menjen el: a melléklet elvesztése kellemetlen, az
+     egész ajánlatkérésé viszont adatvesztés. A migráció után ez sosem fut. */
+  if (isMissingImageColumn(qrError)) {
+    await logError("api/quote-requests POST", "image_url oszlop hiányzik, az ajánlatkérés kép nélkül ment el (futtatandó migráció: 20260831_quote_request_image.sql)", { user: user.id, subject, category });
+    ({ data: qr, error: qrError } = await admin.from("quote_requests").insert(row).select("id").single());
+  }
 
   if (qrError || !qr) { await logError("api/quote-requests POST", qrError?.message ?? "insert returned null", { user: user.id, subject, category }); return NextResponse.json({ error: "Hiba az ajánlatkérés létrehozásakor." }, { status: 500 }); }
 
@@ -300,7 +348,7 @@ export async function POST(request: NextRequest) {
   const nationwide = Array.isArray(counties) && counties.includes("Országosan");
   let providersQuery = admin
     .from("providers")
-    .select("id, user_id")
+    .select("id, user_id, full_name")
     .eq("approval_status", "approved")
     .or("active.is.null,active.eq.true")
     .contains("categories", [category]);
@@ -309,33 +357,63 @@ export async function POST(request: NextRequest) {
   }
   const { data: allProviders } = await providersQuery;
 
-  const seenUserIds = new Set<string>();
-  const uniqueProviders = (allProviders ?? []).filter((p) => {
-    if (!p.user_id || seenUserIds.has(p.user_id)) return false;
-    seenUserIds.add(p.user_id);
-    return true;
-  });
+  const hasSelection = Array.isArray(selectedProviderIds) && selectedProviderIds.length > 0;
 
-  const targetProviders = Array.isArray(selectedProviderIds) && selectedProviderIds.length > 0
-    ? uniqueProviders.filter((p) => selectedProviderIds.includes(p.id))
-    : uniqueProviders;
+  /* Ha a látogató név szerint kijelölte a címzetteket, pontosan azokat a
+     sorokat vesszük. Az azonos user_id-jű duplikátumok kiszűrése csak akkor
+     kell, ha mindenkinek megy: a lekérdezésen nincs rendezés, ezért a szűrés
+     más sort tarthat meg, mint amit a címzettválasztó mutatott – így a
+     kijelölt szolgáltató kieshetne a listából. */
+  const selectedProviders = hasSelection
+    ? (allProviders ?? []).filter((p) => p.user_id && selectedProviderIds.includes(p.id))
+    : (() => {
+        const seenUserIds = new Set<string>();
+        return (allProviders ?? []).filter((p) => {
+          if (!p.user_id || seenUserIds.has(p.user_id)) return false;
+          seenUserIds.add(p.user_id);
+          return true;
+        });
+      })();
 
-  let insertedCount = 0;
-  if (targetProviders.length > 0) {
-    const results = await Promise.allSettled(
-      targetProviders.map((p) =>
-        admin.from("quote_request_recipients").insert({
-          quote_request_id: qr.id,
-          provider_id: p.id,
-          provider_user_id: p.user_id,
-        })
-      )
+  /* Akinek nincs profilja, annak a címzett sora idegenkulcs-hibára fut, és az
+     egész ajánlatkérés láthatatlan marad. Inkább kihagyjuk – a többiekhez így
+     is eljut –, a hiányt pedig a helper naplózza. */
+  const targetProviders = await filterReachableProviders(admin, selectedProviders, "api/quote-requests POST");
+
+  if (hasSelection && targetProviders.length === 0) {
+    await logError("api/quote-requests POST", "a kijelölt szolgáltatók egyike sem tud ajánlatkérést fogadni", { user: user.id, category, counties, selectedProviderIds });
+  }
+
+  /* A supabase-js adatbázishibánál nem dob kivételt, hanem `error`-ral tér
+     vissza – a Promise tehát akkor is "fulfilled", ha a beszúrás elhasalt.
+     Ezért a hibát külön kell megnézni, különben a hívó sikert lát, közben
+     egyetlen címzett sem jött létre, és a naplóban sincs nyoma. */
+  const results = await Promise.all(
+    targetProviders.map(async (p) => {
+      const { error } = await admin.from("quote_request_recipients").insert({
+        quote_request_id: qr.id,
+        provider_id: p.id,
+        provider_user_id: p.user_id,
+      });
+      if (error) await logError("api/quote-requests POST", `címzett beszúrása sikertelen: ${error.message}`, { quoteRequestId: qr.id, provider_id: p.id });
+      return { provider: p, ok: !error };
+    })
+  );
+
+  const delivered = results.filter((r) => r.ok).map((r) => r.provider);
+
+  /* Címzett nélkül az ajánlatkérés sehol nem látszik – sem a küldőnél, sem a
+     szolgáltatónál –, ezért ilyenkor ne mondjunk sikert. */
+  if (delivered.length === 0) {
+    await logError("api/quote-requests POST", "az ajánlatkérés egyetlen címzetthez sem jutott el", { quoteRequestId: qr.id, user: user.id, category, targets: targetProviders.length });
+    return NextResponse.json(
+      { error: "Az ajánlatkérés egyetlen szolgáltatóhoz sem jutott el. Kérlek, próbáld újra, vagy jelezd nekünk!" },
+      { status: 500 },
     );
-    insertedCount = results.filter((r) => r.status === "fulfilled").length;
   }
 
   const origin = request.nextUrl.origin;
-  for (const p of targetProviders) {
+  for (const p of delivered) {
     if (p.user_id) {
       notifyNewQuoteRequest({
         providerUserId: p.user_id,
@@ -348,5 +426,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ id: qr.id, recipient_count: insertedCount });
+  return NextResponse.json({ id: qr.id, recipient_count: delivered.length });
 }

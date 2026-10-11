@@ -226,7 +226,9 @@ export function HeroSlides() {
           <div className="relative -mr-4 ml-auto aspect-[461/570] w-[62%] md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[118%] md:max-w-none md:translate-x-6 lg:-mr-14 lg:translate-x-12">
             <picture>
               <source media="(min-width: 768px)" srcSet={slide.imgMd} />
-              <img src={slide.img} alt={slide.alt} className={slide.imgClass} />
+              {/* lazy: mobilon ez a dia display:none-ban van (a HeroBanners fut),
+                  így a böngésző le sem tölti a szélesvásznú kivágatokat. */}
+              <img src={slide.img} alt={slide.alt} loading="lazy" className={slide.imgClass} />
             </picture>
           </div>
         </div>

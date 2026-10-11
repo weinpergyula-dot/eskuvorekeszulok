@@ -5,6 +5,7 @@ import { Phone, Mail, Globe, MessageCircle, FileText } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
+import { ChatLink, MaskedContact } from "@/components/providers/masked-contact";
 import type { Provider } from "@/lib/types";
 
 type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
@@ -14,23 +15,27 @@ function ContactItem({
   value,
   href,
   external = false,
+  fullyHidden = false,
 }: {
   icon: React.ReactNode;
   value: string;
   href: string;
   external?: boolean;
+  fullyHidden?: boolean;
 }) {
   return (
     <div className="flex gap-3 items-center">
       <span className="shrink-0">{icon}</span>
-      <a
-        href={href}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noopener noreferrer" : undefined}
-        className="text-base text-gray-900 hover:text-[#84AAA6] break-all cursor-pointer"
-      >
-        {value}
-      </a>
+      <MaskedContact value={value} fullyHidden={fullyHidden}>
+        <a
+          href={href}
+          target={external ? "_blank" : undefined}
+          rel={external ? "noopener noreferrer" : undefined}
+          className="text-base text-gray-900 hover:text-[#84AAA6] break-all cursor-pointer"
+        >
+          {value}
+        </a>
+      </MaskedContact>
     </div>
   );
 }
@@ -130,6 +135,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                     icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
                     value={provider.email}
                     href={`mailto:${provider.email}`}
+                    fullyHidden
                   />
                 )}
                 {provider.website && (
@@ -138,16 +144,17 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                     value={provider.website}
                     href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
                     external
+                    fullyHidden
                   />
                 )}
               </div>
-              <a
+              <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
                 className="w-full flex items-center justify-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
-              </a>
+              </ChatLink>
             </div>
           </div>
         </div>
@@ -166,13 +173,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
             <p className="text-base font-semibold text-gray-900 mb-1">Chat {provider.full_name} nevű szolgáltatóval</p>
             <p className="text-sm text-gray-500">A chat a profilodon belüli Chat menüpontban folytatódik.</p>
           </div>
-          <a
+          <ChatLink
             href={`/profil?tab=chat&with=${provider.user_id}`}
             className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
           >
             <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
             Chat indítása
-          </a>
+          </ChatLink>
         </div>
       )}
 

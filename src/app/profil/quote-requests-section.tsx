@@ -3,10 +3,18 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, Send, Trash2, Info, MailOpen, Users } from "lucide-react";
+import { ArrowLeft, Send, Trash2, Info, MailOpen, Users, ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
+import {
+  compressImage,
+  optimizedImageUrl,
+  MAX_UPLOAD_BYTES,
+  MAX_UPLOAD_MB,
+  ALLOWED_IMAGE_TYPES,
+  ALLOWED_IMAGE_ACCEPT,
+} from "@/lib/image-utils";
 import { RecipientPicker } from "./quote-recipient-picker";
 import { MeghivoQuoteForm } from "./meghivo-quote-form";
 
@@ -31,6 +39,7 @@ export interface VisitorChat {
   category: string;
   counties: string[];
   message: string;
+  image_url?: string | null;
   provider_id: string;
   provider_full_name: string;
   provider_avatar_url?: string | null;
@@ -47,6 +56,7 @@ export interface ProviderRequest {
   category: string;
   counties: string[];
   message: string;
+  image_url?: string | null;
   created_at: string;
   read: boolean;
   visitor_name: string;
@@ -95,6 +105,10 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [countyCountMap, setCountyCountMap] = useState<Record<string, number>>({});
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch per-county provider counts when category changes
   useEffect(() => {
@@ -125,6 +139,54 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
     );
   };
 
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+    setImageError(null);
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setImageError("Nem támogatott formátum. JPEG, PNG vagy WebP képet tölts fel.");
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setImageError(`A kép mérete nem haladhatja meg a ${MAX_UPLOAD_MB} MB-ot.`);
+      return;
+    }
+    const compressed = await compressImage(file);
+    setImageFile(compressed);
+    setImagePreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(compressed);
+    });
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImageError(null);
+    setImagePreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+  };
+
+  /* A kép a nyilvános `avatars` bucketbe kerül, felhasználónkénti mappába.
+     A véletlen utótag miatt a hivatkozás nem kitalálható. */
+  const uploadImage = async (): Promise<string | null> => {
+    if (!imageFile) return null;
+    const supabase = createClient();
+    if (!supabase) throw new Error("A képfeltöltés jelenleg nem elérhető.");
+    const { data: { user } } = await supabase.auth.getUser();
+    const owner = userId ?? user?.id;
+    if (!owner) throw new Error("A képfeltöltéshez be kell jelentkezned.");
+    const ext = imageFile.name.match(/\.[a-zA-Z0-9]+$/)?.[0]?.toLowerCase() ?? ".jpg";
+    const path = `${owner}/ajanlatkeres/${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(path, imageFile, { upsert: false, contentType: imageFile.type });
+    if (uploadError) throw new Error("A kép feltöltése nem sikerült. Próbáld újra!");
+    return supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject.trim()) { setError("Add meg a tárgyat!"); return; }
@@ -135,10 +197,11 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
     setSending(true);
     setError(null);
     try {
+      const uploadedImageUrl = await uploadImage();
       const res = await fetch("/api/quote-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, category, counties: selectedCounties, message, selectedProviderIds: [...checkedIds] }),
+        body: JSON.stringify({ subject, category, counties: selectedCounties, message, selectedProviderIds: [...checkedIds], imageUrl: uploadedImageUrl }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt.");
@@ -209,6 +272,44 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
         </div>
       </div>
       <FloatingTextarea id="qs-message" label="Üzenet *" value={message} onChange={e => setMessage(e.target.value)} rows={4} compact className="text-base sm:text-sm" />
+
+      {/* Csatolt kép – a chatben minden címzettnél megjelenik, kinagyítható */}
+      <div>
+        <p className="text-xs text-gray-600 mb-2">Kép csatolása (nem kötelező)</p>
+        {imagePreview ? (
+          <div className="relative inline-block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={imagePreview} alt="Csatolt kép" className="h-28 w-auto max-w-full rounded-xl border border-gray-200 object-cover" />
+            <button
+              type="button"
+              onClick={removeImage}
+              title="Kép eltávolítása"
+              className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-gray-500 shadow border border-gray-200 hover:text-[#F06C6C] cursor-pointer"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => imageInputRef.current?.click()}
+            className="flex items-center gap-2 rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-600 hover:border-[#84AAA6] hover:text-[#84AAA6] transition-colors cursor-pointer"
+          >
+            <ImagePlus className="h-4 w-4" strokeWidth={1.75} />
+            Kép kiválasztása
+          </button>
+        )}
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept={ALLOWED_IMAGE_ACCEPT}
+          className="hidden"
+          onChange={handleImageChange}
+        />
+        <p className="text-xs text-gray-400 mt-1.5">max {MAX_UPLOAD_MB} MB · JPEG, PNG, WebP</p>
+        {imageError && <p className="text-xs text-[#F06C6C] mt-1.5">{imageError}</p>}
+      </div>
+
       <RecipientPicker
         category={category}
         counties={selectedCounties}
@@ -247,7 +348,7 @@ export function QuoteChat({
   subject: string;
   otherName: string;
   otherAvatarUrl?: string | null;
-  requestContext?: { category: string; counties: string[]; message: string } | null;
+  requestContext?: { category: string; counties: string[]; message: string; imageUrl?: string | null } | null;
   requestMsgIsOwn?: boolean;
   userId: string;
   initialMessages: QuoteMessage[];
@@ -261,6 +362,7 @@ export function QuoteChat({
   const [sendError, setSendError]         = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting]           = useState(false);
+  const [lightboxUrl, setLightboxUrl]     = useState<string | null>(null);
   const bottomRef     = useRef<HTMLDivElement>(null);
   const textareaRef   = useRef<HTMLTextAreaElement>(null);
   const containerRef  = useRef<HTMLDivElement>(null);
@@ -281,6 +383,14 @@ export function QuoteChat({
     document.body.classList.add("chat-mode");
     return () => { document.body.classList.remove("chat-mode"); };
   }, []);
+
+  // Nagyított kép: Escape zárja
+  useEffect(() => {
+    if (!lightboxUrl) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setLightboxUrl(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxUrl]);
 
   // Mobile: resize container to match visual viewport so keyboard doesn't push header up
   useEffect(() => {
@@ -485,7 +595,7 @@ export function QuoteChat({
       {/* Messages */}
       <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 bg-gray-50">
         {/* Original request message shown as first chat bubble (standalone block) */}
-        {requestContext?.message && (
+        {(requestContext?.message || requestContext?.imageUrl) && (
           <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
             <div className={`flex flex-col gap-1 max-w-[80%] ${requestMsgIsOwn ? "items-end" : "items-start"}`}>
               <div className="flex items-end gap-2">
@@ -503,6 +613,21 @@ export function QuoteChat({
                     ? "bg-gray-200 text-gray-900"
                     : "bg-white border border-gray-200 text-gray-900"
                 }`}>
+                  {requestContext.imageUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setLightboxUrl(requestContext.imageUrl!)}
+                      className={`block cursor-zoom-in ${requestContext.message ? "mb-2" : ""}`}
+                      title="Kattints a nagyításhoz"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={optimizedImageUrl(requestContext.imageUrl, 480)}
+                        alt="Az ajánlatkéréshez csatolt kép"
+                        className="max-h-60 w-auto max-w-full rounded-xl object-cover"
+                      />
+                    </button>
+                  )}
                   {requestContext.message}
                 </div>
               </div>
@@ -592,6 +717,21 @@ export function QuoteChat({
           {sendError && <p className="text-xs text-[#F06C6C] mt-1.5">{sendError}</p>}
         </div>
       )}
+
+      {/* Nagyított kép */}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center cursor-zoom-out"
+          onClick={() => setLightboxUrl(null)}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightboxUrl}
+            alt="Az ajánlatkéréshez csatolt kép"
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl select-none"
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -629,7 +769,7 @@ export function ProviderChatLoader({
       subject={req.subject}
       otherName={req.visitor_name}
       otherAvatarUrl={req.visitor_avatar_url}
-      requestContext={{ category: req.category, counties: req.counties, message: req.message }}
+      requestContext={{ category: req.category, counties: req.counties, message: req.message, imageUrl: req.image_url }}
       requestMsgIsOwn={false}
       userId={userId}
       initialMessages={messages}

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { OFFERS } from "../_data/offers";
 import { OfferCard } from "./offer-card";
-import { MobileQuotas } from "./quota-bars";
 
 type FilterKey = "net" | "call";
 const INITIAL = 3; // egy sor (weben)
@@ -73,15 +72,13 @@ export function MobileTariffs() {
           Nincs a szűrésnek megfelelő tarifa. Próbálj más szűrőt!
         </div>
       ) : (
-        // Weben is kell térköz a szűrő és a kártyák (illetve a kilógó címkéik) közé.
-        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pt-6 pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pt-9 sm:pb-0 lg:grid-cols-3">
+        <div className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
           {tariffs.map((t, i) => (
             <OfferCard
               key={t.id}
               offer={t}
               ctaLabel="Csak szolgáltatás"
               secondaryCtaLabel="Készülékkel kérem"
-              body={<MobileQuotas offer={t} />}
               className={[
                 "min-w-[82%] shrink-0 snap-start sm:min-w-0 sm:shrink",
                 // Mobilon minden swipe-olható; desktopon az első sor után csak a "Még több" mutatja

@@ -1,7 +1,7 @@
 import {
   Camera, Music, Mic, Cake, Crown, Shirt, Flower2,
   Palette, Scissors, Hand, Gift, Footprints, Sparkles, Gem,
-  Mail, Car, PersonStanding, UtensilsCrossed, Building2, Flower,
+  Mail, Car, PersonStanding, UtensilsCrossed, Building2, Flower, HeartHandshake,
   type LucideIcon,
 } from "lucide-react";
 import type { ServiceCategory } from "./types";
@@ -10,6 +10,7 @@ export const CATEGORY_LUCIDE_ICONS: Record<ServiceCategory, LucideIcon> = {
   "fotosok-videosok": Camera,
   "elo-zene-dj": Music,
   vofely: Mic,
+  szertartasvezeto: HeartHandshake,
   "torta-sutemeny": Cake,
   "menyasszonyi-ruha": Crown,
   "oltonya-szmoking": Shirt,

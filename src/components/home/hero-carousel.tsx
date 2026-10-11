@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { ArrowRight, Pause, Play } from "lucide-react";
-import { ProviderRegisterButton } from "./provider-register-button";
+import { preload } from "react-dom";
+import { ArrowDown, ArrowRight, Pause, Play } from "lucide-react";
+import { useIsLoggedIn } from "@/components/providers/masked-contact";
 
 /**
  * A főoldal bannere. A felépítés, a méretezés és a megjelenítő elemek
@@ -134,6 +135,19 @@ const SLIDES: Slide[] = [
 
 const INTERVAL_MS = 6000;
 
+/** A 2. dia telefonjaiban megjelenő minták (előtöltéshez is). */
+const HERO_PHONE_IMAGES = [
+  "/meghivo/slide-basic.webp",
+  "/meghivo/slide-silver.webp",
+  "/meghivo/slide-premium.webp",
+];
+
+/* A banner összes gombja (mindkét dián) ugyanakkora: azonos magasság,
+   szélesség és betűméret. Mobilon a magasság és a betűméret a csoportos
+   ajánlatkérés gombjáéval egyezik. */
+const CTA_SIZE =
+  "inline-flex h-12 w-[170px] items-center justify-center gap-1.5 rounded-xl text-[15px] font-bold transition-colors md:h-11 md:w-[200px] md:text-base";
+
 /**
  * Egy készülék a banneren. A ház térbeli: a megdöntött telefonnak a
  * vastagsága (oldalkávája) is látszik – az előlap mögé rétegzett, azonos
@@ -156,7 +170,7 @@ function Phone({ src, alt, className = "" }: { src: string; alt: string; classNa
       <div className="hero-phone-face rounded-[1.5rem] bg-gray-900 p-1.5 shadow-[0_30px_55px_-20px_rgba(20,45,42,0.85)] ring-1 ring-white/20">
         <div className="relative overflow-hidden rounded-[1.15rem] bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={src} alt={alt} width={390} height={844} className="block h-auto w-full" />
+          <img src={src} alt={alt} width={390} height={844} decoding="sync" className="block h-auto w-full" />
           <span
             className="absolute left-1/2 top-1.5 h-2.5 w-11 -translate-x-1/2 rounded-full bg-gray-900"
             aria-hidden
@@ -180,6 +194,13 @@ const subscribeReduced = (cb: () => void) => {
 };
 
 export function HeroCarousel() {
+  /* A banner képei ne várjanak: a menyasszony (az 1. dia, rögtön látszik)
+     magas prioritással, a 2. dia telefonjainak képei pedig már most
+     töltődjenek, ne csak a diaváltáskor. A preload a szerveren renderelt
+     HTML fejlécébe kerül. */
+  preload("/hero-bride-cut.webp", { as: "image", fetchPriority: "high" });
+  for (const src of HERO_PHONE_IMAGES) preload(src, { as: "image", fetchPriority: "low" });
+
   const [index, setIndex] = useState(0);
   // Kevesebb mozgás esetén a vetítés alapból áll, de a play gombbal
   // elindítható (az override felülírja a rendszerbeállítást).
@@ -189,6 +210,8 @@ export function HeroCarousel() {
     () => false
   );
   const [override, setOverride] = useState<boolean | null>(null);
+  // A Regisztráció gomb csak kijelentkezett látogatónak jelenik meg.
+  const loggedIn = useIsLoggedIn();
   const paused = override ?? reduced;
   const setPaused = (v: boolean) => setOverride(v);
 
@@ -279,6 +302,18 @@ export function HeroCarousel() {
       )}
       <span aria-hidden className="hero-sheen" />
 
+      {/* Diaváltáskor a dia (a képekkel együtt) újra létrejön. Az iOS Safari
+          a már nem használt kép dekódolt változatát eldobja, és az új
+          elemnél újra dekódolja – addig a kép helye üres, a szöveg után
+          villan be. Ezért a banner összes képe láthatatlanul végig az
+          oldalon marad, a dián lévő képek pedig szinkron dekódolódnak. */}
+      <div aria-hidden className="pointer-events-none absolute left-0 top-0 h-px w-px overflow-hidden opacity-0">
+        {["/hero-bride-cut.webp", ...HERO_PHONE_IMAGES].map((src) => (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img key={src} src={src} alt="" decoding="sync" />
+        ))}
+      </div>
+
       {/* A dia teljes tartalma egyben úszik be jobbról – a szöveg, az ajánlat
           és a kép együtt mozog, így semmi nem ugrál külön. A vetítésvezérlő
           kívül marad, az helyben áll. */}
@@ -293,15 +328,15 @@ export function HeroCarousel() {
         className="hero-slide-in hero-slide-fullscreen relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
       >
         <div
-          className={`max-w-[54%] self-center pb-0 md:max-w-none ${
-            silver ? "md:-translate-y-8 md:translate-x-10" : "hero-text-col pb-48 md:self-auto md:pb-10"
+          className={`max-w-[54%] self-center md:max-w-none ${
+            silver ? "md:-translate-y-8 md:translate-x-10" : "md:self-auto md:pb-10"
           }`}
         >
           {/* A cím és a leírás a képre kerül, ha átfednek */}
           <div className="relative z-10">
             <h1
-              className={`hero-title font-heading leading-tight tracking-tight sm:text-[2.725rem] ${
-                silver ? "text-[2.3125rem] md:text-[4.6rem]" : "hero-title-boost text-[2.0625rem]"
+              className={`hero-title font-heading leading-tight tracking-tight sm:text-[2.725rem] md:text-[4.6rem] ${
+                silver ? "text-[2.3125rem]" : "hero-title-boost text-[2.0625rem]"
               }`}
               style={{
                 fontWeight: 950,
@@ -312,34 +347,40 @@ export function HeroCarousel() {
               <span className={t.lead}>{slide.lead}</span>{" "}
               <span className={t.accent}>{slide.accent}</span>
             </h1>
-            <p className={`mt-3 max-w-md text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
+            <p className={`mt-3 max-w-md text-base sm:text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
 
             {/* Az 1. dián nincs ajánlatkártya: a szöveg alatt két gomb áll –
                 mobilon egymás alatt (a keskeny hasábnál kicsit szélesebben),
                 weben egymás mellett. A színek mindkét méretben azonosak. */}
             {slide.secondaryCta && (
               <div className="mt-5 flex w-fit flex-col gap-2.5 md:mt-8 md:w-auto md:flex-row md:items-start md:gap-3">
+                {loggedIn === false && (
+                  <Link
+                    href="/auth/register"
+                    className={`${CTA_SIZE} border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10`}
+                  >
+                    Regisztráció
+                  </Link>
+                )}
                 <Link
                   href={offer.href}
                   onClick={(e) => scrollToAnchor(e, offer.href)}
-                  className="hero-offer-cta inline-flex h-10 items-center justify-center gap-1.5 rounded-xl px-4 text-[13px] font-bold text-white transition-colors md:h-11 md:px-8 md:text-base"
+                  className={`hero-offer-cta ${CTA_SIZE} text-white`}
                   style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                 >
                   {offer.cta}
-                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                  {/* Az 1. dián a gomb lefelé, a kategóriákhoz gördít */}
+                  <ArrowDown className="h-4 w-4" />
                 </Link>
-                <ProviderRegisterButton className="h-10 w-full cursor-pointer rounded-xl border border-[#C65EA5] bg-transparent px-4 text-[13px] font-bold text-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5] md:h-11 md:w-auto md:px-8 md:text-base" />
               </div>
             )}
           </div>
 
-          {/* A kiemelt ajánlat – csak a 2. dián. Kis telefonon kiemeljük a
-              szövegfolyamból: a banner bal alsó sarkába kerül, a jobbra
-              igazított képre lógva (z-10 miatt a kép fölött). A nagyobb
-              telefonokon (380px-től) és weben (md-től) visszatér a szöveg
-              alá, különben elszakadna a címtől a magas banner alján. */}
+          {/* A kiemelt ajánlat – csak a 2. dián. Mindig közvetlenül az alcím
+              alatt áll; mobilon szélesebb a szövegoszlopnál, így ha odaér,
+              rálóg a jobbra igazított képre (z-10 miatt a kép előtt). */}
           {!silver && (
-            <div className="hero-offer-card absolute bottom-[136px] left-4 z-10 w-[56%] max-w-[208px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
+            <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
               {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
                   ajánlat és alatta a csomagok felsorolása */}
               <p
@@ -367,11 +408,11 @@ export function HeroCarousel() {
               <Link
                 href={offer.href}
                 onClick={(e) => scrollToAnchor(e, offer.href)}
-                className="hero-offer-cta mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white transition-colors md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-base"
+                className={`hero-offer-cta mt-2.5 md:mt-4 ${CTA_SIZE} text-white`}
                 style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
               >
                 {offer.cta}
-                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           )}
@@ -419,6 +460,8 @@ export function HeroCarousel() {
               <img
                 src="/hero-bride-cut.webp"
                 alt={slide.alt}
+                fetchPriority="high"
+                decoding="sync"
                 className={`absolute bottom-0 block w-auto max-w-none object-contain object-bottom ${
                   silver
                     ? "right-0 h-[98vw] md:inset-x-0 md:mx-auto md:h-full"
