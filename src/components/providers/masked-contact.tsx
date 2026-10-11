@@ -135,12 +135,15 @@ export function LoginGateLink({
   );
 }
 
-function LoginRequiredDialog({
+export function LoginRequiredDialog({
   onClose,
   message = "A szolgáltatók teljes elérhetőségét csak regisztrált felhasználók láthatják.",
+  footer,
 }: {
   onClose: () => void;
   message?: string;
+  /** A gombok alatt megjelenő kiegészítés (pl. telefonos elérhetőség). */
+  footer?: React.ReactNode;
 }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -192,11 +195,12 @@ function LoginRequiredDialog({
           </a>
           <a
             href="/auth/register?type=visitor"
-            className="w-full border border-[#84AAA6] text-[#84AAA6] hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors"
+            className="w-full border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10 font-semibold py-2.5 rounded-lg transition-colors"
           >
             Regisztrálok látogatóként
           </a>
         </div>
+        {footer}
       </div>
     </div>,
     document.body,
