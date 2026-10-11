@@ -1921,23 +1921,33 @@ html.a11y-underline a { text-decoration: underline !important; }
   .prm-root .prm-tl-dot { transform: scale(1); animation: none; }
 }
 
-/* ── Chat beviteli mező: domború üveg ──────────────────────────────────
-   A Claude iOS app beviteli dobozát követi (képernyőképről mérve):
-   – a kitöltés szinte az oldal színe (törtfehér, kissé áttetsző), nem
-     tiszta fehér;
-   – színes szegély nincs, csak egy hajszálvékony semleges kontúr;
-   – a domborúságot a belső fények adják: a felső és az alsó él belső
-     oldalán tiszta fehér csík, a szélek felé egy árnyalattal sötétebb,
-     középen világosabb kitöltés;
-   – kívül nagyon halvány, széles árnyék, lefelé valamivel erősebb. */
+/* ── Chat beviteli mező: iOS 27 Liquid Glass (Regular) ─────────────────
+   Az értékek a seunghan91/ios27-design-system „.ios27-liquid-glass-me”
+   receptjéből valók, ami az Apple iOS 27 UI Kitjéből (27.0.2) mért, az
+   alapértelmezett átlátszóságon (0.5):
+   – homályosítás: blur(5.4px) saturate(1.8) – a natív anyagról mérve;
+   – kitöltés: 73.5%-os fehér, rajta szürke (#bfbfbf) fátyol (a kit 10%-a
+     helyett 5% – a mintán a doboz egy hajszállal világosabb az oldalnál);
+   – perem: 0.5px-es, elmosás nélküli világosszürke gyűrű (#dbdbdb);
+   – a „megvilágított” él: két belső árnyék a felső és az alsó élen,
+     a formán túlra tolva;
+   – sarok: 34px.
+   Két eltérés, a Claude app képernyőképén mértek alapján: a kit külső
+   árnyéka (0 8px 48px, 25%) ott jóval halványabb, a belső árnyékok
+   teljes erővel pedig a böngészőben sötét csíkot rajzolnak az élre (a
+   repó szerint a Figma-hatás CSS-átirata csak közelítés) – ezért
+   halványítva vannak, mellettük a mért fehér élfénnyel. */
 .chat-composer-glass {
-  background-color: rgba(251, 251, 250, 0.82);
+  border-radius: 34px;
+  background-color: rgba(255, 255, 255, 0.735);
+  background-image: linear-gradient(rgba(191, 191, 191, 0.05), rgba(191, 191, 191, 0.05));
+  -webkit-backdrop-filter: blur(5.4px) saturate(1.8);
+  backdrop-filter: blur(5.4px) saturate(1.8);
   box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 1),
-    inset 0 10px 10px -8px rgba(255, 255, 255, 0.9),
-    inset 0 -1.5px 0 rgba(255, 255, 255, 1),
-    inset 0 0 12px rgba(0, 0, 0, 0.03),
-    0 0 0 0.5px rgba(0, 0, 0, 0.16),
-    0 8px 20px rgba(0, 0, 0, 0.06),
-    0 0 12px rgba(0, 0, 0, 0.03);
+    0 8px 48px rgba(0, 0, 0, 0.08),
+    0 0 0 0.5px rgb(219, 219, 219),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1.5px 0 rgba(255, 255, 255, 0.9),
+    inset 0 40px 10px -40px rgba(40, 40, 40, 0.08),
+    inset 0 -40px 10px -40px rgba(40, 40, 40, 0.08);
 }

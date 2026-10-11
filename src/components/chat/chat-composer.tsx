@@ -58,10 +58,9 @@ export function ChatComposer({
       <div ref={boxRef} className="absolute inset-x-0 bottom-0 px-3 pb-3 pt-2">
       <form
         onSubmit={onSubmit}
-        /* Domború, szegély nélküli üveg: felül világosabb, alul egy árnyalattal
-           sötétebb kitöltés, a belső élen fénycsík (fent) és halvány árnyék
-           (lent); kívül csak egy nagyon lágy árnyék. */
-        className="chat-composer-glass rounded-[28px] px-4 pb-2.5 pt-3 backdrop-blur-2xl backdrop-saturate-150"
+        /* iOS 27 Liquid Glass – a recept a globals.css .chat-composer-glass
+           szabályában. */
+        className="chat-composer-glass px-4 pb-2.5 pt-3"
       >
         <textarea
           ref={textareaRef}
