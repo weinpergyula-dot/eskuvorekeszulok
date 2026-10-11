@@ -75,7 +75,7 @@ export function ChatComposer({
           placeholder={placeholder}
           rows={1}
           aria-label="Üzenet"
-          className="block w-full resize-none overflow-y-auto border-0 bg-transparent p-0 text-base leading-relaxed text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-0"
+          className="block w-full resize-none overflow-y-auto border-0 bg-transparent p-0 text-[17px] leading-relaxed text-gray-900 placeholder:text-[#8B8B87] focus:outline-none focus:ring-0"
           style={{ maxHeight: `${MAX_HEIGHT}px` }}
         />
         <div className="mt-2 flex items-center justify-end">

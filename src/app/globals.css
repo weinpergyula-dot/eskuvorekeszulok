@@ -1921,17 +1921,23 @@ html.a11y-underline a { text-decoration: underline !important; }
   .prm-root .prm-tl-dot { transform: scale(1); animation: none; }
 }
 
-/* ── Chat beviteli mező: domború, szegély nélküli üveg ──────────────────
-   A Claude iOS app beviteli dobozának mintájára. Nincs szegélyszín: a
-   doboz formáját a felülről lefelé halványodó fehér kitöltés és a belső
-   fények adják (felső él: fehér csík, alsó él: halvány árnyék), kívül
-   pedig csak egy nagyon könnyű, szétterülő árnyék. */
+/* ── Chat beviteli mező: domború üveg ──────────────────────────────────
+   A Claude iOS app beviteli dobozát követi (képernyőképről mérve):
+   – a kitöltés szinte az oldal színe (törtfehér, kissé áttetsző), nem
+     tiszta fehér;
+   – színes szegély nincs, csak egy hajszálvékony semleges kontúr;
+   – a domborúságot a belső fények adják: a felső és az alsó él belső
+     oldalán tiszta fehér csík, a szélek felé egy árnyalattal sötétebb,
+     középen világosabb kitöltés;
+   – kívül nagyon halvány, széles árnyék, lefelé valamivel erősebb. */
 .chat-composer-glass {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(250, 250, 250, 0.78) 100%);
+  background-color: rgba(251, 251, 250, 0.82);
   box-shadow:
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.035),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.6),
-    0 6px 22px -10px rgba(0, 0, 0, 0.12);
+    inset 0 1.5px 0 rgba(255, 255, 255, 1),
+    inset 0 10px 10px -8px rgba(255, 255, 255, 0.9),
+    inset 0 -1.5px 0 rgba(255, 255, 255, 1),
+    inset 0 0 12px rgba(0, 0, 0, 0.03),
+    0 0 0 0.5px rgba(0, 0, 0, 0.16),
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 0 12px rgba(0, 0, 0, 0.03);
 }
