@@ -29,7 +29,7 @@ export function GroupQuoteCta() {
                 Csoportos ajánlatkérés
               </span>
             </div>
-            <h2 className="mt-4 font-heading text-2xl font-bold leading-tight text-gray-900 sm:text-[1.75rem]">
+            <h2 className="mt-4 font-heading text-xl font-bold leading-snug text-gray-900 sm:text-[1.375rem]">
               Nem akarsz egyesével ajánlatot kérni?
             </h2>
             <p className="mt-2 text-base leading-relaxed text-gray-600">
