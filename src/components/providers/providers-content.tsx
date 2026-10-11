@@ -333,6 +333,11 @@ export function ProvidersContent({
      kerül egy kiemelt sávként, és a darabszám is számol vele. */
   const showHouseOffer = category === HOUSE_CATEGORY;
   const resultCount = filtered.length + (showHouseOffer ? 1 : 0);
+  /* A főoldali szekciócím a darabszámot is mutatja (lásd
+     ProvidersSectionTitle) – a lista tetején ott a lapozó áll helyette. */
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("eskuvo:count", { detail: resultCount }));
+  }, [resultCount]);
   const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5";
 
   // Pagination counts featured + normal together; featured stay at the front.
@@ -355,6 +360,42 @@ export function ProvidersContent({
     pages.push(totalPages);
     return pages;
   })();
+
+  /* A lapozó: a lista alján, a főoldalon a lista tetején is (ott a
+     találatszám helyén – a darabszám a szekció címébe került). */
+  const renderPager = (className: string) => totalPages > 1 ? (
+    <div className={`flex items-center gap-1 flex-wrap ${className}`}>
+      <button
+        onClick={() => goToPage(Math.max(1, page - 1))}
+        disabled={page === 1}
+        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+        aria-label="Előző oldal"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+      {pageNumbers.map((n, i) =>
+        n === "…" ? (
+          <span key={`e-${i}`} className="px-2 text-gray-400 select-none">…</span>
+        ) : (
+          <button
+            key={n}
+            onClick={() => goToPage(n)}
+            className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#84AAA6] border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
+          >
+            {n}
+          </button>
+        ),
+      )}
+      <button
+        onClick={() => goToPage(Math.min(totalPages, page + 1))}
+        disabled={page === totalPages}
+        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+        aria-label="Következő oldal"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </button>
+    </div>
+  ) : null;
 
   const pillCls = (active: boolean) =>
     cn(
@@ -421,7 +462,9 @@ export function ProvidersContent({
         <div ref={listTopRef} className="mb-6 scroll-mt-24">
           {/* Desktop: count left, page size + view + sort right */}
           <div className="hidden lg:flex items-center justify-between gap-3">
-            <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>
+            {hideCategoryPills
+              ? <div>{renderPager("justify-start")}</div>
+              : <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>}
             <div className="flex items-stretch gap-2">
               <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
@@ -453,8 +496,11 @@ export function ProvidersContent({
           </div>
         ) : (
           <>
-            {/* Mobile: result count above the list */}
-            <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>
+            {/* Mobile: result count above the list – a főoldalon helyette a
+                lapozó áll (a darabszám ott a szekció címében van). */}
+            {hideCategoryPills
+              ? <div className="lg:hidden mb-4">{renderPager("justify-center")}</div>
+              : <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>}
             {/* Featured (on this page) on top */}
             {pageFeatured.length > 0 && (
               <section className="mb-6">
@@ -486,39 +532,7 @@ export function ProvidersContent({
               </div>
             )}
 
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-1 mt-8 flex-wrap">
-                    <button
-                      onClick={() => goToPage(Math.max(1, page - 1))}
-                      disabled={page === 1}
-                      className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                      aria-label="Előző oldal"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </button>
-                    {pageNumbers.map((n, i) =>
-                      n === "…" ? (
-                        <span key={`e-${i}`} className="px-2 text-gray-400 select-none">…</span>
-                      ) : (
-                        <button
-                          key={n}
-                          onClick={() => goToPage(n)}
-                          className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#84AAA6] border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
-                        >
-                          {n}
-                        </button>
-                      ),
-                    )}
-                    <button
-                      onClick={() => goToPage(Math.min(totalPages, page + 1))}
-                      disabled={page === totalPages}
-                      className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                      aria-label="Következő oldal"
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                )}
+            {renderPager("justify-center mt-8")}
           </>
         )}
       </div>
