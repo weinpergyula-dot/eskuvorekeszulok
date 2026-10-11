@@ -15,16 +15,18 @@ function ContactItem({
   value,
   href,
   external = false,
+  fullyHidden = false,
 }: {
   icon: React.ReactNode;
   value: string;
   href: string;
   external?: boolean;
+  fullyHidden?: boolean;
 }) {
   return (
     <div className="flex gap-3 items-center">
       <span className="shrink-0">{icon}</span>
-      <MaskedContact value={value}>
+      <MaskedContact value={value} fullyHidden={fullyHidden}>
         <a
           href={href}
           target={external ? "_blank" : undefined}
@@ -133,6 +135,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                     icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
                     value={provider.email}
                     href={`mailto:${provider.email}`}
+                    fullyHidden
                   />
                 )}
                 {provider.website && (
@@ -141,6 +144,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                     value={provider.website}
                     href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
                     external
+                    fullyHidden
                   />
                 )}
               </div>

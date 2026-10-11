@@ -37,18 +37,21 @@ export function useIsLoggedIn(): boolean | null {
 }
 
 /* ── Takart elérhetőség ─────────────────────────────────────────────────
-   Kijelentkezett látogatónak az érték első fele látszik, a második fele
-   helyén elmosott kitöltés áll (a valódi karakterek nem kerülnek a
+   Kijelentkezett látogatónak az érték első fele látszik (`fullyHidden`
+   esetén semmi), a takart rész helyén elmosott kitöltés áll (a valódi karakterek nem kerülnek a
    DOM-ba), mögötte a „Mutat” gomb a tájékoztató ablakot nyitja. */
 export function MaskedContact({
   value,
   className = "text-base text-gray-900 break-all",
   linkColor = "text-[#84AAA6]",
+  fullyHidden = false,
   children,
 }: {
   value: string;
   className?: string;
   linkColor?: string;
+  /** Igaz esetén semmi sem látszik az értékből, az egész el van mosva. */
+  fullyHidden?: boolean;
   /** Bejelentkezve ez jelenik meg (pl. kattintható link). */
   children: React.ReactNode;
 }) {
@@ -57,7 +60,7 @@ export function MaskedContact({
 
   if (loggedIn) return <>{children}</>;
 
-  const half = Math.ceil(value.length / 2);
+  const half = fullyHidden ? 0 : Math.ceil(value.length / 2);
   const visible = value.slice(0, half);
   const hiddenLen = value.length - half;
 
