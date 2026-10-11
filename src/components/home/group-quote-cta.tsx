@@ -13,31 +13,32 @@ export function GroupQuoteCta() {
   return (
     <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
       <div className="chat-composer-glass relative isolate overflow-hidden px-5 py-6 sm:px-7 sm:py-7">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-          <div className="flex flex-col items-center gap-3 text-center sm:flex-1">
-            {/* Figyelemfelhívó ikon: teli teal kör, a szöveg fölött középen. */}
-            <span
-              aria-hidden
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#84AAA6]"
-            >
-              <Send className="h-5 w-5 text-white" strokeWidth={2} />
-            </span>
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-                Nem akarsz egyesével ajánlatot kérni?
-              </h2>
-              <p className="mt-1.5 text-base leading-relaxed text-gray-800">
-                Küldj egyetlen ajánlatkérést az általad választott szolgáltatóknak.
-              </p>
-            </div>
+        {/* Figyelemfelhívó ikon: teli teal kör, felül középen. */}
+        <span
+          aria-hidden
+          className="mx-auto mb-4 grid h-11 w-11 place-items-center rounded-full bg-[#84AAA6]"
+        >
+          <Send className="h-5 w-5 text-white" strokeWidth={2} />
+        </span>
+
+        {/* Két hasáb: balra a szövegek, jobbra a gomb. Kijelentkezve a gomb
+            a tájékoztató ablakot nyitja (LoginGateLink). */}
+        <div className="flex items-center justify-between gap-4 sm:gap-8">
+          <div className="min-w-0">
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+              Nem akarsz egyesével ajánlatot kérni?
+            </h2>
+            <p className="mt-1.5 text-base leading-relaxed text-gray-800">
+              Küldj egyetlen ajánlatkérést az általad választott szolgáltatóknak.
+            </p>
           </div>
 
           <LoginGateLink
             href="/profil?tab=quotes"
             message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 self-center rounded-xl bg-[#84AAA6] px-6 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:self-auto"
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#84AAA6] px-4 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:px-6"
           >
-            Csoportos ajánlatkérés
+            Megnézem
             <ArrowRight className="h-4 w-4" />
           </LoginGateLink>
         </div>
