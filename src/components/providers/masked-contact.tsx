@@ -92,10 +92,22 @@ export function MaskedContact({
 /* ── Chat indítása ──────────────────────────────────────────────────────
    Bejelentkezve sima link a profil Chat menüpontjára; kijelentkezve a
    kattintás nem navigál, hanem a tájékoztató ablakot nyitja. */
-export function ChatLink({
+export function ChatLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  return (
+    <LoginGateLink
+      message="A chat csak regisztrált felhasználók számára érhető el."
+      {...props}
+    />
+  );
+}
+
+/** Link, ami kijelentkezett látogatónak navigálás helyett a tájékoztató
+    ablakot nyitja (`message` az ablak első mondata). */
+export function LoginGateLink({
   onClick,
+  message,
   ...props
-}: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+}: React.AnchorHTMLAttributes<HTMLAnchorElement> & { message: string }) {
   const loggedIn = useIsLoggedIn();
   const [open, setOpen] = useState(false);
 
@@ -115,7 +127,7 @@ export function ChatLink({
       />
       {open && (
         <LoginRequiredDialog
-          message="A chat csak regisztrált felhasználók számára érhető el."
+          message={message}
           onClose={() => setOpen(false)}
         />
       )}

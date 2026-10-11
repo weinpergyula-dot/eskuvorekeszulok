@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ArrowRight, Send } from "lucide-react";
+import { LoginGateLink } from "@/components/providers/masked-contact";
 
 /**
  * Csoportos ajánlatkérés — a szolgáltatói listázás előtt álló sáv a
@@ -32,13 +32,14 @@ export function GroupQuoteCta() {
             </div>
           </div>
 
-          <Link
+          <LoginGateLink
             href="/profil?tab=quotes"
+            message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
             className="inline-flex h-12 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#84AAA6] px-6 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:self-auto"
           >
             Csoportos ajánlatkérés
             <ArrowRight className="h-4 w-4" />
-          </Link>
+          </LoginGateLink>
         </div>
       </div>
     </section>
