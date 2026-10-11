@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { ArrowRight, Pause, Play } from "lucide-react";
-import { ProviderRegisterButton } from "./provider-register-button";
+import { Pause, Play } from "lucide-react";
+import { useIsLoggedIn } from "@/components/providers/masked-contact";
 
 /**
  * A főoldal bannere. A felépítés, a méretezés és a megjelenítő elemek
@@ -134,6 +134,11 @@ const SLIDES: Slide[] = [
 
 const INTERVAL_MS = 6000;
 
+/* A banner összes gombja (mindkét dián) ugyanakkora: azonos magasság,
+   szélesség és betűméret. */
+const CTA_SIZE =
+  "inline-flex h-10 w-[140px] items-center justify-center rounded-xl text-[13px] font-bold transition-colors md:h-11 md:w-[200px] md:text-base";
+
 /**
  * Egy készülék a banneren. A ház térbeli: a megdöntött telefonnak a
  * vastagsága (oldalkávája) is látszik – az előlap mögé rétegzett, azonos
@@ -189,6 +194,8 @@ export function HeroCarousel() {
     () => false
   );
   const [override, setOverride] = useState<boolean | null>(null);
+  // A Regisztráció gomb csak kijelentkezett látogatónak jelenik meg.
+  const loggedIn = useIsLoggedIn();
   const paused = override ?? reduced;
   const setPaused = (v: boolean) => setOverride(v);
 
@@ -322,13 +329,19 @@ export function HeroCarousel() {
                 <Link
                   href={offer.href}
                   onClick={(e) => scrollToAnchor(e, offer.href)}
-                  className="hero-offer-cta inline-flex h-10 items-center justify-center gap-1.5 rounded-xl px-4 text-[13px] font-bold text-white transition-colors md:h-11 md:px-8 md:text-base"
+                  className={`hero-offer-cta ${CTA_SIZE} text-white`}
                   style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                 >
                   {offer.cta}
-                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 </Link>
-                <ProviderRegisterButton className="h-10 w-full cursor-pointer rounded-xl border border-[#C65EA5] bg-transparent px-4 text-[13px] font-bold text-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5] md:h-11 md:w-auto md:px-8 md:text-base" />
+                {loggedIn === false && (
+                  <Link
+                    href="/auth/register"
+                    className={`${CTA_SIZE} border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10`}
+                  >
+                    Regisztráció
+                  </Link>
+                )}
               </div>
             )}
           </div>
@@ -367,11 +380,10 @@ export function HeroCarousel() {
               <Link
                 href={offer.href}
                 onClick={(e) => scrollToAnchor(e, offer.href)}
-                className="hero-offer-cta mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white transition-colors md:mt-4 md:rounded-xl md:px-5 md:py-3 md:text-base"
+                className={`hero-offer-cta mt-2.5 md:mt-4 ${CTA_SIZE} text-white`}
                 style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
               >
                 {offer.cta}
-                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
               </Link>
             </div>
           )}
