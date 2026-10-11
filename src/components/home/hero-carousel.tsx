@@ -307,8 +307,8 @@ export function HeroCarousel() {
           {/* A cím és a leírás a képre kerül, ha átfednek */}
           <div className="relative z-10">
             <h1
-              className={`hero-title font-heading leading-tight tracking-tight sm:text-[2.725rem] ${
-                silver ? "text-[2.3125rem] md:text-[4.6rem]" : "hero-title-boost text-[2.0625rem]"
+              className={`hero-title font-heading leading-tight tracking-tight sm:text-[2.725rem] md:text-[4.6rem] ${
+                silver ? "text-[2.3125rem]" : "hero-title-boost text-[2.0625rem]"
               }`}
               style={{
                 fontWeight: 950,
@@ -319,7 +319,7 @@ export function HeroCarousel() {
               <span className={t.lead}>{slide.lead}</span>{" "}
               <span className={t.accent}>{slide.accent}</span>
             </h1>
-            <p className={`mt-3 max-w-md text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
+            <p className={`mt-3 max-w-md text-base sm:text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
 
             {/* Az 1. dián nincs ajánlatkártya: a szöveg alatt két gomb áll –
                 mobilon egymás alatt (a keskeny hasábnál kicsit szélesebben),
