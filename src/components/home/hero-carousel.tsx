@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { preload } from "react-dom";
 import { ArrowDown, ArrowRight, Pause, Play } from "lucide-react";
 import { useIsLoggedIn } from "@/components/providers/masked-contact";
 
@@ -134,6 +135,13 @@ const SLIDES: Slide[] = [
 
 const INTERVAL_MS = 6000;
 
+/** A 2. dia telefonjaiban megjelenő minták (előtöltéshez is). */
+const HERO_PHONE_IMAGES = [
+  "/meghivo/slide-basic.webp",
+  "/meghivo/slide-silver.webp",
+  "/meghivo/slide-premium.webp",
+];
+
 /* A banner összes gombja (mindkét dián) ugyanakkora: azonos magasság,
    szélesség és betűméret. Mobilon a magasság és a betűméret a csoportos
    ajánlatkérés gombjáéval egyezik. */
@@ -186,6 +194,13 @@ const subscribeReduced = (cb: () => void) => {
 };
 
 export function HeroCarousel() {
+  /* A banner képei ne várjanak: a menyasszony (az 1. dia, rögtön látszik)
+     magas prioritással, a 2. dia telefonjainak képei pedig már most
+     töltődjenek, ne csak a diaváltáskor. A preload a szerveren renderelt
+     HTML fejlécébe kerül. */
+  preload("/hero-bride-cut.webp", { as: "image", fetchPriority: "high" });
+  for (const src of HERO_PHONE_IMAGES) preload(src, { as: "image", fetchPriority: "low" });
+
   const [index, setIndex] = useState(0);
   // Kevesebb mozgás esetén a vetítés alapból áll, de a play gombbal
   // elindítható (az override felülírja a rendszerbeállítást).
@@ -435,6 +450,7 @@ export function HeroCarousel() {
               <img
                 src="/hero-bride-cut.webp"
                 alt={slide.alt}
+                fetchPriority="high"
                 className={`absolute bottom-0 block w-auto max-w-none object-contain object-bottom ${
                   silver
                     ? "right-0 h-[98vw] md:inset-x-0 md:mx-auto md:h-full"
