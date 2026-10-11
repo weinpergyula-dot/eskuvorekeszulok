@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ChatComposer, COMPOSER_SCROLL_PAD } from "@/components/chat/chat-composer";
+import { lockPageScroll } from "@/lib/scroll-lock";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -495,18 +496,19 @@ function ChatView({
 
   // Scroll to bottom on new messages — on desktop scroll only the inner container
   useEffect(() => {
-    if (window.innerWidth >= 640) {
-      const el = scrollAreaRef.current;
-      if (el) el.scrollTop = el.scrollHeight;
-    } else {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    /* Mobilon is csak az üzenetlista görög: a scrollIntoView az egész
+       oldalt is mozgatná, és a chat mögött kilátszana a lábléc. */
+    const el = scrollAreaRef.current;
+    if (!el) return;
+    if (window.innerWidth >= 640) el.scrollTop = el.scrollHeight;
+    else el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   // Lock body scroll on mobile via chat-mode class; desktop is fixed-height so no page scroll needed
   useEffect(() => {
     document.body.classList.add("chat-mode");
-    return () => { document.body.classList.remove("chat-mode"); };
+    const unlock = lockPageScroll();
+    return () => { document.body.classList.remove("chat-mode"); unlock(); };
   }, []);
 
   // Mobile: resize container to match visual viewport so keyboard doesn't hide input
@@ -764,7 +766,7 @@ function ChatView({
       )}
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className={`flex-1 min-h-0 overflow-y-auto px-4 pt-5 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
+      <div ref={scrollAreaRef} className={`flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pt-5 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
             <MessageCircle className="h-12 w-12 mb-3 text-gray-200" strokeWidth={1} />

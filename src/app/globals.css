@@ -348,10 +348,19 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 
 /* ── Chat mode: lock body scroll on mobile ───────────── */
-/* The fixed chat overlay covers everything; prevent background scroll. */
+/* The fixed chat overlay covers everything; prevent background scroll.
+   (Az iOS Safarin a tényleges zárat a lockPageScroll() adja.) A lábléc és
+   a lebegő sarokgombok (zene, akadálymentesítés) chat közben egyáltalán
+   ne látszódjanak – a rugalmas görgetésnél se villanjanak be. */
 @media (max-width: 639px) {
+  html:has(body.chat-mode),
   body.chat-mode {
     overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body.chat-mode footer,
+  body.chat-mode .floating-corner {
+    display: none;
   }
 }
 

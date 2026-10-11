@@ -18,6 +18,7 @@ import {
 import { RecipientPicker } from "./quote-recipient-picker";
 import { MeghivoQuoteForm } from "./meghivo-quote-form";
 import { ChatComposer, COMPOSER_SCROLL_PAD } from "@/components/chat/chat-composer";
+import { lockPageScroll } from "@/lib/scroll-lock";
 
 const SYSTEM_PREFIX = "__SYSTEM__:";
 const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
@@ -382,7 +383,8 @@ export function QuoteChat({
   // Lock body scroll on mobile
   useEffect(() => {
     document.body.classList.add("chat-mode");
-    return () => { document.body.classList.remove("chat-mode"); };
+    const unlock = lockPageScroll();
+    return () => { document.body.classList.remove("chat-mode"); unlock(); };
   }, []);
 
   // Nagyított kép: Escape zárja
@@ -413,14 +415,13 @@ export function QuoteChat({
     };
   }, []);
 
-  // Scroll to bottom — desktop scrolls the inner container, mobile uses scrollIntoView
   useEffect(() => {
-    if (window.innerWidth >= 640) {
-      const el = scrollAreaRef.current;
-      if (el) el.scrollTop = el.scrollHeight;
-    } else {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    /* Mobilon is csak az üzenetlista görög: a scrollIntoView az egész
+       oldalt is mozgatná, és a chat mögött kilátszana a lábléc. */
+    const el = scrollAreaRef.current;
+    if (!el) return;
+    if (window.innerWidth >= 640) el.scrollTop = el.scrollHeight;
+    else el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   // Mark unread as read — runs on messages change to avoid race condition with initialMessages
@@ -594,7 +595,7 @@ export function QuoteChat({
       </div>
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className={`flex-1 min-h-0 overflow-y-auto px-4 pt-5 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
+      <div ref={scrollAreaRef} className={`flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pt-5 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
         {/* Original request message shown as first chat bubble (standalone block) */}
         {(requestContext?.message || requestContext?.imageUrl) && (
           <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
