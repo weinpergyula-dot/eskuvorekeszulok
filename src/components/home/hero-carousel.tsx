@@ -298,17 +298,11 @@ export function HeroCarousel() {
            (.hero-slide-fullscreen), így betöltéskor csak a banner látszik;
            fekvőben marad a szélességhez kötött érték. A szöveg mellette,
            függőlegesen középen fut. */
-        className={`hero-slide-in hero-slide-fullscreen relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10 ${
-          // Az 1. dián mobilon a szöveg sora kapja a teljes magasságot, hogy
-          // a banner aljához igazodhasson.
-          silver ? "grid-rows-[1fr_auto] md:grid-rows-none" : ""
-        }`}
+        className="hero-slide-in hero-slide-fullscreen relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
       >
         <div
-          className={`max-w-[54%] md:max-w-none ${
-            /* Az 1. dián mobilon a szöveg a banner aljához igazodik (a
-               vetítésvezérlő fölé), weben függőlegesen középen áll. */
-            silver ? "self-end pb-12 md:self-center md:pb-0 md:-translate-y-8 md:translate-x-10" : "hero-text-col self-center pb-48 md:self-auto md:pb-10"
+          className={`max-w-[54%] self-center md:max-w-none ${
+            silver ? "md:-translate-y-8 md:translate-x-10" : "hero-text-col pb-48 md:self-auto md:pb-10"
           }`}
         >
           {/* A cím és a leírás a képre kerül, ha átfednek */}
