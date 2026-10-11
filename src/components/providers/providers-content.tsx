@@ -334,7 +334,7 @@ export function ProvidersContent({
   const showHouseOffer = category === HOUSE_CATEGORY;
   const resultCount = filtered.length + (showHouseOffer ? 1 : 0);
   /* A főoldali szekciócím a darabszámot is mutatja (lásd
-     ProvidersSectionTitle) – a lista tetején ott a lapozó áll helyette. */
+     ProvidersSectionTitle). */
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("eskuvo:count", { detail: resultCount }));
   }, [resultCount]);
@@ -361,8 +361,7 @@ export function ProvidersContent({
     return pages;
   })();
 
-  /* A lapozó: a lista alján, a főoldalon a lista tetején is (ott a
-     találatszám helyén – a darabszám a szekció címébe került). */
+  /* A lapozó a lista alján. */
   const renderPager = (className: string) => totalPages > 1 ? (
     <div className={`flex items-center gap-1 flex-wrap ${className}`}>
       <button
@@ -405,9 +404,10 @@ export function ProvidersContent({
 
   return (
     <div>
-      <p className="text-base text-gray-700 mb-5">
-        {hideCategoryPills ? "Szűrj megyék szerint" : "Válassz kategóriát és szűrj megyék szerint"}
-      </p>
+      {/* A főoldalon nincs bevezető szöveg: a megyeszűrő magáért beszél. */}
+      {!hideCategoryPills && (
+        <p className="text-base text-gray-700 mb-5">Válassz kategóriát és szűrj megyék szerint</p>
+      )}
       <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
       {/* Desktop county sidebar (left, full height) */}
       <aside className="hidden lg:block lg:w-64 shrink-0">
@@ -462,9 +462,9 @@ export function ProvidersContent({
         <div ref={listTopRef} className="mb-6 scroll-mt-24">
           {/* Desktop: count left, page size + view + sort right */}
           <div className="hidden lg:flex items-center justify-between gap-3">
-            {hideCategoryPills
-              ? <div>{renderPager("justify-start")}</div>
-              : <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>}
+            {/* A főoldalon a darabszám a szekció címében van, itt üres hely
+                marad (a jobb oldali vezérlők így is jobbra zárnak). */}
+            {hideCategoryPills ? <div /> : <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>}
             <div className="flex items-stretch gap-2">
               <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
@@ -496,11 +496,9 @@ export function ProvidersContent({
           </div>
         ) : (
           <>
-            {/* Mobile: result count above the list – a főoldalon helyette a
-                lapozó áll (a darabszám ott a szekció címében van). */}
-            {hideCategoryPills
-              ? <div className="lg:hidden mb-4">{renderPager("justify-center")}</div>
-              : <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>}
+            {/* Mobile: result count above the list – a főoldalon nem kell, ott
+                a darabszám a szekció címében van. */}
+            {!hideCategoryPills && <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>}
             {/* Featured (on this page) on top */}
             {pageFeatured.length > 0 && (
               <section className="mb-6">
