@@ -5,6 +5,7 @@ import { Phone, Mail, Globe, MessageCircle, FileText } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
+import { MaskedContact } from "@/components/providers/masked-contact";
 import type { Provider } from "@/lib/types";
 
 type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
@@ -23,14 +24,16 @@ function ContactItem({
   return (
     <div className="flex gap-3 items-center">
       <span className="shrink-0">{icon}</span>
-      <a
-        href={href}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noopener noreferrer" : undefined}
-        className="text-base text-gray-900 hover:text-[#84AAA6] break-all cursor-pointer"
-      >
-        {value}
-      </a>
+      <MaskedContact value={value}>
+        <a
+          href={href}
+          target={external ? "_blank" : undefined}
+          rel={external ? "noopener noreferrer" : undefined}
+          className="text-base text-gray-900 hover:text-[#84AAA6] break-all cursor-pointer"
+        >
+          {value}
+        </a>
+      </MaskedContact>
     </div>
   );
 }

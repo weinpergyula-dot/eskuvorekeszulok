@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
+import { MaskedContact } from "@/components/providers/masked-contact";
 
 /* Galéria-csík: fix pixelméretek, hogy a Safari ne az aspect-ratio / lusta
    betöltés alapján számolja utólag a sáv szélességét (az iOS 27 óta ettől
@@ -619,6 +620,7 @@ function ContactRow({
   return (
     <div className="flex items-start gap-2.5">
       <span className="shrink-0 mt-0.5">{icon}</span>
+      <MaskedContact value={value} linkColor={linkColor}>
       {isLink ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noopener noreferrer" className={`text-base ${linkColor} hover:underline break-all`}>
           {value}
@@ -626,6 +628,7 @@ function ContactRow({
       ) : (
         <span className="text-base text-gray-900 break-all">{value}</span>
       )}
+      </MaskedContact>
     </div>
   );
 }
