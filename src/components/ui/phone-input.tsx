@@ -73,7 +73,7 @@ export function PhoneInput({
   if (!value && (p1 || p2 || p3)) { setP1(""); setP2(""); setP3(""); }
 
   return (
-    <div className="ios-glass-field flex items-center gap-2 rounded-xl px-3 h-14">
+    <div className="flex items-center gap-2 border border-gray-300 rounded-xl px-3 h-14 focus-within:border-[#84AAA6] bg-white transition-colors">
       <select
         value={countryCode}
         onChange={(e) => handleCountry(e.target.value)}

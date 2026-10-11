@@ -38,7 +38,7 @@ function FilterSelect({
       <button
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          "flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 ios-glass-field ios-press rounded-xl cursor-pointer",
+          "flex items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer",
           fullWidthMobile && "w-full justify-between",
         )}
       >
@@ -47,12 +47,12 @@ function FilterSelect({
       </button>
       {open && (
         <div className={cn(
-          "absolute right-0 top-full mt-1 max-h-72 overflow-y-auto ios-glass-menu z-30",
+          "absolute right-0 top-full mt-1 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30",
           fullWidthMobile ? "left-0 w-full" : "w-60",
         )}>
           <button
             onClick={() => { onChange(""); setOpen(false); }}
-            className={cn("ios-glass-menu-item flex items-center w-full text-left px-4 py-2.5 text-base transition-colors", !value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
+            className={cn("w-full text-left px-4 py-2.5 text-base transition-colors", !value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
           >
             {placeholder}
           </button>
@@ -60,7 +60,7 @@ function FilterSelect({
             <button
               key={opt.value}
               onClick={() => { onChange(opt.value); setOpen(false); }}
-              className={cn("ios-glass-menu-item flex items-center w-full text-left px-4 py-2.5 text-base transition-colors", value === opt.value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
+              className={cn("w-full text-left px-4 py-2.5 text-base transition-colors", value === opt.value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
             >
               {opt.label}
             </button>
@@ -83,12 +83,12 @@ function SortDropdown({ sortBy, setSortBy, fill = false }: { sortBy: SortOption;
   const label = sortBy === "default" ? "Alapértelmezett" : sortBy === "rating" ? "Értékelés alapján" : sortBy === "reviews" ? "Értékelések száma alapján" : "Látogatottság alapján";
   return (
     <div ref={ref} className={cn("relative", fill && "min-w-0")}>
-      <button onClick={() => setOpen((o) => !o)} className={cn("flex h-full items-center gap-2 px-3 py-1.5 text-base text-gray-700 ios-glass-field ios-press rounded-xl cursor-pointer", fill && "w-full justify-between")}>
+      <button onClick={() => setOpen((o) => !o)} className={cn("flex h-full items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer", fill && "w-full justify-between")}>
         <span className={cn(fill && "truncate")}>{label}</span>
         <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-56 ios-glass-menu z-30">
+        <div className="absolute right-0 top-full mt-1 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
           {([
             { value: "default", label: "Alapértelmezett" },
             { value: "rating",  label: "Értékelés alapján" },
@@ -98,7 +98,7 @@ function SortDropdown({ sortBy, setSortBy, fill = false }: { sortBy: SortOption;
             <button
               key={opt.value}
               onClick={() => { setSortBy(opt.value); setOpen(false); }}
-              className={`ios-glass-menu-item flex items-center w-full text-left px-4 py-2.5 text-base transition-colors ${sortBy === opt.value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
+              className={`w-full text-left px-4 py-2.5 text-base transition-colors ${sortBy === opt.value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
             >
               {opt.label}
             </button>
@@ -119,17 +119,17 @@ function PageSizeSelect({ pageSize, setPageSize }: { pageSize: number; setPageSi
   }, []);
   return (
     <div ref={ref} className="relative">
-      <button onClick={() => setOpen((o) => !o)} className="flex h-full items-center gap-2 px-3 py-1.5 text-base text-gray-700 ios-glass-field ios-press rounded-xl cursor-pointer whitespace-nowrap">
+      <button onClick={() => setOpen((o) => !o)} className="flex h-full items-center gap-2 px-3 py-1.5 text-base text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap">
         {pageSize} / oldal
         <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-36 ios-glass-menu z-30">
+        <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
           {[10, 50, 100].map((n) => (
             <button
               key={n}
               onClick={() => { setPageSize(n); setOpen(false); }}
-              className={`ios-glass-menu-item flex items-center w-full text-left px-4 py-2.5 text-base transition-colors ${pageSize === n ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
+              className={`w-full text-left px-4 py-2.5 text-base transition-colors ${pageSize === n ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
             >
               {n} / oldal
             </button>
@@ -143,11 +143,11 @@ function PageSizeSelect({ pageSize, setPageSize }: { pageSize: number; setPageSi
 function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setViewMode: (v: "grid" | "list") => void }) {
   // items-stretch on the parent makes these buttons match the sort button's height.
   return (
-    <div className="ios-glass-field flex items-stretch rounded-xl overflow-hidden">
-      <button onClick={() => setViewMode("grid")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "grid" ? "bg-[#84AAA6] text-white" : "bg-transparent text-gray-500 hover:bg-black/[0.04]"}`} aria-label="Csempés nézet">
+    <div className="flex items-stretch rounded-xl border border-gray-200 overflow-hidden">
+      <button onClick={() => setViewMode("grid")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "grid" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Csempés nézet">
         <LayoutGrid className="h-4 w-4" />
       </button>
-      <button onClick={() => setViewMode("list")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "list" ? "bg-[#84AAA6] text-white" : "bg-transparent text-gray-500 hover:bg-black/[0.04]"}`} aria-label="Listás nézet">
+      <button onClick={() => setViewMode("list")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "list" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Listás nézet">
         <List className="h-4 w-4" />
       </button>
     </div>

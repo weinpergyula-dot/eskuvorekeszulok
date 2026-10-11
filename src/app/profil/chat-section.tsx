@@ -161,7 +161,7 @@ function ChatSelect({
       <button
         type="button"
         onClick={() => { setOpen((v) => !v); setQuery(""); }}
-        className="ios-glass-field ios-press h-10 w-full flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-900 cursor-pointer"
+        className="h-10 w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-900 cursor-pointer hover:border-[#84AAA6] transition-colors"
       >
         <span className="flex items-center gap-1.5 truncate">
           <span className="text-gray-500 shrink-0">Szűrés:</span>
@@ -172,7 +172,7 @@ function ChatSelect({
         <ChevronDown className={cn("h-4 w-4 text-gray-400 shrink-0 transition-transform", open && "rotate-180")} />
       </button>
       {open && (
-        <div className="ios-glass-menu absolute z-30 top-full left-0 right-0 mt-1 overflow-hidden">
+        <div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
           {searchable && (
             <div className="p-2 border-b border-gray-100">
               <div className="relative">
@@ -193,7 +193,7 @@ function ChatSelect({
               type="button"
               onClick={() => { onChange(""); setOpen(false); setQuery(""); }}
               className={cn(
-                "ios-glass-menu-item flex items-center w-full text-left px-3 py-2 text-sm transition-colors cursor-pointer",
+                "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
                 !value ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
               )}
             >
@@ -205,7 +205,7 @@ function ChatSelect({
                 type="button"
                 onClick={() => { onChange(o.value); setOpen(false); setQuery(""); }}
                 className={cn(
-                  "ios-glass-menu-item flex items-center w-full text-left px-3 py-2 text-sm transition-colors cursor-pointer",
+                  "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
                   value === o.value ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
                 )}
               >
@@ -1156,7 +1156,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); resetPage(); }}
                   placeholder="Keresés neve alapján…"
-                  className="ios-glass-field w-full h-10 pl-9 pr-4 rounded-xl text-sm text-gray-900 placeholder:text-gray-400"
+                  className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
                 />
               </div>
               <div className="sm:w-64">
@@ -1282,7 +1282,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                     value={convSearchQuery}
                     onChange={(e) => setConvSearchQuery(e.target.value)}
                     placeholder="Keresés neve alapján…"
-                    className="ios-glass-field w-full h-10 pl-9 pr-4 rounded-xl text-sm text-gray-900 placeholder:text-gray-400"
+                    className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
                   />
                 </div>
                 {convAllCategories.length > 0 && (
