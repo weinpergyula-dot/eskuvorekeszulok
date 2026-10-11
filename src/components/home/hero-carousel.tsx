@@ -382,7 +382,7 @@ export function HeroCarousel() {
               telefonokon (380px-től) és weben (md-től) visszatér a szöveg
               alá, különben elszakadna a címtől a magas banner alján. */}
           {!silver && (
-            <div className="hero-offer-card absolute bottom-[136px] left-4 z-10 w-[56%] max-w-[208px] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
+            <div className="hero-offer-card absolute bottom-12 left-4 z-10 w-[13.5rem] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] sm:left-6 md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
               {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
                   ajánlat és alatta a csomagok felsorolása */}
               <p
