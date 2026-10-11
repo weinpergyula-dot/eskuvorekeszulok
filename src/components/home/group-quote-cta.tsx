@@ -12,31 +12,36 @@ import { LoginGateLink } from "@/components/providers/masked-contact";
 export function GroupQuoteCta() {
   return (
     <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
-      <div className="chat-composer-glass relative isolate overflow-hidden px-5 py-6 sm:px-7 sm:py-7">
-        {/* Figyelemfelhívó ikon: teli teal kör, felül középen. */}
-        <span
-          aria-hidden
-          className="mx-auto mb-4 grid h-11 w-11 place-items-center rounded-full bg-[#84AAA6]"
-        >
-          <Send className="h-5 w-5 text-white" strokeWidth={2} />
-        </span>
-
-        {/* Két hasáb: balra a szövegek, jobbra a gomb. Kijelentkezve a gomb
-            a tájékoztató ablakot nyitja (LoginGateLink). */}
-        <div className="flex items-center justify-between gap-4 sm:gap-8">
+      <div className="chat-composer-glass relative isolate overflow-hidden px-6 py-7 sm:px-10 sm:py-8">
+        {/* Mobilon egy oszlop, alul teljes szélességű gomb; gépen egy sor:
+            balra a szövegek, jobbra (függőlegesen középen) a gomb. */}
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-10">
           <div className="min-w-0">
-            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+            {/* Ikon + kis felirat egy sorban, a cím fölött. */}
+            <div className="flex items-center gap-3">
+              <span
+                aria-hidden
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#84AAA6]"
+              >
+                <Send className="h-[18px] w-[18px] text-white" strokeWidth={2} />
+              </span>
+              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6B8E8A]">
+                Csoportos ajánlatkérés
+              </span>
+            </div>
+            <h2 className="mt-4 font-heading text-2xl font-bold leading-tight text-gray-900 sm:text-[1.75rem]">
               Nem akarsz egyesével ajánlatot kérni?
             </h2>
-            <p className="mt-1.5 text-base leading-relaxed text-gray-800">
-              Küldj egyetlen ajánlatkérést az általad választott szolgáltatóknak.
+            <p className="mt-2 text-base leading-relaxed text-gray-600">
+              Küldj egyetlen ajánlatkérést a választott szolgáltatóknak.
             </p>
           </div>
 
+          {/* Kijelentkezve a gomb a tájékoztató ablakot nyitja (LoginGateLink). */}
           <LoginGateLink
             href="/profil?tab=quotes"
             message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#84AAA6] px-4 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:px-6"
+            className="inline-flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#84AAA6] px-7 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] md:w-auto"
           >
             Megnézem
             <ArrowRight className="h-4 w-4" />
