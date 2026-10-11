@@ -86,7 +86,47 @@ export function MaskedContact({
   );
 }
 
-function LoginRequiredDialog({ onClose }: { onClose: () => void }) {
+/* ── Chat indítása ──────────────────────────────────────────────────────
+   Bejelentkezve sima link a profil Chat menüpontjára; kijelentkezve a
+   kattintás nem navigál, hanem a tájékoztató ablakot nyitja. */
+export function ChatLink({
+  onClick,
+  ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const loggedIn = useIsLoggedIn();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <a
+        {...props}
+        onClick={(e) => {
+          if (loggedIn === false) {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpen(true);
+            return;
+          }
+          onClick?.(e);
+        }}
+      />
+      {open && (
+        <LoginRequiredDialog
+          message="A chat csak regisztrált felhasználók számára érhető el."
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </>
+  );
+}
+
+function LoginRequiredDialog({
+  onClose,
+  message = "A szolgáltatók teljes elérhetőségét csak regisztrált felhasználók láthatják.",
+}: {
+  onClose: () => void;
+  message?: string;
+}) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKey);
@@ -125,8 +165,7 @@ function LoginRequiredDialog({ onClose }: { onClose: () => void }) {
           Csak regisztrált felhasználóknak
         </h2>
         <p className="text-sm text-gray-600 mb-6">
-          A szolgáltatók teljes elérhetőségét csak regisztrált felhasználók láthatják.
-          Ha már regisztráltál, lépj be, ha még nem, regisztrálj látogatóként –
+          {message} Ha már regisztráltál, lépj be, ha még nem, regisztrálj látogatóként –
           1 perc alatt megvan.
         </p>
         <div className="flex flex-col gap-2">

@@ -5,7 +5,7 @@ import { Phone, Mail, Globe, MessageCircle, FileText } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
-import { MaskedContact } from "@/components/providers/masked-contact";
+import { ChatLink, MaskedContact } from "@/components/providers/masked-contact";
 import type { Provider } from "@/lib/types";
 
 type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
@@ -144,13 +144,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                   />
                 )}
               </div>
-              <a
+              <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
                 className="w-full flex items-center justify-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
-              </a>
+              </ChatLink>
             </div>
           </div>
         </div>
@@ -169,13 +169,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
             <p className="text-base font-semibold text-gray-900 mb-1">Chat {provider.full_name} nevű szolgáltatóval</p>
             <p className="text-sm text-gray-500">A chat a profilodon belüli Chat menüpontban folytatódik.</p>
           </div>
-          <a
+          <ChatLink
             href={`/profil?tab=chat&with=${provider.user_id}`}
             className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
           >
             <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
             Chat indítása
-          </a>
+          </ChatLink>
         </div>
       )}
 

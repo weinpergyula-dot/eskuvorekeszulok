@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
-import { MaskedContact } from "@/components/providers/masked-contact";
+import { ChatLink, MaskedContact } from "@/components/providers/masked-contact";
 
 /* Galéria-csík: fix pixelméretek, hogy a Safari ne az aspect-ratio / lusta
    betöltés alapján számolja utólag a sáv szélességét (az iOS 27 óta ettől
@@ -217,10 +217,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <a href={`/profil?tab=chat&with=${provider.user_id}`} className={`hidden sm:flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+          <ChatLink href={`/profil?tab=chat&with=${provider.user_id}`} className={`hidden sm:flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
             <MessageCircle className="h-3.5 w-3.5" />
             Chat indítása
-          </a>
+          </ChatLink>
           <a href={detailHref} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
             Részletek
           </a>
@@ -514,10 +514,10 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
           {/* Chat + Részletek grouped — always pushed to right */}
           <div className="flex items-center gap-2 ml-auto">
-            <a href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
+            <ChatLink href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               <MessageCircle className="h-3.5 w-3.5" />
               Chat indítása
-            </a>
+            </ChatLink>
             <a href={detailHref} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               Részletek
             </a>
