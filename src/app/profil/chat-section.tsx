@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText, SlidersHorizontal } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText, SlidersHorizontal } from "lucide-react";
 import { QuoteChat, ProviderChatLoader, type VisitorChat, type ProviderRequest } from "./quote-requests-section";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ChatComposer } from "@/components/chat/chat-composer";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -829,29 +830,15 @@ function ChatView({
 
       {/* Reply */}
       {!hasSystemMessage && (
-        <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
-          <form onSubmit={handleSend} className="flex gap-2 items-end">
-            <textarea
-              ref={textareaRef}
-              value={replyBody}
-              onChange={(e) => {
-                setReplyBody(e.target.value);
-                e.target.style.height = "auto";
-                e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder="Írj üzenetet… (Shift+Enter = új sor)"
-              rows={1}
-              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors overflow-hidden"
-              style={{ maxHeight: "120px" }}
-            />
-            <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
-              <Send className="h-3.5 w-3.5 mr-1" />
-              {sending ? "..." : "Küldés"}
-            </Button>
-          </form>
-          {sendError && <p className="text-xs text-[#F06C6C] mt-1.5">{sendError}</p>}
-        </div>
+        <ChatComposer
+          textareaRef={textareaRef}
+          value={replyBody}
+          onChange={setReplyBody}
+          onKeyDown={handleKeyDown}
+          onSubmit={handleSend}
+          sending={sending}
+          error={sendError}
+        />
       )}
     </div>
   );
