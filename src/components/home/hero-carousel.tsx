@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Pause, Play } from "lucide-react";
+import { ArrowDown, ArrowRight, Pause, Play } from "lucide-react";
 import { useIsLoggedIn } from "@/components/providers/masked-contact";
 
 /**
@@ -135,9 +135,10 @@ const SLIDES: Slide[] = [
 const INTERVAL_MS = 6000;
 
 /* A banner összes gombja (mindkét dián) ugyanakkora: azonos magasság,
-   szélesség és betűméret. */
+   szélesség és betűméret. Mobilon a magasság és a betűméret a csoportos
+   ajánlatkérés gombjáéval egyezik. */
 const CTA_SIZE =
-  "inline-flex h-10 w-[140px] items-center justify-center rounded-xl text-[13px] font-bold transition-colors md:h-11 md:w-[200px] md:text-base";
+  "inline-flex h-12 w-[170px] items-center justify-center gap-1.5 rounded-xl text-[15px] font-bold transition-colors md:h-11 md:w-[200px] md:text-base";
 
 /**
  * Egy készülék a banneren. A ház térbeli: a megdöntött telefonnak a
@@ -333,6 +334,8 @@ export function HeroCarousel() {
                   style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                 >
                   {offer.cta}
+                  {/* Az 1. dián a gomb lefelé, a kategóriákhoz gördít */}
+                  <ArrowDown className="h-4 w-4" />
                 </Link>
                 {loggedIn === false && (
                   <Link
@@ -384,6 +387,7 @@ export function HeroCarousel() {
                 style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
               >
                 {offer.cta}
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           )}

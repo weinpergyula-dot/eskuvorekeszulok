@@ -34,7 +34,7 @@ export function GroupQuoteCta() {
 
           <Link
             href="/profil?tab=quotes"
-            className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#84AAA6] px-6 py-3 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:self-auto"
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#84AAA6] px-6 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] sm:self-auto"
           >
             Csoportos ajánlatkérés
             <ArrowRight className="h-4 w-4" />
