@@ -857,6 +857,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterCounty, setFilterCounty]     = useState("");
   const [currentPage, setCurrentPage]       = useState(0);
+  const listTopRef = useRef<HTMLDivElement>(null);
   const [selectedView, setSelectedView]     = useState<SelectedView | null>(null);
   const [convSearchQuery, setConvSearchQuery]       = useState("");
   const [convFilterCategory, setConvFilterCategory] = useState("");
@@ -1078,6 +1079,12 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   );
 
   const resetPage = () => setCurrentPage(0);
+  /* Lapváltáskor a lista tetejére ugrunk (a lapozó a lista alján van). */
+  const goToPage = (n: number) => {
+    setCurrentPage(n);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    listTopRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  };
 
   return (
     <div className="space-y-3">
@@ -1136,7 +1143,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
 
       {/* ── Providers tab ── */}
       {tab === "providers" && (
-        <div className="space-y-3">
+        <div ref={listTopRef} className="space-y-3 scroll-mt-24">
           {/* Search + dropdowns — only when filtersOpen */}
           {filtersOpen && (
             <div className="flex flex-col sm:flex-row gap-2">
@@ -1193,7 +1200,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between gap-2 pt-1">
                   <button
-                    onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                    onClick={() => goToPage(Math.max(0, currentPage - 1))}
                     disabled={currentPage === 0}
                     className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
@@ -1204,7 +1211,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                     <span className="text-gray-400 ml-1">({filteredProviders.length} szolgáltató)</span>
                   </span>
                   <button
-                    onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+                    onClick={() => goToPage(Math.min(totalPages - 1, currentPage + 1))}
                     disabled={currentPage >= totalPages - 1}
                     className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >

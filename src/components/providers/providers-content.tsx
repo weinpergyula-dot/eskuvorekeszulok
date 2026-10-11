@@ -205,6 +205,14 @@ export function ProvidersContent({
   const [countyQuery, setCountyQuery] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  /* Lapváltáskor a lista tetejére ugrunk, hogy az új oldal az elejétől
+     látszódjon (a lapozó a lista alján van). */
+  const listTopRef = useRef<HTMLDivElement>(null);
+  const goToPage = (n: number) => {
+    setCurrentPage(n);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    listTopRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  };
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
@@ -394,7 +402,7 @@ export function ProvidersContent({
         )}
 
         {/* ── Controls ── */}
-        <div className="mb-6">
+        <div ref={listTopRef} className="mb-6 scroll-mt-24">
           {/* Desktop: count left, page size + view + sort right */}
           <div className="hidden lg:flex items-center justify-between gap-3">
             <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>
@@ -465,7 +473,7 @@ export function ProvidersContent({
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-1 mt-8 flex-wrap">
                     <button
-                      onClick={() => setCurrentPage(Math.max(1, page - 1))}
+                      onClick={() => goToPage(Math.max(1, page - 1))}
                       disabled={page === 1}
                       className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
                       aria-label="Előző oldal"
@@ -478,7 +486,7 @@ export function ProvidersContent({
                       ) : (
                         <button
                           key={n}
-                          onClick={() => setCurrentPage(n)}
+                          onClick={() => goToPage(n)}
                           className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#84AAA6] border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
                         >
                           {n}
@@ -486,7 +494,7 @@ export function ProvidersContent({
                       ),
                     )}
                     <button
-                      onClick={() => setCurrentPage(Math.min(totalPages, page + 1))}
+                      onClick={() => goToPage(Math.min(totalPages, page + 1))}
                       disabled={page === totalPages}
                       className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
                       aria-label="Következő oldal"
