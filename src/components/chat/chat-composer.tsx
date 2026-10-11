@@ -58,7 +58,10 @@ export function ChatComposer({
       <div ref={boxRef} className="absolute inset-x-0 bottom-0 px-3 pb-3 pt-2">
       <form
         onSubmit={onSubmit}
-        className="rounded-[26px] border border-white/70 bg-white/65 px-4 pb-2.5 pt-3 shadow-[0_12px_32px_-14px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.9)] ring-1 ring-black/[0.06] backdrop-blur-2xl backdrop-saturate-150 transition-colors focus-within:ring-[#84AAA6]/50"
+        /* Domború, szegély nélküli üveg: felül világosabb, alul egy árnyalattal
+           sötétebb kitöltés, a belső élen fénycsík (fent) és halvány árnyék
+           (lent); kívül csak egy nagyon lágy árnyék. */
+        className="chat-composer-glass rounded-[28px] px-4 pb-2.5 pt-3 backdrop-blur-2xl backdrop-saturate-150"
       >
         <textarea
           ref={textareaRef}
