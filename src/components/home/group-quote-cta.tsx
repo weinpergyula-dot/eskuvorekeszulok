@@ -90,22 +90,26 @@ export function GroupQuoteCta() {
  * A perem és az árnyék a chat beviteli doboz üvegét követi. Kattintásra felugró ablakban jelenik meg a cím, a leírás
  * és a Megnézem gomb.
  */
-/* A lefelé lógó fül méretei és körvonala (px). Az R sugarú homorú ívek a
-   fül két felső sarkán túl, a teal sáv aljához simulnak; az alsó sarkok
-   C sugarúak. A teteje nyitott (ott nincs perem, a fül a sávhoz simul). */
-const TAB_W = 332;
+/* A lefelé lógó fül méretei és körvonala (px). Az oldalak kb. 60°-ban
+   dőlnek befelé (felül szélesebb, mint a böngészőfülek); a tetején homorú
+   ív simítja a teal sáv aljába, alul lekerekített sarok zárja. A teteje
+   nyitott (ott nincs perem, a fül a sávhoz simul). A bal oldal pontjait
+   tükrözzük a jobb oldalra. */
+const TAB_W = 380;
 const TAB_H = 56;
-const R = 16;
-const C = 24;
+const m = (x: number) => TAB_W - x;
 const TAB_PATH = [
   `M 0 0`,
-  `A ${R} ${R} 0 0 1 ${R} ${R}`,
-  `L ${R} ${TAB_H - C}`,
-  `A ${C} ${C} 0 0 0 ${R + C} ${TAB_H}`,
-  `L ${TAB_W - R - C} ${TAB_H}`,
-  `A ${C} ${C} 0 0 0 ${TAB_W - R} ${TAB_H - C}`,
-  `L ${TAB_W - R} ${R}`,
-  `A ${R} ${R} 0 0 1 ${TAB_W} 0`,
+  /* homorú ív a sávból a ferde oldalra */
+  `C 9 0 13 5 16 12`,
+  /* ferde oldal: 20px vízszintesen, 34px függőlegesen ≈ 60° */
+  `L 36 46`,
+  /* lekerekített alsó sarok */
+  `C 38.5 51 42 56 50 56`,
+  `L ${m(50)} 56`,
+  `C ${m(42)} 56 ${m(38.5)} 51 ${m(36)} 46`,
+  `L ${m(16)} 12`,
+  `C ${m(13)} 5 ${m(9)} 0 ${TAB_W} 0`,
 ].join(" ");
 
 export function GroupQuoteTab() {
@@ -145,7 +149,7 @@ export function GroupQuoteTab() {
             vectorEffect="non-scaling-stroke"
           />
         </svg>
-        <span className="relative flex h-full items-center justify-center gap-3 px-10">
+        <span className="relative flex h-full items-center justify-center gap-3 px-14">
           <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#C65EA5]">
             <Send className="h-4 w-4 text-white" strokeWidth={2} />
           </span>
