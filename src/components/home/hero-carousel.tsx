@@ -278,9 +278,178 @@ export function HeroCarousel() {
   };
 
   const slide = SLIDES[index];
-  const { offer } = slide;
   const t = THEMES[slide.theme];
   const silver = slide.theme === "silver";
+
+  /* Egy dia tartalma. A „sizer” példány láthatatlan helykitöltő: desktopon
+     mindkét dia ugyanabban a rácscellában ül, így a banner mindig a
+     magasabbik dia magasságát veszi fel, és diaváltáskor nem ugrik meg
+     alatta az oldal (a 2. dia magasabb). */
+  const renderSlide = (s: Slide, sizer: boolean) => {
+    const offer = s.offer;
+    const t = THEMES[s.theme];
+    const silver = s.theme === "silver";
+    return (
+          <div
+            key={sizer ? `sizer-${s.key}` : s.key}
+            aria-hidden={sizer || undefined}
+            inert={sizer || undefined}
+            /* Mobilon mindkét dián a kép abszolút pozícióban ül (nem az húzza a
+               magasságot), ezért a dia magasságát alsó korlát adja. Álló
+               telefonon ez a képernyő magassága a banner fölötti sáv nélkül
+               (.hero-slide-fullscreen), így betöltéskor csak a banner látszik;
+               fekvőben marad a szélességhez kötött érték. A szöveg mellette,
+               függőlegesen középen fut. */
+            className={`${sizer ? "invisible pointer-events-none hidden md:grid" : "hero-slide-in grid"} hero-slide-fullscreen relative mx-auto [grid-area:1/1] w-full min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10`}
+          >
+            <div
+              className={`max-w-[54%] self-center md:max-w-none ${
+                silver ? "md:-translate-y-8 md:translate-x-10" : "md:self-auto md:pb-10"
+              }`}
+            >
+              {/* A cím és a leírás a képre kerül, ha átfednek */}
+              <div className="relative z-10">
+                <h1
+                  className={`hero-title font-heading leading-tight tracking-tight sm:text-[2.725rem] md:text-[4.6rem] ${
+                    silver ? "text-[2.3125rem]" : "hero-title-boost text-[2.0625rem]"
+                  }`}
+                  style={{
+                    fontWeight: 950,
+                    // Mobilon ebből az alapméretből számol a .hero-title szabály
+                    ["--hero-title-base" as string]: silver ? "2.3125rem" : "2.0625rem",
+                  }}
+                >
+                  <span className={t.lead}>{s.lead}</span>{" "}
+                  <span className={t.accent}>{s.accent}</span>
+                </h1>
+                <p className={`mt-3 max-w-md text-base sm:text-[1.125rem] ${t.blurb}`}>{s.blurb}</p>
+
+                {/* Az 1. dián nincs ajánlatkártya: a szöveg alatt két gomb áll –
+                    mobilon egymás alatt (a keskeny hasábnál kicsit szélesebben),
+                    weben egymás mellett. A színek mindkét méretben azonosak. */}
+                {s.secondaryCta && (
+                  <div className="mt-5 flex w-fit flex-col gap-2.5 md:mt-8 md:w-auto md:flex-row md:items-start md:gap-3">
+                    {loggedIn === false && (
+                      <Link
+                        href="/auth/register"
+                        className={`${CTA_SIZE} border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10`}
+                      >
+                        Regisztráció
+                      </Link>
+                    )}
+                    <Link
+                      href={offer.href}
+                      onClick={(e) => scrollToAnchor(e, offer.href)}
+                      className={`hero-offer-cta ${CTA_SIZE} text-white`}
+                      style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
+                    >
+                      {offer.cta}
+                      {/* Az 1. dián a gomb lefelé, a kategóriákhoz gördít */}
+                      <ArrowDown className="h-4 w-4" />
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* A kiemelt ajánlat – csak a 2. dián. Mindig közvetlenül az alcím
+                  alatt áll; mobilon szélesebb a szövegoszlopnál, így ha odaér,
+                  rálóg a jobbra igazított képre (z-10 miatt a kép előtt). */}
+              {!silver && (
+                <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
+                  {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
+                      ajánlat és alatta a csomagok felsorolása */}
+                  <p
+                    className="text-[15px] font-extrabold leading-snug md:hidden"
+                    style={{ color: t.ink }}
+                  >
+                    {offer.short}
+                  </p>
+
+                  <span
+                    className="hidden items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold text-white md:inline-flex md:px-3 md:py-1 md:text-sm"
+                    style={{ backgroundColor: t.ink }}
+                  >
+                    {offer.badge}
+                  </span>
+                  <h2
+                    className="mt-1.5 hidden text-base font-extrabold leading-snug md:mt-2.5 md:block md:text-[1.125rem]"
+                    style={{ color: t.ink }}
+                  >
+                    {offer.headline}
+                  </h2>
+                  <p className="mt-1 hidden md:block md:text-sm" style={{ color: t.inkSoft }}>
+                    {offer.packages}
+                  </p>
+                  <Link
+                    href={offer.href}
+                    onClick={(e) => scrollToAnchor(e, offer.href)}
+                    className={`hero-offer-cta mt-2.5 md:mt-4 ${CTA_SIZE} text-white`}
+                    style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
+                  >
+                    {offer.cta}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Kép: a háttér már a teljes banneren fut, itt csak a kivágott
+                menyasszony, ill. a megdöntött telefonok ülnek. A keret mindkét
+                töréspontnál fix arányú, hogy a diák bannermagassága azonos legyen
+                (különben az alsó szélre igazított ajánlatkártya elmozdulna); a
+                telefonok szándékosan lelógnak az alsó élen. */}
+            <div className="w-full self-end">
+              <div
+                className={
+                  /* Az 1. dián mobilon a keret a saját hasábjában marad (a
+                     menyasszony így nem lóg ki a képernyő jobb szélén), csak
+                     magasabb arányú; a 2. dián a telefon kifut jobbra. */
+                  silver
+                    ? "hero-art absolute inset-y-0 right-[6%] w-[74%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                    : "hero-art absolute inset-y-0 -right-[14%] w-[62%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                }
+              >
+                {s.key === "meghivo" ? (
+                  /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
+                     a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
+                     Mobilon csak a BASIC fér el. */
+                  <div className="hero-duo absolute inset-x-0 bottom-[calc(-14%+50px)] top-0 flex items-end justify-center md:bottom-[-16%]">
+                    <Phone
+                      className="hero-duo-front w-[78%] md:w-[25%]"
+                      src="/meghivo/slide-basic.webp"
+                      alt={s.alt}
+                    />
+                    <Phone
+                      className="hero-duo-front hidden w-[31%] md:-ml-[5%] md:block"
+                      src="/meghivo/slide-silver.webp"
+                      alt="SILVER digitális esküvői meghívó telefonon"
+                    />
+                    <Phone
+                      className="hero-duo-front hidden w-[38%] md:-ml-[5%] md:block"
+                      src="/meghivo/slide-premium.webp"
+                      alt="PREMIUM digitális esküvői meghívó telefonon"
+                    />
+                  </div>
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src="/hero-bride-cut.webp"
+                    alt={s.alt}
+                    fetchPriority="high"
+                    decoding="sync"
+                    className={`absolute bottom-0 block w-auto max-w-none object-contain object-bottom ${
+                      silver
+                        ? "right-0 h-[98vw] md:inset-x-0 md:mx-auto md:h-full"
+                        : "inset-x-0 mx-auto h-full"
+                    }`}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+    );
+  };
+
 
   return (
     /* A háttér a fejléc mögé bújik (negatív felső margó), a két alsó sarok
@@ -317,160 +486,9 @@ export function HeroCarousel() {
       {/* A dia teljes tartalma egyben úszik be jobbról – a szöveg, az ajánlat
           és a kép együtt mozog, így semmi nem ugrál külön. A vetítésvezérlő
           kívül marad, az helyben áll. */}
-      <div
-        key={slide.key}
-        /* Mobilon mindkét dián a kép abszolút pozícióban ül (nem az húzza a
-           magasságot), ezért a dia magasságát alsó korlát adja. Álló
-           telefonon ez a képernyő magassága a banner fölötti sáv nélkül
-           (.hero-slide-fullscreen), így betöltéskor csak a banner látszik;
-           fekvőben marad a szélességhez kötött érték. A szöveg mellette,
-           függőlegesen középen fut. */
-        className="hero-slide-in hero-slide-fullscreen relative mx-auto grid min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10"
-      >
-        <div
-          className={`max-w-[54%] self-center md:max-w-none ${
-            silver ? "md:-translate-y-8 md:translate-x-10" : "md:self-auto md:pb-10"
-          }`}
-        >
-          {/* A cím és a leírás a képre kerül, ha átfednek */}
-          <div className="relative z-10">
-            <h1
-              className={`hero-title font-heading leading-tight tracking-tight sm:text-[2.725rem] md:text-[4.6rem] ${
-                silver ? "text-[2.3125rem]" : "hero-title-boost text-[2.0625rem]"
-              }`}
-              style={{
-                fontWeight: 950,
-                // Mobilon ebből az alapméretből számol a .hero-title szabály
-                ["--hero-title-base" as string]: silver ? "2.3125rem" : "2.0625rem",
-              }}
-            >
-              <span className={t.lead}>{slide.lead}</span>{" "}
-              <span className={t.accent}>{slide.accent}</span>
-            </h1>
-            <p className={`mt-3 max-w-md text-base sm:text-[1.125rem] ${t.blurb}`}>{slide.blurb}</p>
-
-            {/* Az 1. dián nincs ajánlatkártya: a szöveg alatt két gomb áll –
-                mobilon egymás alatt (a keskeny hasábnál kicsit szélesebben),
-                weben egymás mellett. A színek mindkét méretben azonosak. */}
-            {slide.secondaryCta && (
-              <div className="mt-5 flex w-fit flex-col gap-2.5 md:mt-8 md:w-auto md:flex-row md:items-start md:gap-3">
-                {loggedIn === false && (
-                  <Link
-                    href="/auth/register"
-                    className={`${CTA_SIZE} border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10`}
-                  >
-                    Regisztráció
-                  </Link>
-                )}
-                <Link
-                  href={offer.href}
-                  onClick={(e) => scrollToAnchor(e, offer.href)}
-                  className={`hero-offer-cta ${CTA_SIZE} text-white`}
-                  style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
-                >
-                  {offer.cta}
-                  {/* Az 1. dián a gomb lefelé, a kategóriákhoz gördít */}
-                  <ArrowDown className="h-4 w-4" />
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* A kiemelt ajánlat – csak a 2. dián. Mindig közvetlenül az alcím
-              alatt áll; mobilon szélesebb a szövegoszlopnál, így ha odaér,
-              rálóg a jobbra igazított képre (z-10 miatt a kép előtt). */}
-          {!silver && (
-            <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
-              {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
-                  ajánlat és alatta a csomagok felsorolása */}
-              <p
-                className="text-[15px] font-extrabold leading-snug md:hidden"
-                style={{ color: t.ink }}
-              >
-                {offer.short}
-              </p>
-
-              <span
-                className="hidden items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold text-white md:inline-flex md:px-3 md:py-1 md:text-sm"
-                style={{ backgroundColor: t.ink }}
-              >
-                {offer.badge}
-              </span>
-              <h2
-                className="mt-1.5 hidden text-base font-extrabold leading-snug md:mt-2.5 md:block md:text-[1.125rem]"
-                style={{ color: t.ink }}
-              >
-                {offer.headline}
-              </h2>
-              <p className="mt-1 hidden md:block md:text-sm" style={{ color: t.inkSoft }}>
-                {offer.packages}
-              </p>
-              <Link
-                href={offer.href}
-                onClick={(e) => scrollToAnchor(e, offer.href)}
-                className={`hero-offer-cta mt-2.5 md:mt-4 ${CTA_SIZE} text-white`}
-                style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
-              >
-                {offer.cta}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Kép: a háttér már a teljes banneren fut, itt csak a kivágott
-            menyasszony, ill. a megdöntött telefonok ülnek. A keret mindkét
-            töréspontnál fix arányú, hogy a diák bannermagassága azonos legyen
-            (különben az alsó szélre igazított ajánlatkártya elmozdulna); a
-            telefonok szándékosan lelógnak az alsó élen. */}
-        <div className="w-full self-end">
-          <div
-            className={
-              /* Az 1. dián mobilon a keret a saját hasábjában marad (a
-                 menyasszony így nem lóg ki a képernyő jobb szélén), csak
-                 magasabb arányú; a 2. dián a telefon kifut jobbra. */
-              silver
-                ? "hero-art absolute inset-y-0 right-[6%] w-[74%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
-                : "hero-art absolute inset-y-0 -right-[14%] w-[62%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
-            }
-          >
-            {slide.key === "meghivo" ? (
-              /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
-                 a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
-                 Mobilon csak a BASIC fér el. */
-              <div className="hero-duo absolute inset-x-0 bottom-[calc(-14%+50px)] top-0 flex items-end justify-center md:bottom-[-16%]">
-                <Phone
-                  className="hero-duo-front w-[78%] md:w-[25%]"
-                  src="/meghivo/slide-basic.webp"
-                  alt={slide.alt}
-                />
-                <Phone
-                  className="hero-duo-front hidden w-[31%] md:-ml-[5%] md:block"
-                  src="/meghivo/slide-silver.webp"
-                  alt="SILVER digitális esküvői meghívó telefonon"
-                />
-                <Phone
-                  className="hero-duo-front hidden w-[38%] md:-ml-[5%] md:block"
-                  src="/meghivo/slide-premium.webp"
-                  alt="PREMIUM digitális esküvői meghívó telefonon"
-                />
-              </div>
-            ) : (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src="/hero-bride-cut.webp"
-                alt={slide.alt}
-                fetchPriority="high"
-                decoding="sync"
-                className={`absolute bottom-0 block w-auto max-w-none object-contain object-bottom ${
-                  silver
-                    ? "right-0 h-[98vw] md:inset-x-0 md:mx-auto md:h-full"
-                    : "inset-x-0 mx-auto h-full"
-                }`}
-              />
-            )}
-          </div>
-        </div>
+      <div className="grid">
+        {SLIDES.map((s) => (s.key === slide.key ? null : renderSlide(s, true)))}
+        {renderSlide(slide, false)}
       </div>
 
       {/* Vetítésvezérlő: pause/play és a pöttyök, amik mutatják, melyik dián
