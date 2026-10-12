@@ -95,21 +95,21 @@ export function GroupQuoteCta() {
    ív simítja a teal sáv aljába, alul lekerekített sarok zárja. A teteje
    nyitott (ott nincs perem, a fül a sávhoz simul). A bal oldal pontjait
    tükrözzük a jobb oldalra. */
-const TAB_W = 380;
+const TAB_W = 400;
 const TAB_H = 56;
 const m = (x: number) => TAB_W - x;
 const TAB_PATH = [
   `M 0 0`,
   /* homorú ív a sávból a ferde oldalra */
-  `C 9 0 13 5 16 12`,
-  /* ferde oldal: 20px vízszintesen, 34px függőlegesen ≈ 60° */
-  `L 36 46`,
-  /* lekerekített alsó sarok */
-  `C 38.5 51 42 56 50 56`,
-  `L ${m(50)} 56`,
-  `C ${m(42)} 56 ${m(38.5)} 51 ${m(36)} 46`,
-  `L ${m(16)} 12`,
-  `C ${m(13)} 5 ${m(9)} 0 ${TAB_W} 0`,
+  `C 14 0 21 7 26 16`,
+  /* ferde oldal: 14px vízszintesen, 24px függőlegesen ≈ 60° */
+  `L 40 40`,
+  /* erősen lekerekített alsó sarok */
+  `C 43.5 46 50 56 66 56`,
+  `L ${m(66)} 56`,
+  `C ${m(50)} 56 ${m(43.5)} 46 ${m(40)} 40`,
+  `L ${m(26)} 16`,
+  `C ${m(21)} 7 ${m(14)} 0 ${TAB_W} 0`,
 ].join(" ");
 
 export function GroupQuoteTab() {
@@ -149,7 +149,7 @@ export function GroupQuoteTab() {
             vectorEffect="non-scaling-stroke"
           />
         </svg>
-        <span className="relative flex h-full items-center justify-center gap-3 px-14">
+        <span className="relative flex h-full items-center justify-center gap-3 px-16">
           <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#C65EA5]">
             <Send className="h-4 w-4 text-white" strokeWidth={2} />
           </span>
