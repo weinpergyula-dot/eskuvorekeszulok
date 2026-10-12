@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRight, ChevronDown, Send } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { ArrowRight, ChevronDown, Send, X } from "lucide-react";
 import { LoginGateLink } from "@/components/providers/masked-contact";
 
 /**
@@ -84,72 +85,86 @@ export function GroupQuoteCta() {
 }
 
 /**
- * Desktopon a csoportos ajánlatkérés középen álló fehér lapfül, ami a
- * fehér tartalomból a kategóriaválasztó teal sávjába nyúlik fel (mint egy
- * mappafül). Csukva csak a fül: ikon, felirat, kacsacsőr; kattintásra
- * alatta, fehér háttéren lenyílik a cím, a leírás és a Megnézem gomb.
- * A fül alsó sarkainál homorú ív köti a fehér részhez.
+ * Desktopon a csoportos ajánlatkérés középen álló lapfül, ami a
+ * kategóriaválasztó teal sávjának aljáról lóg le. A teteje a sávhoz simul,
+ * az oldalsó és alsó kerete ugyanaz az üveg, mint a chat beviteli dobozáé
+ * (`.glass-tab`). Kattintásra felugró ablakban jelenik meg a cím, a leírás
+ * és a Megnézem gomb.
  */
 export function GroupQuoteTab() {
   const [open, setOpen] = useState(false);
 
-  return (
-    /* A -mt-6 a teal sáv fehér, lekerekített aljára illeszti. */
-    <div className="relative z-10 -mt-6 hidden md:block">
-      <div className="flex justify-center">
-        <div className="relative -mt-8 rounded-t-3xl bg-white">
-          {/* Homorú ívek a fül két alsó sarkánál (a teal és a fehér határán). */}
-          <span aria-hidden className="white-tab-fillet-l absolute -left-4 top-4 h-4 w-4 bg-white" />
-          <span aria-hidden className="white-tab-fillet-r absolute -right-4 top-4 h-4 w-4 bg-white" />
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-controls="group-quote-tab-body"
-            className="flex cursor-pointer items-center gap-3 px-6 pb-2 pt-3"
-          >
-            <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#C65EA5]">
-              <Send className="h-4 w-4 text-white" strokeWidth={2} />
-            </span>
-            <span className="whitespace-nowrap text-xs font-semibold uppercase tracking-[0.16em] text-[#C65EA5]">
-              Csoportos ajánlatkérés
-            </span>
-            <ChevronDown
-              aria-hidden
-              className={`h-5 w-5 shrink-0 text-[#C65EA5] transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-            />
-          </button>
-        </div>
-      </div>
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
-      <div
-        id="group-quote-tab-body"
-        className={`grid bg-white transition-[grid-template-rows,opacity] duration-300 ease-out ${
-          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-        }`}
+  return (
+    /* A -mt-6 a teal sáv aljára illeszti (a fehér, lekerekített átmenet
+       fölé), így a fül a sávból lóg le. */
+    <div className="relative z-10 -mt-6 hidden justify-center md:flex">
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
+        className="glass-tab flex cursor-pointer items-center gap-3 rounded-b-3xl px-6 pb-3 pt-2.5 transition-transform hover:translate-y-0.5"
       >
-        <div className="min-h-0 overflow-hidden" inert={!open}>
-          <div className="mx-auto flex max-w-3xl items-center justify-between gap-8 px-8 pb-2 pt-6">
-            <div className="min-w-0">
-              <h2 className="font-heading text-xl font-bold leading-snug text-gray-900">
-                Nem akarsz egyesével ajánlatot kérni?
-              </h2>
-              <p className="mt-1.5 text-base leading-relaxed text-gray-600">
-                Küldj egyetlen ajánlatkérést a választott szolgáltatóknak.
-              </p>
-            </div>
+        <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#C65EA5]">
+          <Send className="h-4 w-4 text-white" strokeWidth={2} />
+        </span>
+        <span className="whitespace-nowrap text-xs font-semibold uppercase tracking-[0.16em] text-[#C65EA5]">
+          Csoportos ajánlatkérés
+        </span>
+        <ChevronDown aria-hidden className="h-5 w-5 shrink-0 text-[#C65EA5]" />
+      </button>
+
+      {open && createPortal(
+        <div
+          className="fixed inset-0 z-[9000] flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="group-quote-dialog-title"
+            onClick={(e) => e.stopPropagation()}
+            className="chat-composer-glass relative w-full max-w-md bg-white/90 px-8 pb-8 pt-9 text-center"
+          >
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Bezár"
+              className="absolute right-4 top-4 cursor-pointer rounded-full p-1.5 text-gray-400 transition-colors hover:text-gray-700"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <span aria-hidden className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#C65EA5]">
+              <Send className="h-5 w-5 text-white" strokeWidth={2} />
+            </span>
+            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#C65EA5]">
+              Csoportos ajánlatkérés
+            </p>
+            <h2 id="group-quote-dialog-title" className="mt-2 font-heading text-xl font-bold leading-snug text-gray-900">
+              Nem akarsz egyesével ajánlatot kérni?
+            </h2>
+            <p className="mt-2 text-base leading-relaxed text-gray-600">
+              Küldj egyetlen ajánlatkérést a választott szolgáltatóknak.
+            </p>
             {/* Kijelentkezve a gomb a tájékoztató ablakot nyitja (LoginGateLink). */}
             <LoginGateLink
               href="/profil?tab=quotes"
               message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#C65EA5] px-7 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#B04E91]"
+              className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#C65EA5] px-7 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#B04E91]"
             >
               Megnézem
               <ArrowRight className="h-4 w-4" />
             </LoginGateLink>
           </div>
-        </div>
-      </div>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }
