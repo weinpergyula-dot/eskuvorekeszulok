@@ -86,11 +86,28 @@ export function GroupQuoteCta() {
 
 /**
  * Desktopon a csoportos ajánlatkérés középen álló lapfül, ami a
- * kategóriaválasztó teal sávjának aljáról lóg le. A teteje a sávhoz simul,
- * az oldalsó és alsó kerete ugyanaz az üveg, mint a chat beviteli dobozáé
- * (`.glass-tab`). Kattintásra felugró ablakban jelenik meg a cím, a leírás
+ * kategóriaválasztó teal sávjának aljáról lóg le, a tetején homorú ívekkel.
+ * A perem és az árnyék a chat beviteli doboz üvegét követi. Kattintásra felugró ablakban jelenik meg a cím, a leírás
  * és a Megnézem gomb.
  */
+/* A lefelé lógó fül méretei és körvonala (px). Az R sugarú homorú ívek a
+   fül két felső sarkán túl, a teal sáv aljához simulnak; az alsó sarkok
+   C sugarúak. A teteje nyitott (ott nincs perem, a fül a sávhoz simul). */
+const TAB_W = 332;
+const TAB_H = 56;
+const R = 16;
+const C = 24;
+const TAB_PATH = [
+  `M 0 0`,
+  `A ${R} ${R} 0 0 1 ${R} ${R}`,
+  `L ${R} ${TAB_H - C}`,
+  `A ${C} ${C} 0 0 0 ${R + C} ${TAB_H}`,
+  `L ${TAB_W - R - C} ${TAB_H}`,
+  `A ${C} ${C} 0 0 0 ${TAB_W - R} ${TAB_H - C}`,
+  `L ${TAB_W - R} ${R}`,
+  `A ${R} ${R} 0 0 1 ${TAB_W} 0`,
+].join(" ");
+
 export function GroupQuoteTab() {
   const [open, setOpen] = useState(false);
 
@@ -109,15 +126,33 @@ export function GroupQuoteTab() {
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        className="glass-tab flex cursor-pointer items-center gap-3 rounded-b-3xl px-6 pb-3 pt-2.5 transition-transform hover:translate-y-0.5"
+        className="group relative h-14 cursor-pointer transition-transform hover:translate-y-0.5"
+        style={{ width: TAB_W }}
       >
-        <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#C65EA5]">
-          <Send className="h-4 w-4 text-white" strokeWidth={2} />
+        {/* A fül alakja: a tetején homorú ívek kötik a teal sávhoz, alul
+            lekerekített sarkok. A perem (0.5px világosszürke) és az árnyék
+            a chat beviteli doboz üvegét követi, az íveken is végigfut. */}
+        <svg
+          aria-hidden
+          className="absolute inset-0 h-full w-full overflow-visible drop-shadow-[0_10px_14px_rgba(0,0,0,0.08)]"
+          viewBox={`0 0 ${TAB_W} ${TAB_H}`}
+        >
+          <path
+            d={TAB_PATH}
+            fill="rgba(255,255,255,0.96)"
+            stroke="rgb(219,219,219)"
+            strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+        <span className="relative flex h-full items-center justify-center gap-3 px-10">
+          <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#C65EA5]">
+            <Send className="h-4 w-4 text-white" strokeWidth={2} />
+          </span>
+          <span className="whitespace-nowrap text-xs font-semibold uppercase tracking-[0.16em] text-[#C65EA5]">
+            Csoportos ajánlatkérés
+          </span>
         </span>
-        <span className="whitespace-nowrap text-xs font-semibold uppercase tracking-[0.16em] text-[#C65EA5]">
-          Csoportos ajánlatkérés
-        </span>
-        <ChevronDown aria-hidden className="h-5 w-5 shrink-0 text-[#C65EA5]" />
       </button>
 
       {open && createPortal(
@@ -143,10 +178,7 @@ export function GroupQuoteTab() {
             <span aria-hidden className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#C65EA5]">
               <Send className="h-5 w-5 text-white" strokeWidth={2} />
             </span>
-            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#C65EA5]">
-              Csoportos ajánlatkérés
-            </p>
-            <h2 id="group-quote-dialog-title" className="mt-2 font-heading text-xl font-bold leading-snug text-gray-900">
+            <h2 id="group-quote-dialog-title" className="mt-4 font-heading text-xl font-bold leading-snug text-gray-900">
               Nem akarsz egyesével ajánlatot kérni?
             </h2>
             <p className="mt-2 text-base leading-relaxed text-gray-600">
