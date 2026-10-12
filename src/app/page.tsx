@@ -74,7 +74,12 @@ export default async function HomePage() {
       <GroupQuoteTab />
 
       {/* Teljes szolgáltatói lista */}
-      <section id="szolgaltatok" className="bg-white scroll-mt-20">
+      {/* A horgonyra görgetéskor (kategória-csempe, Vissza a listához) a
+          csoportos ajánlatkérés füle a ragadós fejléc mögé kerüljön: a cím
+          fölött csak ~16px látszik (a szekció pt-6-ja 24px, a fül alja a
+          szekció tetején ér véget). Mobilon lefelé görgetéskor a fejléc
+          2.75rem-re húzódik össze, desktopon 4rem marad. */}
+      <section id="szolgaltatok" className="bg-white scroll-mt-9 md:scroll-mt-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10 sm:pb-16">
           <ProvidersSectionTitle />
           <Suspense>
