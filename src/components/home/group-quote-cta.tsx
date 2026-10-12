@@ -31,16 +31,16 @@ export function GroupQuoteCta() {
         >
           <span
             aria-hidden
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#84AAA6]"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#C65EA5]"
           >
             <Send className="h-[18px] w-[18px] text-white" strokeWidth={2} />
           </span>
-          <span className="flex-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#6B8E8A]">
+          <span className="flex-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#C65EA5]">
             Csoportos ajánlatkérés
           </span>
           <ChevronDown
             aria-hidden
-            className={`h-5 w-5 shrink-0 text-[#6B8E8A] transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+            className={`h-5 w-5 shrink-0 text-[#C65EA5] transition-transform duration-300 ${open ? "rotate-180" : ""}`}
           />
         </button>
 
@@ -68,7 +68,7 @@ export function GroupQuoteCta() {
               <LoginGateLink
                 href="/profil?tab=quotes"
                 message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                className="inline-flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#84AAA6] px-7 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#6B8E8A] md:w-auto"
+                className="inline-flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#C65EA5] px-7 text-[15px] font-bold text-white shadow-md transition-colors hover:bg-[#B04E91] md:w-auto"
               >
                 Megnézem
                 <ArrowRight className="h-4 w-4" />
