@@ -8,8 +8,10 @@ export const dynamic = "force-dynamic";
 const DAYS_BACK = 30;
 const WEEKS_BACK = 12;
 
-interface DailyRow { day: string; unique_ips: number; hits: number }
-interface WeeklyRow { week_start: string; unique_ips: number; hits: number }
+/* A new_ips a 20261012_page_visits_new_visitors.sql migráció után érkezik;
+   előtte hiányzik, ilyenkor a felület nem kínálja az „új látogatók” nézetet. */
+interface DailyRow { day: string; unique_ips: number; new_ips?: number; hits: number }
+interface WeeklyRow { week_start: string; unique_ips: number; new_ips?: number; hits: number }
 interface SummaryRow {
   today: number;
   yesterday: number;
@@ -18,6 +20,11 @@ interface SummaryRow {
   last_30_days: number;
   all_time: number;
   total_hits: number;
+  new_today?: number;
+  new_yesterday?: number;
+  new_this_week?: number;
+  new_last_week?: number;
+  new_last_30_days?: number;
 }
 
 const EMPTY_SUMMARY: SummaryRow = {
@@ -57,18 +64,23 @@ export async function GET(req: Request) {
   }
 
   const summaryRow = (Array.isArray(summary.data) ? summary.data[0] : summary.data) as SummaryRow | null;
+  const hasNew = summaryRow?.new_today !== undefined;
+  const num = (v: number | undefined) => Number(v ?? 0);
 
   return NextResponse.json({
     available: true,
     path,
+    hasNew,
     daily: ((daily.data ?? []) as DailyRow[]).map((r) => ({
       date: r.day,
       uniqueIps: Number(r.unique_ips ?? 0),
+      newIps: num(r.new_ips),
       hits: Number(r.hits ?? 0),
     })),
     weekly: ((weekly.data ?? []) as WeeklyRow[]).map((r) => ({
       weekStart: r.week_start,
       uniqueIps: Number(r.unique_ips ?? 0),
+      newIps: num(r.new_ips),
       hits: Number(r.hits ?? 0),
     })),
     summary: {
@@ -79,6 +91,15 @@ export async function GET(req: Request) {
       last30Days: Number(summaryRow?.last_30_days ?? EMPTY_SUMMARY.last_30_days),
       allTime:    Number(summaryRow?.all_time   ?? EMPTY_SUMMARY.all_time),
       totalHits:  Number(summaryRow?.total_hits ?? EMPTY_SUMMARY.total_hits),
+    },
+    /* Új látogatók: egy lenyomat csak az első látogatása napján számít. Az
+       „Összesen” mindkét nézetben ugyanaz (minden lenyomat egyszer). */
+    summaryNew: {
+      today:      num(summaryRow?.new_today),
+      yesterday:  num(summaryRow?.new_yesterday),
+      thisWeek:   num(summaryRow?.new_this_week),
+      lastWeek:   num(summaryRow?.new_last_week),
+      last30Days: num(summaryRow?.new_last_30_days),
     },
   });
 }

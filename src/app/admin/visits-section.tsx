@@ -5,12 +5,14 @@ import { RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_TRACKED_PATH, TRACKED_PAGES } from "@/lib/tracked-paths";
 
-interface DailyPoint { date: string; uniqueIps: number; hits: number }
-interface WeeklyPoint { weekStart: string; uniqueIps: number; hits: number }
+interface DailyPoint { date: string; uniqueIps: number; newIps: number; hits: number }
+interface WeeklyPoint { weekStart: string; uniqueIps: number; newIps: number; hits: number }
 
 export interface VisitStats {
   available: boolean;
   error?: string;
+  /** Megvan-e már az „új látogatók” szám (lefutott-e a migráció). */
+  hasNew?: boolean;
   daily: DailyPoint[];
   weekly: WeeklyPoint[];
   summary: {
@@ -22,7 +24,17 @@ export interface VisitStats {
     allTime: number;
     totalHits: number;
   };
+  summaryNew?: {
+    today: number;
+    yesterday: number;
+    thisWeek: number;
+    lastWeek: number;
+    last30Days: number;
+  };
 }
+
+/** "unique": minden nap minden egyedi IP; "new": egy IP csak az első napján. */
+type Mode = "unique" | "new";
 
 const MONTHS_SHORT = ["jan.", "febr.", "márc.", "ápr.", "máj.", "jún.", "júl.", "aug.", "szept.", "okt.", "nov.", "dec."];
 
@@ -90,6 +102,7 @@ export function VisitsSection() {
   const [stats, setStats] = useState<VisitStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDailyTable, setShowDailyTable] = useState(false);
+  const [mode, setMode] = useState<Mode>("new");
 
   const fetchStats = useCallback(
     (p: string): Promise<VisitStats | null> =>
@@ -173,18 +186,24 @@ export function VisitsSection() {
     </div>
   );
 
+  const isNew = mode === "new" && !!stats.hasNew && !!stats.summaryNew;
+  const val = (p: { uniqueIps: number; newIps: number }) => (isNew ? p.newIps : p.uniqueIps);
+  const unitLabel = isNew ? "új látogató" : "egyedi IP";
+  const colLabel = isNew ? "Új látogató" : "Egyedi IP";
+  const sum = isNew && stats.summaryNew ? { ...stats.summary, ...stats.summaryNew } : stats.summary;
+
   const daily = stats.daily ?? [];
   const weekly = stats.weekly ?? [];
   const today = daily.length > 0 ? daily[daily.length - 1].date : "";
   const currentWeek = weekly.length > 0 ? weekly[weekly.length - 1].weekStart : "";
 
   const tiles = [
-    { label: "Ma",             value: stats.summary.today },
-    { label: "Tegnap",         value: stats.summary.yesterday },
-    { label: "Ezen a héten",   value: stats.summary.thisWeek },
-    { label: "Előző héten",    value: stats.summary.lastWeek },
-    { label: "Utolsó 30 nap",  value: stats.summary.last30Days },
-    { label: "Összesen",       value: stats.summary.allTime },
+    { label: "Ma",             value: sum.today },
+    { label: "Tegnap",         value: sum.yesterday },
+    { label: "Ezen a héten",   value: sum.thisWeek },
+    { label: "Előző héten",    value: sum.lastWeek },
+    { label: "Utolsó 30 nap",  value: sum.last30Days },
+    { label: "Összesen",       value: sum.allTime },
   ];
 
   return (
@@ -193,8 +212,20 @@ export function VisitsSection() {
 
       <div className="flex items-start justify-between gap-4">
         <p className="text-sm text-gray-500 max-w-2xl">
-          Hány különböző IP-címről nyitották meg a(z){" "}
-          <span className="font-mono text-gray-700">{path}</span> oldalt. Az IP-címeket nem tároljuk,
+          {isNew ? (
+            <>
+              Hány új látogató nyitotta meg a(z){" "}
+              <span className="font-mono text-gray-700">{path}</span> oldalt: egy IP-cím csak azon a
+              napon számít, amikor először járt itt – a későbbi napokon már nem.
+            </>
+          ) : (
+            <>
+              Hány különböző IP-címről nyitották meg a(z){" "}
+              <span className="font-mono text-gray-700">{path}</span> oldalt – naponta mindenki
+              számít, aki aznap járt itt.
+            </>
+          )}{" "}
+          Az IP-címeket nem tároljuk,
           csak azok visszafejthetetlen lenyomatát – naponta és IP-nként egyszer, 12 hónapig.
           Összes megnyitás:{" "}
           <span className="font-semibold text-gray-700">{stats.summary.totalHits}</span>.
@@ -203,6 +234,32 @@ export function VisitsSection() {
           <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} /> Frissítés
         </Button>
       </div>
+
+      {/* Nézetváltó: új látogatók / minden egyedi IP */}
+      {stats.hasNew ? (
+        <div className="inline-flex rounded-full border border-gray-200 bg-white p-1">
+          {([
+            { value: "new", label: "Új látogatók" },
+            { value: "unique", label: "Minden egyedi IP" },
+          ] as { value: Mode; label: string }[]).map((m) => (
+            <button
+              key={m.value}
+              onClick={() => setMode(m.value)}
+              className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
+                mode === m.value ? "bg-[#84AAA6] text-white" : "text-gray-600 hover:bg-[#84AAA6]/10 hover:text-[#5C8480]"
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <p className="text-xs text-gray-400">
+          Az „új látogatók” nézethez futtasd le a{" "}
+          <code className="bg-gray-100 px-1 py-0.5 rounded font-mono">supabase/migrations/20261012_page_visits_new_visitors.sql</code>{" "}
+          fájlt a Supabase SQL Editorban.
+        </p>
+      )}
 
       {/* Összesítő számok */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -223,8 +280,8 @@ export function VisitsSection() {
           points={daily.map((d) => ({
             key: d.date,
             label: String(Number(d.date.slice(8, 10))),
-            value: d.uniqueIps,
-            title: `${formatDate(d.date)} – ${d.uniqueIps} egyedi IP, ${d.hits} megnyitás`,
+            value: val(d),
+            title: `${formatDate(d.date)} – ${val(d)} ${unitLabel}, ${d.hits} megnyitás`,
             muted: weekday(d.date) === 0 || weekday(d.date) === 6,
             current: d.date === today,
           }))}
@@ -244,7 +301,7 @@ export function VisitsSection() {
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Nap</th>
-                  <th className="text-right px-4 py-2.5 font-semibold text-gray-700">Egyedi IP</th>
+                  <th className="text-right px-4 py-2.5 font-semibold text-gray-700">{colLabel}</th>
                   <th className="text-right px-4 py-2.5 font-semibold text-gray-700">Megnyitás</th>
                 </tr>
               </thead>
@@ -252,7 +309,7 @@ export function VisitsSection() {
                 {[...daily].reverse().map((d) => (
                   <tr key={d.date} className="bg-white hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-2 text-gray-700 whitespace-nowrap">{formatDate(d.date)}</td>
-                    <td className="px-4 py-2 text-right font-semibold text-gray-900">{d.uniqueIps}</td>
+                    <td className="px-4 py-2 text-right font-semibold text-gray-900">{val(d)}</td>
                     <td className="px-4 py-2 text-right text-gray-500">{d.hits}</td>
                   </tr>
                 ))}
@@ -271,8 +328,8 @@ export function VisitsSection() {
           points={weekly.map((w) => ({
             key: w.weekStart,
             label: `${Number(w.weekStart.slice(5, 7))}.${Number(w.weekStart.slice(8, 10))}.`,
-            value: w.uniqueIps,
-            title: `${formatWeek(w.weekStart)} – ${w.uniqueIps} egyedi IP, ${w.hits} megnyitás`,
+            value: val(w),
+            title: `${formatWeek(w.weekStart)} – ${val(w)} ${unitLabel}, ${w.hits} megnyitás`,
             muted: false,
             current: w.weekStart === currentWeek,
           }))}
@@ -283,7 +340,7 @@ export function VisitsSection() {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="text-left px-4 py-2.5 font-semibold text-gray-700">Hét</th>
-                <th className="text-right px-4 py-2.5 font-semibold text-gray-700">Egyedi IP</th>
+                <th className="text-right px-4 py-2.5 font-semibold text-gray-700">{colLabel}</th>
                 <th className="text-right px-4 py-2.5 font-semibold text-gray-700">Megnyitás</th>
               </tr>
             </thead>
@@ -296,7 +353,7 @@ export function VisitsSection() {
                       <span className="ml-2 text-xs text-[#D07AB5] font-medium">folyamatban</span>
                     )}
                   </td>
-                  <td className="px-4 py-2 text-right font-semibold text-gray-900">{w.uniqueIps}</td>
+                  <td className="px-4 py-2 text-right font-semibold text-gray-900">{val(w)}</td>
                   <td className="px-4 py-2 text-right text-gray-500">{w.hits}</td>
                 </tr>
               ))}
