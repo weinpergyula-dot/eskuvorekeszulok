@@ -102,7 +102,7 @@ export function VisitsSection() {
   const [stats, setStats] = useState<VisitStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDailyTable, setShowDailyTable] = useState(false);
-  const [mode, setMode] = useState<Mode>("new");
+  const [mode, setMode] = useState<Mode>("unique");
 
   const fetchStats = useCallback(
     (p: string): Promise<VisitStats | null> =>
@@ -211,24 +211,9 @@ export function VisitsSection() {
       {tabs}
 
       <div className="flex items-start justify-between gap-4">
-        <p className="text-sm text-gray-500 max-w-2xl">
-          {isNew ? (
-            <>
-              Hány új látogató nyitotta meg a(z){" "}
-              <span className="font-mono text-gray-700">{path}</span> oldalt: egy IP-cím csak azon a
-              napon számít, amikor először járt itt – a későbbi napokon már nem.
-            </>
-          ) : (
-            <>
-              Hány különböző IP-címről nyitották meg a(z){" "}
-              <span className="font-mono text-gray-700">{path}</span> oldalt – naponta mindenki
-              számít, aki aznap járt itt.
-            </>
-          )}{" "}
-          Az IP-címeket nem tároljuk,
-          csak azok visszafejthetetlen lenyomatát – naponta és IP-nként egyszer, 12 hónapig.
+        <p className="text-sm text-gray-500">
           Összes megnyitás:{" "}
-          <span className="font-semibold text-gray-700">{stats.summary.totalHits}</span>.
+          <span className="font-semibold text-gray-700">{stats.summary.totalHits}</span>
         </p>
         <Button size="sm" variant="outline" onClick={refresh} disabled={loading} className="gap-1.5 cursor-pointer h-8 text-xs shrink-0">
           <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} /> Frissítés
@@ -239,8 +224,8 @@ export function VisitsSection() {
       {stats.hasNew ? (
         <div className="inline-flex rounded-full border border-gray-200 bg-white p-1">
           {([
+            { value: "unique", label: "Látogatók" },
             { value: "new", label: "Új látogatók" },
-            { value: "unique", label: "Minden egyedi IP" },
           ] as { value: Mode; label: string }[]).map((m) => (
             <button
               key={m.value}
