@@ -193,6 +193,18 @@ export function ProvidersContent({
   const pathname = usePathname();
   const [category, setCategory] = useState<string>(searchParams.get("category") ?? "");
   const [county, setCounty] = useState<string>(searchParams.get("county") ?? "");
+  /* A főoldalon mobilon a megyeszűrő alapból rejtett; a szekciócím Szűrő
+     gombja nyitja ("eskuvo:toggle-filter"). Ha a címből már szűrt megyével
+     érkezik a látogató, nyitva indul. */
+  const [filterOpen, setFilterOpen] = useState<boolean>(() => !!searchParams.get("county"));
+  useEffect(() => {
+    const h = () => setFilterOpen((v) => !v);
+    window.addEventListener("eskuvo:toggle-filter", h);
+    return () => window.removeEventListener("eskuvo:toggle-filter", h);
+  }, []);
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("eskuvo:filter-state", { detail: { open: filterOpen, active: !!county } }));
+  }, [filterOpen, county]);
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   /* A véletlen sorrend magva. A profil-linkek `sor` paraméterként viszik
@@ -479,7 +491,9 @@ export function ProvidersContent({
             {!hideCategoryPills && (
               <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
             )}
-            <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
+            {(!hideCategoryPills || filterOpen) && (
+              <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
+            )}
             <div className="grid grid-cols-[auto_1fr_auto] items-stretch gap-2">
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
               <SortDropdown sortBy={sortBy} setSortBy={setSortBy} fill />

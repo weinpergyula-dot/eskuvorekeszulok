@@ -3,8 +3,7 @@ import { HeroCarousel } from "@/components/home/hero-carousel";
 import { ProvidersContent } from "@/components/providers/providers-content";
 import { CategoryQuickTiles } from "@/components/home/category-quick-tiles";
 import { ProvidersSectionTitle } from "@/components/home/providers-section-title";
-import { GroupQuoteCta } from "@/components/home/group-quote-cta";
-import { HomeProvidersCta } from "@/components/home/home-providers-cta";
+import { GroupQuoteCta, GroupQuoteTab } from "@/components/home/group-quote-cta";
 import { VisitTracker } from "@/components/home/visit-tracker";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
@@ -70,7 +69,9 @@ export default async function HomePage() {
         <div className="h-6 rounded-t-3xl bg-white" aria-hidden />
       </div>
 
-      {/* Csoportos ajánlatkérés – még a listázás előtt */}
+      {/* Csoportos ajánlatkérés – még a listázás előtt: desktopon a fehér
+          tartalomból a teal sávba nyúló lapfül, mobilon üvegkártya */}
+      <GroupQuoteTab />
       <GroupQuoteCta />
 
       {/* Teljes szolgáltatói lista */}
@@ -83,8 +84,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Úszó gomb: legördít a szolgáltatókhoz; a szekció elérésekor eltűnik */}
-      <HomeProvidersCta />
     </>
   );
 }

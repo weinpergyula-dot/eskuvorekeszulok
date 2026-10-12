@@ -892,6 +892,16 @@ html.a11y-underline a { text-decoration: underline !important; }
   background-size: 260% 260%;
   animation: teal-gshift 18s ease-in-out infinite;
 }
+/* A csoportos ajánlatkérés fehér lapfülének (GroupQuoteTab) homorú ívei:
+   a fehér négyzetből kivágott negyedkör köti a fület a tartalomhoz. */
+.white-tab-fillet-l {
+  -webkit-mask-image: radial-gradient(circle at 0 0, transparent 15.5px, #000 16px);
+  mask-image: radial-gradient(circle at 0 0, transparent 15.5px, #000 16px);
+}
+.white-tab-fillet-r {
+  -webkit-mask-image: radial-gradient(circle at 100% 0, transparent 15.5px, #000 16px);
+  mask-image: radial-gradient(circle at 100% 0, transparent 15.5px, #000 16px);
+}
 /* Világosabb változat – a banner 2. diája használja, hogy elváljon a fejléc
    és a gyorskategória-sáv tealjétől. */
 .teal-shift-bg-light {
