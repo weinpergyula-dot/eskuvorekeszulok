@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -440,8 +441,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               className="w-full h-full overflow-hidden focus:outline-none"
               onClick={() => { setGalleryIndex(0); setGalleryOpen(true); }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={galleryUrls[0]} alt="Galéria" className="w-full h-full object-cover" draggable={false} loading="lazy" />
+              <Image src={galleryUrls[0]} alt="Galéria" width={640} height={168} sizes="(min-width: 640px) 480px, 100vw" className="w-full h-full object-cover" draggable={false} />
             </button>
           ) : (
             <div
@@ -460,8 +460,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                   style={{ width: `${GALLERY_THUMB_W}px` }}
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="block w-full h-full object-cover" draggable={false} decoding="async" />
+                  {/* Kicsinyített kiskép (next/image), nem az eredeti fotó: a
+                      Chromium alapú böngészők (Edge, Chrome) a sok nagy,
+                      kitömörített képet nem tartják egyszerre a memóriában,
+                      és egy részük fehér maradt a csíkban. */}
+                  <Image
+                    src={url}
+                    alt=""
+                    width={GALLERY_THUMB_W}
+                    height={84}
+                    sizes={`${GALLERY_THUMB_W}px`}
+                    loading="eager"
+                    className="block w-full h-full object-cover"
+                    draggable={false}
+                  />
                 </button>
               ))}
             </div>
