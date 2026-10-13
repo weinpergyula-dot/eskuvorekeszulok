@@ -1314,16 +1314,16 @@ html.a11y-underline a { text-decoration: underline !important; }
   background: linear-gradient(
     145deg,
     #FFFEFF 0%,
-    #FBF4F8 18%,
+    #FCF7FA 18%,
     #FFFFFF 34%,
-    #F6EAF1 56%,
-    #FEFAFC 76%,
-    #F8EEF4 100%
+    #F9F0F5 56%,
+    #FEFCFD 76%,
+    #FAF3F7 100%
   );
   background-size: 220% 220%;
 }
 .hero-meghivo .hero-blob-2 {
-  background: radial-gradient(circle, rgba(232, 190, 218, 0.4), transparent 65%);
+  background: radial-gradient(circle, rgba(232, 190, 218, 0.28), transparent 65%);
 }
 
 @media (prefers-reduced-motion: reduce) {
