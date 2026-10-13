@@ -53,7 +53,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
   return (
     <a
       href="/meghivo"
-      className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#C65EA5]/40 bg-[#FAF0F7] px-5 pb-14 pt-5 transition-colors hover:border-[#C65EA5]"
+      className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#C65EA5]/40 bg-[#FAF0F7] px-5 pb-20 pt-5 lg:pb-14 transition-colors hover:border-[#C65EA5]"
     >
       <span
         aria-hidden
