@@ -1307,8 +1307,8 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 
 /* A 2. (digitális meghívós) dia mobilon a meghívó-promókártya rózsaszín
-   színvilágát kapja az 1. dia ezüst hátterén: rózsaszín fénycsík, gomb
-   és pöttyök. Desktopon marad a teal.
+   színvilágát kapja az 1. dia ezüst hátterén és fehér fénycsíkjával:
+   rózsaszín gomb és pöttyök. Desktopon marad a teal.
    A pöttyök színe inline stílusból jön, ezért ott !important kell. */
 @media (max-width: 767.98px) {
   /* Ugyanaz a vándorló ezüst háttér, mint az 1. dián (.hero-silver) */
@@ -1324,15 +1324,6 @@ html.a11y-underline a { text-decoration: underline !important; }
     );
     background-size: 220% 220%;
     animation: hero-silver-shift 16s ease-in-out infinite;
-  }
-  /* A fénycsík itt fehér helyett az oldal rózsaszínje (#C65EA5) */
-  .hero-meghivo .hero-sheen {
-    background: linear-gradient(
-      115deg,
-      rgba(198, 94, 165, 0) 38%,
-      rgba(198, 94, 165, 0.28) 50%,
-      rgba(198, 94, 165, 0) 62%
-    );
   }
   .hero-meghivo .hero-blob-2 {
     background: radial-gradient(circle, rgba(232, 190, 218, 0.75), transparent 65%);
