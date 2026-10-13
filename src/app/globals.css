@@ -1324,6 +1324,15 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 /* Mobilon egy fokkal erősebb, de továbbra is halvány rózsaszín */
 @media (max-width: 767.98px) {
+  /* A fénycsík is kap egy leheletnyi rózsaszínt (fehér helyett) */
+  .hero-meghivo .hero-sheen {
+    background: linear-gradient(
+      115deg,
+      rgba(250, 226, 241, 0) 38%,
+      rgba(250, 226, 241, 0.6) 50%,
+      rgba(250, 226, 241, 0) 62%
+    );
+  }
   .hero-meghivo.hero-silver {
     background: linear-gradient(
       145deg,
