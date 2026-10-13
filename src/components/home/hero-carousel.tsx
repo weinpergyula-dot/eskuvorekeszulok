@@ -60,7 +60,7 @@ const THEMES: Record<string, Theme> = {
   teal: {
     bg: "teal-shift-bg-light hero-meghivo",
     lead: "text-[#C65EA5] md:text-white",
-    accent: "text-gray-900 md:text-[#456965]",
+    accent: "text-gray-400 md:text-[#456965]",
     blurb: "text-gray-700 md:text-white/95",
     ink: "#456965",
     inkSoft: "#5A807B",
@@ -357,7 +357,7 @@ export function HeroCarousel() {
                   alatt áll; mobilon szélesebb a szövegoszlopnál, így ha odaér,
                   rálóg a jobbra igazított képre (z-10 miatt a kép előtt). */}
               {!silver && (
-                <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-[#C65EA5]/40 bg-white/60 p-3 shadow-[0_18px_50px_rgba(70,20,55,0.14)] backdrop-blur-[3px] md:shadow-[0_18px_50px_rgba(20,45,42,0.18)] md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
+                <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-[#C65EA5]/40 bg-transparent p-3 md:shadow-[0_18px_50px_rgba(20,45,42,0.18)] md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
                   {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
                       ajánlat és alatta a csomagok felsorolása */}
                   <p className="text-[15px] font-extrabold leading-snug text-[#A34A87] md:hidden">
