@@ -1328,10 +1328,12 @@ html.a11y-underline a { text-decoration: underline !important; }
   .hero-meghivo .hero-sheen {
     background: linear-gradient(
       115deg,
-      rgba(240, 196, 224, 0) 38%,
+      rgba(240, 196, 224, 0) 26%,
       rgba(240, 196, 224, 0.6) 50%,
-      rgba(240, 196, 224, 0) 62%
+      rgba(240, 196, 224, 0) 74%
     );
+    /* szélesebb sáv, lassabb áthaladás (az 1. dián 7.5s) */
+    animation-duration: 10s;
   }
   .hero-meghivo.hero-silver {
     background: linear-gradient(
