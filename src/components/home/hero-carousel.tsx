@@ -333,7 +333,7 @@ export function HeroCarousel() {
                     {loggedIn === false && (
                       <Link
                         href="/auth/register"
-                        className={`${CTA_SIZE} border border-[#C65EA5] bg-white text-[#C65EA5] hover:bg-[#FAF0F7]`}
+                        className={`${CTA_SIZE} border border-white/70 bg-white/60 text-[#C65EA5] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80`}
                       >
                         Regisztráció
                       </Link>

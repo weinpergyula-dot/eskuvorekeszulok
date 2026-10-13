@@ -1308,22 +1308,22 @@ html.a11y-underline a { text-decoration: underline !important; }
 
 /* A 2. (digitális meghívós) dián a meghívó-promókártya rózsaszín
    színvilága ül. A háttér az 1. dia vándorló gradiense (.hero-silver
-   mozgásával), csak a kékes-teal árnyalatok helyett halvány rózsaszínnel;
+   mozgásával), csak a kékes-teal árnyalatok helyett fehér alapon egyetlen
+   keskeny, nagyon halvány rózsaszín sávval;
    a fényfolt is rózsaszínes. */
 .hero-meghivo.hero-silver {
   background: linear-gradient(
     145deg,
-    #FFFEFF 0%,
-    #FCF7FA 18%,
-    #FFFFFF 34%,
-    #F9F0F5 56%,
-    #FEFCFD 76%,
-    #FAF3F7 100%
+    #FFFFFF 0%,
+    #FFFFFF 42%,
+    #FBF5F8 56%,
+    #FFFFFF 70%,
+    #FFFFFF 100%
   );
   background-size: 220% 220%;
 }
 .hero-meghivo .hero-blob-2 {
-  background: radial-gradient(circle, rgba(232, 190, 218, 0.28), transparent 65%);
+  background: radial-gradient(circle, rgba(232, 190, 218, 0.16), transparent 65%);
 }
 
 @media (prefers-reduced-motion: reduce) {
