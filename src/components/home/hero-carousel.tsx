@@ -11,10 +11,10 @@ import { useIsLoggedIn } from "@/components/providers/masked-contact";
  * (ajánlatkártya, képkeret, vetítésvezérlő, beúszó mozgás) a /yettel_web
  * bannerének mintájára készültek – csak a színek és a tartalom mások.
  *
- * Két dia váltakozik: a szolgáltatói köszöntő (kivágott menyasszony) az
- * ezüstös bannerháttéren, és a digitális meghívó ajánlója (megdöntött
- * telefonok) a mozgó teal világosabb változatán. Mindkettőn átfut egy
- * fénycsík; a szövegek és a gombok színét a dia témája adja.
+ * Két dia váltakozik: a szolgáltatói köszöntő (kivágott menyasszony) és a
+ * digitális meghívó ajánlója (legyezőbe rendezett telefonok), mindkettő az
+ * ezüstös bannerháttéren. Mindkettőn átfut egy fénycsík; a szövegek és a
+ * gombok színét a dia témája adja.
  */
 
 /** A dia színvilága – a háttérhez igazodó szövegek, gombok, pöttyök. */
@@ -54,22 +54,21 @@ const THEMES: Record<string, Theme> = {
     dotActive: "#456965",
     dotIdle: "rgba(69,105,101,0.28)",
   },
-  /* 2. dia: a mozgó teal világosabb változata, fehér + sötét teal szövegekkel.
-     Mobilon (md alatt) a digitális meghívó promókártyájának rózsaszín
-     színvilágát kapja halvány, mozgó háttérrel (.hero-meghivo, globals.css). */
-  teal: {
-    bg: "teal-shift-bg-light hero-meghivo",
-    lead: "text-[#C65EA5] md:text-white",
-    accent: "text-gray-400 md:text-[#456965]",
-    blurb: "text-gray-700 md:text-white/95",
-    ink: "#456965",
-    inkSoft: "#5A807B",
-    inkFaint: "#7C9C97",
-    cta: "#84AAA6",
-    ctaHover: "#6B8E8A",
-    ctrl: "border-[#C65EA5]/30 bg-white/70 text-[#A34A87] md:border-white/70 md:bg-white/60 md:text-[#456965]",
-    dotActive: "#456965",
-    dotIdle: "rgba(255,255,255,0.5)",
+  /* 2. dia: ugyanaz az ezüstös háttér, a digitális meghívó promókártyájának
+     rózsaszín színeivel (.hero-meghivo: a fényfolt színe, globals.css) */
+  pink: {
+    bg: "hero-silver hero-meghivo",
+    lead: "text-[#C65EA5]",
+    accent: "text-gray-400",
+    blurb: "text-gray-700",
+    ink: "#A34A87",
+    inkSoft: "#6B7280",
+    inkFaint: "#9CA3AF",
+    cta: "#C65EA5",
+    ctaHover: "#B04E91",
+    ctrl: "border-[#C65EA5]/30 bg-white/70 text-[#A34A87]",
+    dotActive: "#A34A87",
+    dotIdle: "rgba(198,94,165,0.3)",
   },
 };
 
@@ -118,7 +117,7 @@ const SLIDES: Slide[] = [
   },
   {
     key: "meghivo",
-    theme: "teal",
+    theme: "pink",
     lead: "DIGITÁLIS",
     accent: "MEGHÍVÓK",
     blurb:
@@ -409,26 +408,36 @@ export function HeroCarousel() {
                 }
               >
                 {s.key === "meghivo" ? (
-                  /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
-                     a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
-                     Mobilon csak egy fér el: a PREMIUM. */
-                  <div className="hero-duo absolute inset-x-0 bottom-[calc(-14%+50px)] top-0 flex items-end justify-center md:bottom-[-16%]">
-                    <Phone
-                      className="hero-duo-front hidden md:block md:w-[25%]"
-                      src="/meghivo/slide-basic.webp"
-                      alt="BASIC digitális esküvői meghívó telefonon"
-                    />
-                    <Phone
-                      className="hero-duo-front hidden w-[31%] md:-ml-[5%] md:block"
-                      src="/meghivo/slide-silver.webp"
-                      alt="SILVER digitális esküvői meghívó telefonon"
-                    />
-                    <Phone
-                      className="hero-duo-front w-[78%] md:-ml-[5%] md:w-[38%]"
-                      src="/meghivo/slide-premium.webp"
-                      alt={s.alt}
-                    />
-                  </div>
+                  /* Mindhárom csomag mintája úgy látszik, mint a digitális
+                     meghívó promókártyáján: legyezőben, középen legelöl a
+                     PREMIUM, két oldalt megdöntve a BASIC és a SILVER.
+                     Mobilon csak egy fér el: a PREMIUM, térben megdöntve. */
+                  <>
+                    <div className="hero-duo absolute inset-x-0 bottom-[calc(-14%+50px)] top-0 flex items-end justify-center md:hidden">
+                      <Phone
+                        className="hero-duo-front w-[78%]"
+                        src="/meghivo/slide-premium.webp"
+                        alt={s.alt}
+                      />
+                    </div>
+                    <div className="absolute inset-x-0 bottom-[-16%] top-0 hidden items-end justify-center md:flex">
+                      <Phone
+                        className="z-0 -mr-[7%] mb-[4%] w-[31%] -rotate-[9deg]"
+                        src="/meghivo/slide-basic.webp"
+                        alt="BASIC digitális esküvői meghívó telefonon"
+                      />
+                      <Phone
+                        className="z-10 mb-[9%] w-[35%]"
+                        src="/meghivo/slide-premium.webp"
+                        alt={s.alt}
+                      />
+                      <Phone
+                        className="z-0 -ml-[7%] mb-[4%] w-[31%] rotate-[9deg]"
+                        src="/meghivo/slide-silver.webp"
+                        alt="SILVER digitális esküvői meghívó telefonon"
+                      />
+                    </div>
+                  </>
                 ) : (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
@@ -452,8 +461,8 @@ export function HeroCarousel() {
 
   return (
     /* A háttér a fejléc mögé bújik (negatív felső margó), a két alsó sarok
-       lekerekített, alul 1px fehér elválasztóval. Az 1. dia ezüstös, a 2. a
-       mozgó teal világosabb változata – mindkettőn átfut egy fénycsík. */
+       lekerekített, alul 1px fehér elválasztóval. Mindkét dia ezüstös hátterű,
+       és mindkettőn átfut egy fénycsík. */
     <section
       ref={sectionRef}
       className={`${t.bg} relative z-20 -mt-6 overflow-hidden rounded-b-[32px] border-b border-white pt-6`}
@@ -515,8 +524,7 @@ export function HeroCarousel() {
                   className="cursor-pointer px-0.5 py-1.5"
                 >
                   <span
-                    data-active={i === index || undefined}
-                    className="hero-dot block h-1.5 rounded-full transition-all duration-300"
+                    className="block h-1.5 rounded-full transition-all duration-300"
                     style={{
                       width: i === index ? 18 : 6,
                       backgroundColor: i === index ? t.dotActive : t.dotIdle,
