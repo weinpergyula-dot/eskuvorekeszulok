@@ -7,7 +7,7 @@ import { ProviderCard } from "./provider-card";
 import { MeghivoPromoCard } from "./meghivo-promo-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
-import { displayCount, HOUSE_CATEGORY, orderedCategories } from "@/lib/categories";
+import { displayCount, HOUSE_CATEGORY, HOUSE_OFFER_COUNT, orderedCategories } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -306,8 +306,11 @@ export function ProvidersContent({
   );
 
   // County counts within the current category selection (Országosan counts everywhere).
+  // A saját digitális meghívónk minden megyében elérhető, ezért a Meghívók
+  // között minden megye darabszáma eggyel több.
   const countyCounts = useMemo(() => {
     const m: Record<string, number> = {};
+    if (category === HOUSE_CATEGORY) for (const c of geoCounties) m[c] = HOUSE_OFFER_COUNT;
     for (const p of byCategory) {
       const cos = (p.counties ?? []) as string[];
       if (cos.includes("Országosan")) {
@@ -317,7 +320,7 @@ export function ProvidersContent({
       }
     }
     return m;
-  }, [byCategory, geoCounties]);
+  }, [byCategory, geoCounties, category]);
 
   const countyList = countyQuery.trim()
     ? geoCounties.filter((c) => c.toLowerCase().includes(countyQuery.trim().toLowerCase()))
@@ -344,7 +347,7 @@ export function ProvidersContent({
   /* A Meghívók között a saját digitális meghívónk is ott van: a lista élére
      kerül egy kiemelt sávként, és a darabszám is számol vele. */
   const showHouseOffer = category === HOUSE_CATEGORY;
-  const resultCount = filtered.length + (showHouseOffer ? 1 : 0);
+  const resultCount = filtered.length + (showHouseOffer ? HOUSE_OFFER_COUNT : 0);
   /* A főoldali szekciócím a darabszámot is mutatja (lásd
      ProvidersSectionTitle). */
   useEffect(() => {
