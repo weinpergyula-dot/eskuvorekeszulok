@@ -451,9 +451,7 @@ export function HeroCarousel() {
                     alt={s.alt}
                     fetchPriority="high"
                     decoding="sync"
-                    /* .hero-bride: néhány másodpercenként kicsit bedől és
-                       „kuncog" egyet (globals.css) */
-                    className={`hero-bride absolute bottom-0 block w-auto max-w-none object-contain object-bottom ${
+                    className={`absolute bottom-0 block w-auto max-w-none object-contain object-bottom ${
                       silver
                         ? "right-0 h-[98vw] md:inset-x-0 md:mx-auto md:h-full"
                         : "inset-x-0 mx-auto h-full"

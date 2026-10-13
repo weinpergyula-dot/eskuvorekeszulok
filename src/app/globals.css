@@ -1352,30 +1352,8 @@ html.a11y-underline a { text-decoration: underline !important; }
   background: radial-gradient(circle, rgba(232, 190, 218, 0.16), transparent 65%);
 }
 
-/* Az 1. dia menyasszonya: hosszabb nyugalom után kicsit oldalra dől (az
-   alja a tengely), két apró, rugózó „kuncogás", majd lassan visszaáll.
-   Dőlés közben kicsit lejjebb is csúszik, hogy a kivágott kép alsó éle
-   ne emelkedjen el a banner aljától.
-   Az első mozdulat a dia beúszása után jön. */
-.hero-bride {
-  transform-origin: 50% 100%;
-  animation: hero-bride-giggle 8s ease-in-out 1.6s infinite;
-  will-change: transform;
-}
-@keyframes hero-bride-giggle {
-  0%, 52%  { transform: rotate(0deg) translateY(0); }
-  60%      { transform: rotate(-2.6deg) translateY(3%); }
-  64%      { transform: rotate(-2.2deg) translateY(2.3%); }
-  67%      { transform: rotate(-2.8deg) translateY(3%); }
-  70%      { transform: rotate(-2.3deg) translateY(2.4%); }
-  73%      { transform: rotate(-2.7deg) translateY(3%); }
-  80%      { transform: rotate(-2.4deg) translateY(3%); }
-  92%, 100% { transform: rotate(0deg) translateY(0); }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-slide-in,
-  .hero-bride,
   .hero-blob,
   .hero-silver,
   .hero-sheen { animation: none; }
