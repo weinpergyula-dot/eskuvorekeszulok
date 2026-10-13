@@ -1322,6 +1322,21 @@ html.a11y-underline a { text-decoration: underline !important; }
   );
   background-size: 220% 220%;
 }
+/* Mobilon egy fokkal erősebb, de továbbra is halvány rózsaszín */
+@media (max-width: 767.98px) {
+  .hero-meghivo.hero-silver {
+    background: linear-gradient(
+      145deg,
+      #FFFFFF 0%,
+      #FBF4F8 20%,
+      #FFFFFF 38%,
+      #F7ECF3 56%,
+      #FFFFFF 74%,
+      #FAF2F7 100%
+    );
+    background-size: 220% 220%;
+  }
+}
 .hero-meghivo .hero-blob-2 {
   background: radial-gradient(circle, rgba(232, 190, 218, 0.16), transparent 65%);
 }
