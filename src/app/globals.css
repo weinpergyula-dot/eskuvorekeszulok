@@ -1306,9 +1306,22 @@ html.a11y-underline a { text-decoration: underline !important; }
   100%     { transform: translateX(70%); opacity: 0; }
 }
 
-/* A 2. (digitális meghívós) dián a teal helyett a meghívó-promókártya
-   rózsaszín színvilága ül az 1. dia ezüst hátterén (.hero-silver); a
-   jobb alsó fényfolt is rózsaszínes. */
+/* A 2. (digitális meghívós) dián a meghívó-promókártya rózsaszín
+   színvilága ül. A háttér az 1. dia vándorló gradiense (.hero-silver
+   mozgásával), csak a kékes-teal árnyalatok helyett halvány rózsaszínnel;
+   a fényfolt is rózsaszínes. */
+.hero-meghivo.hero-silver {
+  background: linear-gradient(
+    145deg,
+    #FFFDFE 0%,
+    #F3E0EC 18%,
+    #FFFFFF 34%,
+    #E8C9DD 56%,
+    #FBF2F8 76%,
+    #EED6E6 100%
+  );
+  background-size: 220% 220%;
+}
 .hero-meghivo .hero-blob-2 {
   background: radial-gradient(circle, rgba(232, 190, 218, 0.75), transparent 65%);
 }
