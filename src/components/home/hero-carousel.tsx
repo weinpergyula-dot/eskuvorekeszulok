@@ -396,7 +396,7 @@ export function HeroCarousel() {
                 töréspontnál fix arányú, hogy a diák bannermagassága azonos legyen
                 (különben az alsó szélre igazított ajánlatkártya elmozdulna); a
                 telefonok szándékosan lelógnak az alsó élen. */}
-            <div className="w-full self-end">
+            <div className={`w-full self-end ${silver ? "" : "md:self-center md:pb-10"}`}>
               <div
                 className={
                   /* Az 1. dián mobilon a keret a saját hasábjában marad (a
@@ -404,7 +404,7 @@ export function HeroCarousel() {
                      magasabb arányú; a 2. dián a telefon kifut jobbra. */
                   silver
                     ? "hero-art absolute inset-y-0 right-[6%] w-[74%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
-                    : "hero-art absolute inset-y-0 -right-[14%] w-[62%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                    : "hero-art absolute inset-y-0 -right-[14%] w-[62%] md:relative md:inset-auto md:aspect-[620/461] md:w-full md:max-w-none xl:w-[106%] xl:translate-x-4"
                 }
               >
                 {s.key === "meghivo" ? (
@@ -420,22 +420,28 @@ export function HeroCarousel() {
                         alt={s.alt}
                       />
                     </div>
-                    <div className="absolute inset-x-0 bottom-[-16%] top-0 hidden items-end justify-center md:flex">
-                      <Phone
-                        className="z-0 -mr-[7%] mb-[4%] w-[31%] -rotate-[9deg]"
-                        src="/meghivo/slide-basic.webp"
-                        alt="BASIC digitális esküvői meghívó telefonon"
-                      />
-                      <Phone
-                        className="z-10 mb-[9%] w-[35%]"
-                        src="/meghivo/slide-premium.webp"
-                        alt={s.alt}
-                      />
-                      <Phone
-                        className="z-0 -ml-[7%] mb-[4%] w-[31%] rotate-[9deg]"
-                        src="/meghivo/slide-silver.webp"
-                        alt="SILVER digitális esküvői meghívó telefonon"
-                      />
+                    {/* Desktopon a három telefon függőlegesen középen áll,
+                        egymástól kicsit távolabb, alattuk a csomag nevével
+                        (a promókártya címkéinek stílusában). */}
+                    <div className="absolute inset-0 hidden items-center justify-center md:flex">
+                      {(
+                        [
+                          { src: "/meghivo/slide-basic.webp", label: "Basic", color: "#6E9995", alt: "BASIC digitális esküvői meghívó telefonon", cls: "z-0 -mr-[2%] mt-[6%] w-[29%] -rotate-[9deg]" },
+                          { src: "/meghivo/slide-premium.webp", label: "Premium", color: "#A8437F", alt: s.alt, cls: "z-10 w-[33%]" },
+                          { src: "/meghivo/slide-silver.webp", label: "Silver", color: "#77828F", alt: "SILVER digitális esküvői meghívó telefonon", cls: "z-0 -ml-[2%] mt-[6%] w-[29%] rotate-[9deg]" },
+                        ] as const
+                      ).map((ph) => (
+                        <div key={ph.label} className={`relative flex min-w-0 shrink-0 flex-col items-center ${ph.cls}`}>
+                          <Phone className="w-full" src={ph.src} alt={ph.alt} />
+                          {/* A címke a csomag saját színét viseli (mint a /meghivo oldalon) */}
+                          <span
+                            className="mt-3 rounded-full bg-white/80 px-3 py-1 text-xs font-bold uppercase tracking-wider shadow-sm ring-1 backdrop-blur-sm"
+                            style={{ color: ph.color, ["--tw-ring-color" as string]: `${ph.color}55` }}
+                          >
+                            {ph.label}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </>
                 ) : (
