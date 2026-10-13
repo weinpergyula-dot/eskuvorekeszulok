@@ -50,67 +50,74 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
     );
   }
 
+  /* A „Saját szolgáltatás" címke a szolgáltatói kártyák „Kiemelt
+     szolgáltató" címkéjéhez hasonlóan a felső kereten ül, középre zárva. A
+     link overflow-hidden, ezért a címke a köré tett burkolóba kerül, aminek
+     felső belső margója ugyanakkora, mint a szolgáltatói kártyáké – így a
+     rácsban egy vonalban maradnak. */
   return (
-    <a
-      href="/meghivo"
-      className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#C65EA5]/40 bg-[#FAF0F7] px-5 pb-20 pt-5 lg:pb-14 transition-colors hover:border-[#C65EA5]"
-    >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#C65EA5]/15 blur-2xl"
-      />
-
-      <div className="relative">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C65EA5] px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
-          <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
-          Saját szolgáltatás
-        </span>
-        <h3 className="mt-3 flex items-center gap-2 text-xl font-bold text-gray-900">
-          <MailOpen className="h-5 w-5 shrink-0 text-[#C65EA5]" strokeWidth={1.75} />
-          Digitális esküvői meghívó
-        </h3>
-        <p className="mt-2 text-base leading-relaxed text-gray-700">
-          Felejtsd el a papírt! Egyetlen linken elküldhető, mobilra szabott meghívó
-          visszaszámlálóval, programmal és online visszajelzéssel – már 14&nbsp;900&nbsp;Ft-tól.
-        </p>
-      </div>
-
-      {/* A szöveg és a gomb közti sávba a három csomag mintája kerül,
-         legyezőszerűen: középen, legelöl a PREMIUM, két oldalt megdöntve a
-         BASIC és a SILVER. A sáv abszolút pozicionált tartalommal tölti ki a
-         maradék helyet, így többoszlopos rácsban a kártya magasságát a
-         szomszédos kártyák diktálják, nem a telefonok; mobilon, ahol a
-         kártya egyedül áll a sorban, a minimális magasság ad helyet nekik
-         (keskeny kijelzőn is elfér egymás mellett a három telefon). */}
-      <div aria-hidden className="relative mt-2 min-h-[210px] flex-1 lg:mt-0 lg:min-h-[180px]">
-        <span className="pointer-events-none absolute inset-x-6 bottom-2 top-6 rounded-full bg-[#C65EA5]/20 blur-3xl" />
-        <div className="absolute inset-0 flex items-center justify-center pt-4">
-          <MiniPhone
-            src="/meghivo/slide-basic.webp"
-            label="Basic"
-            className="z-0 -mr-6 translate-y-3 -rotate-[9deg] group-hover:-translate-x-2 group-hover:-rotate-[12deg]"
-          />
-          <MiniPhone
-            src="/meghivo/slide-premium.webp"
-            label="Premium"
-            className="z-10 -translate-y-1 scale-110 group-hover:-translate-y-3"
-          />
-          <MiniPhone
-            src="/meghivo/slide-silver.webp"
-            label="Silver"
-            className="z-0 -ml-6 translate-y-3 rotate-[9deg] group-hover:translate-x-2 group-hover:rotate-[12deg]"
-          />
-        </div>
-      </div>
-
-      {/* A gomb felirata, mérete és helye is a szolgáltatói kártyák
-         „Részletek" gombját követi: a lábléc px-4 py-3 belső margójának
-         megfelelően a jobb alsó sarokhoz igazítva, így nem lóg rá a minták
-         képére. */}
-      <span className="absolute bottom-3 right-4 inline-flex items-center whitespace-nowrap rounded-full bg-[#C65EA5] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#B04E91]">
-        Részletek
+    <div className="relative h-full pt-3.5">
+      <span className="pointer-events-none absolute left-1/2 top-3.5 z-20 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#C65EA5] px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
+        <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
+        Saját szolgáltatás
       </span>
-    </a>
+      <a
+        href="/meghivo"
+        className="group relative flex h-full min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#C65EA5]/40 bg-[#FAF0F7] px-5 pb-20 pt-6 lg:pb-14 transition-colors hover:border-[#C65EA5]"
+      >
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#C65EA5]/15 blur-2xl"
+        />
+
+        <div className="relative">
+          <h3 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <MailOpen className="h-5 w-5 shrink-0 text-[#C65EA5]" strokeWidth={1.75} />
+            Digitális esküvői meghívó
+          </h3>
+          <p className="mt-2 text-base leading-relaxed text-gray-700">
+            Felejtsd el a papírt! Egyetlen linken elküldhető, mobilra szabott meghívó
+            visszaszámlálóval, programmal és online visszajelzéssel – már 14&nbsp;900&nbsp;Ft-tól.
+          </p>
+        </div>
+
+        {/* A szöveg és a gomb közti sávba a három csomag mintája kerül,
+           legyezőszerűen: középen, legelöl a PREMIUM, két oldalt megdöntve a
+           BASIC és a SILVER. A sáv abszolút pozicionált tartalommal tölti ki a
+           maradék helyet, így többoszlopos rácsban a kártya magasságát a
+           szomszédos kártyák diktálják, nem a telefonok; mobilon, ahol a
+           kártya egyedül áll a sorban, a minimális magasság ad helyet nekik
+           (keskeny kijelzőn is elfér egymás mellett a három telefon). */}
+        <div aria-hidden className="relative mt-2 min-h-[210px] flex-1 lg:mt-0 lg:min-h-[180px]">
+          <span className="pointer-events-none absolute inset-x-6 bottom-2 top-6 rounded-full bg-[#C65EA5]/20 blur-3xl" />
+          <div className="absolute inset-0 flex items-center justify-center pt-4">
+            <MiniPhone
+              src="/meghivo/slide-basic.webp"
+              label="Basic"
+              className="z-0 -mr-6 translate-y-3 -rotate-[9deg] group-hover:-translate-x-2 group-hover:-rotate-[12deg]"
+            />
+            <MiniPhone
+              src="/meghivo/slide-premium.webp"
+              label="Premium"
+              className="z-10 -translate-y-1 scale-110 group-hover:-translate-y-3"
+            />
+            <MiniPhone
+              src="/meghivo/slide-silver.webp"
+              label="Silver"
+              className="z-0 -ml-6 translate-y-3 rotate-[9deg] group-hover:translate-x-2 group-hover:rotate-[12deg]"
+            />
+          </div>
+        </div>
+
+        {/* A gomb felirata, mérete és helye is a szolgáltatói kártyák
+           „Részletek" gombját követi: a lábléc px-4 py-3 belső margójának
+           megfelelően a jobb alsó sarokhoz igazítva, így nem lóg rá a minták
+           képére. */}
+        <span className="absolute bottom-3 right-4 inline-flex items-center whitespace-nowrap rounded-full bg-[#C65EA5] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#B04E91]">
+          Részletek
+        </span>
+      </a>
+    </div>
   );
 }
 
