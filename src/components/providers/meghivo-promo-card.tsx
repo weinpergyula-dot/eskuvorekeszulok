@@ -101,12 +101,12 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
         </div>
       </div>
 
-      {/* A gomb méretre és helyre a szolgáltatói kártyák „Részletek" gombját
-         követi: a lábléc px-4 py-3 belső margójának megfelelően a jobb alsó
-         sarokhoz igazítva, a hosszabb felirat balra nyúlik ki. */}
-      <span className="absolute bottom-3 right-4 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-[#84AAA6] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#6B8E8A]">
-        Megnézem a csomagokat
-        <ArrowRight className="h-3.5 w-3.5" />
+      {/* A gomb felirata, mérete és helye is a szolgáltatói kártyák
+         „Részletek" gombját követi: a lábléc px-4 py-3 belső margójának
+         megfelelően a jobb alsó sarokhoz igazítva, így nem lóg rá a minták
+         képére. */}
+      <span className="absolute bottom-3 right-4 inline-flex items-center whitespace-nowrap rounded-full bg-[#84AAA6] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#6B8E8A]">
+        Részletek
       </span>
     </a>
   );
