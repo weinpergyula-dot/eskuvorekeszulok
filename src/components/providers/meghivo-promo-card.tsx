@@ -8,17 +8,17 @@ import { ArrowRight, MailOpen, Sparkles } from "lucide-react";
 export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
   /* Listanézetben a szolgáltatói sorok ritmusát követi: bal oldalt kör alakú
      jel az arckép helyén, középen a név–leírás–címke hármas, jobbra a gomb.
-     Ettől ugyanolyan magas lesz, mint a többi sor, csak a teal háttér és a
+     Ettől ugyanolyan magas lesz, mint a többi sor, csak a rózsaszín háttér és a
      „Saját szolgáltatás" címke jelzi, hogy ez a mi ajánlatunk. */
   if (listView) {
     return (
       <a
         href="/meghivo"
-        className="group flex flex-col gap-3 rounded-xl border border-[#84AAA6]/40 bg-[#F0F6F5] px-4 py-3 shadow-sm transition-all hover:border-[#84AAA6] hover:shadow-md sm:flex-row sm:items-center sm:gap-3"
+        className="group flex flex-col gap-3 rounded-xl border border-[#C65EA5]/40 bg-[#FAF0F7] px-4 py-3 shadow-sm transition-all hover:border-[#C65EA5] hover:shadow-md sm:flex-row sm:items-center sm:gap-3"
       >
         <div className="flex min-w-0 flex-1 items-center gap-3">
           {/* Kör alakú jel a szolgáltatói arckép helyén */}
-          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white bg-[#84AAA6] shadow-sm">
+          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white bg-[#C65EA5] shadow-sm">
             <MailOpen className="h-7 w-7 text-white" strokeWidth={1.5} />
           </span>
 
@@ -30,11 +30,11 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
               Egy linken elküldhető meghívó visszaszámlálóval és online visszajelzéssel.
             </p>
             <div className="mt-1.5 flex flex-wrap items-center gap-1">
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#84AAA6] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#C65EA5] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                 <Sparkles className="h-2.5 w-2.5" strokeWidth={2.5} />
                 Saját szolgáltatás
               </span>
-              <span className="rounded-full border border-[#84AAA6]/40 bg-[#84AAA6]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#5C8480]">
+              <span className="rounded-full border border-[#C65EA5]/40 bg-[#C65EA5]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#A34A87]">
                 már 14&nbsp;900&nbsp;Ft-tól
               </span>
             </div>
@@ -42,7 +42,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
         </div>
 
         {/* Mobilon a gomb saját sorba kerül, hogy a névnek maradjon hely */}
-        <span className="flex w-full shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-[#84AAA6] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#6B8E8A] sm:w-auto">
+        <span className="flex w-full shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-[#C65EA5] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#B04E91] sm:w-auto">
           Megnézem a csomagokat
           <ArrowRight className="h-3.5 w-3.5" />
         </span>
@@ -53,20 +53,20 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
   return (
     <a
       href="/meghivo"
-      className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#84AAA6]/40 bg-[#F0F6F5] px-5 pb-14 pt-5 transition-colors hover:border-[#84AAA6]"
+      className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#C65EA5]/40 bg-[#FAF0F7] px-5 pb-14 pt-5 transition-colors hover:border-[#C65EA5]"
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#84AAA6]/15 blur-2xl"
+        className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#C65EA5]/15 blur-2xl"
       />
 
       <div className="relative">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#84AAA6] px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C65EA5] px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
           <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
           Saját szolgáltatás
         </span>
         <h3 className="mt-3 flex items-center gap-2 text-xl font-bold text-gray-900">
-          <MailOpen className="h-5 w-5 shrink-0 text-[#84AAA6]" strokeWidth={1.75} />
+          <MailOpen className="h-5 w-5 shrink-0 text-[#C65EA5]" strokeWidth={1.75} />
           Digitális esküvői meghívó
         </h3>
         <p className="mt-2 text-base leading-relaxed text-gray-700">
@@ -81,7 +81,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
          tartalommal tölti ki a maradék helyet, így a kártya magasságát a
          rács többi eleme diktálja, nem a telefonok. */}
       <div aria-hidden className="relative hidden min-h-[180px] flex-1 lg:block">
-        <span className="pointer-events-none absolute inset-x-6 bottom-2 top-6 rounded-full bg-[#84AAA6]/20 blur-3xl" />
+        <span className="pointer-events-none absolute inset-x-6 bottom-2 top-6 rounded-full bg-[#C65EA5]/20 blur-3xl" />
         <div className="absolute inset-0 flex items-center justify-center pt-4">
           <MiniPhone
             src="/meghivo/slide-basic.webp"
@@ -105,7 +105,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
          „Részletek" gombját követi: a lábléc px-4 py-3 belső margójának
          megfelelően a jobb alsó sarokhoz igazítva, így nem lóg rá a minták
          képére. */}
-      <span className="absolute bottom-3 right-4 inline-flex items-center whitespace-nowrap rounded-full bg-[#84AAA6] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#6B8E8A]">
+      <span className="absolute bottom-3 right-4 inline-flex items-center whitespace-nowrap rounded-full bg-[#C65EA5] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#B04E91]">
         Részletek
       </span>
     </a>
@@ -116,7 +116,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
 function MiniPhone({ src, label, className = "" }: { src: string; label: string; className?: string }) {
   return (
     <div className={`relative flex h-full max-h-[240px] flex-col items-center transition-transform duration-500 ease-out ${className}`}>
-      <div className="aspect-[390/844] h-full rounded-[0.9rem] bg-gray-900 p-[3px] shadow-[0_18px_30px_-14px_rgba(20,45,42,0.7)] ring-1 ring-white/30">
+      <div className="aspect-[390/844] h-full rounded-[0.9rem] bg-gray-900 p-[3px] shadow-[0_18px_30px_-14px_rgba(70,20,55,0.6)] ring-1 ring-white/30">
         <div className="relative h-full overflow-hidden rounded-[0.7rem] bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt="" loading="lazy" className="block h-full w-full object-cover object-top" />
@@ -124,7 +124,7 @@ function MiniPhone({ src, label, className = "" }: { src: string; label: string;
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/25" />
         </div>
       </div>
-      <span className="absolute -bottom-2.5 rounded-full bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#5C8480] shadow-sm ring-1 ring-[#84AAA6]/30">
+      <span className="absolute -bottom-2.5 rounded-full bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#A34A87] shadow-sm ring-1 ring-[#C65EA5]/30">
         {label}
       </span>
     </div>
