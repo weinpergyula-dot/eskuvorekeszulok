@@ -473,9 +473,17 @@ export function ProvidersContent({
         <div ref={listTopRef} className="mb-6 scroll-mt-24">
           {/* Desktop: count left, page size + view + sort right */}
           <div className="hidden lg:flex items-center justify-between gap-3">
-            {/* A főoldalon a darabszám a szekció címében van, itt üres hely
-                marad (a jobb oldali vezérlők így is jobbra zárnak). */}
-            {hideCategoryPills ? <div /> : <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>}
+            {/* A főoldalon itt áll a szekció címe (Összes szolgáltató, ill. a
+                kategória neve) a darabszámmal; mobilon a ProvidersSectionTitle
+                mutatja a lista fölött. */}
+            {hideCategoryPills ? (
+              <h2 className="text-[24px] font-bold text-gray-900">
+                {CATEGORY_LABELS[category as ServiceCategory] ?? "Összes szolgáltató"}
+                <span className="font-semibold text-gray-500"> ({resultCount})</span>
+              </h2>
+            ) : (
+              <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>
+            )}
             <div className="flex items-stretch gap-2">
               <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />

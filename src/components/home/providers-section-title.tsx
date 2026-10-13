@@ -33,7 +33,9 @@ export function ProvidersSectionTitle() {
   const label = CATEGORY_LABELS[category as ServiceCategory];
 
   return (
-    <div className="mb-6 flex items-center justify-between gap-3">
+    /* Desktopon (lg-től) a cím a szolgáltatói lista vezérlősorába kerül, a
+       rendezés mellé (ProvidersContent), itt csak mobilon látszik. */
+    <div className="mb-6 flex items-center justify-between gap-3 lg:hidden">
       <h2 className="text-[18px] md:text-[24px] font-bold text-gray-900">
         {label ?? "Összes szolgáltató"}
         {count !== null && <span className="font-semibold text-gray-500"> ({count})</span>}
