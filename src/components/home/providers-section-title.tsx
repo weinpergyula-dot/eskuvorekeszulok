@@ -34,7 +34,7 @@ export function ProvidersSectionTitle() {
 
   return (
     <div className="mb-6 flex items-center justify-between gap-3">
-      <h2 className="text-[20px] md:text-[26px] font-bold text-gray-900">
+      <h2 className="text-[18px] md:text-[24px] font-bold text-gray-900">
         {label ?? "Összes szolgáltató"}
         {count !== null && <span className="font-semibold text-gray-500"> ({count})</span>}
       </h2>

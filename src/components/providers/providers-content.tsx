@@ -487,11 +487,15 @@ export function ProvidersContent({
             </div>
           </div>
 
-          {/* Mobile: county (full), then view + sort + page size filling one row.
-              A kategóriát a főoldalon a gyorskategória-csempék adják, ezért ott
-              a legördülő is elmarad. */}
+          {/* Mobile: category + county (full), then view + sort + page size
+              filling one row. A főoldalon a két szűrő csak a Szűrő gombra
+              nyílik ki. */}
           <div className="lg:hidden space-y-2">
-            {!hideCategoryPills && (
+            {/* A főoldalon a kategória-legördülő (darabszámokkal) is a Szűrő
+                gombra jelenik meg, a megyeszűrő fölött; a választás a
+                gyorskategória-csempékkel és a szekciócímmel szinkronban marad
+                (eskuvo:category esemény). */}
+            {(!hideCategoryPills || filterOpen) && (
               <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
             )}
             {(!hideCategoryPills || filterOpen) && (
