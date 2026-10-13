@@ -1313,17 +1313,17 @@ html.a11y-underline a { text-decoration: underline !important; }
 .hero-meghivo.hero-silver {
   background: linear-gradient(
     145deg,
-    #FFFDFE 0%,
-    #F3E0EC 18%,
+    #FFFEFF 0%,
+    #FBF4F8 18%,
     #FFFFFF 34%,
-    #E8C9DD 56%,
-    #FBF2F8 76%,
-    #EED6E6 100%
+    #F6EAF1 56%,
+    #FEFAFC 76%,
+    #F8EEF4 100%
   );
   background-size: 220% 220%;
 }
 .hero-meghivo .hero-blob-2 {
-  background: radial-gradient(circle, rgba(232, 190, 218, 0.75), transparent 65%);
+  background: radial-gradient(circle, rgba(232, 190, 218, 0.4), transparent 65%);
 }
 
 @media (prefers-reduced-motion: reduce) {
