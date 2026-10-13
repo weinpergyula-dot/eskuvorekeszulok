@@ -75,10 +75,55 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
         </p>
       </div>
 
+      {/* Desktopon a szöveg és a gomb közti üres sávba a három csomag
+         mintája kerül, legyezőszerűen: középen, legelöl a SILVER, két
+         oldalt megdöntve a BASIC és a PREMIUM. A sáv abszolút pozicionált
+         tartalommal tölti ki a maradék helyet, így a kártya magasságát a
+         rács többi eleme diktálja, nem a telefonok. */}
+      <div aria-hidden className="relative hidden min-h-[180px] flex-1 lg:block">
+        <span className="pointer-events-none absolute inset-x-6 bottom-2 top-6 rounded-full bg-[#84AAA6]/20 blur-3xl" />
+        <div className="absolute inset-0 flex items-center justify-center pt-4">
+          <MiniPhone
+            src="/meghivo/slide-basic.webp"
+            label="Basic"
+            className="z-0 -mr-6 translate-y-3 -rotate-[9deg] group-hover:-translate-x-2 group-hover:-rotate-[12deg]"
+          />
+          <MiniPhone
+            src="/meghivo/slide-silver.webp"
+            label="Silver"
+            className="z-10 -translate-y-1 scale-110 group-hover:-translate-y-3"
+          />
+          <MiniPhone
+            src="/meghivo/slide-premium.webp"
+            label="Premium"
+            className="z-0 -ml-6 translate-y-3 rotate-[9deg] group-hover:translate-x-2 group-hover:rotate-[12deg]"
+          />
+        </div>
+      </div>
+
       <span className="relative mt-5 inline-flex items-center gap-2 self-start rounded-full bg-[#84AAA6] px-5 py-2.5 text-[15px] font-bold text-white transition-colors group-hover:bg-[#6B8E8A]">
         Megnézem a csomagokat
         <ArrowRight className="h-4 w-4" />
       </span>
     </a>
+  );
+}
+
+/** Kicsinyített telefonkeret egy meghívó-minta képernyőképével. */
+function MiniPhone({ src, label, className = "" }: { src: string; label: string; className?: string }) {
+  return (
+    <div className={`relative flex h-full max-h-[240px] flex-col items-center transition-transform duration-500 ease-out ${className}`}>
+      <div className="aspect-[390/844] h-full rounded-[0.9rem] bg-gray-900 p-[3px] shadow-[0_18px_30px_-14px_rgba(20,45,42,0.7)] ring-1 ring-white/30">
+        <div className="relative h-full overflow-hidden rounded-[0.7rem] bg-white">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt="" loading="lazy" className="block h-full w-full object-cover object-top" />
+          <span className="absolute left-1/2 top-1 h-1 w-6 -translate-x-1/2 rounded-full bg-gray-900" />
+          <span className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/25" />
+        </div>
+      </div>
+      <span className="absolute -bottom-2.5 rounded-full bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#5C8480] shadow-sm ring-1 ring-[#84AAA6]/30">
+        {label}
+      </span>
+    </div>
   );
 }
