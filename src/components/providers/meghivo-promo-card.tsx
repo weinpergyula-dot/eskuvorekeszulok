@@ -75,12 +75,14 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
         </p>
       </div>
 
-      {/* Desktopon a szöveg és a gomb közti üres sávba a három csomag
-         mintája kerül, legyezőszerűen: középen, legelöl a PREMIUM, két
-         oldalt megdöntve a BASIC és a SILVER. A sáv abszolút pozicionált
-         tartalommal tölti ki a maradék helyet, így a kártya magasságát a
-         rács többi eleme diktálja, nem a telefonok. */}
-      <div aria-hidden className="relative hidden min-h-[180px] flex-1 lg:block">
+      {/* A szöveg és a gomb közti sávba a három csomag mintája kerül,
+         legyezőszerűen: középen, legelöl a PREMIUM, két oldalt megdöntve a
+         BASIC és a SILVER. A sáv abszolút pozicionált tartalommal tölti ki a
+         maradék helyet, így többoszlopos rácsban a kártya magasságát a
+         szomszédos kártyák diktálják, nem a telefonok; mobilon, ahol a
+         kártya egyedül áll a sorban, a minimális magasság ad helyet nekik
+         (keskeny kijelzőn is elfér egymás mellett a három telefon). */}
+      <div aria-hidden className="relative mt-2 min-h-[210px] flex-1 lg:mt-0 lg:min-h-[180px]">
         <span className="pointer-events-none absolute inset-x-6 bottom-2 top-6 rounded-full bg-[#C65EA5]/20 blur-3xl" />
         <div className="absolute inset-0 flex items-center justify-center pt-4">
           <MiniPhone
