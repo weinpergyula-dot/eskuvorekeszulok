@@ -50,6 +50,19 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const [descExpanded, setDescExpanded] = useState(false);
   const [catExpanded, setCatExpanded] = useState(false);
   const [countyExpanded, setCountyExpanded] = useState(false);
+  /* A profilkép a mellette álló szövegblokk (név, megye, értékelés,
+     kategóriák) teljes magasságát kapja, négyzetesen. Első rendereléskor a
+     sorok számából becsüljük, utána a tényleges magasságot mérjük. */
+  const infoRef = useRef<HTMLDivElement>(null);
+  const hasCategoryRow = !hideCategories && (provider.categories ?? []).length > 0;
+  const [avatarSize, setAvatarSize] = useState(hasCategoryRow ? 98 : 70);
+  useEffect(() => {
+    const el = infoRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setAvatarSize(Math.max(64, Math.round(el.getBoundingClientRect().height))));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   // Swipe tracking for gallery lightbox
@@ -345,12 +358,15 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </span>
           </div>
 
-          {/* Avatar */}
+          {/* Avatar: a jobb oldali szövegblokk teljes magasságát kitölti (a név
+              tetejétől az utolsó sor aljáig), négyzetes arányban; legalább
+              64px (avatarSize). */}
           <div
             className={cn(
-              "w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0 ml-1",
+              "relative rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0 ml-1",
               provider.avatar_url && "cursor-zoom-in"
             )}
+            style={{ width: avatarSize, height: avatarSize }}
             onClick={(e) => {
               e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation();
               if (provider.avatar_url) setAvatarOpen(true);
@@ -358,14 +374,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           >
             {provider.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
+              <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="absolute inset-0 w-full h-full object-cover" />
             ) : (
               <span className="text-xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
             )}
           </div>
 
           {/* Info: name, counties, stars */}
-          <div className="flex-1 min-w-0 pr-14">
+          <div ref={infoRef} className="flex-1 min-w-0 pr-14">
             {!disableLink ? (
               <a href={detailHref} onClick={(e) => e.stopPropagation()} className="block">
                 <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
