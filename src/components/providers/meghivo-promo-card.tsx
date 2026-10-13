@@ -53,7 +53,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
   return (
     <a
       href="/meghivo"
-      className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#84AAA6]/40 bg-[#F0F6F5] p-5 transition-colors hover:border-[#84AAA6]"
+      className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#84AAA6]/40 bg-[#F0F6F5] px-5 pb-14 pt-5 transition-colors hover:border-[#84AAA6]"
     >
       <span
         aria-hidden
@@ -76,8 +76,8 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
       </div>
 
       {/* Desktopon a szöveg és a gomb közti üres sávba a három csomag
-         mintája kerül, legyezőszerűen: középen, legelöl a SILVER, két
-         oldalt megdöntve a BASIC és a PREMIUM. A sáv abszolút pozicionált
+         mintája kerül, legyezőszerűen: középen, legelöl a PREMIUM, két
+         oldalt megdöntve a BASIC és a SILVER. A sáv abszolút pozicionált
          tartalommal tölti ki a maradék helyet, így a kártya magasságát a
          rács többi eleme diktálja, nem a telefonok. */}
       <div aria-hidden className="relative hidden min-h-[180px] flex-1 lg:block">
@@ -89,21 +89,24 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
             className="z-0 -mr-6 translate-y-3 -rotate-[9deg] group-hover:-translate-x-2 group-hover:-rotate-[12deg]"
           />
           <MiniPhone
-            src="/meghivo/slide-silver.webp"
-            label="Silver"
+            src="/meghivo/slide-premium.webp"
+            label="Premium"
             className="z-10 -translate-y-1 scale-110 group-hover:-translate-y-3"
           />
           <MiniPhone
-            src="/meghivo/slide-premium.webp"
-            label="Premium"
+            src="/meghivo/slide-silver.webp"
+            label="Silver"
             className="z-0 -ml-6 translate-y-3 rotate-[9deg] group-hover:translate-x-2 group-hover:rotate-[12deg]"
           />
         </div>
       </div>
 
-      <span className="relative mt-5 inline-flex items-center gap-2 self-start rounded-full bg-[#84AAA6] px-5 py-2.5 text-[15px] font-bold text-white transition-colors group-hover:bg-[#6B8E8A]">
+      {/* A gomb méretre és helyre a szolgáltatói kártyák „Részletek" gombját
+         követi: a lábléc px-4 py-3 belső margójának megfelelően a jobb alsó
+         sarokhoz igazítva, a hosszabb felirat balra nyúlik ki. */}
+      <span className="absolute bottom-3 right-4 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-[#84AAA6] px-3 py-1.5 text-sm font-medium text-white transition-colors group-hover:bg-[#6B8E8A]">
         Megnézem a csomagokat
-        <ArrowRight className="h-4 w-4" />
+        <ArrowRight className="h-3.5 w-3.5" />
       </span>
     </a>
   );
