@@ -1328,9 +1328,9 @@ html.a11y-underline a { text-decoration: underline !important; }
   .hero-meghivo .hero-sheen {
     background: linear-gradient(
       115deg,
-      rgba(250, 226, 241, 0) 38%,
-      rgba(250, 226, 241, 0.6) 50%,
-      rgba(250, 226, 241, 0) 62%
+      rgba(240, 196, 224, 0) 38%,
+      rgba(240, 196, 224, 0.6) 50%,
+      rgba(240, 196, 224, 0) 62%
     );
   }
   .hero-meghivo.hero-silver {
