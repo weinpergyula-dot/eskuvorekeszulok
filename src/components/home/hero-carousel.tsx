@@ -301,17 +301,12 @@ export function HeroCarousel() {
                (.hero-slide-fullscreen), így betöltéskor csak a banner látszik;
                fekvőben marad a szélességhez kötött érték. A szöveg mellette,
                függőlegesen középen fut. */
-            className={`${sizer ? "invisible pointer-events-none hidden md:grid" : silver ? "hero-slide-in grid" : "hero-slide-in flex flex-col md:grid"} hero-slide-fullscreen relative mx-auto [grid-area:1/1] w-full min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10`}
+            className={`${sizer ? "invisible pointer-events-none hidden md:grid" : "hero-slide-in grid"} hero-slide-fullscreen relative mx-auto [grid-area:1/1] w-full min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10`}
           >
             <div
-              className={
-                /* A 2. dián mobilon a szöveg a teljes szélességet kapja, a
-                   telefonok alatta, a maradék helyen állnak – így nem
-                   takarják egymást, legfeljebb az ajánlatkártya ér rájuk. */
-                silver
-                  ? "max-w-[54%] self-center md:max-w-none md:-translate-y-8 md:translate-x-10"
-                  : "w-full md:max-w-none md:self-auto md:pb-10"
-              }
+              className={`max-w-[54%] self-center md:max-w-none ${
+                silver ? "md:-translate-y-8 md:translate-x-10" : "md:self-auto md:pb-10"
+              }`}
             >
               {/* A cím és a leírás a képre kerül, ha átfednek */}
               <div className="relative z-10">
@@ -401,7 +396,7 @@ export function HeroCarousel() {
                 töréspontnál fix arányú, hogy a diák bannermagassága azonos legyen
                 (különben az alsó szélre igazított ajánlatkártya elmozdulna); a
                 telefonok szándékosan lelógnak az alsó élen. */}
-            <div className={silver ? "w-full self-end" : "w-full self-end max-md:relative max-md:-mt-6 max-md:min-h-[240px] max-md:flex-1"}>
+            <div className="w-full self-end">
               <div
                 className={
                   /* Az 1. dián mobilon a keret a saját hasábjában marad (a
@@ -409,31 +404,40 @@ export function HeroCarousel() {
                      magasabb arányú; a 2. dián a telefon kifut jobbra. */
                   silver
                     ? "hero-art absolute inset-y-0 right-[6%] w-[74%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
-                    : "absolute inset-0 md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
+                    : "hero-art absolute inset-y-0 -right-[14%] w-[62%] md:static md:-mr-6 md:ml-0 md:aspect-[620/461] md:w-[112%] md:max-w-none md:translate-x-4 lg:-mr-10 lg:translate-x-8"
                 }
               >
                 {s.key === "meghivo" ? (
                   /* Mindhárom csomag mintája úgy látszik, mint a digitális
                      meghívó promókártyáján: legyezőben, középen legelöl a
                      PREMIUM, két oldalt megdöntve a BASIC és a SILVER.
-                     Mobilon a szöveg alatti sávot töltik ki. */
-                  <div className="absolute inset-x-0 bottom-[-8%] top-0 flex items-end justify-center md:bottom-[-16%]">
-                    <Phone
-                      className="z-0 -mr-[7%] mb-[4%] w-[31%] -rotate-[9deg]"
-                      src="/meghivo/slide-basic.webp"
-                      alt="BASIC digitális esküvői meghívó telefonon"
-                    />
-                    <Phone
-                      className="z-10 mb-[9%] w-[35%]"
-                      src="/meghivo/slide-premium.webp"
-                      alt={s.alt}
-                    />
-                    <Phone
-                      className="z-0 -ml-[7%] mb-[4%] w-[31%] rotate-[9deg]"
-                      src="/meghivo/slide-silver.webp"
-                      alt="SILVER digitális esküvői meghívó telefonon"
-                    />
-                  </div>
+                     Mobilon csak egy fér el: a PREMIUM, térben megdöntve. */
+                  <>
+                    <div className="hero-duo absolute inset-x-0 bottom-[calc(-14%+50px)] top-0 flex items-end justify-center md:hidden">
+                      <Phone
+                        className="hero-duo-front w-[78%]"
+                        src="/meghivo/slide-premium.webp"
+                        alt={s.alt}
+                      />
+                    </div>
+                    <div className="absolute inset-x-0 bottom-[-16%] top-0 hidden items-end justify-center md:flex">
+                      <Phone
+                        className="z-0 -mr-[7%] mb-[4%] w-[31%] -rotate-[9deg]"
+                        src="/meghivo/slide-basic.webp"
+                        alt="BASIC digitális esküvői meghívó telefonon"
+                      />
+                      <Phone
+                        className="z-10 mb-[9%] w-[35%]"
+                        src="/meghivo/slide-premium.webp"
+                        alt={s.alt}
+                      />
+                      <Phone
+                        className="z-0 -ml-[7%] mb-[4%] w-[31%] rotate-[9deg]"
+                        src="/meghivo/slide-silver.webp"
+                        alt="SILVER digitális esküvői meghívó telefonon"
+                      />
+                    </div>
+                  </>
                 ) : (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
