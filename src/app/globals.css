@@ -1306,6 +1306,33 @@ html.a11y-underline a { text-decoration: underline !important; }
   100%     { transform: translateX(70%); opacity: 0; }
 }
 
+/* A 2. (digitális meghívós) dia mobilon a meghívó-promókártya rózsaszín
+   színvilágát kapja: halvány, lassan vándorló rózsaszín háttér (a teal
+   változat mozgásával), rózsaszín gomb és pöttyök. Desktopon marad a teal.
+   A pöttyök színe inline stílusból jön, ezért ott !important kell. */
+@media (max-width: 767.98px) {
+  .hero-meghivo.teal-shift-bg-light {
+    background: linear-gradient(
+      130deg,
+      #F3DDEC 0%,
+      #F8EAF3 20%,
+      #FCF4F9 38%,
+      #FFFFFF 50%,
+      #FCF4F9 62%,
+      #F8EAF3 80%,
+      #F3DDEC 100%
+    );
+    background-size: 260% 260%;
+  }
+  .hero-meghivo .hero-blob-2 {
+    background: radial-gradient(circle, rgba(232, 190, 218, 0.75), transparent 65%);
+  }
+  .hero-meghivo .hero-offer-cta { background-color: #C65EA5; }
+  .hero-meghivo .hero-offer-cta:hover { background-color: #B04E91; }
+  .hero-meghivo .hero-dot { background-color: rgba(198, 94, 165, 0.3) !important; }
+  .hero-meghivo .hero-dot[data-active] { background-color: #A34A87 !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-slide-in,
   .hero-blob,

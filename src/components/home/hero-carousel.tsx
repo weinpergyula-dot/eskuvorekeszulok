@@ -54,18 +54,20 @@ const THEMES: Record<string, Theme> = {
     dotActive: "#456965",
     dotIdle: "rgba(69,105,101,0.28)",
   },
-  /* 2. dia: a mozgó teal világosabb változata, fehér + sötét teal szövegekkel */
+  /* 2. dia: a mozgó teal világosabb változata, fehér + sötét teal szövegekkel.
+     Mobilon (md alatt) a digitális meghívó promókártyájának rózsaszín
+     színvilágát kapja halvány, mozgó háttérrel (.hero-meghivo, globals.css). */
   teal: {
-    bg: "teal-shift-bg-light",
-    lead: "text-white",
-    accent: "text-[#456965]",
-    blurb: "text-white/95",
+    bg: "teal-shift-bg-light hero-meghivo",
+    lead: "text-[#C65EA5] md:text-white",
+    accent: "text-gray-900 md:text-[#456965]",
+    blurb: "text-gray-700 md:text-white/95",
     ink: "#456965",
     inkSoft: "#5A807B",
     inkFaint: "#7C9C97",
     cta: "#84AAA6",
     ctaHover: "#6B8E8A",
-    ctrl: "border-white/70 bg-white/60 text-[#456965]",
+    ctrl: "border-[#C65EA5]/30 bg-white/70 text-[#A34A87] md:border-white/70 md:bg-white/60 md:text-[#456965]",
     dotActive: "#456965",
     dotIdle: "rgba(255,255,255,0.5)",
   },
@@ -355,13 +357,10 @@ export function HeroCarousel() {
                   alatt áll; mobilon szélesebb a szövegoszlopnál, így ha odaér,
                   rálóg a jobbra igazított képre (z-10 miatt a kép előtt). */}
               {!silver && (
-                <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-white/60 bg-white/25 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-[3px] md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
+                <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-[#C65EA5]/40 bg-white/60 p-3 shadow-[0_18px_50px_rgba(70,20,55,0.14)] backdrop-blur-[3px] md:shadow-[0_18px_50px_rgba(20,45,42,0.18)] md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:border-white/70 md:bg-white/60 md:p-4 md:backdrop-blur-xl">
                   {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
                       ajánlat és alatta a csomagok felsorolása */}
-                  <p
-                    className="text-[15px] font-extrabold leading-snug md:hidden"
-                    style={{ color: t.ink }}
-                  >
+                  <p className="text-[15px] font-extrabold leading-snug text-[#A34A87] md:hidden">
                     {offer.short}
                   </p>
 
@@ -412,12 +411,12 @@ export function HeroCarousel() {
                 {s.key === "meghivo" ? (
                   /* Weben mindhárom csomag mintája látszik, növekvő sorrendben:
                      a legkisebb a BASIC, a legnagyobb és legelöl a PREMIUM.
-                     Mobilon csak a BASIC fér el. */
+                     Mobilon csak egy fér el: a PREMIUM. */
                   <div className="hero-duo absolute inset-x-0 bottom-[calc(-14%+50px)] top-0 flex items-end justify-center md:bottom-[-16%]">
                     <Phone
-                      className="hero-duo-front w-[78%] md:w-[25%]"
+                      className="hero-duo-front hidden md:block md:w-[25%]"
                       src="/meghivo/slide-basic.webp"
-                      alt={s.alt}
+                      alt="BASIC digitális esküvői meghívó telefonon"
                     />
                     <Phone
                       className="hero-duo-front hidden w-[31%] md:-ml-[5%] md:block"
@@ -425,9 +424,9 @@ export function HeroCarousel() {
                       alt="SILVER digitális esküvői meghívó telefonon"
                     />
                     <Phone
-                      className="hero-duo-front hidden w-[38%] md:-ml-[5%] md:block"
+                      className="hero-duo-front w-[78%] md:-ml-[5%] md:w-[38%]"
                       src="/meghivo/slide-premium.webp"
-                      alt="PREMIUM digitális esküvői meghívó telefonon"
+                      alt={s.alt}
                     />
                   </div>
                 ) : (
@@ -516,7 +515,8 @@ export function HeroCarousel() {
                   className="cursor-pointer px-0.5 py-1.5"
                 >
                   <span
-                    className="block h-1.5 rounded-full transition-all duration-300"
+                    data-active={i === index || undefined}
+                    className="hero-dot block h-1.5 rounded-full transition-all duration-300"
                     style={{
                       width: i === index ? 18 : 6,
                       backgroundColor: i === index ? t.dotActive : t.dotIdle,
