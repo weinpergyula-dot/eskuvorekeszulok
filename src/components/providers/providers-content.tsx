@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, Star } from "lucide-react";
+import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
 import { MeghivoPromoCard } from "./meghivo-promo-card";
@@ -360,12 +360,8 @@ export function ProvidersContent({
   const totalPages = Math.max(1, Math.ceil(combined.length / pageSize));
   const page = Math.min(currentPage, totalPages);
   const pageItems = combined.slice((page - 1) * pageSize, page * pageSize);
-  const pageFeatured = pageItems.filter((p) => p.featured);
-  const pageNormal = pageItems.filter((p) => !p.featured);
-  /* A sáv az első oldal legelső helyén áll: ha van kiemelt szolgáltató, annak
-     a rácsában, különben a normál lista élén. */
-  const houseOfferInFeatured = showHouseOffer && page === 1 && pageFeatured.length > 0;
-  const houseOfferHere = showHouseOffer && page === 1 && pageFeatured.length === 0;
+  /* A meghívó-ajánlat az első oldal legelső helyén áll. */
+  const houseOfferHere = showHouseOffer && page === 1;
   const pageNumbers = ((): (number | "…")[] => {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
     const pages: (number | "…")[] = [1];
@@ -520,36 +516,15 @@ export function ProvidersContent({
             {/* Mobile: result count above the list – a főoldalon nem kell, ott
                 a darabszám a szekció címében van. */}
             {!hideCategoryPills && <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>}
-            {/* Featured (on this page) on top */}
-            {pageFeatured.length > 0 && (
-              <section className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  Kiemelt szolgáltatók
-                </h2>
-                <div className={gridCls}>
-                  {houseOfferInFeatured && <MeghivoPromoCard listView={viewMode === "list"} />}
-                  {pageFeatured.map((p) => (
-                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {pageFeatured.length > 0 && pageNormal.length > 0 && (
-              <div className="border-t border-gray-200 mt-2 mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mt-6">További szolgáltatók</h2>
-              </div>
-            )}
-
-            {(pageNormal.length > 0 || houseOfferHere) && (
-              <div className={gridCls}>
-                {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
-                {pageNormal.map((p) => (
-                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
-                ))}
-              </div>
-            )}
+            {/* Egyetlen lista, címsorok nélkül: elöl a saját meghívó-ajánlatunk,
+                utána a kiemelt szolgáltatók (a kártyájukon a „Kiemelt
+                szolgáltató" címkével), majd a többiek. */}
+            <div className={gridCls}>
+              {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
+              {pageItems.map((p) => (
+                <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
+              ))}
+            </div>
 
             {renderPager("justify-center mt-8")}
           </>
