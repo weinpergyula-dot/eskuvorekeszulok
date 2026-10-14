@@ -178,11 +178,19 @@ const HERO_PHOTO_IMAGES = [
 ];
 
 /** Egy előhívott, polaroidszerű fotó a 3. dián (alul szélesebb fehér sávval). */
-function PhotoPrint({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+function PhotoPrint({ src, alt, className = "", pinned = false }: { src: string; alt: string; className?: string; pinned?: boolean }) {
   return (
     <div className={`relative shrink-0 bg-white p-[4%] pb-[16%] shadow-[0_24px_40px_-18px_rgba(60,40,20,0.55)] ring-1 ring-black/5 ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={alt} decoding="sync" className="block aspect-[4/5] w-full object-cover" />
+      {/* Rajzszög a fotó tetején, középen: fényes arany fej árnyékkal */}
+      {pinned && (
+        <span
+          aria-hidden
+          className="absolute -top-2 left-1/2 z-10 h-4 w-4 -translate-x-1/2 rounded-full shadow-[1px_3px_4px_rgba(60,40,20,0.45)]"
+          style={{ background: "radial-gradient(circle at 35% 30%, #FFF4DC 0%, #D9B26F 35%, #A9824B 70%, #7A5A2E 100%)" }}
+        />
+      )}
     </div>
   );
 }
@@ -501,26 +509,35 @@ export function HeroCarousel() {
                     </div>
                   </>
                 ) : s.key === "fotos" ? (
-                  /* Három előhívott fotó legyezőben, mintha épp kiterítették
-                     volna őket: középen, legelöl a menyasszony. Mobilon a
-                     szöveg melletti hasáb alján, desktopon középen. */
-                  <div className="absolute inset-x-0 bottom-[3%] top-0 flex items-end justify-center md:bottom-0 md:items-center">
-                    <PhotoPrint
-                      className="z-0 -mr-[10%] mb-[6%] w-[40%] -rotate-[10deg] md:w-[34%]"
-                      src="/meghivo-silver/g2.webp"
-                      alt="Koszorúslányok csokrokkal"
-                    />
-                    <PhotoPrint
-                      className="z-10 w-[46%] rotate-[2deg] md:w-[38%]"
-                      src="/meghivo-silver/g6.webp"
-                      alt="Mosolygó menyasszony"
-                    />
-                    <PhotoPrint
-                      className="z-0 -ml-[10%] mb-[6%] w-[40%] rotate-[11deg] md:w-[34%]"
-                      src="/meghivo-silver/g5.webp"
-                      alt="Menyasszonyi frizura virágokkal"
-                    />
-                  </div>
+                  /* Három előhívott fotó: desktopon legyezőben, mintha épp
+                     kiterítették volna őket (középen, legelöl a menyasszony);
+                     mobilon egymás alatt, rajzszöggel kitűzve. */
+                  <>
+                    {/* Mobilon a fotók egymás alatt, enyhén elcsúsztatva és
+                        megdöntve, mindegyik egy rajzszöggel kitűzve. */}
+                    <div className="absolute bottom-[2%] left-[4%] right-[24%] top-[10%] flex flex-col items-center justify-center md:hidden">
+                      <PhotoPrint pinned className="z-0 -mb-[6%] w-[42%] -translate-x-[18%] -rotate-[6deg]" src="/meghivo-silver/g6.webp" alt="Mosolygó menyasszony" />
+                      <PhotoPrint pinned className="z-10 -mb-[6%] w-[42%] translate-x-[16%] rotate-[5deg]" src="/meghivo-silver/g2.webp" alt="Koszorúslányok csokrokkal" />
+                      <PhotoPrint pinned className="z-20 w-[42%] -translate-x-[10%] -rotate-[3deg]" src="/meghivo-silver/g5.webp" alt="Menyasszonyi frizura virágokkal" />
+                    </div>
+                    <div className="absolute inset-0 hidden items-center justify-center md:flex">
+                      <PhotoPrint
+                        className="z-0 -mr-[10%] mb-[6%] w-[34%] -rotate-[10deg]"
+                        src="/meghivo-silver/g2.webp"
+                        alt="Koszorúslányok csokrokkal"
+                      />
+                      <PhotoPrint
+                        className="z-10 w-[38%] rotate-[2deg]"
+                        src="/meghivo-silver/g6.webp"
+                        alt="Mosolygó menyasszony"
+                      />
+                      <PhotoPrint
+                        className="z-0 -ml-[10%] mb-[6%] w-[34%] rotate-[11deg]"
+                        src="/meghivo-silver/g5.webp"
+                        alt="Menyasszonyi frizura virágokkal"
+                      />
+                    </div>
+                  </>
                 ) : (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
