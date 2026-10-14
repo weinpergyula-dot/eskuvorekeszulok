@@ -383,17 +383,20 @@ export function HeroCarousel() {
   const t = THEMES[slide.theme];
   const silver = slide.theme === "silver";
 
-  /* Egy dia tartalma. A „sizer” példány láthatatlan helykitöltő: desktopon
-     mindkét dia ugyanabban a rácscellában ül, így a banner mindig a
-     magasabbik dia magasságát veszi fel, és diaváltáskor nem ugrik meg
-     alatta az oldal (a 2. dia magasabb). */
+  /* Egy dia tartalma. Mind a négy dia folyamatosan az oldalon van,
+     ugyanabban a rácscellában (így a banner a legmagasabb dia magasságát
+     veszi fel, és diaváltáskor nem ugrik meg alatta az oldal); csak az
+     aktív látszik. A diák – és a képeik – váltáskor NEM jönnek létre újra:
+     az iOS Safari az eldobott képelemeket újra dekódolja, és addig a kép
+     helye üres, a szöveg után villan be. A beúszó animáció attól indul újra,
+     hogy az aktív dia megkapja a .hero-slide-in osztályt. */
   const renderSlide = (s: Slide, sizer: boolean) => {
     const offer = s.offer;
     const t = THEMES[s.theme];
     const silver = s.theme === "silver";
     return (
           <div
-            key={sizer ? `sizer-${s.key}` : s.key}
+            key={s.key}
             aria-hidden={sizer || undefined}
             inert={sizer || undefined}
             /* Mobilon mindkét dián a kép abszolút pozícióban ül (nem az húzza a
@@ -402,7 +405,7 @@ export function HeroCarousel() {
                (.hero-slide-fullscreen), így betöltéskor csak a banner látszik;
                fekvőben marad a szélességhez kötött érték. A szöveg mellette,
                függőlegesen középen fut. */
-            className={`${sizer ? "invisible pointer-events-none hidden md:grid" : "hero-slide-in grid"} hero-slide-fullscreen relative mx-auto [grid-area:1/1] w-full min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10`}
+            className={`${sizer ? "pointer-events-none opacity-0" : "hero-slide-in z-[1]"} grid hero-slide-fullscreen relative mx-auto [grid-area:1/1] w-full min-h-[calc(84vw+150px)] max-w-6xl items-end gap-3 px-4 pt-8 sm:px-6 md:min-h-0 md:grid-cols-2 md:gap-8 md:pt-10`}
           >
             <div
               className={`max-w-[54%] self-center md:max-w-none ${
@@ -663,8 +666,7 @@ export function HeroCarousel() {
           és a kép együtt mozog, így semmi nem ugrál külön. A vetítésvezérlő
           kívül marad, az helyben áll. */}
       <div className="grid">
-        {SLIDES.map((s) => (s.key === slide.key ? null : renderSlide(s, true)))}
-        {renderSlide(slide, false)}
+        {SLIDES.map((s) => renderSlide(s, s.key !== slide.key))}
       </div>
 
       {/* Vetítésvezérlő: pause/play és a pöttyök, amik mutatják, melyik dián
