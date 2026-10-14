@@ -297,8 +297,8 @@ export function HeroCarousel() {
      magas prioritással, a 2. dia telefonjainak képei pedig már most
      töltődjenek, ne csak a diaváltáskor. A preload a szerveren renderelt
      HTML fejlécébe kerül. */
-  preload("/hero-bride-cut.webp", { as: "image", fetchPriority: "high" });
-  for (const src of [...HERO_PHONE_IMAGES, ...HERO_PHOTO_IMAGES, HERO_CAKE_IMAGE]) preload(src, { as: "image", fetchPriority: "low" });
+  preload("/hero-bride-cut.webp", { as: "image", fetchPriority: "high", media: "(min-width: 768px)" });
+  for (const src of [...HERO_PHONE_IMAGES, ...HERO_PHOTO_IMAGES, HERO_CAKE_IMAGE]) preload(src, { as: "image", fetchPriority: "low", media: "(min-width: 768px)" });
 
   const [index, setIndex] = useState(0);
   // Kevesebb mozgás esetén a vetítés alapból áll, de a play gombbal

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { HeroCarousel } from "@/components/home/hero-carousel";
+import { MobileHeroBanner } from "@/components/home/mobile-hero-banner";
 import { ProvidersContent } from "@/components/providers/providers-content";
 import { CategoryQuickTiles } from "@/components/home/category-quick-tiles";
 import { ProvidersSectionTitle } from "@/components/home/providers-section-title";
@@ -54,8 +55,14 @@ export default async function HomePage() {
       {/* Látogatás rögzítése (napi/heti egyedi IP statisztika az adminban) */}
       <VisitTracker path="/" />
 
-      {/* Banner: köszöntő és digitális meghívó diák */}
-      <HeroCarousel />
+      {/* Banner: mobilon teljes képes fotós diák, desktopon a köszöntő,
+          meghívós, fotós és cukrász diák */}
+      <div className="md:hidden">
+        <MobileHeroBanner />
+      </div>
+      <div className="hidden md:block">
+        <HeroCarousel />
+      </div>
 
       {/* Kategóriaválasztó – a banner lekerekített alja alá bújva. A görgetési
           ráhagyás úgy van beállítva, hogy a banner Megnézem gombjára a banner

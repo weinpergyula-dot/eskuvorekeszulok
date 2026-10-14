@@ -1386,8 +1386,42 @@ html.a11y-underline a { text-decoration: underline !important; }
   background: radial-gradient(circle, rgba(232, 190, 218, 0.16), transparent 65%);
 }
 
+/* ── Mobilos teljes képes banner (MobileHeroBanner) ─────────────────────
+   Álló telefonon pontosan a képernyő alját éri el (a fölötte lévő sávot a
+   komponens méri a --hero-top változóba); fekvőben és tartalékként
+   szélességhez kötött magasság. */
+.mobile-hero { height: max(520px, 150vw); }
+@media (max-width: 767px) and (orientation: portrait) {
+  .mobile-hero {
+    height: calc(100vh - var(--hero-top));
+    height: calc(100svh - var(--hero-top));
+    min-height: 520px;
+  }
+}
+/* Az aktív dia fotója lassan ráközelít, a szöveg alulról beúszik. */
+.mobile-hero-zoom { animation: mobile-hero-zoom 7s ease-out both; }
+@keyframes mobile-hero-zoom {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1); }
+}
+.mobile-hero-text { animation: mobile-hero-text 0.7s 0.15s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+@keyframes mobile-hero-text {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.mobile-hero-cta { background-color: var(--cta); }
+.mobile-hero-cta:hover { background-color: var(--cta-hover); }
+.mobile-hero-rec { animation: mobile-hero-rec 1.2s steps(2, jump-none) infinite; }
+@keyframes mobile-hero-rec {
+  0%   { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-slide-in,
+  .mobile-hero-zoom,
+  .mobile-hero-text,
+  .mobile-hero-rec,
   .hero-blob,
   .hero-silver,
   .hero-sheen { animation: none; }
