@@ -514,8 +514,10 @@ export function HeroCarousel() {
                      mobilon egymás alatt, rajzszöggel kitűzve. */
                   <>
                     {/* Mobilon a fotók egymás alatt, enyhén elcsúsztatva és
-                        megdöntve, mindegyik egy rajzszöggel kitűzve. */}
-                    <div className="absolute bottom-[2%] left-[4%] right-[24%] top-[10%] flex flex-col items-center justify-center md:hidden">
+                        megdöntve, mindegyik egy rajzszöggel kitűzve. Az egész
+                        csoport kicsit balra-lejjebb tolva (a .hero-art 1,2–1,3×
+                        nagyítása miatt a 25px kb. 30–32px a képernyőn). */}
+                    <div className="absolute bottom-[2%] left-[4%] right-[24%] top-[10%] flex -translate-x-[25px] translate-y-[25px] flex-col items-center justify-center md:hidden">
                       <PhotoPrint pinned className="z-0 -mb-[6%] w-[42%] -translate-x-[18%] -rotate-[6deg]" src="/meghivo-silver/g6.webp" alt="Mosolygó menyasszony" />
                       <PhotoPrint pinned className="z-10 -mb-[6%] w-[42%] translate-x-[16%] rotate-[5deg]" src="/meghivo-silver/g2.webp" alt="Koszorúslányok csokrokkal" />
                       <PhotoPrint pinned className="z-20 w-[42%] -translate-x-[10%] -rotate-[3deg]" src="/meghivo-silver/g5.webp" alt="Menyasszonyi frizura virágokkal" />
