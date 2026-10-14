@@ -284,7 +284,7 @@ export function MobileHeroBanner() {
             )}
 
             {/* A meghívós dia rajzolt jelenete: a prémium minta lila borítéka */}
-            {s.overlay === "envelope" && <EnvelopeScene active={on} label={s.alt} />}
+            {s.overlay === "envelope" && <EnvelopeScene label={s.alt} />}
 
             {/* Rétegek: sötétítés / sarokvilágítás / kereső-keret */}
             {(s.overlay === "bottom-dark" || s.overlay === "viewfinder") && (
@@ -436,65 +436,59 @@ export function MobileHeroBanner() {
   );
 }
 
-/** Csillogó pontok helye (%-ban) és mérete a meghívós dia hátterén. */
+/** A háttérben lebegő fénypontok – ugyanazok, mint a prémium minta nyitóképén. */
 const SPARKS = [
-  [12, 14, 3], [82, 9, 2], [70, 22, 4], [24, 34, 2], [90, 40, 3],
-  [8, 52, 2], [62, 6, 2], [40, 18, 2], [86, 60, 2], [18, 70, 3],
-] as const;
+  { left: "12%", top: "22%", size: 10, delay: "0s" },
+  { left: "82%", top: "18%", size: 14, delay: "1.4s" },
+  { left: "24%", top: "60%", size: 8, delay: "2.6s" },
+  { left: "70%", top: "66%", size: 12, delay: "0.8s" },
+  { left: "46%", top: "12%", size: 7, delay: "3.4s" },
+  { left: "90%", top: "46%", size: 9, delay: "2.0s" },
+  { left: "6%", top: "42%", size: 11, delay: "4.2s" },
+];
 
 /**
- * A prémium digitális meghívó borítéka, a /meghivo-premium minta nyitó
- * képének mintájára: mély szilvalila háttér csillogó pontokkal, lila
- * boríték lehajtott füllel, rózsaszín viaszpecséttel és átfutó fénnyel.
+ * A prémium digitális meghívó zárt borítéka – a /meghivo-premium minta
+ * nyitóképének elemeivel és animációjával (globals.css .prm-env-*): a
+ * boríték lassan lebeg és enyhén előredől, a viaszpecsét körül fénygyűrű
+ * pulzál, a borítékon fény fut át, a háttérben fénypontok lebegnek.
  */
-function EnvelopeScene({ active, label }: { active: boolean; label: string }) {
+function EnvelopeScene({ label }: { label: string }) {
   return (
-    <div role="img" aria-label={label} className="absolute inset-0 overflow-hidden"
-      style={{ background: "radial-gradient(120% 70% at 50% 32%, #4A2156 0%, #2A1233 45%, #14081A 100%)" }}
+    <div
+      role="img"
+      aria-label={label}
+      className="absolute inset-0 overflow-hidden"
+      style={{
+        background:
+          "radial-gradient(70% 50% at 50% 34%, rgba(198, 94, 165, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #150B18",
+      }}
     >
-      {SPARKS.map(([x, y, r], k) => (
+      {SPARKS.map((sp) => (
         <span
-          key={k}
+          key={sp.left + sp.top}
           aria-hidden
-          className="mobile-hero-spark absolute rounded-full bg-white"
-          style={{ left: `${x}%`, top: `${y}%`, width: r * 2, height: r * 2, animationDelay: `${(k % 5) * 0.6}s`, boxShadow: "0 0 10px 2px rgba(255,220,240,0.6)" }}
+          className="prm-spark"
+          style={{ left: sp.left, top: sp.top, width: sp.size, height: sp.size, animationDelay: sp.delay }}
         />
       ))}
 
-      <div className={`absolute left-1/2 top-[11%] w-[80%] -translate-x-1/2 ${active ? "mobile-hero-env" : ""}`}>
-        <p className="mb-4 text-center text-[10px] font-semibold uppercase tracking-[0.32em] text-[#F2D4E6]/75">
-          Premium minta
-        </p>
-        {/* Boríték */}
-        <div
-          className="relative aspect-[3/2] w-full overflow-hidden rounded-[10px] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.8)] ring-1 ring-white/10"
-          style={{ background: "linear-gradient(160deg, #7A3F8C 0%, #5B2C6B 55%, #45204F 100%)" }}
-        >
-          {/* oldalsó hajtások */}
-          <span aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(to top right, rgba(0,0,0,0.18) 50%, transparent 50%) left / 50% 100% no-repeat, linear-gradient(to top left, rgba(0,0,0,0.18) 50%, transparent 50%) right / 50% 100% no-repeat" }} />
-          {/* lehajtott fül */}
-          <span
-            aria-hidden
-            className="absolute inset-x-0 top-0 h-[58%]"
-            style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)", background: "linear-gradient(180deg, #8E4CA2 0%, #6A3479 100%)", filter: "drop-shadow(0 6px 8px rgba(0,0,0,0.35))" }}
-          />
-          {/* fénycsík a fülön */}
-          <span aria-hidden className="absolute left-[4%] top-[6%] h-[3px] w-[24%] rotate-[33deg] rounded-full bg-white/50 blur-[1px]" />
-          {/* átfutó fény */}
-          <span aria-hidden className="prm-env-shine" />
-          {/* Viaszpecsét a fül csúcsán */}
-          <span
-            aria-hidden
-            className="absolute left-1/2 top-[58%] grid aspect-square w-[26%] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-['Great_Vibes'] text-[clamp(1.2rem,6.5vw,2rem)] text-[#7A2F5E] shadow-[0_8px_18px_rgba(0,0,0,0.45),inset_0_2px_6px_rgba(255,255,255,0.6),inset_0_-4px_8px_rgba(120,30,80,0.35)] ring-[6px] ring-[#5B2C6B]/60"
-            style={{ background: "radial-gradient(circle at 38% 32%, #FCD6EA 0%, #F09BCB 45%, #CF5FA3 100%)" }}
-          >
-            L&amp;D
-          </span>
+      <div className="absolute left-1/2 top-[13%] -translate-x-1/2">
+        <div className="prm-env-scene" style={{ width: "min(80vw, 380px)" }}>
+          <div className="prm-env">
+            <span aria-hidden className="prm-env-back" />
+            <span aria-hidden className="prm-env-front" />
+            <span aria-hidden className="prm-env-flap" />
+            <span aria-hidden className="prm-env-shine" />
+            <span aria-hidden className="prm-env-seal" style={{ cursor: "default" }}>
+              L&amp;D
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Alsó sötétítés a szöveg alá */}
-      <span aria-hidden className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, rgba(20,8,26,0) 0%, rgba(20,8,26,0.85) 60%, rgba(20,8,26,0.95) 100%)" }} />
+      <span aria-hidden className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, rgba(21,11,24,0) 0%, rgba(21,11,24,0.85) 60%, rgba(21,11,24,0.95) 100%)" }} />
     </div>
   );
 }
