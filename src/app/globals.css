@@ -1365,6 +1365,23 @@ html.a11y-underline a { text-decoration: underline !important; }
 .hero-foto .hero-blob-2 {
   background: radial-gradient(circle, rgba(226, 200, 160, 0.45), transparent 65%);
 }
+/* A 4. (cukrász) dia: a .hero-silver vándorló gradiense halvány
+   zsályazöld–púderrózsaszín árnyalatban, a fényfolt púderrózsaszín. */
+.hero-torta.hero-silver {
+  background: linear-gradient(
+    145deg,
+    #FDFEFC 0%,
+    #EEF3EC 18%,
+    #FFFFFF 34%,
+    #E3EBE1 56%,
+    #FBF4F4 76%,
+    #F1F0E9 100%
+  );
+  background-size: 220% 220%;
+}
+.hero-torta .hero-blob-2 {
+  background: radial-gradient(circle, rgba(240, 200, 205, 0.4), transparent 65%);
+}
 .hero-meghivo .hero-blob-2 {
   background: radial-gradient(circle, rgba(232, 190, 218, 0.16), transparent 65%);
 }

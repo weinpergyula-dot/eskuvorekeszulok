@@ -86,6 +86,22 @@ const THEMES: Record<string, Theme> = {
     dotActive: "#8A6A3B",
     dotIdle: "rgba(184,146,90,0.32)",
   },
+  /* 4. dia (cukrászok): a vándorló háttér halvány zsálya–rózsaszín
+     árnyalatban (.hero-torta, globals.css), a torta zsályazöldjével */
+  sage: {
+    bg: "hero-silver hero-torta",
+    lead: "text-[#7E9A82]",
+    accent: "text-gray-400",
+    blurb: "text-gray-700",
+    ink: "#5E7762",
+    inkSoft: "#6B7280",
+    inkFaint: "#9CA3AF",
+    cta: "#7A957C",
+    ctaHover: "#66806A",
+    ctrl: "border-[#7A957C]/30 bg-white/70 text-[#5E7762]",
+    dotActive: "#5E7762",
+    dotIdle: "rgba(122,149,124,0.32)",
+  },
 };
 
 type Slide = {
@@ -168,7 +184,28 @@ const SLIDES: Slide[] = [
       category: "fotosok-videosok",
     },
   },
+  {
+    key: "torta",
+    theme: "sage",
+    lead: "ÉDES",
+    accent: "KEZDET",
+    blurb:
+      "A torta a nagy nap egyik legszebb pillanata – találd meg a cukrászt, aki megálmodja és elkészíti.",
+    alt: "Emeletes esküvői torta rózsákkal",
+    offer: {
+      badge: "Torták, sütemények",
+      headline: "Esküvői torták és sütemények egy helyen",
+      packages: "Emeletes torta · sütibár · macaron",
+      short: "Cukrászok egy helyen",
+      cta: "Megnézem",
+      href: "#szolgaltatok",
+      category: "torta-sutemeny",
+    },
+  },
 ];
+
+/** A 4. dia tortafotója (előtöltéshez is). */
+const HERO_CAKE_IMAGE = "/meghivo-silver/g3.webp";
 
 /** A 3. dia előhívott fotói (előtöltéshez is). */
 const HERO_PHOTO_IMAGES = [
@@ -261,7 +298,7 @@ export function HeroCarousel() {
      töltődjenek, ne csak a diaváltáskor. A preload a szerveren renderelt
      HTML fejlécébe kerül. */
   preload("/hero-bride-cut.webp", { as: "image", fetchPriority: "high" });
-  for (const src of [...HERO_PHONE_IMAGES, ...HERO_PHOTO_IMAGES]) preload(src, { as: "image", fetchPriority: "low" });
+  for (const src of [...HERO_PHONE_IMAGES, ...HERO_PHOTO_IMAGES, HERO_CAKE_IMAGE]) preload(src, { as: "image", fetchPriority: "low" });
 
   const [index, setIndex] = useState(0);
   // Kevesebb mozgás esetén a vetítés alapból áll, de a play gombbal
@@ -384,8 +421,10 @@ export function HeroCarousel() {
                     ["--hero-title-base" as string]: silver ? "2.3125rem" : "2.0625rem",
                   }}
                 >
-                  <span className={t.lead}>{s.lead}</span>{" "}
-                  <span className={t.accent}>{s.accent}</span>
+                  {/* Desktopon a két szó mindig külön sorban áll (a rövidebb
+                      címeknél is), így minden dia ugyanúgy tagolódik. */}
+                  <span className={`${t.lead} md:block`}>{s.lead}</span>{" "}
+                  <span className={`${t.accent} md:block`}>{s.accent}</span>
                 </h1>
                 <p className={`mt-3 max-w-md text-base sm:text-[1.125rem] ${t.blurb}`}>{s.blurb}</p>
 
@@ -540,6 +579,26 @@ export function HeroCarousel() {
                       />
                     </div>
                   </>
+                ) : s.key === "torta" ? (
+                  /* A torta egy cukrászdai vitrin boltíves keretében, mellette
+                     kézírásos „Kóstolj bele!" matrica. Mobilon a szöveg
+                     melletti hasáb alján, desktopon középen. */
+                  <div className="absolute inset-x-0 bottom-[6%] top-0 flex items-end justify-center md:bottom-0 md:items-center">
+                    <div className="relative w-[78%] [container-type:inline-size] md:w-[46%]">
+                      <div className="overflow-hidden rounded-t-full border-[6px] border-white bg-white shadow-[0_28px_50px_-20px_rgba(50,70,52,0.55)] ring-1 ring-black/5 md:border-[10px]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={HERO_CAKE_IMAGE} alt={s.alt} decoding="sync" className="block aspect-[4/5] w-full object-cover" />
+                      </div>
+                      <span
+                        aria-hidden
+                        className="absolute -bottom-[10%] left-[6%] grid aspect-square w-[42%] rotate-[-12deg] place-items-center rounded-full bg-[#F6E3E6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#A0566B] shadow-[0_10px_20px_-8px_rgba(120,60,80,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:w-[40%] md:text-[10.5cqw]"
+                      >
+                        Kóstolj
+                        <br />
+                        bele!
+                      </span>
+                    </div>
+                  </div>
                 ) : (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
@@ -587,7 +646,7 @@ export function HeroCarousel() {
           villan be. Ezért a banner összes képe láthatatlanul végig az
           oldalon marad, a dián lévő képek pedig szinkron dekódolódnak. */}
       <div aria-hidden className="pointer-events-none absolute left-0 top-0 h-px w-px overflow-hidden opacity-0">
-        {["/hero-bride-cut.webp", ...HERO_PHONE_IMAGES, ...HERO_PHOTO_IMAGES].map((src) => (
+        {["/hero-bride-cut.webp", ...HERO_PHONE_IMAGES, ...HERO_PHOTO_IMAGES, HERO_CAKE_IMAGE].map((src) => (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img key={src} src={src} alt="" decoding="sync" />
         ))}
