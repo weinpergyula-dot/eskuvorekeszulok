@@ -70,6 +70,22 @@ const THEMES: Record<string, Theme> = {
     dotActive: "#A34A87",
     dotIdle: "rgba(198,94,165,0.3)",
   },
+  /* 3. dia (fotósok): ugyanaz a vándorló háttér meleg pezsgő árnyalatban
+     (.hero-foto, globals.css), arany kiemelésekkel */
+  gold: {
+    bg: "hero-silver hero-foto",
+    lead: "text-[#A9824B]",
+    accent: "text-gray-400",
+    blurb: "text-gray-700",
+    ink: "#8A6A3B",
+    inkSoft: "#6B7280",
+    inkFaint: "#9CA3AF",
+    cta: "#B8925A",
+    ctaHover: "#9E7A45",
+    ctrl: "border-[#B8925A]/30 bg-white/70 text-[#8A6A3B]",
+    dotActive: "#8A6A3B",
+    dotIdle: "rgba(184,146,90,0.32)",
+  },
 };
 
 type Slide = {
@@ -91,6 +107,8 @@ type Slide = {
     short: string;
     cta: string;
     href: string;
+    /** Ha meg van adva, a gomb erre a kategóriára szűri a főoldali listát. */
+    category?: string;
   };
   /** A dia melletti gombok (az 1. dián a kártya helyett ezek állnak). */
   secondaryCta?: boolean;
@@ -132,7 +150,42 @@ const SLIDES: Slide[] = [
       href: "/meghivo",
     },
   },
+  {
+    key: "fotos",
+    theme: "gold",
+    lead: "PILLANATOK",
+    accent: "ÖRÖKRE",
+    blurb:
+      "Az első pillantástól a hajnali táncig – találd meg a fotóst, aki a ti stílusotokban meséli el a nagy napot.",
+    alt: "Esküvői fotók: koszorúslányok, menyasszonyi frizura, menyasszony",
+    offer: {
+      badge: "Fotósok, videósok",
+      headline: "Esküvői fotósok és videósok egy helyen",
+      packages: "Kreatív fotó · jegyesfotózás · esküvői film",
+      short: "Fotósok és videósok egy helyen",
+      cta: "Megnézem",
+      href: "#szolgaltatok",
+      category: "fotosok-videosok",
+    },
+  },
 ];
+
+/** A 3. dia előhívott fotói (előtöltéshez is). */
+const HERO_PHOTO_IMAGES = [
+  "/meghivo-silver/g2.webp",
+  "/meghivo-silver/g6.webp",
+  "/meghivo-silver/g5.webp",
+];
+
+/** Egy előhívott, polaroidszerű fotó a 3. dián (alul szélesebb fehér sávval). */
+function PhotoPrint({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+  return (
+    <div className={`relative shrink-0 bg-white p-[4%] pb-[16%] shadow-[0_24px_40px_-18px_rgba(60,40,20,0.55)] ring-1 ring-black/5 ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} decoding="sync" className="block aspect-[4/5] w-full object-cover" />
+    </div>
+  );
+}
 
 const INTERVAL_MS = 6000;
 
@@ -200,7 +253,7 @@ export function HeroCarousel() {
      töltődjenek, ne csak a diaváltáskor. A preload a szerveren renderelt
      HTML fejlécébe kerül. */
   preload("/hero-bride-cut.webp", { as: "image", fetchPriority: "high" });
-  for (const src of HERO_PHONE_IMAGES) preload(src, { as: "image", fetchPriority: "low" });
+  for (const src of [...HERO_PHONE_IMAGES, ...HERO_PHOTO_IMAGES]) preload(src, { as: "image", fetchPriority: "low" });
 
   const [index, setIndex] = useState(0);
   // Kevesebb mozgás esetén a vetítés alapból áll, de a play gombbal
@@ -269,8 +322,11 @@ export function HeroCarousel() {
      hanem gördüljön oda. A célelem scroll-mt-20-at visel, így a ragadós
      fejléc nem takarja el a szekció címét. A /meghivo-ra mutató gombnál a
      függvény nem csinál semmit, marad a szokásos navigáció. */
-  const scrollToAnchor = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const scrollToAnchor = (e: React.MouseEvent<HTMLAnchorElement>, href: string, category?: string) => {
     if (!href.startsWith("#")) return;
+    /* A 3. dia gombja előbb a fotós kategóriára szűri a listát (ugyanúgy,
+       mint a gyorskategória-csempék). */
+    if (category) window.dispatchEvent(new CustomEvent("eskuvo:set-category", { detail: category }));
     const target = document.querySelector(href);
     if (!target) return;
     e.preventDefault();
@@ -359,7 +415,7 @@ export function HeroCarousel() {
                 <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-white/70 bg-white/60 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:p-4">
                   {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
                       ajánlat és alatta a csomagok felsorolása */}
-                  <p className="text-[15px] font-extrabold leading-snug text-[#A34A87] md:hidden">
+                  <p className="text-[15px] font-extrabold leading-snug md:hidden" style={{ color: t.ink }}>
                     {offer.short}
                   </p>
 
@@ -380,7 +436,7 @@ export function HeroCarousel() {
                   </p>
                   <Link
                     href={offer.href}
-                    onClick={(e) => scrollToAnchor(e, offer.href)}
+                    onClick={(e) => scrollToAnchor(e, offer.href, offer.category)}
                     className={`hero-offer-cta mt-2.5 md:mt-4 ${CTA_SIZE} text-white`}
                     style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                   >
@@ -444,6 +500,27 @@ export function HeroCarousel() {
                       ))}
                     </div>
                   </>
+                ) : s.key === "fotos" ? (
+                  /* Három előhívott fotó legyezőben, mintha épp kiterítették
+                     volna őket: középen, legelöl a menyasszony. Mobilon a
+                     szöveg melletti hasáb alján, desktopon középen. */
+                  <div className="absolute inset-x-0 bottom-[3%] top-0 flex items-end justify-center md:bottom-0 md:items-center">
+                    <PhotoPrint
+                      className="z-0 -mr-[10%] mb-[6%] w-[40%] -rotate-[10deg] md:w-[34%]"
+                      src="/meghivo-silver/g2.webp"
+                      alt="Koszorúslányok csokrokkal"
+                    />
+                    <PhotoPrint
+                      className="z-10 w-[46%] rotate-[2deg] md:w-[38%]"
+                      src="/meghivo-silver/g6.webp"
+                      alt="Mosolygó menyasszony"
+                    />
+                    <PhotoPrint
+                      className="z-0 -ml-[10%] mb-[6%] w-[40%] rotate-[11deg] md:w-[34%]"
+                      src="/meghivo-silver/g5.webp"
+                      alt="Menyasszonyi frizura virágokkal"
+                    />
+                  </div>
                 ) : (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
@@ -491,7 +568,7 @@ export function HeroCarousel() {
           villan be. Ezért a banner összes képe láthatatlanul végig az
           oldalon marad, a dián lévő képek pedig szinkron dekódolódnak. */}
       <div aria-hidden className="pointer-events-none absolute left-0 top-0 h-px w-px overflow-hidden opacity-0">
-        {["/hero-bride-cut.webp", ...HERO_PHONE_IMAGES].map((src) => (
+        {["/hero-bride-cut.webp", ...HERO_PHONE_IMAGES, ...HERO_PHOTO_IMAGES].map((src) => (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img key={src} src={src} alt="" decoding="sync" />
         ))}

@@ -1348,6 +1348,23 @@ html.a11y-underline a { text-decoration: underline !important; }
     background-size: 220% 220%;
   }
 }
+/* A 3. (fotós) dia: a .hero-silver vándorló gradiense meleg, pezsgő-
+   elefántcsont árnyalatban, a fényfolt is meleg. */
+.hero-foto.hero-silver {
+  background: linear-gradient(
+    145deg,
+    #FFFEFB 0%,
+    #F6EEE2 18%,
+    #FFFFFF 34%,
+    #EEE2CF 56%,
+    #FBF7F0 76%,
+    #F2E8D8 100%
+  );
+  background-size: 220% 220%;
+}
+.hero-foto .hero-blob-2 {
+  background: radial-gradient(circle, rgba(226, 200, 160, 0.45), transparent 65%);
+}
 .hero-meghivo .hero-blob-2 {
   background: radial-gradient(circle, rgba(232, 190, 218, 0.16), transparent 65%);
 }
