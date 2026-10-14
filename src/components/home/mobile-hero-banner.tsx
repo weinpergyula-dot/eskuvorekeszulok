@@ -21,7 +21,8 @@ type Tone = "dark" | "light";
 
 type MobileSlide = {
   key: string;
-  img: string;
+  /** A háttérfotó; ha nincs, a dia saját rajzolt jelenetet kap (overlay). */
+  img?: string;
   alt: string;
   /** A kép kivágásának fókusza (object-position). */
   focus: string;
@@ -36,11 +37,13 @@ type MobileSlide = {
   cta: string;
   /** Erre a kategóriára szűri a listát; ha nincs, a kategóriákhoz görget. */
   category?: string;
+  /** Ha meg van adva, a gomb erre az oldalra visz (pl. /meghivo). */
+  href?: string;
   /** Kiemelő szín (cím második sora, gomb, pöttyök). */
   color: string;
   colorHover: string;
   /** A kép fölé kerülő rétegek. */
-  overlay: "bottom-dark" | "corner-top-light" | "corner-bottom-light" | "viewfinder";
+  overlay: "bottom-dark" | "corner-top-light" | "corner-bottom-light" | "viewfinder" | "envelope";
   sticker?: string;
 };
 
@@ -60,6 +63,39 @@ const SLIDES: MobileSlide[] = [
     color: "#A9CFCB",
     colorHover: "#84AAA6",
     overlay: "bottom-dark",
+  },
+  {
+    key: "meghivo",
+    alt: "Prémium digitális esküvői meghívó: lila boríték viaszpecséttel",
+    focus: "50% 50%",
+    tone: "dark",
+    place: "bottom",
+    eyebrow: "Saját szolgáltatás · Premium",
+    lead: "DIGITÁLIS",
+    accent: "MEGHÍVÓK",
+    blurb: "Egy linken elküldhető, mobilra szabott meghívó visszaszámlálóval és online visszajelzéssel – már 14\u00a0900\u00a0Ft-tól.",
+    cta: "Megnézem",
+    href: "/meghivo",
+    color: "#F2A6CF",
+    colorHover: "#C65EA5",
+    overlay: "envelope",
+  },
+  {
+    key: "fotos",
+    img: "/hero-m/fotos.webp",
+    alt: "Menyasszony az ablakban, sziluettben",
+    focus: "50% 40%",
+    tone: "dark",
+    place: "bottom",
+    eyebrow: "Fotósok, videósok",
+    lead: "PILLANATOK",
+    accent: "ÖRÖKRE",
+    blurb: "Az első pillantástól a hajnali táncig – találd meg a fotóst, aki a ti stílusotokban meséli el.",
+    cta: "Fotósok",
+    category: "fotosok-videosok",
+    color: "#E2C38E",
+    colorHover: "#C9A76E",
+    overlay: "viewfinder",
   },
   {
     key: "fodrasz",
@@ -114,23 +150,6 @@ const SLIDES: MobileSlide[] = [
     overlay: "bottom-dark",
   },
   {
-    key: "fotos",
-    img: "/hero-m/fotos.webp",
-    alt: "Menyasszony az ablakban, sziluettben",
-    focus: "50% 40%",
-    tone: "dark",
-    place: "bottom",
-    eyebrow: "Fotósok, videósok",
-    lead: "PILLANATOK",
-    accent: "ÖRÖKRE",
-    blurb: "Az első pillantástól a hajnali táncig – találd meg a fotóst, aki a ti stílusotokban meséli el.",
-    cta: "Fotósok",
-    category: "fotosok-videosok",
-    color: "#E2C38E",
-    colorHover: "#C9A76E",
-    overlay: "viewfinder",
-  },
-  {
     key: "torta",
     img: "/hero-m/torta.webp",
     alt: "Emeletes esküvői torta rózsákkal",
@@ -166,7 +185,7 @@ export function MobileHeroBanner() {
   /* Csak mobilon töltjük előre: az első kép magas, a többi alacsony
      prioritással. */
   SLIDES.forEach((s, i) =>
-    preload(s.img, { as: "image", fetchPriority: i === 0 ? "high" : "low", media: "(max-width: 767px)" }),
+    s.img && preload(s.img, { as: "image", fetchPriority: i === 0 ? "high" : "low", media: "(max-width: 767px)" }),
   );
 
   const [index, setIndex] = useState(0);
@@ -252,15 +271,20 @@ export function MobileHeroBanner() {
             className={`absolute inset-0 transition-opacity duration-700 ${on ? "z-[1] opacity-100" : "pointer-events-none opacity-0"}`}
           >
             {/* A fotó lassú ráközelítéssel (csak az aktív dián) */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={s.img}
-              alt={s.alt}
-              decoding="sync"
-              fetchPriority={i === 0 ? "high" : "low"}
-              className={`absolute inset-0 h-full w-full object-cover ${on ? "mobile-hero-zoom" : ""}`}
-              style={{ objectPosition: s.focus }}
-            />
+            {s.img && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={s.img}
+                alt={s.alt}
+                decoding="sync"
+                fetchPriority={i === 0 ? "high" : "low"}
+                className={`absolute inset-0 h-full w-full object-cover ${on ? "mobile-hero-zoom" : ""}`}
+                style={{ objectPosition: s.focus }}
+              />
+            )}
+
+            {/* A meghívós dia rajzolt jelenete: a prémium minta lila borítéka */}
+            {s.overlay === "envelope" && <EnvelopeScene active={on} label={s.alt} />}
 
             {/* Rétegek: sötétítés / sarokvilágítás / kereső-keret */}
             {(s.overlay === "bottom-dark" || s.overlay === "viewfinder") && (
@@ -344,15 +368,26 @@ export function MobileHeroBanner() {
                     Regisztráció
                   </Link>
                 )}
-                <a
-                  href={s.category ? "#szolgaltatok" : "#kategoriak"}
-                  onClick={(e) => go(e, s)}
-                  className={`${CTA} mobile-hero-cta text-white shadow-lg`}
-                  style={{ ["--cta" as string]: light ? s.color : s.colorHover, ["--cta-hover" as string]: light ? s.colorHover : s.color }}
-                >
-                  {s.cta}
-                  {s.category ? <ArrowRight className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
-                </a>
+                {s.href ? (
+                  <Link
+                    href={s.href}
+                    className={`${CTA} mobile-hero-cta text-white shadow-lg`}
+                    style={{ ["--cta" as string]: s.colorHover, ["--cta-hover" as string]: "#B04E91" }}
+                  >
+                    {s.cta}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <a
+                    href={s.category ? "#szolgaltatok" : "#kategoriak"}
+                    onClick={(e) => go(e, s)}
+                    className={`${CTA} mobile-hero-cta text-white shadow-lg`}
+                    style={{ ["--cta" as string]: light ? s.color : s.colorHover, ["--cta-hover" as string]: light ? s.colorHover : s.color }}
+                  >
+                    {s.cta}
+                    {s.category ? <ArrowRight className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -398,5 +433,68 @@ export function MobileHeroBanner() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** Csillogó pontok helye (%-ban) és mérete a meghívós dia hátterén. */
+const SPARKS = [
+  [12, 14, 3], [82, 9, 2], [70, 22, 4], [24, 34, 2], [90, 40, 3],
+  [8, 52, 2], [62, 6, 2], [40, 18, 2], [86, 60, 2], [18, 70, 3],
+] as const;
+
+/**
+ * A prémium digitális meghívó borítéka, a /meghivo-premium minta nyitó
+ * képének mintájára: mély szilvalila háttér csillogó pontokkal, lila
+ * boríték lehajtott füllel, rózsaszín viaszpecséttel és átfutó fénnyel.
+ */
+function EnvelopeScene({ active, label }: { active: boolean; label: string }) {
+  return (
+    <div role="img" aria-label={label} className="absolute inset-0 overflow-hidden"
+      style={{ background: "radial-gradient(120% 70% at 50% 32%, #4A2156 0%, #2A1233 45%, #14081A 100%)" }}
+    >
+      {SPARKS.map(([x, y, r], k) => (
+        <span
+          key={k}
+          aria-hidden
+          className="mobile-hero-spark absolute rounded-full bg-white"
+          style={{ left: `${x}%`, top: `${y}%`, width: r * 2, height: r * 2, animationDelay: `${(k % 5) * 0.6}s`, boxShadow: "0 0 10px 2px rgba(255,220,240,0.6)" }}
+        />
+      ))}
+
+      <div className={`absolute left-1/2 top-[11%] w-[80%] -translate-x-1/2 ${active ? "mobile-hero-env" : ""}`}>
+        <p className="mb-4 text-center text-[10px] font-semibold uppercase tracking-[0.32em] text-[#F2D4E6]/75">
+          Premium minta
+        </p>
+        {/* Boríték */}
+        <div
+          className="relative aspect-[3/2] w-full overflow-hidden rounded-[10px] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.8)] ring-1 ring-white/10"
+          style={{ background: "linear-gradient(160deg, #7A3F8C 0%, #5B2C6B 55%, #45204F 100%)" }}
+        >
+          {/* oldalsó hajtások */}
+          <span aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(to top right, rgba(0,0,0,0.18) 50%, transparent 50%) left / 50% 100% no-repeat, linear-gradient(to top left, rgba(0,0,0,0.18) 50%, transparent 50%) right / 50% 100% no-repeat" }} />
+          {/* lehajtott fül */}
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-0 h-[58%]"
+            style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)", background: "linear-gradient(180deg, #8E4CA2 0%, #6A3479 100%)", filter: "drop-shadow(0 6px 8px rgba(0,0,0,0.35))" }}
+          />
+          {/* fénycsík a fülön */}
+          <span aria-hidden className="absolute left-[4%] top-[6%] h-[3px] w-[24%] rotate-[33deg] rounded-full bg-white/50 blur-[1px]" />
+          {/* átfutó fény */}
+          <span aria-hidden className="prm-env-shine" />
+          {/* Viaszpecsét a fül csúcsán */}
+          <span
+            aria-hidden
+            className="absolute left-1/2 top-[58%] grid aspect-square w-[26%] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-['Great_Vibes'] text-[clamp(1.2rem,6.5vw,2rem)] text-[#7A2F5E] shadow-[0_8px_18px_rgba(0,0,0,0.45),inset_0_2px_6px_rgba(255,255,255,0.6),inset_0_-4px_8px_rgba(120,30,80,0.35)] ring-[6px] ring-[#5B2C6B]/60"
+            style={{ background: "radial-gradient(circle at 38% 32%, #FCD6EA 0%, #F09BCB 45%, #CF5FA3 100%)" }}
+          >
+            L&amp;D
+          </span>
+        </div>
+      </div>
+
+      {/* Alsó sötétítés a szöveg alá */}
+      <span aria-hidden className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, rgba(20,8,26,0) 0%, rgba(20,8,26,0.85) 60%, rgba(20,8,26,0.95) 100%)" }} />
+    </div>
   );
 }
