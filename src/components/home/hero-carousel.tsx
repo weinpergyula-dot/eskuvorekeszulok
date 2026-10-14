@@ -459,7 +459,13 @@ export function HeroCarousel() {
                   alatt áll; mobilon szélesebb a szövegoszlopnál, így ha odaér,
                   rálóg a jobbra igazított képre (z-10 miatt a kép előtt). */}
               {!silver && (
-                <div className="hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-white/70 bg-white/60 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:p-4">
+                <div
+                  className={`hero-offer-card relative z-10 mt-[1.375rem] w-[13.5rem] rounded-[18px] border border-white/70 bg-white/60 p-3 shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl md:static md:mt-6 md:w-full md:max-w-[320px] md:rounded-[20px] md:p-4 ${
+                    /* A 4. dián mobilon kicsit lejjebb és jobbra áll, a nagy
+                       tortakép bal alsó sarkára */
+                    s.key === "torta" ? "max-md:translate-x-4 max-md:translate-y-8" : ""
+                  }`}
+                >
                   {/* Mobilon csak egyetlen ajánlatsor fér el, weben a badge, az
                       ajánlat és alatta a csomagok felsorolása */}
                   <p className="text-[15px] font-extrabold leading-snug md:hidden" style={{ color: t.ink }}>
@@ -592,7 +598,7 @@ export function HeroCarousel() {
                       </div>
                       <span
                         aria-hidden
-                        className="absolute -bottom-[10%] left-[6%] grid aspect-square w-[42%] rotate-[-12deg] place-items-center rounded-full bg-[#F6E3E6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#A0566B] shadow-[0_10px_20px_-8px_rgba(120,60,80,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:w-[40%] md:text-[10.5cqw]"
+                        className="absolute -left-[8%] top-[8%] grid aspect-square w-[42%] rotate-[-12deg] place-items-center rounded-full bg-[#F6E3E6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#A0566B] shadow-[0_10px_20px_-8px_rgba(120,60,80,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:top-auto md:w-[40%] md:text-[10.5cqw]"
                       >
                         Kóstolj
                         <br />
