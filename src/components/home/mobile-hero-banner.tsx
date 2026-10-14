@@ -64,8 +64,8 @@ const SLIDES: MobileSlide[] = [
   {
     key: "fodrasz",
     img: "/hero-m/fodrasz.webp",
-    alt: "Menyasszony virágkoszorúval, hosszú, hullámos hajjal",
-    focus: "4% 50%",
+    alt: "Menyasszony virágkoszorúval, hosszú, hullámos hajjal, az ég előtt",
+    focus: "75% 50%",
     tone: "light",
     place: "top",
     eyebrow: "Fodrászok, borbélyok",
@@ -332,7 +332,7 @@ export function MobileHeroBanner() {
               </h2>
               {/* A világosított bal alsó sarokban keskenyebb, hogy a szöveg ne
                   érjen ki a világos részből */}
-              <p className={`mt-3 text-[15px] leading-relaxed ${s.overlay === "corner-bottom-light" ? "max-w-[15rem]" : "max-w-[20rem]"} ${light ? "text-gray-700" : "text-white/90"}`}>
+              <p className={`mt-3 text-[15px] leading-relaxed ${s.overlay === "corner-bottom-light" ? "max-w-[15rem]" : s.key === "fodrasz" ? "max-w-[13rem]" : "max-w-[20rem]"} ${light ? "text-gray-700" : "text-white/90"}`}>
                 {s.blurb}
               </p>
               <div className="mt-5 flex flex-wrap gap-2.5">
