@@ -385,7 +385,7 @@ export function MobileHeroBanner() {
                     style={{ ["--cta" as string]: light ? s.color : s.colorHover, ["--cta-hover" as string]: light ? s.colorHover : s.color }}
                   >
                     {s.cta}
-                    {s.category ? <ArrowRight className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                    <ArrowDown className="h-4 w-4" />
                   </a>
                 )}
               </div>
