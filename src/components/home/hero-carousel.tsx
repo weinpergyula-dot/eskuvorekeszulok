@@ -590,15 +590,15 @@ export function HeroCarousel() {
                      kézírásos „Kóstolj bele!" matrica. Mindkét nézetben
                      függőlegesen középen; mobilon nagyobb (a gombos rész
                      ráérhet), desktopon magasabb arányú. */
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative w-[96%] [container-type:inline-size] md:w-[50%]">
+                  <div className="absolute inset-x-0 bottom-0 top-[14%] flex items-center justify-center md:top-0">
+                    <div className="relative w-[82%] [container-type:inline-size] md:w-[50%]">
                       <div className="overflow-hidden rounded-t-full border-[6px] border-white bg-white shadow-[0_28px_50px_-20px_rgba(50,70,52,0.55)] ring-1 ring-black/5 md:border-[10px]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={HERO_CAKE_IMAGE} alt={s.alt} decoding="sync" className="block aspect-[5/7] w-full object-cover" />
+                        <img src={HERO_CAKE_IMAGE} alt={s.alt} decoding="sync" className="block aspect-[2/3] w-full object-cover md:aspect-[5/7]" />
                       </div>
                       <span
                         aria-hidden
-                        className="absolute -left-[8%] top-[8%] grid aspect-square w-[42%] rotate-[-12deg] place-items-center rounded-full bg-[#F6E3E6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#A0566B] shadow-[0_10px_20px_-8px_rgba(120,60,80,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:top-auto md:w-[40%] md:text-[10.5cqw]"
+                        className="absolute -left-[10%] top-[8%] grid aspect-square w-[46%] rotate-[-12deg] place-items-center rounded-full bg-[#F6E3E6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#A0566B] shadow-[0_10px_20px_-8px_rgba(120,60,80,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:top-auto md:w-[40%] md:text-[10.5cqw]"
                       >
                         Kóstolj
                         <br />
