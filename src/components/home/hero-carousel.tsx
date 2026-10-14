@@ -594,7 +594,7 @@ export function HeroCarousel() {
                     <div className="relative w-[82%] [container-type:inline-size] md:w-[50%]">
                       <div className="overflow-hidden rounded-t-full border-[6px] border-white bg-white shadow-[0_28px_50px_-20px_rgba(50,70,52,0.55)] ring-1 ring-black/5 md:border-[10px]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={HERO_CAKE_IMAGE} alt={s.alt} decoding="sync" className="block aspect-[2/3] w-full object-cover md:aspect-[5/7]" />
+                        <img src={HERO_CAKE_IMAGE} alt={s.alt} decoding="sync" className="block aspect-[2/3] w-full object-fill md:aspect-[5/7] md:object-cover" />
                       </div>
                       <span
                         aria-hidden
