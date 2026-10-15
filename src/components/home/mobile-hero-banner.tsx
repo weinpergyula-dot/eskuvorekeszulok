@@ -488,7 +488,7 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
       className="mhb-env absolute inset-0 overflow-hidden"
       style={{
         background:
-          "radial-gradient(70% 50% at 72% 34%, rgba(198, 94, 165, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #150B18",
+          "radial-gradient(70% 50% at 50% 40%, rgba(198, 94, 165, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #150B18",
       }}
     >
       {SPARKS.map((sp) => (
@@ -500,25 +500,27 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
         />
       ))}
 
-      {/* A boríték jobbra kilóg a diáról: csak a bal 2/3-a látszik. */}
-      <div className="absolute top-[13%]" style={{ right: `calc(${ENV_W} / -3)` }}>
-        <div className="prm-env-scene" style={{ width: ENV_W }}>
+      {/* Zárva a boríték jobbra kilóg a diáról (csak a bal 2/3-a látszik);
+          nyitáskor középre csúszik, és a kiemelkedő lappal együtt
+          függőlegesen középen áll (globals.css .mhb-env-pos). */}
+      <div className="mhb-env-pos" style={{ "--env-w": ENV_W } as React.CSSProperties}>
+        <div className="prm-env-scene" style={{ width: "var(--env-w)" }}>
           <div className="prm-env">
             <span aria-hidden className="prm-env-rays" />
             <span aria-hidden className="prm-env-burst" />
             <span aria-hidden className="prm-env-back" />
             {/* A kiemelkedő meghívólap */}
             <div aria-hidden className="prm-env-card">
-              <p className="text-[11px] uppercase tracking-[0.3em]" style={{ color: "#9A5182" }}>
+              <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: "#9A5182" }}>
                 Meghívó
               </p>
-              <p className="mt-2 text-[2.4rem] leading-none" style={{ color: "#8F3671", fontFamily: "'Great Vibes', cursive" }}>
+              <p className="mt-2 text-[2.1rem] leading-none" style={{ color: "#8F3671", fontFamily: "'Great Vibes', cursive" }}>
                 L &amp; D
               </p>
-              <p className="mt-2 font-heading text-[19px] leading-snug" style={{ color: "#4A1B3D" }}>
+              <p className="mt-2 font-heading text-[17px] leading-snug" style={{ color: "#4A1B3D" }}>
                 Lilla és Dániel
               </p>
-              <p className="mt-1.5 text-[14px]" style={{ color: "#7C4468" }}>
+              <p className="mt-1.5 text-[12px]" style={{ color: "#7C4468" }}>
                 2027. augusztus 21. · Tihany
               </p>
             </div>
