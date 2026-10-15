@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
+import { MarqueeText } from "@/components/ui/marquee-text";
 import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
 
 /* Galéria-csík: fix pixelméretek, hogy a Safari ne az aspect-ratio / lusta
@@ -189,7 +190,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         )}
 
         <div className="flex-1 min-w-0">
-          <div className="font-bold text-gray-900 truncate" style={{ fontSize: "16px" }}>{provider.full_name}</div>
+          <MarqueeText className="font-bold text-gray-900" style={{ fontSize: "16px" }}>{provider.full_name}</MarqueeText>
           <div className="flex items-start gap-1 mt-0.5">
             <MapPin className={`h-3 w-3 ${tc.text} shrink-0 mt-[2px]`} />
             <span className="text-sm text-gray-500 leading-snug">
@@ -377,13 +378,13 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <div className="flex-1 min-w-0 pr-14">
             {!disableLink ? (
               <a href={detailHref} onClick={(e) => e.stopPropagation()} className="block">
-                <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
-                  {provider.full_name}
+                <h3 className={`font-bold text-gray-900 text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
+                  <MarqueeText>{provider.full_name}</MarqueeText>
                 </h3>
               </a>
             ) : (
-              <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
-                {provider.full_name}
+              <h3 className={`font-bold text-gray-900 text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
+                <MarqueeText>{provider.full_name}</MarqueeText>
               </h3>
             )}
             <div className="flex items-start gap-1 mt-0.5">
