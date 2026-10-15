@@ -4,7 +4,6 @@ import { MobileHeroBanner } from "@/components/home/mobile-hero-banner";
 import { ProvidersContent } from "@/components/providers/providers-content";
 import { CategoryQuickTiles } from "@/components/home/category-quick-tiles";
 import { ProvidersSectionTitle } from "@/components/home/providers-section-title";
-import { GroupQuoteTab } from "@/components/home/group-quote-cta";
 import { VisitTracker } from "@/components/home/visit-tracker";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
@@ -79,16 +78,11 @@ export default async function HomePage() {
         <div className="h-6 rounded-t-3xl bg-white" aria-hidden />
       </div>
 
-      {/* Csoportos ajánlatkérés – még a listázás előtt: a teal sávból
-          lelógó lapfül, kattintásra felugró ablak */}
-      <GroupQuoteTab />
-
       {/* Teljes szolgáltatói lista */}
       {/* A horgonyra görgetéskor (kategória-csempe, Vissza a listához) a
-          csoportos ajánlatkérés füle a ragadós fejléc mögé kerüljön: a cím
-          fölött csak ~16px látszik (a szekció pt-6-ja 24px, a fül alja a
-          szekció tetején ér véget). Mobilon lefelé görgetéskor a fejléc
-          2.75rem-re húzódik össze, desktopon 4rem marad. */}
+          cím fölött csak ~16px látszik (a szekció pt-6-ja 24px). Mobilon
+          lefelé görgetéskor a fejléc 2.75rem-re húzódik össze, desktopon
+          4rem marad. */}
       <section id="szolgaltatok" className="bg-white scroll-mt-9 md:scroll-mt-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10 sm:pb-16">
           <ProvidersSectionTitle />

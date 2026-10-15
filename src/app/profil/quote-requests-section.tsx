@@ -98,10 +98,21 @@ function formatShort(iso: string) {
 
 // ── SendForm ──────────────────────────────────────────────────────────────────
 
-function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?: () => void; userId?: string }) {
+/** Egy szolgáltató kártyájáról indított ajánlatkérés előtöltése. */
+interface SendFormPrefill {
+  providerId: string;
+  category?: string;
+  counties?: string[];
+}
+
+function SendForm({ onSent, onCancel, userId, prefill }: { onSent: () => void; onCancel?: () => void; userId?: string; prefill?: SendFormPrefill }) {
   const [subject, setSubject] = useState("");
-  const [category, setCategory] = useState("");
-  const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
+  const [category, setCategory] = useState(
+    prefill?.category && prefill.category in CATEGORY_LABELS ? prefill.category : ""
+  );
+  const [selectedCounties, setSelectedCounties] = useState<string[]>(
+    () => (prefill?.counties ?? []).filter((c) => (COUNTIES as readonly string[]).includes(c) && c !== "Országosan")
+  );
   const [message, setMessage] = useState("");
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
@@ -318,6 +329,7 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
         userId={userId}
         checkedIds={checkedIds}
         setCheckedIds={setCheckedIds}
+        initialCheckedId={prefill?.providerId}
       />
       {error && <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-xs px-4 py-3 rounded-xl border border-[#F06C6C]/30">{error}</div>}
       <div className="flex gap-3">
@@ -780,6 +792,17 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
     searchParams.get("form") === "meghivo" ? "meghivo" : "general"
   );
 
+  /* Szolgáltatói kártyáról érkezve (?szolgaltato=…) az űrlap az ő
+     kategóriájával, megyéivel és őt bejelölve nyílik. */
+  const prefillProviderId = searchParams.get("szolgaltato");
+  const prefill: SendFormPrefill | undefined = prefillProviderId
+    ? {
+        providerId: prefillProviderId,
+        category: searchParams.get("kategoria") ?? undefined,
+        counties: searchParams.get("megye")?.split(",").filter(Boolean),
+      }
+    : undefined;
+
   useEffect(() => {
     onUnreadChange(0);
     window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: 0 }));
@@ -837,7 +860,7 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
           <p className="text-base text-gray-700">
             Kategória és megyeválasztás után egyenként ki tudod választani, hogy melyik szolgáltató kapja meg az ajánlatkérést.
           </p>
-          <SendForm onSent={() => setSent(true)} userId={userId} />
+          <SendForm onSent={() => setSent(true)} userId={userId} prefill={prefill} />
         </>
       )}
     </div>

@@ -3,13 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
-import { ChatLink, MaskedContact } from "@/components/providers/masked-contact";
+import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
 
 /* Galéria-csík: fix pixelméretek, hogy a Safari ne az aspect-ratio / lusta
    betöltés alapján számolja utólag a sáv szélességét (az iOS 27 óta ettől
@@ -45,6 +45,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const detailHref = backHref
     ? `/providers/${provider.id}?from=${encodeURIComponent(backHref)}`
     : `/providers/${provider.id}`;
+  /* Az ajánlatkérő űrlap ezzel a szolgáltatóval előtöltve nyílik: a
+     kategóriája és a megyéi ki vannak választva, ő maga pedig bejelölve a
+     címzettek között. */
+  const quoteParams = new URLSearchParams({ tab: "quotes", szolgaltato: provider.id });
+  if (provider.categories?.[0]) quoteParams.set("kategoria", provider.categories[0]);
+  const quoteCounties = (provider.counties ?? []).filter((c) => c !== "Országosan");
+  if (quoteCounties.length) quoteParams.set("megye", quoteCounties.join(","));
+  const quoteHref = `/profil?${quoteParams}`;
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
@@ -525,11 +533,21 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Footer */}
       {!inCarousel && !disableLink && (
         <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
-          {/* Chat + Részletek grouped — always pushed to right */}
-          <div className="flex items-center gap-2 ml-auto">
+          {/* Ajánlatkérés + Chat + Részletek grouped — always pushed to right */}
+          <div className="flex flex-wrap items-center justify-end gap-2 ml-auto">
+            <LoginGateLink
+              href={quoteHref}
+              message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+              onClick={(e) => e.stopPropagation()}
+              className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}
+            >
+              <Send className="h-3.5 w-3.5" />
+              Ajánlatkérés
+            </LoginGateLink>
             <ChatLink href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               <MessageCircle className="h-3.5 w-3.5" />
-              Chat indítása
+              {/* Három gomb mellett a rövid felirat fér ki a kártya alján. */}
+              Chat
             </ChatLink>
             <a href={detailHref} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               Részletek
