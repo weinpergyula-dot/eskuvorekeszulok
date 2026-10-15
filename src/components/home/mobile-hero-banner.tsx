@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { preload } from "react-dom";
 import { ArrowDown, ArrowRight, Pause, Play } from "lucide-react";
@@ -455,6 +455,57 @@ const SPARKS = [
  * A diára váltás után 1 mp-cel magától kinyílik: a pecsét széttörik, a fül
  * felnyílik, fény tör elő, és kiemelkedik a meghívólap (.mhb-env).
  */
+/**
+ * Festett hatású, telt szív a meghívólap aljára: színátmenetes kitöltés,
+ * akvarellszerűen hullámzó, a szélén sötétebb perem és egy fehér csillanás.
+ * A lap kiemelkedése után ecsetvonásokban „festődik” fel (egy vastag,
+ * cikcakkos maszkvonal fut végig rajta), majd lassan dobog (globals.css
+ * .mhb-heart).
+ */
+function PaintedHeart() {
+  const id = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const heart =
+    "M50 84 C 46 80, 8 58, 6 32 C 4 15, 16 5, 29 5 C 39 5, 46 11, 50 19 C 54 11, 61 5, 71 5 C 84 5, 96 15, 94 32 C 92 58, 54 80, 50 84 Z";
+  return (
+    <svg aria-hidden className="mhb-heart mx-auto mt-3 h-[78px] w-[86px]" viewBox="-4 -4 108 98">
+      <defs>
+        <radialGradient id={`${id}-fill`} cx="38%" cy="30%" r="75%">
+          <stop offset="0%" stopColor="#F7C4DF" />
+          <stop offset="45%" stopColor="#E07DB8" />
+          <stop offset="100%" stopColor="#B04E91" />
+        </radialGradient>
+        {/* Akvarellszerű, enyhén hullámzó szél */}
+        <filter id={`${id}-paint`} x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" />
+        </filter>
+        <mask id={`${id}-brush`} maskUnits="userSpaceOnUse" x="-4" y="-4" width="108" height="98">
+          <path
+            className="mhb-brush"
+            pathLength={1}
+            d="M2 20 C 30 6, 70 6, 98 20 L 4 40 C 40 30, 60 30, 96 40 L 12 60 C 40 54, 60 54, 88 60 L 30 76 C 44 74, 56 74, 70 76 L 50 90"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="26"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </mask>
+      </defs>
+      <g mask={`url(#${id}-brush)`}>
+        <g filter={`url(#${id}-paint)`}>
+          <path d={heart} fill={`url(#${id}-fill)`} />
+          {/* A festék a szélén sötétebben szárad be */}
+          <path d={heart} fill="none" stroke="#9A3B7C" strokeOpacity="0.45" strokeWidth="2.5" />
+        </g>
+        {/* Csillanás a bal felső íven */}
+        <path d="M18 28 C 18 19, 24 13, 32 13" fill="none" stroke="#fff" strokeOpacity="0.75" strokeWidth="4" strokeLinecap="round" />
+        <circle cx="16.5" cy="35" r="2" fill="#fff" fillOpacity="0.7" />
+      </g>
+    </svg>
+  );
+}
+
 const ENV_W = "min(92vw, 440px)";
 const ENV_OPEN_DELAY_MS = 1000;
 /* A fül nyílása után emelkedik ki a lap – mint a /meghivo-premium oldalon. */
@@ -523,12 +574,7 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
               <p className="mt-1.5 text-[12px]" style={{ color: "#7C4468" }}>
                 2027. augusztus 21. · Tihany
               </p>
-              {/* Két egymásba fonódó szív: a lap kiemelkedése után
-                  kirajzolódik, majd halkan dobog (globals.css .mhb-heart). */}
-              <svg className="mhb-heart mx-auto mt-3 h-[76px] w-28" viewBox="0 0 120 80" fill="#C65EA5" stroke="#8F3671" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path pathLength={1} d="M46 72 C 20 55, 8 40, 13 25 C 18 10, 38 9, 46 25 C 54 9, 74 10, 79 25 C 84 40, 72 55, 46 72 Z" />
-                <path pathLength={1} d="M74 72 C 48 55, 36 40, 41 25 C 46 10, 66 9, 74 25 C 82 9, 102 10, 107 25 C 112 40, 100 55, 74 72 Z" />
-              </svg>
+              <PaintedHeart />
             </div>
             <span aria-hidden className="prm-env-front" />
             <span aria-hidden className="prm-env-flap" />
