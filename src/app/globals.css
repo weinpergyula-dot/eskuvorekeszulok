@@ -2108,7 +2108,8 @@ html.a11y-underline a { text-decoration: underline !important; }
     inset 0 -40px 10px -40px rgba(40, 40, 40, 0.08);
 }
 
-/* MarqueeText: álló állapotban levágott (…) szöveg, mozgás közben a belső
-   sor egyben csúszik (ehhez inline-block kell). */
-.marquee-text[data-marquee="off"] { text-overflow: ellipsis; }
-.marquee-text[data-marquee="on"] > span { display: inline-block; }
+/* MarqueeText: a belső sor egyben mérhető és csúsztatható (inline-block).
+   „…” csak akkor van, ha nem fér ki, és csökkentett mozgás miatt nem mozog. */
+.marquee-text > span { display: inline-block; }
+.marquee-text[data-marquee="clip"] { text-overflow: ellipsis; }
+.marquee-text[data-marquee="clip"] > span { display: inline; }
