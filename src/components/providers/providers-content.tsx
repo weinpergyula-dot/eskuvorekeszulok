@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List } from "lucide-react";
+import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, X } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
 import { MeghivoPromoCard } from "./meghivo-promo-card";
@@ -177,6 +177,11 @@ function seededShuffle<T>(items: T[], seed: number): T[] {
 }
 
 // ── Providers list ──────────────────────────────────────────────────────────
+/** Kisbetűs, ékezet nélküli alak a kereséshez („Fotós” → „fotos”). */
+function normalizeSearch(text: string): string {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 export function ProvidersContent({
   providers,
   categoryCounts,
@@ -257,8 +262,17 @@ export function ProvidersContent({
     window.dispatchEvent(new CustomEvent("eskuvo:category", { detail: category }));
   }, [category]);
 
+  /* A főoldali mobilos kereső (CategorySearch) szövege: név, kategória,
+     megye és leírás alapján szűr, kis- és nagybetűtől, ékezettől függetlenül. */
+  const [query, setQuery] = useState("");
+  useEffect(() => {
+    const h = (e: Event) => setQuery((e as CustomEvent<string>).detail ?? "");
+    window.addEventListener("eskuvo:set-query", h);
+    return () => window.removeEventListener("eskuvo:set-query", h);
+  }, []);
+
   // Reset to first page when the result set or page size changes.
-  useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize]);
+  useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize, query]);
 
   /* A listázás aktuális állapota. A szűrők a címsorba is bekerülnek, és a
      szolgáltatói kártyák linkjei is magukkal viszik – így a részletes
@@ -327,9 +341,21 @@ export function ProvidersContent({
     : geoCounties;
 
   const filtered = useMemo(() => {
-    if (!county) return byCategory;
-    return byCategory.filter((p) => (p.counties ?? []).includes(county) || (p.counties ?? []).includes("Országosan"));
-  }, [byCategory, county]);
+    const byCounty = county
+      ? byCategory.filter((p) => (p.counties ?? []).includes(county) || (p.counties ?? []).includes("Országosan"))
+      : byCategory;
+    const words = normalizeSearch(query).split(/\s+/).filter(Boolean);
+    if (!words.length) return byCounty;
+    return byCounty.filter((p) => {
+      const haystack = normalizeSearch([
+        p.full_name,
+        ...(p.categories ?? []).map((c) => CATEGORY_LABELS[c as ServiceCategory] ?? c),
+        ...(p.counties ?? []),
+        p.description ?? "",
+      ].join(" "));
+      return words.every((w) => haystack.includes(w));
+    });
+  }, [byCategory, county, query]);
 
   const featured = useMemo(() => filtered.filter((p) => p.featured).sort((a, b) => tier(b.featured) - tier(a.featured)), [filtered]);
   const normal = useMemo(() => filtered.filter((p) => !p.featured), [filtered]);
@@ -346,7 +372,7 @@ export function ProvidersContent({
 
   /* A Meghívók között a saját digitális meghívónk is ott van: a lista élére
      kerül egy kiemelt sávként, és a darabszám is számol vele. */
-  const showHouseOffer = category === HOUSE_CATEGORY;
+  const showHouseOffer = category === HOUSE_CATEGORY && !query;
   const resultCount = filtered.length + (showHouseOffer ? HOUSE_OFFER_COUNT : 0);
   /* A főoldali szekciócím a darabszámot is mutatja (lásd
      ProvidersSectionTitle). */
@@ -513,11 +539,31 @@ export function ProvidersContent({
           </div>
         </div>
 
+        {/* Aktív keresés jelzése (a teal sáv keresőjéből), innen is törölhető */}
+        {query && (
+          <div className="mb-4 flex items-center gap-2">
+            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-[#84AAA6]/50 bg-[#EDF4F3] py-1 pl-3 pr-1 text-sm text-[#3F6662]">
+              <Search className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">Keresés: „{query}”</span>
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("eskuvo:clear-query"))}
+                aria-label="Keresés törlése"
+                className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full hover:bg-[#84AAA6]/20"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </span>
+          </div>
+        )}
+
         {resultCount === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
-            <p className="text-gray-900 text-lg">A kiválasztott szűrőkre egyelőre nincs szolgáltató.</p>
+            <p className="text-gray-900 text-lg">
+              {query ? <>A(z) „{query}” keresésre nincs szolgáltató a kiválasztott szűrőkkel.</> : "A kiválasztott szűrőkre egyelőre nincs szolgáltató."}
+            </p>
           </div>
         ) : (
           <>

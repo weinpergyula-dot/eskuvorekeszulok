@@ -2113,3 +2113,24 @@ html.a11y-underline a { text-decoration: underline !important; }
 .marquee-text > span { display: inline-block; }
 .marquee-text[data-marquee="clip"] { text-overflow: ellipsis; }
 .marquee-text[data-marquee="clip"] > span { display: inline; }
+
+/* Mobilos kereső a kategóriaválasztó teal sávjában (CategorySearch).
+   Zárva: áttetsző kerek nagyító gomb a cím jobb oldalán. Nyitva: a cím
+   fölé teljes szélességben kinyíló fehér mező. */
+.category-search-field {
+  width: 2.5rem;
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.15);
+  transition: width 0.35s cubic-bezier(0.22, 0.61, 0.36, 1), background-color 0.25s ease, border-color 0.25s ease;
+}
+.category-search-icon { color: #fff; transition: color 0.25s ease; }
+.category-search[data-open] .category-search-field {
+  width: 100%;
+  border-color: #fff;
+  background: #fff;
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.35);
+}
+.category-search[data-open] .category-search-icon { color: #5C8480; }
+@media (prefers-reduced-motion: reduce) {
+  .category-search-field { transition: none; }
+}
