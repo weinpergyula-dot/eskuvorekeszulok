@@ -1851,28 +1851,18 @@ html.a11y-underline a { text-decoration: underline !important; }
   transform: translateY(0) rotateX(6deg);
 }
 
-/* A meghívólap alján a festett szív: egy vastag maszkvonal ecsetvonásokban
-   „festi fel”, utána lassan dobog. Záráskor visszaáll. */
-.mhb-heart { transform-origin: 50% 60%; overflow: visible; }
-.mhb-heart .mhb-brush {
+/* A meghívólap alján az egyvonalas két szív: a vonal a lap kiemelkedése
+   után végigrajzolódik. Záráskor visszaáll. */
+.mhb-heart path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
-.mhb-env[data-phase="card"] .mhb-heart .mhb-brush {
-  animation: mhb-heart-paint 1.5s cubic-bezier(0.45, 0, 0.35, 1) 0.7s forwards;
+.mhb-env[data-phase="card"] .mhb-heart path {
+  animation: mhb-heart-draw 2.4s cubic-bezier(0.45, 0, 0.3, 1) 0.6s forwards;
 }
-.mhb-env[data-phase="card"] .mhb-heart {
-  animation: mhb-heart-beat 1.8s ease-in-out 2.4s infinite;
-}
-@keyframes mhb-heart-paint { to { stroke-dashoffset: 0; } }
-@keyframes mhb-heart-beat {
-  0%, 40%, 100% { transform: scale(1); }
-  15% { transform: scale(1.09); }
-  28% { transform: scale(1.03); }
-}
+@keyframes mhb-heart-draw { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .mhb-env .mhb-heart .mhb-brush { stroke-dashoffset: 0; animation: none; }
-  .mhb-env .mhb-heart { animation: none; }
+  .mhb-env .mhb-heart path { stroke-dashoffset: 0; animation: none; }
 }
 
 /* Végigfutó fénycsillanás a zárt borítékon */

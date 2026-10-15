@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { preload } from "react-dom";
 import { ArrowDown, ArrowRight, Pause, Play } from "lucide-react";
@@ -456,52 +456,34 @@ const SPARKS = [
  * felnyílik, fény tör elő, és kiemelkedik a meghívólap (.mhb-env).
  */
 /**
- * Festett hatású, telt szív a meghívólap aljára: színátmenetes kitöltés,
- * akvarellszerűen hullámzó, a szélén sötétebb perem és egy fehér csillanás.
- * A lap kiemelkedése után ecsetvonásokban „festődik” fel (egy vastag,
- * cikcakkos maszkvonal fut végig rajta), majd lassan dobog (globals.css
- * .mhb-heart).
+ * Egyetlen vonallal rajzolt két szív a meghívólap aljára: a vonal balról
+ * fut be, kirajzolja a nagy, majd a kis szívet, és jobbra egy kis hurokkal
+ * fut ki. A lap kiemelkedése után mintha tollal húznák végig
+ * (globals.css .mhb-heart).
  */
-function PaintedHeart() {
-  const id = useId().replace(/[^a-zA-Z0-9]/g, "");
-  const heart =
-    "M50 84 C 46 80, 8 58, 6 32 C 4 15, 16 5, 29 5 C 39 5, 46 11, 50 19 C 54 11, 61 5, 71 5 C 84 5, 96 15, 94 32 C 92 58, 54 80, 50 84 Z";
+const LINE_HEARTS_PATH = [
+  "M2 76 C 30 69, 66 68, 90 73",
+  "C 104 60, 116 46, 113 31 C 111 20, 103 15, 96 16 C 89 17, 84 22, 81 28",
+  "C 77 22, 71 20, 66 20 C 56 20, 50 28, 51 38 C 52 52, 66 63, 92 74",
+  "C 108 79, 130 75, 137 64 C 141 56, 134 49, 127 50 C 122 51, 118 54, 117 58",
+  "C 116 51, 111 45, 104 45 C 96 46, 95 56, 99 63 C 104 73, 113 81, 128 82",
+  "C 141 83, 150 79, 156 73 C 159 70, 158 67, 156 67 C 153 67, 153 71, 157 73",
+  "C 164 76, 171 75, 174 72",
+].join(" ");
+
+function LineHearts() {
   return (
-    <svg aria-hidden className="mhb-heart mx-auto mt-3 h-[78px] w-[86px]" viewBox="-4 -4 108 98">
-      <defs>
-        <radialGradient id={`${id}-fill`} cx="38%" cy="30%" r="75%">
-          <stop offset="0%" stopColor="#F7C4DF" />
-          <stop offset="45%" stopColor="#E07DB8" />
-          <stop offset="100%" stopColor="#B04E91" />
-        </radialGradient>
-        {/* Akvarellszerű, enyhén hullámzó szél */}
-        <filter id={`${id}-paint`} x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" />
-        </filter>
-        <mask id={`${id}-brush`} maskUnits="userSpaceOnUse" x="-4" y="-4" width="108" height="98">
-          <path
-            className="mhb-brush"
-            pathLength={1}
-            d="M2 20 C 30 6, 70 6, 98 20 L 4 40 C 40 30, 60 30, 96 40 L 12 60 C 40 54, 60 54, 88 60 L 30 76 C 44 74, 56 74, 70 76 L 50 90"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="26"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </mask>
-      </defs>
-      <g mask={`url(#${id}-brush)`}>
-        <g filter={`url(#${id}-paint)`}>
-          <path d={heart} fill={`url(#${id}-fill)`} />
-          {/* A festék a szélén sötétebben szárad be */}
-          <path d={heart} fill="none" stroke="#9A3B7C" strokeOpacity="0.45" strokeWidth="2.5" />
-        </g>
-        {/* Csillanás a bal felső íven */}
-        <path d="M18 28 C 18 19, 24 13, 32 13" fill="none" stroke="#fff" strokeOpacity="0.75" strokeWidth="4" strokeLinecap="round" />
-        <circle cx="16.5" cy="35" r="2" fill="#fff" fillOpacity="0.7" />
-      </g>
+    <svg
+      aria-hidden
+      className="mhb-heart mx-auto mt-2 block w-[72%]"
+      viewBox="0 12 176 74"
+      fill="none"
+      stroke="#8F3671"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path pathLength={1} d={LINE_HEARTS_PATH} />
     </svg>
   );
 }
@@ -574,7 +556,7 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
               <p className="mt-1.5 text-[12px]" style={{ color: "#7C4468" }}>
                 2027. augusztus 21. · Tihany
               </p>
-              <PaintedHeart />
+              <LineHearts />
             </div>
             <span aria-hidden className="prm-env-front" />
             <span aria-hidden className="prm-env-flap" />
