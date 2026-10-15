@@ -523,6 +523,12 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
               <p className="mt-1.5 text-[12px]" style={{ color: "#7C4468" }}>
                 2027. augusztus 21. · Tihany
               </p>
+              {/* Két egymásba fonódó szív: a lap kiemelkedése után
+                  kirajzolódik, majd halkan dobog (globals.css .mhb-heart). */}
+              <svg className="mhb-heart mx-auto mt-3 h-[76px] w-28" viewBox="0 0 120 80" fill="#C65EA5" stroke="#8F3671" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path pathLength={1} d="M46 72 C 20 55, 8 40, 13 25 C 18 10, 38 9, 46 25 C 54 9, 74 10, 79 25 C 84 40, 72 55, 46 72 Z" />
+                <path pathLength={1} d="M74 72 C 48 55, 36 40, 41 25 C 46 10, 66 9, 74 25 C 82 9, 102 10, 107 25 C 112 40, 100 55, 74 72 Z" />
+              </svg>
             </div>
             <span aria-hidden className="prm-env-front" />
             <span aria-hidden className="prm-env-flap" />
