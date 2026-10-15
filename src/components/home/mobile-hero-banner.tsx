@@ -284,7 +284,7 @@ export function MobileHeroBanner() {
             )}
 
             {/* A meghívós dia rajzolt jelenete: a prémium minta lila borítéka */}
-            {s.overlay === "envelope" && <EnvelopeScene label={s.alt} />}
+            {s.overlay === "envelope" && <EnvelopeScene label={s.alt} active={on} />}
 
             {/* Rétegek: sötétítés / sarokvilágítás / kereső-keret */}
             {(s.overlay === "bottom-dark" || s.overlay === "viewfinder") && (
@@ -448,19 +448,44 @@ const SPARKS = [
 ];
 
 /**
- * A prémium digitális meghívó zárt borítéka – a /meghivo-premium minta
+ * A prémium digitális meghívó borítéka – a /meghivo-premium minta
  * nyitóképének elemeivel és animációjával (globals.css .prm-env-*): a
  * boríték lassan lebeg és enyhén előredől, a viaszpecsét körül fénygyűrű
  * pulzál, a borítékon fény fut át, a háttérben fénypontok lebegnek.
+ * A diára váltás után 1 mp-cel magától kinyílik: a pecsét széttörik, a fül
+ * felnyílik, fény tör elő, és kiemelkedik a meghívólap (.mhb-env).
  */
 const ENV_W = "min(92vw, 440px)";
+const ENV_OPEN_DELAY_MS = 1000;
+/* A fül nyílása után emelkedik ki a lap – mint a /meghivo-premium oldalon. */
+const ENV_CARD_DELAY_MS = ENV_OPEN_DELAY_MS + 900;
 
-function EnvelopeScene({ label }: { label: string }) {
+type EnvPhase = "closed" | "opening" | "card";
+
+function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
+  const [phase, setPhase] = useState<EnvPhase>("closed");
+
+  useEffect(() => {
+    /* Elváltáskor csak az elhalványulás (700ms) után zárul vissza, hogy a
+       visszacsukódás ne látsszon; legközelebb újra kinyílik. */
+    if (!active) {
+      const t = setTimeout(() => setPhase("closed"), 700);
+      return () => clearTimeout(t);
+    }
+    const open = setTimeout(() => setPhase("opening"), ENV_OPEN_DELAY_MS);
+    const card = setTimeout(() => setPhase("card"), ENV_CARD_DELAY_MS);
+    return () => {
+      clearTimeout(open);
+      clearTimeout(card);
+    };
+  }, [active]);
+
   return (
     <div
       role="img"
       aria-label={label}
-      className="absolute inset-0 overflow-hidden"
+      data-phase={phase}
+      className="mhb-env absolute inset-0 overflow-hidden"
       style={{
         background:
           "radial-gradient(70% 50% at 72% 34%, rgba(198, 94, 165, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #150B18",
@@ -479,7 +504,24 @@ function EnvelopeScene({ label }: { label: string }) {
       <div className="absolute top-[13%]" style={{ right: `calc(${ENV_W} / -3)` }}>
         <div className="prm-env-scene" style={{ width: ENV_W }}>
           <div className="prm-env">
+            <span aria-hidden className="prm-env-rays" />
+            <span aria-hidden className="prm-env-burst" />
             <span aria-hidden className="prm-env-back" />
+            {/* A kiemelkedő meghívólap */}
+            <div aria-hidden className="prm-env-card">
+              <p className="text-[11px] uppercase tracking-[0.3em]" style={{ color: "#9A5182" }}>
+                Meghívó
+              </p>
+              <p className="mt-2 text-[2.4rem] leading-none" style={{ color: "#8F3671", fontFamily: "'Great Vibes', cursive" }}>
+                L &amp; D
+              </p>
+              <p className="mt-2 font-heading text-[19px] leading-snug" style={{ color: "#4A1B3D" }}>
+                Lilla és Dániel
+              </p>
+              <p className="mt-1.5 text-[14px]" style={{ color: "#7C4468" }}>
+                2027. augusztus 21. · Tihany
+              </p>
+            </div>
             <span aria-hidden className="prm-env-front" />
             <span aria-hidden className="prm-env-flap" />
             <span aria-hidden className="prm-env-shine" />
