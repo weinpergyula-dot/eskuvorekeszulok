@@ -453,6 +453,8 @@ const SPARKS = [
  * boríték lassan lebeg és enyhén előredől, a viaszpecsét körül fénygyűrű
  * pulzál, a borítékon fény fut át, a háttérben fénypontok lebegnek.
  */
+const ENV_W = "min(92vw, 440px)";
+
 function EnvelopeScene({ label }: { label: string }) {
   return (
     <div
@@ -461,7 +463,7 @@ function EnvelopeScene({ label }: { label: string }) {
       className="absolute inset-0 overflow-hidden"
       style={{
         background:
-          "radial-gradient(70% 50% at 50% 34%, rgba(198, 94, 165, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #150B18",
+          "radial-gradient(70% 50% at 72% 34%, rgba(198, 94, 165, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #150B18",
       }}
     >
       {SPARKS.map((sp) => (
@@ -473,8 +475,9 @@ function EnvelopeScene({ label }: { label: string }) {
         />
       ))}
 
-      <div className="absolute left-1/2 top-[13%] -translate-x-1/2">
-        <div className="prm-env-scene" style={{ width: "min(80vw, 380px)" }}>
+      {/* A boríték jobbra kilóg a diáról: csak a bal 2/3-a látszik. */}
+      <div className="absolute top-[13%]" style={{ right: `calc(${ENV_W} / -3)` }}>
+        <div className="prm-env-scene" style={{ width: ENV_W }}>
           <div className="prm-env">
             <span aria-hidden className="prm-env-back" />
             <span aria-hidden className="prm-env-front" />
