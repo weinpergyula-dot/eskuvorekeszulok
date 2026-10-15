@@ -12,6 +12,7 @@ import { ProviderTabs } from "@/components/providers/provider-tabs";
 import { ProviderUserActions } from "@/components/providers/provider-user-actions";
 import { ShareButton } from "@/components/providers/share-button";
 import { AvatarLightbox } from "@/components/providers/avatar-lightbox";
+import { MarqueeText } from "@/components/ui/marquee-text";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -112,8 +113,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-24 h-24" />
               </div>
               <div className="flex-1 min-w-0 pr-10">
-                <h1 className="font-bold text-gray-900 text-[18px] leading-snug truncate">
-                  {provider.full_name}
+                {/* A ki nem férő név lassan végigcsúszik, hogy olvasható legyen. */}
+                <h1 className="font-bold text-gray-900 text-[18px] leading-snug">
+                  <MarqueeText>{provider.full_name}</MarqueeText>
                 </h1>
                 {(provider.counties ?? []).length > 0 && (
                   <div className="flex items-center gap-1 mt-0.5">
