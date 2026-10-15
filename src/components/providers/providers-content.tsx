@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, X } from "lucide-react";
+import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
 import { MeghivoPromoCard } from "./meghivo-promo-card";
@@ -262,7 +262,7 @@ export function ProvidersContent({
     window.dispatchEvent(new CustomEvent("eskuvo:category", { detail: category }));
   }, [category]);
 
-  /* A főoldali mobilos kereső (CategorySearch) szövege: név, kategória,
+  /* A főoldali mobilos kereső (ProvidersSectionTitle) szövege: név, kategória,
      megye és leírás alapján szűr, kis- és nagybetűtől, ékezettől függetlenül. */
   const [query, setQuery] = useState("");
   useEffect(() => {
@@ -538,24 +538,6 @@ export function ProvidersContent({
             </div>
           </div>
         </div>
-
-        {/* Aktív keresés jelzése (a teal sáv keresőjéből), innen is törölhető */}
-        {query && (
-          <div className="mb-4 flex items-center gap-2">
-            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-[#84AAA6]/50 bg-[#EDF4F3] py-1 pl-3 pr-1 text-sm text-[#3F6662]">
-              <Search className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">Keresés: „{query}”</span>
-              <button
-                type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent("eskuvo:clear-query"))}
-                aria-label="Keresés törlése"
-                className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full hover:bg-[#84AAA6]/20"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </span>
-          </div>
-        )}
 
         {resultCount === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">

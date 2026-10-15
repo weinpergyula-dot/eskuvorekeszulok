@@ -5,7 +5,6 @@ import { ProvidersContent } from "@/components/providers/providers-content";
 import { CategoryQuickTiles } from "@/components/home/category-quick-tiles";
 import { ProvidersSectionTitle } from "@/components/home/providers-section-title";
 import { VisitTracker } from "@/components/home/visit-tracker";
-import { CategorySearch } from "@/components/home/category-search";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
 
@@ -70,15 +69,9 @@ export default async function HomePage() {
           cím fölött és alatt egyforma (24px) hely maradjon. */}
       <div id="kategoriak" className="teal-shift-bg-deep w-full relative -mt-6 scroll-mt-[41px] md:scroll-mt-9">
         <div className="max-w-7xl mx-auto px-5 pb-8 pt-12 sm:px-6 sm:pb-10 sm:pt-14 lg:px-8">
-          {/* Mobilon a cím mellett jobbra a kinyitható szolgáltatókereső */}
-          <div className="relative">
-            <h2 className="text-center text-xl md:text-2xl font-bold text-white">
-              Válassz kategóriát!
-            </h2>
-            <div className="md:hidden">
-              <CategorySearch />
-            </div>
-          </div>
+          <h2 className="text-center text-xl md:text-2xl font-bold text-white">
+            Válassz kategóriát!
+          </h2>
           <CategoryQuickTiles categoryCounts={categoryCounts} />
         </div>
         {/* Lefelé kerekedő átmenet a fehér tartalomba */}
