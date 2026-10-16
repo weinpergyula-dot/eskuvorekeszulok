@@ -269,6 +269,26 @@ export function MobileHeroBanner() {
     };
   }, [reduced]);
 
+  /* A letöltött első videót azonnal elindítjuk, ha a dia látszik. iOS
+     Safari a videót csak lejátszásra kezdi el betölteni: a canplay addig
+     meg sem jön, és az autoplay attribútumra sem lehet számítani. A
+     diaváltáskori play() pedig még az üres lejátszón futott le. */
+  const indexRef = useRef(index);
+  indexRef.current = index;
+  useEffect(() => {
+    if (!firstSrc) return;
+    const v = videoRefs.current[0];
+    if (!v) return;
+    if (indexRef.current !== 0 || reduced) {
+      setHeroProgress(1, true);
+      return;
+    }
+    v.muted = true;
+    v.play()
+      .catch(() => {})
+      .finally(() => setHeroProgress(1, true));
+  }, [firstSrc, reduced]);
+
   /* A videós dia akkor fut, amikor látszik: odaváltáskor az elejéről indul,
      elváltáskor megáll. Csökkentett mozgásnál csak a poszter látszik. */
   useEffect(() => {
@@ -362,26 +382,20 @@ export function MobileHeroBanner() {
                 némán, ismétlődve fut; a lassú ráközelítés itt nem kell. */}
             {s.video ? (
               <video
-                ref={(el) => { videoRefs.current[i] = el; }}
+                ref={(el) => {
+                  videoRefs.current[i] = el;
+                  /* A React a muted-et csak tulajdonságként állítja, iOS a
+                     hang nélküli automatikus lejátszáshoz az attribútumot is
+                     nézi. */
+                  if (el) { el.muted = true; el.defaultMuted = true; el.setAttribute("muted", ""); }
+                }}
                 src={i === 0 ? firstSrc : s.video}
                 poster={s.img}
                 muted
                 /* Megállított vetítésnél ismétlődik; egyébként a végén lapoz. */
                 loop={paused}
                 onEnded={() => { if (i === index && !paused) setIndex((n) => (n + 1) % SLIDES.length); }}
-                onCanPlay={(e) => {
-                  if (i === 0) setHeroProgress(1, true);
-                  /* Az első dia videója csak a letöltés után kap címet, amikor
-                     a diaváltáskori lejátszás már lefutott (üresen), és az
-                     automatikus lejátszásra iOS-en nem lehet számítani: ezért
-                     itt indítjuk, ha épp ez a dia látszik. A muted tulajdonság
-                     kell iOS-nek a hang nélküli automatikus lejátszáshoz. */
-                  const v = e.currentTarget;
-                  if (i === index && !reduced && v.paused && v.currentTime === 0) {
-                    v.muted = true;
-                    v.play().catch(() => {});
-                  }
-                }}
+                onCanPlay={i === 0 ? () => setHeroProgress(1, true) : undefined}
                 onError={() => { setVideoFailed(true); if (i === 0) setHeroProgress(1, true); }}
                 playsInline
                 autoPlay={i === 0 && !reduced}
