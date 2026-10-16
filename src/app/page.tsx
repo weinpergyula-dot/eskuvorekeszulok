@@ -5,6 +5,7 @@ import { ProvidersContent } from "@/components/providers/providers-content";
 import { CategoryQuickTiles } from "@/components/home/category-quick-tiles";
 import { ProvidersSectionTitle } from "@/components/home/providers-section-title";
 import { VisitTracker } from "@/components/home/visit-tracker";
+import { HomeLoader } from "@/components/home/home-loader";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Provider } from "@/lib/types";
 
@@ -53,6 +54,8 @@ export default async function HomePage() {
     <>
       {/* Látogatás rögzítése (napi/heti egyedi IP statisztika az adminban) */}
       <VisitTracker path="/" />
+      {/* Mobilon a banner videójáig töltőképernyő takarja az oldalt */}
+      <HomeLoader />
 
       {/* Banner: mobilon teljes képes fotós diák, desktopon a köszöntő,
           meghívós, fotós és cukrász diák */}

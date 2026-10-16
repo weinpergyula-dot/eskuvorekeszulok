@@ -173,7 +173,9 @@ const SLIDES: MobileSlide[] = [
   },
 ];
 
-const INTERVAL_MS = 6000;
+const INTERVAL_MS = 4000;
+/* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
+const VIDEO_SAFETY_MS = 9000;
 
 const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
 const subscribeReduced = (cb: () => void) => {
@@ -202,9 +204,33 @@ export function MobileHeroBanner() {
   const paused = override ?? reduced;
   const loggedIn = useIsLoggedIn();
 
+  /* Ha a videó nem tölthető be, a dia sima, időzített fotós diaként megy. */
+  const [videoFailed, setVideoFailed] = useState(false);
+
+  /* Az első dia videója: amíg be nem tölt, a főoldal töltőképernyője
+     (HomeLoader) takarja az oldalt. Betöltéskor, hibánál vagy csökkentett
+     mozgásnál jelzünk neki ("eskuvo:hero-ready"). */
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  useEffect(() => {
+    const ready = () => {
+      (window as Window & { __heroReady?: boolean }).__heroReady = true;
+      window.dispatchEvent(new Event("eskuvo:hero-ready"));
+    };
+    const v = videoRefs.current[0];
+    if (!v || reduced || v.readyState >= 3) {
+      ready();
+      return;
+    }
+    v.addEventListener("canplay", ready, { once: true });
+    v.addEventListener("error", ready, { once: true });
+    return () => {
+      v.removeEventListener("canplay", ready);
+      v.removeEventListener("error", ready);
+    };
+  }, [reduced]);
+
   /* A videós dia akkor fut, amikor látszik: odaváltáskor az elejéről indul,
      elváltáskor megáll. Csökkentett mozgásnál csak a poszter látszik. */
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   useEffect(() => {
     videoRefs.current.forEach((v, i) => {
       if (!v) return;
@@ -217,11 +243,14 @@ export function MobileHeroBanner() {
     });
   }, [index, reduced]);
 
+  /* Lapozás: a videós dia a videó végén vált (onEnded), a többi
+     INTERVAL_MS után. A videós diánál csak egy tartalék időzítő fut. */
+  const videoDrives = !!SLIDES[index].video && !reduced && !videoFailed;
   useEffect(() => {
     if (paused) return;
-    const t = setTimeout(() => setIndex((i) => (i + 1) % SLIDES.length), INTERVAL_MS);
+    const t = setTimeout(() => setIndex((i) => (i + 1) % SLIDES.length), videoDrives ? VIDEO_SAFETY_MS : INTERVAL_MS);
     return () => clearTimeout(t);
-  }, [paused, index]);
+  }, [paused, index, videoDrives]);
 
   /* Legyintéssel is lapozható. */
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -297,7 +326,10 @@ export function MobileHeroBanner() {
                 src={s.video}
                 poster={s.img}
                 muted
-                loop
+                /* Megállított vetítésnél ismétlődik; egyébként a végén lapoz. */
+                loop={paused}
+                onEnded={() => { if (i === index && !paused) setIndex((n) => (n + 1) % SLIDES.length); }}
+                onError={() => setVideoFailed(true)}
                 playsInline
                 autoPlay={i === 0 && !reduced}
                 preload={i === 0 ? "auto" : "metadata"}
