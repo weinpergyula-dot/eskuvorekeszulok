@@ -1404,7 +1404,17 @@ html.a11y-underline a { text-decoration: underline !important; }
   from { transform: scale(1.08); }
   to   { transform: scale(1); }
 }
-.mobile-hero-text { animation: mobile-hero-text 0.7s 0.15s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+/* Diaváltás feketén át: a régi dia 0,7 mp alatt elsötétül, az új csak
+   0,55 mp múlva kezd 0,9 mp alatt kivilágosodni – így a kettő között egy
+   rövid, majdnem fekete pillanat van. */
+.mobile-hero-slide-out { transition: opacity 0.7s ease-in; }
+.mobile-hero-slide-in { transition: opacity 0.9s ease-out 0.55s; }
+@media (prefers-reduced-motion: reduce) {
+  .mobile-hero-slide-out,
+  .mobile-hero-slide-in { transition-duration: 0.3s; transition-delay: 0s; }
+}
+/* A szöveg a kivilágosodással együtt úszik be. */
+.mobile-hero-text { animation: mobile-hero-text 0.8s 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
 @keyframes mobile-hero-text {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }

@@ -173,7 +173,7 @@ const SLIDES: MobileSlide[] = [
   },
 ];
 
-const INTERVAL_MS = 5000;
+const INTERVAL_MS = 4000;
 /* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
 const VIDEO_SAFETY_MS = 9000;
 
@@ -397,7 +397,7 @@ export function MobileHeroBanner() {
   return (
     <section
       ref={sectionRef}
-      className="mobile-hero relative z-20 -mt-6 overflow-hidden rounded-b-[32px] border-b border-white bg-gray-900"
+      className="mobile-hero relative z-20 -mt-6 overflow-hidden rounded-b-[32px] border-b border-white bg-black"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       aria-roledescription="carousel"
@@ -411,7 +411,9 @@ export function MobileHeroBanner() {
             key={s.key}
             aria-hidden={!on || undefined}
             inert={!on || undefined}
-            className={`absolute inset-0 transition-opacity duration-700 ${on ? "z-[1] opacity-100" : "pointer-events-none opacity-0"}`}
+            /* Váltás feketén át: a régi dia elsötétül, az új csak utána
+               világosodik ki (mobile-hero-slide-in/out, globals.css). */
+            className={`absolute inset-0 ${on ? "mobile-hero-slide-in z-[1] opacity-100" : "mobile-hero-slide-out pointer-events-none opacity-0"}`}
           >
             {/* Videós dia: a poszter (s.img) betöltésig látszik, a videó
                 némán, ismétlődve fut; a lassú ráközelítés itt nem kell. */}
