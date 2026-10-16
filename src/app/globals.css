@@ -1831,14 +1831,18 @@ html.a11y-underline a { text-decoration: underline !important; }
    közepén legyen: a boríték 0,39 borítékmagassággal (= 0,26 szélesség) a
    középvonal alatt. */
 .mhb-env-pos {
+  /* A dia szövege a dia aljához igazodik, a boríték a közepéhez: magas
+     kijelzőn (pl. iPhone Pro Max) a kinyílt lap alja különben épp eléri a
+     szöveg felső sorát, ezért a boríték egy kicsit a közép fölött áll. */
+  --env-lift: 24px;
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%) translate(calc(50vw - var(--env-w) / 6), calc(var(--env-w) * 0.26));
+  transform: translate(-50%, -50%) translate(calc(50vw - var(--env-w) / 6), calc(var(--env-w) * 0.26 - var(--env-lift)));
   transition: transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .mhb-env:is([data-phase="opening"], [data-phase="card"]) .mhb-env-pos {
-  transform: translate(-50%, -50%) translateY(calc(var(--env-w) * 0.26));
+  transform: translate(-50%, -50%) translateY(calc(var(--env-w) * 0.26 - var(--env-lift)));
 }
 /* A lap a boríték magasságú, egyenesen felfelé emelkedik ki. A boríték a
    helyén marad, csak a lebegés áll le. */
