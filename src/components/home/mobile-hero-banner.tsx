@@ -369,7 +369,19 @@ export function MobileHeroBanner() {
                 /* Megállított vetítésnél ismétlődik; egyébként a végén lapoz. */
                 loop={paused}
                 onEnded={() => { if (i === index && !paused) setIndex((n) => (n + 1) % SLIDES.length); }}
-                onCanPlay={i === 0 ? () => setHeroProgress(1, true) : undefined}
+                onCanPlay={(e) => {
+                  if (i === 0) setHeroProgress(1, true);
+                  /* Az első dia videója csak a letöltés után kap címet, amikor
+                     a diaváltáskori lejátszás már lefutott (üresen), és az
+                     automatikus lejátszásra iOS-en nem lehet számítani: ezért
+                     itt indítjuk, ha épp ez a dia látszik. A muted tulajdonság
+                     kell iOS-nek a hang nélküli automatikus lejátszáshoz. */
+                  const v = e.currentTarget;
+                  if (i === index && !reduced && v.paused && v.currentTime === 0) {
+                    v.muted = true;
+                    v.play().catch(() => {});
+                  }
+                }}
                 onError={() => { setVideoFailed(true); if (i === 0) setHeroProgress(1, true); }}
                 playsInline
                 autoPlay={i === 0 && !reduced}
