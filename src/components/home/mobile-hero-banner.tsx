@@ -235,6 +235,16 @@ export function MobileHeroBanner() {
   );
 
   const [index, setIndex] = useState(0);
+  /* Az épp elhalványuló (előző) dia: a fotója az elsötétülés végéig
+     megtartja a lassú ráközelítést, különben a kép a váltás pillanatában
+     visszaugrana eredeti méretére. (Előző-render minta, a React leírása
+     szerint renderelés közben frissítve.) */
+  const [shownIndex, setShownIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState<number | null>(null);
+  if (shownIndex !== index) {
+    setPrevIndex(shownIndex);
+    setShownIndex(index);
+  }
   const reduced = useSyncExternalStore(
     subscribeReduced,
     () => window.matchMedia(REDUCED_QUERY).matches,
@@ -426,7 +436,7 @@ export function MobileHeroBanner() {
                 alt={s.alt}
                 decoding="sync"
                 fetchPriority={i === 0 ? "high" : "low"}
-                className={`absolute inset-0 h-full w-full object-cover ${on ? "mobile-hero-zoom" : ""}`}
+                className={`absolute inset-0 h-full w-full object-cover ${on || i === prevIndex ? "mobile-hero-zoom" : ""}`}
                 style={{ objectPosition: s.focus }}
               />
             )}
@@ -650,7 +660,7 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
     /* Elváltáskor csak az elhalványulás (700ms) után zárul vissza, hogy a
        visszacsukódás ne látsszon; legközelebb újra kinyílik. */
     if (!active) {
-      const t = setTimeout(() => setPhase("closed"), 700);
+      const t = setTimeout(() => setPhase("closed"), 800);
       return () => clearTimeout(t);
     }
     const open = setTimeout(() => setPhase("opening"), ENV_OPEN_DELAY_MS);
