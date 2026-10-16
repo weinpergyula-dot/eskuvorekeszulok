@@ -72,10 +72,14 @@ export function HomeLoader() {
     };
   }, [state]);
 
-  /* 100%-nál a keret bezárul, rövid szünet, majd elhalványul. */
+  /* 100%-nál a keret bezárul, rövid szünet, majd elhalványul; ekkor a
+     banner videója az elejéről indul ("eskuvo:loader-done"). */
   useEffect(() => {
     if (state !== "closing") return;
-    const t = setTimeout(() => setState("fading"), CLOSE_HOLD_MS);
+    const t = setTimeout(() => {
+      setState("fading");
+      window.dispatchEvent(new Event("eskuvo:loader-done"));
+    }, CLOSE_HOLD_MS);
     return () => clearTimeout(t);
   }, [state]);
 

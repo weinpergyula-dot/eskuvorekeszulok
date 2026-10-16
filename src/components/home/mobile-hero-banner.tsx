@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { memo, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { preload } from "react-dom";
 import { ArrowDown, ArrowRight, Pause, Play } from "lucide-react";
@@ -187,6 +187,35 @@ const subscribeReduced = (cb: () => void) => {
 const CTA =
   "inline-flex h-12 items-center justify-center gap-1.5 rounded-xl px-6 text-[15px] font-bold transition-colors";
 
+/**
+ * Némított, beágyazott háttérvideó. A <video> nyers HTML-ként kerül a
+ * szerver válaszába, hogy az autoplay, muted és playsinline attribútumok
+ * már az első HTML-ben rajta legyenek: a React a muted-et nem írja ki, és
+ * iOS Safari enélkül érintés nélkül nem indítja el a videót.
+ */
+const VideoBackground = memo(function VideoBackground({
+  src,
+  poster,
+  label,
+  focus,
+  slide,
+}: {
+  src: string;
+  poster?: string;
+  label: string;
+  focus: string;
+  slide: number;
+}) {
+  const esc = (v: string) => v.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  /* Pontosan abban a formában, ahogy a böngésző visszaadja (innerHTML):
+     így a hidratáláskor nincs eltérés, és a React nem cseréli ki a már
+     betöltődő (iOS-en már automatikusan induló) videót egy újra. */
+  const html =
+    `<video src="${esc(src)}"${poster ? ` poster="${esc(poster)}"` : ""} autoplay="" muted="" playsinline="" preload="auto"` +
+    ` data-slide="${slide}" aria-label="${esc(label)}" class="absolute inset-0 h-full w-full object-cover" style="object-position: ${esc(focus)};"></video>`;
+  return <div className="absolute inset-0" dangerouslySetInnerHTML={{ __html: html }} suppressHydrationWarning />;
+});
+
 /** A főoldali töltőképernyő (HomeLoader) értesítése a betöltés állásáról. */
 function setHeroProgress(value: number, ready = false) {
   const w = window as Window & { __heroProgress?: number; __heroReady?: boolean };
@@ -219,82 +248,88 @@ export function MobileHeroBanner() {
   const [videoFailed, setVideoFailed] = useState(false);
 
   /* Az első dia videója: amíg be nem tölt, a főoldal töltőképernyője
-     (HomeLoader) takarja az oldalt, és a logó kerete a letöltés valódi
-     állását mutatja. Mobilon ezért a videót mi töltjük le (fetch), bájtra
-     követve ("eskuvo:hero-progress", 0–1), és a kész fájlt adjuk a
-     lejátszónak. Ha lejátszható, hibás, vagy csökkentett mozgásnál nem is
-     kell, "eskuvo:hero-ready" jelzi, hogy az oldal mehet. */
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const [firstSrc, setFirstSrc] = useState<string | undefined>(undefined);
-  useEffect(() => {
-    const url = SLIDES[0].video;
-    const mobile = window.matchMedia("(max-width: 767px)").matches;
-    if (!url || reduced || !mobile) {
-      setHeroProgress(1, true);
-      /* Itt nincs mit követni: a lejátszó maga tölti a videót. */
-      const t = setTimeout(() => setFirstSrc(url), 0);
-      return () => clearTimeout(t);
-    }
-    const ctrl = new AbortController();
-    let objectUrl: string | undefined;
-    setHeroProgress(0.08);
-    (async () => {
-      try {
-        const res = await fetch(url, { signal: ctrl.signal });
-        if (!res.ok || !res.body) throw new Error(String(res.status));
-        const total = Number(res.headers.get("content-length")) || 0;
-        const reader = res.body.getReader();
-        const chunks: Uint8Array[] = [];
-        let received = 0;
-        for (;;) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          chunks.push(value);
-          received += value.length;
-          /* Méret nélkül (pl. tömörített válasz) becsült, lassuló haladás. */
-          const frac = total ? received / total : 1 - Math.exp(-received / 300_000);
-          setHeroProgress(0.08 + 0.87 * Math.min(frac, 1));
-        }
-        objectUrl = URL.createObjectURL(new Blob(chunks as BlobPart[], { type: "video/mp4" }));
-        setFirstSrc(objectUrl);
-      } catch {
-        if (ctrl.signal.aborted) return;
-        /* Ha a letöltés nem sikerül, a lejátszó maga próbálja. */
-        setFirstSrc(url);
-      }
-    })();
-    return () => {
-      ctrl.abort();
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, [reduced]);
-
-  /* A letöltött első videót azonnal elindítjuk, ha a dia látszik. iOS
-     Safari a videót csak lejátszásra kezdi el betölteni: a canplay addig
-     meg sem jön, és az autoplay attribútumra sem lehet számítani. A
-     diaváltáskori play() pedig még az üres lejátszón futott le. */
+     (HomeLoader) takarja az oldalt, és a logó kerete a betöltés állását
+     mutatja ("eskuvo:hero-progress", 0–1, a lejátszó pufferéből). Ha
+     lejátszható, hibás, vagy nem is kell (desktop, csökkentett mozgás),
+     "eskuvo:hero-ready" jelzi, hogy az oldal mehet. A videó a szerver
+     HTML-jében autoplay/muted/playsinline attribútumokkal érkezik
+     (VideoBackground), mert iOS csak így játssza le érintés nélkül. */
+  /* A diák videóit mindig frissen keressük meg (data-slide), nem tartunk
+     rájuk hivatkozást: így egy esetleges elemcsere sem töri el a vezérlést. */
+  const slideVideo = (i: number) =>
+    document.querySelector<HTMLVideoElement>(`video[data-slide="${i}"]`);
   const indexRef = useRef(index);
-  indexRef.current = index;
+  const pausedRef = useRef(paused);
   useEffect(() => {
-    if (!firstSrc) return;
-    const v = videoRefs.current[0];
-    if (!v) return;
-    if (indexRef.current !== 0 || reduced) {
+    indexRef.current = index;
+    pausedRef.current = paused;
+  }, [index, paused]);
+  useEffect(() => {
+    const first = slideVideo(0);
+    const mobile = window.matchMedia("(max-width: 767px)").matches;
+    if (!first || reduced || !mobile) {
+      if (first && reduced) first.pause();
       setHeroProgress(1, true);
       return;
     }
-    v.muted = true;
-    v.play()
-      .catch(() => {})
-      .finally(() => setHeroProgress(1, true));
-  }, [firstSrc, reduced]);
+    setHeroProgress(0.08);
+    /* A médiaesemények nem buborékolnak, de a capture fázisban az
+       ablakon is elkaphatók – így a videóelem cseréje sem számít. */
+    const isFirst = (e: Event) => (e.target as HTMLElement)?.dataset?.slide === "0";
+    const onProgress = (e: Event) => {
+      if (!isFirst(e)) return;
+      const v = e.target as HTMLVideoElement;
+      if (!v.duration || !v.buffered.length) return;
+      const frac = v.buffered.end(v.buffered.length - 1) / v.duration;
+      setHeroProgress(0.08 + 0.87 * Math.min(frac, 1));
+    };
+    const onReady = (e: Event) => { if (isFirst(e)) setHeroProgress(1, true); };
+    const onError = (e: Event) => {
+      if (!isFirst(e)) return;
+      setVideoFailed(true);
+      setHeroProgress(1, true);
+    };
+    /* A videó végén lapoz (megállított vetítésnél a loop ismétli). */
+    const onEnded = (e: Event) => {
+      if (isFirst(e) && indexRef.current === 0 && !pausedRef.current) setIndex(1 % SLIDES.length);
+    };
+    /* Ha a töltőképernyő eltűnt, az elejéről indítjuk, hogy ne maradjon le
+       semmi abból, ami mögötte már lement. */
+    const onLoaderDone = () => {
+      const v = slideVideo(0);
+      if (!v || indexRef.current !== 0) return;
+      v.muted = true;
+      v.currentTime = 0;
+      v.play().catch(() => {});
+    };
+    if (first.readyState >= 4) setHeroProgress(1, true);
+    const media: [string, (e: Event) => void][] = [
+      ["progress", onProgress],
+      ["loadeddata", onProgress],
+      ["canplaythrough", onReady],
+      ["error", onError],
+      ["ended", onEnded],
+    ];
+    for (const [n, h] of media) window.addEventListener(n, h, true);
+    window.addEventListener("eskuvo:loader-done", onLoaderDone);
+    return () => {
+      for (const [n, h] of media) window.removeEventListener(n, h, true);
+      window.removeEventListener("eskuvo:loader-done", onLoaderDone);
+    };
+  }, [reduced]);
+
+  /* Megállított vetítésnél a videó ismétlődik, egyébként a végén lapoz. */
+  useEffect(() => {
+    document.querySelectorAll<HTMLVideoElement>("video[data-slide]").forEach((v) => { v.loop = paused; });
+  }, [paused]);
 
   /* A videós dia akkor fut, amikor látszik: odaváltáskor az elejéről indul,
      elváltáskor megáll. Csökkentett mozgásnál csak a poszter látszik. */
   useEffect(() => {
-    videoRefs.current.forEach((v, i) => {
-      if (!v) return;
+    document.querySelectorAll<HTMLVideoElement>("video[data-slide]").forEach((v) => {
+      const i = Number(v.dataset.slide);
       if (i === index && !reduced) {
+        v.muted = true;
         v.currentTime = 0;
         v.play().catch(() => {});
       } else {
@@ -381,29 +416,7 @@ export function MobileHeroBanner() {
             {/* Videós dia: a poszter (s.img) betöltésig látszik, a videó
                 némán, ismétlődve fut; a lassú ráközelítés itt nem kell. */}
             {s.video ? (
-              <video
-                ref={(el) => {
-                  videoRefs.current[i] = el;
-                  /* A React a muted-et csak tulajdonságként állítja, iOS a
-                     hang nélküli automatikus lejátszáshoz az attribútumot is
-                     nézi. */
-                  if (el) { el.muted = true; el.defaultMuted = true; el.setAttribute("muted", ""); }
-                }}
-                src={i === 0 ? firstSrc : s.video}
-                poster={s.img}
-                muted
-                /* Megállított vetítésnél ismétlődik; egyébként a végén lapoz. */
-                loop={paused}
-                onEnded={() => { if (i === index && !paused) setIndex((n) => (n + 1) % SLIDES.length); }}
-                onCanPlay={i === 0 ? () => setHeroProgress(1, true) : undefined}
-                onError={() => { setVideoFailed(true); if (i === 0) setHeroProgress(1, true); }}
-                playsInline
-                autoPlay={i === 0 && !reduced}
-                preload={i === 0 ? "auto" : "metadata"}
-                aria-label={s.alt}
-                className="absolute inset-0 h-full w-full object-cover"
-                style={{ objectPosition: s.focus }}
-              />
+              <VideoBackground src={s.video} poster={s.img} label={s.alt} focus={s.focus} slide={i} />
             ) : s.img && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
