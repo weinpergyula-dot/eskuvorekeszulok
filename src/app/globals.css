@@ -2118,12 +2118,9 @@ html.a11y-underline a { text-decoration: underline !important; }
 .marquee-text[data-marquee="clip"] { text-overflow: ellipsis; }
 .marquee-text[data-marquee="clip"] > span { display: inline; }
 
-/* Főoldali mobilos töltőképernyő (HomeLoader): a logó lassan lélegzik. */
-.home-loader-logo { animation: home-loader-breathe 1.6s ease-in-out infinite; }
-@keyframes home-loader-breathe {
-  0%, 100% { opacity: 0.55; transform: scale(0.97); }
-  50%      { opacity: 1; transform: scale(1); }
-}
+/* Főoldali mobilos töltőképernyő (HomeLoader): a logó kerete a betöltés
+   állásával együtt, simán rajzolódik körbe. */
+.home-loader-frame { transition: stroke-dashoffset 0.35s ease-out; }
 @media (prefers-reduced-motion: reduce) {
-  .home-loader-logo { animation: none; }
+  .home-loader-frame { transition: none; }
 }

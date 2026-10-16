@@ -173,7 +173,7 @@ const SLIDES: MobileSlide[] = [
   },
 ];
 
-const INTERVAL_MS = 4000;
+const INTERVAL_MS = 5000;
 /* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
 const VIDEO_SAFETY_MS = 9000;
 
@@ -186,6 +186,17 @@ const subscribeReduced = (cb: () => void) => {
 
 const CTA =
   "inline-flex h-12 items-center justify-center gap-1.5 rounded-xl px-6 text-[15px] font-bold transition-colors";
+
+/** A főoldali töltőképernyő (HomeLoader) értesítése a betöltés állásáról. */
+function setHeroProgress(value: number, ready = false) {
+  const w = window as Window & { __heroProgress?: number; __heroReady?: boolean };
+  w.__heroProgress = Math.max(w.__heroProgress ?? 0, value);
+  window.dispatchEvent(new CustomEvent("eskuvo:hero-progress", { detail: w.__heroProgress }));
+  if (ready && !w.__heroReady) {
+    w.__heroReady = true;
+    window.dispatchEvent(new Event("eskuvo:hero-ready"));
+  }
+}
 
 export function MobileHeroBanner() {
   /* Csak mobilon töltjük előre: az első kép magas, a többi alacsony
@@ -208,24 +219,53 @@ export function MobileHeroBanner() {
   const [videoFailed, setVideoFailed] = useState(false);
 
   /* Az első dia videója: amíg be nem tölt, a főoldal töltőképernyője
-     (HomeLoader) takarja az oldalt. Betöltéskor, hibánál vagy csökkentett
-     mozgásnál jelzünk neki ("eskuvo:hero-ready"). */
+     (HomeLoader) takarja az oldalt, és a logó kerete a letöltés valódi
+     állását mutatja. Mobilon ezért a videót mi töltjük le (fetch), bájtra
+     követve ("eskuvo:hero-progress", 0–1), és a kész fájlt adjuk a
+     lejátszónak. Ha lejátszható, hibás, vagy csökkentett mozgásnál nem is
+     kell, "eskuvo:hero-ready" jelzi, hogy az oldal mehet. */
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const [firstSrc, setFirstSrc] = useState<string | undefined>(undefined);
   useEffect(() => {
-    const ready = () => {
-      (window as Window & { __heroReady?: boolean }).__heroReady = true;
-      window.dispatchEvent(new Event("eskuvo:hero-ready"));
-    };
-    const v = videoRefs.current[0];
-    if (!v || reduced || v.readyState >= 3) {
-      ready();
-      return;
+    const url = SLIDES[0].video;
+    const mobile = window.matchMedia("(max-width: 767px)").matches;
+    if (!url || reduced || !mobile) {
+      setHeroProgress(1, true);
+      /* Itt nincs mit követni: a lejátszó maga tölti a videót. */
+      const t = setTimeout(() => setFirstSrc(url), 0);
+      return () => clearTimeout(t);
     }
-    v.addEventListener("canplay", ready, { once: true });
-    v.addEventListener("error", ready, { once: true });
+    const ctrl = new AbortController();
+    let objectUrl: string | undefined;
+    setHeroProgress(0.08);
+    (async () => {
+      try {
+        const res = await fetch(url, { signal: ctrl.signal });
+        if (!res.ok || !res.body) throw new Error(String(res.status));
+        const total = Number(res.headers.get("content-length")) || 0;
+        const reader = res.body.getReader();
+        const chunks: Uint8Array[] = [];
+        let received = 0;
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          received += value.length;
+          /* Méret nélkül (pl. tömörített válasz) becsült, lassuló haladás. */
+          const frac = total ? received / total : 1 - Math.exp(-received / 300_000);
+          setHeroProgress(0.08 + 0.87 * Math.min(frac, 1));
+        }
+        objectUrl = URL.createObjectURL(new Blob(chunks as BlobPart[], { type: "video/mp4" }));
+        setFirstSrc(objectUrl);
+      } catch {
+        if (ctrl.signal.aborted) return;
+        /* Ha a letöltés nem sikerül, a lejátszó maga próbálja. */
+        setFirstSrc(url);
+      }
+    })();
     return () => {
-      v.removeEventListener("canplay", ready);
-      v.removeEventListener("error", ready);
+      ctrl.abort();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [reduced]);
 
@@ -323,13 +363,14 @@ export function MobileHeroBanner() {
             {s.video ? (
               <video
                 ref={(el) => { videoRefs.current[i] = el; }}
-                src={s.video}
+                src={i === 0 ? firstSrc : s.video}
                 poster={s.img}
                 muted
                 /* Megállított vetítésnél ismétlődik; egyébként a végén lapoz. */
                 loop={paused}
                 onEnded={() => { if (i === index && !paused) setIndex((n) => (n + 1) % SLIDES.length); }}
-                onError={() => setVideoFailed(true)}
+                onCanPlay={i === 0 ? () => setHeroProgress(1, true) : undefined}
+                onError={() => { setVideoFailed(true); if (i === 0) setHeroProgress(1, true); }}
                 playsInline
                 autoPlay={i === 0 && !reduced}
                 preload={i === 0 ? "auto" : "metadata"}
