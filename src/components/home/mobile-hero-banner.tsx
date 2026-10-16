@@ -21,8 +21,11 @@ type Tone = "dark" | "light";
 
 type MobileSlide = {
   key: string;
-  /** A háttérfotó; ha nincs, a dia saját rajzolt jelenetet kap (overlay). */
+  /** A háttérfotó; ha nincs, a dia saját rajzolt jelenetet kap (overlay).
+      Videós diánál ez a videó állóképe (poszter), ami betöltésig látszik. */
   img?: string;
+  /** Háttérvideó (némítva, ismétlődve); az aktív dián az elejéről indul. */
+  video?: string;
   alt: string;
   /** A kép kivágásának fókusza (object-position). */
   focus: string;
@@ -50,9 +53,10 @@ type MobileSlide = {
 const SLIDES: MobileSlide[] = [
   {
     key: "eskuvo",
-    img: "/hero-m/eskuvo.webp",
+    img: "/hero-m/eskuvo-video.webp",
+    video: "/hero-m/eskuvo.mp4",
     alt: "Menyasszony hajdísszel és csokorral",
-    focus: "35% 30%",
+    focus: "50% 30%",
     tone: "dark",
     place: "bottom",
     eyebrow: "Minden egy helyen",
@@ -198,6 +202,21 @@ export function MobileHeroBanner() {
   const paused = override ?? reduced;
   const loggedIn = useIsLoggedIn();
 
+  /* A videós dia akkor fut, amikor látszik: odaváltáskor az elejéről indul,
+     elváltáskor megáll. Csökkentett mozgásnál csak a poszter látszik. */
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  useEffect(() => {
+    videoRefs.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === index && !reduced) {
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      } else {
+        v.pause();
+      }
+    });
+  }, [index, reduced]);
+
   useEffect(() => {
     if (paused) return;
     const t = setTimeout(() => setIndex((i) => (i + 1) % SLIDES.length), INTERVAL_MS);
@@ -270,8 +289,23 @@ export function MobileHeroBanner() {
             inert={!on || undefined}
             className={`absolute inset-0 transition-opacity duration-700 ${on ? "z-[1] opacity-100" : "pointer-events-none opacity-0"}`}
           >
-            {/* A fotó lassú ráközelítéssel (csak az aktív dián) */}
-            {s.img && (
+            {/* Videós dia: a poszter (s.img) betöltésig látszik, a videó
+                némán, ismétlődve fut; a lassú ráközelítés itt nem kell. */}
+            {s.video ? (
+              <video
+                ref={(el) => { videoRefs.current[i] = el; }}
+                src={s.video}
+                poster={s.img}
+                muted
+                loop
+                playsInline
+                autoPlay={i === 0 && !reduced}
+                preload={i === 0 ? "auto" : "metadata"}
+                aria-label={s.alt}
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ objectPosition: s.focus }}
+              />
+            ) : s.img && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={s.img}
