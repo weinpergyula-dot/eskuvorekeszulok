@@ -823,7 +823,7 @@ export function MobileHeroBanner() {
                 {s.eyebrow}
               </p>
               <h2
-                className={`mt-2 font-heading text-[2.6rem] leading-[0.98] tracking-tight ${light ? "text-gray-900" : "text-white"}`}
+                className={`mt-2 font-heading text-[2.6rem] leading-[0.98] tracking-tight ${light ? "text-[#5A6266]" : "text-white"}`}
                 style={{ fontWeight: 950, textShadow: light ? undefined : "0 2px 18px rgba(0,0,0,0.35)" }}
               >
                 {s.lead}
