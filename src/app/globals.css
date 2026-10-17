@@ -1422,6 +1422,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 .mobile-hero-cta { background-color: var(--cta); }
 .mobile-hero-cta:hover { background-color: var(--cta-hover); }
 .mobile-hero-rec { animation: mobile-hero-rec 1.2s steps(2, jump-none) infinite; }
+/* A fotós dia REC keretében egy vakuvillanás: hirtelen fel, lassabban le. */
+.mobile-hero-flash { opacity: 0; animation: mobile-hero-flash 0.7s ease-out 1.7s both; }
+@keyframes mobile-hero-flash {
+  0%   { opacity: 0; }
+  6%   { opacity: 0.92; }
+  100% { opacity: 0; }
+}
 @keyframes mobile-hero-rec {
   0%   { opacity: 1; }
   100% { opacity: 0.2; }
@@ -1430,6 +1437,7 @@ html.a11y-underline a { text-decoration: underline !important; }
 @media (prefers-reduced-motion: reduce) {
   .hero-slide-in,
   .mobile-hero-zoom,
+  .mobile-hero-flash,
   .mobile-hero-text,
   .mobile-hero-rec,
   .hero-blob,

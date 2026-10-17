@@ -29,6 +29,8 @@ type MobileSlide = {
   alt: string;
   /** A kép kivágásának fókusza (object-position). */
   focus: string;
+  /** Egyedi képméret és -helyzet a dián belül (pl. nagyítás egy pontra). */
+  imgBox?: React.CSSProperties;
   /** Világos szöveg sötétített képen, vagy sötét szöveg világosított sarokban. */
   tone: Tone;
   /** A szövegblokk helye. */
@@ -88,7 +90,13 @@ const SLIDES: MobileSlide[] = [
     key: "fotos",
     img: "/hero-m/fotos.webp",
     alt: "Menyasszony az ablakban, sziluettben",
-    focus: "50% 40%",
+    focus: "50% 50%",
+    /* Nagyítva, hogy a lány (a kép függőleges közepe) a REC keret közepére
+       essen: a keret a dia tetejétől 64 px-től a magasság 54%-áig tart, a
+       közepe tehát 32px + 27%. A 140%-os kép közepe ide kerül, ha a teteje
+       32px + 27% − 70% = 32px − 43%. Így a lassú ráközelítés is a lányra
+       közelít. */
+    imgBox: { height: "140%", top: "calc(32px - 43%)", bottom: "auto" },
     tone: "dark",
     place: "bottom",
     eyebrow: "Fotósok, videósok",
@@ -464,7 +472,7 @@ export function MobileHeroBanner() {
                 decoding="sync"
                 fetchPriority={i === 0 ? "high" : "low"}
                 className={`absolute inset-0 h-full w-full object-cover ${on || i === prevIndex ? "mobile-hero-zoom" : ""}`}
-                style={{ objectPosition: s.focus }}
+                style={{ objectPosition: s.focus, ...s.imgBox }}
               />
             )}
 
@@ -500,6 +508,9 @@ export function MobileHeroBanner() {
             )}
             {s.overlay === "viewfinder" && (
               <span aria-hidden className="absolute inset-x-5 bottom-[46%] top-16">
+                {/* Vakuvillanás, csak a kereten belül (egyszer, a dia
+                    kivilágosodása után) */}
+                {on && <span className="mobile-hero-flash absolute inset-0 bg-white" />}
                 {["left-0 top-0 border-l-2 border-t-2", "right-0 top-0 border-r-2 border-t-2", "bottom-0 left-0 border-b-2 border-l-2", "bottom-0 right-0 border-b-2 border-r-2"].map((c) => (
                   <span key={c} className={`absolute h-7 w-7 border-white/80 ${c}`} />
                 ))}
