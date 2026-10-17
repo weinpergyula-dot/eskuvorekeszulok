@@ -31,6 +31,8 @@ type MobileSlide = {
   focus: string;
   /** A fotó animációja az aktív dián (alapból lassú ráközelítés). */
   zoomClass?: string;
+  /** Púderszemcsék forrása a dián (%), pl. a sminkecset hegye. */
+  powder?: { x: number; y: number };
   /** „Előtte” kép: a dián ebből fésüli át a fésű a kész (img) képre. */
   before?: string;
   /** Az átváltás módja: csillogás (fentről lefelé) vagy virágszirmok
@@ -155,6 +157,9 @@ const SLIDES: MobileSlide[] = [
     img: "/hero-m/smink.webp",
     alt: "Menyasszonyi smink készül",
     focus: "45% 25%",
+    /* Az ecset hegye felé közelít, onnan szállnak fel a púderszemcsék. */
+    zoomClass: "mobile-hero-zoom-smink",
+    powder: { x: 68, y: 42 },
     tone: "dark",
     place: "bottom",
     eyebrow: "Sminkesek",
@@ -242,6 +247,27 @@ const PETALS = (() => {
       fall: Math.round(90 + rnd() * 140),
       delay: +(1.45 + rnd() * 0.7).toFixed(2),
       size: Math.round(11 + rnd() * 10),
+      color: colors[k % colors.length],
+    };
+  });
+})();
+
+/* A sminkes dia púderszemcséi: az ecset hegyéről indulnak, többnyire
+   felfelé és oldalra sodródnak, közben elhalványulnak; folyamatosan,
+   egymás után ismétlődve (rögzített ál-véletlen értékek). */
+const POWDER = (() => {
+  let seed = 23;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const colors = ["#F6D3C4", "#EFC2A8", "#F8E1C8", "#E9B9A6", "#FFF1E4", "#E8C38E"];
+  return Array.from({ length: 34 }, (_, k) => {
+    const ang = -Math.PI / 2 + (rnd() - 0.5) * Math.PI * 1.3;
+    const dist = 40 + rnd() * 110;
+    return {
+      dx: Math.round(Math.cos(ang) * dist),
+      dy: Math.round(Math.sin(ang) * dist),
+      size: +(2 + rnd() * 3.5).toFixed(1),
+      dur: +(1.8 + rnd() * 1.4).toFixed(2),
+      delay: +(0.6 + rnd() * 3.2).toFixed(2),
       color: colors[k % colors.length],
     };
   });
@@ -637,6 +663,29 @@ export function MobileHeroBanner() {
                       <path d="M0 -9 C 1.5 -3 1.5 3 0 9" stroke="rgba(255,255,255,0.55)" strokeWidth="0.8" fill="none" />
                     </svg>
                   </span>
+                ))}
+              </span>
+            )}
+
+            {/* Sminkes dia: az ecset hegyéről lassan felszálló, meleg púderszemcsék */}
+            {s.powder && !reduced && (on || i === prevIndex) && (
+              <span key={`powder-${animKey}`} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+                {POWDER.map((pd, k) => (
+                  <span
+                    key={k}
+                    className="mhb-powder absolute rounded-full"
+                    style={{
+                      left: `${s.powder!.x}%`,
+                      top: `${s.powder!.y}%`,
+                      width: pd.size,
+                      height: pd.size,
+                      background: pd.color,
+                      animationDelay: `${pd.delay}s`,
+                      animationDuration: `${pd.dur}s`,
+                      ["--dx" as string]: `${pd.dx}px`,
+                      ["--dy" as string]: `${pd.dy}px`,
+                    }}
+                  />
                 ))}
               </span>
             )}

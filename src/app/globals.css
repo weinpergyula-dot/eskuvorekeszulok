@@ -1500,6 +1500,31 @@ html.a11y-underline a { text-decoration: underline !important; }
   100% { opacity: 0; transform: translate(-50%, -50%) translate(calc(var(--sx) * -0.12), var(--fall)) rotate(calc(var(--r0) + var(--r1))) scale(0.85); }
 }
 
+/* Sminkes dia: lassú ráközelítés az ecset hegye felé (a hegy a helyén
+   marad), és onnan felszálló púderszemcsék. */
+.mobile-hero-zoom-smink {
+  transform-origin: 68% 42%;
+  animation: mobile-hero-zoom-smink 5.5s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+@keyframes mobile-hero-zoom-smink {
+  from { transform: scale(1); }
+  to   { transform: scale(1.12); }
+}
+.mhb-powder {
+  opacity: 0;
+  box-shadow: 0 0 4px 1px rgba(255, 230, 205, 0.7);
+  animation-name: mhb-powder;
+  animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+@keyframes mhb-powder {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translate(0, 0) scale(0.6); }
+  15%  { opacity: 0.95; }
+  70%  { opacity: 0.6; }
+  100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(1.1); }
+}
+
 /* A ráközelítés végén egy vakuvillanás a REC kereten belül: hirtelen fel,
    lassabban le. */
 .mobile-hero-flash { opacity: 0; animation: mobile-hero-flash 0.7s ease-out 2.85s both; }
@@ -1527,6 +1552,7 @@ html.a11y-underline a { text-decoration: underline !important; }
   .hero-slide-in,
   .mobile-hero-zoom,
   .mobile-hero-zoom-fotos,
+  .mobile-hero-zoom-smink,
   .mobile-hero-flash,
   .mobile-hero-dim,
   .mobile-hero-text,
