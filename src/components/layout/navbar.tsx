@@ -69,10 +69,20 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
+    /* Programozott görgetés (pl. a főoldali banner gombja) idejére a fejléc
+       összehúzva marad, hogy a cél pontosan beálljon: egy javító, felfelé
+       irányuló lépés különben kinyitná, és elcsúsztatná a tartalmat. */
+    let lockUntil = 0;
+    const onLock = (e: Event) => {
+      lockUntil = Date.now() + ((e as CustomEvent<number>).detail ?? 2500);
+      if (window.innerWidth < 768) setShrink(true);
+    };
+    window.addEventListener("eskuvo:nav-hold-shrink", onLock);
     const onScroll = () => {
       const y = window.scrollY;
       // Shrink only on mobile (<md). On desktop the navbar keeps its full size.
       if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
+      if (Date.now() < lockUntil) { lastScrollY.current = y; return; }
       // Only shrink while scrolling DOWN; expand again on scroll up or near top.
       if (y < 80) setShrink(false);
       else if (y > lastScrollY.current + 4) setShrink(true);
@@ -83,6 +93,7 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     return () => {
+      window.removeEventListener("eskuvo:nav-hold-shrink", onLock);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };

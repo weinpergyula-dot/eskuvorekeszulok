@@ -329,34 +329,49 @@ const VideoBackground = memo(function VideoBackground({
 });
 
 /**
- * Görgetés úgy, hogy az elem teteje a képernyő `desired` px-énél álljon
- * meg. A fejléc lefelé görgetve 64-ről 44 px-re húzódik össze, és mivel a
+ * Görgetés úgy, hogy az elem teteje a fejléc aljától `fromNav` px-re
+ * álljon meg. A fejléc lefelé görgetve 64-ről 44 px-re húzódik össze, és mivel a
  * lap tetején helyet foglal, ettől minden feljebb csúszik – ezt előre
  * beszámoljuk. A végén, ha a görgetés már ténylegesen megállt (nem csak egy
  * időzítő járt le – iOS-en a sima görgetés lassabb), egy kis, azonnali
  * igazítás pontosít.
  */
-function scrollToAligned(el: HTMLElement, desired: number, instant: boolean) {
+function scrollToAligned(el: HTMLElement, fromNav: number, instant: boolean) {
   const SHRUNK_NAV = 44;
   const nav = document.querySelector("nav");
+  /* A cél a fejléc aljához képest értendő (fromNav px), így akkor is jó,
+     ha a fejléc épp kinyílt (felfelé görgetéskor 64 px-es). */
+  const navBottom = () => (nav ? nav.getBoundingClientRect().bottom : SHRUNK_NAV);
   const shift = nav ? Math.max(0, nav.getBoundingClientRect().height - SHRUNK_NAV) : 0;
-  const top = window.scrollY + el.getBoundingClientRect().top - shift - desired;
+  const top = window.scrollY + el.getBoundingClientRect().top - shift - (SHRUNK_NAV + fromNav);
+  /* A görgetés és az igazítás idejére a fejléc összehúzva marad (navbar). */
+  window.dispatchEvent(new CustomEvent("eskuvo:nav-hold-shrink", { detail: 3500 }));
   window.scrollTo({ top, behavior: instant ? "auto" : "smooth" });
-  let last = -1;
-  let still = 0;
-  const started = Date.now();
-  const tick = () => {
-    const y = window.scrollY;
-    still = Math.abs(y - last) < 0.5 ? still + 1 : 0;
-    last = y;
-    if (still < 3 && Date.now() - started < 3000) {
-      setTimeout(tick, 80);
-      return;
-    }
-    const off = el.getBoundingClientRect().top - desired;
-    if (Math.abs(off) > 1 && Math.abs(off) < 80) window.scrollBy({ top: off, behavior: "auto" });
+  /* Az igazítás csak a görgetés tényleges megállása után fut (iOS-en a sima
+     görgetés lassabb, a scrollend sincs mindenhol), ezért bármekkora
+     maradék eltérést kijavíthat; utána még egyszer ellenőrzünk, mert a
+     fejléc összehúzódása vagy a Safari eszköztára addigra is mozdíthat. */
+  const settleThenFix = (passes: number) => {
+    let last = -1;
+    let still = 0;
+    const started = Date.now();
+    const tick = () => {
+      const y = window.scrollY;
+      still = Math.abs(y - last) < 0.5 ? still + 1 : 0;
+      last = y;
+      if (still < 3 && Date.now() - started < 3000) {
+        setTimeout(tick, 80);
+        return;
+      }
+      const off = el.getBoundingClientRect().top - (navBottom() + fromNav);
+      if (Math.abs(off) > 1) {
+        window.scrollBy({ top: off, behavior: "auto" });
+        if (passes > 1) setTimeout(() => settleThenFix(passes - 1), 120);
+      }
+    };
+    setTimeout(tick, 120);
   };
-  setTimeout(tick, 120);
+  settleThenFix(2);
 }
 
 /** A főoldali töltőképernyő (HomeLoader) értesítése a betöltés állásáról. */
@@ -591,13 +606,11 @@ export function MobileHeroBanner() {
     window.dispatchEvent(new CustomEvent("eskuvo:set-category", { detail: s.category ?? "" }));
     const target = document.querySelector<HTMLElement>(s.category ? "#szolgaltatok" : "#kategoriak");
     if (!target) return;
-    /* Hová kerüljön a cél teteje a képernyőn (px), összehúzott (44 px-es)
-       fejléc mellett:
+    /* Hová kerüljön a cél teteje a fejléc aljához képest (px):
        – kategóriák: a banner alja (a cél teteje + 24 px) épp a fejléc alja
          fölé, így a „Válassz kategóriát!” cím fölött és alatt ~egyforma hely;
        – szolgáltatói lista: a cím (pt-6 = 24 px) kevéssel a fejléc alatt. */
-    const desired = s.category ? 26 : 18;
-    scrollToAligned(target, desired, window.matchMedia(REDUCED_QUERY).matches);
+    scrollToAligned(target, s.category ? -18 : -26, window.matchMedia(REDUCED_QUERY).matches);
   };
 
   const active = SLIDES[index];
