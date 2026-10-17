@@ -79,7 +79,7 @@ function Bars({ points }: { points: { key: string; label: string; value: number;
             </span>
             <div
               className={`w-full rounded-t transition-colors ${
-                p.current ? "bg-[#D07AB5]" : p.muted ? "bg-[#84AAA6]/40" : "bg-[#84AAA6]"
+                p.current ? "bg-[#BD7E90]" : p.muted ? "bg-[#84AAA6]/40" : "bg-[#84AAA6]"
               } group-hover:bg-[#6B8E8A]`}
               style={{ height: `${Math.max((p.value / max) * 88, p.value > 0 ? 3 : 1)}%` }}
             />
@@ -335,7 +335,7 @@ export function VisitsSection() {
                   <td className="px-4 py-2 text-gray-700 whitespace-nowrap">
                     {formatWeek(w.weekStart)}
                     {w.weekStart === currentWeek && (
-                      <span className="ml-2 text-xs text-[#D07AB5] font-medium">folyamatban</span>
+                      <span className="ml-2 text-xs text-[#BD7E90] font-medium">folyamatban</span>
                     )}
                   </td>
                   <td className="px-4 py-2 text-right font-semibold text-gray-900">{val(w)}</td>

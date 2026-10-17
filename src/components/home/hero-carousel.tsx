@@ -58,17 +58,17 @@ const THEMES: Record<string, Theme> = {
      rózsaszín színeivel (.hero-meghivo: a fényfolt színe, globals.css) */
   pink: {
     bg: "hero-silver hero-meghivo",
-    lead: "text-[#C65EA5]",
+    lead: "text-[#B5677D]",
     accent: "text-gray-400",
     blurb: "text-gray-700",
-    ink: "#A34A87",
+    ink: "#945365",
     inkSoft: "#6B7280",
     inkFaint: "#9CA3AF",
-    cta: "#C65EA5",
-    ctaHover: "#B04E91",
-    ctrl: "border-[#C65EA5]/30 bg-white/70 text-[#A34A87]",
-    dotActive: "#A34A87",
-    dotIdle: "rgba(198,94,165,0.3)",
+    cta: "#B5677D",
+    ctaHover: "#9A5267",
+    ctrl: "border-[#B5677D]/30 bg-white/70 text-[#945365]",
+    dotActive: "#945365",
+    dotIdle: "rgba(181,103,125,0.3)",
   },
   /* 3. dia (fotósok): ugyanaz a vándorló háttér meleg pezsgő árnyalatban
      (.hero-foto, globals.css), arany kiemelésekkel */
@@ -439,7 +439,7 @@ export function HeroCarousel() {
                     {loggedIn === false && (
                       <Link
                         href="/auth/register"
-                        className={`${CTA_SIZE} border border-white/70 bg-white/60 text-[#C65EA5] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80`}
+                        className={`${CTA_SIZE} border border-white/70 bg-white/60 text-[#B5677D] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80`}
                       >
                         Regisztráció
                       </Link>
@@ -539,7 +539,7 @@ export function HeroCarousel() {
                       {(
                         [
                           { src: "/meghivo/slide-basic.webp", label: "Basic", color: "#6E9995", alt: "BASIC digitális esküvői meghívó telefonon", cls: "z-0 -mr-[2%] mt-[6%] w-[29%] -rotate-[9deg]" },
-                          { src: "/meghivo/slide-premium.webp", label: "Premium", color: "#A8437F", alt: s.alt, cls: "z-10 w-[33%]" },
+                          { src: "/meghivo/slide-premium.webp", label: "Premium", color: "#994E64", alt: s.alt, cls: "z-10 w-[33%]" },
                           { src: "/meghivo/slide-silver.webp", label: "Silver", color: "#77828F", alt: "SILVER digitális esküvői meghívó telefonon", cls: "z-0 -ml-[2%] mt-[6%] w-[29%] rotate-[9deg]" },
                         ] as const
                       ).map((ph) => (
@@ -601,7 +601,7 @@ export function HeroCarousel() {
                       </div>
                       <span
                         aria-hidden
-                        className="absolute -left-[10%] top-[8%] grid aspect-square w-[46%] rotate-[-12deg] place-items-center rounded-full bg-[#F6E3E6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#A0566B] shadow-[0_10px_20px_-8px_rgba(120,60,80,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:top-auto md:w-[40%] md:text-[10.5cqw]"
+                        className="absolute -left-[10%] top-[8%] grid aspect-square w-[46%] rotate-[-12deg] place-items-center rounded-full bg-[#F6E3E6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#9A5267] shadow-[0_10px_20px_-8px_rgba(120,60,80,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:top-auto md:w-[40%] md:text-[10.5cqw]"
                       >
                         Kóstolj
                         <br />

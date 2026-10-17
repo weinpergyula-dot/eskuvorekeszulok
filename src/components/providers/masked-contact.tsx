@@ -211,7 +211,7 @@ export function LoginRequiredContent({ message }: { message: string }) {
         </a>
         <a
           href="/auth/register?type=visitor"
-          className="w-full border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10 font-semibold py-2.5 rounded-lg transition-colors"
+          className="w-full border border-[#B5677D] text-[#B5677D] hover:bg-[#B5677D]/10 font-semibold py-2.5 rounded-lg transition-colors"
         >
           Regisztrálok látogatóként
         </a>

@@ -91,8 +91,8 @@ const SLIDES: MobileSlide[] = [
     blurb: "Egy linken elküldhető, mobilra szabott meghívó visszaszámlálóval és online visszajelzéssel – már 14\u00a0900\u00a0Ft-tól.",
     cta: "Megnézem",
     href: "/meghivo",
-    color: "#F2A6CF",
-    colorHover: "#C65EA5",
+    color: "#E3B5C2",
+    colorHover: "#B5677D",
     overlay: "envelope",
   },
   {
@@ -112,8 +112,8 @@ const SLIDES: MobileSlide[] = [
     blurb: "Az első pillantástól a hajnali táncig – találd meg a fotóst, aki a ti stílusotokban meséli el.",
     cta: "Fotósok",
     category: "fotosok-videosok",
-    color: "#E2C38E",
-    colorHover: "#C9A76E",
+    color: "#D5DBDE",
+    colorHover: "#6E7A80",
     overlay: "viewfinder",
   },
   {
@@ -130,8 +130,8 @@ const SLIDES: MobileSlide[] = [
     blurb: "Menyasszonyi frizura próbával – találd meg a fodrászodat a közeledben.",
     cta: "Fodrászok",
     category: "fodrasz-borbely",
-    color: "#5E7FA3",
-    colorHover: "#4A6889",
+    color: "#6B8E8A",
+    colorHover: "#557672",
     overlay: "corner-top-light",
   },
   {
@@ -149,8 +149,8 @@ const SLIDES: MobileSlide[] = [
     blurb: "Menyasszonyi csokor, asztaldísz, kapudísz – virágkötők egy helyen.",
     cta: "Virágkötők",
     category: "virag",
-    color: "#F2B8C6",
-    colorHover: "#E59BAE",
+    color: "#E3B5C2",
+    colorHover: "#B5677D",
     overlay: "bottom-dark",
     sticker: "Csokor\n& dekor",
   },
@@ -175,8 +175,8 @@ const SLIDES: MobileSlide[] = [
     blurb: "Tartós, fotón is gyönyörű smink – próbasminkkel, akár a helyszínen.",
     cta: "Sminkesek",
     category: "smink",
-    color: "#E8B4A0",
-    colorHover: "#D69A84",
+    color: "#A9CFCB",
+    colorHover: "#84AAA6",
     overlay: "bottom-dark",
   },
   {
@@ -806,7 +806,7 @@ export function MobileHeroBanner() {
                 key={`sticker-${s.before && s.beforeFx === "petals" ? animKey : 0}`}
                 aria-hidden
                 className={`absolute grid aspect-square w-28 rotate-[-10deg] ${s.before && s.beforeFx === "petals" && !reduced ? "mhb-sticker-pop" : ""} place-items-center whitespace-pre-line rounded-full text-center font-['Great_Vibes'] text-[1.7rem] leading-[0.95] shadow-[0_10px_24px_-8px_rgba(0,0,0,0.45)] ring-2 ring-white ${
-                  s.key === "torta" ? "left-5 top-[18%] bg-[#F6E3E6] text-[#A0566B]" : "right-5 top-[16%] bg-white/90 text-[#B5677D]"
+                  s.key === "torta" ? "left-5 top-[18%] bg-[#F6E3E6] text-[#9A5267]" : "right-5 top-[16%] bg-white/90 text-[#B5677D]"
                 }`}
               >
                 {s.sticker}
@@ -848,7 +848,7 @@ export function MobileHeroBanner() {
                   <Link
                     href={s.href}
                     className={`${CTA} mobile-hero-cta text-white shadow-lg`}
-                    style={{ ["--cta" as string]: s.colorHover, ["--cta-hover" as string]: "#B04E91" }}
+                    style={{ ["--cta" as string]: s.colorHover, ["--cta-hover" as string]: "#9A5267" }}
                   >
                     {s.cta}
                     <ArrowRight className="h-4 w-4" />
@@ -954,7 +954,7 @@ function LineHearts() {
       className="mhb-heart mx-auto mt-2 block w-[72%]"
       viewBox="0 12 176 74"
       fill="none"
-      stroke="#8F3671"
+      stroke="#7E4254"
       strokeWidth="1.6"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -997,7 +997,7 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
       className="mhb-env absolute inset-0 overflow-hidden"
       style={{
         background:
-          "radial-gradient(70% 50% at 50% 40%, rgba(198, 94, 165, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #150B18",
+          "radial-gradient(70% 50% at 50% 40%, rgba(181, 103, 125, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #180D10",
       }}
     >
       {SPARKS.map((sp) => (
@@ -1020,16 +1020,16 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
             <span aria-hidden className="prm-env-back" />
             {/* A kiemelkedő meghívólap */}
             <div aria-hidden className="prm-env-card">
-              <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: "#9A5182" }}>
+              <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: "#8C5666" }}>
                 Meghívó
               </p>
-              <p className="mt-2 text-[2.1rem] leading-none" style={{ color: "#8F3671", fontFamily: "'Great Vibes', cursive" }}>
+              <p className="mt-2 text-[2.1rem] leading-none" style={{ color: "#7E4254", fontFamily: "'Great Vibes', cursive" }}>
                 L &amp; D
               </p>
-              <p className="mt-2 font-heading text-[17px] leading-snug" style={{ color: "#4A1B3D" }}>
+              <p className="mt-2 font-heading text-[17px] leading-snug" style={{ color: "#4A242F" }}>
                 Lilla és Dániel
               </p>
-              <p className="mt-1.5 text-[12px]" style={{ color: "#7C4468" }}>
+              <p className="mt-1.5 text-[12px]" style={{ color: "#714853" }}>
                 2027. augusztus 21. · Tihany
               </p>
               <LineHearts />
@@ -1045,7 +1045,7 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
       </div>
 
       {/* Alsó sötétítés a szöveg alá */}
-      <span aria-hidden className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, rgba(21,11,24,0) 0%, rgba(21,11,24,0.85) 60%, rgba(21,11,24,0.95) 100%)" }} />
+      <span aria-hidden className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, rgba(24,13,16,0) 0%, rgba(24,13,16,0.85) 60%, rgba(24,13,16,0.95) 100%)" }} />
     </div>
   );
 }

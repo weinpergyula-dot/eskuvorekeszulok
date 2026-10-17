@@ -50,10 +50,10 @@ function ScratchPanel({
     ctx.scale(dpr, dpr);
 
     const grad = ctx.createLinearGradient(0, 0, width, height);
-    grad.addColorStop(0, "#DCC0D2");
-    grad.addColorStop(0.35, "#9E7692");
-    grad.addColorStop(0.62, "#CDA9C0");
-    grad.addColorStop(1, "#7C5873");
+    grad.addColorStop(0, "#C8B4B9");
+    grad.addColorStop(0.35, "#90727B");
+    grad.addColorStop(0.62, "#BBA0A8");
+    grad.addColorStop(1, "#71565E");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
 

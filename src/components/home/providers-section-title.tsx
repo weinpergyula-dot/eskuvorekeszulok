@@ -90,7 +90,7 @@ export function ProvidersSectionTitle() {
             className={iconBtn(filter.open)}
           >
             <SlidersHorizontal className="h-4 w-4" />
-            {filter.active && <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-[#C65EA5]" aria-label="Aktív szűrő" />}
+            {filter.active && <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-[#B5677D]" aria-label="Aktív szűrő" />}
           </button>
           <button
             type="button"

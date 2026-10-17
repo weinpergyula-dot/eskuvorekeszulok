@@ -44,7 +44,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
             patternUnits="userSpaceOnUse"
             patternTransform="rotate(38)"
           >
-            <rect x="0" y="0" width="2.6" height="6" fill="#E8B4D4" />
+            <rect x="0" y="0" width="2.6" height="6" fill="#D3ADB8" />
           </pattern>
           {/* Keresztsatír a mélyebb tónusért */}
           <pattern
@@ -54,7 +54,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
             patternUnits="userSpaceOnUse"
             patternTransform="rotate(-42)"
           >
-            <rect x="0" y="0" width="1.6" height="8" fill="#C65EA5" />
+            <rect x="0" y="0" width="1.6" height="8" fill="#B5677D" />
           </pattern>
         </defs>
 
@@ -108,7 +108,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
           textLength="520"
           lengthAdjust="spacingAndGlyphs"
           fill="none"
-          stroke="#C65EA5"
+          stroke="#B5677D"
           strokeWidth="0.9"
           opacity="0.55"
           className="prm-sketch-outline"
@@ -121,7 +121,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
         <path
           d="M78 108 C 180 100, 300 116, 430 104 C 470 100, 500 106, 522 110"
           fill="none"
-          stroke="#C65EA5"
+          stroke="#B5677D"
           strokeWidth="2.6"
           strokeLinecap="round"
           className="prm-sketch-underline"
@@ -132,7 +132,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
             x="300"
             y="136"
             textAnchor="middle"
-            fill="#C3A3C0"
+            fill="#B19AA1"
             className="prm-sketch-fill"
             style={{
               fontFamily: "'Jost', ui-sans-serif, system-ui, sans-serif",

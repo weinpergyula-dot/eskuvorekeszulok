@@ -56,7 +56,7 @@ export function RsvpForm() {
                 onClick={() => setAttending(v)}
                 className={`flex-1 rounded-lg border px-4 py-2.5 text-sm transition-colors ${
                   attending === v
-                    ? "border-[var(--prm-accent)] bg-[rgba(198,94,165,0.16)] text-[var(--prm-text)]"
+                    ? "border-[var(--prm-accent)] bg-[rgba(181,103,125,0.16)] text-[var(--prm-text)]"
                     : "border-[var(--prm-line)] text-[var(--prm-muted)] hover:text-[var(--prm-text)]"
                 }`}
               >
@@ -103,7 +103,7 @@ export function RsvpForm() {
 
         <button
           type="submit"
-          className="mt-1 rounded-full border border-[var(--prm-line)] bg-[rgba(232,180,212,0.10)] px-8 py-3 text-sm tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(232,180,212,0.2)]"
+          className="mt-1 rounded-full border border-[var(--prm-line)] bg-[rgba(211,173,184,0.10)] px-8 py-3 text-sm tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(211,173,184,0.2)]"
         >
           Visszajelzés elküldése
         </button>
