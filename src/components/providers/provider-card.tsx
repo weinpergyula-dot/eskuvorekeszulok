@@ -150,7 +150,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   }, [galleryOpen, galleryUrls.length]);
 
   const tc = provider.featured === "gold"
-    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-400", hoverBgFill: "hover:bg-amber-500", buttonText: "text-amber-950", borderBase: "border-amber-200", borderHover: "hover:border-amber-400", badgeClass: "border-amber-300 text-amber-700 bg-amber-50", featuredBadgeClass: "bg-amber-50 text-amber-700 border-amber-300" }
+    ? { text: "text-[#B5677D]", textHover: "hover:text-[#9A5267]", groupHover: "group-hover:text-[#B5677D]", border50: "border-[#B5677D]/50", bg10: "bg-[#B5677D]/10", hoverBg20: "hover:bg-[#B5677D]/20", bgFill: "bg-[#B5677D]", hoverBgFill: "hover:bg-[#9A5267]", buttonText: "text-white", borderBase: "border-[#B5677D]/40", borderHover: "hover:border-[#B5677D]", badgeClass: "border-[#B5677D]/40 text-[#9A5267] bg-[#F8EEF1]", featuredBadgeClass: "bg-[#F8EEF1] text-[#9A5267] border-[#B5677D]/40" }
     : provider.featured === "silver"
     ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", buttonText: "text-white", borderBase: "border-slate-200", borderHover: "hover:border-slate-400", badgeClass: "border-slate-300 text-slate-500 bg-slate-50", featuredBadgeClass: "bg-slate-100 text-slate-600 border-slate-300" }
     : provider.featured === "teal"
@@ -257,7 +257,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   );
 
   const showFeaturedBadge = !!provider.featured;
-  const headerBg = provider.featured === "gold" ? "#FFFBEB" : provider.featured === "silver" ? "#F8FAFC" : provider.featured === "teal" ? "#EDF4F3" : "#F0F6F5";
+  const headerBg = provider.featured === "gold" ? "#F8EEF1" : provider.featured === "silver" ? "#F8FAFC" : provider.featured === "teal" ? "#EDF4F3" : "#F0F6F5";
 
   return (
     <div id={anchorId} className={cn("relative h-full scroll-mt-24", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
