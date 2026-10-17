@@ -1434,6 +1434,79 @@ html.a11y-underline a { text-decoration: underline !important; }
   from { transform: scale(1); }
   to   { transform: scale(1.4); }
 }
+/* Fodrász dia: kócos hajból kész frizura. A kócos „előtte” kép a kész fotó
+   fölött van; egy lágy szélű maszk felülről lefelé tünteti el (a maszk
+   kétszer olyan magas, mint a dia: felső fele átlátszó, alsó fele fedő, a
+   lágy határ a közepén; a maszk függőleges helye 100%-ról 0%-ra futva a
+   határt a dia tetejéről az aljára viszi). A határon egy arany fésű halad
+   lefelé, mögötte csillámló fénnyel; a végén fénycsillanás fut végig. */
+.mhb-comb-before {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 46%, #000 54%, #000 100%);
+          mask-image: linear-gradient(to bottom, transparent 0%, transparent 46%, #000 54%, #000 100%);
+  -webkit-mask-size: 100% 200%;
+          mask-size: 100% 200%;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: 0 100%;
+          mask-position: 0 100%;
+  animation: mhb-comb-wipe 2s cubic-bezier(0.45, 0.05, 0.4, 1) 1.5s both,
+    mhb-comb-rest 0.5s ease-out 3.5s forwards;
+}
+@keyframes mhb-comb-wipe {
+  from { -webkit-mask-position: 0 92%; mask-position: 0 92%; }
+  to   { -webkit-mask-position: 0 14%; mask-position: 0 14%; }
+}
+/* A fésű után az alsó, a két képen amúgy is egyező rész is átvált. */
+@keyframes mhb-comb-rest { to { opacity: 0; } }
+.mhb-comb-tool {
+  left: 63%;
+  width: 34%;
+  height: 22px;
+  top: 8%;
+  opacity: 0;
+  transform: translateY(-50%) rotate(-8deg);
+  animation: mhb-comb-move 2s cubic-bezier(0.45, 0.05, 0.4, 1) 1.5s both,
+    mhb-comb-show 2.2s linear 1.4s both;
+}
+@keyframes mhb-comb-move {
+  from { top: 8%; }
+  to   { top: 86%; }
+}
+@keyframes mhb-comb-show {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+.mhb-comb-glow {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  top: -140%;
+  height: 300%;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, rgba(255, 246, 220, 0.85), rgba(255, 230, 170, 0.35) 55%, transparent);
+  filter: blur(4px);
+  mix-blend-mode: screen;
+  animation: mhb-comb-sparkle 0.35s ease-in-out infinite alternate;
+}
+@keyframes mhb-comb-sparkle {
+  from { opacity: 0.7; transform: scaleX(0.95); }
+  to   { opacity: 1; transform: scaleX(1.05); }
+}
+.mhb-comb-glint {
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  animation: mhb-comb-glint 1.1s ease-in-out 3.6s both;
+}
+@keyframes mhb-comb-glint {
+  0%   { opacity: 1; background-position: 120% 0; }
+  100% { opacity: 1; background-position: -20% 0; }
+}
+
 /* A ráközelítés végén egy vakuvillanás a REC kereten belül: hirtelen fel,
    lassabban le. */
 .mobile-hero-flash { opacity: 0; animation: mobile-hero-flash 0.7s ease-out 2.85s both; }

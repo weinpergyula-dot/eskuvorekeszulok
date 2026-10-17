@@ -31,6 +31,8 @@ type MobileSlide = {
   focus: string;
   /** A fotó animációja az aktív dián (alapból lassú ráközelítés). */
   zoomClass?: string;
+  /** „Előtte” kép: a dián ebből fésüli át a fésű a kész (img) képre. */
+  before?: string;
   /** Világos szöveg sötétített képen, vagy sötét szöveg világosított sarokban. */
   tone: Tone;
   /** A szövegblokk helye. */
@@ -111,6 +113,7 @@ const SLIDES: MobileSlide[] = [
     key: "fodrasz",
     img: "/hero-m/fodrasz.webp",
     alt: "Menyasszony virágkoszorúval, hosszú, hullámos hajjal, az ég előtt",
+    before: "/hero-m/fodrasz-elotte.webp",
     focus: "75% 50%",
     tone: "light",
     place: "top",
@@ -242,6 +245,9 @@ export function MobileHeroBanner() {
      prioritással. */
   SLIDES.forEach((s, i) =>
     s.img && preload(s.img, { as: "image", fetchPriority: i === 0 ? "high" : "low", media: "(max-width: 767px)" }),
+  );
+  SLIDES.forEach((s) =>
+    s.before && preload(s.before, { as: "image", fetchPriority: "low", media: "(max-width: 767px)" }),
   );
 
   const [index, setIndex] = useState(0);
@@ -474,6 +480,40 @@ export function MobileHeroBanner() {
                 className={`absolute inset-0 h-full w-full object-cover ${on || i === prevIndex ? (s.zoomClass ?? "mobile-hero-zoom") : ""}`}
                 style={{ objectPosition: s.focus }}
               />
+            )}
+
+            {/* Fodrász dia: a kócos „előtte” képből egy fésű fésüli át a kész
+                frizurára (globals.css .mhb-comb-*). A kép ugyanazt a
+                ráközelítést kapja, mint alatta a kész fotó, így fedik egymást. */}
+            {s.before && !reduced && (on || i === prevIndex) && (
+              <>
+                <span aria-hidden className="mhb-comb-before absolute inset-0 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={s.before}
+                    alt=""
+                    className={`absolute inset-0 h-full w-full object-cover ${s.zoomClass ?? "mobile-hero-zoom"}`}
+                    style={{ objectPosition: s.focus }}
+                  />
+                </span>
+                <span aria-hidden className="mhb-comb-tool absolute">
+                  <span className="mhb-comb-glow" />
+                  <svg viewBox="0 0 120 40" className="relative h-full w-full drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)]">
+                    <defs>
+                      <linearGradient id="mhb-comb-gold" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor="#F7E7B4" />
+                        <stop offset="50%" stopColor="#D9B46A" />
+                        <stop offset="100%" stopColor="#B88A3E" />
+                      </linearGradient>
+                    </defs>
+                    <rect x="4" y="2" width="112" height="12" rx="6" fill="url(#mhb-comb-gold)" />
+                    {Array.from({ length: 18 }, (_, k) => (
+                      <rect key={k} x={9 + k * 6} y="12" width="2.6" height={k % 2 ? 22 : 25} rx="1.3" fill="url(#mhb-comb-gold)" />
+                    ))}
+                  </svg>
+                </span>
+                {on && <span aria-hidden className="mhb-comb-glint absolute inset-0" />}
+              </>
             )}
 
             {/* A meghívós dia rajzolt jelenete: a prémium minta lila borítéka */}
