@@ -1476,6 +1476,29 @@ html.a11y-underline a { text-decoration: underline !important; }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(70deg); }
 }
 
+/* Virágos dia: az „előtte” kép a szirmok mögött úszik át a kész képbe. */
+.mhb-petal-before {
+  animation: mhb-petal-fade 0.9s ease-in-out 2s both;
+}
+@keyframes mhb-petal-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+/* Egy szirom: a kép szélén túlról kavarog be (--sx/--sy eltolás), a
+   helyén (left/top) megpihen, majd forogva lehullik és elhalványul. */
+.mhb-petal {
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgba(150, 60, 90, 0.25));
+  animation: mhb-petal 2.6s cubic-bezier(0.3, 0.6, 0.35, 1) both;
+}
+@keyframes mhb-petal {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translate(var(--sx), var(--sy)) rotate(var(--r0)) scale(0.6); }
+  12%  { opacity: 1; }
+  45%  { opacity: 1; transform: translate(-50%, -50%) translate(0, 0) rotate(calc(var(--r0) + var(--r1) * 0.6)) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) translate(calc(var(--sx) * -0.12), var(--fall)) rotate(calc(var(--r0) + var(--r1))) scale(0.85); }
+}
+
 /* A ráközelítés végén egy vakuvillanás a REC kereten belül: hirtelen fel,
    lassabban le. */
 .mobile-hero-flash { opacity: 0; animation: mobile-hero-flash 0.7s ease-out 2.85s both; }

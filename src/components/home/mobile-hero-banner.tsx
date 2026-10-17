@@ -33,6 +33,9 @@ type MobileSlide = {
   zoomClass?: string;
   /** „Előtte” kép: a dián ebből fésüli át a fésű a kész (img) képre. */
   before?: string;
+  /** Az átváltás módja: csillogás (fentről lefelé) vagy virágszirmok
+      mögötti átúszás. */
+  beforeFx?: "shine" | "petals";
   /** Világos szöveg sötétített képen, vagy sötét szöveg világosított sarokban. */
   tone: Tone;
   /** A szövegblokk helye. */
@@ -131,6 +134,8 @@ const SLIDES: MobileSlide[] = [
     key: "virag",
     img: "/hero-m/virag.webp",
     alt: "Menyasszony rózsaszín csokorral",
+    before: "/hero-m/virag-elotte.webp",
+    beforeFx: "petals",
     focus: "40% 30%",
     tone: "dark",
     place: "bottom",
@@ -214,6 +219,32 @@ const SHINE_STARS = (() => {
     }
   }
   return stars;
+})();
+
+/* A virágos dia szirmai: a kép széleiről kavarognak be, és a csokor
+   helye (kb. 78% / 42%) körül gyűlnek össze, majd lehullanak. Rögzített
+   ál-véletlen értékek: cél (x, y %), indulási eltolás (sx, sy px), forgás,
+   hullás, késleltetés, méret, szín. */
+const PETALS = (() => {
+  let seed = 11;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const colors = ["#F4B6C8", "#F7C9D6", "#EE9DB5", "#FBE3EA", "#FFFFFF", "#F2A8BF"];
+  return Array.from({ length: 26 }, (_, k) => {
+    const ang = rnd() * Math.PI * 2;
+    const dist = 220 + rnd() * 160;
+    return {
+      x: +(78 + (rnd() - 0.5) * 34).toFixed(1),
+      y: +(42 + (rnd() - 0.5) * 30).toFixed(1),
+      sx: Math.round(Math.cos(ang) * dist),
+      sy: Math.round(Math.sin(ang) * dist - 120),
+      r0: Math.round(rnd() * 360),
+      r1: Math.round(360 + rnd() * 540) * (k % 2 ? 1 : -1),
+      fall: Math.round(90 + rnd() * 140),
+      delay: +(1.45 + rnd() * 0.7).toFixed(2),
+      size: Math.round(11 + rnd() * 10),
+      color: colors[k % colors.length],
+    };
+  });
 })();
 
 const VIDEO_SAFETY_MS = 9000;
@@ -527,7 +558,7 @@ export function MobileHeroBanner() {
                 .mhb-comb-*, .mhb-shine-star).
                 A kép ugyanazt a ráközelítést kapja, mint alatta a kész fotó,
                 így fedik egymást. */}
-            {s.before && !reduced && (on || i === prevIndex) && (
+            {s.before && s.beforeFx !== "petals" && !reduced && (on || i === prevIndex) && (
               <span key={animKey} aria-hidden className="absolute inset-0">
                 <span className="mhb-comb-before absolute inset-0 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -557,6 +588,46 @@ export function MobileHeroBanner() {
                     <circle r="12" fill="url(#mhb-shine-halo)" />
                     <path d="M0 -9 C 0.8 -2 2 -0.8 9 0 C 2 0.8 0.8 2 0 9 C -0.8 2 -2 0.8 -9 0 C -2 -0.8 -0.8 -2 0 -9 Z" fill="#FFFFFF" />
                   </svg>
+                ))}
+              </span>
+            )}
+
+            {/* Virágos dia: az üres kezű, szomorú „előtte” képből virágszirmok
+                mögött úszik át a csokros képbe (globals.css .mhb-petal*). Az
+                „előtte” kép ugyanazt a ráközelítést kapja, mint a kész fotó. */}
+            {s.before && s.beforeFx === "petals" && !reduced && (on || i === prevIndex) && (
+              <span key={animKey} aria-hidden className="absolute inset-0 overflow-hidden">
+                <span className="mhb-petal-before absolute inset-0 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={s.before}
+                    alt=""
+                    className={`absolute inset-0 h-full w-full object-cover ${s.zoomClass ?? "mobile-hero-zoom"}`}
+                    style={{ objectPosition: s.focus }}
+                  />
+                </span>
+                {PETALS.map((pt, k) => (
+                  <span
+                    key={k}
+                    className="mhb-petal absolute"
+                    style={{
+                      left: `${pt.x}%`,
+                      top: `${pt.y}%`,
+                      width: pt.size,
+                      height: pt.size * 1.25,
+                      animationDelay: `${pt.delay}s`,
+                      ["--sx" as string]: `${pt.sx}px`,
+                      ["--sy" as string]: `${pt.sy}px`,
+                      ["--r0" as string]: `${pt.r0}deg`,
+                      ["--r1" as string]: `${pt.r1}deg`,
+                      ["--fall" as string]: `${pt.fall}px`,
+                    }}
+                  >
+                    <svg viewBox="-10 -12 20 24" className="h-full w-full">
+                      <path d="M0 -11 C 7 -8 9 2 0 11 C -9 2 -7 -8 0 -11 Z" fill={pt.color} />
+                      <path d="M0 -9 C 1.5 -3 1.5 3 0 9" stroke="rgba(255,255,255,0.55)" strokeWidth="0.8" fill="none" />
+                    </svg>
+                  </span>
                 ))}
               </span>
             )}
