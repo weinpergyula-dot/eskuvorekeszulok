@@ -1438,8 +1438,8 @@ html.a11y-underline a { text-decoration: underline !important; }
    fölött van; egy lágy szélű maszk felülről lefelé tünteti el (a maszk
    kétszer olyan magas, mint a dia: felső fele átlátszó, alsó fele fedő, a
    lágy határ a közepén; a maszk függőleges helye 100%-ról 0%-ra futva a
-   határt a dia tetejéről az aljára viszi). A határon egy arany fésű halad
-   lefelé, mögötte csillámló fénnyel; a végén fénycsillanás fut végig. */
+   határt a dia tetejéről az aljára viszi). A határon csillogó sáv halad
+   lefelé; a végén fénycsillanás fut végig. */
 .mhb-comb-before {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 46%, #000 54%, #000 100%);
           mask-image: linear-gradient(to bottom, transparent 0%, transparent 46%, #000 54%, #000 100%);
@@ -1458,41 +1458,44 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 /* A fésű után az alsó, a két képen amúgy is egyező rész is átvált. */
 @keyframes mhb-comb-rest { to { opacity: 0; } }
-.mhb-comb-tool {
-  left: 63%;
-  width: 34%;
-  height: 22px;
+/* A határon lefelé futó csillogó sáv: lágy fénysáv és egymás után
+   felvillanó csillagok (a maszk határával együtt mozog). */
+.mhb-shine-band {
+  left: 50%;
+  right: -4%;
+  height: 70px;
   top: 8%;
   opacity: 0;
-  transform: translateY(-50%) rotate(-8deg);
-  animation: mhb-comb-move 2s cubic-bezier(0.45, 0.05, 0.4, 1) 1.5s both,
-    mhb-comb-show 2.2s linear 1.4s both;
+  transform: translateY(-50%);
+  pointer-events: none;
+  animation: mhb-shine-move 2s cubic-bezier(0.45, 0.05, 0.4, 1) 1.5s both,
+    mhb-shine-show 2.2s linear 1.4s both;
 }
-@keyframes mhb-comb-move {
+@keyframes mhb-shine-move {
   from { top: 8%; }
   to   { top: 86%; }
 }
-@keyframes mhb-comb-show {
+@keyframes mhb-shine-show {
   0%   { opacity: 0; }
   10%  { opacity: 1; }
-  88%  { opacity: 1; }
+  85%  { opacity: 1; }
   100% { opacity: 0; }
 }
-.mhb-comb-glow {
+.mhb-shine-glow {
   position: absolute;
-  left: -20%;
-  right: -20%;
-  top: -140%;
-  height: 300%;
+  inset: 22% -6%;
   border-radius: 9999px;
-  background: radial-gradient(closest-side, rgba(255, 246, 220, 0.85), rgba(255, 230, 170, 0.35) 55%, transparent);
-  filter: blur(4px);
-  mix-blend-mode: screen;
-  animation: mhb-comb-sparkle 0.35s ease-in-out infinite alternate;
+  background: radial-gradient(closest-side, rgba(255, 250, 235, 0.95), rgba(240, 205, 140, 0.4) 55%, transparent);
+  filter: blur(6px);
 }
-@keyframes mhb-comb-sparkle {
-  from { opacity: 0.7; transform: scaleX(0.95); }
-  to   { opacity: 1; transform: scaleX(1.05); }
+.mhb-shine-star {
+  transform: translate(-50%, -50%) scale(0);
+  filter: drop-shadow(0 0 2px rgba(201, 150, 60, 0.95)) drop-shadow(0 0 7px rgba(232, 182, 90, 0.9));
+  animation: mhb-shine-twinkle 0.7s ease-in-out infinite;
+}
+@keyframes mhb-shine-twinkle {
+  0%, 100% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+  50%      { transform: translate(-50%, -50%) scale(1) rotate(45deg); opacity: 1; }
 }
 .mhb-comb-glint {
   background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);

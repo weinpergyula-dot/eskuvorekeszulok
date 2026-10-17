@@ -184,6 +184,23 @@ const SLIDES: MobileSlide[] = [
 
 const INTERVAL_MS = 5000;
 /* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
+/* A fodrász dia csillogó sávjának csillagai (a sávon belüli helyük, méretük
+   és a felvillanás késleltetése). */
+const SHINE_STARS = [
+  { x: 6, y: 42, size: 20, delay: 0 },
+  { x: 18, y: 18, size: 14, delay: 0.2 },
+  { x: 28, y: 66, size: 24, delay: 0.34 },
+  { x: 40, y: 32, size: 16, delay: 0.08 },
+  { x: 50, y: 74, size: 12, delay: 0.46 },
+  { x: 58, y: 44, size: 26, delay: 0.26 },
+  { x: 68, y: 16, size: 13, delay: 0.4 },
+  { x: 76, y: 62, size: 20, delay: 0.14 },
+  { x: 86, y: 34, size: 15, delay: 0.3 },
+  { x: 95, y: 56, size: 18, delay: 0.52 },
+  { x: 34, y: 50, size: 10, delay: 0.58 },
+  { x: 82, y: 82, size: 11, delay: 0.04 },
+];
+
 const VIDEO_SAFETY_MS = 9000;
 /* A régi dia elsötétülésének hossza (globals.css .mobile-hero-slide-out). A
    videós dia ennyivel a videó vége előtt vált, így a kép a videó utolsó
@@ -257,9 +274,15 @@ export function MobileHeroBanner() {
      szerint renderelés közben frissítve.) */
   const [shownIndex, setShownIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
+  /* Minden diaváltással nő: az aktív dia animált rétegei ezt kapják
+     kulcsnak (az elhalványuló az eggyel kisebbet), így egy diára
+     visszalépve az animációk elölről indulnak, elváltáskor viszont nem
+     indulnak újra. */
+  const [activation, setActivation] = useState(0);
   if (shownIndex !== index) {
     setPrevIndex(shownIndex);
     setShownIndex(index);
+    setActivation((n) => n + 1);
   }
   const reduced = useSyncExternalStore(
     subscribeReduced,
@@ -457,6 +480,7 @@ export function MobileHeroBanner() {
       {SLIDES.map((s, i) => {
         const on = i === index;
         const light = s.tone === "light";
+        const animKey = on ? activation : activation - 1;
         return (
           <div
             key={s.key}
@@ -473,6 +497,7 @@ export function MobileHeroBanner() {
             ) : s.img && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
+                key={animKey}
                 src={s.img}
                 alt={s.alt}
                 decoding="sync"
@@ -482,12 +507,13 @@ export function MobileHeroBanner() {
               />
             )}
 
-            {/* Fodrász dia: a kócos „előtte” képből egy fésű fésüli át a kész
-                frizurára (globals.css .mhb-comb-*). A kép ugyanazt a
-                ráközelítést kapja, mint alatta a kész fotó, így fedik egymást. */}
+            {/* Fodrász dia: a kócos „előtte” képből csillogó sáv „varázsolja”
+                át a kész frizurára (globals.css .mhb-comb-*, .mhb-shine-*).
+                A kép ugyanazt a ráközelítést kapja, mint alatta a kész fotó,
+                így fedik egymást. */}
             {s.before && !reduced && (on || i === prevIndex) && (
-              <>
-                <span aria-hidden className="mhb-comb-before absolute inset-0 overflow-hidden">
+              <span key={animKey} aria-hidden className="absolute inset-0">
+                <span className="mhb-comb-before absolute inset-0 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={s.before}
@@ -496,24 +522,21 @@ export function MobileHeroBanner() {
                     style={{ objectPosition: s.focus }}
                   />
                 </span>
-                <span aria-hidden className="mhb-comb-tool absolute">
-                  <span className="mhb-comb-glow" />
-                  <svg viewBox="0 0 120 40" className="relative h-full w-full drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)]">
-                    <defs>
-                      <linearGradient id="mhb-comb-gold" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stopColor="#F7E7B4" />
-                        <stop offset="50%" stopColor="#D9B46A" />
-                        <stop offset="100%" stopColor="#B88A3E" />
-                      </linearGradient>
-                    </defs>
-                    <rect x="4" y="2" width="112" height="12" rx="6" fill="url(#mhb-comb-gold)" />
-                    {Array.from({ length: 18 }, (_, k) => (
-                      <rect key={k} x={9 + k * 6} y="12" width="2.6" height={k % 2 ? 22 : 25} rx="1.3" fill="url(#mhb-comb-gold)" />
-                    ))}
-                  </svg>
+                <span className="mhb-shine-band absolute">
+                  <span className="mhb-shine-glow" />
+                  {SHINE_STARS.map((st, k) => (
+                    <svg
+                      key={k}
+                      viewBox="-10 -10 20 20"
+                      className="mhb-shine-star absolute"
+                      style={{ left: `${st.x}%`, top: `${st.y}%`, width: st.size, height: st.size, animationDelay: `${st.delay}s` }}
+                    >
+                      <path d="M0 -10 C 1 -2 2 -1 10 0 C 2 1 1 2 0 10 C -1 2 -2 1 -10 0 C -2 -1 -1 -2 0 -10 Z" fill="#FFF8E1" />
+                    </svg>
+                  ))}
                 </span>
-                {on && <span aria-hidden className="mhb-comb-glint absolute inset-0" />}
-              </>
+                {on && <span className="mhb-comb-glint absolute inset-0" />}
+              </span>
             )}
 
             {/* A meghívós dia rajzolt jelenete: a prémium minta lila borítéka */}
@@ -547,7 +570,7 @@ export function MobileHeroBanner() {
               />
             )}
             {s.overlay === "viewfinder" && (
-              <span aria-hidden className="absolute inset-x-5 bottom-[46%] top-16">
+              <span key={animKey} aria-hidden className="absolute inset-x-5 bottom-[46%] top-16">
                 {/* A villanás után a kereten kívüli kép elsötétül (a keret
                     árnyéka), és a kereten belül egy vakuvillanás fut le. */}
                 {(on || i === prevIndex) && <span className="mobile-hero-dim absolute inset-0" />}
