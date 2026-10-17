@@ -328,6 +328,37 @@ const VideoBackground = memo(function VideoBackground({
   return <div className="absolute inset-0" dangerouslySetInnerHTML={{ __html: html }} suppressHydrationWarning />;
 });
 
+/**
+ * Görgetés úgy, hogy az elem teteje a képernyő `desired` px-énél álljon
+ * meg. A fejléc lefelé görgetve 64-ről 44 px-re húzódik össze, és mivel a
+ * lap tetején helyet foglal, ettől minden feljebb csúszik – ezt előre
+ * beszámoljuk. A végén, ha a görgetés már ténylegesen megállt (nem csak egy
+ * időzítő járt le – iOS-en a sima görgetés lassabb), egy kis, azonnali
+ * igazítás pontosít.
+ */
+function scrollToAligned(el: HTMLElement, desired: number, instant: boolean) {
+  const SHRUNK_NAV = 44;
+  const nav = document.querySelector("nav");
+  const shift = nav ? Math.max(0, nav.getBoundingClientRect().height - SHRUNK_NAV) : 0;
+  const top = window.scrollY + el.getBoundingClientRect().top - shift - desired;
+  window.scrollTo({ top, behavior: instant ? "auto" : "smooth" });
+  let last = -1;
+  let still = 0;
+  const started = Date.now();
+  const tick = () => {
+    const y = window.scrollY;
+    still = Math.abs(y - last) < 0.5 ? still + 1 : 0;
+    last = y;
+    if (still < 3 && Date.now() - started < 3000) {
+      setTimeout(tick, 80);
+      return;
+    }
+    const off = el.getBoundingClientRect().top - desired;
+    if (Math.abs(off) > 1 && Math.abs(off) < 80) window.scrollBy({ top: off, behavior: "auto" });
+  };
+  setTimeout(tick, 120);
+}
+
 /** A főoldali töltőképernyő (HomeLoader) értesítése a betöltés állásáról. */
 function setHeroProgress(value: number, ready = false) {
   const w = window as Window & { __heroProgress?: number; __heroReady?: boolean };
@@ -558,38 +589,15 @@ export function MobileHeroBanner() {
     /* Kategória nélküli diáról (pl. az első) mindig az „Összes” jön, ne
        maradjon érvényben egy korábban választott kategória. */
     window.dispatchEvent(new CustomEvent("eskuvo:set-category", { detail: s.category ?? "" }));
-    const target = document.querySelector(s.category ? "#szolgaltatok" : "#kategoriak");
-    const reducedNow = window.matchMedia(REDUCED_QUERY).matches;
-    const behavior: ScrollBehavior = reducedNow ? "auto" : "smooth";
-    if (s.category) {
-      target?.scrollIntoView({ behavior, block: "start" });
-      return;
-    }
-    /* A kategóriákhoz: a banner alja kerüljön teljesen a fejléc alá. A
-       fejléc lefelé görgetéskor 44 px-re húzódik össze, és mivel a lap
-       tetején helyet foglal, ettől minden 20 px-szel feljebb csúszik –
-       ezt a célnál előre beszámoljuk, a végén pedig egy azonnali
-       igazítással pontosítunk. */
-    const hero = sectionRef.current;
-    const nav = document.querySelector("nav");
-    if (!hero || !nav) {
-      target?.scrollIntoView({ behavior, block: "start" });
-      return;
-    }
-    const SHRUNK_NAV = 44;
-    /* A banner alja épp a fejléc alja fölé kerüljön: így a „Válassz
-       kategóriát!” cím fölött és alatt egyforma (~24 px) hely marad. */
-    const UNDER = 2;
-    const wanted = SHRUNK_NAV - UNDER;
-    const shift = Math.max(0, nav.getBoundingClientRect().height - SHRUNK_NAV);
-    const top = window.scrollY + hero.getBoundingClientRect().bottom - shift - wanted;
-    window.scrollTo({ top, behavior });
-    const fix = () => {
-      const off = hero.getBoundingClientRect().bottom - wanted;
-      if (Math.abs(off) > 1) window.scrollBy({ top: off, behavior: "auto" });
-    };
-    if ("onscrollend" in window) window.addEventListener("scrollend", fix, { once: true });
-    else setTimeout(fix, 900);
+    const target = document.querySelector<HTMLElement>(s.category ? "#szolgaltatok" : "#kategoriak");
+    if (!target) return;
+    /* Hová kerüljön a cél teteje a képernyőn (px), összehúzott (44 px-es)
+       fejléc mellett:
+       – kategóriák: a banner alja (a cél teteje + 24 px) épp a fejléc alja
+         fölé, így a „Válassz kategóriát!” cím fölött és alatt ~egyforma hely;
+       – szolgáltatói lista: a cím (pt-6 = 24 px) kevéssel a fejléc alatt. */
+    const desired = s.category ? 26 : 18;
+    scrollToAligned(target, desired, window.matchMedia(REDUCED_QUERY).matches);
   };
 
   const active = SLIDES[index];
