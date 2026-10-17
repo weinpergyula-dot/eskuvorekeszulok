@@ -329,49 +329,48 @@ const VideoBackground = memo(function VideoBackground({
 });
 
 /**
- * Görgetés úgy, hogy az elem teteje a fejléc aljától `fromNav` px-re
- * álljon meg. A fejléc lefelé görgetve 64-ről 44 px-re húzódik össze, és mivel a
- * lap tetején helyet foglal, ettől minden feljebb csúszik – ezt előre
- * beszámoljuk. A végén, ha a görgetés már ténylegesen megállt (nem csak egy
- * időzítő járt le – iOS-en a sima görgetés lassabb), egy kis, azonnali
- * igazítás pontosít.
+ * Sima görgetés úgy, hogy az elem teteje a fejléc aljától `fromNav` px-re
+ * álljon meg. Saját, képkockánként vezérelt animáció: minden képkockán
+ * újramérjük a cél helyét, így a fejléc összehúzódását (64 → 44 px, ami a
+ * tartalmat feljebb csúsztatja) és a Safari eszköztárának mozgását menet
+ * közben, simán lekövetjük – a végén nincs utólagos ugrás.
  */
 function scrollToAligned(el: HTMLElement, fromNav: number, instant: boolean) {
-  const SHRUNK_NAV = 44;
   const nav = document.querySelector("nav");
-  /* A cél a fejléc aljához képest értendő (fromNav px), így akkor is jó,
-     ha a fejléc épp kinyílt (felfelé görgetéskor 64 px-es). */
-  const navBottom = () => (nav ? nav.getBoundingClientRect().bottom : SHRUNK_NAV);
-  const shift = nav ? Math.max(0, nav.getBoundingClientRect().height - SHRUNK_NAV) : 0;
-  const top = window.scrollY + el.getBoundingClientRect().top - shift - (SHRUNK_NAV + fromNav);
-  /* A görgetés és az igazítás idejére a fejléc összehúzva marad (navbar). */
-  window.dispatchEvent(new CustomEvent("eskuvo:nav-hold-shrink", { detail: 3500 }));
-  window.scrollTo({ top, behavior: instant ? "auto" : "smooth" });
-  /* Az igazítás csak a görgetés tényleges megállása után fut (iOS-en a sima
-     görgetés lassabb, a scrollend sincs mindenhol), ezért bármekkora
-     maradék eltérést kijavíthat; utána még egyszer ellenőrzünk, mert a
-     fejléc összehúzódása vagy a Safari eszköztára addigra is mozdíthat. */
-  const settleThenFix = (passes: number) => {
-    let last = -1;
-    let still = 0;
-    const started = Date.now();
-    const tick = () => {
-      const y = window.scrollY;
-      still = Math.abs(y - last) < 0.5 ? still + 1 : 0;
-      last = y;
-      if (still < 3 && Date.now() - started < 3000) {
-        setTimeout(tick, 80);
-        return;
-      }
-      const off = el.getBoundingClientRect().top - (navBottom() + fromNav);
-      if (Math.abs(off) > 1) {
-        window.scrollBy({ top: off, behavior: "auto" });
-        if (passes > 1) setTimeout(() => settleThenFix(passes - 1), 120);
-      }
-    };
-    setTimeout(tick, 120);
+  const goalOffset = () => el.getBoundingClientRect().top - ((nav ? nav.getBoundingClientRect().bottom : 44) + fromNav);
+  /* A görgetés idejére a fejléc összehúzva marad (navbar). */
+  window.dispatchEvent(new CustomEvent("eskuvo:nav-hold-shrink", { detail: 2500 }));
+  if (instant) {
+    requestAnimationFrame(() => {
+      window.scrollBy({ top: goalOffset(), behavior: "auto" });
+      requestAnimationFrame(() => window.scrollBy({ top: goalOffset(), behavior: "auto" }));
+    });
+    return;
+  }
+  const startY = window.scrollY;
+  const dist = Math.abs(goalOffset());
+  const duration = Math.min(1100, Math.max(550, 450 + dist * 0.35));
+  const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const t0 = performance.now();
+  /* A felhasználó érintése/görgetése megszakítja az animációt. */
+  let cancelled = false;
+  const cancel = () => { cancelled = true; };
+  window.addEventListener("touchstart", cancel, { once: true, passive: true });
+  window.addEventListener("wheel", cancel, { once: true, passive: true });
+  const step = (now: number) => {
+    if (cancelled) return;
+    const t = Math.min(1, (now - t0) / duration);
+    /* A cél aktuális helye a dokumentumban (menet közben változhat). */
+    const goalY = window.scrollY + goalOffset();
+    window.scrollTo(0, startY + (goalY - startY) * ease(t));
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      window.removeEventListener("touchstart", cancel);
+      window.removeEventListener("wheel", cancel);
+    }
   };
-  settleThenFix(2);
+  requestAnimationFrame(step);
 }
 
 /** A főoldali töltőképernyő (HomeLoader) értesítése a betöltés állásáról. */
