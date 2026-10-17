@@ -1500,29 +1500,32 @@ html.a11y-underline a { text-decoration: underline !important; }
   100% { opacity: 0; transform: translate(-50%, -50%) translate(calc(var(--sx) * -0.12), var(--fall)) rotate(calc(var(--r0) + var(--r1))) scale(0.85); }
 }
 
-/* Sminkes dia: lassú ráközelítés az ecset hegye felé (a hegy a helyén
-   marad), és onnan felszálló púderszemcsék. */
-.mobile-hero-zoom-smink {
-  transform-origin: 68% 42%;
-  animation: mobile-hero-zoom-smink 5.5s cubic-bezier(0.25, 0.1, 0.25, 1) both;
-}
-@keyframes mobile-hero-zoom-smink {
-  from { transform: scale(1); }
-  to   { transform: scale(1.12); }
-}
-.mhb-powder {
+/* Sminkes dia: highlighter-szerű, meleg fény fut végig ferdén az arcon
+   (az arc köré maszkolva), majd apró csillanások villannak fel. */
+.mhb-glow-sweep {
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 238, 220, 0.75) 48%, rgba(255, 250, 242, 0.9) 50%, rgba(255, 238, 220, 0.75) 52%, transparent 62%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  mix-blend-mode: screen;
   opacity: 0;
-  box-shadow: 0 0 4px 1px rgba(255, 230, 205, 0.7);
-  animation-name: mhb-powder;
-  animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: mhb-glow-sweep 1.5s cubic-bezier(0.45, 0.05, 0.4, 1) 1.5s both;
 }
-@keyframes mhb-powder {
-  0%   { opacity: 0; transform: translate(-50%, -50%) translate(0, 0) scale(0.6); }
-  15%  { opacity: 0.95; }
-  70%  { opacity: 0.6; }
-  100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(1.1); }
+@keyframes mhb-glow-sweep {
+  0%   { opacity: 0; background-position: 100% 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { opacity: 0; background-position: 0% 0; }
+}
+.mhb-glow-sparkle {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 1)) drop-shadow(0 0 8px rgba(255, 214, 170, 0.95));
+  animation: mhb-glow-sparkle 0.9s ease-out both;
+}
+@keyframes mhb-glow-sparkle {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+  30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15) rotate(30deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(70deg); }
 }
 
 /* A ráközelítés végén egy vakuvillanás a REC kereten belül: hirtelen fel,
@@ -1552,7 +1555,6 @@ html.a11y-underline a { text-decoration: underline !important; }
   .hero-slide-in,
   .mobile-hero-zoom,
   .mobile-hero-zoom-fotos,
-  .mobile-hero-zoom-smink,
   .mobile-hero-flash,
   .mobile-hero-dim,
   .mobile-hero-text,
