@@ -310,13 +310,6 @@ export function MobileHeroBanner() {
       setHeroProgress(1, true);
     };
     /* A videó végén lapoz (megállított vetítésnél a loop ismétli). */
-    /* A ~4 mp-es videót enyhén lassítva a dia hosszára (INTERVAL_MS)
-       nyújtjuk, így pont a dia végén ér véget (és sötétül el). */
-    const fitRate = (v: HTMLVideoElement) => {
-      if (!v.duration) return;
-      const rate = Math.min(1, v.duration / (INTERVAL_MS / 1000));
-      if (Math.abs(v.playbackRate - rate) > 0.01) v.playbackRate = rate;
-    };
     const advance = () => {
       if (indexRef.current === 0 && !pausedRef.current) setIndex(1 % SLIDES.length);
     };
@@ -325,11 +318,10 @@ export function MobileHeroBanner() {
       if (!isFirst(e)) return;
       clearTimeout(endTimer);
       const v = e.target as HTMLVideoElement;
-      fitRate(v);
       if (!v.duration || v.paused) return;
       const left = ((v.duration - v.currentTime) / (v.playbackRate || 1)) * 1000;
-      /* +100 ms tartalék: lassított lejátszásnál az időzítő és a videó órája
-         kissé elcsúszhat, a végére így biztosan teljesen sötét a kép. */
+      /* +100 ms tartalék: az időzítő és a videó órája kissé elcsúszhat, a
+         végére így biztosan teljesen sötét a kép. */
       endTimer = setTimeout(advance, Math.max(0, left - FADE_OUT_MS - 100));
     };
     const unschedule = (e: Event) => { if (isFirst(e)) clearTimeout(endTimer); };
@@ -351,7 +343,6 @@ export function MobileHeroBanner() {
       ["canplaythrough", onReady],
       ["error", onError],
       ["ended", onEnded],
-      ["loadedmetadata", (e: Event) => { if (isFirst(e)) fitRate(e.target as HTMLVideoElement); }],
       ["playing", schedule],
       ["seeked", schedule],
       ["ratechange", schedule],
