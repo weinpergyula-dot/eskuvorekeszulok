@@ -181,7 +181,9 @@ const SLIDES: MobileSlide[] = [
   },
   {
     key: "torta",
-    img: "/hero-m/torta.webp",
+    /* Új néven, mert a régi (figura nélküli) torta.webp a gyorsítótárakban
+       még a régi képként él. */
+    img: "/hero-m/torta-par.webp",
     alt: "Emeletes esküvői torta rózsákkal és menyasszony–vőlegény figurával",
     /* A figura nélküli tortáról csillogással jelenik meg a pár a tetején. */
     before: "/hero-m/torta-elotte.webp",
