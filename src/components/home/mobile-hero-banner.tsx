@@ -31,6 +31,8 @@ type MobileSlide = {
   focus: string;
   /** A fotó animációja az aktív dián (alapból lassú ráközelítés). */
   zoomClass?: string;
+  /** A haj területén lassú, szélfútta hullámzás (HairWind). */
+  wind?: boolean;
   /** Világos szöveg sötétített képen, vagy sötét szöveg világosított sarokban. */
   tone: Tone;
   /** A szövegblokk helye. */
@@ -111,7 +113,10 @@ const SLIDES: MobileSlide[] = [
     key: "fodrasz",
     img: "/hero-m/fodrasz.webp",
     alt: "Menyasszony virágkoszorúval, hosszú, hullámos hajjal, az ég előtt",
-    focus: "75% 50%",
+    /* A jobb szélhez igazítva, hogy a HairWind (xMaxYMid) rétege pontosan
+       fedje a fotót. */
+    focus: "100% 50%",
+    wind: true,
     tone: "light",
     place: "top",
     eyebrow: "Fodrászok, borbélyok",
@@ -225,6 +230,48 @@ const VideoBackground = memo(function VideoBackground({
     ` data-slide="${slide}" aria-label="${esc(label)}" class="absolute inset-0 h-full w-full object-cover" style="object-position: ${esc(focus)};"></video>`;
   return <div className="absolute inset-0" dangerouslySetInnerHTML={{ __html: html }} suppressHydrationWarning />;
 });
+
+/**
+ * Lassított szél a fodrász dia hajában. A fotó (900 × 1268) egy másolata
+ * SVG-ben, a haj és a fátyol területére maszkolva (lágy szélű), egy lassan
+ * változó zajjal torzítva (feTurbulence + feDisplacementMap): a tincsek és
+ * a fátyol finoman hullámzanak, az arc, a koszorú és a háttér áll. A réteg
+ * xMaxYMid kivágással pontosan a jobbra igazított (100% 50%) fotót fedi, és
+ * a fotóval azonos ráközelítést kap.
+ */
+function HairWind({ src, className }: { src: string; className: string }) {
+  const ease = "0.45 0 0.55 1;0.45 0 0.55 1";
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 900 1268"
+      preserveAspectRatio="xMaxYMid slice"
+      className={`absolute inset-0 h-full w-full ${className}`}
+    >
+      <defs>
+        <filter id="mhb-wind" filterUnits="userSpaceOnUse" x="640" y="300" width="270" height="760" colorInterpolationFilters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.004 0.011" numOctaves={1} seed={4} result="noise">
+            <animate attributeName="baseFrequency" dur="6s" values="0.004 0.011;0.0055 0.015;0.004 0.011" keyTimes="0;0.5;1" calcMode="spline" keySplines={ease} repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale={16} xChannelSelector="R" yChannelSelector="G">
+            <animate attributeName="scale" dur="6s" values="10;26;10" keyTimes="0;0.5;1" calcMode="spline" keySplines={ease} repeatCount="indefinite" />
+          </feDisplacementMap>
+        </filter>
+        <filter id="mhb-wind-soft" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="32" />
+        </filter>
+        <mask id="mhb-wind-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="900" height="1268">
+          <path
+            filter="url(#mhb-wind-soft)"
+            fill="#fff"
+            d="M 770 430 C 800 420 850 440 900 470 L 900 820 C 880 900 850 980 820 1010 C 790 1000 760 960 740 900 C 735 820 745 700 755 600 C 760 520 762 470 770 430 Z"
+          />
+        </mask>
+      </defs>
+      <image href={src} width="900" height="1268" filter="url(#mhb-wind)" mask="url(#mhb-wind-mask)" />
+    </svg>
+  );
+}
 
 /** A főoldali töltőképernyő (HomeLoader) értesítése a betöltés állásáról. */
 function setHeroProgress(value: number, ready = false) {
@@ -472,6 +519,11 @@ export function MobileHeroBanner() {
                 className={`absolute inset-0 h-full w-full object-cover ${on || i === prevIndex ? (s.zoomClass ?? "mobile-hero-zoom") : ""}`}
                 style={{ objectPosition: s.focus }}
               />
+            )}
+
+            {/* Szél a hajban: a fotó fölött a haj területe lassan hullámzik */}
+            {s.wind && s.img && !reduced && (on || i === prevIndex) && (
+              <HairWind src={s.img} className={on || i === prevIndex ? (s.zoomClass ?? "mobile-hero-zoom") : ""} />
             )}
 
             {/* A meghívós dia rajzolt jelenete: a prémium minta lila borítéka */}
