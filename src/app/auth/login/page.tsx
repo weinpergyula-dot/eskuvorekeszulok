@@ -29,6 +29,7 @@ function LoginForm() {
 
   const registered = searchParams.get("registered");
   const reset = searchParams.get("reset");
+  const linkError = searchParams.get("error") === "auth";
   const next = searchParams.get("next");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,6 +91,11 @@ function LoginForm() {
         {reset && (
           <div className="bg-green-50 text-green-700 text-lg px-4 py-3 rounded-xl border border-green-200">
             Jelszavad sikeresen megváltozott. Jelentkezz be.
+          </div>
+        )}
+        {linkError && !error && (
+          <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-lg px-4 py-3 rounded-xl border border-[#F06C6C]/30">
+            A megerősítő link lejárt vagy már nem érvényes. Próbálj meg bejelentkezni – ha a fiókod még nincs megerősítve, regisztrálj újra ugyanezzel az e-mail-címmel, és új megerősítő levelet küldünk.
           </div>
         )}
         {error && (

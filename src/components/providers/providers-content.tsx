@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List, Star } from "lucide-react";
+import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
 import { MeghivoPromoCard } from "./meghivo-promo-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
-import { displayCount, HOUSE_CATEGORY, orderedCategories } from "@/lib/categories";
+import { displayCount, HOUSE_CATEGORY, HOUSE_OFFER_COUNT, orderedCategories } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -177,6 +177,11 @@ function seededShuffle<T>(items: T[], seed: number): T[] {
 }
 
 // ── Providers list ──────────────────────────────────────────────────────────
+/** Kisbetűs, ékezet nélküli alak a kereséshez („Fotós” → „fotos”). */
+function normalizeSearch(text: string): string {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 export function ProvidersContent({
   providers,
   categoryCounts,
@@ -193,6 +198,18 @@ export function ProvidersContent({
   const pathname = usePathname();
   const [category, setCategory] = useState<string>(searchParams.get("category") ?? "");
   const [county, setCounty] = useState<string>(searchParams.get("county") ?? "");
+  /* A főoldalon mobilon a megyeszűrő alapból rejtett; a szekciócím Szűrő
+     gombja nyitja ("eskuvo:toggle-filter"). Ha a címből már szűrt megyével
+     érkezik a látogató, nyitva indul. */
+  const [filterOpen, setFilterOpen] = useState<boolean>(() => !!searchParams.get("county"));
+  useEffect(() => {
+    const h = () => setFilterOpen((v) => !v);
+    window.addEventListener("eskuvo:toggle-filter", h);
+    return () => window.removeEventListener("eskuvo:toggle-filter", h);
+  }, []);
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("eskuvo:filter-state", { detail: { open: filterOpen, active: !!county } }));
+  }, [filterOpen, county]);
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   /* A véletlen sorrend magva. A profil-linkek `sor` paraméterként viszik
@@ -205,6 +222,30 @@ export function ProvidersContent({
   const [countyQuery, setCountyQuery] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  /* Lapváltáskor a lista tetejére ugrunk, hogy az új oldal az elejétől
+     látszódjon (a lapozó a lista alján van). A görgetés csak az új oldal
+     kirajzolása után indul: ha a kártyák cseréje előtt kezdődne, a lap
+     magasságának változása az iOS Safarin félbeszakítaná. */
+  const listTopRef = useRef<HTMLDivElement>(null);
+  const scrollToListTop = useRef(false);
+  const goToPage = (n: number) => {
+    scrollToListTop.current = true;
+    setCurrentPage(n);
+  };
+  useEffect(() => {
+    if (!scrollToListTop.current) return;
+    scrollToListTop.current = false;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const frame = requestAnimationFrame(() => {
+      const el = listTopRef.current;
+      if (!el) return;
+      /* A scroll-mt-24 helyett itt számolunk: a scrollIntoView a Safarin a
+         ragadós fejléc alá is bebújhat. */
+      const top = el.getBoundingClientRect().top + window.scrollY - 96;
+      window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [currentPage]);
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
@@ -221,8 +262,17 @@ export function ProvidersContent({
     window.dispatchEvent(new CustomEvent("eskuvo:category", { detail: category }));
   }, [category]);
 
+  /* A főoldali mobilos kereső (ProvidersSectionTitle) szövege: név, kategória,
+     megye és leírás alapján szűr, kis- és nagybetűtől, ékezettől függetlenül. */
+  const [query, setQuery] = useState("");
+  useEffect(() => {
+    const h = (e: Event) => setQuery((e as CustomEvent<string>).detail ?? "");
+    window.addEventListener("eskuvo:set-query", h);
+    return () => window.removeEventListener("eskuvo:set-query", h);
+  }, []);
+
   // Reset to first page when the result set or page size changes.
-  useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize]);
+  useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize, query]);
 
   /* A listázás aktuális állapota. A szűrők a címsorba is bekerülnek, és a
      szolgáltatói kártyák linkjei is magukkal viszik – így a részletes
@@ -270,8 +320,11 @@ export function ProvidersContent({
   );
 
   // County counts within the current category selection (Országosan counts everywhere).
+  // A saját digitális meghívónk minden megyében elérhető, ezért a Meghívók
+  // között minden megye darabszáma eggyel több.
   const countyCounts = useMemo(() => {
     const m: Record<string, number> = {};
+    if (category === HOUSE_CATEGORY) for (const c of geoCounties) m[c] = HOUSE_OFFER_COUNT;
     for (const p of byCategory) {
       const cos = (p.counties ?? []) as string[];
       if (cos.includes("Országosan")) {
@@ -281,16 +334,28 @@ export function ProvidersContent({
       }
     }
     return m;
-  }, [byCategory, geoCounties]);
+  }, [byCategory, geoCounties, category]);
 
   const countyList = countyQuery.trim()
     ? geoCounties.filter((c) => c.toLowerCase().includes(countyQuery.trim().toLowerCase()))
     : geoCounties;
 
   const filtered = useMemo(() => {
-    if (!county) return byCategory;
-    return byCategory.filter((p) => (p.counties ?? []).includes(county) || (p.counties ?? []).includes("Országosan"));
-  }, [byCategory, county]);
+    const byCounty = county
+      ? byCategory.filter((p) => (p.counties ?? []).includes(county) || (p.counties ?? []).includes("Országosan"))
+      : byCategory;
+    const words = normalizeSearch(query).split(/\s+/).filter(Boolean);
+    if (!words.length) return byCounty;
+    return byCounty.filter((p) => {
+      const haystack = normalizeSearch([
+        p.full_name,
+        ...(p.categories ?? []).map((c) => CATEGORY_LABELS[c as ServiceCategory] ?? c),
+        ...(p.counties ?? []),
+        p.description ?? "",
+      ].join(" "));
+      return words.every((w) => haystack.includes(w));
+    });
+  }, [byCategory, county, query]);
 
   const featured = useMemo(() => filtered.filter((p) => p.featured).sort((a, b) => tier(b.featured) - tier(a.featured)), [filtered]);
   const normal = useMemo(() => filtered.filter((p) => !p.featured), [filtered]);
@@ -307,8 +372,13 @@ export function ProvidersContent({
 
   /* A Meghívók között a saját digitális meghívónk is ott van: a lista élére
      kerül egy kiemelt sávként, és a darabszám is számol vele. */
-  const showHouseOffer = category === HOUSE_CATEGORY;
-  const resultCount = filtered.length + (showHouseOffer ? 1 : 0);
+  const showHouseOffer = category === HOUSE_CATEGORY && !query;
+  const resultCount = filtered.length + (showHouseOffer ? HOUSE_OFFER_COUNT : 0);
+  /* A főoldali szekciócím a darabszámot is mutatja (lásd
+     ProvidersSectionTitle). */
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("eskuvo:count", { detail: resultCount }));
+  }, [resultCount]);
   const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5";
 
   // Pagination counts featured + normal together; featured stay at the front.
@@ -316,12 +386,8 @@ export function ProvidersContent({
   const totalPages = Math.max(1, Math.ceil(combined.length / pageSize));
   const page = Math.min(currentPage, totalPages);
   const pageItems = combined.slice((page - 1) * pageSize, page * pageSize);
-  const pageFeatured = pageItems.filter((p) => p.featured);
-  const pageNormal = pageItems.filter((p) => !p.featured);
-  /* A sáv az első oldal legelső helyén áll: ha van kiemelt szolgáltató, annak
-     a rácsában, különben a normál lista élén. */
-  const houseOfferInFeatured = showHouseOffer && page === 1 && pageFeatured.length > 0;
-  const houseOfferHere = showHouseOffer && page === 1 && pageFeatured.length === 0;
+  /* A meghívó-ajánlat az első oldal legelső helyén áll. */
+  const houseOfferHere = showHouseOffer && page === 1;
   const pageNumbers = ((): (number | "…")[] => {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
     const pages: (number | "…")[] = [1];
@@ -332,6 +398,41 @@ export function ProvidersContent({
     return pages;
   })();
 
+  /* A lapozó a lista alján. */
+  const renderPager = (className: string) => totalPages > 1 ? (
+    <div className={`flex items-center gap-1 flex-wrap ${className}`}>
+      <button
+        onClick={() => goToPage(Math.max(1, page - 1))}
+        disabled={page === 1}
+        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+        aria-label="Előző oldal"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+      {pageNumbers.map((n, i) =>
+        n === "…" ? (
+          <span key={`e-${i}`} className="px-2 text-gray-400 select-none">…</span>
+        ) : (
+          <button
+            key={n}
+            onClick={() => goToPage(n)}
+            className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#84AAA6] border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
+          >
+            {n}
+          </button>
+        ),
+      )}
+      <button
+        onClick={() => goToPage(Math.min(totalPages, page + 1))}
+        disabled={page === totalPages}
+        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+        aria-label="Következő oldal"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </button>
+    </div>
+  ) : null;
+
   const pillCls = (active: boolean) =>
     cn(
       "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
@@ -340,9 +441,10 @@ export function ProvidersContent({
 
   return (
     <div>
-      <p className="text-base text-gray-700 mb-5">
-        {hideCategoryPills ? "Szűrj megyék szerint" : "Válassz kategóriát és szűrj megyék szerint"}
-      </p>
+      {/* A főoldalon nincs bevezető szöveg: a megyeszűrő magáért beszél. */}
+      {!hideCategoryPills && (
+        <p className="text-base text-gray-700 mb-5">Válassz kategóriát és szűrj megyék szerint</p>
+      )}
       <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
       {/* Desktop county sidebar (left, full height) */}
       <aside className="hidden lg:block lg:w-64 shrink-0">
@@ -394,10 +496,20 @@ export function ProvidersContent({
         )}
 
         {/* ── Controls ── */}
-        <div className="mb-6">
+        <div ref={listTopRef} className="mb-6 scroll-mt-24">
           {/* Desktop: count left, page size + view + sort right */}
           <div className="hidden lg:flex items-center justify-between gap-3">
-            <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>
+            {/* A főoldalon itt áll a szekció címe (Összes szolgáltató, ill. a
+                kategória neve) a darabszámmal; mobilon a ProvidersSectionTitle
+                mutatja a lista fölött. */}
+            {hideCategoryPills ? (
+              <h2 className="text-[24px] font-bold text-gray-900">
+                {CATEGORY_LABELS[category as ServiceCategory] ?? "Összes szolgáltató"}
+                <span className="font-semibold text-gray-500"> ({resultCount})</span>
+              </h2>
+            ) : (
+              <p className="text-lg text-gray-900">{resultCount} szolgáltató</p>
+            )}
             <div className="flex items-stretch gap-2">
               <PageSizeSelect pageSize={pageSize} setPageSize={setPageSize} />
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
@@ -405,14 +517,20 @@ export function ProvidersContent({
             </div>
           </div>
 
-          {/* Mobile: county (full), then view + sort + page size filling one row.
-              A kategóriát a főoldalon a gyorskategória-csempék adják, ezért ott
-              a legördülő is elmarad. */}
+          {/* Mobile: category + county (full), then view + sort + page size
+              filling one row. A főoldalon a két szűrő csak a Szűrő gombra
+              nyílik ki. */}
           <div className="lg:hidden space-y-2">
-            {!hideCategoryPills && (
+            {/* A főoldalon a kategória-legördülő (darabszámokkal) is a Szűrő
+                gombra jelenik meg, a megyeszűrő fölött; a választás a
+                gyorskategória-csempékkel és a szekciócímmel szinkronban marad
+                (eskuvo:category esemény). */}
+            {(!hideCategoryPills || filterOpen) && (
               <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
             )}
-            <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
+            {(!hideCategoryPills || filterOpen) && (
+              <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
+            )}
             <div className="grid grid-cols-[auto_1fr_auto] items-stretch gap-2">
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
               <SortDropdown sortBy={sortBy} setSortBy={setSortBy} fill />
@@ -425,76 +543,26 @@ export function ProvidersContent({
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
-            <p className="text-gray-900 text-lg">A kiválasztott szűrőkre egyelőre nincs szolgáltató.</p>
+            <p className="text-gray-900 text-lg">
+              {query ? <>A(z) „{query}” keresésre nincs szolgáltató a kiválasztott szűrőkkel.</> : "A kiválasztott szűrőkre egyelőre nincs szolgáltató."}
+            </p>
           </div>
         ) : (
           <>
-            {/* Mobile: result count above the list */}
-            <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>
-            {/* Featured (on this page) on top */}
-            {pageFeatured.length > 0 && (
-              <section className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  Kiemelt szolgáltatók
-                </h2>
-                <div className={gridCls}>
-                  {houseOfferInFeatured && <MeghivoPromoCard listView={viewMode === "list"} />}
-                  {pageFeatured.map((p) => (
-                    <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
-                  ))}
-                </div>
-              </section>
-            )}
+            {/* Mobile: result count above the list – a főoldalon nem kell, ott
+                a darabszám a szekció címében van. */}
+            {!hideCategoryPills && <p className="lg:hidden text-lg text-gray-900 mb-4">{resultCount} szolgáltató</p>}
+            {/* Egyetlen lista, címsorok nélkül: elöl a saját meghívó-ajánlatunk,
+                utána a kiemelt szolgáltatók (a kártyájukon a „Kiemelt
+                szolgáltató" címkével), majd a többiek. */}
+            <div className={gridCls}>
+              {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
+              {pageItems.map((p) => (
+                <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
+              ))}
+            </div>
 
-            {pageFeatured.length > 0 && pageNormal.length > 0 && (
-              <div className="border-t border-gray-200 mt-2 mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mt-6">További szolgáltatók</h2>
-              </div>
-            )}
-
-            {(pageNormal.length > 0 || houseOfferHere) && (
-              <div className={gridCls}>
-                {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
-                {pageNormal.map((p) => (
-                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
-                ))}
-              </div>
-            )}
-
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-1 mt-8 flex-wrap">
-                    <button
-                      onClick={() => setCurrentPage(Math.max(1, page - 1))}
-                      disabled={page === 1}
-                      className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                      aria-label="Előző oldal"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </button>
-                    {pageNumbers.map((n, i) =>
-                      n === "…" ? (
-                        <span key={`e-${i}`} className="px-2 text-gray-400 select-none">…</span>
-                      ) : (
-                        <button
-                          key={n}
-                          onClick={() => setCurrentPage(n)}
-                          className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#84AAA6] border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
-                        >
-                          {n}
-                        </button>
-                      ),
-                    )}
-                    <button
-                      onClick={() => setCurrentPage(Math.min(totalPages, page + 1))}
-                      disabled={page === totalPages}
-                      className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                      aria-label="Következő oldal"
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                )}
+            {renderPager("justify-center mt-8")}
           </>
         )}
       </div>

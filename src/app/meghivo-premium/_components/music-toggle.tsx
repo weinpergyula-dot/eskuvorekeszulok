@@ -42,7 +42,7 @@ export function MusicToggle({ src, title }: { src: string; title: string }) {
         type="button"
         onClick={toggle}
         aria-pressed={playing}
-        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full border border-[var(--prm-line)] bg-[#2A1733]/90 px-4 py-2.5 text-sm text-[var(--prm-rose)] backdrop-blur transition-colors hover:bg-[#351D40]"
+        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full border border-[var(--prm-line)] bg-[#331C23]/90 px-4 py-2.5 text-sm text-[var(--prm-rose)] backdrop-blur transition-colors hover:bg-[#40242C]"
       >
         {playing ? <Pause className="h-4 w-4" /> : <Music className="h-4 w-4" />}
         <span className="hidden sm:inline">{playing ? "Zene szünetel" : title}</span>

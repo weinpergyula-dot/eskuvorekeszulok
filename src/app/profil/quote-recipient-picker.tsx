@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Heart, Star } from "lucide-react";
 
 /**
@@ -43,13 +43,18 @@ export function RecipientPicker({
   userId,
   checkedIds,
   setCheckedIds,
+  initialCheckedId,
 }: {
   category: string;
   counties: string[];
   userId?: string;
   checkedIds: Set<string>;
   setCheckedIds: (ids: Set<string>) => void;
+  /** Az első találati listában ő előre be van jelölve (szolgáltatói
+      kártyáról indított ajánlatkérés). */
+  initialCheckedId?: string;
 }) {
+  const pendingInitialId = useRef(initialCheckedId);
   /* A találatot a lekérdezés kulcsával együtt tároljuk, így a szűrő
      változásakor a régi lista magától érvénytelen lesz – nem kell külön
      nullázni, és nem indul fölösleges újrarenderelés. */
@@ -67,10 +72,14 @@ export function RecipientPicker({
       .then(r => r.json())
       .then(d => {
         if (cancelled) return;
-        setResult({ key: queryKey, list: (d.providers ?? []) as MatchingProvider[] });
+        const list = (d.providers ?? []) as MatchingProvider[];
+        setResult({ key: queryKey, list });
         // Alapból senki nincs kijelölve – a címzetteket kifejezetten a
-        // látogató választja ki.
-        setCheckedIds(new Set());
+        // látogató választja ki. Kivétel a szolgáltató, akinek a kártyájáról
+        // az ajánlatkérés indult: ő az első listában bejelölve érkezik.
+        const initialId = pendingInitialId.current;
+        pendingInitialId.current = undefined;
+        setCheckedIds(initialId && list.some(p => p.id === initialId) ? new Set([initialId]) : new Set());
       })
       .catch(() => {});
     return () => { cancelled = true; };

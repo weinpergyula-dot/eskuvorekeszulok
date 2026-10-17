@@ -75,7 +75,7 @@ export function BackgroundMusic() {
         onClick={toggle}
         aria-label={playing ? "Zene kikapcsolása" : "Zene bekapcsolása"}
         title={playing ? "Zene kikapcsolása" : "Zene bekapcsolása"}
-        className="fixed bottom-5 right-5 z-40 flex items-center justify-center w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm text-[#84AAA6] opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+        className="floating-corner fixed bottom-5 right-5 z-40 flex items-center justify-center w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm text-[#84AAA6] opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
       >
         <span className="relative inline-flex">
           <Music2 className="h-5 w-5" strokeWidth={2} />

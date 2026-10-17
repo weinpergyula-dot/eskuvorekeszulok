@@ -171,7 +171,7 @@ export default function MeghivoPremiumPage() {
 
           <a
             href="#visszajelzes"
-            className="mt-12 inline-flex items-center gap-2 rounded-full border border-[var(--prm-line)] bg-[rgba(232,180,212,0.08)] px-7 py-3 text-sm tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(232,180,212,0.18)]"
+            className="mt-12 inline-flex items-center gap-2 rounded-full border border-[var(--prm-line)] bg-[rgba(211,173,184,0.08)] px-7 py-3 text-sm tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(211,173,184,0.18)]"
           >
             Visszajelzek
           </a>
@@ -287,7 +287,7 @@ export default function MeghivoPremiumPage() {
                         href={maps}
                         target="_blank"
                         rel="noopener"
-                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--prm-line)] px-4 py-2 text-xs tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(232,180,212,0.12)]"
+                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--prm-line)] px-4 py-2 text-xs tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(211,173,184,0.12)]"
                       >
                         <MapPin className="h-3.5 w-3.5" />
                         Megnyitom a térképen

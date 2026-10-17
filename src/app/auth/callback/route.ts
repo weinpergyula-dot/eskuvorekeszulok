@@ -1,5 +1,22 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+
+async function isEmailConfirmed(email: string): Promise<boolean> {
+  try {
+    const admin = createAdminClient();
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("user_id")
+      .eq("email", email.trim().toLowerCase())
+      .maybeSingle();
+    if (!profile?.user_id) return false;
+    const { data } = await admin.auth.admin.getUserById(profile.user_id);
+    return !!(data?.user?.email_confirmed_at || data?.user?.confirmed_at);
+  } catch {
+    return false;
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -94,12 +111,24 @@ export async function GET(request: NextRequest) {
     });
 
     if (tokenHash && type) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as any });
-      if (!error) {
-        await supabase.auth.signOut();
-        return response;
+      /* A megerősítő levél magiclink tokent küld; ha a GoTrue megerősítő
+         (signup) tokenként tárolta, a többi típussal is megpróbáljuk. */
+      const types = [type, ...["magiclink", "email", "signup"].filter((t) => t !== type)];
+      for (const t of types) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: t as any });
+        if (!error) {
+          await supabase.auth.signOut();
+          return response;
+        }
       }
+
+      /* A token egyszer használható: ha a levelezőprogram vagy egy
+         linkellenőrző már megnyitotta (és ezzel megerősítette a fiókot),
+         a látogató kattintására már elutasítja. Ilyenkor a fiók állapota
+         dönt: ha megerősített, a sikeres megerősítés oldalára visszük. */
+      const email = searchParams.get("email");
+      if (email && (await isEmailConfirmed(email))) return response;
     }
 
     return NextResponse.redirect(`${origin}/auth/login?error=auth`);

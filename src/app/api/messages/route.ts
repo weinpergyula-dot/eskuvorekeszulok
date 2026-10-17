@@ -87,7 +87,32 @@ export async function POST(req: Request) {
     body: body.trim(),
   }).select("id").single();
 
-  if (error) { await logError("api/messages POST", error.message, { sender: user.id, recipient_id }); return NextResponse.json({ error: error.message }, { status: 500 }); }
+  if (error) {
+    /* 23503 = idegenkulcs-hiba: a címzett fiókja nem létezik (pl. árva
+       szolgáltatói sor, lásd supabase/orphan_provider_check.sql). Ez
+       adathiba, nem a felhasználóé – érthető üzenetet kap, a naplóba pedig
+       a szolgáltató neve is bekerül, hogy könnyű legyen megtalálni. */
+    if (error.code === "23503") {
+      const { data: provider } = await createAdminClient()
+        .from("providers")
+        .select("id, full_name")
+        .eq("user_id", recipient_id)
+        .maybeSingle();
+      await logError("api/messages POST", "a címzett fiókja hiányzik (idegenkulcs-hiba)", {
+        sender: user.id,
+        recipient_id,
+        provider_id: provider?.id ?? null,
+        provider_name: provider?.full_name ?? null,
+        db_error: error.message,
+      });
+      return NextResponse.json(
+        { error: "Ennek a szolgáltatónak jelenleg nem lehet üzenetet küldeni. Kérjük, próbáld később, vagy keresd az elérhetőségein." },
+        { status: 409 }
+      );
+    }
+    await logError("api/messages POST", error.message, { sender: user.id, recipient_id });
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   // Értesítés küldése (fire-and-forget – nem blokkolja a választ)
   const origin = new URL(req.url).origin;

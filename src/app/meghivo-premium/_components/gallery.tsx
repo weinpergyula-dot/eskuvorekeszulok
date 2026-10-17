@@ -53,14 +53,14 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
               loading="lazy"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
-            <span className="absolute inset-0 bg-[#1A0E1E]/25 transition-opacity duration-300 group-hover:opacity-0" />
+            <span className="absolute inset-0 bg-[#1E1115]/25 transition-opacity duration-300 group-hover:opacity-0" />
           </button>
         ))}
       </div>
 
       {open !== null && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#120814]/95 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#140A0D]/95 p-4"
           onClick={close}
           role="dialog"
           aria-modal="true"

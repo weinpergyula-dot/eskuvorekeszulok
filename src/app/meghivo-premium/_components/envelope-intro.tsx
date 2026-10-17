@@ -119,17 +119,17 @@ export function EnvelopeIntro({
             <div className="prm-env-card">
               <p
                 className="text-[10px] uppercase tracking-[0.3em]"
-                style={{ color: "#9A5182" }}
+                style={{ color: "#8C5666" }}
               >
                 Meghívó
               </p>
               <p
                 className="prm-script mt-3 text-[2rem] leading-none"
-                style={{ color: "#8F3671" }}
+                style={{ color: "#7E4254" }}
               >
                 {monogram}
               </p>
-              <p className="prm-serif mt-3 text-xl leading-snug" style={{ color: "#4A1B3D" }}>
+              <p className="prm-serif mt-3 text-xl leading-snug" style={{ color: "#4A242F" }}>
                 {names}
               </p>
               {/* A dátum sorsjegyszerű bevonat alatt – ezt kell lesatírozni.
@@ -138,7 +138,7 @@ export function EnvelopeIntro({
               <div className="mt-4">
                 <ScratchDate items={dateParts} onComplete={() => setScratched(true)} />
               </div>
-              <p className="mt-3 text-[13px]" style={{ color: "#7C4468" }}>
+              <p className="mt-3 text-[13px]" style={{ color: "#714853" }}>
                 {place}
               </p>
             </div>
