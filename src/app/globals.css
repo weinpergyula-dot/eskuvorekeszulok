@@ -1485,6 +1485,15 @@ html.a11y-underline a { text-decoration: underline !important; }
   from { opacity: 1; }
   to   { opacity: 0; }
 }
+/* A virágos dia „Csokor & dekor” matricája a szirmokkal együtt pattan
+   elő (a forgatást a rotate tulajdonság adja, ez csak méretez). */
+.mhb-sticker-pop {
+  animation: mhb-sticker-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 1.9s both;
+}
+@keyframes mhb-sticker-pop {
+  from { opacity: 0; transform: scale(0.2); }
+  to   { opacity: 1; transform: scale(1); }
+}
 /* Egy szirom: a kép szélén túlról kavarog be (--sx/--sy eltolás), a
    helyén (left/top) megpihen, majd forogva lehullik és elhalványul. */
 .mhb-petal {
@@ -1500,22 +1509,7 @@ html.a11y-underline a { text-decoration: underline !important; }
   100% { opacity: 0; transform: translate(-50%, -50%) translate(calc(var(--sx) * -0.12), var(--fall)) rotate(calc(var(--r0) + var(--r1))) scale(0.85); }
 }
 
-/* Sminkes dia: highlighter-szerű, meleg fény fut végig ferdén az arcon
-   (az arc köré maszkolva), majd apró csillanások villannak fel. */
-.mhb-glow-sweep {
-  background: linear-gradient(115deg, transparent 38%, rgba(255, 238, 220, 0.75) 48%, rgba(255, 250, 242, 0.9) 50%, rgba(255, 238, 220, 0.75) 52%, transparent 62%);
-  background-size: 300% 100%;
-  background-position: 100% 0;
-  mix-blend-mode: screen;
-  opacity: 0;
-  animation: mhb-glow-sweep 1.5s cubic-bezier(0.45, 0.05, 0.4, 1) 1.5s both;
-}
-@keyframes mhb-glow-sweep {
-  0%   { opacity: 0; background-position: 100% 0; }
-  15%  { opacity: 1; }
-  85%  { opacity: 1; }
-  100% { opacity: 0; background-position: 0% 0; }
-}
+/* Sminkes dia: apró csillanások villannak fel az arcon. */
 .mhb-glow-sparkle {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0);

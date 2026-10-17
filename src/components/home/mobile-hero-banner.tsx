@@ -31,9 +31,8 @@ type MobileSlide = {
   focus: string;
   /** A fotó animációja az aktív dián (alapból lassú ráközelítés). */
   zoomClass?: string;
-  /** „Ragyogás”: highlighter-szerű fény az arcon (ellipszis közép/méret %)
-      és apró csillanások (hely %, késleltetés mp). */
-  glow?: { cx: number; cy: number; rx: number; ry: number; sparkles: { x: number; y: number; delay: number; size: number }[] };
+  /** „Ragyogás”: apró csillanások az arcon (hely %, késleltetés mp, méret px). */
+  glow?: { sparkles: { x: number; y: number; delay: number; size: number }[] };
   /** „Előtte” kép: a dián ebből fésüli át a fésű a kész (img) képre. */
   before?: string;
   /** Az átváltás módja: csillogás (fentről lefelé) vagy virágszirmok
@@ -158,13 +157,8 @@ const SLIDES: MobileSlide[] = [
     img: "/hero-m/smink.webp",
     alt: "Menyasszonyi smink készül",
     focus: "45% 25%",
-    /* Highlighter-szerű fény fut végig az arcon (arccsont, orrnyereg,
-       száj), majd csillanás a szem sarkánál és a szájszélen. */
+    /* Egymás után csillanás az orrnyergen, a szem sarkánál és a szájszélen. */
     glow: {
-      cx: 57,
-      cy: 47,
-      rx: 26,
-      ry: 17,
       sparkles: [
         { x: 51, y: 44, delay: 2.55, size: 22 },
         { x: 69, y: 40.5, delay: 3.0, size: 30 },
@@ -656,17 +650,10 @@ export function MobileHeroBanner() {
               </span>
             )}
 
-            {/* Sminkes dia: „Ragyogj” – highlighter-fény az arcon, majd apró
-                csillanások (globals.css .mhb-glow*) */}
+            {/* Sminkes dia: „Ragyogj” – apró csillanások az arcon
+                (globals.css .mhb-glow-sparkle) */}
             {s.glow && !reduced && (on || i === prevIndex) && (
               <span key={`glow-${animKey}`} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-                <span
-                  className="mhb-glow-sweep absolute inset-0"
-                  style={{
-                    WebkitMaskImage: `radial-gradient(ellipse ${s.glow.rx}% ${s.glow.ry}% at ${s.glow.cx}% ${s.glow.cy}%, #000 35%, transparent 100%)`,
-                    maskImage: `radial-gradient(ellipse ${s.glow.rx}% ${s.glow.ry}% at ${s.glow.cx}% ${s.glow.cy}%, #000 35%, transparent 100%)`,
-                  }}
-                />
                 {s.glow.sparkles.map((sp, k) => (
                   <svg
                     key={k}
@@ -727,10 +714,13 @@ export function MobileHeroBanner() {
             )}
 
             {/* Matrica */}
+            {/* A virágos dián a matrica a szirmokkal együtt „pattan” elő
+                (globals.css .mhb-sticker-pop), a többin végig látszik. */}
             {s.sticker && (
               <span
+                key={`sticker-${s.before && s.beforeFx === "petals" ? animKey : 0}`}
                 aria-hidden
-                className={`absolute grid aspect-square w-28 rotate-[-10deg] place-items-center whitespace-pre-line rounded-full text-center font-['Great_Vibes'] text-[1.7rem] leading-[0.95] shadow-[0_10px_24px_-8px_rgba(0,0,0,0.45)] ring-2 ring-white ${
+                className={`absolute grid aspect-square w-28 rotate-[-10deg] ${s.before && s.beforeFx === "petals" && !reduced ? "mhb-sticker-pop" : ""} place-items-center whitespace-pre-line rounded-full text-center font-['Great_Vibes'] text-[1.7rem] leading-[0.95] shadow-[0_10px_24px_-8px_rgba(0,0,0,0.45)] ring-2 ring-white ${
                   s.key === "torta" ? "left-5 top-[18%] bg-[#F6E3E6] text-[#A0566B]" : "right-5 top-[16%] bg-white/90 text-[#B5677D]"
                 }`}
               >
