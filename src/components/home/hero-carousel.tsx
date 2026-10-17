@@ -244,6 +244,9 @@ const HERO_PHONE_IMAGES = [
 /* A banner összes gombja (mindkét dián) ugyanakkora: azonos magasság,
    szélesség és betűméret. Mobilon a magasság és a betűméret a csoportos
    ajánlatkérés gombjáéval egyezik. */
+/* A lila gombok helyett fehér, üveghatású gomb lila felirattal. */
+const GLASS_CTA =
+  "border border-[#B5677D]/30 bg-white/75 text-[#9A5267] shadow-[0_12px_30px_-10px_rgba(120,60,80,0.35)] backdrop-blur-xl hover:bg-white/95";
 const CTA_SIZE =
   "inline-flex h-12 w-[170px] items-center justify-center gap-1.5 rounded-xl text-[15px] font-bold transition-colors md:h-11 md:w-[200px] md:text-base";
 
@@ -447,8 +450,8 @@ export function HeroCarousel() {
                     <Link
                       href={offer.href}
                       onClick={(e) => scrollToAnchor(e, offer.href)}
-                      className={`hero-offer-cta ${CTA_SIZE} text-white`}
-                      style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
+                      className={`${CTA_SIZE} ${t.cta === "#B5677D" ? GLASS_CTA : "hero-offer-cta text-white"}`}
+                      style={t.cta === "#B5677D" ? undefined : { ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                     >
                       {offer.cta}
                       {/* Az 1. dián a gomb lefelé, a kategóriákhoz gördít */}
@@ -493,8 +496,8 @@ export function HeroCarousel() {
                   <Link
                     href={offer.href}
                     onClick={(e) => scrollToAnchor(e, offer.href, offer.category)}
-                    className={`hero-offer-cta mt-2.5 md:mt-4 ${CTA_SIZE} text-white`}
-                    style={{ ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
+                    className={`mt-2.5 md:mt-4 ${CTA_SIZE} ${t.cta === "#B5677D" ? GLASS_CTA : "hero-offer-cta text-white"}`}
+                    style={t.cta === "#B5677D" ? undefined : { ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                   >
                     {offer.cta}
                     <ArrowRight className="h-4 w-4" />

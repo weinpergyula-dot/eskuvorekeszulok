@@ -204,6 +204,11 @@ const SLIDES: MobileSlide[] = [
   },
 ];
 
+/* A lila gombok helyett fehér, üveghatású gomb lila felirattal. */
+const LILA = "#B5677D";
+const GLASS_CTA =
+  "border border-white/90 bg-white/90 text-[#9A5267] shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] backdrop-blur-md hover:bg-white";
+
 const INTERVAL_MS = 5000;
 /* Csillogó átváltás: a terület (shine.x0–x1, y0–y1, a dián %) sorokba
    rendezett, helyben felvillanó csillagai fentről lefelé sorról sorra
@@ -847,8 +852,8 @@ export function MobileHeroBanner() {
                 {s.href ? (
                   <Link
                     href={s.href}
-                    className={`${CTA} mobile-hero-cta text-white shadow-lg`}
-                    style={{ ["--cta" as string]: s.colorHover, ["--cta-hover" as string]: "#9A5267" }}
+                    className={`${CTA} ${s.colorHover === LILA ? GLASS_CTA : "mobile-hero-cta text-white shadow-lg"}`}
+                    style={s.colorHover === LILA ? undefined : { ["--cta" as string]: s.colorHover, ["--cta-hover" as string]: s.color }}
                   >
                     {s.cta}
                     <ArrowRight className="h-4 w-4" />
@@ -857,8 +862,8 @@ export function MobileHeroBanner() {
                   <a
                     href={s.category ? "#szolgaltatok" : "#kategoriak"}
                     onClick={(e) => go(e, s)}
-                    className={`${CTA} mobile-hero-cta text-white shadow-lg`}
-                    style={{ ["--cta" as string]: light ? s.color : s.colorHover, ["--cta-hover" as string]: light ? s.colorHover : s.color }}
+                    className={`${CTA} ${(light ? s.color : s.colorHover) === LILA ? GLASS_CTA : "mobile-hero-cta text-white shadow-lg"}`}
+                    style={(light ? s.color : s.colorHover) === LILA ? undefined : { ["--cta" as string]: light ? s.color : s.colorHover, ["--cta-hover" as string]: light ? s.colorHover : s.color }}
                   >
                     {s.cta}
                     <ArrowDown className="h-4 w-4" />
