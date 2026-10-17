@@ -1419,6 +1419,9 @@ html.a11y-underline a { text-decoration: underline !important; }
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+/* A vetítésvezérlő elhalványul, ha a banner alja a fejléc alá ért. */
+.mobile-hero-controls { transition: opacity 0.25s ease; }
+.mobile-hero[data-under-nav] .mobile-hero-controls { opacity: 0; pointer-events: none; }
 .mobile-hero-cta { background-color: var(--cta); }
 .mobile-hero-cta:hover { background-color: var(--cta-hover); }
 .mobile-hero-rec { animation: mobile-hero-rec 1.2s steps(2, jump-none) infinite; }

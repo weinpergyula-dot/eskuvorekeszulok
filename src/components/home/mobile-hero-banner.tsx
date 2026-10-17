@@ -534,6 +534,10 @@ export function MobileHeroBanner() {
     const el = sectionRef.current;
     if (!el) return;
     const publish = () => {
+      /* Ha a banner alja már a (félig áttetsző) fejléc alá ért, a
+         vetítésvezérlő elhalványul, hogy ne üssön át a fejlécen. */
+      const bottom = el.getBoundingClientRect().bottom;
+      el.toggleAttribute("data-under-nav", bottom < 110);
       if (window.scrollY > 0) return;
       el.style.setProperty("--hero-top", `${Math.max(el.getBoundingClientRect().top, 0)}px`);
     };
@@ -554,7 +558,34 @@ export function MobileHeroBanner() {
     if (s.category) window.dispatchEvent(new CustomEvent("eskuvo:set-category", { detail: s.category }));
     const target = document.querySelector(s.category ? "#szolgaltatok" : "#kategoriak");
     const reducedNow = window.matchMedia(REDUCED_QUERY).matches;
-    target?.scrollIntoView({ behavior: reducedNow ? "auto" : "smooth", block: "start" });
+    const behavior: ScrollBehavior = reducedNow ? "auto" : "smooth";
+    if (s.category) {
+      target?.scrollIntoView({ behavior, block: "start" });
+      return;
+    }
+    /* A kategóriákhoz: a banner alja kerüljön teljesen a fejléc alá. A
+       fejléc lefelé görgetéskor 44 px-re húzódik össze, és mivel a lap
+       tetején helyet foglal, ettől minden 20 px-szel feljebb csúszik –
+       ezt a célnál előre beszámoljuk, a végén pedig egy azonnali
+       igazítással pontosítunk. */
+    const hero = sectionRef.current;
+    const nav = document.querySelector("nav");
+    if (!hero || !nav) {
+      target?.scrollIntoView({ behavior, block: "start" });
+      return;
+    }
+    const SHRUNK_NAV = 44;
+    const UNDER = 8; // ennyivel a fejléc alja fölé kerüljön a banner alja
+    const wanted = SHRUNK_NAV - UNDER;
+    const shift = Math.max(0, nav.getBoundingClientRect().height - SHRUNK_NAV);
+    const top = window.scrollY + hero.getBoundingClientRect().bottom - shift - wanted;
+    window.scrollTo({ top, behavior });
+    const fix = () => {
+      const off = hero.getBoundingClientRect().bottom - wanted;
+      if (Math.abs(off) > 1) window.scrollBy({ top: off, behavior: "auto" });
+    };
+    if ("onscrollend" in window) window.addEventListener("scrollend", fix, { once: true });
+    else setTimeout(fix, 900);
   };
 
   const active = SLIDES[index];
@@ -816,7 +847,7 @@ export function MobileHeroBanner() {
       })}
 
       {/* Vetítésvezérlő */}
-      <div className="absolute inset-x-0 bottom-4 z-20 px-5">
+      <div className="mobile-hero-controls absolute inset-x-0 bottom-4 z-20 px-5">
         <div className="flex items-center gap-2.5">
           <button
             type="button"
