@@ -112,8 +112,8 @@ const SLIDES: MobileSlide[] = [
     blurb: "Az első pillantástól a hajnali táncig – találd meg a fotóst, aki a ti stílusotokban meséli el.",
     cta: "Fotósok",
     category: "fotosok-videosok",
-    color: "#D5DBDE",
-    colorHover: "#6E7A80",
+    color: "#A9CFCB",
+    colorHover: "#84AAA6",
     overlay: "viewfinder",
   },
   {

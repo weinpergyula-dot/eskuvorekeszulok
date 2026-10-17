@@ -97,7 +97,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
               className="z-0 -mr-6 translate-y-3 -rotate-[9deg] group-hover:-translate-x-2 group-hover:-rotate-[12deg]"
             />
             <MiniPhone
-              src="/meghivo/slide-premium.webp"
+              src="/meghivo/slide-premium-rose.webp"
               label="Premium"
               className="z-10 -translate-y-1 scale-110 group-hover:-translate-y-3"
             />
