@@ -1428,7 +1428,7 @@ html.a11y-underline a { text-decoration: underline !important; }
    ha O + 1,4·(0,5H − O) = 32px + 0,27H, azaz O = 107,5% − 80px. */
 .mobile-hero-zoom-fotos {
   transform-origin: 50% calc(107.5% - 80px);
-  animation: mobile-hero-zoom-fotos 1.6s cubic-bezier(0.45, 0, 0.25, 1) 0.7s both;
+  animation: mobile-hero-zoom-fotos 2s cubic-bezier(0.45, 0, 0.25, 1) 0.8s both;
 }
 @keyframes mobile-hero-zoom-fotos {
   from { transform: scale(1); }
@@ -1436,13 +1436,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 /* A ráközelítés végén egy vakuvillanás a REC kereten belül: hirtelen fel,
    lassabban le. */
-.mobile-hero-flash { opacity: 0; animation: mobile-hero-flash 0.7s ease-out 2.35s both; }
+.mobile-hero-flash { opacity: 0; animation: mobile-hero-flash 0.7s ease-out 2.85s both; }
 /* A villanás után a kereten kívüli kép elsötétül: a keret óriási árnyéka
    fedi le a dia többi részét (a banner overflow-hidden levágja). */
 .mobile-hero-dim {
   box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.5);
   opacity: 0;
-  animation: mobile-hero-dim 0.6s ease-out 2.5s both;
+  animation: mobile-hero-dim 0.7s ease-out 3s both;
 }
 @keyframes mobile-hero-dim {
   to { opacity: 1; }

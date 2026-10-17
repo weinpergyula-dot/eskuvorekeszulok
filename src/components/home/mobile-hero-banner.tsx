@@ -31,8 +31,6 @@ type MobileSlide = {
   focus: string;
   /** A fotó animációja az aktív dián (alapból lassú ráközelítés). */
   zoomClass?: string;
-  /** A haj területén lassú, szélfútta hullámzás (HairWind). */
-  wind?: boolean;
   /** Világos szöveg sötétített képen, vagy sötét szöveg világosított sarokban. */
   tone: Tone;
   /** A szövegblokk helye. */
@@ -113,10 +111,7 @@ const SLIDES: MobileSlide[] = [
     key: "fodrasz",
     img: "/hero-m/fodrasz.webp",
     alt: "Menyasszony virágkoszorúval, hosszú, hullámos hajjal, az ég előtt",
-    /* A jobb szélhez igazítva, hogy a HairWind (xMaxYMid) rétege pontosan
-       fedje a fotót. */
-    focus: "100% 50%",
-    wind: true,
+    focus: "75% 50%",
     tone: "light",
     place: "top",
     eyebrow: "Fodrászok, borbélyok",
@@ -184,7 +179,7 @@ const SLIDES: MobileSlide[] = [
   },
 ];
 
-const INTERVAL_MS = 4000;
+const INTERVAL_MS = 5000;
 /* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
 const VIDEO_SAFETY_MS = 9000;
 /* A régi dia elsötétülésének hossza (globals.css .mobile-hero-slide-out). A
@@ -230,48 +225,6 @@ const VideoBackground = memo(function VideoBackground({
     ` data-slide="${slide}" aria-label="${esc(label)}" class="absolute inset-0 h-full w-full object-cover" style="object-position: ${esc(focus)};"></video>`;
   return <div className="absolute inset-0" dangerouslySetInnerHTML={{ __html: html }} suppressHydrationWarning />;
 });
-
-/**
- * Lassított szél a fodrász dia hajában. A fotó (900 × 1268) egy másolata
- * SVG-ben, a haj és a fátyol területére maszkolva (lágy szélű), egy lassan
- * változó zajjal torzítva (feTurbulence + feDisplacementMap): a tincsek és
- * a fátyol finoman hullámzanak, az arc, a koszorú és a háttér áll. A réteg
- * xMaxYMid kivágással pontosan a jobbra igazított (100% 50%) fotót fedi, és
- * a fotóval azonos ráközelítést kap.
- */
-function HairWind({ src, className }: { src: string; className: string }) {
-  const ease = "0.45 0 0.55 1;0.45 0 0.55 1";
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 900 1268"
-      preserveAspectRatio="xMaxYMid slice"
-      className={`absolute inset-0 h-full w-full ${className}`}
-    >
-      <defs>
-        <filter id="mhb-wind" filterUnits="userSpaceOnUse" x="640" y="300" width="270" height="760" colorInterpolationFilters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.004 0.011" numOctaves={1} seed={4} result="noise">
-            <animate attributeName="baseFrequency" dur="6s" values="0.004 0.011;0.0055 0.015;0.004 0.011" keyTimes="0;0.5;1" calcMode="spline" keySplines={ease} repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale={16} xChannelSelector="R" yChannelSelector="G">
-            <animate attributeName="scale" dur="6s" values="10;26;10" keyTimes="0;0.5;1" calcMode="spline" keySplines={ease} repeatCount="indefinite" />
-          </feDisplacementMap>
-        </filter>
-        <filter id="mhb-wind-soft" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="32" />
-        </filter>
-        <mask id="mhb-wind-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="900" height="1268">
-          <path
-            filter="url(#mhb-wind-soft)"
-            fill="#fff"
-            d="M 770 430 C 800 420 850 440 900 470 L 900 820 C 880 900 850 980 820 1010 C 790 1000 760 960 740 900 C 735 820 745 700 755 600 C 760 520 762 470 770 430 Z"
-          />
-        </mask>
-      </defs>
-      <image href={src} width="900" height="1268" filter="url(#mhb-wind)" mask="url(#mhb-wind-mask)" />
-    </svg>
-  );
-}
 
 /** A főoldali töltőképernyő (HomeLoader) értesítése a betöltés állásáról. */
 function setHeroProgress(value: number, ready = false) {
@@ -357,6 +310,13 @@ export function MobileHeroBanner() {
       setHeroProgress(1, true);
     };
     /* A videó végén lapoz (megállított vetítésnél a loop ismétli). */
+    /* A ~4 mp-es videót enyhén lassítva a dia hosszára (INTERVAL_MS)
+       nyújtjuk, így pont a dia végén ér véget (és sötétül el). */
+    const fitRate = (v: HTMLVideoElement) => {
+      if (!v.duration) return;
+      const rate = Math.min(1, v.duration / (INTERVAL_MS / 1000));
+      if (Math.abs(v.playbackRate - rate) > 0.01) v.playbackRate = rate;
+    };
     const advance = () => {
       if (indexRef.current === 0 && !pausedRef.current) setIndex(1 % SLIDES.length);
     };
@@ -365,9 +325,12 @@ export function MobileHeroBanner() {
       if (!isFirst(e)) return;
       clearTimeout(endTimer);
       const v = e.target as HTMLVideoElement;
+      fitRate(v);
       if (!v.duration || v.paused) return;
       const left = ((v.duration - v.currentTime) / (v.playbackRate || 1)) * 1000;
-      endTimer = setTimeout(advance, Math.max(0, left - FADE_OUT_MS));
+      /* +100 ms tartalék: lassított lejátszásnál az időzítő és a videó órája
+         kissé elcsúszhat, a végére így biztosan teljesen sötét a kép. */
+      endTimer = setTimeout(advance, Math.max(0, left - FADE_OUT_MS - 100));
     };
     const unschedule = (e: Event) => { if (isFirst(e)) clearTimeout(endTimer); };
     /* Tartalék: ha az időzítő valamiért nem futott le. */
@@ -388,6 +351,7 @@ export function MobileHeroBanner() {
       ["canplaythrough", onReady],
       ["error", onError],
       ["ended", onEnded],
+      ["loadedmetadata", (e: Event) => { if (isFirst(e)) fitRate(e.target as HTMLVideoElement); }],
       ["playing", schedule],
       ["seeked", schedule],
       ["ratechange", schedule],
@@ -521,11 +485,6 @@ export function MobileHeroBanner() {
               />
             )}
 
-            {/* Szél a hajban: a fotó fölött a haj területe lassan hullámzik */}
-            {s.wind && s.img && !reduced && (on || i === prevIndex) && (
-              <HairWind src={s.img} className={on || i === prevIndex ? (s.zoomClass ?? "mobile-hero-zoom") : ""} />
-            )}
-
             {/* A meghívós dia rajzolt jelenete: a prémium minta lila borítéka */}
             {s.overlay === "envelope" && <EnvelopeScene label={s.alt} active={on} />}
 
@@ -577,7 +536,7 @@ export function MobileHeroBanner() {
               <span
                 aria-hidden
                 className={`absolute grid aspect-square w-28 rotate-[-10deg] place-items-center whitespace-pre-line rounded-full text-center font-['Great_Vibes'] text-[1.7rem] leading-[0.95] shadow-[0_10px_24px_-8px_rgba(0,0,0,0.45)] ring-2 ring-white ${
-                  s.key === "torta" ? "right-5 top-[22%] bg-[#F6E3E6] text-[#A0566B]" : "right-5 top-[16%] bg-white/90 text-[#B5677D]"
+                  s.key === "torta" ? "left-5 top-[18%] bg-[#F6E3E6] text-[#A0566B]" : "right-5 top-[16%] bg-white/90 text-[#B5677D]"
                 }`}
               >
                 {s.sticker}
