@@ -176,6 +176,10 @@ const SLIDES: MobileSlide[] = [
 const INTERVAL_MS = 4000;
 /* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
 const VIDEO_SAFETY_MS = 9000;
+/* A régi dia elsötétülésének hossza (globals.css .mobile-hero-slide-out). A
+   videós dia ennyivel a videó vége előtt vált, így a kép a videó utolsó
+   képkockájára sötétül el teljesen – nem látszik, hogy a videó megáll. */
+const FADE_OUT_MS = 700;
 
 const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
 const subscribeReduced = (cb: () => void) => {
@@ -300,9 +304,21 @@ export function MobileHeroBanner() {
       setHeroProgress(1, true);
     };
     /* A videó végén lapoz (megállított vetítésnél a loop ismétli). */
-    const onEnded = (e: Event) => {
-      if (isFirst(e) && indexRef.current === 0 && !pausedRef.current) setIndex(1 % SLIDES.length);
+    const advance = () => {
+      if (indexRef.current === 0 && !pausedRef.current) setIndex(1 % SLIDES.length);
     };
+    let endTimer: ReturnType<typeof setTimeout> | undefined;
+    const schedule = (e: Event) => {
+      if (!isFirst(e)) return;
+      clearTimeout(endTimer);
+      const v = e.target as HTMLVideoElement;
+      if (!v.duration || v.paused) return;
+      const left = ((v.duration - v.currentTime) / (v.playbackRate || 1)) * 1000;
+      endTimer = setTimeout(advance, Math.max(0, left - FADE_OUT_MS));
+    };
+    const unschedule = (e: Event) => { if (isFirst(e)) clearTimeout(endTimer); };
+    /* Tartalék: ha az időzítő valamiért nem futott le. */
+    const onEnded = (e: Event) => { if (isFirst(e)) advance(); };
     /* Ha a töltőképernyő eltűnt, az elejéről indítjuk, hogy ne maradjon le
        semmi abból, ami mögötte már lement. */
     const onLoaderDone = () => {
@@ -319,12 +335,18 @@ export function MobileHeroBanner() {
       ["canplaythrough", onReady],
       ["error", onError],
       ["ended", onEnded],
+      ["playing", schedule],
+      ["seeked", schedule],
+      ["ratechange", schedule],
+      ["pause", unschedule],
+      ["waiting", unschedule],
     ];
     for (const [n, h] of media) window.addEventListener(n, h, true);
     window.addEventListener("eskuvo:loader-done", onLoaderDone);
     return () => {
       for (const [n, h] of media) window.removeEventListener(n, h, true);
       window.removeEventListener("eskuvo:loader-done", onLoaderDone);
+      clearTimeout(endTimer);
     };
   }, [reduced]);
 
@@ -333,22 +355,27 @@ export function MobileHeroBanner() {
     document.querySelectorAll<HTMLVideoElement>("video[data-slide]").forEach((v) => { v.loop = paused; });
   }, [paused]);
 
-  /* A videós dia akkor fut, amikor látszik: odaváltáskor az elejéről indul,
-     elváltáskor megáll. Csökkentett mozgásnál csak a poszter látszik. */
+  /* A videós dia akkor fut, amikor látszik: odaváltáskor az elejéről indul.
+     Elváltáskor csak az elsötétülés után áll meg, hogy közben ne látsszon
+     kimerevített kép. Csökkentett mozgásnál csak a poszter látszik. */
   useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
     document.querySelectorAll<HTMLVideoElement>("video[data-slide]").forEach((v) => {
       const i = Number(v.dataset.slide);
       if (i === index && !reduced) {
         v.muted = true;
         v.currentTime = 0;
         v.play().catch(() => {});
-      } else {
+      } else if (reduced || v.paused) {
         v.pause();
+      } else {
+        timers.push(setTimeout(() => v.pause(), FADE_OUT_MS + 100));
       }
     });
+    return () => timers.forEach(clearTimeout);
   }, [index, reduced]);
 
-  /* Lapozás: a videós dia a videó végén vált (onEnded), a többi
+  /* Lapozás: a videós dia FADE_OUT_MS-sel a videó vége előtt vált, a többi
      INTERVAL_MS után. A videós diánál csak egy tartalék időzítő fut. */
   const videoDrives = !!SLIDES[index].video && !reduced && !videoFailed;
   useEffect(() => {
