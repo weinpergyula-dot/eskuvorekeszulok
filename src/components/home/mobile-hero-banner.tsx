@@ -221,27 +221,32 @@ const SHINE_STARS = (() => {
   return stars;
 })();
 
-/* A virágos dia szirmai: a kép széleiről kavarognak be, és a csokor
-   helye (kb. 78% / 42%) körül gyűlnek össze, majd lehullanak. Rögzített
-   ál-véletlen értékek: cél (x, y %), indulási eltolás (sx, sy px), forgás,
-   hullás, késleltetés, méret, szín. */
+/* A virágos dia szirmai: a kép minden széléről kavarognak be, az egész
+   képen szétszórva pihennek meg egy pillanatra, majd forogva lehullanak.
+   Rögzített ál-véletlen értékek: cél (x, y %), indulási eltolás (sx, sy
+   px), forgás, hullás, késleltetés, méret, szín. */
 const PETALS = (() => {
   let seed = 11;
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
   const colors = ["#F4B6C8", "#F7C9D6", "#EE9DB5", "#FBE3EA", "#FFFFFF", "#F2A8BF"];
-  return Array.from({ length: 26 }, (_, k) => {
+  const cols = 6;
+  const rows = 8;
+  return Array.from({ length: cols * rows }, (_, k) => {
+    /* Rácsba szórva, hogy egyenletesen fedjék a képet */
+    const cx = (k % cols) + 0.15 + rnd() * 0.7;
+    const cy = Math.floor(k / cols) + 0.15 + rnd() * 0.7;
     const ang = rnd() * Math.PI * 2;
-    const dist = 220 + rnd() * 160;
+    const dist = 160 + rnd() * 200;
     return {
-      x: +(78 + (rnd() - 0.5) * 34).toFixed(1),
-      y: +(42 + (rnd() - 0.5) * 30).toFixed(1),
+      x: +((cx / cols) * 100).toFixed(1),
+      y: +((cy / rows) * 96).toFixed(1),
       sx: Math.round(Math.cos(ang) * dist),
-      sy: Math.round(Math.sin(ang) * dist - 120),
+      sy: Math.round(Math.sin(ang) * dist - 140),
       r0: Math.round(rnd() * 360),
       r1: Math.round(360 + rnd() * 540) * (k % 2 ? 1 : -1),
-      fall: Math.round(90 + rnd() * 140),
-      delay: +(1.45 + rnd() * 0.7).toFixed(2),
-      size: Math.round(11 + rnd() * 10),
+      fall: Math.round(90 + rnd() * 160),
+      delay: +(1.4 + rnd() * 0.8).toFixed(2),
+      size: Math.round(11 + rnd() * 11),
       color: colors[k % colors.length],
     };
   });
@@ -411,7 +416,15 @@ export function MobileHeroBanner() {
       v.currentTime = 0;
       v.play().catch(() => {});
     };
-    if (first.readyState >= 4) setHeroProgress(1, true);
+    /* A hidratálás előtt lezajlott események pótlása: ha a videó már
+       betöltött vagy hibára futott, ne várjon rá a töltőképernyő. */
+    let failTimer: ReturnType<typeof setTimeout> | undefined;
+    if (first.error || first.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+      setHeroProgress(1, true);
+      failTimer = setTimeout(() => setVideoFailed(true), 0);
+    } else if (first.readyState >= 4) {
+      setHeroProgress(1, true);
+    }
     const media: [string, (e: Event) => void][] = [
       ["progress", onProgress],
       ["loadeddata", onProgress],
@@ -430,6 +443,7 @@ export function MobileHeroBanner() {
       for (const [n, h] of media) window.removeEventListener(n, h, true);
       window.removeEventListener("eskuvo:loader-done", onLoaderDone);
       clearTimeout(endTimer);
+      clearTimeout(failTimer);
     };
   }, [reduced]);
 
@@ -543,7 +557,7 @@ export function MobileHeroBanner() {
             ) : s.img && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
-                key={animKey}
+                key={`img-${animKey}`}
                 src={s.img}
                 alt={s.alt}
                 decoding="sync"
@@ -559,7 +573,7 @@ export function MobileHeroBanner() {
                 A kép ugyanazt a ráközelítést kapja, mint alatta a kész fotó,
                 így fedik egymást. */}
             {s.before && s.beforeFx !== "petals" && !reduced && (on || i === prevIndex) && (
-              <span key={animKey} aria-hidden className="absolute inset-0">
+              <span key={`shine-${animKey}`} aria-hidden className="absolute inset-0">
                 <span className="mhb-comb-before absolute inset-0 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -596,7 +610,7 @@ export function MobileHeroBanner() {
                 mögött úszik át a csokros képbe (globals.css .mhb-petal*). Az
                 „előtte” kép ugyanazt a ráközelítést kapja, mint a kész fotó. */}
             {s.before && s.beforeFx === "petals" && !reduced && (on || i === prevIndex) && (
-              <span key={animKey} aria-hidden className="absolute inset-0 overflow-hidden">
+              <span key={`petals-${animKey}`} aria-hidden className="absolute inset-0 overflow-hidden">
                 <span className="mhb-petal-before absolute inset-0 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -663,7 +677,7 @@ export function MobileHeroBanner() {
               />
             )}
             {s.overlay === "viewfinder" && (
-              <span key={animKey} aria-hidden className="absolute inset-x-5 bottom-[46%] top-16">
+              <span key={`rec-${animKey}`} aria-hidden className="absolute inset-x-5 bottom-[46%] top-16">
                 {/* A villanás után a kereten kívüli kép elsötétül (a keret
                     árnyéka), és a kereten belül egy vakuvillanás fut le. */}
                 {(on || i === prevIndex) && <span className="mobile-hero-dim absolute inset-0" />}
