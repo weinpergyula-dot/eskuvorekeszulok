@@ -555,7 +555,9 @@ export function MobileHeroBanner() {
 
   const go = (e: React.MouseEvent<HTMLAnchorElement>, s: MobileSlide) => {
     e.preventDefault();
-    if (s.category) window.dispatchEvent(new CustomEvent("eskuvo:set-category", { detail: s.category }));
+    /* Kategória nélküli diáról (pl. az első) mindig az „Összes” jön, ne
+       maradjon érvényben egy korábban választott kategória. */
+    window.dispatchEvent(new CustomEvent("eskuvo:set-category", { detail: s.category ?? "" }));
     const target = document.querySelector(s.category ? "#szolgaltatok" : "#kategoriak");
     const reducedNow = window.matchMedia(REDUCED_QUERY).matches;
     const behavior: ScrollBehavior = reducedNow ? "auto" : "smooth";
@@ -575,7 +577,9 @@ export function MobileHeroBanner() {
       return;
     }
     const SHRUNK_NAV = 44;
-    const UNDER = 8; // ennyivel a fejléc alja fölé kerüljön a banner alja
+    /* A banner alja épp a fejléc alja fölé kerüljön: így a „Válassz
+       kategóriát!” cím fölött és alatt egyforma (~24 px) hely marad. */
+    const UNDER = 2;
     const wanted = SHRUNK_NAV - UNDER;
     const shift = Math.max(0, nav.getBoundingClientRect().height - SHRUNK_NAV);
     const top = window.scrollY + hero.getBoundingClientRect().bottom - shift - wanted;
