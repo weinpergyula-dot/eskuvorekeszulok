@@ -558,7 +558,6 @@ export function MobileHeroBanner() {
                     <path d="M0 -9 C 0.8 -2 2 -0.8 9 0 C 2 0.8 0.8 2 0 9 C -0.8 2 -2 0.8 -9 0 C -2 -0.8 -0.8 -2 0 -9 Z" fill="#FFFFFF" />
                   </svg>
                 ))}
-                {on && <span className="mhb-comb-glint absolute inset-0" />}
               </span>
             )}
 

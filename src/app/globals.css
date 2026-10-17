@@ -1439,7 +1439,7 @@ html.a11y-underline a { text-decoration: underline !important; }
    kétszer olyan magas, mint a dia: felső fele átlátszó, alsó fele fedő, a
    lágy határ a közepén; a maszk függőleges helye 100%-ról 0%-ra futva a
    határt a dia tetejéről az aljára viszi). Előtte sorról sorra csillagok
-   gyúlnak ki és alszanak ki; a végén fénycsillanás fut végig. */
+   gyúlnak ki és alszanak ki. */
 .mhb-comb-before {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 46%, #000 54%, #000 100%);
           mask-image: linear-gradient(to bottom, transparent 0%, transparent 46%, #000 54%, #000 100%);
@@ -1474,18 +1474,6 @@ html.a11y-underline a { text-decoration: underline !important; }
   22%  { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(25deg); }
   55%  { opacity: 0.9; transform: translate(-50%, -50%) scale(0.85) rotate(45deg); }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(70deg); }
-}
-.mhb-comb-glint {
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
-  background-size: 250% 100%;
-  background-position: 120% 0;
-  mix-blend-mode: soft-light;
-  opacity: 0;
-  animation: mhb-comb-glint 0.9s ease-in-out 4s both;
-}
-@keyframes mhb-comb-glint {
-  0%   { opacity: 1; background-position: 120% 0; }
-  100% { opacity: 1; background-position: -20% 0; }
 }
 
 /* A ráközelítés végén egy vakuvillanás a REC kereten belül: hirtelen fel,
