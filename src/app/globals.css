@@ -1438,8 +1438,8 @@ html.a11y-underline a { text-decoration: underline !important; }
    fölött van; egy lágy szélű maszk felülről lefelé tünteti el (a maszk
    kétszer olyan magas, mint a dia: felső fele átlátszó, alsó fele fedő, a
    lágy határ a közepén; a maszk függőleges helye 100%-ról 0%-ra futva a
-   határt a dia tetejéről az aljára viszi). A határon csillogó sáv halad
-   lefelé; a végén fénycsillanás fut végig. */
+   határt a dia tetejéről az aljára viszi). Előtte sorról sorra csillagok
+   gyúlnak ki és alszanak ki; a végén fénycsillanás fut végig. */
 .mhb-comb-before {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 46%, #000 54%, #000 100%);
           mask-image: linear-gradient(to bottom, transparent 0%, transparent 46%, #000 54%, #000 100%);
@@ -1449,53 +1449,31 @@ html.a11y-underline a { text-decoration: underline !important; }
           mask-repeat: no-repeat;
   -webkit-mask-position: 0 100%;
           mask-position: 0 100%;
-  animation: mhb-comb-wipe 2s cubic-bezier(0.45, 0.05, 0.4, 1) 1.5s both,
-    mhb-comb-rest 0.5s ease-out 3.5s forwards;
+  /* A csillogás (SHINE_START_S = 1,4 mp, 2 mp alatt 10% → 86%) után
+     ~0,5 mp-cel, vele egyenletes tempóban halad: ahol a csillagok
+     kialszanak, ott már az új kép látszik. */
+  animation: mhb-comb-wipe 2s linear 1.9s both,
+    mhb-comb-rest 0.4s ease-out 3.9s forwards;
 }
 @keyframes mhb-comb-wipe {
-  from { -webkit-mask-position: 0 92%; mask-position: 0 92%; }
+  from { -webkit-mask-position: 0 90%; mask-position: 0 90%; }
   to   { -webkit-mask-position: 0 14%; mask-position: 0 14%; }
 }
 /* A fésű után az alsó, a két képen amúgy is egyező rész is átvált. */
 @keyframes mhb-comb-rest { to { opacity: 0; } }
-/* A határon lefelé futó csillogó sáv: lágy fénysáv és egymás után
-   felvillanó csillagok (a maszk határával együtt mozog). */
-.mhb-shine-band {
-  left: 50%;
-  right: -4%;
-  height: 70px;
-  top: 8%;
-  opacity: 0;
-  transform: translateY(-50%);
-  pointer-events: none;
-  animation: mhb-shine-move 2s cubic-bezier(0.45, 0.05, 0.4, 1) 1.5s both,
-    mhb-shine-show 2.2s linear 1.4s both;
-}
-@keyframes mhb-shine-move {
-  from { top: 8%; }
-  to   { top: 86%; }
-}
-@keyframes mhb-shine-show {
-  0%   { opacity: 0; }
-  10%  { opacity: 1; }
-  85%  { opacity: 1; }
-  100% { opacity: 0; }
-}
-.mhb-shine-glow {
-  position: absolute;
-  inset: 22% -6%;
-  border-radius: 9999px;
-  background: radial-gradient(closest-side, rgba(255, 250, 235, 0.95), rgba(240, 205, 140, 0.4) 55%, transparent);
-  filter: blur(6px);
-}
+/* A csillogás csillagai: helyben gyúlnak ki, rövid ideig ragyognak, majd
+   kialszanak (kb. 3–4 sor látszik egyszerre). */
 .mhb-shine-star {
+  opacity: 0;
   transform: translate(-50%, -50%) scale(0);
-  filter: drop-shadow(0 0 2px rgba(201, 150, 60, 0.95)) drop-shadow(0 0 7px rgba(232, 182, 90, 0.9));
-  animation: mhb-shine-twinkle 0.7s ease-in-out infinite;
+  pointer-events: none;
+  animation: mhb-shine-star 0.75s ease-out both;
 }
-@keyframes mhb-shine-twinkle {
-  0%, 100% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
-  50%      { transform: translate(-50%, -50%) scale(1) rotate(45deg); opacity: 1; }
+@keyframes mhb-shine-star {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+  22%  { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(25deg); }
+  55%  { opacity: 0.9; transform: translate(-50%, -50%) scale(0.85) rotate(45deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(70deg); }
 }
 .mhb-comb-glint {
   background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
@@ -1503,7 +1481,7 @@ html.a11y-underline a { text-decoration: underline !important; }
   background-position: 120% 0;
   mix-blend-mode: soft-light;
   opacity: 0;
-  animation: mhb-comb-glint 1.1s ease-in-out 3.6s both;
+  animation: mhb-comb-glint 0.9s ease-in-out 4s both;
 }
 @keyframes mhb-comb-glint {
   0%   { opacity: 1; background-position: 120% 0; }

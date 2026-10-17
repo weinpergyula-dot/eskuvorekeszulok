@@ -184,22 +184,37 @@ const SLIDES: MobileSlide[] = [
 
 const INTERVAL_MS = 5000;
 /* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
-/* A fodrász dia csillogó sávjának csillagai (a sávon belüli helyük, méretük
-   és a felvillanás késleltetése). */
-const SHINE_STARS = [
-  { x: 6, y: 42, size: 20, delay: 0 },
-  { x: 18, y: 18, size: 14, delay: 0.2 },
-  { x: 28, y: 66, size: 24, delay: 0.34 },
-  { x: 40, y: 32, size: 16, delay: 0.08 },
-  { x: 50, y: 74, size: 12, delay: 0.46 },
-  { x: 58, y: 44, size: 26, delay: 0.26 },
-  { x: 68, y: 16, size: 13, delay: 0.4 },
-  { x: 76, y: 62, size: 20, delay: 0.14 },
-  { x: 86, y: 34, size: 15, delay: 0.3 },
-  { x: 95, y: 56, size: 18, delay: 0.52 },
-  { x: 34, y: 50, size: 10, delay: 0.58 },
-  { x: 82, y: 82, size: 11, delay: 0.04 },
-];
+/* A fodrász dia csillogása: a haj területén sorokba rendezett, helyben
+   felvillanó csillagok. Fentről lefelé sorról sorra gyúlnak ki (a
+   fényhatár előtt), majd kb. 3–4 sorral lemaradva kialszanak, és alattuk
+   már az új kép tűnik elő. A helyük és méretük rögzített (ál-véletlen),
+   a késleltetésük a soruk magasságából jön (SHINE_*). */
+const SHINE_START_S = 1.4; // az első sor kigyulladása
+const SHINE_TRAVEL_S = 2; // a fényhatár útja a haj tetejétől az aljáig
+const SHINE_TOP = 10; // a haj teteje a dián (%)
+const SHINE_BOTTOM = 86; // a haj alja a dián (%)
+const SHINE_STARS = (() => {
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const rows = 15;
+  const stars: { x: number; y: number; size: number; delay: number }[] = [];
+  for (let r = 0; r < rows; r++) {
+    const y = SHINE_TOP + ((SHINE_BOTTOM - SHINE_TOP) * (r + 0.5)) / rows;
+    const perRow = 6 + (r % 2);
+    for (let k = 0; k < perRow; k++) {
+      const x = 54 + ((100 - 54) * (k + 0.2 + rnd() * 0.6)) / perRow;
+      const yy = y + (rnd() - 0.5) * 4;
+      const frac = (yy - SHINE_TOP) / (SHINE_BOTTOM - SHINE_TOP);
+      stars.push({
+        x: +x.toFixed(2),
+        y: +yy.toFixed(2),
+        size: Math.round(8 + rnd() * 12),
+        delay: +(SHINE_START_S + frac * SHINE_TRAVEL_S + rnd() * 0.12).toFixed(3),
+      });
+    }
+  }
+  return stars;
+})();
 
 const VIDEO_SAFETY_MS = 9000;
 /* A régi dia elsötétülésének hossza (globals.css .mobile-hero-slide-out). A
@@ -507,8 +522,9 @@ export function MobileHeroBanner() {
               />
             )}
 
-            {/* Fodrász dia: a kócos „előtte” képből csillogó sáv „varázsolja”
-                át a kész frizurára (globals.css .mhb-comb-*, .mhb-shine-*).
+            {/* Fodrász dia: a kócos „előtte” képből sorról sorra kigyúló
+                csillogás „varázsolja” át a kész frizurára (globals.css
+                .mhb-comb-*, .mhb-shine-star).
                 A kép ugyanazt a ráközelítést kapja, mint alatta a kész fotó,
                 így fedik egymást. */}
             {s.before && !reduced && (on || i === prevIndex) && (
@@ -522,19 +538,26 @@ export function MobileHeroBanner() {
                     style={{ objectPosition: s.focus }}
                   />
                 </span>
-                <span className="mhb-shine-band absolute">
-                  <span className="mhb-shine-glow" />
-                  {SHINE_STARS.map((st, k) => (
-                    <svg
-                      key={k}
-                      viewBox="-10 -10 20 20"
-                      className="mhb-shine-star absolute"
-                      style={{ left: `${st.x}%`, top: `${st.y}%`, width: st.size, height: st.size, animationDelay: `${st.delay}s` }}
-                    >
-                      <path d="M0 -10 C 1 -2 2 -1 10 0 C 2 1 1 2 0 10 C -1 2 -2 1 -10 0 C -2 -1 -1 -2 0 -10 Z" fill="#FFF8E1" />
-                    </svg>
-                  ))}
-                </span>
+                <svg aria-hidden width="0" height="0" className="absolute">
+                  <defs>
+                    <radialGradient id="mhb-shine-halo">
+                      <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.95" />
+                      <stop offset="35%" stopColor="#CFE6FF" stopOpacity="0.7" />
+                      <stop offset="100%" stopColor="#9CCBFF" stopOpacity="0" />
+                    </radialGradient>
+                  </defs>
+                </svg>
+                {SHINE_STARS.map((st, k) => (
+                  <svg
+                    key={k}
+                    viewBox="-12 -12 24 24"
+                    className="mhb-shine-star absolute"
+                    style={{ left: `${st.x}%`, top: `${st.y}%`, width: st.size * 1.6, height: st.size * 1.6, animationDelay: `${st.delay}s` }}
+                  >
+                    <circle r="12" fill="url(#mhb-shine-halo)" />
+                    <path d="M0 -9 C 0.8 -2 2 -0.8 9 0 C 2 0.8 0.8 2 0 9 C -0.8 2 -2 0.8 -9 0 C -2 -0.8 -0.8 -2 0 -9 Z" fill="#FFFFFF" />
+                  </svg>
+                ))}
                 {on && <span className="mhb-comb-glint absolute inset-0" />}
               </span>
             )}
