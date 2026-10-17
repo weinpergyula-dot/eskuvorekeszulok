@@ -38,6 +38,8 @@ type MobileSlide = {
   /** Az átváltás módja: csillogás (fentről lefelé) vagy virágszirmok
       mögötti átúszás. */
   beforeFx?: "shine" | "petals";
+  /** A csillogó átváltás területe és időzítése (alapból a fodrász dia haja). */
+  shine?: { x0: number; x1: number; y0: number; y1: number; start: number; travel: number };
   /** Világos szöveg sötétített képen, vagy sötét szöveg világosított sarokban. */
   tone: Tone;
   /** A szövegblokk helye. */
@@ -180,7 +182,10 @@ const SLIDES: MobileSlide[] = [
   {
     key: "torta",
     img: "/hero-m/torta.webp",
-    alt: "Emeletes esküvői torta rózsákkal",
+    alt: "Emeletes esküvői torta rózsákkal és menyasszony–vőlegény figurával",
+    /* A figura nélküli tortáról csillogással jelenik meg a pár a tetején. */
+    before: "/hero-m/torta-elotte.webp",
+    shine: { x0: 40, x1: 80, y0: 9, y1: 36, start: 1.5, travel: 1.4 },
     focus: "60% 50%",
     tone: "light",
     place: "bottom",
@@ -198,38 +203,57 @@ const SLIDES: MobileSlide[] = [
 ];
 
 const INTERVAL_MS = 5000;
-/* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
-/* A fodrász dia csillogása: a haj területén sorokba rendezett, helyben
-   felvillanó csillagok. Fentről lefelé sorról sorra gyúlnak ki (a
-   fényhatár előtt), majd kb. 3–4 sorral lemaradva kialszanak, és alattuk
-   már az új kép tűnik elő. A helyük és méretük rögzített (ál-véletlen),
-   a késleltetésük a soruk magasságából jön (SHINE_*). */
-const SHINE_START_S = 1.4; // az első sor kigyulladása
-const SHINE_TRAVEL_S = 2; // a fényhatár útja a haj tetejétől az aljáig
-const SHINE_TOP = 10; // a haj teteje a dián (%)
-const SHINE_BOTTOM = 86; // a haj alja a dián (%)
-const SHINE_STARS = (() => {
+/* Csillogó átváltás: a terület (shine.x0–x1, y0–y1, a dián %) sorokba
+   rendezett, helyben felvillanó csillagai fentről lefelé sorról sorra
+   gyúlnak ki, majd kb. 3–4 sorral lemaradva kialszanak, és alattuk már az
+   új kép tűnik elő. A helyük és méretük rögzített (ál-véletlen), a
+   késleltetésük a soruk magasságából jön. */
+type ShineArea = { x0: number; x1: number; y0: number; y1: number; start: number; travel: number };
+/* Alapértelmezés: a fodrász dia haja. */
+const DEFAULT_SHINE: ShineArea = { x0: 54, x1: 100, y0: 10, y1: 86, start: 1.4, travel: 2 };
+function makeShineStars(a: ShineArea) {
   let seed = 7;
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  const rows = 15;
+  /* ~5%-onként egy sor, soronként a szélességgel arányos számú csillag */
+  const rows = Math.max(4, Math.round((a.y1 - a.y0) / 5));
+  const base = Math.max(4, Math.round((a.x1 - a.x0) / 7.5));
   const stars: { x: number; y: number; size: number; delay: number }[] = [];
   for (let r = 0; r < rows; r++) {
-    const y = SHINE_TOP + ((SHINE_BOTTOM - SHINE_TOP) * (r + 0.5)) / rows;
-    const perRow = 6 + (r % 2);
+    const y = a.y0 + ((a.y1 - a.y0) * (r + 0.5)) / rows;
+    const perRow = base + (r % 2);
     for (let k = 0; k < perRow; k++) {
-      const x = 54 + ((100 - 54) * (k + 0.2 + rnd() * 0.6)) / perRow;
+      const x = a.x0 + ((a.x1 - a.x0) * (k + 0.2 + rnd() * 0.6)) / perRow;
       const yy = y + (rnd() - 0.5) * 4;
-      const frac = (yy - SHINE_TOP) / (SHINE_BOTTOM - SHINE_TOP);
+      const frac = Math.min(1, Math.max(0, (yy - a.y0) / (a.y1 - a.y0)));
       stars.push({
         x: +x.toFixed(2),
         y: +yy.toFixed(2),
         size: Math.round(8 + rnd() * 12),
-        delay: +(SHINE_START_S + frac * SHINE_TRAVEL_S + rnd() * 0.12).toFixed(3),
+        delay: +(a.start + frac * a.travel + rnd() * 0.12).toFixed(3),
       });
     }
   }
   return stars;
-})();
+}
+/* A kócos/„előtte” kép maszkja a csillagok után ~0,5 mp-cel, velük
+   egyenletes tempóban halad (globals.css .mhb-comb-before); a maszk
+   helye p = 100% − határ, így a határ y0-tól y1-ig fut. */
+function shineMaskStyle(a: ShineArea): React.CSSProperties {
+  const lag = 0.5;
+  return {
+    ["--wipe-from" as string]: `${100 - a.y0}%`,
+    ["--wipe-to" as string]: `${100 - a.y1}%`,
+    animationDuration: `${a.travel}s, 0.4s`,
+    animationDelay: `${a.start + lag}s, ${a.start + lag + a.travel}s`,
+  };
+}
+const SHINE_STARS_CACHE = new Map<string, ReturnType<typeof makeShineStars>>();
+function shineStars(a: ShineArea) {
+  const key = JSON.stringify(a);
+  let v = SHINE_STARS_CACHE.get(key);
+  if (!v) SHINE_STARS_CACHE.set(key, (v = makeShineStars(a)));
+  return v;
+}
 
 /* A virágos dia szirmai: a kép széleiről kavarognak be, és a csokor
    helye (kb. 78% / 42%) körül gyűlnek össze, majd lehullanak. Rögzített
@@ -256,6 +280,7 @@ const PETALS = (() => {
     };
   });
 })();
+/* Ha a videó valamiért nem ér véget (elakad), ennyi után akkor is lapoz. */
 const VIDEO_SAFETY_MS = 9000;
 /* A régi dia elsötétülésének hossza (globals.css .mobile-hero-slide-out). A
    videós dia ennyivel a videó vége előtt vált, így a kép a videó utolsó
@@ -578,7 +603,10 @@ export function MobileHeroBanner() {
                 így fedik egymást. */}
             {s.before && s.beforeFx !== "petals" && !reduced && (on || i === prevIndex) && (
               <span key={`shine-${animKey}`} aria-hidden className="absolute inset-0">
-                <span className="mhb-comb-before absolute inset-0 overflow-hidden">
+                <span
+                  className="mhb-comb-before absolute inset-0 overflow-hidden"
+                  style={shineMaskStyle(s.shine ?? DEFAULT_SHINE)}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={s.before}
@@ -596,7 +624,7 @@ export function MobileHeroBanner() {
                     </radialGradient>
                   </defs>
                 </svg>
-                {SHINE_STARS.map((st, k) => (
+                {shineStars(s.shine ?? DEFAULT_SHINE).map((st, k) => (
                   <svg
                     key={k}
                     viewBox="-12 -12 24 24"

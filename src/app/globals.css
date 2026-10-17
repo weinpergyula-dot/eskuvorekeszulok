@@ -1456,8 +1456,8 @@ html.a11y-underline a { text-decoration: underline !important; }
     mhb-comb-rest 0.4s ease-out 3.9s forwards;
 }
 @keyframes mhb-comb-wipe {
-  from { -webkit-mask-position: 0 90%; mask-position: 0 90%; }
-  to   { -webkit-mask-position: 0 14%; mask-position: 0 14%; }
+  from { -webkit-mask-position: 0 var(--wipe-from, 90%); mask-position: 0 var(--wipe-from, 90%); }
+  to   { -webkit-mask-position: 0 var(--wipe-to, 14%); mask-position: 0 var(--wipe-to, 14%); }
 }
 /* A fésű után az alsó, a két képen amúgy is egyező rész is átvált. */
 @keyframes mhb-comb-rest { to { opacity: 0; } }
