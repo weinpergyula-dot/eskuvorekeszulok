@@ -221,32 +221,27 @@ const SHINE_STARS = (() => {
   return stars;
 })();
 
-/* A virágos dia szirmai: a kép minden széléről kavarognak be, az egész
-   képen szétszórva pihennek meg egy pillanatra, majd forogva lehullanak.
-   Rögzített ál-véletlen értékek: cél (x, y %), indulási eltolás (sx, sy
-   px), forgás, hullás, késleltetés, méret, szín. */
+/* A virágos dia szirmai: a kép széleiről kavarognak be, és a csokor
+   helye (kb. 78% / 42%) körül gyűlnek össze, majd lehullanak. Rögzített
+   ál-véletlen értékek: cél (x, y %), indulási eltolás (sx, sy px), forgás,
+   hullás, késleltetés, méret, szín. */
 const PETALS = (() => {
   let seed = 11;
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
   const colors = ["#F4B6C8", "#F7C9D6", "#EE9DB5", "#FBE3EA", "#FFFFFF", "#F2A8BF"];
-  const cols = 6;
-  const rows = 8;
-  return Array.from({ length: cols * rows }, (_, k) => {
-    /* Rácsba szórva, hogy egyenletesen fedjék a képet */
-    const cx = (k % cols) + 0.15 + rnd() * 0.7;
-    const cy = Math.floor(k / cols) + 0.15 + rnd() * 0.7;
+  return Array.from({ length: 26 }, (_, k) => {
     const ang = rnd() * Math.PI * 2;
-    const dist = 160 + rnd() * 200;
+    const dist = 220 + rnd() * 160;
     return {
-      x: +((cx / cols) * 100).toFixed(1),
-      y: +((cy / rows) * 96).toFixed(1),
+      x: +(78 + (rnd() - 0.5) * 34).toFixed(1),
+      y: +(42 + (rnd() - 0.5) * 30).toFixed(1),
       sx: Math.round(Math.cos(ang) * dist),
-      sy: Math.round(Math.sin(ang) * dist - 140),
+      sy: Math.round(Math.sin(ang) * dist - 120),
       r0: Math.round(rnd() * 360),
       r1: Math.round(360 + rnd() * 540) * (k % 2 ? 1 : -1),
-      fall: Math.round(90 + rnd() * 160),
-      delay: +(1.4 + rnd() * 0.8).toFixed(2),
-      size: Math.round(11 + rnd() * 11),
+      fall: Math.round(90 + rnd() * 140),
+      delay: +(1.45 + rnd() * 0.7).toFixed(2),
+      size: Math.round(11 + rnd() * 10),
       color: colors[k % colors.length],
     };
   });

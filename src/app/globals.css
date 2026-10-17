@@ -1476,9 +1476,10 @@ html.a11y-underline a { text-decoration: underline !important; }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(70deg); }
 }
 
-/* Virágos dia: az „előtte” kép a szirmok mögött úszik át a kész képbe. */
+/* Virágos dia: az „előtte” kép a szirmok mögött lassan (2,4 mp alatt)
+   úszik át a kész képbe, így a lány arca finoman vált. */
 .mhb-petal-before {
-  animation: mhb-petal-fade 0.9s ease-in-out 2s both;
+  animation: mhb-petal-fade 2.4s ease-in-out 1.6s both;
 }
 @keyframes mhb-petal-fade {
   from { opacity: 1; }
