@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { featuredStyle } from "@/lib/featured-style";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
@@ -149,13 +150,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     return () => window.removeEventListener("keydown", handleKey);
   }, [galleryOpen, galleryUrls.length]);
 
-  const tc = provider.featured === "gold"
-    ? { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", buttonText: "text-white", borderBase: "border-[#84AAA6]/40", borderHover: "hover:border-[#84AAA6]", badgeClass: "border-[#84AAA6]/40 text-[#5C8480] bg-[#DAE8E6]", featuredBadgeClass: "bg-[#84AAA6] text-white border-[#84AAA6]" }
-    : provider.featured === "silver"
-    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", buttonText: "text-white", borderBase: "border-slate-200", borderHover: "hover:border-slate-400", badgeClass: "border-slate-300 text-slate-500 bg-slate-50", featuredBadgeClass: "bg-slate-100 text-slate-600 border-slate-300" }
-    : provider.featured === "teal"
-    ? { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", buttonText: "text-white", borderBase: "border-[#84AAA6]/40", borderHover: "hover:border-[#84AAA6]", badgeClass: "border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]", featuredBadgeClass: "bg-[#EDF4F3] text-[#5C8480] border-[#84AAA6]/40" }
-    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", buttonText: "text-white", borderBase: "border-gray-200", borderHover: "hover:border-[#84AAA6]", badgeClass: "", featuredBadgeClass: "" };
+  const tc = featuredStyle(provider.featured);
 
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
@@ -247,7 +242,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           key={star}
           className={cn(
             inCarousel ? "h-4 w-4 sm:h-5 sm:w-5" : "h-4 w-4",
-            star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200"
+            star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : tc.emptyStar
           )}
         />
       ))}
@@ -257,7 +252,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   );
 
   const showFeaturedBadge = !!provider.featured;
-  const headerBg = provider.featured === "gold" ? "#DAE8E6" : provider.featured === "silver" ? "#F8FAFC" : provider.featured === "teal" ? "#EDF4F3" : "#F0F6F5";
 
   return (
     <div id={anchorId} className={cn("relative h-full scroll-mt-24", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
@@ -278,7 +272,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     >
       {/* ── CAROUSEL mode: stacked centered header ─────────────────────── */}
       {inCarousel && (
-        <div className="relative flex flex-col items-center pt-8 px-7 pb-6" style={{ backgroundColor: headerBg }}>
+        <div className="relative flex flex-col items-center pt-8 px-7 pb-6" style={{ backgroundColor: tc.headerBg }}>
           {/* Avatar */}
           <div
             className={cn(
@@ -334,7 +328,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── REGULAR card: compact horizontal header ──────────────────────── */}
       {!inCarousel && (
-        <div className="relative flex items-center gap-3 px-4 pt-12 pb-5" style={{ backgroundColor: headerBg }}>
+        <div className="relative flex items-center gap-3 px-4 pt-12 pb-5" style={{ backgroundColor: tc.headerBg }}>
           {/* Absolute action buttons */}
           {!disableLink && (
             <div className="absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
