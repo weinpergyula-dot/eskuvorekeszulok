@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
+import { RefreshCw, ChevronDown, ChevronUp, Monitor, Smartphone, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_TRACKED_PATH, TRACKED_PAGES } from "@/lib/tracked-paths";
 
@@ -64,6 +64,80 @@ function formatWeek(iso: string): string {
     : `${MONTHS_SHORT[sm - 1]} ${sd}. – ${MONTHS_SHORT[em - 1]} ${ed}.`;
 }
 
+interface TodayVisit {
+  id: string;
+  firstSeenAt: string;
+  lastSeenAt: string;
+  hits: number;
+  device: "desktop" | "ios" | "android" | null;
+  user: { id: string; name: string; role: string | null } | null;
+}
+
+const DEVICE_LABELS: Record<string, string> = { desktop: "Desktop", ios: "iOS", android: "Android" };
+const ROLE_LABELS: Record<string, string> = { visitor: "látogató", provider: "szolgáltató", admin: "admin" };
+
+/** ISO időbélyeg → "14:05" (magyar idő) */
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString("hu-HU", { timeZone: "Europe/Budapest", hour: "2-digit", minute: "2-digit" });
+}
+
+/** A mai látogatók listája: eszköz, időpont, belépett / kijelentkezett. */
+function TodayList({ path }: { path: string }) {
+  const [visits, setVisits] = useState<TodayVisit[] | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    fetch(`/api/admin/visits/today?path=${encodeURIComponent(path)}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((data: { visits: TodayVisit[] }) => { if (alive) setVisits(data.visits ?? []); })
+      .catch(() => { if (alive) setFailed(true); });
+    return () => { alive = false; };
+  }, [path]);
+
+  if (failed) return <p className="text-sm text-gray-500">A mai látogatók listája nem tölthető be.</p>;
+  if (!visits) return (
+    <div className="flex justify-center py-6">
+      <div className="w-6 h-6 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
+    </div>
+  );
+  if (visits.length === 0) return <p className="text-sm text-gray-500">Ma még nem volt látogató.</p>;
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white divide-y divide-gray-100 overflow-hidden">
+      {visits.map((v) => {
+        const first = formatTime(v.firstSeenAt);
+        const last = formatTime(v.lastSeenAt);
+        return (
+          <div key={v.id} className="flex items-center gap-3 px-4 py-2 text-sm">
+            <span className="flex w-24 shrink-0 items-center gap-1.5 text-gray-700">
+              {v.device === "ios" || v.device === "android"
+                ? <Smartphone className="h-4 w-4 text-gray-400" />
+                : <Monitor className="h-4 w-4 text-gray-400" />}
+              {v.device ? DEVICE_LABELS[v.device] ?? v.device : "–"}
+            </span>
+            <span className="w-28 shrink-0 tabular-nums text-gray-700" title={`${v.hits} megnyitás`}>
+              {first === last ? first : `${first} – ${last}`}
+            </span>
+            <span className="flex min-w-0 flex-1 items-center gap-1.5">
+              {v.user ? (
+                <>
+                  <UserRound className="h-4 w-4 shrink-0 text-[#84AAA6]" />
+                  <span className="truncate font-medium text-gray-900">{v.user.name}</span>
+                  {v.user.role && <span className="shrink-0 text-xs text-gray-400">({ROLE_LABELS[v.user.role] ?? v.user.role})</span>}
+                </>
+              ) : (
+                <span className="text-gray-400">Nincs belépve</span>
+              )}
+            </span>
+            {v.hits > 1 && <span className="shrink-0 text-xs text-gray-400 tabular-nums">{v.hits}×</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function Bars({ points }: { points: { key: string; label: string; value: number; title: string; muted: boolean; current: boolean }[] }) {
   const max = Math.max(1, ...points.map((p) => p.value));
 
@@ -103,6 +177,8 @@ export function VisitsSection() {
   const [loading, setLoading] = useState(true);
   const [showDailyTable, setShowDailyTable] = useState(false);
   const [mode, setMode] = useState<Mode>("unique");
+  const [showToday, setShowToday] = useState(false);
+  const [todayKey, setTodayKey] = useState(0);
 
   const fetchStats = useCallback(
     (p: string): Promise<VisitStats | null> =>
@@ -126,11 +202,13 @@ export function VisitsSection() {
     if (next === path) return;
     setLoading(true);
     setStats(null);
+    setShowToday(false);
     setPath(next);
   };
 
   const refresh = () => {
     setLoading(true);
+    setTodayKey((k) => k + 1);
     fetchStats(path).then((data) => {
       if (data) setStats(data);
       setLoading(false);
@@ -248,13 +326,35 @@ export function VisitsSection() {
 
       {/* Összesítő számok */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        {tiles.map((t) => (
-          <div key={t.label} className="rounded-lg border border-gray-200 bg-white p-3">
-            <div className="text-2xl font-bold text-gray-900">{t.value}</div>
-            <div className="text-sm text-gray-500 mt-0.5">{t.label}</div>
-          </div>
-        ))}
+        {tiles.map((t) =>
+          t.label === "Ma" ? (
+            /* A mai számra kattintva lenyílik a mai látogatók listája */
+            <button
+              key={t.label}
+              onClick={() => setShowToday((v) => !v)}
+              className={`rounded-lg border bg-white p-3 text-left transition-colors cursor-pointer hover:border-[#84AAA6] ${showToday ? "border-[#84AAA6]" : "border-gray-200"}`}
+            >
+              <div className="text-2xl font-bold text-gray-900">{t.value}</div>
+              <div className="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+                {t.label}
+                {showToday ? <ChevronUp className="h-3.5 w-3.5 text-[#84AAA6]" /> : <ChevronDown className="h-3.5 w-3.5 text-[#84AAA6]" />}
+              </div>
+            </button>
+          ) : (
+            <div key={t.label} className="rounded-lg border border-gray-200 bg-white p-3">
+              <div className="text-2xl font-bold text-gray-900">{t.value}</div>
+              <div className="text-sm text-gray-500 mt-0.5">{t.label}</div>
+            </div>
+          )
+        )}
       </div>
+
+      {showToday && (
+        <section>
+          <h3 className="text-base font-semibold text-gray-900 mb-3">Mai látogatók</h3>
+          <TodayList key={`${path}-${todayKey}`} path={path} />
+        </section>
+      )}
 
       {/* Napi bontás */}
       <section>
