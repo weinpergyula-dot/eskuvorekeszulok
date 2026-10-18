@@ -66,9 +66,18 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   const [pendingProvidersState, setPendingProvidersState] = useState<Provider[]>(initialPendingProviders);
   const [pendingChangesState, setPendingChangesState] = useState<Provider[]>(initialPendingChanges);
 
-  // Sync from server props when router.refresh() updates them
-  useEffect(() => { setPendingProvidersState(initialPendingProviders); }, [initialPendingProviders]);
-  useEffect(() => { setPendingChangesState(initialPendingChanges); }, [initialPendingChanges]);
+  // Sync from server props when router.refresh() updates them – during
+  // render, so the new data shows without an extra effect pass.
+  const [prevPendingProviders, setPrevPendingProviders] = useState(initialPendingProviders);
+  if (initialPendingProviders !== prevPendingProviders) {
+    setPrevPendingProviders(initialPendingProviders);
+    setPendingProvidersState(initialPendingProviders);
+  }
+  const [prevPendingChanges, setPrevPendingChanges] = useState(initialPendingChanges);
+  if (initialPendingChanges !== prevPendingChanges) {
+    setPrevPendingChanges(initialPendingChanges);
+    setPendingChangesState(initialPendingChanges);
+  }
 
   // Poll /api/admin/pending every 10s for live updates
   useEffect(() => {
@@ -101,9 +110,18 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   const [resendingIds, setResendingIds] = useState<Record<string, "loading" | "done" | "error">>({});
 
   // Sync preRegistrations when server props update (router.refresh)
-  useEffect(() => {
+  const [prevPreRegistrations, setPrevPreRegistrations] = useState(initialPreRegistrations);
+  if (initialPreRegistrations !== prevPreRegistrations) {
+    setPrevPreRegistrations(initialPreRegistrations);
     setPreRegistrations(initialPreRegistrations);
-  }, [initialPreRegistrations]);
+  }
+
+  // Current time for the pre-registration countdowns, refreshed every minute
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Poll pre-registrations every 5 min (auth.users has no real-time support)
   useEffect(() => {
@@ -300,7 +318,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
             <div className="space-y-3">
               {preRegistrations.map((pr) => {
                 const createdAt = new Date(pr.created_at);
-                const elapsedMs = Date.now() - createdAt.getTime();
+                const elapsedMs = now - createdAt.getTime();
                 const elapsedH = Math.floor(elapsedMs / (1000 * 60 * 60));
                 const elapsedM = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
                 const remainingH = 24 - elapsedH;
