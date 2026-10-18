@@ -814,13 +814,25 @@ function RegisterContent() {
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-lg">
           <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
-          <p className="text-gray-900 text-lg mb-6">Alapadatok megadása</p>
-
-          {/* Progress */}
-          <div className="flex gap-2 mb-6">
-            <div className="h-1 flex-1 bg-[#84AAA6] rounded-full" />
-            <div className={`h-1 flex-1 rounded-full ${role === "provider" ? "bg-gray-200" : "bg-[#84AAA6]"}`} />
-          </div>
+          {/* Progress – látogatónál egy lépés, szolgáltatónál kettő, a
+              csíkok fölött a lépés nevével */}
+          {role === "provider" ? (
+            <div className="flex gap-2 mb-6">
+              <div className="flex-1">
+                <p className="text-gray-900 text-lg mb-2 text-center">Alapadatok</p>
+                <div className="h-1 bg-[#84AAA6] rounded-full" />
+              </div>
+              <div className="flex-1">
+                <p className="text-gray-400 text-lg mb-2 text-center">Szolgáltatói adatok</p>
+                <div className="h-1 bg-gray-200 rounded-full" />
+              </div>
+            </div>
+          ) : (
+            <div className="mb-6">
+              <p className="text-gray-900 text-lg mb-2 text-center">Alapadatok megadása</p>
+              <div className="h-1 bg-[#84AAA6] rounded-full" />
+            </div>
+          )}
 
           <form onSubmit={handleBasicSubmit} className="space-y-4" noValidate>
             {/* Google prefill / connected-account UI */}
@@ -1050,12 +1062,16 @@ function RegisterContent() {
           </div>
         )}
 
-        <p className="text-gray-900 text-lg mb-6">Szolgáltatói profiladatok megadása</p>
-
-        {/* Progress */}
+        {/* Progress – a csíkok fölött a lépés nevével */}
         <div className="flex gap-2 mb-8">
-          <div className="h-1 flex-1 bg-[#84AAA6] rounded-full" />
-          <div className="h-1 flex-1 bg-[#84AAA6] rounded-full" />
+          <div className="flex-1">
+            <p className="text-gray-400 text-lg mb-2 text-center">Alapadatok</p>
+            <div className="h-1 bg-[#84AAA6] rounded-full" />
+          </div>
+          <div className="flex-1">
+            <p className="text-gray-900 text-lg mb-2 text-center">Szolgáltatói adatok</p>
+            <div className="h-1 bg-[#84AAA6] rounded-full" />
+          </div>
         </div>
 
         <form onSubmit={handleProviderSubmit} noValidate>

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2, RotateCcw, Check } from "lucide-react";
+import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2, RotateCcw, Check, Rows3, LayoutList } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
 
 interface UserProfile {
@@ -51,16 +51,6 @@ interface ProviderStatus {
   pending_changes: unknown;
 }
 
-interface DeletedUser {
-  id: string;
-  user_id: string;
-  email: string | null;
-  full_name: string | null;
-  role: string | null;
-  deleted_at: string;
-  deleted_by: string | null;
-}
-
 const ROLE_LABELS: Record<string, string> = {
   visitor: "Látogató",
   provider: "Szolgáltató",
@@ -75,15 +65,19 @@ const ROLE_BADGE: Record<string, "default" | "secondary" | "approved" | "admin">
 
 const PAGE_SIZE_OPTIONS = [10, 50, 100];
 
-type ApprovalFilter = "all" | "provider" | "visitor" | "admin" | "deleted";
+type ApprovalFilter = "all" | "visitor" | "provider";
 
 const FILTER_LABELS: Record<ApprovalFilter, string> = {
   all:      "Összes",
-  provider: "Szolgáltatók",
   visitor:  "Látogatók",
-  admin:    "Admin",
-  deleted:  "Törölt",
+  provider: "Szolgáltatók",
 };
+
+type ViewMode = "compact" | "full";
+
+/* Regisztráció ideje percre pontosan, pl. 2026. 10. 18. 14:05 */
+const formatDateTime = (iso: string) =>
+  new Date(iso).toLocaleString("hu-HU", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
 
 type SortKey = "full_name" | "role" | "email" | "created_at" | "providerViewCount";
 type SortDir = "asc" | "desc";
@@ -98,7 +92,7 @@ function SortIcon({ col, sortKey, dir }: { col: SortKey; sortKey: SortKey; dir: 
 export function UsersSection({ providerStatuses }: { providerStatuses: ProviderStatus[] }) {
   const router = useRouter();
   const [users, setUsers] = useState<UserProfile[]>([]);
-  const [deletedUsers, setDeletedUsers] = useState<DeletedUser[]>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>("compact");
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -119,7 +113,6 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
       .then((data) => {
         if (data && typeof data === "object" && "users" in data) {
           setUsers(Array.isArray(data.users) ? data.users : []);
-          setDeletedUsers(Array.isArray(data.deletedUsers) ? data.deletedUsers : []);
         } else {
           // fallback if old shape
           setUsers(Array.isArray(data) ? data : []);
@@ -138,6 +131,14 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
     return [...cats].sort();
   }, [users]);
 
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const u of users) {
+      for (const c of u.providerCategories ?? []) counts.set(c, (counts.get(c) ?? 0) + 1);
+    }
+    return counts;
+  }, [users]);
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return users.filter((u) => {
@@ -151,8 +152,6 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
         matchesFilter = u.role === "provider" || u.providerId != null;
       } else if (approvalFilter === "visitor") {
         matchesFilter = u.role === "visitor";
-      } else if (approvalFilter === "admin") {
-        matchesFilter = u.role === "admin";
       }
 
       const matchesCategory =
@@ -294,60 +293,59 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           />
         </div>
 
-        {/* Role / status filters */}
+        {/* Fiók típus szerinti szűrés */}
         <div className="flex flex-wrap gap-2">
-          {(["all", "provider", "visitor", "admin", "deleted"] as ApprovalFilter[]).map((f) => (
+          {(["all", "visitor", "provider"] as ApprovalFilter[]).map((f) => (
             <button
               key={f}
               onClick={() => handleFilter(f)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors cursor-pointer ${
                 approvalFilter === f
-                  ? f === "deleted" ? "bg-[#F06C6C] text-white border-[#F06C6C]" : "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
                   : "bg-white text-gray-700 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
-              {f === "deleted" && <Trash2 className="h-3.5 w-3.5" />}
               {FILTER_LABELS[f]}
-              {f === "deleted" && deletedUsers.length > 0 && (
-                <span className={`text-xs font-bold rounded-full px-1.5 ${approvalFilter === "deleted" ? "bg-white/30" : "bg-[#F06C6C]/15 text-[#F06C6C]"}`}>
-                  {deletedUsers.length}
-                </span>
-              )}
             </button>
           ))}
         </div>
 
-        {/* Category filters */}
+        {/* Kategória szerinti szűrés – legördülő, zárójelben a darabszámmal */}
         {allCategories.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => handleCategory(null)}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer ${
-                categoryFilter === null
-                  ? "bg-gray-700 text-white border-gray-700"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
-              }`}
-            >
-              Minden kategória
-            </button>
+          <select
+            value={categoryFilter ?? ""}
+            onChange={(e) => handleCategory(e.target.value || null)}
+            className="h-9 rounded-md border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-[#84AAA6] focus:outline-none cursor-pointer"
+          >
+            <option value="">Minden kategória</option>
             {allCategories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleCategory(cat === categoryFilter ? null : cat)}
-                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer ${
-                  categoryFilter === cat
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
-                }`}
-              >
-                {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
-              </button>
+              <option key={cat} value={cat}>
+                {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat} ({categoryCounts.get(cat) ?? 0})
+              </option>
             ))}
-          </div>
+          </select>
         )}
 
         <div className="flex items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">{sorted.length} felhasználó</p>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-gray-500">{sorted.length} felhasználó</p>
+            <div className="flex gap-1">
+              {(["compact", "full"] as ViewMode[]).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setViewMode(v)}
+                  title={v === "compact" ? "Egysoros nézet" : "Teljes nézet"}
+                  className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer ${
+                    viewMode === v
+                      ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                      : "bg-white text-gray-500 border-gray-200 hover:border-[#84AAA6]"
+                  }`}
+                >
+                  {v === "compact" ? <Rows3 className="h-3.5 w-3.5" /> : <LayoutList className="h-3.5 w-3.5" />}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">Oldalanként:</span>
             <div className="flex gap-1">
@@ -374,73 +372,51 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           </div>
         )}
 
-        {/* ── Törölt felhasználók nézet ─────────────────────────────────── */}
-        {approvalFilter === "deleted" && (
-          <>
-            {deletedUsers.length === 0 ? (
-              <p className="text-gray-500 text-sm">Még senki sem törölte a fiókját.</p>
-            ) : (
-              <div className="rounded-xl border border-gray-200 overflow-hidden">
-                <table className="w-full text-sm hidden sm:table">
-                  <thead className="bg-gray-50 border-b border-gray-200">
-                    <tr>
-                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">Név</th>
-                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">E-mail</th>
-                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">Korábbi szerepkör</th>
-                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">Törölve</th>
-                      <th className="px-4 py-2.5 font-semibold text-gray-700 text-left">Ki törölte</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {deletedUsers.map((d) => (
-                      <tr key={d.id} className="bg-white hover:bg-gray-50 transition-colors">
-                        <td className="px-4 py-2.5 text-gray-900 font-medium">{d.full_name || "–"}</td>
-                        <td className="px-4 py-2.5 text-gray-600">{d.email || "–"}</td>
-                        <td className="px-4 py-2.5 text-gray-500">{ROLE_LABELS[d.role ?? ""] ?? d.role ?? "–"}</td>
-                        <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">
-                          {new Date(d.deleted_at).toLocaleString("hu-HU")}
-                        </td>
-                        <td className="px-4 py-2.5 text-gray-500">
-                          {d.deleted_by ? (
-                            <span className="text-[#F06C6C] font-medium">Admin</span>
-                          ) : (
-                            <span className="text-gray-400">Saját maga</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {/* Mobile cards */}
-                <div className="sm:hidden divide-y divide-gray-100">
-                  {deletedUsers.map((d) => (
-                    <div key={d.id} className="px-4 py-3 bg-white space-y-1">
-                      <p className="font-medium text-gray-900">{d.full_name || "–"}</p>
-                      <p className="text-xs text-gray-500 flex items-center gap-1.5">
-                        <Mail className="h-3.5 w-3.5" /> {d.email || "–"}
-                      </p>
-                      <p className="text-xs text-gray-400 flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5" />
-                        {new Date(d.deleted_at).toLocaleString("hu-HU")}
-                        {" · "}
-                        {d.deleted_by
-                          ? <span className="text-[#F06C6C]">Admin törölte</span>
-                          : "Saját maga törölte"}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        {approvalFilter !== "deleted" && paginated.length === 0 && (
+        {paginated.length === 0 && (
           <p className="text-gray-500 text-sm">Nincs találat.</p>
         )}
 
-        {/* Desktop table – aktív felhasználók */}
-        {approvalFilter !== "deleted" && <div className="hidden sm:block rounded-xl border border-gray-200 overflow-hidden">
+        {/* Egysoros nézet: kép, név, regisztráció ideje, reset és törlés */}
+        {viewMode === "compact" && paginated.length > 0 && (
+          <div className="rounded-xl border border-gray-200 bg-white divide-y divide-gray-100 overflow-hidden">
+            {paginated.map((u) => (
+              <div key={u.id} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors">
+                <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
+                  {u.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={u.avatar_url ?? ""} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[10px] font-semibold text-[#84AAA6]">
+                      {(u.full_name || u.email || "?").split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("")}
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  {u.providerApprovalStatus === "approved" && u.providerId ? (
+                    <Link href={`/providers/${u.providerId}`} className="block truncate text-sm font-medium text-[#84AAA6] hover:underline">
+                      {u.full_name || u.email || "–"}
+                    </Link>
+                  ) : (
+                    <span className="block truncate text-sm font-medium text-gray-900">{u.full_name || u.email || "–"}</span>
+                  )}
+                </div>
+                <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap shrink-0">{formatDateTime(u.created_at)}</span>
+                <OnboardingResetButton userId={u.user_id} />
+                <button
+                  disabled={deleting === u.user_id}
+                  onClick={() => setConfirmDelete(u)}
+                  title="Törlés"
+                  className="h-7 w-7 shrink-0 flex items-center justify-center rounded border border-[#F06C6C]/40 text-[#F06C6C] hover:bg-[#F06C6C] hover:text-white transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Desktop table – teljes nézet */}
+        {viewMode === "full" && <div className="hidden sm:block rounded-xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -580,8 +556,8 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
 
         }
 
-        {/* Mobile cards – aktív felhasználók */}
-        {approvalFilter !== "deleted" && <div className="sm:hidden space-y-3">
+        {/* Mobile cards – teljes nézet */}
+        {viewMode === "full" && <div className="sm:hidden space-y-3">
           {paginated.map((u) => (
             <div key={u.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
               <div className="px-4 pt-3 pb-2 flex items-start justify-between gap-2">
@@ -702,8 +678,8 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           ))}
         </div>}
 
-        {/* Pagination – csak aktív nézetben */}
-        {approvalFilter !== "deleted" && totalPages > 1 && (
+        {/* Pagination */}
+        {totalPages > 1 && (
           <div className="flex items-center justify-between pt-2">
             <Button size="sm" variant="outline" disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="cursor-pointer">
               ← Előző
