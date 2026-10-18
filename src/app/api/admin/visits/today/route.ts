@@ -11,6 +11,7 @@ interface VisitRow {
   last_seen_at: string;
   hit_count: number;
   device: string | null;
+  client?: string | null;
   user_id: string | null;
 }
 
@@ -33,20 +34,18 @@ export async function GET(req: Request) {
   const admin = createAdminClient();
   const today = todayInBudapest();
 
-  let res = await admin
-    .from("page_visits")
-    .select("id, first_seen_at, last_seen_at, hit_count, device, user_id")
-    .eq("path", path)
-    .eq("visit_date", today)
-    .order("last_seen_at", { ascending: false });
-  if (res.error) {
-    res = await admin
+  // A régebbi migrációk után egyes oszlopok még hiányoznak – ilyenkor
+  // a kevesebb oszlopos lekérdezéssel próbálkozunk.
+  const query = (columns: string) =>
+    admin
       .from("page_visits")
-      .select("id, first_seen_at, last_seen_at, hit_count")
+      .select(columns)
       .eq("path", path)
       .eq("visit_date", today)
-      .order("last_seen_at", { ascending: false }) as typeof res;
-  }
+      .order("last_seen_at", { ascending: false });
+  let res = await query("id, first_seen_at, last_seen_at, hit_count, device, client, user_id");
+  if (res.error) res = await query("id, first_seen_at, last_seen_at, hit_count, device, user_id");
+  if (res.error) res = await query("id, first_seen_at, last_seen_at, hit_count");
   if (res.error) return NextResponse.json({ error: res.error.message }, { status: 500 });
 
   /* Egy belépett felhasználó egyszer szerepel, akkor is, ha napközben
@@ -55,7 +54,7 @@ export async function GET(req: Request) {
      legutóbbi. */
   const rows: VisitRow[] = [];
   const byUser = new Map<string, VisitRow>();
-  for (const r of (res.data ?? []) as VisitRow[]) {
+  for (const r of (res.data ?? []) as unknown as VisitRow[]) {
     const merged = r.user_id ? byUser.get(r.user_id) : undefined;
     if (!merged) {
       const copy = { ...r };
@@ -66,6 +65,7 @@ export async function GET(req: Request) {
     if (r.first_seen_at < merged.first_seen_at) merged.first_seen_at = r.first_seen_at;
     merged.hit_count = Number(merged.hit_count ?? 1) + Number(r.hit_count ?? 1);
     merged.device ??= r.device;
+    merged.client ??= r.client;
   }
   const userIds = [...new Set(rows.map((r) => r.user_id).filter((id): id is string => !!id))];
   const profiles = new Map<string, { full_name: string | null; email: string | null; role: string | null }>();
@@ -83,6 +83,7 @@ export async function GET(req: Request) {
         lastSeenAt: r.last_seen_at,
         hits: Number(r.hit_count ?? 1),
         device: r.device ?? null,
+        client: r.client ?? null,
         user: r.user_id ? { id: r.user_id, name: p?.full_name || p?.email || "Ismeretlen fiók", role: p?.role ?? null } : null,
       };
     }),

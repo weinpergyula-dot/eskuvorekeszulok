@@ -70,6 +70,8 @@ interface TodayVisit {
   lastSeenAt: string;
   hits: number;
   device: "desktop" | "ios" | "android" | null;
+  /** Operációs rendszer és böngésző, pl. „Windows · Chrome” */
+  client: string | null;
   user: { id: string; name: string; role: string | null } | null;
 }
 
@@ -110,11 +112,11 @@ function TodayList({ path }: { path: string }) {
         const last = formatTime(v.lastSeenAt);
         return (
           <div key={v.id} className="flex items-center gap-3 px-4 py-2 text-sm">
-            <span className="flex w-24 shrink-0 items-center gap-1.5 text-gray-700">
+            <span className="flex w-44 shrink-0 items-center gap-1.5 text-gray-700 min-w-0" title={v.client ?? undefined}>
               {v.device === "ios" || v.device === "android"
                 ? <Smartphone className="h-4 w-4 text-gray-400" />
                 : <Monitor className="h-4 w-4 text-gray-400" />}
-              {v.device ? DEVICE_LABELS[v.device] ?? v.device : "–"}
+              <span className="truncate">{v.client ?? (v.device ? DEVICE_LABELS[v.device] ?? v.device : "–")}</span>
             </span>
             <span className="w-28 shrink-0 tabular-nums text-gray-700" title={`${v.hits} megnyitás`}>
               {first === last ? first : `${first} – ${last}`}
