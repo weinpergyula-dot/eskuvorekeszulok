@@ -49,7 +49,24 @@ export async function GET(req: Request) {
   }
   if (res.error) return NextResponse.json({ error: res.error.message }, { status: 500 });
 
-  const rows = (res.data ?? []) as VisitRow[];
+  /* Egy belépett felhasználó egyszer szerepel, akkor is, ha napközben
+     IP-t váltott (pl. wifiről mobilnetre) és így több sora lett. A sorok
+     a legutóbbi látogatás szerint jönnek, így az összevont sor eszköze a
+     legutóbbi. */
+  const rows: VisitRow[] = [];
+  const byUser = new Map<string, VisitRow>();
+  for (const r of (res.data ?? []) as VisitRow[]) {
+    const merged = r.user_id ? byUser.get(r.user_id) : undefined;
+    if (!merged) {
+      const copy = { ...r };
+      rows.push(copy);
+      if (r.user_id) byUser.set(r.user_id, copy);
+      continue;
+    }
+    if (r.first_seen_at < merged.first_seen_at) merged.first_seen_at = r.first_seen_at;
+    merged.hit_count = Number(merged.hit_count ?? 1) + Number(r.hit_count ?? 1);
+    merged.device ??= r.device;
+  }
   const userIds = [...new Set(rows.map((r) => r.user_id).filter((id): id is string => !!id))];
   const profiles = new Map<string, { full_name: string | null; email: string | null; role: string | null }>();
   if (userIds.length > 0) {
