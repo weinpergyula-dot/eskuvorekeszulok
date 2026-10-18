@@ -111,17 +111,22 @@ function TodayList({ path }: { path: string }) {
         const first = formatTime(v.firstSeenAt);
         const last = formatTime(v.lastSeenAt);
         return (
-          <div key={v.id} className="flex items-center gap-3 px-4 py-2 text-sm">
-            <span className="flex w-44 shrink-0 items-center gap-1.5 text-gray-700 min-w-0" title={v.client ?? undefined}>
+          /* Rács: mobilon két sor (eszköz + időpont, alatta felhasználó +
+             megnyitások), sm-től egy sor fix szélességű oszlopokkal. */
+          <div
+            key={v.id}
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5 px-4 py-2 text-sm sm:grid-cols-[14rem_7.5rem_minmax(0,1fr)_3rem]"
+          >
+            <span className="flex min-w-0 items-center gap-1.5 text-gray-700" title={v.client ?? undefined}>
               {v.device === "ios" || v.device === "android"
-                ? <Smartphone className="h-4 w-4 text-gray-400" />
-                : <Monitor className="h-4 w-4 text-gray-400" />}
+                ? <Smartphone className="h-4 w-4 shrink-0 text-gray-400" />
+                : <Monitor className="h-4 w-4 shrink-0 text-gray-400" />}
               <span className="truncate">{v.client ?? (v.device ? DEVICE_LABELS[v.device] ?? v.device : "–")}</span>
             </span>
-            <span className="w-28 shrink-0 tabular-nums text-gray-700" title={`${v.hits} megnyitás`}>
+            <span className="whitespace-nowrap text-right tabular-nums text-gray-700 sm:text-left" title={`${v.hits} megnyitás`}>
               {first === last ? first : `${first} – ${last}`}
             </span>
-            <span className="flex min-w-0 flex-1 items-center gap-1.5">
+            <span className="flex min-w-0 items-center gap-1.5">
               {v.user ? (
                 <>
                   <UserRound className="h-4 w-4 shrink-0 text-[#84AAA6]" />
@@ -129,10 +134,10 @@ function TodayList({ path }: { path: string }) {
                   {v.user.role && <span className="shrink-0 text-xs text-gray-400">({ROLE_LABELS[v.user.role] ?? v.user.role})</span>}
                 </>
               ) : (
-                <span className="text-gray-400">Nincs belépve</span>
+                <span className="whitespace-nowrap text-gray-400">Nincs belépve</span>
               )}
             </span>
-            {v.hits > 1 && <span className="shrink-0 text-xs text-gray-400 tabular-nums">{v.hits}×</span>}
+            <span className="text-right text-xs text-gray-400 tabular-nums">{v.hits > 1 ? `${v.hits}×` : ""}</span>
           </div>
         );
       })}
