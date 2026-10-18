@@ -41,6 +41,7 @@ function RoleCard({
   subtitle,
   summary,
   benefits,
+  cta,
   onClick,
 }: {
   icon: LucideIcon;
@@ -48,28 +49,41 @@ function RoleCard({
   subtitle: string;
   summary: string;
   benefits: string[];
+  cta: string;
   onClick: () => void;
 }) {
+  /* Kiemelt, színezett választókártya. Mobilon kompakt sor marad, hogy a
+     két lehetőség görgetés nélkül, egyszerre látszódjon. */
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center gap-4 rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-[#84AAA6] hover:shadow-md sm:flex-col sm:items-start sm:gap-0 sm:p-6"
+      className="group flex w-full items-center gap-4 rounded-2xl border-2 border-[#84AAA6]/40 bg-[#F0F6F5] p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#84AAA6] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
     >
-      <Icon className="h-9 w-9 shrink-0 text-[#84AAA6] sm:mb-3 sm:h-10 sm:w-10" strokeWidth={1.5} />
-      <span className="min-w-0 flex-1 sm:w-full sm:flex-none">
-        <span className="block text-lg font-semibold text-gray-900 group-hover:text-[#84AAA6] sm:mb-0.5 sm:text-xl">{title}</span>
-        <span className="block text-sm text-gray-400 sm:mb-4">{subtitle}</span>
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#84AAA6] shadow-sm sm:mb-4 sm:h-14 sm:w-14">
+        <Icon className="h-6 w-6 text-white sm:h-7 sm:w-7" strokeWidth={1.75} />
+      </span>
+      <span className="min-w-0 flex-1 sm:flex sm:w-full sm:flex-col">
+        <span className="flex flex-wrap items-center gap-2 sm:mb-1">
+          <span className="text-lg font-bold text-gray-900 sm:text-2xl">{title}</span>
+          <span className="rounded-full border border-[#84AAA6]/40 bg-white px-2 py-0.5 text-xs font-medium text-[#5C8480]">{subtitle}</span>
+        </span>
         <span className="mt-0.5 block text-sm text-gray-700 sm:hidden">{summary}</span>
-        <span className="hidden sm:block">
+        <span className="hidden sm:mb-5 sm:block">
           {benefits.map((b) => (
             <span key={b} className="mt-2 flex items-start gap-2 text-sm text-gray-700">
               <span className="shrink-0 font-bold text-[#84AAA6]">✓</span> {b}
             </span>
           ))}
         </span>
+        <span className="mt-auto hidden w-full items-center justify-center gap-1.5 rounded-full bg-[#84AAA6] px-4 py-2.5 text-base font-medium text-white transition-colors group-hover:bg-[#6B8E8A] sm:flex">
+          {cta}
+          <ChevronRight className="h-4 w-4" strokeWidth={2.25} />
+        </span>
       </span>
-      <ChevronRight className="h-5 w-5 shrink-0 text-[#84AAA6] sm:hidden" strokeWidth={2} />
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#84AAA6] transition-colors group-hover:bg-[#6B8E8A] sm:hidden">
+        <ChevronRight className="h-5 w-5 text-white" strokeWidth={2.25} />
+      </span>
     </button>
   );
 }
@@ -739,6 +753,7 @@ function RegisterContent() {
                 subtitle="Ingyenes fiók"
                 summary="Ajánlatkérés, kedvencek, chat, értékelés"
                 benefits={VISITOR_BENEFITS}
+                cta="Regisztrálok látogatóként"
                 onClick={() => { setRole("visitor"); setPrefillRoleSelect(false); setStep("basic"); }}
               />
               <RoleCard
@@ -747,6 +762,7 @@ function RegisterContent() {
                 subtitle="Ingyenes profil"
                 summary="Saját profil, ajánlatkérések, chat"
                 benefits={PROVIDER_BENEFITS}
+                cta="Regisztrálok szolgáltatóként"
                 onClick={() => { setRole("provider"); setPrefillRoleSelect(false); setStep("basic"); }}
               />
             </div>
@@ -772,6 +788,7 @@ function RegisterContent() {
                 subtitle="Ingyenes fiók"
                 summary="Ajánlatkérés, kedvencek, chat, értékelés"
                 benefits={VISITOR_BENEFITS}
+                cta="Regisztrálok látogatóként"
                 onClick={() => { setRole("visitor"); setStep("basic"); router.replace("/auth/register?type=visitor"); }}
               />
             <RoleCard
@@ -780,6 +797,7 @@ function RegisterContent() {
                 subtitle="Ingyenes profil"
                 summary="Saját profil, ajánlatkérések, chat"
                 benefits={PROVIDER_BENEFITS}
+                cta="Regisztrálok szolgáltatóként"
                 onClick={() => { setRole("provider"); setStep("basic"); router.replace("/auth/register?type=provider"); }}
               />
           </div>
