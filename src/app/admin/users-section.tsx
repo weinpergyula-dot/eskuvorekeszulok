@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2, RotateCcw, Check, Rows3, LayoutList } from "lucide-react";
+import { Mail, Calendar, Eye, Tag, ChevronUp, ChevronDown, ChevronsUpDown, Star, Trash2, RotateCcw, Check, Rows3, LayoutList, Search, SlidersHorizontal } from "lucide-react";
 import { CATEGORY_LABELS } from "@/lib/types";
 
 interface UserProfile {
@@ -99,6 +99,8 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
   const [confirmDelete, setConfirmDelete] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const [showCategory, setShowCategory] = useState(false);
   const [approvalFilter, setApprovalFilter] = useState<ApprovalFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -282,19 +284,10 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
       )}
 
       <div className="space-y-4">
-        {/* Search */}
-        <div className="max-w-sm">
-          <FloatingInput
-            id="admin-search"
-            label="Keresés név vagy email alapján..."
-            value={search}
-            onChange={(e) => handleSearch(e.target.value)}
-            compact
-          />
-        </div>
-
-        {/* Fiók típus szerinti szűrés */}
-        <div className="flex flex-wrap gap-2">
+        {/* Fiók típus szerinti szűrés, mellette a kategóriaszűrő és a kereső
+            lenyitó gombja. Ha a lenyitott mező értéke aktív, a gomb akkor is
+            kiemelt marad, amikor csukva van. */}
+        <div className="flex flex-wrap items-center gap-2">
           {(["all", "visitor", "provider"] as ApprovalFilter[]).map((f) => (
             <button
               key={f}
@@ -308,10 +301,47 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
               {FILTER_LABELS[f]}
             </button>
           ))}
+          {allCategories.length > 0 && (
+            <button
+              onClick={() => setShowCategory((v) => !v)}
+              title="Kategória szűrő"
+              className={`h-8 w-8 flex items-center justify-center rounded-md border transition-colors cursor-pointer ${
+                showCategory || categoryFilter
+                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
+              }`}
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+            </button>
+          )}
+          <button
+            onClick={() => setShowSearch((v) => !v)}
+            title="Keresés"
+            className={`h-8 w-8 flex items-center justify-center rounded-md border transition-colors cursor-pointer ${
+              showSearch || search
+                ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
+            }`}
+          >
+            <Search className="h-4 w-4" />
+          </button>
         </div>
 
+        {showSearch && (
+          <div className="max-w-sm">
+            <FloatingInput
+              id="admin-search"
+              label="Keresés név vagy email alapján..."
+              value={search}
+              onChange={(e) => handleSearch(e.target.value)}
+              autoFocus
+              compact
+            />
+          </div>
+        )}
+
         {/* Kategória szerinti szűrés – legördülő, zárójelben a darabszámmal */}
-        {allCategories.length > 0 && (
+        {showCategory && allCategories.length > 0 && (
           <select
             value={categoryFilter ?? ""}
             onChange={(e) => handleCategory(e.target.value || null)}
