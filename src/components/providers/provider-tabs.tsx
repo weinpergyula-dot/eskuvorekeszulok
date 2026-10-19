@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Phone, Mail, Globe, MessageCircle, FileText, Send } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
@@ -51,18 +51,21 @@ const HASH_TO_TAB: Record<string, Tab> = {
   arak: "pricing",
 };
 
+const subscribeHash = (onChange: () => void) => {
+  window.addEventListener("hashchange", onChange);
+  return () => window.removeEventListener("hashchange", onChange);
+};
+const hashTabSnapshot = () => HASH_TO_TAB[window.location.hash.replace("#", "")] ?? null;
+
 export function ProviderTabs({ provider }: { provider: Provider }) {
-  const [active, setActive] = useState<Tab>("about");
+  // The URL hash (#reviews, #arak…) picks the opening tab; once the user
+  // clicks a tab, that choice wins. On the server there is no hash.
+  const hashTab = useSyncExternalStore(subscribeHash, hashTabSnapshot, () => null);
+  const [chosen, setActive] = useState<Tab | null>(null);
+  const active: Tab = chosen ?? hashTab ?? "about";
 
   const reviewCount = provider.review_count ?? 0;
   const hasGallery = (provider.gallery_urls ?? []).length > 0;
-
-  // Switch to tab based on URL hash on mount
-  useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    const tab = HASH_TO_TAB[hash];
-    if (tab) setActive(tab);
-  }, []);
 
   const hasPricing = !!(provider.pricing_pdf_url || provider.pricing_text);
 
@@ -151,7 +154,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               </div>
               <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="w-full flex items-center justify-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
