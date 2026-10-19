@@ -7,6 +7,7 @@ import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDo
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { featuredStyle } from "@/lib/featured-style";
+import { quoteHrefFor } from "@/lib/quote-href";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
@@ -47,14 +48,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const detailHref = backHref
     ? `/providers/${provider.id}?from=${encodeURIComponent(backHref)}`
     : `/providers/${provider.id}`;
-  /* Az ajánlatkérő űrlap ezzel a szolgáltatóval előtöltve nyílik: a
-     kategóriája és a megyéi ki vannak választva, ő maga pedig bejelölve a
-     címzettek között. */
-  const quoteParams = new URLSearchParams({ tab: "quotes", szolgaltato: provider.id });
-  if (provider.categories?.[0]) quoteParams.set("kategoria", provider.categories[0]);
-  const quoteCounties = (provider.counties ?? []).filter((c) => c !== "Országosan");
-  if (quoteCounties.length) quoteParams.set("megye", quoteCounties.join(","));
-  const quoteHref = `/profil?${quoteParams}`;
+  const quoteHref = quoteHrefFor(provider);
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
@@ -155,7 +149,21 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
     return (
-      <div id={anchorId} className={cn("flex items-center gap-3 scroll-mt-24 bg-[#FCFCFC] rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", tc.borderBase, tc.borderHover)}>
+      /* Kiemelt szolgáltató a lista nézetben is: a kártyáéval egyező
+         címke a sor felső szélén, és a kártya fejlécének színe háttérként. */
+      <div id={anchorId} className={cn("relative scroll-mt-24", provider.featured && "pt-3.5")}>
+      {provider.featured && (
+        <span className={cn(
+          "absolute top-3.5 left-6 z-20 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
+          tc.featuredBadgeClass
+        )}>
+          Kiemelt szolgáltató
+        </span>
+      )}
+      <div
+        className={cn("flex items-center gap-3 rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", !provider.featured && "bg-[#FCFCFC]", provider.featured && "pt-4", tc.borderBase, tc.borderHover)}
+        style={provider.featured ? { backgroundColor: tc.headerBg } : undefined}
+      >
         {/* Avatar */}
         <button
           type="button"
@@ -201,7 +209,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </div>
           <div className="flex items-center gap-1 mt-0.5">
             {[1, 2, 3, 4, 5].map((star) => (
-              <Star key={star} className={cn("h-3 w-3", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200")} />
+              <Star key={star} className={cn("h-3 w-3", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : tc.emptyStar)} />
             ))}
             <span className="text-sm font-semibold text-gray-900 ml-0.5">{rating > 0 ? rating.toFixed(1) : "–"}</span>
             {reviewCount > 0 && <span className="text-sm text-gray-500">({reviewCount})</span>}
@@ -230,6 +238,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             Részletek
           </a>
         </div>
+      </div>
       </div>
     );
   }

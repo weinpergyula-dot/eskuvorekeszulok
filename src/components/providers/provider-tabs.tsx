@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Phone, Mail, Globe, MessageCircle, FileText } from "lucide-react";
+import { Phone, Mail, Globe, MessageCircle, FileText, Send } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
-import { ChatLink, MaskedContact } from "@/components/providers/masked-contact";
+import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
+import { quoteHrefFor } from "@/lib/quote-href";
 import type { Provider } from "@/lib/types";
 
 type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
@@ -155,6 +156,15 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
               </ChatLink>
+              {/* Ajánlatkérés – ugyanúgy előtöltve, mint a szolgáltatói kártyáról */}
+              <LoginGateLink
+                href={quoteHrefFor(provider)}
+                message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+              >
+                <Send className="h-4 w-4" strokeWidth={1.5} />
+                Ajánlatkérés
+              </LoginGateLink>
             </div>
           </div>
         </div>
