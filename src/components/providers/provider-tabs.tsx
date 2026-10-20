@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
 import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
 import { quoteHrefFor } from "@/lib/quote-href";
+import { WebsiteLink } from "@/components/providers/website-link";
 import type { Provider } from "@/lib/types";
 
 type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
@@ -17,17 +18,23 @@ function ContactItem({
   href,
   external = false,
   fullyHidden = false,
+  website = false,
 }: {
   icon: React.ReactNode;
   value: string;
   href: string;
   external?: boolean;
   fullyHidden?: boolean;
+  /** Weboldal: egy sorban, a vége kipontozva; Instagram/Facebook névvel. */
+  website?: boolean;
 }) {
   return (
-    <div className="flex gap-3 items-center">
+    <div className="flex gap-3 items-center min-w-0">
       <span className="shrink-0">{icon}</span>
       <MaskedContact value={value} fullyHidden={fullyHidden}>
+        {website ? (
+          <WebsiteLink value={value} className="min-w-0 truncate text-base text-gray-900 hover:text-[#84AAA6] cursor-pointer" />
+        ) : (
         <a
           href={href}
           target={external ? "_blank" : undefined}
@@ -36,6 +43,7 @@ function ContactItem({
         >
           {value}
         </a>
+        )}
       </MaskedContact>
     </div>
   );
@@ -149,6 +157,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                     href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
                     external
                     fullyHidden
+                    website
                   />
                 )}
               </div>

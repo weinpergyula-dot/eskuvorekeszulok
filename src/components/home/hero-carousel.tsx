@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { preload } from "react-dom";
-import { ArrowDown, ArrowRight, Pause, Play } from "lucide-react";
+import { ArrowDown, ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useIsLoggedIn } from "@/components/providers/masked-contact";
 
 /**
@@ -38,6 +38,22 @@ type Theme = {
   dotIdle: string;
 };
 
+/** A 3. és a 4. dia színvilága: az oldalon használt teal árnyalatok. */
+const TEAL_THEME = (bg: string): Theme => ({
+  bg,
+  lead: "text-[#84AAA6]",
+  accent: "text-gray-400",
+  blurb: "text-gray-700",
+  ink: "#456965",
+  inkSoft: "#6B7280",
+  inkFaint: "#9CA3AF",
+  cta: "#84AAA6",
+  ctaHover: "#6B8E8A",
+  ctrl: "border-[#84AAA6]/35 bg-white/70 text-[#456965]",
+  dotActive: "#456965",
+  dotIdle: "rgba(132,170,166,0.4)",
+});
+
 const THEMES: Record<string, Theme> = {
   /* 1. dia: ezüstös háttér, sötét teal szövegekkel */
   silver: {
@@ -70,38 +86,12 @@ const THEMES: Record<string, Theme> = {
     dotActive: "#945365",
     dotIdle: "rgba(181,103,125,0.3)",
   },
-  /* 3. dia (fotósok): ugyanaz a vándorló háttér meleg pezsgő árnyalatban
-     (.hero-foto, globals.css), arany kiemelésekkel */
-  gold: {
-    bg: "hero-silver hero-foto",
-    lead: "text-[#A9824B]",
-    accent: "text-gray-400",
-    blurb: "text-gray-700",
-    ink: "#8A6A3B",
-    inkSoft: "#6B7280",
-    inkFaint: "#9CA3AF",
-    cta: "#B8925A",
-    ctaHover: "#9E7A45",
-    ctrl: "border-[#B8925A]/30 bg-white/70 text-[#8A6A3B]",
-    dotActive: "#8A6A3B",
-    dotIdle: "rgba(184,146,90,0.32)",
-  },
-  /* 4. dia (cukrászok): a vándorló háttér halvány zsálya–rózsaszín
-     árnyalatban (.hero-torta, globals.css), a torta zsályazöldjével */
-  sage: {
-    bg: "hero-silver hero-torta",
-    lead: "text-[#7E9A82]",
-    accent: "text-gray-400",
-    blurb: "text-gray-700",
-    ink: "#5E7762",
-    inkSoft: "#6B7280",
-    inkFaint: "#9CA3AF",
-    cta: "#7A957C",
-    ctaHover: "#66806A",
-    ctrl: "border-[#7A957C]/30 bg-white/70 text-[#5E7762]",
-    dotActive: "#5E7762",
-    dotIdle: "rgba(122,149,124,0.32)",
-  },
+  /* 3. dia (fotósok): a vándorló háttér meleg pezsgő árnyalatban
+     (.hero-foto, globals.css), az oldal teal színeivel */
+  foto: TEAL_THEME("hero-silver hero-foto"),
+  /* 4. dia (cukrászok): a vándorló háttér halvány teal–rózsaszín
+     árnyalatban (.hero-torta, globals.css), az oldal teal színeivel */
+  torta: TEAL_THEME("hero-silver hero-torta"),
 };
 
 type Slide = {
@@ -168,7 +158,7 @@ const SLIDES: Slide[] = [
   },
   {
     key: "fotos",
-    theme: "gold",
+    theme: "foto",
     lead: "PILLANATOK",
     accent: "ÖRÖKRE",
     blurb:
@@ -186,7 +176,7 @@ const SLIDES: Slide[] = [
   },
   {
     key: "torta",
-    theme: "sage",
+    theme: "torta",
     lead: "ÉDES",
     accent: "KEZDET",
     blurb:
@@ -671,6 +661,22 @@ export function HeroCarousel() {
       <div className="grid">
         {SLIDES.map((s) => renderSlide(s, s.key !== slide.key))}
       </div>
+
+      {/* Desktopon a banner két szélén lapozó nyilak */}
+      {([
+        { dir: -1, label: "Előző dia", Icon: ChevronLeft, side: "left-4 lg:left-6" },
+        { dir: 1, label: "Következő dia", Icon: ChevronRight, side: "right-4 lg:right-6" },
+      ] as const).map(({ dir, label, Icon, side }) => (
+        <button
+          key={dir}
+          type="button"
+          onClick={() => setIndex((i) => (i + dir + SLIDES.length) % SLIDES.length)}
+          aria-label={label}
+          className={`absolute top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full border shadow-sm backdrop-blur-md transition-colors hover:bg-white/95 md:grid ${side} ${t.ctrl}`}
+        >
+          <Icon className="h-5 w-5" />
+        </button>
+      ))}
 
       {/* Vetítésvezérlő: pause/play és a pöttyök, amik mutatják, melyik dián
           állunk. A banner alján: mobilon a tartalom bal széléhez igazítva,

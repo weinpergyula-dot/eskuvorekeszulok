@@ -1366,16 +1366,16 @@ html.a11y-underline a { text-decoration: underline !important; }
   background: radial-gradient(circle, rgba(226, 200, 160, 0.45), transparent 65%);
 }
 /* A 4. (cukrász) dia: a .hero-silver vándorló gradiense halvány
-   zsályazöld–púderrózsaszín árnyalatban, a fényfolt púderrózsaszín. */
+   teal–púderrózsaszín árnyalatban, a fényfolt púderrózsaszín. */
 .hero-torta.hero-silver {
   background: linear-gradient(
     145deg,
-    #FDFEFC 0%,
-    #EEF3EC 18%,
+    #FDFEFE 0%,
+    #EAF2F1 18%,
     #FFFFFF 34%,
-    #E3EBE1 56%,
+    #DDEAE8 56%,
     #FBF4F4 76%,
-    #F1F0E9 100%
+    #EEF4F3 100%
   );
   background-size: 220% 220%;
 }

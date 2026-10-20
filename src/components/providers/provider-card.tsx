@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { featuredStyle } from "@/lib/featured-style";
 import { quoteHrefFor } from "@/lib/quote-href";
+import { socialLabel, WebsiteLink } from "@/components/providers/website-link";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
@@ -514,7 +515,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} linkColor={tc.text} />
           <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} linkColor={tc.text} fullyHidden />
           {provider.website && (
-            <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} fullyHidden />
+            <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} fullyHidden website />
           )}
           {provider.description && (
             <div className="flex gap-2.5">
@@ -647,18 +648,27 @@ function ContactRow({
   isLink = false,
   linkColor = "text-[#84AAA6]",
   fullyHidden = false,
+  website = false,
 }: {
   icon: React.ReactNode;
   value: string;
   isLink?: boolean;
   linkColor?: string;
   fullyHidden?: boolean;
+  /** Weboldal: egy sorban, a vége kipontozva; Instagram/Facebook névvel. */
+  website?: boolean;
 }) {
   return (
-    <div className="flex items-start gap-2.5">
+    <div className="flex items-start gap-2.5 min-w-0">
       <span className="shrink-0 mt-0.5">{icon}</span>
       <MaskedContact value={value} linkColor={linkColor} fullyHidden={fullyHidden}>
-      {isLink ? (
+      {website ? (
+        isLink ? (
+          <WebsiteLink value={value} className={`min-w-0 truncate text-base ${linkColor} hover:underline`} />
+        ) : (
+          <span className="min-w-0 truncate text-base text-gray-900">{socialLabel(value) ?? value}</span>
+        )
+      ) : isLink ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noopener noreferrer" className={`text-base ${linkColor} hover:underline break-all`}>
           {value}
         </a>
