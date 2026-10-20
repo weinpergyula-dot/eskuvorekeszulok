@@ -512,7 +512,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Contact info */}
       {!inCarousel && (
         <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
-          <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} linkColor={tc.text} />
+          <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} linkColor={tc.text} fullyHidden />
           <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} linkColor={tc.text} fullyHidden />
           {provider.website && (
             <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} fullyHidden website />

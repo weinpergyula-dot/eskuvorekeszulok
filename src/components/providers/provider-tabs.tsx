@@ -140,6 +140,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                     icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
                     value={provider.phone}
                     href={`tel:${provider.phone}`}
+                    fullyHidden
                   />
                 )}
                 {provider.email && (
