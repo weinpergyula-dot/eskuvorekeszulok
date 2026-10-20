@@ -264,9 +264,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const showFeaturedBadge = !!provider.featured;
 
   return (
-    /* A rácsban nem nyúlik a sor magasságára: ha a szomszéd kártyát
-       kinyitják, ez csukva marad, üres rész nélkül. */
-    <div id={anchorId} className={cn("relative scroll-mt-24", inCarousel ? "h-full" : "self-start", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
+    <div id={anchorId} className={cn("relative h-full scroll-mt-24", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
       {showFeaturedBadge && (
         <span className={cn(
           "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
@@ -497,9 +495,9 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
       )}
 
-      {/* Expand/collapse row – mobilon és desktopon is */}
+      {/* Mobile expand/collapse row */}
       {!inCarousel && (
-        <div className="flex items-center justify-center py-2.5 bg-white border-b border-gray-100">
+        <div className="sm:hidden flex items-center justify-center py-2.5 bg-white border-b border-gray-100">
           <button
             type="button"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setExpanded((v) => !v); }}
@@ -513,7 +511,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Contact info */}
       {!inCarousel && (
-        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden")}>
+        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
           <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} linkColor={tc.text} />
           <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} linkColor={tc.text} fullyHidden />
           {provider.website && (
@@ -539,7 +537,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Footer */}
       {!inCarousel && !disableLink && (
-        <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden")}>
+        <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
           {/* Ajánlatkérés + Chat + Részletek grouped — always pushed to right */}
           <div className="flex flex-wrap items-center justify-end gap-2 ml-auto">
             <LoginGateLink
