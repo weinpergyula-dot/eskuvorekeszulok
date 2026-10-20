@@ -54,6 +54,22 @@ const TEAL_THEME = (bg: string): Theme => ({
   dotIdle: "rgba(132,170,166,0.4)",
 });
 
+/** Az arany feliratú diák színvilága, a meleg pezsgő háttérrel. */
+const GOLD_THEME: Theme = {
+  bg: "hero-silver hero-foto",
+  lead: "text-[#B8925A]",
+  accent: "text-gray-400",
+  blurb: "text-gray-700",
+  ink: "#8A6A3B",
+  inkSoft: "#6B7280",
+  inkFaint: "#9CA3AF",
+  cta: "#B8925A",
+  ctaHover: "#9E7A45",
+  ctrl: "border-[#B8925A]/30 bg-white/70 text-[#8A6A3B]",
+  dotActive: "#8A6A3B",
+  dotIdle: "rgba(184, 146, 90,0.3)",
+};
+
 const THEMES: Record<string, Theme> = {
   /* 1. dia: ezüstös háttér, sötét teal szövegekkel */
   silver: {
@@ -72,22 +88,9 @@ const THEMES: Record<string, Theme> = {
   },
   /* 2. dia (meghívók): arany feliratokhoz a meleg pezsgő háttér
      (.hero-foto, globals.css) */
-  pink: {
-    bg: "hero-silver hero-foto",
-    lead: "text-[#B8925A]",
-    accent: "text-gray-400",
-    blurb: "text-gray-700",
-    ink: "#8A6A3B",
-    inkSoft: "#6B7280",
-    inkFaint: "#9CA3AF",
-    cta: "#B8925A",
-    ctaHover: "#9E7A45",
-    ctrl: "border-[#B8925A]/30 bg-white/70 text-[#8A6A3B]",
-    dotActive: "#8A6A3B",
-    dotIdle: "rgba(184, 146, 90,0.3)",
-  },
-  /* 3. dia (fotósok): teal feliratokhoz az 1. dia teal háttere */
-  foto: TEAL_THEME("hero-silver"),
+  pink: GOLD_THEME,
+  /* 3. dia (fotósok): arany, mint a meghívós dia */
+  foto: GOLD_THEME,
   /* 4. dia (cukrászok): teal feliratokhoz az 1. dia teal háttere */
   torta: TEAL_THEME("hero-silver"),
 };
