@@ -272,7 +272,12 @@ export function ProvidersContent({
   }, []);
 
   // Reset to first page when the result set or page size changes.
-  useEffect(() => { setCurrentPage(1); }, [category, county, sortBy, pageSize, query]);
+  const filterKey = JSON.stringify([category, county, sortBy, pageSize, query]);
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (filterKey !== prevFilterKey) {
+    setPrevFilterKey(filterKey);
+    setCurrentPage(1);
+  }
 
   /* A listázás aktuális állapota. A szűrők a címsorba is bekerülnek, és a
      szolgáltatói kártyák linkjei is magukkal viszik – így a részletes

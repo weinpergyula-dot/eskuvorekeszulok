@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Heart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,11 @@ export function FavoriteButton({
   const [loading, setLoading] = useState(false);
 
   // Sync when parent loads favorites asynchronously after initial render
-  useEffect(() => { setLiked(initialLiked); }, [initialLiked]);
+  const [prevInitialLiked, setPrevInitialLiked] = useState(initialLiked);
+  if (initialLiked !== prevInitialLiked) {
+    setPrevInitialLiked(initialLiked);
+    setLiked(initialLiked);
+  }
   const [tooltipRect, setTooltipRect] = useState<DOMRect | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
