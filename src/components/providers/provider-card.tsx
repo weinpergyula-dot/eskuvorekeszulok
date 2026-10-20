@@ -196,7 +196,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         <div className="flex-1 min-w-0">
           <MarqueeText className="font-bold text-gray-900" style={{ fontSize: "16px" }}>{provider.full_name}</MarqueeText>
           <div className="flex items-start gap-1 mt-0.5">
-            <MapPin className={`h-3 w-3 ${tc.text} shrink-0 mt-[2px]`} />
+            <MapPin className={`h-3 w-3 ${tc.text} shrink-0 mt-[3.5px]`} />
             <span className="text-sm text-gray-500 leading-snug">
               {countyExpanded
                 ? (provider.counties ?? []).join(", ")
@@ -264,7 +264,9 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const showFeaturedBadge = !!provider.featured;
 
   return (
-    <div id={anchorId} className={cn("relative h-full scroll-mt-24", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
+    /* A rácsban nem nyúlik a sor magasságára: ha a szomszéd kártyát
+       kinyitják, ez csukva marad, üres rész nélkül. */
+    <div id={anchorId} className={cn("relative scroll-mt-24", inCarousel ? "h-full" : "self-start", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
       {showFeaturedBadge && (
         <span className={cn(
           "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
@@ -392,7 +394,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               </h3>
             )}
             <div className="flex items-start gap-1 mt-0.5">
-              <MapPin className={`h-3.5 w-3.5 shrink-0 mt-[2px] ${tc.text}`} />
+              <MapPin className={`h-3.5 w-3.5 shrink-0 mt-[2.5px] ${tc.text}`} />
               <span className="text-sm text-gray-900 leading-snug">
                 {countyExpanded
                   ? (provider.counties ?? []).join(", ")
@@ -495,9 +497,9 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         </div>
       )}
 
-      {/* Mobile expand/collapse row */}
+      {/* Expand/collapse row – mobilon és desktopon is */}
       {!inCarousel && (
-        <div className="sm:hidden flex items-center justify-center py-2.5 bg-white border-b border-gray-100">
+        <div className="flex items-center justify-center py-2.5 bg-white border-b border-gray-100">
           <button
             type="button"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setExpanded((v) => !v); }}
@@ -511,7 +513,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Contact info */}
       {!inCarousel && (
-        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
+        <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden")}>
           <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} linkColor={tc.text} />
           <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} linkColor={tc.text} fullyHidden />
           {provider.website && (
@@ -519,7 +521,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           )}
           {provider.description && (
             <div className="flex gap-2.5">
-              <MessageCircle className={`h-4 w-4 ${tc.text} shrink-0 mt-0.5`} />
+              <span className="flex h-[1.625rem] shrink-0 items-center"><MessageCircle className={`h-4 w-4 ${tc.text}`} /></span>
               <p className="text-base text-gray-900 leading-relaxed">
                 {!descExpanded && provider.description.length > 200
                   ? provider.description.slice(0, 200) + "…"
@@ -537,7 +539,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* Footer */}
       {!inCarousel && !disableLink && (
-        <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
+        <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden")}>
           {/* Ajánlatkérés + Chat + Részletek grouped — always pushed to right */}
           <div className="flex flex-wrap items-center justify-end gap-2 ml-auto">
             <LoginGateLink
@@ -660,7 +662,7 @@ function ContactRow({
 }) {
   return (
     <div className="flex items-start gap-2.5 min-w-0">
-      <span className="shrink-0 mt-0.5">{icon}</span>
+      <span className="flex h-6 shrink-0 items-center">{icon}</span>
       <MaskedContact value={value} linkColor={linkColor} fullyHidden={fullyHidden}>
       {website ? (
         isLink ? (
