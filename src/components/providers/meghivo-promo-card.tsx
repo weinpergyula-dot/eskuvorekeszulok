@@ -82,7 +82,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
         </div>
 
         {/* A szöveg és a gomb közti sávba a három csomag mintája kerül,
-           legyezőszerűen: középen, legelöl a PREMIUM, két oldalt megdöntve a
+           legyezőszerűen: középen, legelöl a GOLD, két oldalt megdöntve a
            BASIC és a SILVER. A sáv abszolút pozicionált tartalommal tölti ki a
            maradék helyet, így többoszlopos rácsban a kártya magasságát a
            szomszédos kártyák diktálják, nem a telefonok; mobilon, ahol a
@@ -97,8 +97,8 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
               className="z-0 -mr-6 translate-y-3 -rotate-[9deg] group-hover:-translate-x-2 group-hover:-rotate-[12deg]"
             />
             <MiniPhone
-              src="/meghivo/slide-premium-rose.webp"
-              label="Premium"
+              src="/meghivo/slide-gold.webp"
+              label="Gold"
               className="z-10 -translate-y-1 scale-110 group-hover:-translate-y-3"
             />
             <MiniPhone

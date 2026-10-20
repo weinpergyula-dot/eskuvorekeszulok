@@ -5,7 +5,7 @@ import { Sparkles } from "lucide-react";
 import { ScratchDate, type ScratchItem } from "./scratch-date";
 
 /**
- * PREMIUM extra: a meghívó egy lezárt borítékkal indul. A látogató a
+ * GOLD extra: a meghívó egy lezárt borítékkal indul. A látogató a
  * viaszpecsétre kattint, mire az széttörik, a fül kinyílik, fény tör elő a
  * borítékból, és a meghívókártya kiemelkedik. A kártyán a dátum sorsjegyszerű
  * bevonat alatt bújik meg: amíg le nem satírozza mindhárom mezőt (év, hónap,
@@ -105,7 +105,7 @@ export function EnvelopeIntro({
 
       <div className="relative flex flex-col items-center">
         <p className="prm-env-caption prm-caps mb-8 text-center text-[10px] sm:text-xs">
-          Premium minta · digitális esküvői meghívó
+          Gold minta · digitális esküvői meghívó
         </p>
 
         <div className="prm-env-scene">
@@ -119,17 +119,17 @@ export function EnvelopeIntro({
             <div className="prm-env-card">
               <p
                 className="text-[10px] uppercase tracking-[0.3em]"
-                style={{ color: "#8C5666" }}
+                style={{ color: "#8C7856" }}
               >
                 Meghívó
               </p>
               <p
                 className="prm-script mt-3 text-[2rem] leading-none"
-                style={{ color: "#7E4254" }}
+                style={{ color: "#7E6842" }}
               >
                 {monogram}
               </p>
-              <p className="prm-serif mt-3 text-xl leading-snug" style={{ color: "#4A242F" }}>
+              <p className="prm-serif mt-3 text-xl leading-snug" style={{ color: "#4A3C24" }}>
                 {names}
               </p>
               {/* A dátum sorsjegyszerű bevonat alatt – ezt kell lesatírozni.
@@ -138,7 +138,7 @@ export function EnvelopeIntro({
               <div className="mt-4">
                 <ScratchDate items={dateParts} onComplete={() => setScratched(true)} />
               </div>
-              <p className="mt-3 text-[13px]" style={{ color: "#714853" }}>
+              <p className="mt-3 text-[13px]" style={{ color: "#716248" }}>
                 {place}
               </p>
             </div>

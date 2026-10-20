@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * PREMIUM extra: a dátum három mezőben (év / hónap / nap) van elrejtve egy
+ * GOLD extra: a dátum három mezőben (év / hónap / nap) van elrejtve egy
  * sorsjegyszerű bevonat alatt – a látogatónak le kell satíroznia, hogy
  * kiderüljön. A meghívó csak akkor nyílik meg, ha mindhárom mező előbukkant.
  *
@@ -50,10 +50,10 @@ function ScratchPanel({
     ctx.scale(dpr, dpr);
 
     const grad = ctx.createLinearGradient(0, 0, width, height);
-    grad.addColorStop(0, "#C8B4B9");
-    grad.addColorStop(0.35, "#90727B");
-    grad.addColorStop(0.62, "#BBA0A8");
-    grad.addColorStop(1, "#71565E");
+    grad.addColorStop(0, "#C8C1B4");
+    grad.addColorStop(0.35, "#908572");
+    grad.addColorStop(0.62, "#BBB1A0");
+    grad.addColorStop(1, "#716756");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
 

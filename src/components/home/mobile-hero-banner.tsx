@@ -81,11 +81,11 @@ const SLIDES: MobileSlide[] = [
   },
   {
     key: "meghivo",
-    alt: "Prémium digitális esküvői meghívó: lila boríték viaszpecséttel",
+    alt: "Gold digitális esküvői meghívó: arany boríték viaszpecséttel",
     focus: "50% 50%",
     tone: "dark",
     place: "bottom",
-    eyebrow: "Saját szolgáltatás · Premium",
+    eyebrow: "Saját szolgáltatás · Gold",
     lead: "DIGITÁLIS",
     accent: "MEGHÍVÓK",
     blurb: "Egy linken elküldhető, mobilra szabott meghívó visszaszámlálóval és online visszajelzéssel – már 14\u00a0900\u00a0Ft-tól.",
@@ -757,7 +757,7 @@ export function MobileHeroBanner() {
               </span>
             )}
 
-            {/* A meghívós dia rajzolt jelenete: a prémium minta lila borítéka */}
+            {/* A meghívós dia rajzolt jelenete: a Gold minta arany borítéka */}
             {s.overlay === "envelope" && <EnvelopeScene label={s.alt} active={on} />}
 
             {/* Rétegek: sötétítés / sarokvilágítás / kereső-keret */}
@@ -917,7 +917,7 @@ export function MobileHeroBanner() {
   );
 }
 
-/** A háttérben lebegő fénypontok – ugyanazok, mint a prémium minta nyitóképén. */
+/** A háttérben lebegő fénypontok – ugyanazok, mint a Gold minta nyitóképén. */
 const SPARKS = [
   { left: "12%", top: "22%", size: 10, delay: "0s" },
   { left: "82%", top: "18%", size: 14, delay: "1.4s" },
@@ -929,7 +929,7 @@ const SPARKS = [
 ];
 
 /**
- * A prémium digitális meghívó borítéka – a /meghivo-premium minta
+ * A Gold digitális meghívó borítéka – a /meghivo-gold minta
  * nyitóképének elemeivel és animációjával (globals.css .prm-env-*): a
  * boríték lassan lebeg és enyhén előredől, a viaszpecsét körül fénygyűrű
  * pulzál, a borítékon fény fut át, a háttérben fénypontok lebegnek.
@@ -959,7 +959,7 @@ function LineHearts() {
       className="mhb-heart mx-auto mt-2 block w-[72%]"
       viewBox="0 12 176 74"
       fill="none"
-      stroke="#7E4254"
+      stroke="#7E6842"
       strokeWidth="1.6"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -971,7 +971,7 @@ function LineHearts() {
 
 const ENV_W = "min(92vw, 440px)";
 const ENV_OPEN_DELAY_MS = 1000;
-/* A fül nyílása után emelkedik ki a lap – mint a /meghivo-premium oldalon. */
+/* A fül nyílása után emelkedik ki a lap – mint a /meghivo-gold oldalon. */
 const ENV_CARD_DELAY_MS = ENV_OPEN_DELAY_MS + 900;
 
 type EnvPhase = "closed" | "opening" | "card";
@@ -1002,7 +1002,7 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
       className="mhb-env absolute inset-0 overflow-hidden"
       style={{
         background:
-          "radial-gradient(70% 50% at 50% 40%, rgba(181, 103, 125, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #180D10",
+          "radial-gradient(70% 50% at 50% 40%, rgba(181, 152, 103, 0.26), transparent 70%), radial-gradient(50% 40% at 15% 90%, rgba(240, 213, 168, 0.12), transparent 70%), #18140D",
       }}
     >
       {SPARKS.map((sp) => (
@@ -1025,16 +1025,16 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
             <span aria-hidden className="prm-env-back" />
             {/* A kiemelkedő meghívólap */}
             <div aria-hidden className="prm-env-card">
-              <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: "#8C5666" }}>
+              <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: "#8C7856" }}>
                 Meghívó
               </p>
-              <p className="mt-2 text-[2.1rem] leading-none" style={{ color: "#7E4254", fontFamily: "'Great Vibes', cursive" }}>
+              <p className="mt-2 text-[2.1rem] leading-none" style={{ color: "#7E6842", fontFamily: "'Great Vibes', cursive" }}>
                 L &amp; D
               </p>
-              <p className="mt-2 font-heading text-[17px] leading-snug" style={{ color: "#4A242F" }}>
+              <p className="mt-2 font-heading text-[17px] leading-snug" style={{ color: "#4A3C24" }}>
                 Lilla és Dániel
               </p>
-              <p className="mt-1.5 text-[12px]" style={{ color: "#714853" }}>
+              <p className="mt-1.5 text-[12px]" style={{ color: "#716248" }}>
                 2027. augusztus 21. · Tihany
               </p>
               <LineHearts />
@@ -1050,7 +1050,7 @@ function EnvelopeScene({ label, active }: { label: string; active: boolean }) {
       </div>
 
       {/* Alsó sötétítés a szöveg alá */}
-      <span aria-hidden className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, rgba(24,13,16,0) 0%, rgba(24,13,16,0.85) 60%, rgba(24,13,16,0.95) 100%)" }} />
+      <span aria-hidden className="absolute inset-x-0 bottom-0 h-[55%]" style={{ background: "linear-gradient(180deg, rgba(24, 20, 13,0) 0%, rgba(24, 20, 13,0.85) 60%, rgba(24, 20, 13,0.95) 100%)" }} />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PenLine, Quote } from "lucide-react";
 
 /**
- * PREMIUM extra: vendégkönyv. A mintában a bejegyzések a böngészőben
+ * GOLD extra: vendégkönyv. A mintában a bejegyzések a böngészőben
  * maradnak (nincs mentés) – élesben a pár postaládájába érkeznek.
  */
 
@@ -67,7 +67,7 @@ export function Guestbook() {
           />
           <button
             type="submit"
-            className="self-start rounded-full border border-[var(--prm-line)] bg-[rgba(211,173,184,0.08)] px-6 py-2.5 text-sm text-[var(--prm-rose)] transition-colors hover:bg-[rgba(211,173,184,0.16)]"
+            className="self-start rounded-full border border-[var(--prm-line)] bg-[rgba(211, 197, 173,0.08)] px-6 py-2.5 text-sm text-[var(--prm-rose)] transition-colors hover:bg-[rgba(211, 197, 173,0.16)]"
           >
             Beírom a vendégkönyvbe
           </button>

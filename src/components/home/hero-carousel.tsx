@@ -150,7 +150,7 @@ const SLIDES: Slide[] = [
     offer: {
       badge: "Új",
       headline: "Csomagok elérhetőek már 14\u00a0900\u00a0Ft\u2011tól",
-      packages: "BASIC · SILVER · PREMIUM",
+      packages: "BASIC · SILVER · GOLD",
       short: "Csomagok már 14\u00a0900\u00a0Ft\u2011tól",
       cta: "Megnézem",
       href: "/meghivo",
@@ -228,7 +228,7 @@ const INTERVAL_MS = 6000;
 const HERO_PHONE_IMAGES = [
   "/meghivo/slide-basic.webp",
   "/meghivo/slide-silver.webp",
-  "/meghivo/slide-premium-rose.webp",
+  "/meghivo/slide-gold.webp",
 ];
 
 /* A banner összes gombja (mindkét dián) ugyanakkora: azonos magasság,
@@ -515,13 +515,13 @@ export function HeroCarousel() {
                 {s.key === "meghivo" ? (
                   /* Mindhárom csomag mintája úgy látszik, mint a digitális
                      meghívó promókártyáján: legyezőben, középen legelöl a
-                     PREMIUM, két oldalt megdöntve a BASIC és a SILVER.
-                     Mobilon csak egy fér el: a PREMIUM, térben megdöntve. */
+                     GOLD, két oldalt megdöntve a BASIC és a SILVER.
+                     Mobilon csak egy fér el: a GOLD, térben megdöntve. */
                   <>
                     <div className="hero-duo absolute inset-x-0 bottom-[calc(-14%+50px)] top-0 flex items-end justify-center md:hidden">
                       <Phone
                         className="hero-duo-front w-[78%]"
-                        src="/meghivo/slide-premium-rose.webp"
+                        src="/meghivo/slide-gold.webp"
                         alt={s.alt}
                       />
                     </div>
@@ -532,7 +532,7 @@ export function HeroCarousel() {
                       {(
                         [
                           { src: "/meghivo/slide-basic.webp", label: "Basic", color: "#6E9995", alt: "BASIC digitális esküvői meghívó telefonon", cls: "z-0 -mr-[2%] mt-[6%] w-[29%] -rotate-[9deg]" },
-                          { src: "/meghivo/slide-premium-rose.webp", label: "Premium", color: "#994E64", alt: s.alt, cls: "z-10 w-[33%]" },
+                          { src: "/meghivo/slide-gold.webp", label: "Gold", color: "#99794E", alt: s.alt, cls: "z-10 w-[33%]" },
                           { src: "/meghivo/slide-silver.webp", label: "Silver", color: "#77828F", alt: "SILVER digitális esküvői meghívó telefonon", cls: "z-0 -ml-[2%] mt-[6%] w-[29%] rotate-[9deg]" },
                         ] as const
                       ).map((ph) => (

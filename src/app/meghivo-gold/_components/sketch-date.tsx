@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 /**
- * PREMIUM extra: satírozott dátum. Először a betűk körvonala „rajzolódik
+ * GOLD extra: satírozott dátum. Először a betűk körvonala „rajzolódik
  * meg”, majd ferde vonalkás (ceruzával árnyékolt) kitöltést kap, végül egy
  * kézzel húzott aláhúzás fut végig alatta. Az animáció akkor indul, amikor a
  * felirat képernyőre kerül – a CSS `is-in` osztályhoz kötve.
@@ -44,7 +44,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
             patternUnits="userSpaceOnUse"
             patternTransform="rotate(38)"
           >
-            <rect x="0" y="0" width="2.6" height="6" fill="#D3ADB8" />
+            <rect x="0" y="0" width="2.6" height="6" fill="#D3C5AD" />
           </pattern>
           {/* Keresztsatír a mélyebb tónusért */}
           <pattern
@@ -54,7 +54,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
             patternUnits="userSpaceOnUse"
             patternTransform="rotate(-42)"
           >
-            <rect x="0" y="0" width="1.6" height="8" fill="#B5677D" />
+            <rect x="0" y="0" width="1.6" height="8" fill="#B59867" />
           </pattern>
         </defs>
 
@@ -92,7 +92,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
           textLength="520"
           lengthAdjust="spacingAndGlyphs"
           fill="none"
-          stroke="#F6EAF3"
+          stroke="#F6F2EA"
           strokeWidth="1.1"
           className="prm-sketch-outline"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 72, fontWeight: 600 }}
@@ -108,7 +108,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
           textLength="520"
           lengthAdjust="spacingAndGlyphs"
           fill="none"
-          stroke="#B5677D"
+          stroke="#B59867"
           strokeWidth="0.9"
           opacity="0.55"
           className="prm-sketch-outline"
@@ -121,7 +121,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
         <path
           d="M78 108 C 180 100, 300 116, 430 104 C 470 100, 500 106, 522 110"
           fill="none"
-          stroke="#B5677D"
+          stroke="#B59867"
           strokeWidth="2.6"
           strokeLinecap="round"
           className="prm-sketch-underline"
@@ -132,7 +132,7 @@ export function SketchDate({ text, sub }: { text: string; sub?: string }) {
             x="300"
             y="136"
             textAnchor="middle"
-            fill="#B19AA1"
+            fill="#B1A99A"
             className="prm-sketch-fill"
             style={{
               fontFamily: "'Jost', ui-sans-serif, system-ui, sans-serif",
