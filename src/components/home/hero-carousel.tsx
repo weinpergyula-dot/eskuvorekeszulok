@@ -70,10 +70,10 @@ const THEMES: Record<string, Theme> = {
     dotActive: "#456965",
     dotIdle: "rgba(69,105,101,0.28)",
   },
-  /* 2. dia: ugyanaz az ezüstös háttér, a digitális meghívó promókártyájának
-     arany színeivel (.hero-meghivo: a fényfolt színe, globals.css) */
+  /* 2. dia (meghívók): arany feliratokhoz a meleg pezsgő háttér
+     (.hero-foto, globals.css) */
   pink: {
-    bg: "hero-silver hero-meghivo",
+    bg: "hero-silver hero-foto",
     lead: "text-[#B8925A]",
     accent: "text-gray-400",
     blurb: "text-gray-700",
@@ -86,12 +86,10 @@ const THEMES: Record<string, Theme> = {
     dotActive: "#8A6A3B",
     dotIdle: "rgba(184, 146, 90,0.3)",
   },
-  /* 3. dia (fotósok): a vándorló háttér meleg pezsgő árnyalatban
-     (.hero-foto, globals.css), az oldal teal színeivel */
-  foto: TEAL_THEME("hero-silver hero-foto"),
-  /* 4. dia (cukrászok): a vándorló háttér halvány teal–rózsaszín
-     árnyalatban (.hero-torta, globals.css), az oldal teal színeivel */
-  torta: TEAL_THEME("hero-silver hero-torta"),
+  /* 3. dia (fotósok): teal feliratokhoz az 1. dia teal háttere */
+  foto: TEAL_THEME("hero-silver"),
+  /* 4. dia (cukrászok): teal feliratokhoz az 1. dia teal háttere */
+  torta: TEAL_THEME("hero-silver"),
 };
 
 type Slide = {
