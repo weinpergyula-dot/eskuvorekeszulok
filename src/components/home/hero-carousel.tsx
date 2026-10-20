@@ -71,20 +71,20 @@ const THEMES: Record<string, Theme> = {
     dotIdle: "rgba(69,105,101,0.28)",
   },
   /* 2. dia: ugyanaz az ezüstös háttér, a digitális meghívó promókártyájának
-     rózsaszín színeivel (.hero-meghivo: a fényfolt színe, globals.css) */
+     arany színeivel (.hero-meghivo: a fényfolt színe, globals.css) */
   pink: {
     bg: "hero-silver hero-meghivo",
-    lead: "text-[#B5677D]",
+    lead: "text-[#B8925A]",
     accent: "text-gray-400",
     blurb: "text-gray-700",
-    ink: "#945365",
+    ink: "#8A6A3B",
     inkSoft: "#6B7280",
     inkFaint: "#9CA3AF",
-    cta: "#B5677D",
-    ctaHover: "#9A5267",
-    ctrl: "border-[#B5677D]/30 bg-white/70 text-[#945365]",
-    dotActive: "#945365",
-    dotIdle: "rgba(181,103,125,0.3)",
+    cta: "#B8925A",
+    ctaHover: "#9E7A45",
+    ctrl: "border-[#B8925A]/30 bg-white/70 text-[#8A6A3B]",
+    dotActive: "#8A6A3B",
+    dotIdle: "rgba(184, 146, 90,0.3)",
   },
   /* 3. dia (fotósok): a vándorló háttér meleg pezsgő árnyalatban
      (.hero-foto, globals.css), az oldal teal színeivel */
@@ -234,9 +234,9 @@ const HERO_PHONE_IMAGES = [
 /* A banner összes gombja (mindkét dián) ugyanakkora: azonos magasság,
    szélesség és betűméret. Mobilon a magasság és a betűméret a csoportos
    ajánlatkérés gombjáéval egyezik. */
-/* A lila gombok helyett fehér, üveghatású gomb lila felirattal. */
+/* A színes gombok helyett fehér, üveghatású gomb arany felirattal. */
 const GLASS_CTA =
-  "border border-[#B5677D]/30 bg-white/75 text-[#9A5267] shadow-[0_12px_30px_-10px_rgba(120,60,80,0.35)] backdrop-blur-xl hover:bg-white/95";
+  "border border-[#B8925A]/30 bg-white/75 text-[#9E7A45] shadow-[0_12px_30px_-10px_rgba(110, 80, 40,0.35)] backdrop-blur-xl hover:bg-white/95";
 const CTA_SIZE =
   "inline-flex h-12 w-[170px] items-center justify-center gap-1.5 rounded-xl text-[15px] font-bold transition-colors md:h-11 md:w-[200px] md:text-base";
 
@@ -432,7 +432,7 @@ export function HeroCarousel() {
                     {loggedIn === false && (
                       <Link
                         href="/auth/register"
-                        className={`${CTA_SIZE} border border-white/70 bg-white/60 text-[#B5677D] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80`}
+                        className={`${CTA_SIZE} border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80`}
                       >
                         Regisztráció
                       </Link>
@@ -440,8 +440,8 @@ export function HeroCarousel() {
                     <Link
                       href={offer.href}
                       onClick={(e) => scrollToAnchor(e, offer.href)}
-                      className={`${CTA_SIZE} ${t.cta === "#B5677D" ? GLASS_CTA : "hero-offer-cta text-white"}`}
-                      style={t.cta === "#B5677D" ? undefined : { ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
+                      className={`${CTA_SIZE} ${t.cta === "#B8925A" ? GLASS_CTA : "hero-offer-cta text-white"}`}
+                      style={t.cta === "#B8925A" ? undefined : { ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                     >
                       {offer.cta}
                       {/* Az 1. dián a gomb lefelé, a kategóriákhoz gördít */}
@@ -486,8 +486,8 @@ export function HeroCarousel() {
                   <Link
                     href={offer.href}
                     onClick={(e) => scrollToAnchor(e, offer.href, offer.category)}
-                    className={`mt-2.5 md:mt-4 ${CTA_SIZE} ${t.cta === "#B5677D" ? GLASS_CTA : "hero-offer-cta text-white"}`}
-                    style={t.cta === "#B5677D" ? undefined : { ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
+                    className={`mt-2.5 md:mt-4 ${CTA_SIZE} ${t.cta === "#B8925A" ? GLASS_CTA : "hero-offer-cta text-white"}`}
+                    style={t.cta === "#B8925A" ? undefined : { ["--cta" as string]: t.cta, ["--cta-hover" as string]: t.ctaHover }}
                   >
                     {offer.cta}
                     <ArrowRight className="h-4 w-4" />
@@ -594,7 +594,7 @@ export function HeroCarousel() {
                       </div>
                       <span
                         aria-hidden
-                        className="absolute -left-[10%] top-[8%] grid aspect-square w-[46%] rotate-[-12deg] place-items-center rounded-full bg-[#F6E3E6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#9A5267] shadow-[0_10px_20px_-8px_rgba(120,60,80,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:top-auto md:w-[40%] md:text-[10.5cqw]"
+                        className="absolute -left-[10%] top-[8%] grid aspect-square w-[46%] rotate-[-12deg] place-items-center rounded-full bg-[#F3E8D6] text-center font-['Great_Vibes'] text-[11cqw] leading-[0.95] text-[#9E7A45] shadow-[0_10px_20px_-8px_rgba(110, 80, 40,0.5)] ring-2 ring-white md:-left-[22%] md:bottom-[14%] md:top-auto md:w-[40%] md:text-[10.5cqw]"
                       >
                         Kóstolj
                         <br />

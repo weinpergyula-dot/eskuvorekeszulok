@@ -36,8 +36,8 @@ const TABS = [
     icon: Briefcase,
     title: "Regisztrálj szolgáltatónak",
     chip: "Ingyenes profil",
-    accent: "#B5677D",
-    gradient: "linear-gradient(150deg, #C58F9E 0%, #AF6F81 60%, #9A5267 100%)",
+    accent: "#B8925A",
+    gradient: "linear-gradient(150deg, #D2B587 0%, #B08A55 60%, #9E7A45 100%)",
     shadow: "0 22px 44px -20px rgba(154, 82, 103, 0.65)",
     features: [
       "Ingyenes szolgáltatói profilt létrehozni",
@@ -63,7 +63,7 @@ export function WhyRegister() {
       </h2>
       <div className="mx-auto mt-3 flex items-center justify-center gap-2" aria-hidden>
         <span className="h-px w-10 bg-gray-200" />
-        <span className="h-1.5 w-1.5 rotate-45 rounded-[2px] bg-[#BD7E90]" />
+        <span className="h-1.5 w-1.5 rotate-45 rounded-[2px] bg-[#C9A675]" />
         <span className="h-px w-10 bg-gray-200" />
       </div>
       <p className="mx-auto mt-3 max-w-xs text-center text-[15px] leading-relaxed text-gray-600">

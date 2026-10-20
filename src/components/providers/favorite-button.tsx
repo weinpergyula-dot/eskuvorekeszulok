@@ -65,8 +65,8 @@ export function FavoriteButton({
         className={cn(
           "flex items-center justify-center transition-colors cursor-pointer disabled:cursor-default",
           iconOnly
-            ? "w-8 h-8 rounded-full border border-gray-200 bg-white/80 hover:bg-[#F8EEF1]"
-            : "gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#F8EEF1]"
+            ? "w-8 h-8 rounded-full border border-gray-200 bg-white/80 hover:bg-[#F8F2E8]"
+            : "gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#F8F2E8]"
         )}
       >
         {loading ? (

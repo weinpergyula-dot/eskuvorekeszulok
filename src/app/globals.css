@@ -138,9 +138,9 @@
   --color-teal-bg:     #F0F6F5;  /* panel background / light hover */
 
   /* ── Pink ──────────────────────────────────────────── */
-  --color-pink:        #B5677D;  /* accent / CTA */
-  --color-pink-hover:  #9A5267;  /* button hover / darker */
-  --color-pink-bg:     #F8EEF1;  /* panel background / light hover */
+  --color-pink:        #B8925A;  /* accent / CTA */
+  --color-pink-hover:  #9E7A45;  /* button hover / darker */
+  --color-pink-bg:     #F8F2E8;  /* panel background / light hover */
 
   /* ── Gray ──────────────────────────────────────────── */
   --color-gray-mid:    #BFBFBF;  /* borders, disabled states */
@@ -1383,7 +1383,7 @@ html.a11y-underline a { text-decoration: underline !important; }
   background: radial-gradient(circle, rgba(240, 200, 205, 0.4), transparent 65%);
 }
 .hero-meghivo .hero-blob-2 {
-  background: radial-gradient(circle, rgba(211, 180, 189, 0.16), transparent 65%);
+  background: radial-gradient(circle, rgba(215, 195, 160, 0.16), transparent 65%);
 }
 
 /* ── Mobilos teljes képes banner (MobileHeroBanner) ─────────────────────

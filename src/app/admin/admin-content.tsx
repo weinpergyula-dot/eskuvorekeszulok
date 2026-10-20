@@ -328,7 +328,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
                           <span className="font-semibold text-gray-900">{pr.full_name || "–"}</span>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${pr.role === "provider" ? "bg-[#BD7E90]/15 text-[#BD7E90]" : "bg-[#84AAA6]/15 text-[#84AAA6]"}`}>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${pr.role === "provider" ? "bg-[#C9A675]/15 text-[#C9A675]" : "bg-[#84AAA6]/15 text-[#84AAA6]"}`}>
                             {pr.role === "provider" ? "Szolgáltató" : "Látogató"}
                           </span>
                         </div>

@@ -91,8 +91,8 @@ const SLIDES: MobileSlide[] = [
     blurb: "Egy linken elküldhető, mobilra szabott meghívó visszaszámlálóval és online visszajelzéssel – már 14\u00a0900\u00a0Ft-tól.",
     cta: "Megnézem",
     href: "/meghivo",
-    color: "#E3B5C2",
-    colorHover: "#B5677D",
+    color: "#E6D2A9",
+    colorHover: "#B8925A",
     overlay: "envelope",
   },
   {
@@ -149,8 +149,8 @@ const SLIDES: MobileSlide[] = [
     blurb: "Menyasszonyi csokor, asztaldísz, kapudísz – virágkötők egy helyen.",
     cta: "Virágkötők",
     category: "virag",
-    color: "#E3B5C2",
-    colorHover: "#B5677D",
+    color: "#E6D2A9",
+    colorHover: "#B8925A",
     overlay: "bottom-dark",
     sticker: "Csokor\n& dekor",
   },
@@ -197,17 +197,17 @@ const SLIDES: MobileSlide[] = [
     blurb: "A torta a nagy nap egyik legszebb pillanata – találd meg a cukrászodat.",
     cta: "Cukrászok",
     category: "torta-sutemeny",
-    color: "#B5677D",
-    colorHover: "#9A5267",
+    color: "#B8925A",
+    colorHover: "#9E7A45",
     overlay: "corner-bottom-light",
     sticker: "Kóstolj\nbele!",
   },
 ];
 
-/* A lila gombok helyett fehér, üveghatású gomb lila felirattal. */
-const LILA = "#B5677D";
+/* A színes gombok helyett fehér, üveghatású gomb arany felirattal. */
+const GOLD = "#B8925A";
 const GLASS_CTA =
-  "border border-white/90 bg-white/90 text-[#9A5267] shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] backdrop-blur-md hover:bg-white";
+  "border border-white/90 bg-white/90 text-[#9E7A45] shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] backdrop-blur-md hover:bg-white";
 
 const INTERVAL_MS = 5000;
 /* Csillogó átváltás: a terület (shine.x0–x1, y0–y1, a dián %) sorokba
@@ -811,7 +811,7 @@ export function MobileHeroBanner() {
                 key={`sticker-${s.before && s.beforeFx === "petals" ? animKey : 0}`}
                 aria-hidden
                 className={`absolute grid aspect-square w-28 rotate-[-10deg] ${s.before && s.beforeFx === "petals" && !reduced ? "mhb-sticker-pop" : ""} place-items-center whitespace-pre-line rounded-full text-center font-['Great_Vibes'] text-[1.7rem] leading-[0.95] shadow-[0_10px_24px_-8px_rgba(0,0,0,0.45)] ring-2 ring-white ${
-                  s.key === "torta" ? "left-5 top-[18%] bg-[#F6E3E6] text-[#9A5267]" : "right-5 top-[16%] bg-white/90 text-[#B5677D]"
+                  s.key === "torta" ? "left-5 top-[18%] bg-[#F3E8D6] text-[#9E7A45]" : "right-5 top-[16%] bg-white/90 text-[#B8925A]"
                 }`}
               >
                 {s.sticker}
@@ -852,8 +852,8 @@ export function MobileHeroBanner() {
                 {s.href ? (
                   <Link
                     href={s.href}
-                    className={`${CTA} ${s.colorHover === LILA ? GLASS_CTA : "mobile-hero-cta text-white shadow-lg"}`}
-                    style={s.colorHover === LILA ? undefined : { ["--cta" as string]: s.colorHover, ["--cta-hover" as string]: s.color }}
+                    className={`${CTA} ${s.colorHover === GOLD ? GLASS_CTA : "mobile-hero-cta text-white shadow-lg"}`}
+                    style={s.colorHover === GOLD ? undefined : { ["--cta" as string]: s.colorHover, ["--cta-hover" as string]: s.color }}
                   >
                     {s.cta}
                     <ArrowRight className="h-4 w-4" />
@@ -862,8 +862,8 @@ export function MobileHeroBanner() {
                   <a
                     href={s.category ? "#szolgaltatok" : "#kategoriak"}
                     onClick={(e) => go(e, s)}
-                    className={`${CTA} ${(light ? s.color : s.colorHover) === LILA ? GLASS_CTA : "mobile-hero-cta text-white shadow-lg"}`}
-                    style={(light ? s.color : s.colorHover) === LILA ? undefined : { ["--cta" as string]: light ? s.color : s.colorHover, ["--cta-hover" as string]: light ? s.colorHover : s.color }}
+                    className={`${CTA} ${(light ? s.color : s.colorHover) === GOLD ? GLASS_CTA : "mobile-hero-cta text-white shadow-lg"}`}
+                    style={(light ? s.color : s.colorHover) === GOLD ? undefined : { ["--cta" as string]: light ? s.color : s.colorHover, ["--cta-hover" as string]: light ? s.colorHover : s.color }}
                   >
                     {s.cta}
                     <ArrowDown className="h-4 w-4" />
