@@ -1382,6 +1382,79 @@
                       padding-top:calc(64px + env(safe-area-inset-top));
                       padding-bottom:calc(40px + env(safe-area-inset-bottom)); }
   }
+
+  /* ============================================================
+     HOME — layout after the reference design (scoped to the home screen)
+     ============================================================ */
+  [data-screen="home"] .top{ padding-bottom:78px; margin-bottom:0; }
+  [data-screen="home"] .top .top-actions{ gap:14px; }
+  [data-screen="home"] .top .icon-btn{ width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.6); }
+  [data-screen="home"] .top .icon-btn i{ font-size:22px; color:var(--navy); }
+  [data-screen="home"] .brand{ font-size:30px; }
+  /* bill notice overlapping the lime header */
+  .hnote{ position:relative; z-index:1; margin:-62px 0 6px; padding:16px 16px 16px; border-radius:20px; background:#FCF5D7; }
+  .hnote.off{ display:none; }
+  [data-screen="home"]:has(.hnote.off) .top{ padding-bottom:18px; margin-bottom:6px; }
+  .hnrow{ display:flex; align-items:center; gap:10px; }
+  .hnic{ font-size:20px; color:#F0A500; }
+  .hnt{ flex:1; margin:0; font-family:'Sora'; font-size:14px; font-weight:700; color:var(--navy); }
+  .hnx{ border:none; background:none; padding:0; cursor:pointer; display:flex; }
+  .hnx i{ font-size:19px; color:var(--mid); }
+  .hnrow2{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:6px; padding-left:30px; }
+  .hns{ margin:0; font-size:13px; color:var(--navy); }
+  .hnbtn{ flex-shrink:0; padding:10px 22px; border-radius:999px; background:#0C1740; color:#fff; font-weight:700; font-size:13px; cursor:pointer; }
+  /* Gyors elérés */
+  [data-screen="home"] .qedit{ padding:18px 2px 10px; }
+  [data-screen="home"] .hst{ font-family:'Sora'; font-size:15px; font-weight:600; color:var(--mid); }
+  [data-screen="home"] .qedit .link{ font-weight:600; color:var(--mid); text-decoration:underline; text-underline-offset:3px; }
+  [data-screen="home"] .quick{ margin-top:0 !important; gap:9px; }
+  [data-screen="home"] .qtile{ border:none; padding:14px 4px 13px; gap:8px; border-radius:18px; }
+  [data-screen="home"] .qtile:hover{ transform:none; }
+  [data-screen="home"] .qic{ width:auto; height:30px; }
+  [data-screen="home"] .qic i{ font-size:28px; }
+  [data-screen="home"] .qtile span{ font-size:11px; color:var(--navy); font-weight:500; text-align:center; line-height:1.2; }
+  /* Előfizetéseim */
+  [data-screen="home"] .accouter{ margin-top:30px; }
+  [data-screen="home"] .accotop .at{ font-size:19px; font-weight:800; }
+  [data-screen="home"] .sub{ border:none; border-radius:22px; padding:18px 16px; margin-bottom:14px; box-shadow:none; }
+  [data-screen="home"] .sub.subgroup{ padding:0; }
+  [data-screen="home"] .subhead{ padding:18px 16px; }
+  [data-screen="home"] .sub .meta{ display:flex; flex-direction:column-reverse; }
+  [data-screen="home"] .sub .meta .s{ margin:0 0 2px; font-size:14px; color:var(--navy); }
+  [data-screen="home"] .sub .meta .t{ font-family:'Sora'; font-size:16px; font-weight:700; }
+  [data-screen="home"] .itile{ width:46px; height:46px; }
+  [data-screen="home"] .itile i{ font-size:22px; }
+  [data-screen="home"] .chev{ color:var(--mid); }
+  /* framed primary card */
+  [data-screen="home"] .primbox{ border:none; background:#FFFFFF; border-radius:22px; padding:16px 0 4px; margin-bottom:14px; }
+  [data-screen="home"] .primhead{ margin:0 16px; padding:11px 16px; border-radius:10px; background:#E8ECF1; }
+  [data-screen="home"] .primt{ font-family:'Manrope'; font-size:14px; font-weight:700; }
+  [data-screen="home"] .primedit{ width:32px; height:32px; margin:-6px -8px -6px 0; border:none; background:none; }
+  [data-screen="home"] .primedit i{ font-size:20px; }
+  [data-screen="home"] .primbox .sub{ margin:0; }
+  [data-screen="home"] .primbox .itile{ background:var(--lime); }
+  /* usage row: only for the primary subscription */
+  .subuse{ display:none; }
+  .primbox .subuse{ display:flex; align-items:center; gap:12px; padding:0 16px 16px; }
+  .subuse .uic{ width:36px; height:36px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:var(--icb); }
+  .subuse .uic i{ font-size:18px; color:var(--navy); }
+  .subuse .ut{ flex:1; font-size:13.5px; color:var(--navy); }
+  .subuse .ubtn{ flex-shrink:0; padding:8px 20px; border-radius:999px; border:2px solid #0C1740; color:#0C1740; font-weight:700; font-size:13px; cursor:pointer; }
+  [data-screen="home"] .subgroup .subrel{ margin:0 16px; }
+  /* recommendation banner sits right under the cards */
+  [data-screen="home"] .rcar{ margin-top:6px; }
+
+  /* bottom nav: navy labels, light grey pill on the active item */
+  .nitem{ color:var(--navy) !important; font-size:11px; font-weight:600; }
+  .nitem i{ font-size:25px; }
+  .nitem::before{ inset:3px 2px !important; border-radius:22px !important; }
+  #s-home:checked ~ .nav .nitem[for="s-home"]::before,
+  #s-billing:checked ~ .nav .nitem[for="s-billing"]::before,
+  #s-addservice:checked ~ .nav .nitem[for="s-addservice"]::before,
+  #s-fun:checked ~ .nav .nitem[for="s-fun"]::before,
+  #s-account:checked ~ .nav .nitem[for="s-account"]::before{
+    background:rgba(20,36,94,.08) !important; border-color:transparent !important; box-shadow:none !important;
+  }
 </style>
 </head>
 <body>
@@ -1568,28 +1641,34 @@
       </div>
     </div>
 
+    <div class="hnote" id="hnote">
+      <div class="hnrow"><i class="ti ti-alert-circle hnic"></i><p class="hnt">Új számlád érkezett!</p><button class="hnx" type="button" data-hnclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
+      <div class="hnrow2"><p class="hns">1 számla vár befizetésre</p><label class="hnbtn" for="s-billing">Befizetem</label></div>
+    </div>
+
     <div class="qedit"><span class="hst">Gyors elérés</span><span class="link">Szerkesztés</span></div>
     <div class="quick">
-      <label class="qtile" for="s-billing"><div class="qic"><i class="ti ti-receipt"></i></div><span>Számláim</span></label>
-      <div class="qtile"><div class="qic"><i class="ti ti-parking"></i></div><span>Parkolás</span></div>
-      <div class="qtile"><div class="qic"><i class="ti ti-car"></i></div><span>Autópálya</span></div>
-      <label class="qtile" for="s-fun"><div class="qic"><i class="ti ti-star"></i></div><span>Élménytér</span></label>
+      <div class="qtile"><div class="qic"><i class="ti ti-parking-circle"></i></div><span>Parkolás</span></div>
+      <div class="qtile"><div class="qic"><i class="ti ti-discount"></i></div><span>Kuponok</span></div>
+      <label class="qtile" for="s-topup1"><div class="qic"><i class="ti ti-file-upload"></i></div><span>Kártyás feltöltés</span></label>
+      <label class="qtile" for="s-fun"><div class="qic"><i class="ti ti-gift"></i></div><span>Játssz és nyerj!</span></label>
     </div>
 
     <!-- shared ring gradient (detail screens reference url(#rg)) -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs></svg>
 
     <div class="acc accouter">
-      <div class="acc-head accotop"><span class="at">Előfizetéseim</span><label class="acclink" for="s-allsubs">Összes</label></div>
+      <div class="acc-head accotop"><span class="at">Előfizetéseim</span></div>
       <div class="acc-body">
         <div class="primbox">
           <div class="primhead"><span class="primt">Elsődleges előfizetésed</span><button class="primedit" type="button" data-primedit aria-label="Elsődleges előfizetés módosítása"><i class="ti ti-pencil"></i></button></div>
         <div class="sub subgroup" data-sub="mob-7430">
           <label class="subhead" for="s-detail">
-            <div class="itile"><i class="ti ti-device-mobile"></i></div>
-            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+            <div class="itile"><i class="ti ti-phone-call"></i></div>
+            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Prime Plus 2024</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
+          <div class="subuse"><span class="uic"><i class="ti ti-world"></i></span><span class="ut"><b>12,4</b> <span data-dtot="7430">/ 20 GB</span> felhasználva</span><label class="ubtn" for="s-xdata1">Extrák</label></div>
           <div class="subrel" data-related="mob-7430">
             <span class="relanchor" data-relhead="mob-7430" hidden></span>
             <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
@@ -1597,31 +1676,39 @@
           </div>
         </div>
         </div>
-        <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detailmob2"></label>
-          <div class="itile"><i class="ti ti-device-mobile"></i></div>
-          <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
-          <i class="ti ti-chevron-right chev"></i>
+        <div class="sub subgroup" data-sub="mob-7566">
+          <label class="subhead" for="s-detailmob2">
+            <div class="itile"><i class="ti ti-phone-call"></i></div>
+            <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Prime Plus 2025</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+          <div class="subuse"><span class="uic"><i class="ti ti-world"></i></span><span class="ut"><b>3,1</b> <span data-dtot="7566">/ 5 GB</span> felhasználva</span><label class="ubtn" for="s-xdata2">Extrák</label></div>
         </div>
-        <div class="sub" style="position:relative;" data-sub="mob-9734"><label class="subcover" for="s-detailpre1"></label>
-          <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-          <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
-          <i class="ti ti-chevron-right chev"></i>
+        <div class="sub subgroup" data-sub="mob-9734">
+          <label class="subhead" for="s-detailpre1">
+            <div class="itile"><i class="ti ti-phone-call"></i></div>
+            <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">XS+ · Feltöltőkártyás</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+          <div class="subuse"><span class="uic"><i class="ti ti-wallet"></i></span><span class="ut">Egyenleg: <b data-bal="9734">3 450 Ft</b></span><label class="ubtn" for="s-topup1">Feltöltés</label></div>
         </div>
-        <div class="sub" style="position:relative;" data-sub="mob-8812"><label class="subcover" for="s-detailpre2"></label>
-          <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-          <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
-          <i class="ti ti-chevron-right chev"></i>
+        <div class="sub subgroup" data-sub="mob-8812">
+          <label class="subhead" for="s-detailpre2">
+            <div class="itile"><i class="ti ti-phone-call"></i></div>
+            <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">XS · Feltöltőkártyás</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+          <div class="subuse"><span class="uic"><i class="ti ti-wallet"></i></span><span class="ut">Egyenleg: <b data-bal="8812">1 280 Ft</b></span><label class="ubtn" for="s-topup2">Feltöltés</label></div>
         </div>
         <div class="sub" data-goto="detail-net" style="position:relative;" data-sub="net"><label class="subcover" for="s-detail-net"></label>
-          <div class="itile blue"><i class="ti ti-router"></i></div>
-          <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+          <div class="itile blue"><i class="ti ti-home-signal"></i></div>
+          <div class="meta"><p class="t">Veszprém, Tölgyfa u. 4</p><p class="s">Yettel Otthoni Net 1000</p></div>
           <i class="ti ti-chevron-right chev"></i>
         </div>
         <span data-anchor="otthoni" hidden></span>
       </div>
     </div>
 
-    <div class="sec"><h3>Neked ajánljuk</h3></div>
     <div class="rcar">
       <label class="promo inet" for="s-addrsvc">
         <div class="blob"></div><div class="blob2"></div>
@@ -5595,9 +5682,9 @@
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
-    <label class="nitem" for="s-billing"><i class="ti ti-wallet"></i>Pénzügyek</label>
+    <label class="nitem" for="s-billing"><i class="ti ti-file-invoice"></i>Pénzügyek</label>
     <label class="nitem" for="s-addservice"><i class="ti ti-shopping-cart"></i>Vásárlás</label>
-    <label class="nitem" for="s-fun"><i class="ti ti-gift"></i>Bónusz</label>
+    <label class="nitem" for="s-fun"><i class="ti ti-star"></i>Bónusz</label>
     <label class="nitem" for="s-account"><i class="ti ti-user"></i>Profil</label>
   </div>
 
@@ -6191,6 +6278,12 @@
 })();
 </script>
 <script>
+/* home: bill notice can be dismissed */
+(function(){
+  var n = document.getElementById('hnote');
+  var x = n && n.querySelector('[data-hnclose]');
+  if (x) x.addEventListener('click', function(){ n.classList.add('off'); });
+})();
 /* home: choose which mobile subscription is framed as the primary one */
 (function(){
   var modal = document.getElementById('primpick');
@@ -6234,7 +6327,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-primedit],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
