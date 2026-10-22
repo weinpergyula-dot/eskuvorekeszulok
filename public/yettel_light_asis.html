@@ -1926,6 +1926,43 @@
   .nwdots span{ width:9px; height:9px; border-radius:999px; background:#C9D1DC; transition:width .25s, background .25s; }
   .nwdots span.on{ width:56px; background:#0C2440; }
   .nwlist{ margin-top:0; }
+
+  /* ===== photo cards: figures break out above the card ===== */
+  .bnlist{ gap:16px; }
+  .bncard{ overflow:visible; background:linear-gradient(180deg,#9DBCC9 0%,#C7E1EB 100%); }
+  .bncard::after{ content:""; position:absolute; right:0; bottom:0; width:167px; height:100px; background:var(--img) right bottom/contain no-repeat; pointer-events:none; }
+  .bncard > *{ position:relative; z-index:1; }
+  .bnlist{ padding-top:10px; }
+
+  /* ===== floating glass nav — reference look ===== */
+  .nav{ left:12px !important; right:12px !important; bottom:14px !important; height:66px !important; padding:0 4px !important; border-radius:999px !important;
+        background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(244,246,248,.72)) !important;
+        border:1px solid rgba(200,206,214,.9) !important;
+        -webkit-backdrop-filter:blur(24px) saturate(180%) !important; backdrop-filter:blur(24px) saturate(180%) !important;
+        box-shadow:0 10px 30px -14px rgba(20,36,94,.35), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(0,0,0,.04) !important; }
+  .nav::before{ display:none; }
+  .nitem{ position:relative; height:56px; justify-content:center; gap:3px; padding:0 !important; color:#111111 !important; font-size:11.5px !important; font-weight:400 !important; }
+  .nitem i{ width:26px; height:26px; font-size:26px !important; color:#111111; }
+  .nitem::before{ display:block !important; inset:0 !important; border-radius:999px !important; background:transparent; border:none !important; box-shadow:none !important; }
+  #s-home:checked ~ .nav .nitem[for="s-home"],
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"],
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"],
+  #s-fun:checked ~ .nav .nitem[for="s-fun"],
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"]{ color:#0C2440 !important; font-weight:700 !important; }
+  #s-home:checked ~ .nav .nitem[for="s-home"] i,
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"] i,
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"] i,
+  #s-fun:checked ~ .nav .nitem[for="s-fun"] i,
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"] i{ color:#0C2440; }
+  #s-home:checked ~ .nav .nitem[for="s-home"]::before,
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"]::before,
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"]::before,
+  #s-fun:checked ~ .nav .nitem[for="s-fun"]::before,
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"]::before{ background:rgba(20,30,50,.08) !important; }
+  .nift{ display:block; width:26px; height:26px; background:currentColor; -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round' stroke-linecap='round'><path d='M14 2.8H6.8a2 2 0 0 0-2 2v14.4a2 2 0 0 0 2 2h10.4a2 2 0 0 0 2-2V8z'/><path d='M14 2.8V8h5.2'/><path d='M8 18v-6.5h3M8 14.6h2.4M13 11v6.2a1 1 0 0 0 1 1h1.2M12 13.2h3.2'/></svg>") center/contain no-repeat; mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round' stroke-linecap='round'><path d='M14 2.8H6.8a2 2 0 0 0-2 2v14.4a2 2 0 0 0 2 2h10.4a2 2 0 0 0 2-2V8z'/><path d='M14 2.8V8h5.2'/><path d='M8 18v-6.5h3M8 14.6h2.4M13 11v6.2a1 1 0 0 0 1 1h1.2M12 13.2h3.2'/></svg>") center/contain no-repeat; }
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"] .nift{ -webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><mask id='m'><rect width='24' height='24' fill='white'/><path d='M8 18v-6.5h3M8 14.6h2.4M13 11v6.2a1 1 0 0 0 1 1h1.2M12 13.2h3.2' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></mask></defs><g mask='url(%23m)'><path d='M14 2H6.8A2.8 2.8 0 0 0 4 4.8v14.4A2.8 2.8 0 0 0 6.8 22h10.4a2.8 2.8 0 0 0 2.8-2.8V8h-4.2A1.8 1.8 0 0 1 14 6.2z'/><path d='M15.5 2.4v3.8h3.9z'/></g></svg>"); mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><mask id='m'><rect width='24' height='24' fill='white'/><path d='M8 18v-6.5h3M8 14.6h2.4M13 11v6.2a1 1 0 0 0 1 1h1.2M12 13.2h3.2' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></mask></defs><g mask='url(%23m)'><path d='M14 2H6.8A2.8 2.8 0 0 0 4 4.8v14.4A2.8 2.8 0 0 0 6.8 22h10.4a2.8 2.8 0 0 0 2.8-2.8V8h-4.2A1.8 1.8 0 0 1 14 6.2z'/><path d='M15.5 2.4v3.8h3.9z'/></g></svg>"); }
+  .nbdg{ position:absolute; top:3px; left:calc(50% + 6px); min-width:18px; height:18px; padding:0 5px; border-radius:999px; background:#E5484D; color:#fff;
+         font-size:11px; font-weight:700; line-height:18px; text-align:center; z-index:2; }
 </style>
 </head>
 <body>
@@ -6220,10 +6257,10 @@
       <div style="width:42px"></div>
     </div>
     <div class="bnlist">
-      <label class="bncard" for="s-ctvaddr" style="--img:url('yettel/buy-net-tv.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
-      <label class="bncard" for="s-addrsvc" style="--img:url('yettel/buy-net.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
-      <label class="bncard" for="s-tvselsvc" data-tvpre="none" style="--img:url('yettel/buy-tv.jpg')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></label>
-      <label class="bncard" for="s-addservice" data-tab="ts-mobil" style="--img:url('yettel/buy-mobile.jpg')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></label>
+      <label class="bncard" for="s-ctvaddr" style="--img:url('yettel/buy-net-tv.webp')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
+      <label class="bncard" for="s-addrsvc" style="--img:url('yettel/buy-net.webp')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
+      <label class="bncard" for="s-tvselsvc" data-tvpre="none" style="--img:url('yettel/buy-tv.webp')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></label>
+      <label class="bncard" for="s-addservice" data-tab="ts-mobil" style="--img:url('yettel/buy-mobile.webp')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></label>
     </div>
   </div>
 
@@ -6287,19 +6324,19 @@
     </div>
     <div class="nwdots" data-nwdots><span class="on"></span><span></span><span></span></div>
     <div class="bnlist nwlist">
-      <label class="bncard" for="s-ctvaddr" style="--img:url('yettel/buy-net-tv.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
-      <label class="bncard" for="s-addrsvc" style="--img:url('yettel/buy-net.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
-      <label class="bncard" for="s-tvselsvc" data-tvpre="none" style="--img:url('yettel/buy-tv.jpg')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></label>
-      <label class="bncard" for="s-buy" style="--img:url('yettel/buy-mobile.jpg')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></label>
+      <label class="bncard" for="s-ctvaddr" style="--img:url('yettel/buy-net-tv.webp')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
+      <label class="bncard" for="s-addrsvc" style="--img:url('yettel/buy-net.webp')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
+      <label class="bncard" for="s-tvselsvc" data-tvpre="none" style="--img:url('yettel/buy-tv.webp')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></label>
+      <label class="bncard" for="s-buy" style="--img:url('yettel/buy-mobile.webp')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></label>
     </div>
   </div>
 
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
-    <label class="nitem" for="s-tfin"><i class="ti ti-file-invoice"></i>Pénzügyek</label>
+    <label class="nitem" for="s-tfin"><i class="nift"></i><span class="nbdg">1</span>Pénzügyek</label>
     <label class="nitem" for="s-tshop"><i class="ti ti-shopping-cart"></i>Vásárlás</label>
-    <label class="nitem" for="s-fun"><i class="ti ti-star"></i>Élménytér</label>
+    <label class="nitem" for="s-fun"><i class="ti ti-star"></i>Bónusz</label>
     <label class="nitem" for="s-tprof"><i class="ti ti-user"></i>Profil</label>
   </div>
 
