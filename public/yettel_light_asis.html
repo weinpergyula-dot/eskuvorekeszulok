@@ -590,15 +590,15 @@
   .menuscrim{position:absolute; inset:0; z-index:8; display:none; background:rgba(20,36,94,.35);}
   #s-menu:checked ~ .menuscrim{display:block;}
   #s-menu:checked ~ [data-screen="home"]{display:block !important;}
-  .menupanel{position:absolute; top:0; right:0; bottom:0; width:82%; max-width:312px; z-index:9;
-             transform:translateX(103%); transition:transform .32s cubic-bezier(.4,0,.2,1);
+  .menupanel{position:absolute; top:0; left:0; bottom:0; width:82%; max-width:312px; z-index:9;
+             transform:translateX(-103%); transition:transform .32s cubic-bezier(.4,0,.2,1);
              display:flex; flex-direction:column; padding:20px 16px 18px; overflow-y:auto; scrollbar-width:none;
              background:#FFFFFF;
-             border-left:1px solid var(--line);
-             box-shadow:-24px 0 60px -22px rgba(20,36,94,.35);}
+             border-right:1px solid var(--line);
+             box-shadow:24px 0 60px -22px rgba(20,36,94,.35);}
   .menupanel::-webkit-scrollbar{display:none;}
   #s-menu:checked ~ .menupanel{transform:translateX(0);}
-  #s-welcome:checked ~ .menupanel,#s-login:checked ~ .menupanel{transform:translateX(103%);}
+  #s-welcome:checked ~ .menupanel,#s-login:checked ~ .menupanel{transform:translateX(-103%);}
   #s-welcome:checked ~ .menuscrim,#s-login:checked ~ .menuscrim{display:none;}
   .menuhead{display:flex; align-items:center; gap:11px; padding:2px 2px 16px; border-bottom:1px solid var(--line);}
   .menuwho{flex:1; min-width:0;}
@@ -946,7 +946,7 @@
   .primbox{border:1.5px solid var(--lime3); border-radius:26px; padding:12px 10px 1px; margin-bottom:14px;}
   .primbox:not(:has(.sub)){display:none;}
   .primhead{display:flex; align-items:center; justify-content:space-between; padding:0 6px 10px;}
-  .primt{font-family:'Sora'; font-size:15px; font-weight:700; letter-spacing:-.01em; color:var(--navy);}
+  .primt{font-family:'Sora'; font-size:13px; font-weight:700; letter-spacing:-.01em; color:var(--navy);}
   .primedit{width:32px; height:32px; border-radius:50%; border:1px solid var(--line); background:#FFFFFF; cursor:pointer;
             display:flex; align-items:center; justify-content:center; padding:0;}
   .primedit i{font-size:16px; color:var(--navy);}
