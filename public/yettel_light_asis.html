@@ -342,11 +342,12 @@
   #s-tfin:checked ~ [data-screen="tab-fin"],
   #s-tprof:checked ~ [data-screen="tab-prof"],
   #s-qedit:checked ~ [data-screen="quick-edit"],
+  #s-buynew:checked ~ [data-screen="buy-new"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -1731,6 +1732,51 @@
   /* OtthonNet details (shares the mobile detail layout) */
   .dtval b.dtinf{ font-size:18px; line-height:1; }
   .dtcard > .dtrow + .dtrow{ border-top:1px solid #E3E8EE !important; }
+
+  /* ===== Vásárlás: phones block ===== */
+  .tbfam{ margin-top:18px; }
+  /* ===== Új előfizetés vásárlás ===== */
+  .bnlist{ display:flex; flex-direction:column; gap:12px; margin-top:22px; }
+  .bncard{ position:relative; display:flex; flex-direction:column; justify-content:space-between; height:86px; padding:14px 18px; border-radius:14px; overflow:hidden; cursor:pointer;
+           background:var(--img) right center/auto 100% no-repeat, linear-gradient(180deg,#9DBCC9 0%,#C7E1EB 100%); }
+  .bnic{ display:flex; align-items:center; gap:8px; color:var(--navy); }
+  .bnic i{ font-size:24px; }
+  .bnic b{ font-size:12px; }
+  .bntv{ display:block; width:24px; height:24px; }
+  .bntv svg{ width:100%; height:100%; }
+  .bnt{ font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); }
+  /* ===== Address screens ===== */
+  .adscr{ background:#FFFFFF; padding-bottom:24px !important; }
+  .adscr .formbody{ min-height:calc(812px - 80px - 24px - 52px - 60px); }
+  .adscr:has(input[id$="-new"]:checked) .formbody{ min-height:calc(812px - 80px - 24px - 52px - 40px); }
+  .adq{ margin:16px 0 14px; font-family:'Yettel'; font-size:17px; font-weight:700; color:var(--navy); }
+  .adpick{ display:flex; flex-direction:column; gap:12px; }
+  .adopt{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 14px; border:2px solid #E3E8EE; border-radius:12px; cursor:pointer; }
+  .adtx b{ display:block; font-size:13px; font-weight:700; color:var(--navy); }
+  .adtx small{ display:block; margin-top:6px; font-size:12px; color:var(--navy); }
+  .adchk{ display:none; width:22px; height:22px; border-radius:50%; background:#0C1740; align-items:center; justify-content:center; }
+  .adchk i{ font-size:14px; color:#fff; }
+  .adscr .formbody > input[id$="-perm"]:checked ~ .adpick .adopt[for$="-perm"]{ border-color:#0C1740; background:#F1F9FD; }
+  .adscr .formbody > input[id$="-perm"]:checked ~ .adpick .adopt[for$="-perm"] .adchk{ display:flex; }
+  .adform{ display:none; }
+  .adscr .formbody > input[id$="-new"]:checked ~ .adpick{ display:none; }
+  .adscr .formbody > input[id$="-new"]:checked ~ .adform{ display:block; }
+  .adsub{ margin:-6px 0 16px; font-size:12px; line-height:1.4; color:var(--navy); }
+  .adl{ display:block; margin:0 0 8px; font-size:12px; font-weight:700; color:var(--navy); }
+  .adin{ display:block; width:100%; height:44px; margin:0 0 16px; padding:0 14px; border:2px solid #E3E8EE; border-radius:10px; background:#FFFFFF;
+         font-family:'Yettel'; font-size:13px; color:var(--navy); outline:none; -webkit-appearance:none; }
+  .adin:focus{ border-color:#0C1740; }
+  .adin:disabled{ border-color:#CDD4DC; background:#CDD4DC; }
+  .adin::placeholder{ color:#8592A6; }
+  .adhelp{ display:flex; align-items:center; gap:12px; margin-top:22px; padding:14px; border-radius:10px; background:#DCEFFC; font-size:12px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .adhelp > i:first-child{ font-size:22px; }
+  .adhelp span{ flex:1; }
+  .adhelp .chev{ font-size:18px; color:var(--mid); }
+  .adscr .adnext{ background:#0C1740 !important; color:#FFFFFF !important; border-radius:999px !important; box-shadow:none !important; }
+  .adscr .adnext.off{ background:#CDD4DC !important; color:#8592A6 !important; pointer-events:none; }
+  .adnote{ margin:12px 14px 0; font-size:11px; line-height:1.4; color:var(--navy); }
+  .adscr .formbody > input[id$="-new"]:checked ~ * .adnote{ display:none; }
+  .adscr:has(input[id$="-new"]:checked) .adnote{ display:none; }
 </style>
 </head>
 <body>
@@ -1824,6 +1870,7 @@
   <input class="rt" type="radio" name="nav" id="s-tfin">
   <input class="rt" type="radio" name="nav" id="s-tprof">
   <input class="rt" type="radio" name="nav" id="s-qedit">
+  <input class="rt" type="radio" name="nav" id="s-buynew">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
@@ -2509,24 +2556,33 @@
   </div>
 
   <!-- ============= CÍMKERESŐ: addr-svc ============= -->
-  <div class="screen formscr" data-screen="addr-svc" style="display:none;">
+  <div class="screen formscr adscr" data-screen="addr-svc" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-offsvc1"><i class="ti ti-arrow-left"></i></label>
+      <label class="icon-btn" for="s-offsvc1" data-adback><i class="ti ti-arrow-left"></i></label>
       <span class="title">Címed</span>
       <div style="width:42px"></div>
     </div>
     <div class="formbody">
-      <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Hova szeretnél otthoni internetet?</h2>
-      <p class="buysub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
-      <label class="afl">Település vagy irányítószám <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="1097"></div>
-      <label class="afl">Közterület <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="Deák Ferenc utca"></div>
-      <label class="afl">Házszám <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="6"></div>
-      <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
+      <h2 class="adq">Hova szeretnél otthoni internetet?</h2>
+      <input class="rt" type="radio" name="adr-net" id="adr-net-perm" checked>
+      <input class="rt" type="radio" name="adr-net" id="adr-net-new">
+      <div class="adpick">
+        <label class="adopt" for="adr-net-perm"><span class="adtx"><b>Állandó lakcímedre</b><small>8200 Veszprém, Tölgyfa u. 4</small></span><span class="adchk"><i class="ti ti-check"></i></span></label>
+        <label class="adopt" for="adr-net-new"><span class="adtx"><b>Másik címed adok meg</b></span></label>
+      </div>
+      <div class="adform">
+        <p class="adsub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
+        <label class="adl">Település, vagy irányítószám <span>*</span></label>
+        <input class="adin" type="text" placeholder="1097">
+        <label class="adl">Közterület <span>*</span></label>
+        <input class="adin" type="text" placeholder="Deák Ferenc utca" disabled>
+        <label class="adl">Házszám <span>*</span></label>
+        <input class="adin" type="text" placeholder="6" disabled>
+        <div class="adhelp"><i class="ti ti-message-chatbot"></i><span>Nem találod a címed? Jelezd nekünk.</span><i class="ti ti-chevron-right chev"></i></div>
+      </div>
     </div>
-    <label class="acont jbtn" for="s-loadavail">Tovább</label>
+    <label class="acont jbtn adnext" for="s-loadavail">Tovább</label>
+    <p class="adnote">A Tovább gomb megnyomása után, a megadott címedre vonatkozóan személyre szabott ajánlatról tájékoztatunk.</p>
   </div>
 
   <!-- ============= ÉRTESÍTÉSEK ============= -->
@@ -5306,24 +5362,33 @@
   </div>
 
   <!-- ============= INTERNET + TV FLOW: CÍMED ============= -->
-  <div class="screen formscr" data-screen="ctv-addr" style="display:none;">
+  <div class="screen formscr adscr" data-screen="ctv-addr" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-ctvnet"><i class="ti ti-arrow-left"></i></label>
+      <label class="icon-btn" for="s-ctvnet" data-adback><i class="ti ti-arrow-left"></i></label>
       <span class="title">Címed</span>
       <div style="width:42px"></div>
     </div>
     <div class="formbody">
-      <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Hova szeretnél internetet és TV-t?</h2>
-      <p class="buysub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
-      <label class="afl">Település vagy irányítószám <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="1097"></div>
-      <label class="afl">Közterület <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="Deák Ferenc utca"></div>
-      <label class="afl">Házszám <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="6"></div>
-      <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
+      <h2 class="adq">Hova szeretnél internetet és TV-t?</h2>
+      <input class="rt" type="radio" name="adr-ctv" id="adr-ctv-perm" checked>
+      <input class="rt" type="radio" name="adr-ctv" id="adr-ctv-new">
+      <div class="adpick">
+        <label class="adopt" for="adr-ctv-perm"><span class="adtx"><b>Állandó lakcímedre</b><small>8200 Veszprém, Tölgyfa u. 4</small></span><span class="adchk"><i class="ti ti-check"></i></span></label>
+        <label class="adopt" for="adr-ctv-new"><span class="adtx"><b>Másik címed adok meg</b></span></label>
+      </div>
+      <div class="adform">
+        <p class="adsub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
+        <label class="adl">Település, vagy irányítószám <span>*</span></label>
+        <input class="adin" type="text" placeholder="1097">
+        <label class="adl">Közterület <span>*</span></label>
+        <input class="adin" type="text" placeholder="Deák Ferenc utca" disabled>
+        <label class="adl">Házszám <span>*</span></label>
+        <input class="adin" type="text" placeholder="6" disabled>
+        <div class="adhelp"><i class="ti ti-message-chatbot"></i><span>Nem találod a címed? Jelezd nekünk.</span><i class="ti ti-chevron-right chev"></i></div>
+      </div>
     </div>
-    <label class="acont jbtn" for="s-ctvloadavail">Tovább</label>
+    <label class="acont jbtn adnext" for="s-ctvloadavail">Tovább</label>
+    <p class="adnote">A Tovább gomb megnyomása után, a megadott címedre vonatkozóan személyre szabott ajánlatról tájékoztatunk.</p>
   </div>
 
   <!-- ============= INTERNET + TV FLOW: AJÁNLATOK ============= -->
@@ -6020,8 +6085,17 @@
       <span class="title">Vásárlás</span>
       <div class="icon-btn"><i class="ti ti-message-chatbot"></i></div>
     </div>
+    <div class="dtcard tbfam">
+      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><label class="dtlink" for="s-devbuy">Összes készülék</label></div>
+      <p class="dtsub">Új szám, új mobil, pár kattintással.</p>
+      <div class="dtphones">
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</label>
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</label>
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</label>
+      </div>
+    </div>
     <div class="tblist tbboxed">
-      <label class="tbrow" for="s-addservice"><span class="tbic"><i class="ti ti-shopping-cart"></i></span><span class="n">Új szolgáltatás vásárlás</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="tbrow" for="s-buynew"><span class="tbic"><i class="ti ti-shopping-cart"></i></span><span class="n">Új szolgáltatás vásárlás</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="tbrow" for="s-addonsvc"><span class="tbic"><i class="ti ti-circle-plus"></i></span><span class="n">Extra szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
     <div class="tbsec"><p>Mobilfizetés</p><label class="tblink" for="s-topup1">Keretfeltöltés</label></div>
@@ -6099,6 +6173,21 @@
       <label class="qerow"><span>Speedtest</span><input type="checkbox" value="speed"></label>
     </div>
     <label class="qesave" for="s-home" data-qsave>Mentés</label>
+  </div>
+
+  <!-- ============= ÚJ ELŐFIZETÉS VÁSÁRLÁS ============= -->
+  <div class="screen bnscreen" data-screen="buy-new" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-tshop"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Új előfizetés vásárlás</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="bnlist">
+      <label class="bncard" for="s-ctvnet" style="--img:url('yettel/buy-net-tv.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
+      <label class="bncard" for="s-offsvc1" style="--img:url('yettel/buy-net.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
+      <label class="bncard" for="s-tvselsvc" data-tvpre="none" style="--img:url('yettel/buy-tv.jpg')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></label>
+      <label class="bncard" for="s-addservice" data-tab="ts-mobil" style="--img:url('yettel/buy-mobile.jpg')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></label>
+    </div>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -6417,7 +6506,7 @@
   })();
   /* menu: purchase entries preselect the right tab */
   (function(){
-    Array.prototype.slice.call(document.querySelectorAll('.mrow[data-tab]')).forEach(function(el){
+    Array.prototype.slice.call(document.querySelectorAll('.mrow[data-tab], .bncard[data-tab]')).forEach(function(el){
       el.addEventListener('click', function(){
         var t = document.getElementById(el.getAttribute('data-tab'));
         if(t) t.checked = true;
@@ -6746,7 +6835,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -6815,6 +6904,26 @@
     home.innerHTML = saved.map(function(k){ return tile(k, true); }).join('');
   });
   render();
+})();
+</script>
+<script>
+/* address screens: "Állandó lakcímedre" or a new address typed step by step */
+(function(){
+  Array.prototype.slice.call(document.querySelectorAll('.adscr')).forEach(function(sc){
+    var newR = sc.querySelector('input[id$="-new"]'), permR = sc.querySelector('input[id$="-perm"]');
+    var ins = Array.prototype.slice.call(sc.querySelectorAll('.adin'));
+    var next = sc.querySelector('.adnext'), back = sc.querySelector('[data-adback]');
+    function upd(){
+      for (var i = 1; i < ins.length; i++) ins[i].disabled = !ins[i-1].value.trim() || ins[i-1].disabled;
+      var full = ins.every(function(x){ return !x.disabled && x.value.trim(); });
+      next.classList.toggle('off', newR.checked && !full);
+    }
+    ins.forEach(function(x){ x.addEventListener('input', upd); });
+    [newR, permR].forEach(function(r){ r.addEventListener('change', upd); });
+    /* on the typed-address step, the back arrow returns to the address choice */
+    back.addEventListener('click', function(e){ if (newR.checked){ e.preventDefault(); permR.checked = true; upd(); } });
+    upd();
+  });
 })();
 </script>
 </body>
