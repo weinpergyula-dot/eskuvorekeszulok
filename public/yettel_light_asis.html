@@ -333,11 +333,14 @@
   #s-netsec:checked ~ [data-screen="net-sec"],
   #s-dsvcsum:checked ~ [data-screen="dsvc-sum"],
   #s-dsvcok:checked ~ [data-screen="dsvc-ok"],
+  #s-tshop:checked ~ [data-screen="tab-shop"],
+  #s-tfin:checked ~ [data-screen="tab-fin"],
+  #s-tprof:checked ~ [data-screen="tab-prof"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -757,15 +760,15 @@
   .lrow .n{line-height:1.3;}
   /* bottom-nav highlight follows the active screen */
   #s-home:checked ~ .nav .nitem[for="s-home"],
-  #s-billing:checked ~ .nav .nitem[for="s-billing"],
-  #s-addservice:checked ~ .nav .nitem[for="s-addservice"],
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"],
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"],
   #s-fun:checked ~ .nav .nitem[for="s-fun"],
-  #s-account:checked ~ .nav .nitem[for="s-account"]{color:var(--limed);}
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"]{color:var(--limed);}
   #s-home:checked ~ .nav .nitem[for="s-home"] i,
-  #s-billing:checked ~ .nav .nitem[for="s-billing"] i,
-  #s-addservice:checked ~ .nav .nitem[for="s-addservice"] i,
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"] i,
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"] i,
   #s-fun:checked ~ .nav .nitem[for="s-fun"] i,
-  #s-account:checked ~ .nav .nitem[for="s-account"] i{filter:drop-shadow(0 0 8px rgba(164,216,46,.55));}
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"] i{filter:drop-shadow(0 0 8px rgba(164,216,46,.55));}
   .edit.icon{padding:8px; width:34px; height:34px; justify-content:center;}
   .edit.icon i{font-size:16px;}
   #xm-o1:checked ~ .usg.xmu1{display:block;}
@@ -1201,20 +1204,20 @@
     border:1px solid transparent; z-index:-1;
   }
   #s-home:checked ~ .nav .nitem[for="s-home"],
-  #s-billing:checked ~ .nav .nitem[for="s-billing"],
-  #s-addservice:checked ~ .nav .nitem[for="s-addservice"],
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"],
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"],
   #s-fun:checked ~ .nav .nitem[for="s-fun"],
-  #s-account:checked ~ .nav .nitem[for="s-account"]{ color:var(--navy); }
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"]{ color:var(--navy); }
   #s-home:checked ~ .nav .nitem[for="s-home"] i,
-  #s-billing:checked ~ .nav .nitem[for="s-billing"] i,
-  #s-addservice:checked ~ .nav .nitem[for="s-addservice"] i,
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"] i,
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"] i,
   #s-fun:checked ~ .nav .nitem[for="s-fun"] i,
-  #s-account:checked ~ .nav .nitem[for="s-account"] i{ filter:none; }
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"] i{ filter:none; }
   #s-home:checked ~ .nav .nitem[for="s-home"]::before,
-  #s-billing:checked ~ .nav .nitem[for="s-billing"]::before,
-  #s-addservice:checked ~ .nav .nitem[for="s-addservice"]::before,
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"]::before,
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"]::before,
   #s-fun:checked ~ .nav .nitem[for="s-fun"]::before,
-  #s-account:checked ~ .nav .nitem[for="s-account"]::before{
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"]::before{
     background:linear-gradient(180deg, rgba(20,36,94,.14), rgba(20,36,94,.05));
     border-color:rgba(255,255,255,.5);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 6px 14px -8px rgba(20,36,94,.45);
@@ -1449,10 +1452,10 @@
   .nitem i{ font-size:25px; }
   .nitem::before{ inset:3px 2px !important; border-radius:22px !important; }
   #s-home:checked ~ .nav .nitem[for="s-home"]::before,
-  #s-billing:checked ~ .nav .nitem[for="s-billing"]::before,
-  #s-addservice:checked ~ .nav .nitem[for="s-addservice"]::before,
+  #s-tfin:checked ~ .nav .nitem[for="s-tfin"]::before,
+  #s-tshop:checked ~ .nav .nitem[for="s-tshop"]::before,
   #s-fun:checked ~ .nav .nitem[for="s-fun"]::before,
-  #s-account:checked ~ .nav .nitem[for="s-account"]::before{
+  #s-tprof:checked ~ .nav .nitem[for="s-tprof"]::before{
     background:rgba(20,36,94,.08) !important; border-color:transparent !important; box-shadow:none !important;
   }
 
@@ -1538,6 +1541,49 @@
   .dtkv:last-child{ margin-bottom:0; }
   .dtkv span{ display:block; font-size:12.5px; color:var(--mid); }
   .dtkv b{ display:block; margin-top:2px; font-size:13px; font-weight:600; color:var(--navy); }
+
+  /* ============================================================
+     BOTTOM-NAV TAB PAGES — Vásárlás / Pénzügyek / Profil
+     ============================================================ */
+  .tbscreen{ padding-bottom:110px; }
+  .tbhead .title{ font-size:20px; }
+  .tbhead > div{ height:42px; }
+  .tbhead .icon-btn i{ font-size:26px; }
+  .tbic{ width:46px; height:46px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#DCEBFA; }
+  .tbic i{ font-size:24px; color:var(--navy); }
+  .tbrow{ display:flex; align-items:center; gap:18px; padding:16px; cursor:pointer; background:#FFFFFF; }
+  .tbrow .n{ flex:1; font-size:14px; font-weight:600; color:var(--navy); }
+  .tbrow .chev,.tbtile .chev{ font-size:20px; color:var(--mid); }
+  .tblist{ display:flex; flex-direction:column; gap:12px; margin-top:16px; }
+  .tbboxed .tbrow{ border:2px solid #E3E8EE; border-radius:20px; }
+  .tbsec{ display:flex; align-items:baseline; justify-content:space-between; margin:30px 0 0; padding:0 2px; }
+  .tbsec p{ margin:0; font-family:'Sora'; font-size:15px; font-weight:800; color:var(--navy); }
+  .tblink{ margin-right:40px; font-size:14px; font-weight:600; color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  .tbsec + .tblist{ margin-top:22px; }
+  .tbgrid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px; }
+  .tbtile{ display:flex; flex-direction:column; justify-content:space-between; gap:30px; padding:16px; min-height:130px; background:#FFFFFF; border:2px solid #E3E8EE; border-radius:20px; cursor:pointer; }
+  .tbtile .n{ display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:13.5px; font-weight:600; color:var(--navy); }
+  /* Pénzügyek */
+  .tbbill{ margin-top:22px; padding:28px 22px 26px; text-align:center; background:#FFFFFF; border-radius:24px; }
+  .tbbic{ width:48px; height:48px; margin:0 auto 14px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#FCF0D2; }
+  .tbbic i{ font-size:24px; color:#E58A00; }
+  .tbbt{ margin:0 0 6px; font-family:'Sora'; font-size:17px; font-weight:800; color:var(--navy); }
+  .tbbs{ margin:0 0 20px; font-size:13px; color:var(--navy); }
+  .tbbbtn{ display:block; margin:0 12px; padding:14px; border-radius:999px; background:#0C1740; color:#fff; font-weight:700; font-size:14px; cursor:pointer; }
+  .tbsolo{ border-radius:20px; padding:18px 16px; }
+  .tbsolo .tbic{ background:none; width:28px; height:28px; }
+  /* Profil */
+  .tbme{ display:flex; align-items:center; gap:16px; margin-top:22px; padding:20px 16px; background:#FFFFFF; border-radius:22px; }
+  .tbav{ width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--lime); }
+  .tbav i{ font-size:24px; color:var(--navy); }
+  .tbmn{ margin:0; font-family:'Sora'; font-size:14px; font-weight:800; color:var(--navy); }
+  .tbme2{ margin:2px 0 0; font-size:14px; color:var(--navy); }
+  .tbgroup{ margin-top:12px; padding:0 16px; background:#FFFFFF; border-radius:22px; }
+  .tbgroup .tbrow{ padding:18px 0; border-bottom:1px solid #E3E8EE; }
+  .tbgroup .tbrow:last-child{ border-bottom:none; }
+  .tbgroup .tbic{ background:none; width:28px; height:28px; }
+  .tbout{ display:flex; align-items:center; justify-content:center; gap:10px; margin-top:28px; font-family:'Sora'; font-size:15px; font-weight:800; color:var(--navy); cursor:pointer; }
+  .tbout i{ font-size:24px; }
 </style>
 </head>
 <body>
@@ -1627,6 +1673,9 @@
   <input class="rt" type="radio" name="nav" id="s-detailmob2">
   <input class="rt" type="radio" name="nav" id="s-actok">
   <input class="rt" type="radio" name="nav" id="s-actload">
+  <input class="rt" type="radio" name="nav" id="s-tshop">
+  <input class="rt" type="radio" name="nav" id="s-tfin">
+  <input class="rt" type="radio" name="nav" id="s-tprof">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
@@ -5774,13 +5823,80 @@
       <div class="loadok" id="loadokX" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres tranzakció!</p></div>
     </div>
   </div>
+  <!-- ============= TAB: VÁSÁRLÁS ============= -->
+  <div class="screen tbscreen" data-screen="tab-shop" style="display:none;">
+    <div class="dhead tbhead">
+      <div style="width:42px"></div>
+      <span class="title">Vásárlás</span>
+      <div class="icon-btn"><i class="ti ti-message-chatbot"></i></div>
+    </div>
+    <div class="tblist tbboxed">
+      <label class="tbrow" for="s-addservice"><span class="tbic"><i class="ti ti-shopping-cart"></i></span><span class="n">Új szolgáltatás vásárlás</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="tbrow" for="s-addonsvc"><span class="tbic"><i class="ti ti-circle-plus"></i></span><span class="n">Extra szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
+    </div>
+    <div class="tbsec"><p>Mobilfizetés</p><label class="tblink" for="s-topup1">Keretfeltöltés</label></div>
+    <div class="tblist tbboxed">
+      <div class="tbrow"><span class="tbic"><i class="ti ti-parking-circle"></i></span><span class="n">Parkoló jegy</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="tbrow"><span class="tbic"><i class="ti ti-road"></i></span><span class="n">Autópálya matrica</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <div class="tbsec"><p>Nézz körül</p></div>
+    <div class="tbgrid">
+      <label class="tbtile" for="s-xdatar"><span class="tbic"><i class="ti ti-plane"></i></span><span class="n">Külföldre utazol?<i class="ti ti-chevron-right chev"></i></span></label>
+      <div class="tbtile"><span class="tbic"><i class="ti ti-shield-check"></i></span><span class="n">Készülékbiztosítás<i class="ti ti-chevron-right chev"></i></span></div>
+    </div>
+  </div>
+
+  <!-- ============= TAB: PÉNZÜGYEK ============= -->
+  <div class="screen tbscreen" data-screen="tab-fin" style="display:none;">
+    <div class="dhead tbhead">
+      <div style="width:42px"></div>
+      <span class="title">Pénzügyek</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="tbbill">
+      <span class="tbbic"><i class="ti ti-file-invoice"></i></span>
+      <p class="tbbt">1 számla vár befizetésre</p>
+      <p class="tbbs">Fizetési határidő: 2026. 11. 05. · <b>7 990 Ft</b></p>
+      <label class="tbbbtn" for="s-billing">Befizetem</label>
+    </div>
+    <div class="tblist">
+      <label class="tbrow tbsolo" for="s-billing"><span class="tbic"><i class="ti ti-receipt-2"></i></span><span class="n">Számlatörténet</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="tbrow tbsolo" for="s-topup1"><span class="tbic"><i class="ti ti-file-upload"></i></span><span class="n">Kártyás feltöltés</span><i class="ti ti-chevron-right chev"></i></label>
+      <div class="tbrow tbsolo"><span class="tbic"><i class="ti ti-credit-card"></i></span><span class="n">Mentett kártya kezelés</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="tbrow tbsolo"><span class="tbic"><i class="ti ti-device-mobile"></i></span><span class="n">Mobilszámlás fizetés</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+  </div>
+
+  <!-- ============= TAB: PROFIL ============= -->
+  <div class="screen tbscreen" data-screen="tab-prof" style="display:none;">
+    <div class="dhead tbhead">
+      <div style="width:42px"></div>
+      <span class="title">Profil</span>
+      <div class="icon-btn"><i class="ti ti-message-chatbot"></i></div>
+    </div>
+    <div class="tbme">
+      <span class="tbav"><i class="ti ti-user"></i></span>
+      <div><p class="tbmn">Weinper Gyula</p><p class="tbme2">weinper.gyula@gmail.com</p></div>
+    </div>
+    <div class="tbgroup">
+      <div class="tbrow"><span class="tbic"><i class="ti ti-mail"></i></span><span class="n">E-mail cím módosítás</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="tbrow"><span class="tbic"><i class="ti ti-phone-call"></i></span><span class="n">Kapcsolattartási telefonszám csere</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="tbrow"><span class="tbic"><i class="ti ti-lock"></i></span><span class="n">Jelszó módosítás</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <div class="tbgroup">
+      <div class="tbrow"><span class="tbic"><i class="ti ti-file-download"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="tbrow"><span class="tbic"><i class="ti ti-file-certificate"></i></span><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <label class="tbout" for="s-welcome">Kijelentkezés<i class="ti ti-logout"></i></label>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
-    <label class="nitem" for="s-billing"><i class="ti ti-file-invoice"></i>Pénzügyek</label>
-    <label class="nitem" for="s-addservice"><i class="ti ti-shopping-cart"></i>Vásárlás</label>
+    <label class="nitem" for="s-tfin"><i class="ti ti-file-invoice"></i>Pénzügyek</label>
+    <label class="nitem" for="s-tshop"><i class="ti ti-shopping-cart"></i>Vásárlás</label>
     <label class="nitem" for="s-fun"><i class="ti ti-star"></i>Bónusz</label>
-    <label class="nitem" for="s-account"><i class="ti ti-user"></i>Profil</label>
+    <label class="nitem" for="s-tprof"><i class="ti ti-user"></i>Profil</label>
   </div>
 
 
@@ -6418,7 +6534,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
