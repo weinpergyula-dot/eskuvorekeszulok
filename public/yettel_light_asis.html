@@ -1596,6 +1596,42 @@
   .menupanel .mrow{ gap:18px; padding:12px 12px; border-radius:12px; }
   .menupanel .mrow .mi{ width:26px; text-align:center; font-size:24px; color:var(--navy); }
   .menupanel .mrow .n{ font-size:13px; font-weight:600; color:var(--navy); }
+
+  /* ===== home: "Előfizetéseid" cards — v2, after the reference design ===== */
+  [data-screen="home"] .accotop{ display:flex; align-items:center; justify-content:space-between; padding-bottom:10px; }
+  [data-screen="home"] .accotop .at{ font-size:17px; }
+  .subsmenu{ width:32px; height:32px; margin-right:-6px; border:none; background:none; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .subsmenu i{ font-size:22px; color:var(--navy); }
+  [data-screen="home"] .primbox{ padding:0; margin-bottom:12px; background:none; }
+  [data-screen="home"] .sub,
+  [data-screen="home"] .sub.subgroup{ padding:0; margin-bottom:12px; border:none; border-radius:16px; background:#FFFFFF; box-shadow:0 2px 8px -4px rgba(20,36,94,.10); }
+  [data-screen="home"] .primbox .sub{ margin:0; }
+  [data-screen="home"] .subhead{ gap:12px; padding:14px 14px 14px 12px; }
+  [data-screen="home"] .itile{ width:38px; height:38px; }
+  [data-screen="home"] .itile i{ font-size:20px; }
+  [data-screen="home"] .primbox .itile{ background:var(--lime); }
+  [data-screen="home"] .sub .meta .s{ margin:0 0 1px; font-size:11px; font-weight:500; }
+  [data-screen="home"] .sub .meta .t{ font-size:13.5px; font-weight:800; line-height:1.3; }
+  [data-screen="home"] .chev{ font-size:18px; }
+  /* usage block (primary only), indented under the text */
+  .primbox .subuse{ display:flex; align-items:center; gap:10px; padding:0 14px 14px 62px; margin-top:-4px; }
+  .subuse .uic{ display:none; }
+  .subuse .ublk{ flex:1; min-width:0; }
+  .subuse .ul,.subuse .ur{ margin:0; font-size:10px; color:var(--mid); }
+  .subuse .uv{ display:flex; gap:16px; margin:1px 0; }
+  .subuse .uv b{ font-family:'Sora'; font-size:13.5px; font-weight:800; color:var(--navy); }
+  .subuse .ubtn{ padding:6px 18px; border-width:1.5px; font-size:11px; }
+  /* linked services: plain rows between dividers, account e-mail below */
+  [data-screen="home"] .subgroup .subrel{ margin:0 14px; padding:4px 0; border-top:1px solid #E3E8EE; }
+  [data-screen="home"] .substrm{ margin:0; padding:10px 0; gap:14px; background:none; border:none; border-radius:0; }
+  [data-screen="home"] .substrm:hover{ background:none; }
+  [data-screen="home"] .substrm .ssic{ width:24px; height:24px; border-radius:0; background:none; }
+  [data-screen="home"] .substrm .ssic i{ font-size:20px; color:var(--navy); }
+  [data-screen="home"] .substrm .ssn{ font-size:11px; font-weight:500; color:var(--navy); }
+  .subacct{ margin:0 14px; padding:12px 0 14px; border-top:1px solid #E3E8EE; font-size:10.5px; color:var(--mid); }
+  .subrel:not(:has(.substrm)) + .subacct{ display:none; }
+  /* pending order */
+  .pendtag{ display:inline-block; margin:12px 0 -4px 12px; padding:2px 9px; border-radius:999px; background:#DCEBFA; font-size:10px; font-weight:700; color:var(--navy); }
 </style>
 </head>
 <body>
@@ -1793,31 +1829,46 @@
     <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs></svg>
 
     <div class="acc accouter">
-      <div class="acc-head accotop"><span class="at">Előfizetéseim</span></div>
+      <div class="acc-head accotop"><span class="at">Előfizetéseid</span><button class="subsmenu" type="button" data-primedit aria-label="Elsődleges előfizetés kiválasztása"><i class="ti ti-dots-vertical"></i></button></div>
       <div class="acc-body">
         <div class="primbox">
-          <div class="primhead"><span class="primt">Elsődleges előfizetésed</span><button class="primedit" type="button" data-primedit aria-label="Elsődleges előfizetés módosítása"><i class="ti ti-pencil"></i></button></div>
-        <div class="sub subgroup" data-sub="mob-7430">
-          <label class="subhead" for="s-detail">
-            <div class="itile"><i class="ti ti-phone-call"></i></div>
-            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Prime Plus 2024</p></div>
-            <i class="ti ti-chevron-right chev"></i>
-          </label>
-          <div class="subuse"><span class="uic"><i class="ti ti-world"></i></span><span class="ut"><b>12,4</b> <span data-dtot="7430">/ 20 GB</span> felhasználva</span><label class="ubtn" for="s-xdata1">Extrák</label></div>
-          <div class="subrel" data-related="mob-7430">
-            <span class="relanchor" data-relhead="mob-7430" hidden></span>
-            <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-            <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max<span class="sssub">Streaming</span></span><i class="ti ti-chevron-right chev"></i></label>
-          </div>
-        </div>
-        </div>
         <div class="sub subgroup" data-sub="mob-7566">
           <label class="subhead" for="s-detailmob2">
             <div class="itile"><i class="ti ti-phone-call"></i></div>
             <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Prime Plus 2025</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
-          <div class="subuse"><span class="uic"><i class="ti ti-world"></i></span><span class="ut"><b>3,1</b> <span data-dtot="7566">/ 5 GB</span> felhasználva</span><label class="ubtn" for="s-xdata2">Extrák</label></div>
+          <div class="subuse"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>1,9 GB</b><b>40 perc</b></p><p class="ur">Megújul: 2026.07.22</p></div><label class="ubtn" for="s-xdata2">Extrák</label></div>
+        </div>
+        </div>
+        <div class="sub subgroup" data-sub="net">
+          <label class="subhead" for="s-detail-net">
+            <div class="itile"><i class="ti ti-home-signal"></i></div>
+            <div class="meta"><p class="t">8200 Veszprém, Tölgyfa u. 4</p><p class="s">Otthoni Net 1000</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+        </div>
+        <div class="sub subgroup subpend" data-sub="net-pend">
+          <span class="pendtag">Folyamatban</span>
+          <label class="subhead" for="s-detail-net">
+            <div class="itile"><i class="ti ti-home-signal"></i></div>
+            <div class="meta"><p class="t">8200 Veszprém, Jutasi út 12</p><p class="s">Otthoni Net 500</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+        </div>
+        <div class="sub subgroup" data-sub="mob-7430">
+          <label class="subhead" for="s-detail">
+            <div class="itile"><i class="ti ti-phone-call"></i></div>
+            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Prime Plus 2024</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+          <div class="subuse"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>7,6 GB</b><b>90 perc</b></p><p class="ur">Megújul: 2026.07.31</p></div><label class="ubtn" for="s-xdata1">Extrák</label></div>
+          <div class="subrel" data-related="mob-7430">
+            <span class="relanchor" data-relhead="mob-7430" hidden></span>
+            <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV</span><i class="ti ti-chevron-right chev"></i></label>
+            <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-wifi"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
+          </div>
+          <div class="subacct">weinper.gyula@gmail.com</div>
         </div>
         <div class="sub subgroup" data-sub="mob-9734">
           <label class="subhead" for="s-detailpre1">
@@ -1825,7 +1876,7 @@
             <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">XS+ · Feltöltőkártyás</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
-          <div class="subuse"><span class="uic"><i class="ti ti-wallet"></i></span><span class="ut">Egyenleg: <b data-bal="9734">3 450 Ft</b></span><label class="ubtn" for="s-topup1">Feltöltés</label></div>
+          <div class="subuse"><div class="ublk"><p class="ul">Egyenleg</p><p class="uv"><b data-bal="9734">3 450 Ft</b></p><p class="ur">Havidíj nélkül</p></div><label class="ubtn" for="s-topup1">Feltöltés</label></div>
         </div>
         <div class="sub subgroup" data-sub="mob-8812">
           <label class="subhead" for="s-detailpre2">
@@ -1833,12 +1884,7 @@
             <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">XS · Feltöltőkártyás</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
-          <div class="subuse"><span class="uic"><i class="ti ti-wallet"></i></span><span class="ut">Egyenleg: <b data-bal="8812">1 280 Ft</b></span><label class="ubtn" for="s-topup2">Feltöltés</label></div>
-        </div>
-        <div class="sub" data-goto="detail-net" style="position:relative;" data-sub="net"><label class="subcover" for="s-detail-net"></label>
-          <div class="itile blue"><i class="ti ti-home-signal"></i></div>
-          <div class="meta"><p class="t">Veszprém, Tölgyfa u. 4</p><p class="s">Yettel Otthoni Net 1000</p></div>
-          <i class="ti ti-chevron-right chev"></i>
+          <div class="subuse"><div class="ublk"><p class="ul">Egyenleg</p><p class="uv"><b data-bal="8812">1 280 Ft</b></p><p class="ur">Havidíj nélkül</p></div><label class="ubtn" for="s-topup2">Feltöltés</label></div>
         </div>
         <span data-anchor="otthoni" hidden></span>
       </div>
@@ -6371,8 +6417,9 @@
     function featRow(id,name,ic){
       return '<div class="substrm" data-sub="'+id+'"><span class="ssic"><i class="ti '+ic+'"></i></span><span class="ssn">'+name+'<span class="sssub">Aktív</span></span></div>';
     }
-    function netSub(pkg){ return '<div class="sub" data-sub="net-new" style="position:relative;"><label class="subcover" for="s-detail-net"></label><div class="itile blue"><i class="ti ti-router"></i></div><div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Új megrendelés</p><p class="s">Internet · '+pkg+'</p></div><i class="ti ti-chevron-right chev"></i></div>'; }
-    function tvSub(pkg){ return '<div class="sub" data-sub="tv-new" style="position:relative;"><label class="subcover" for="s-detail-tv"></label><div class="itile violet"><i class="ti ti-device-tv"></i></div><div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Új megrendelés</p><p class="s">TV · '+pkg+'</p></div><i class="ti ti-chevron-right chev"></i></div>'; }
+    function pendSub(id,to,ic,pkg){ return '<div class="sub subgroup subpend" data-sub="'+id+'"><span class="pendtag">Folyamatban</span><label class="subhead" for="'+to+'"><div class="itile"><i class="ti '+ic+'"></i></div><div class="meta"><p class="t">Új megrendelés</p><p class="s">'+pkg+'</p></div><i class="ti ti-chevron-right chev"></i></label></div>'; }
+    function netSub(pkg){ return pendSub('net-new','s-detail-net','ti-home-signal',pkg); }
+    function tvSub(pkg){ return pendSub('tv-new','s-detail-tv','ti-device-tv',pkg); }
 
     /* ORDER: digital services (streaming / gyermekvédelem / NetPajzs) */
     var dsvcBtn=document.querySelector('label[for="s-dsvcok"]');
