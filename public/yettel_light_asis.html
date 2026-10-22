@@ -305,7 +305,6 @@
   #s-strm1:checked ~ [data-screen="strm-1"],
   #s-strm2:checked ~ [data-screen="strm-2"],
   #s-strm3:checked ~ [data-screen="strm-3"],
-  #s-offsvc1:checked ~ [data-screen="offers-svc-1"],
   #s-offbuy1:checked ~ [data-screen="offers-buy-1"],
   #s-offsvc:checked ~ [data-screen="offers-svc"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
@@ -324,7 +323,6 @@
   #s-xdata1:checked ~ [data-screen="xdata-1"],
   #s-xmin:checked ~ [data-screen="xmin"],
   #s-tvpkg:checked ~ [data-screen="tvpkg"],
-  #s-ctvnet:checked ~ [data-screen="ctv-net"],
   #s-ctvaddr:checked ~ [data-screen="ctv-addr"],
   #s-ctvavail:checked ~ [data-screen="ctv-avail"],
   #s-ctvxnet:checked ~ [data-screen="ctv-xnet"],
@@ -343,11 +341,12 @@
   #s-tprof:checked ~ [data-screen="tab-prof"],
   #s-qedit:checked ~ [data-screen="quick-edit"],
   #s-buynew:checked ~ [data-screen="buy-new"],
+  #s-xsvc:checked ~ [data-screen="xsvc"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -1777,6 +1776,55 @@
   .adnote{ margin:12px 14px 0; font-size:11px; line-height:1.4; color:var(--navy); }
   .adscr .formbody > input[id$="-new"]:checked ~ * .adnote{ display:none; }
   .adscr:has(input[id$="-new"]:checked) .adnote{ display:none; }
+
+  /* ===== Extra szolgáltatások: subscription sheet ===== */
+  .xsheet{ position:absolute; inset:0; z-index:110; display:none; }
+  .xsheet.on{ display:block; }
+  .xsbg{ position:absolute; inset:0; background:rgba(20,36,94,.35); }
+  .xspanel{ position:absolute; left:8px; right:8px; bottom:8px; max-height:78%; overflow-y:auto; padding:10px 16px 18px; border-radius:26px; background:#FFFFFF;
+            box-shadow:0 -10px 40px -10px rgba(20,36,94,.35); animation:xsup .28s cubic-bezier(.4,0,.2,1); }
+  @keyframes xsup{ from{ transform:translateY(40px); opacity:0; } to{ transform:none; opacity:1; } }
+  .xsgrab{ display:block; width:52px; height:4px; margin:0 auto 14px; border-radius:4px; background:#CDD4DC; }
+  .xshead{ display:flex; align-items:center; justify-content:space-between; }
+  .xshead p{ margin:0; font-family:'Yettel'; font-size:17px; font-weight:700; color:var(--navy); }
+  .xsx{ border:none; background:none; padding:4px; cursor:pointer; display:flex; }
+  .xsx i{ font-size:22px; color:var(--mid); }
+  .xsq{ margin:14px 0 16px; font-size:12px; color:var(--navy); }
+  .xsopts{ display:flex; flex-direction:column; gap:12px; margin-bottom:16px; }
+  .xsopt{ display:flex; align-items:center; gap:14px; padding:12px 14px; border:2px solid #E3E8EE; border-radius:14px; cursor:pointer; }
+  .xsopt input{ display:none; }
+  .xsopt:has(input:checked){ border-color:#0C1740; background:#F1F9FD; }
+  .xsoic{ width:40px; height:40px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#C9DDE8; }
+  .xsoic i{ font-size:20px; color:var(--navy); }
+  .xsotx{ flex:1; min-width:0; }
+  .xsotx small{ display:block; font-size:11px; color:var(--navy); }
+  .xsotx b{ display:block; font-size:14px; font-weight:700; color:var(--navy); }
+  .xschk{ display:none; width:22px; height:22px; border-radius:50%; background:#0C1740; align-items:center; justify-content:center; }
+  .xschk i{ font-size:14px; color:#fff; }
+  .xsopt:has(input:checked) .xschk{ display:flex; }
+  .xsgo{ width:100%; padding:14px; border:none; border-radius:999px; background:#0C1740; color:#fff; font-family:'Yettel'; font-weight:700; font-size:14px; cursor:pointer; }
+  /* ===== Extra szolgáltatások: list screen ===== */
+  .xsid{ display:flex; align-items:center; gap:16px; margin:-28px -16px 18px; padding:40px 26px 16px; background:#FFFFFF; border-radius:0 0 26px 26px; cursor:pointer;
+         box-shadow:0 10px 20px -16px rgba(20,36,94,.4); }
+  .xsid > i:first-child{ font-size:26px; color:var(--navy); }
+  .xsid .meta{ flex:1; }
+  .xsid .meta .s{ margin:0; font-size:12px; color:var(--navy); }
+  .xsid .meta .t{ margin:1px 0 0; font-family:'Yettel'; font-size:15px; font-weight:700; color:var(--navy); }
+  .xsdd{ font-size:20px; color:var(--navy); }
+  .xsmine{ display:flex; align-items:center; justify-content:space-between; padding:16px; border-radius:16px; background:#FFFFFF; cursor:pointer; }
+  .xsmine span{ font-size:13px; font-weight:600; color:var(--navy); }
+  .xsmine .chev{ font-size:18px; color:var(--mid); }
+  .xslab{ margin:24px 2px 14px; font-size:13px; color:var(--navy); }
+  .xslist{ padding:0 16px; border-radius:16px; background:#FFFFFF; }
+  .xslist[hidden]{ display:none; }
+  .xsrow{ display:flex; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid #E3E8EE; cursor:pointer; }
+  .xsrow:last-child{ border-bottom:none; }
+  .xsic{ width:44px; height:44px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#C9DDE8; }
+  .xsic i{ font-size:22px; color:var(--navy); }
+  .xsic.dark{ background:#0C1740; } .xsic.dark i{ color:#FFFFFF; }
+  .xsrow .n{ flex:1; font-size:13px; font-weight:600; color:var(--navy); }
+  .xsrow .chev{ font-size:18px; color:var(--mid); }
+  .xsnew{ padding:2px 9px; border-radius:999px; background:var(--lime); font-size:11px; font-weight:600; color:var(--navy); }
 </style>
 </head>
 <body>
@@ -1821,7 +1869,6 @@
   <input class="rt" type="radio" name="nav" id="s-menu">
   <input class="rt" type="radio" name="nav" id="s-prebuy">
   <input class="rt" type="radio" name="nav" id="s-presvc">
-  <input class="rt" type="radio" name="nav" id="s-offsvc1">
   <input class="rt" type="radio" name="nav" id="s-offbuy1">
   <input class="rt" type="radio" name="nav" id="s-strm1">
   <input class="rt" type="radio" name="nav" id="s-strm2">
@@ -1849,7 +1896,6 @@
   <input class="rt" type="radio" name="nav" id="s-eddev">
   <input class="rt" type="radio" name="nav" id="s-edacc">
   <input class="rt" type="radio" name="nav" id="s-tvpkg">
-  <input class="rt" type="radio" name="nav" id="s-ctvnet">
   <input class="rt" type="radio" name="nav" id="s-ctvaddr">
   <input class="rt" type="radio" name="nav" id="s-ctvavail">
   <input class="rt" type="radio" name="nav" id="s-ctvxnet">
@@ -1871,6 +1917,7 @@
   <input class="rt" type="radio" name="nav" id="s-tprof">
   <input class="rt" type="radio" name="nav" id="s-qedit">
   <input class="rt" type="radio" name="nav" id="s-buynew">
+  <input class="rt" type="radio" name="nav" id="s-xsvc">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
@@ -2558,7 +2605,7 @@
   <!-- ============= CÍMKERESŐ: addr-svc ============= -->
   <div class="screen formscr adscr" data-screen="addr-svc" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-offsvc1" data-adback><i class="ti ti-arrow-left"></i></label>
+      <label class="icon-btn" for="s-buynew" data-adback><i class="ti ti-arrow-left"></i></label>
       <span class="title">Címed</span>
       <div style="width:42px"></div>
     </div>
@@ -3043,7 +3090,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <label class="svccard s-violet" for="s-ctvnet">
+      <label class="svccard s-violet" for="s-ctvaddr">
         <span class="sbadge">Csomagban</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
@@ -3107,7 +3154,7 @@
       </div>
     </div>
     <div class="tabpane tp-otthon">
-      <label class="svccard s-blue" for="s-offsvc1">
+      <label class="svccard s-blue" for="s-addrsvc">
         <span class="sbadge">30 nap díjmentes</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-router"></i></span>
@@ -3128,7 +3175,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <label class="svccard s-violet" for="s-ctvnet">
+      <label class="svccard s-violet" for="s-ctvaddr">
         <span class="sbadge">Csomagban</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
@@ -4920,56 +4967,6 @@
     </div>
   </div>
 
-  <!-- ============= INTERNET TARIFÁK (1. lépés) ============= -->
-  <div class="screen" data-screen="offers-svc-1" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-addservice"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Internet tarifák</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Válaszd ki az<br>internetcsomagod.</h2>
-    <p class="buysub">Előbb nézd meg a csomagokat, majd ellenőrizd az elérhetőséget a címeden.</p>
-    <p class="offsec">Internet</p>
-    <label class="tfcard" for="s-addrsvc">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">1000 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Címellenőrzés</span>
-        </div>
-      </div>
-    </label>
-    <label class="tfcard" for="s-addrsvc">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">500 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Címellenőrzés</span>
-        </div>
-      </div>
-    </label>
-    <div class="tfhelp">
-      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
-      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
-    </div>
-  </div>
-
   <div class="screen" data-screen="offers-buy-1" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
@@ -5311,60 +5308,10 @@
     </div>
   </div>
 
-  <!-- ============= INTERNET + TV FLOW: CSOMAGVÁLASZTÁS ============= -->
-  <div class="screen" data-screen="ctv-net" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Internet + TV</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Válaszd ki az<br>internetcsomagod.</h2>
-    <p class="buysub">Előbb az internetcsomagot választod, majd ellenőrizzük az elérhetőséget, végül jöhet a TV.</p>
-    <p class="offsec">Internet</p>
-    <label class="tfcard" for="s-ctvaddr">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">1000 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Címellenőrzés</span>
-        </div>
-      </div>
-    </label>
-    <label class="tfcard" for="s-ctvaddr">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">500 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Címellenőrzés</span>
-        </div>
-      </div>
-    </label>
-    <div class="tfhelp">
-      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
-      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
-    </div>
-  </div>
-
   <!-- ============= INTERNET + TV FLOW: CÍMED ============= -->
   <div class="screen formscr adscr" data-screen="ctv-addr" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-ctvnet" data-adback><i class="ti ti-arrow-left"></i></label>
+      <label class="icon-btn" for="s-buynew" data-adback><i class="ti ti-arrow-left"></i></label>
       <span class="title">Címed</span>
       <div style="width:42px"></div>
     </div>
@@ -6096,7 +6043,7 @@
     </div>
     <div class="tblist tbboxed">
       <label class="tbrow" for="s-buynew"><span class="tbic"><i class="ti ti-shopping-cart"></i></span><span class="n">Új szolgáltatás vásárlás</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="tbrow" for="s-addonsvc"><span class="tbic"><i class="ti ti-circle-plus"></i></span><span class="n">Extra szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
+      <div class="tbrow" data-xsheet><span class="tbic"><i class="ti ti-circle-plus"></i></span><span class="n">Extra szolgáltatások</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
     <div class="tbsec"><p>Mobilfizetés</p><label class="tblink" for="s-topup1">Keretfeltöltés</label></div>
     <div class="tblist tbboxed">
@@ -6183,10 +6130,43 @@
       <div style="width:42px"></div>
     </div>
     <div class="bnlist">
-      <label class="bncard" for="s-ctvnet" style="--img:url('yettel/buy-net-tv.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
-      <label class="bncard" for="s-offsvc1" style="--img:url('yettel/buy-net.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
+      <label class="bncard" for="s-ctvaddr" style="--img:url('yettel/buy-net-tv.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
+      <label class="bncard" for="s-addrsvc" style="--img:url('yettel/buy-net.jpg')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
       <label class="bncard" for="s-tvselsvc" data-tvpre="none" style="--img:url('yettel/buy-tv.jpg')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></label>
       <label class="bncard" for="s-addservice" data-tab="ts-mobil" style="--img:url('yettel/buy-mobile.jpg')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></label>
+    </div>
+  </div>
+
+  <!-- ============= EXTRA SZOLGÁLTATÁSOK ============= -->
+  <div class="screen xsscreen" data-screen="xsvc" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-tshop"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Szolgáltatások</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="xsid" data-xsheet>
+      <i class="ti ti-phone-call" data-xsic></i>
+      <div class="meta"><p class="s" data-xsplan>Prime Plus 2025</p><p class="t" data-xsnum>+36 20 290 7566</p></div>
+      <i class="ti ti-chevron-down xsdd"></i>
+    </div>
+    <label class="xsmine" for="s-detailmob2" data-xsmine><span>Szolgáltatásaid</span><i class="ti ti-chevron-right chev"></i></label>
+    <p class="xslab">Rendelhető</p>
+    <div class="xslist" data-xslist="mob">
+        <div class="xsrow"><span class="xsic dark"><i class="ti ti-tag"></i></span><span class="n">Ajánlataid</span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="xsrow"><span class="xsic"><i class="ti ti-heart-handshake"></i></span><span class="n">Ajándékozás</span><span class="xsnew">Új!</span><i class="ti ti-chevron-right chev"></i></div>
+        <label class="xsrow" for="s-xmin"><span class="xsic"><i class="ti ti-phone-call"></i></span><span class="n">Perc opciók</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="xsrow" for="s-netsec"><span class="xsic"><i class="ti ti-shield-check"></i></span><span class="n">Internetvédelem</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="xsrow" for="s-xdata2" data-xsdata><span class="xsic"><i class="ti ti-device-mobile-plus"></i></span><span class="n">Adat opciók</span><i class="ti ti-chevron-right chev"></i></label>
+        <div class="xsrow"><span class="xsic"><i class="ti ti-arrows-exchange"></i></span><span class="n">Hordozhatóság</span><i class="ti ti-chevron-right chev"></i></div>
+        <label class="xsrow" for="s-xdatar"><span class="xsic"><i class="ti ti-world"></i></span><span class="n">Roaming 1 díjzóna</span><i class="ti ti-chevron-right chev"></i></label>
+        <div class="xsrow"><span class="xsic"><i class="ti ti-world"></i></span><span class="n">Roaming 2 és 3 díjzóna</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <div class="xslist" data-xslist="net" hidden>
+        <div class="xsrow"><span class="xsic dark"><i class="ti ti-tag"></i></span><span class="n">Ajánlataid</span><i class="ti ti-chevron-right chev"></i></div>
+        <label class="xsrow" for="s-netsec"><span class="xsic"><i class="ti ti-shield-check"></i></span><span class="n">Internetvédelem</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="xsrow" for="s-strpick"><span class="xsic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="xsrow" for="s-tvselsvc"><span class="xsic"><i class="ti ti-device-tv"></i></span><span class="n">TV csomagok</span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="xsrow" for="s-addonsvc"><span class="xsic"><i class="ti ti-circle-plus"></i></span><span class="n">Kiegészítő szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
   </div>
 
@@ -6243,6 +6223,16 @@
       <p class="wips">Add meg ezt a kódot a szolgáltatás appjában vagy weboldalán az aktiváláshoz.</p>
       <div class="codebox"><span id="codeval">----</span></div>
       <button class="wipb" type="button">Bezárás</button>
+    </div>
+  </div>
+  <div class="xsheet" id="xsheet">
+    <div class="xsbg" data-xsclose></div>
+    <div class="xspanel">
+      <span class="xsgrab"></span>
+      <div class="xshead"><p>Előfizetéseid</p><button type="button" class="xsx" data-xsclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
+      <p class="xsq">Melyik előfizetésedhez vásárolnál extra szolgáltatást?</p>
+      <div class="xsopts"></div>
+      <button type="button" class="xsgo" data-xsgo>Tovább</button>
     </div>
   </div>
   <div class="wip" id="primpick">
@@ -6835,11 +6825,11 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -6924,6 +6914,80 @@
     back.addEventListener('click', function(e){ if (newR.checked){ e.preventDefault(); permR.checked = true; upd(); } });
     upd();
   });
+})();
+</script>
+<script>
+/* back arrows walk the journey backwards (previously visited screen), falling back to their own target */
+(function(){
+  var ROOTS = {'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
+  var stack = [];
+  function curId(){ var c = document.querySelector('input.rt[name="nav"]:checked'); return c ? c.id : null; }
+  function screenOf(){ var all = document.querySelectorAll('[data-screen]');
+    for (var i = 0; i < all.length; i++){ if (getComputedStyle(all[i]).display !== 'none') return all[i]; } return null; }
+  function skip(sc){ return !sc || sc.classList.contains('loadscr') || sc.classList.contains('okscr'); }
+  function record(){
+    var id = curId(); if (!id || id === 's-menu') return;
+    if (ROOTS[id]){ stack = [id]; return; }
+    var sc = screenOf(); if (skip(sc)) return;
+    /* an edit screen left via Mentés/Mégse is not a step to come back to */
+    var top = stack[stack.length-1];
+    if (top && /^s-ed/.test(top) && !/^s-ed/.test(id)) stack.pop();
+    if (stack[stack.length-1] !== id) stack.push(id);
+  }
+  document.addEventListener('change', function(e){ if (e.target && e.target.name === 'nav') record(); });
+  var firstId = curId(); if (firstId) stack = [firstId];
+  document.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('.dhead label.icon-btn');
+    if (!b || e.defaultPrevented || !b.querySelector('.ti-arrow-left')) return;
+    var c = curId();
+    while (stack.length && stack[stack.length-1] === c) stack.pop();
+    var t = stack[stack.length-1];
+    if (!t) return;                 /* nothing recorded: use the label's own target */
+    e.preventDefault();
+    var r = document.getElementById(t); if (r) r.checked = true;
+  });
+})();
+</script>
+<script>
+/* Extra szolgáltatások: pick a subscription in a bottom sheet, then list what can be ordered for it */
+(function(){
+  var SUBS = [
+    {id:'7566', ic:'ti-phone-call', plan:'Prime Plus 2025', t:'+36 20 290 7566', kind:'mob', det:'s-detailmob2', data:'s-xdata2'},
+    {id:'7430', ic:'ti-phone-call', plan:'Prime Plus 2024', t:'+36 20 290 7430', kind:'mob', det:'s-detail', data:'s-xdata1'},
+    {id:'9734', ic:'ti-phone-call', plan:'XS+ · Feltöltőkártyás', t:'+36 20 290 9734', kind:'mob', det:'s-detailpre1', data:'s-topup1'},
+    {id:'8812', ic:'ti-phone-call', plan:'XS · Feltöltőkártyás', t:'+36 20 290 8812', kind:'mob', det:'s-detailpre2', data:'s-topup2'},
+    {id:'net', ic:'ti-home-signal', plan:'Otthoni Net 1000', t:'8200 Veszprém, Tölgyfa u. 4', kind:'net', det:'s-detail-net'}
+  ];
+  var sheet = document.getElementById('xsheet'), sc = document.querySelector('[data-screen="xsvc"]');
+  if (!sheet || !sc) return;
+  var opts = sheet.querySelector('.xsopts'), cur = SUBS[0];
+  function open(){
+    opts.innerHTML = SUBS.map(function(x){
+      return '<label class="xsopt"><input type="radio" name="xssub" value="'+x.id+'"'+(x===cur?' checked':'')+'>'
+           + '<span class="xsoic"><i class="ti '+x.ic+'"></i></span><span class="xsotx"><small>'+x.plan+'</small><b>'+x.t+'</b></span><span class="xschk"><i class="ti ti-check"></i></span></label>';
+    }).join('');
+    sheet.classList.add('on');
+  }
+  function apply(){
+    sc.querySelector('[data-xsic]').className = 'ti '+cur.ic;
+    sc.querySelector('[data-xsplan]').textContent = cur.plan;
+    sc.querySelector('[data-xsnum]').textContent = cur.t;
+    sc.querySelector('[data-xsmine]').setAttribute('for', cur.det);
+    var d = sc.querySelector('[data-xsdata]'); if (d && cur.data) d.setAttribute('for', cur.data);
+    Array.prototype.slice.call(sc.querySelectorAll('[data-xslist]')).forEach(function(l){ l.hidden = l.getAttribute('data-xslist') !== cur.kind; });
+  }
+  document.addEventListener('click', function(e){
+    if (!e.target.closest) return;
+    if (e.target.closest('[data-xsheet]')){ open(); return; }
+    if (e.target.closest('[data-xsclose]')){ sheet.classList.remove('on'); return; }
+    if (e.target.closest('[data-xsgo]')){
+      var v = opts.querySelector('input:checked'); if (!v) return;
+      SUBS.forEach(function(x){ if (x.id === v.value) cur = x; });
+      apply(); sheet.classList.remove('on');
+      var r = document.getElementById('s-xsvc'); if (r && !r.checked){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); }
+    }
+  });
+  apply();
 })();
 </script>
 </body>
