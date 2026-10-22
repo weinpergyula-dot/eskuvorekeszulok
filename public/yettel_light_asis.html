@@ -757,12 +757,14 @@
   .lrow .n{line-height:1.3;}
   /* bottom-nav highlight follows the active screen */
   #s-home:checked ~ .nav .nitem[for="s-home"],
-  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"],
-  #s-alldev:checked ~ .nav .nitem[for="s-alldev"],
+  #s-billing:checked ~ .nav .nitem[for="s-billing"],
+  #s-addservice:checked ~ .nav .nitem[for="s-addservice"],
+  #s-fun:checked ~ .nav .nitem[for="s-fun"],
   #s-account:checked ~ .nav .nitem[for="s-account"]{color:var(--limed);}
   #s-home:checked ~ .nav .nitem[for="s-home"] i,
-  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"] i,
-  #s-alldev:checked ~ .nav .nitem[for="s-alldev"] i,
+  #s-billing:checked ~ .nav .nitem[for="s-billing"] i,
+  #s-addservice:checked ~ .nav .nitem[for="s-addservice"] i,
+  #s-fun:checked ~ .nav .nitem[for="s-fun"] i,
   #s-account:checked ~ .nav .nitem[for="s-account"] i{filter:drop-shadow(0 0 8px rgba(164,216,46,.55));}
   .edit.icon{padding:8px; width:34px; height:34px; justify-content:center;}
   .edit.icon i{font-size:16px;}
@@ -937,6 +939,24 @@
   .accouter{margin-top:24px;}
   .accouter > .accotop{padding:6px 2px 14px;}
   .accotop .at{font-family:'Sora'; font-size:17px; font-weight:700; letter-spacing:-.01em;}
+  /* "Szerkesztés" link above the quick tiles */
+  .qedit{display:flex; justify-content:flex-end; margin:4px 2px 8px;}
+  .qedit .link{font-size:12px; font-weight:700; color:var(--limed); cursor:pointer;}
+  /* primary mobile subscription: framed, with its own heading + edit */
+  .primbox{border:1.5px solid var(--lime3); border-radius:26px; padding:12px 10px 1px; margin-bottom:14px;
+           background:rgba(198,242,78,.10); box-shadow:0 12px 26px -18px rgba(164,216,46,.8);}
+  .primbox:not(:has(.sub)){display:none;}
+  .primhead{display:flex; align-items:center; justify-content:space-between; padding:0 6px 10px;}
+  .primt{font-family:'Sora'; font-size:15px; font-weight:700; letter-spacing:-.01em; color:var(--navy);}
+  .primedit{width:32px; height:32px; border-radius:50%; border:1px solid var(--line); background:#FFFFFF; cursor:pointer;
+            display:flex; align-items:center; justify-content:center; padding:0;}
+  .primedit i{font-size:16px; color:var(--navy);}
+  .primopts{display:flex; flex-direction:column; gap:8px; margin:0 0 16px; text-align:left;}
+  .primopt{display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:14px; border:1px solid var(--line); cursor:pointer;}
+  .primopt:has(input:checked){border-color:var(--lime3); background:rgba(198,242,78,.16);}
+  .primopt input{accent-color:var(--lime3); margin:0;}
+  .primopt b{display:block; font-size:13.5px; color:var(--navy);}
+  .primopt small{display:block; font-size:11.5px; color:var(--mid); margin-top:1px;}
   .substrm .ssn .sssub{display:block; font-size:10.5px; font-weight:500; color:var(--mid); margin-top:1px;}
   .acctoggle{margin-left:auto; margin-right:8px; font-size:12px; font-weight:700; color:var(--mid); font-family:'Manrope';}
   .xprice{display:inline-block; margin-top:10px; font-size:9px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:4px 9px; border-radius:7px; background:var(--glass); border:1px solid var(--stroke); color:var(--hi);}
@@ -1182,16 +1202,19 @@
     border:1px solid transparent; z-index:-1;
   }
   #s-home:checked ~ .nav .nitem[for="s-home"],
-  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"],
-  #s-alldev:checked ~ .nav .nitem[for="s-alldev"],
+  #s-billing:checked ~ .nav .nitem[for="s-billing"],
+  #s-addservice:checked ~ .nav .nitem[for="s-addservice"],
+  #s-fun:checked ~ .nav .nitem[for="s-fun"],
   #s-account:checked ~ .nav .nitem[for="s-account"]{ color:var(--navy); }
   #s-home:checked ~ .nav .nitem[for="s-home"] i,
-  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"] i,
-  #s-alldev:checked ~ .nav .nitem[for="s-alldev"] i,
+  #s-billing:checked ~ .nav .nitem[for="s-billing"] i,
+  #s-addservice:checked ~ .nav .nitem[for="s-addservice"] i,
+  #s-fun:checked ~ .nav .nitem[for="s-fun"] i,
   #s-account:checked ~ .nav .nitem[for="s-account"] i{ filter:none; }
   #s-home:checked ~ .nav .nitem[for="s-home"]::before,
-  #s-allsubs:checked ~ .nav .nitem[for="s-allsubs"]::before,
-  #s-alldev:checked ~ .nav .nitem[for="s-alldev"]::before,
+  #s-billing:checked ~ .nav .nitem[for="s-billing"]::before,
+  #s-addservice:checked ~ .nav .nitem[for="s-addservice"]::before,
+  #s-fun:checked ~ .nav .nitem[for="s-fun"]::before,
   #s-account:checked ~ .nav .nitem[for="s-account"]::before{
     background:linear-gradient(180deg, rgba(20,36,94,.14), rgba(20,36,94,.05));
     border-color:rgba(255,255,255,.5);
@@ -1545,6 +1568,7 @@
       </div>
     </div>
 
+    <div class="qedit"><span class="link">Szerkesztés</span></div>
     <div class="quick">
       <label class="qtile" for="s-billing"><div class="qic"><i class="ti ti-receipt"></i></div><span>Számláim</span></label>
       <div class="qtile"><div class="qic"><i class="ti ti-parking"></i></div><span>Parkolás</span></div>
@@ -1552,90 +1576,86 @@
       <label class="qtile" for="s-fun"><div class="qic"><i class="ti ti-star"></i></div><span>Élménytér</span></label>
     </div>
 
-    <div class="sec"><h3>Mobil dashboard</h3></div>
-    <div class="hcar">
+    <!-- shared ring gradient (detail screens reference url(#rg)) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs></svg>
 
-      <div class="hero pcard"><label class="herocover" for="s-detail"></label>
-        
-        <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2024</span><span class="g5">Havidíjas</span></div>
-        <p class="num">+36 20 290 7430</p>
-        <p class="plan-sub">Megújul · 2026. 07. 31.</p>
-        <div class="hero-bottom">
-          <div class="ring-wrap">
-            <svg width="92" height="92" viewBox="0 0 92 92">
-              <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="#E4E8F1" stroke-width="7"/>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" data-dring="7430" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
-            </svg>
-            <div class="ring-center"><b>12,4</b><span data-dtot="7430">/ 20 GB</span></div>
-          </div>
-          <div class="stats">
-            <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">210<span class="u"> / 300</span></span></div><div class="track"><div class="fill" style="width:70%"></div></div></div>
-            <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">74<span class="u"> / 100</span></span></div><div class="track"><div class="fill amber" style="width:74%"></div></div></div>
+    <div class="acc accouter">
+      <div class="acc-head accotop"><span class="at">Előfizetéseim</span><label class="acclink" for="s-allsubs">Összes</label></div>
+      <div class="acc-body">
+    <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
+
+    <div class="acc">
+      <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>4</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-body">
+        <div class="primbox">
+          <div class="primhead"><span class="primt">Elsődleges előfizetésed</span><button class="primedit" type="button" data-primedit aria-label="Elsődleges előfizetés módosítása"><i class="ti ti-pencil"></i></button></div>
+        <div class="sub subgroup" data-sub="mob-7430">
+          <label class="subhead" for="s-detail">
+            <div class="itile"><i class="ti ti-device-mobile"></i></div>
+            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+          <div class="subrel" data-related="mob-7430">
+            <span class="relanchor" data-relhead="mob-7430" hidden></span>
+            <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
+            <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max<span class="sssub">Streaming</span></span><i class="ti ti-chevron-right chev"></i></label>
           </div>
         </div>
-        <div class="cactions"><label class="cbtn" for="s-xdata1"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch1"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
-      </div>
-
-      <div class="hero pcard"><label class="herocover" for="s-detailmob2"></label>
-        
-        <div class="hero-row"><span class="plan-tag"><span class="pip"></span>Prime Plus 2025</span><span class="g5">Havidíjas</span></div>
-        <p class="num">+36 20 290 7566</p>
-        <p class="plan-sub">Megújul · 2026. 07. 22.</p>
-        <div class="hero-bottom">
-          <div class="ring-wrap">
-            <svg width="92" height="92" viewBox="0 0 92 92">
-              <circle cx="46" cy="46" r="38" fill="none" stroke="#E4E8F1" stroke-width="7"/>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" data-dring="7566" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
-            </svg>
-            <div class="ring-center"><b>3,1</b><span data-dtot="7566">/ 5 GB</span></div>
-          </div>
-          <div class="stats">
-            <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">60<span class="u"> / 100</span></span></div><div class="track"><div class="fill" style="width:60%"></div></div></div>
-            <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">18<span class="u"> / 50</span></span></div><div class="track"><div class="fill amber" style="width:36%"></div></div></div>
-          </div>
         </div>
-        <div class="cactions"><label class="cbtn" for="s-xdata2"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label><label class="cbtn" for="s-tarifch2"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label></div>
-      </div>
-
-      <div class="hero pcard"><label class="herocover" for="s-detailpre1"></label>
-        
-        <div class="hero-row"><span class="plan-tag"><span class="pip"></span>XS+</span><span class="g5">Feltöltőkártyás</span></div>
-        <p class="num">+36 20 290 9734</p>
-        <p class="plan-sub">Havidíj nélkül</p>
-        <div class="hero-bottom">
-          <div class="balbox"><p class="ball">EGYENLEG</p><p class="balv" data-bal="9734">3 450 Ft</p></div>
-          <div class="ring-wrap">
-            <svg width="92" height="92" viewBox="0 0 92 92">
-              <defs><linearGradient id="rgp1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="7"/>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rgp1)" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="152.8" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
-            </svg>
-            <div class="ring-center"><b>1,8</b><span>/ 5 GB</span></div>
-          </div>
+        <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detailmob2"></label>
+          <div class="itile"><i class="ti ti-device-mobile"></i></div>
+          <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
+          <i class="ti ti-chevron-right chev"></i>
         </div>
-        <div class="cactions"><label class="cbtn" for="s-topup1"><span class="c"><i class="ti ti-plus"></i></span>Egyenlegfeltöltés</label><label class="cbtn" for="s-tarifch3"><span class="c"><i class="ti ti-arrow-up"></i></span>Havidíjasra váltás</label></div>
-      </div>
-      <div class="hero pcard"><label class="herocover" for="s-detailpre2"></label>
-        <div class="hero-row"><span class="plan-tag"><span class="pip"></span>XS</span><span class="g5">Feltöltőkártyás</span></div>
-        <p class="num">+36 20 290 8812</p>
-        <p class="plan-sub">Havidíj nélkül</p>
-        <div class="hero-bottom">
-          <div class="balbox"><p class="ball">EGYENLEG</p><p class="balv" data-bal="8812">1 280 Ft</p></div>
-          <div class="ring-wrap">
-            <svg width="92" height="92" viewBox="0 0 92 92">
-              <defs><linearGradient id="rgp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DAFF6E"/><stop offset="1" stop-color="#A4D82E"/></linearGradient></defs>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="7"/>
-              <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rgp2)" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="167.1" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 6px rgba(198,242,78,.6))"/>
-            </svg>
-            <div class="ring-center"><b>0,6</b><span>/ 2 GB</span></div>
-          </div>
+        <div class="sub" style="position:relative;" data-sub="mob-9734"><label class="subcover" for="s-detailpre1"></label>
+          <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+          <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
+          <i class="ti ti-chevron-right chev"></i>
         </div>
-        <div class="cactions"><label class="cbtn" for="s-topup2"><span class="c"><i class="ti ti-plus"></i></span>Egyenlegfeltöltés</label><label class="cbtn" for="s-tarifch4"><span class="c"><i class="ti ti-arrow-up"></i></span>Havidíjasra váltás</label></div>
+        <div class="sub" style="position:relative;" data-sub="mob-8812"><label class="subcover" for="s-detailpre2"></label>
+          <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+          <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
       </div>
-
     </div>
-    <div class="hdots"><span class="on"></span><span></span><span></span><span></span></div>
+
+    <div class="acc">
+      <div class="acc-head" data-acc><span class="at">Otthoni szolgáltatások <small>1</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
+      <div class="acc-body">
+        <div class="sub" data-goto="detail-net" style="position:relative;" data-sub="net"><label class="subcover" for="s-detail-net"></label>
+          <div class="itile blue"><i class="ti ti-router"></i></div>
+          <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+          <i class="ti ti-chevron-right chev"></i>
+        </div>
+      </div>
+    </div>
+
+
+      </div>
+    </div>
+
+    <div class="acc accouter">
+      <div class="acc-head accotop"><span class="at">Eszközeim</span><label class="acclink" for="s-alldev">Összes</label></div>
+      <div class="acc-body">
+    <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
+      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">Hátralévő részletek · 12 hónap</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet2"></label>
+      <div class="itile blue"><i class="ti ti-device-watch"></i></div>
+      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">Hátralévő részletek · 8 hónap</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet3"></label>
+      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
+      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">Kifizetve</p></div>
+      <i class="ti ti-chevron-right chev"></i>
+    </div>
+      </div>
+    </div>
 
     <div class="sec"><h3>Neked ajánljuk</h3></div>
     <div class="rcar">
@@ -1670,59 +1690,6 @@
           <p class="bbt">HONOR 400 Pro<br>ajándék gyorstöltővel</p>
           <p class="bbp">199 990 Ft<span>vagy 8 330 Ft / hó</span></p>
         </div>
-      </div>
-    </div>
-
-    <div class="acc accouter">
-      <div class="acc-head accotop"><span class="at">Előfizetéseim</span><label class="acclink" for="s-allsubs">Összes</label></div>
-      <div class="acc-body">
-    <label class="addsvc" for="s-addservice" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új szolgáltatás vásárlása</label>
-
-    <div class="acc">
-      <div class="acc-head" data-acc><span class="at">Mobil szolgáltatások <small>4</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
-      <div class="acc-body">
-        <div class="sub subgroup" data-sub="mob-7430">
-          <label class="subhead" for="s-detail">
-            <div class="itile"><i class="ti ti-device-mobile"></i></div>
-            <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Havidíjas · Prime Plus 2024</p></div>
-            <i class="ti ti-chevron-right chev"></i>
-          </label>
-          <div class="subrel" data-related="mob-7430">
-            <span class="relanchor" data-relhead="mob-7430" hidden></span>
-            <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-            <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max<span class="sssub">Streaming</span></span><i class="ti ti-chevron-right chev"></i></label>
-          </div>
-        </div>
-        <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detailmob2"></label>
-          <div class="itile"><i class="ti ti-device-mobile"></i></div>
-          <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Havidíjas · Prime Plus 2025</p></div>
-          <i class="ti ti-chevron-right chev"></i>
-        </div>
-        <div class="sub" style="position:relative;" data-sub="mob-9734"><label class="subcover" for="s-detailpre1"></label>
-          <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-          <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
-          <i class="ti ti-chevron-right chev"></i>
-        </div>
-        <div class="sub" style="position:relative;" data-sub="mob-8812"><label class="subcover" for="s-detailpre2"></label>
-          <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-          <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
-          <i class="ti ti-chevron-right chev"></i>
-        </div>
-      </div>
-    </div>
-
-    <div class="acc">
-      <div class="acc-head" data-acc><span class="at">Otthoni szolgáltatások <small>1</small></span><i class="ti ti-chevron-down achev" style="transform:rotate(180deg)"></i></div>
-      <div class="acc-body">
-        <div class="sub" data-goto="detail-net" style="position:relative;" data-sub="net"><label class="subcover" for="s-detail-net"></label>
-          <div class="itile blue"><i class="ti ti-router"></i></div>
-          <div class="meta"><p class="t" style="font-size:13px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
-          <i class="ti ti-chevron-right chev"></i>
-        </div>
-      </div>
-    </div>
-
-
       </div>
     </div>
 
@@ -5664,9 +5631,10 @@
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
-    <label class="nitem" for="s-allsubs"><i class="ti ti-device-mobile"></i>Előfizetéseim</label>
-    <label class="nitem" for="s-alldev"><i class="ti ti-devices"></i>Készülékeim</label>
-    <label class="nitem" for="s-account"><i class="ti ti-user"></i>Profilom</label>
+    <label class="nitem" for="s-billing"><i class="ti ti-wallet"></i>Pénzügyek</label>
+    <label class="nitem" for="s-addservice"><i class="ti ti-shopping-cart"></i>Vásárlás</label>
+    <label class="nitem" for="s-fun"><i class="ti ti-gift"></i>Bónusz</label>
+    <label class="nitem" for="s-account"><i class="ti ti-user"></i>Profil</label>
   </div>
 
 
@@ -5713,6 +5681,15 @@
       <p class="wips">Add meg ezt a kódot a szolgáltatás appjában vagy weboldalán az aktiváláshoz.</p>
       <div class="codebox"><span id="codeval">----</span></div>
       <button class="wipb" type="button">Bezárás</button>
+    </div>
+  </div>
+  <div class="wip" id="primpick">
+    <div class="wipcard">
+      <span class="wipic"><i class="ti ti-star"></i></span>
+      <p class="wipt">Elsődleges előfizetés</p>
+      <p class="wips">Válaszd ki, melyik mobil-előfizetésed jelenjen meg elsőként a kezdőlapon.</p>
+      <div class="primopts"></div>
+      <button class="wipb" type="button" data-primsave>Mentés</button>
     </div>
   </div>
   <div class="wip" id="wip">
@@ -6104,7 +6081,7 @@
     function recount(){
       all('.acc-head .at small').forEach(function(sm){
         var body=sm.closest('.acc-head').nextElementSibling; if(!body) return;
-        sm.textContent = body.querySelectorAll(':scope > .sub').length;
+        sm.textContent = body.querySelectorAll(':scope > .sub, :scope > .primbox > .sub').length;
       });
     }
     function addRow(anchorSel, pos, subId, html){
@@ -6250,6 +6227,39 @@
 })();
 </script>
 <script>
+/* home: choose which mobile subscription is framed as the primary one */
+(function(){
+  var modal = document.getElementById('primpick');
+  var box = document.querySelector('[data-screen="home"] .primbox');
+  if (!modal || !box) return;
+  var list = box.parentNode, opts = modal.querySelector('.primopts');
+  function subs(){ return Array.prototype.slice.call(list.querySelectorAll('.sub[data-sub^="mob-"]')); }
+  function txt(el, sel){ var e = el.querySelector(sel); return e ? e.textContent.trim() : ''; }
+  document.addEventListener('click', function(e){
+    if (!e.target.closest || !e.target.closest('[data-primedit]')) return;
+    var cur = box.querySelector('.sub');
+    opts.innerHTML = subs().map(function(sb){
+      var id = sb.getAttribute('data-sub');
+      return '<label class="primopt"><input type="radio" name="primsub" value="'+id+'"'+(sb===cur?' checked':'')+'>'
+           + '<span><b>'+txt(sb,'.meta .t')+'</b><small>'+txt(sb,'.meta .s')+'</small></span></label>';
+    }).join('');
+    modal.classList.add('on');
+  });
+  modal.addEventListener('click', function(e){
+    if (e.target === modal) { modal.classList.remove('on'); return; }
+    if (!e.target.closest('[data-primsave]')) return;
+    var sel = opts.querySelector('input:checked');
+    var pick = sel && list.querySelector('.sub[data-sub="'+sel.value+'"]');
+    var cur = box.querySelector('.sub');
+    if (pick && pick !== cur){
+      if (cur) list.insertBefore(cur, box.nextSibling);
+      box.appendChild(pick);
+    }
+    modal.classList.remove('on');
+  });
+})();
+</script>
+<script>
 (function(){
   var modal = document.getElementById('wip');
   if (!modal) return;
@@ -6260,7 +6270,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-primedit],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
