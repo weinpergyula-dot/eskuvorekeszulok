@@ -343,6 +343,7 @@
   #s-buynew:checked ~ [data-screen="buy-new"],
   #s-xsvc:checked ~ [data-screen="xsvc"],
   #s-xsmine:checked ~ [data-screen="xs-mine"],
+  #s-primedit:checked ~ [data-screen="prim-edit"],
   #s-newcust:checked ~ [data-screen="newcust"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
@@ -1983,6 +1984,32 @@
   .hns{ font-weight:300; }
   [data-screen="home"] .sub .meta .s,
   [data-screen="home"] .substrm .ssn{ font-weight:300; }
+
+  /* ===== Személyreszabás: primary subscription ===== */
+  .pescreen{ background:#FFFFFF; padding-bottom:24px !important; }
+  .pescreen .dhead .icon-btn:last-child i{ font-size:26px; }
+  .peh{ margin:22px 0 8px; font-family:'Yettel'; font-size:15px; font-weight:700; color:var(--navy); }
+  .pes{ margin:0 0 4px; font-size:12px; line-height:1.4; color:var(--navy); }
+  .peopts{ display:flex; flex-direction:column; gap:10px; }
+  .peopt{ display:flex; align-items:center; gap:14px; padding:14px 14px; border:2px solid #E3E8EE; border-radius:12px; cursor:pointer; }
+  .peopt input{ display:none; }
+  .peopt:has(input:checked){ border-color:var(--navy); background:#F1F9FD; }
+  .peic{ width:40px; height:40px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#C9DDE8; }
+  .peic i{ font-size:20px; color:var(--navy); }
+  .petx{ flex:1; min-width:0; }
+  .petx small{ display:block; font-size:11.5px; font-weight:300; color:var(--navy); }
+  .petx b{ display:block; font-size:14px; font-weight:700; color:var(--navy); }
+  .pechk{ display:none; width:22px; height:22px; border-radius:50%; background:var(--navy); align-items:center; justify-content:center; }
+  .pechk i{ font-size:14px; color:#fff; }
+  .peopt:has(input:checked) .pechk{ display:flex; }
+  .petip{ display:flex; gap:12px; margin-top:22px; padding:16px; border-radius:10px; background:#DCEFFC; }
+  .petip > i{ font-size:22px; color:#3D8DE0; }
+  .petip b{ display:block; font-size:12px; font-weight:700; color:var(--navy); }
+  .petip p{ margin:4px 0 0; font-size:12px; line-height:1.4; color:var(--navy); }
+  .pesave{ display:block; position:sticky; bottom:0; margin-top:40px; padding:15px; border-radius:999px; background:var(--navy); color:#fff; text-align:center; font-weight:700; font-size:14px; cursor:pointer; }
+  .pesave.off{ background:#CDD4DC; color:#8592A6; pointer-events:none; }
+  .pescreen .peopts{ min-height:0; }
+  .pescreen .petip{ margin-bottom:calc(812px - 640px); }
 </style>
 </head>
 <body>
@@ -2077,6 +2104,7 @@
   <input class="rt" type="radio" name="nav" id="s-buynew">
   <input class="rt" type="radio" name="nav" id="s-xsvc">
   <input class="rt" type="radio" name="nav" id="s-xsmine">
+  <input class="rt" type="radio" name="nav" id="s-primedit">
   <input class="rt" type="radio" name="nav" id="s-newcust">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
@@ -6351,6 +6379,21 @@
     </div>
   </div>
 
+  <!-- ============= SZEMÉLYRESZABÁS: ELSŐDLEGES ELŐFIZETÉS ============= -->
+  <div class="screen pescreen" data-screen="prim-edit" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Személyreszabás</span>
+      <div class="icon-btn"><i class="ti ti-message-chatbot"></i></div>
+    </div>
+    <p class="peh">Elsődleges előfizetésed</p>
+    <p class="pes">Ennek az előfizetésnek látod az egyenlegét a nyitóoldalon, és minden olyan funkciót, ami ehhez az előfizetéshez kötött.</p>
+    <p class="peh">Szolgáltatásaid</p>
+    <div class="peopts" data-peopts></div>
+    <div class="petip"><i class="ti ti-bulb"></i><div><b>Hiányolsz valamit?</b><p>Ha nem látod itt valamelyik szolgáltatásodat, akkor azt nem lehet elsődlegesnek választani</p></div></div>
+    <label class="pesave off" for="s-home" data-pesave>Mentés</label>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
@@ -6414,15 +6457,6 @@
       <p class="xsq">Melyik előfizetésedhez vásárolnál extra szolgáltatást?</p>
       <div class="xsopts"></div>
       <button type="button" class="xsgo" data-xsgo>Tovább</button>
-    </div>
-  </div>
-  <div class="wip" id="primpick">
-    <div class="wipcard">
-      <span class="wipic"><i class="ti ti-star"></i></span>
-      <p class="wipt">Elsődleges előfizetés</p>
-      <p class="wips">Válaszd ki, melyik mobil-előfizetésed jelenjen meg elsőként a kezdőlapon.</p>
-      <div class="primopts"></div>
-      <button class="wipb" type="button" data-primsave>Mentés</button>
     </div>
   </div>
   <div class="wip" id="wip">
@@ -6967,35 +7001,36 @@
   var x = n && n.querySelector('[data-hnclose]');
   if (x) x.addEventListener('click', function(){ n.classList.add('off'); });
 })();
-/* home: choose which mobile subscription is framed as the primary one */
+/* home: "Személyreszabás" screen picks the primary subscription framed at the top of Előfizetéseim */
 (function(){
-  var modal = document.getElementById('primpick');
+  var sc = document.querySelector('[data-screen="prim-edit"]');
   var box = document.querySelector('[data-screen="home"] .primbox');
-  if (!modal || !box) return;
-  var list = box.parentNode, opts = modal.querySelector('.primopts');
-  function subs(){ return Array.prototype.slice.call(list.querySelectorAll('.sub[data-sub^="mob-"]')); }
+  if (!sc || !box) return;
+  var list = box.parentNode, opts = sc.querySelector('[data-peopts]'), save = sc.querySelector('[data-pesave]');
+  function subs(){ return Array.prototype.slice.call(list.querySelectorAll('.sub[data-sub]:not(.subpend)')).filter(function(sb){ return /^(mob-|net)/.test(sb.getAttribute('data-sub')); }); }
   function txt(el, sel){ var e = el.querySelector(sel); return e ? e.textContent.trim() : ''; }
+  function curId(){ var c = box.querySelector('.sub'); return c ? c.getAttribute('data-sub') : ''; }
+  function upd(){ var v = opts.querySelector('input:checked'); save.classList.toggle('off', !v || v.value === curId()); }
   document.addEventListener('click', function(e){
     if (!e.target.closest || !e.target.closest('[data-primedit]')) return;
-    var cur = box.querySelector('.sub');
+    var cur = curId();
     opts.innerHTML = subs().map(function(sb){
-      var id = sb.getAttribute('data-sub');
-      return '<label class="primopt"><input type="radio" name="primsub" value="'+id+'"'+(sb===cur?' checked':'')+'>'
-           + '<span><b>'+txt(sb,'.meta .t')+'</b><small>'+txt(sb,'.meta .s')+'</small></span></label>';
+      var id = sb.getAttribute('data-sub'), ic = sb.querySelector('.itile i');
+      return '<label class="peopt"><input type="radio" name="primsub" value="'+id+'"'+(id===cur?' checked':'')+'>'
+           + '<span class="peic"><i class="'+(ic ? ic.className : 'ti ti-phone-call')+'"></i></span>'
+           + '<span class="petx"><small>'+txt(sb,'.meta .s')+'</small><b>'+txt(sb,'.meta .t')+'</b></span><span class="pechk"><i class="ti ti-check"></i></span></label>';
     }).join('');
-    modal.classList.add('on');
+    upd();
+    var r = document.getElementById('s-primedit'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
   });
-  modal.addEventListener('click', function(e){
-    if (e.target === modal) { modal.classList.remove('on'); return; }
-    if (!e.target.closest('[data-primsave]')) return;
+  opts.addEventListener('change', upd);
+  save.addEventListener('click', function(e){
     var sel = opts.querySelector('input:checked');
     var pick = sel && list.querySelector('.sub[data-sub="'+sel.value+'"]');
     var cur = box.querySelector('.sub');
-    if (pick && pick !== cur){
-      if (cur) list.insertBefore(cur, box.nextSibling);
-      box.appendChild(pick);
-    }
-    modal.classList.remove('on');
+    if (!pick || pick === cur){ e.preventDefault(); return; }
+    if (cur) list.insertBefore(cur, box.nextSibling);
+    box.appendChild(pick);
   });
 })();
 </script>
