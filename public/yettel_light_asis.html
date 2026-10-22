@@ -341,6 +341,7 @@
   #s-tshop:checked ~ [data-screen="tab-shop"],
   #s-tfin:checked ~ [data-screen="tab-fin"],
   #s-tprof:checked ~ [data-screen="tab-prof"],
+  #s-qedit:checked ~ [data-screen="quick-edit"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
@@ -1695,6 +1696,37 @@
   [data-screen="home"] .primbox .sub{ box-shadow:none; background:none; }
   [data-screen="home"] .primhead{ margin:0 12px; padding:8px 12px; border-radius:8px; background:#E8ECF1; }
   [data-screen="home"] .primt{ font-size:12px; line-height:20px; font-weight:700; }
+
+  /* ===== Gyors elérés tweaks ===== */
+  [data-screen="home"] .qtile span{ font-weight:300; }
+  [data-screen="home"] .accouter{ margin-top:12px; }
+  /* usage values separated by a thin vertical rule */
+  .subuse .uv b + b{ padding-left:16px; border-left:1px solid #C9D1DC; }
+  /* OtthonNet details: tile icons centred above their labels */
+  .ntile .nic{ align-self:center; }
+
+  /* ===== Személyre szabás (quick tile editor) ===== */
+  .qescreen{ background:#FFFFFF; padding-bottom:24px !important; }
+  .qehead{ display:flex; align-items:baseline; justify-content:space-between; margin:18px 0 14px; }
+  .qet{ margin:0; font-family:'Yettel'; font-size:14px; font-weight:700; color:var(--navy); }
+  .qecount{ margin:0; font-size:12px; color:var(--navy); }
+  .qeprev{ display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin:0 0 18px; }
+  .qeprev .qtile{ border:2px solid #E3E8EE; box-shadow:none; padding:9px 4px 8px; gap:5px; border-radius:16px; }
+  .qeprev .qtile:hover{ transform:none; box-shadow:none; }
+  .qeprev .qic{ width:auto; height:28px; }
+  .qeprev .qic i{ font-size:24px; color:var(--navy); }
+  .qeprev .qtile span{ font-size:10px; font-weight:300; color:var(--navy); text-align:center; line-height:1.2; }
+  .qelist{ display:flex; flex-direction:column; }
+  .qerow{ display:flex; align-items:center; justify-content:space-between; padding:16px 0; border-bottom:1px solid #E3E8EE; cursor:pointer; }
+  .qerow:last-child{ border-bottom:none; }
+  .qerow span{ font-size:14px; color:var(--navy); }
+  .qerow:has(input:not(:checked)) span{ color:var(--low); }
+  .qerow input{ appearance:none; -webkit-appearance:none; margin:0; width:20px; height:20px; border-radius:5px; border:1.5px solid var(--low); background:#FFFFFF; cursor:pointer; }
+  .qerow input:checked{ background:#0C1740; border-color:#0C1740; }
+  .qerow input:disabled{ cursor:not-allowed; }
+  .qerow:has(input:disabled){ cursor:not-allowed; }
+  .qesave{ display:block; position:sticky; bottom:0; margin-top:48px; padding:14px; border-radius:999px; background:#0C1740; color:#fff; text-align:center; font-weight:700; font-size:14px; cursor:pointer; }
+  .qesave.off{ background:#D3D9E0; color:var(--mid); pointer-events:none; }
 </style>
 </head>
 <body>
@@ -1787,6 +1819,7 @@
   <input class="rt" type="radio" name="nav" id="s-tshop">
   <input class="rt" type="radio" name="nav" id="s-tfin">
   <input class="rt" type="radio" name="nav" id="s-tprof">
+  <input class="rt" type="radio" name="nav" id="s-qedit">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
@@ -1880,8 +1913,8 @@
       <div class="hnrow2"><p class="hns">1 számla vár befizetésre</p><label class="hnbtn" for="s-billing">Befizetem</label></div>
     </div>
 
-    <div class="qedit"><span class="hst">Gyors elérés</span><span class="link">Szerkesztés</span></div>
-    <div class="quick">
+    <div class="qedit"><span class="hst">Gyors elérés</span><label class="link" for="s-qedit">Szerkesztés</label></div>
+    <div class="quick" data-quick>
       <div class="qtile"><div class="qic"><i class="ti ti-parking-circle"></i></div><span>Parkolás</span></div>
       <div class="qtile"><div class="qic"><i class="ti ti-discount"></i></div><span>Kuponok</span></div>
       <label class="qtile" for="s-topup1"><div class="qic"><i class="ti ti-file-upload"></i></div><span>Kártyás feltöltés</span></label>
@@ -6003,6 +6036,27 @@
     <label class="tbout" for="s-welcome">Kijelentkezés<i class="ti ti-logout"></i></label>
   </div>
 
+  <!-- ============= GYORS ELÉRÉS: SZEMÉLYRE SZABÁS ============= -->
+  <div class="screen qescreen" data-screen="quick-edit" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Személyre szabás</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="qehead"><p class="qet">Válassz 4 funkciót!</p><p class="qecount"><span data-qcount>4</span>/4 kiválasztva</p></div>
+    <div class="quick qeprev" data-qprev></div>
+    <div class="qelist">
+      <label class="qerow"><span>Kuponok</span><input type="checkbox" value="coupon"></label>
+      <label class="qerow"><span>Parkolás</span><input type="checkbox" value="park"></label>
+      <label class="qerow"><span>Autópálya matrica</span><input type="checkbox" value="hwy"></label>
+      <label class="qerow"><span>Kártyás feltöltés</span><input type="checkbox" value="topup"></label>
+      <label class="qerow"><span>Játssz és nyerj!</span><input type="checkbox" value="fun"></label>
+      <label class="qerow"><span>Yettel TV</span><input type="checkbox" value="tv"></label>
+      <label class="qerow"><span>Speedtest</span><input type="checkbox" value="speed"></label>
+    </div>
+    <label class="qesave" for="s-home" data-qsave>Mentés</label>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
@@ -6672,6 +6726,51 @@
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape') hide();
   });
+})();
+</script>
+<script>
+/* Gyors elérés: pick 4 functions on the "Személyre szabás" screen, Mentés rebuilds the home tiles */
+(function(){
+  var DEF = {
+    coupon:{t:'Kuponok', ic:'ti-discount'},
+    park:{t:'Parkolás', ic:'ti-parking-circle'},
+    hwy:{t:'Autópálya matrica', ic:'ti-road'},
+    topup:{t:'Kártyás feltöltés', ic:'ti-file-upload', to:'s-topup1'},
+    fun:{t:'Játssz és nyerj!', ic:'ti-gift', to:'s-fun'},
+    tv:{t:'Yettel TV', ic:'ti-device-tv', to:'s-detail-tv'},
+    speed:{t:'Speedtest', ic:'ti-brand-speedtest'}
+  };
+  var saved = ['park','coupon','topup','fun'], work = saved.slice();
+  var sc = document.querySelector('[data-screen="quick-edit"]');
+  var home = document.querySelector('[data-quick]');
+  if (!sc || !home) return;
+  var boxes = Array.prototype.slice.call(sc.querySelectorAll('.qerow input'));
+  var prev = sc.querySelector('[data-qprev]'), cnt = sc.querySelector('[data-qcount]'), save = sc.querySelector('[data-qsave]');
+  function tile(k, link){
+    var d = DEF[k], inner = '<div class="qic"><i class="ti '+d.ic+'"></i></div><span>'+d.t+'</span>';
+    return (link && d.to) ? '<label class="qtile" for="'+d.to+'">'+inner+'</label>' : '<div class="qtile">'+inner+'</div>';
+  }
+  function render(){
+    boxes.forEach(function(b){ b.checked = work.indexOf(b.value) >= 0; b.disabled = !b.checked && work.length >= 4; });
+    prev.innerHTML = work.map(function(k){ return tile(k, false); }).join('');
+    cnt.textContent = work.length;
+    save.classList.toggle('off', work.length !== 4);
+  }
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      var i = work.indexOf(b.value);
+      if (b.checked && i < 0) work.push(b.value);
+      if (!b.checked && i >= 0) work.splice(i, 1);
+      render();
+    });
+  });
+  document.querySelectorAll('label[for="s-qedit"]').forEach(function(l){ l.addEventListener('click', function(){ work = saved.slice(); render(); }); });
+  save.addEventListener('click', function(e){
+    if (work.length !== 4){ e.preventDefault(); return; }
+    saved = work.slice();
+    home.innerHTML = saved.map(function(k){ return tile(k, true); }).join('');
+  });
+  render();
 })();
 </script>
 </body>
