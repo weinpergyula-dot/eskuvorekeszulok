@@ -1584,6 +1584,18 @@
   .tbgroup .tbic{ background:none; width:28px; height:28px; }
   .tbout{ display:flex; align-items:center; justify-content:center; gap:10px; margin-top:28px; font-family:'Sora'; font-size:13px; font-weight:800; color:var(--navy); cursor:pointer; }
   .tbout i{ font-size:24px; }
+
+  /* ===== hamburger menu — after the reference design ===== */
+  .menupanel{ width:80% !important; max-width:none !important; padding:0 !important; border-right:none !important; }
+  .menuhead{ display:flex; align-items:center; justify-content:space-between; padding:26px 22px 20px; border-bottom:1px solid #E3E8EE; }
+  .mhi{ margin:0; font-family:'Sora'; font-size:17px; font-weight:800; color:var(--navy); }
+  .mclose{ display:flex; cursor:pointer; }
+  .mclose i{ font-size:24px; color:var(--navy); }
+  .mlist{ display:flex; flex-direction:column; padding:14px 6px; }
+  .mfoot{ margin-top:auto; border-top:1px solid #E3E8EE; padding-bottom:22px; }
+  .menupanel .mrow{ gap:18px; padding:12px 12px; border-radius:12px; }
+  .menupanel .mrow .mi{ width:26px; text-align:center; font-size:24px; color:var(--navy); }
+  .menupanel .mrow .n{ font-size:13px; font-weight:600; color:var(--navy); }
 </style>
 </head>
 <body>
@@ -1679,34 +1691,25 @@
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
     <div class="menuhead">
-      <div class="avatar">GY</div>
-      <div class="menuwho"><p class="mn">Weinper Gyula</p><p class="me">weinper.gyula@gmail.com</p></div>
-      <label class="icon-btn" for="s-home"><i class="ti ti-x"></i></label>
+      <p class="mhi">Szia Gyula!</p>
+      <label class="mclose" for="s-home"><i class="ti ti-x"></i></label>
     </div>
-    <p class="mlab2">Fiók</p>
-    <label class="mrow" for="s-account"><span class="mic"><i class="ti ti-user"></i></span><span class="n">Fiók és személyes adatok</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="mrow" for="s-allsubs"><span class="mic"><i class="ti ti-device-mobile"></i></span><span class="n">Előfizetéseim</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="mrow" for="s-alldev"><span class="mic"><i class="ti ti-devices"></i></span><span class="n">Készülékeim</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="mrow" for="s-billing"><span class="mic"><i class="ti ti-receipt"></i></span><span class="n">Számláim és fizetés</span><i class="ti ti-chevron-right chev"></i></label>
-    <div class="mrow"><span class="mic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
-    <p class="mlab2">Vásárlás</p>
-    <label class="mrow" for="s-addservice" data-tab="ts-otthon"><span class="mic"><i class="ti ti-router"></i></span><span class="n">Otthoni szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="mrow" for="s-addservice" data-tab="ts-mobil"><span class="mic"><i class="ti ti-device-mobile"></i></span><span class="n">Mobil szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="mrow" for="s-strpick"><span class="mic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="mrow" for="s-nppick"><span class="mic"><i class="ti ti-shield-lock"></i></span><span class="n">NetPajzs</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="mrow" for="s-xdata1"><span class="mic"><i class="ti ti-database"></i></span><span class="n">Extra adatok</span><i class="ti ti-chevron-right chev"></i></label>
-    <label class="mrow" for="s-xmin"><span class="mic"><i class="ti ti-phone-plus"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
-    <div class="mrow"><span class="mic"><i class="ti ti-device-tv"></i></span><span class="n">Extra médiabox</span><i class="ti ti-chevron-right chev"></i></div>
-    <p class="mlab2">Szolgáltatások</p>
-    <label class="mrow" for="s-topup1"><span class="mic"><i class="ti ti-wallet"></i></span><span class="n">Egyenlegfeltöltés</span><i class="ti ti-chevron-right chev"></i></label>
-    <div class="mrow"><span class="mic"><i class="ti ti-parking"></i></span><span class="n">Parkolás</span><i class="ti ti-chevron-right chev"></i></div>
-    <div class="mrow"><span class="mic"><i class="ti ti-car"></i></span><span class="n">Autópályamatrica</span><i class="ti ti-chevron-right chev"></i></div>
-    <label class="mrow" for="s-fun"><span class="mic"><i class="ti ti-star"></i></span><span class="n">Élménytér</span><i class="ti ti-chevron-right chev"></i></label>
-    <p class="mlab2">Segítség</p>
-    <div class="mrow"><span class="mic"><i class="ti ti-headset"></i></span><span class="n">Ügyfélszolgálat</span><i class="ti ti-chevron-right chev"></i></div>
-    <div class="mrow"><span class="mic"><i class="ti ti-map-pin"></i></span><span class="n">Üzletkereső</span><i class="ti ti-chevron-right chev"></i></div>
-    <div class="mrow"><span class="mic"><i class="ti ti-settings"></i></span><span class="n">Beállítások</span><i class="ti ti-chevron-right chev"></i></div>
-    <label class="mout" for="s-welcome"><i class="ti ti-logout" style="font-size:17px"></i>Kijelentkezés</label>
+    <div class="mlist">
+      <label class="mrow" for="s-alldev"><i class="ti ti-device-mobile mi"></i><span class="n">Készülék</span></label>
+      <div class="mrow"><i class="ti ti-antenna mi"></i><span class="n">Hálózat</span></div>
+      <div class="mrow"><i class="ti ti-device-mobile-dollar mi"></i><span class="n">Mobilszámlás fizetés</span></div>
+      <label class="mrow" for="s-detail-net"><i class="ti ti-home-signal mi"></i><span class="n">OtthonNet</span></label>
+      <div class="mrow"><i class="ti ti-device-sim mi"></i><span class="n">Kártyás adategyeztetés</span></div>
+      <div class="mrow"><i class="ti ti-cards mi"></i><span class="n">Kártya aktiválás</span></div>
+      <label class="mrow" for="s-topup1"><i class="ti ti-file-upload mi"></i><span class="n">Kártyás feltöltés</span></label>
+      <div class="mrow"><i class="ti ti-book mi"></i><span class="n">ProSuli</span></div>
+      <div class="mrow"><i class="ti ti-building mi"></i><span class="n">Karrier</span></div>
+    </div>
+    <div class="mlist mfoot">
+      <div class="mrow"><i class="ti ti-headset mi"></i><span class="n">Kapcsolat</span></div>
+      <div class="mrow"><i class="ti ti-settings mi"></i><span class="n">Beállítások</span></div>
+      <label class="mrow" for="s-welcome"><i class="ti ti-logout mi"></i><span class="n">Kijelentkezés</span></label>
+    </div>
   </div>
 
   <!-- ============= WELCOME ============= -->
