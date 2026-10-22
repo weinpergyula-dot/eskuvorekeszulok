@@ -1674,8 +1674,8 @@
   [data-screen="home"] .top .icon-btn{ width:40px; height:40px; }
   /* section titles on home use the same heading style */
   [data-screen="home"] .hst{ font-size:14px; line-height:24px; }
-  [data-screen="home"] .qtile span{ font-size:10px; }
-  [data-screen="home"] .qtile{ padding:9px 4px 8px; gap:5px; }
+  [data-screen="home"] .qtile span{ font-size:11px; }
+  [data-screen="home"] .qtile{ padding:12px 4px 10px; gap:6px; }
   /* bottom nav: grey inactive, navy + filled active, no pill */
   .nav{ justify-content:space-between; padding:0 6px !important; }
   .nitem{ color:#8592A6 !important; font-size:11px; font-weight:500; gap:4px; }
@@ -1727,6 +1727,10 @@
   .qerow:has(input:disabled){ cursor:not-allowed; }
   .qesave{ display:block; position:sticky; bottom:0; margin-top:48px; padding:14px; border-radius:999px; background:#0C1740; color:#fff; text-align:center; font-weight:700; font-size:14px; cursor:pointer; }
   .qesave.off{ background:#D3D9E0; color:var(--mid); pointer-events:none; }
+
+  /* OtthonNet details (shares the mobile detail layout) */
+  .dtval b.dtinf{ font-size:18px; line-height:1; }
+  .dtcard > .dtrow + .dtrow{ border-top:1px solid #E3E8EE !important; }
 </style>
 </head>
 <body>
@@ -2126,56 +2130,96 @@
   </div>
 
   <!-- ============= DETAIL: OTTHONI INTERNET ============= -->
-  <div class="screen" data-screen="detail-net" style="display:none;">
+  <div class="screen dtscreen" data-screen="detail-net" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Előfizetés részletei</span>
-      <div class="icon-btn"><i class="ti ti-headset"></i></div>
+      <span class="title">Szolgáltatás részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="dtid">
+      <i class="ti ti-home-signal"></i>
+      <div class="meta"><p class="s">Otthoni Net 1000</p><p class="t">8200 Veszprém, Tölgyfa u. 4</p></div>
     </div>
 
-    <div class="planbar">
-      <div class="itile blue"><i class="ti ti-home"></i></div>
-      <div class="meta"><p class="s">Otthoni Net 1000</p><p class="t" style="font-size:14px;">Veszprém, Tölgyfa u. 4</p></div>
-      <label class="edit icon" for="s-ednet"><i class="ti ti-pencil"></i></label>
+    <div class="dtcard nkcard">
+      <div class="nkrow">
+        <input class="edfield" type="text" value="" placeholder="Nevezd el az előfizetést" data-edold="8200 Veszprém, Tölgyfa u. 4" maxlength="40">
+        <button class="nkbtn" type="button" data-edsave>Mentés</button>
+      </div>
+      <p class="nknote">Becenév nélkül a cím fogja azonosítani az előfizetést.</p>
     </div>
 
-    <!-- internet részletek (specifikáció) -->
-    <div class="speccard">
-      <div class="specrow"><p class="sl">max. letöltési sebesség</p><p class="sv">1 000 Mbit/s</p></div>
-      <div class="specrow"><p class="sl">max. feltöltési sebesség</p><p class="sv">300 Mbit/s</p></div>
-      <div class="specrow"><p class="sl">WiFi Router széria szám</p><p class="sv">YR‑300 067 402</p></div>
+    <div class="dtcard dttabcard">
+      <input class="rt" type="radio" name="dt-net" id="dt-net-a" checked>
+      <input class="rt" type="radio" name="dt-net" id="dt-net-b">
+      <div class="dttabs"><label class="dttab" for="dt-net-a">Felhasználható</label><label class="dttab" for="dt-net-b">Havi fogyasztásom</label></div>
+      <div class="dtpane dtp-a">
+        <div class="dtblk">
+          <p class="dth"><i class="ti ti-home-signal"></i>Otthoni internet</p>
+          <div class="dtval"><span>Otthoni Net 1000 belföldi adatkeret<small>Megújul: 2026.11.08.</small></span><b class="dtinf">∞</b></div>
+        </div>
+        <div class="dtblk dtline">
+          <p class="dth"><i class="ti ti-file-dollar"></i>Mobilvásárlásra felhasználható</p><b class="dtbig">0 Ft</b>
+        </div>
+      </div>
+      <div class="dtpane dtp-b">
+        <div class="dtval dtover"><span>Letöltött adat ebben a hónapban</span><b>412 GB</b></div>
+        <div class="dtval dtover"><span>Feltöltött adat ebben a hónapban</span><b>58 GB</b></div>
+        <div class="dtval dtover"><span>Átlagos letöltési sebesség</span><b>874 Mbit/s</b></div>
+      </div>
     </div>
 
-    <!-- ===== internet részletek alatti rész ===== -->
-    <div class="dsec">Kiegészítő szolgáltatások</div>
-    <div class="ntiles c2">
-      <label class="ntile" for="s-addonsvc"><span class="nic"><i class="ti ti-shopping-cart"></i></span><span>Kiegészítő vásárlás</span></label>
-      <div class="ntile"><span class="nic"><i class="ti ti-circle-check"></i></span><span>Aktív kiegészítők</span></div>
+    <div class="dtcard">
+      <p class="dtct">Extra szolgáltatások</p>
+      <div class="dtxgrid">
+        <label class="dtx" for="s-addonsvc"><span class="dtxic"><i class="ti ti-shopping-cart"></i></span>Extra vásárlás</label>
+        <div class="dtx dtxwip"><span class="dtxic"><i class="ti ti-device-mobile-plus"></i></span>Aktív extráid</div>
+      </div>
     </div>
 
-    <div class="dsec">Vedd fel velünk a kapcsolatot!</div>
-    <div class="ntiles c3">
-      <div class="ntile"><span class="nic"><i class="ti ti-map-pin"></i></span><span>Üzletkereső</span></div>
-      <div class="ntile"><span class="nic"><i class="ti ti-message-2"></i></span><span>Chat</span></div>
-      <div class="ntile"><span class="nic"><i class="ti ti-phone"></i></span><span>Hívás</span></div>
+    <div class="dtcard">
+      <p class="dtct">Kapcsolódó szolgáltatások</p>
+      <label class="dtrow" for="s-detail-tv"><i class="ti ti-device-tv dtic"></i><span class="n">Yettel TV Basic</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="dtrow" for="s-strm3"><i class="ti ti-player-play dtic"></i><span class="n">TV2 Play Premium</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="dtrow" for="s-strm3"><i class="ti ti-device-tv dtic"></i><span class="n">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
-    <div class="gcard" style="margin-top:18px;">
-      <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-checkbox"></i></span><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></div>
-      <label class="lrow" for="s-billing"><span class="sic"><i class="ti ti-file-invoice"></i></span><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></label>
-      <div class="lrow"><span class="sic"><i class="ti ti-router"></i></span><span class="n">Saját Router használata<small class="ninv">Bridge mód</small></span><i class="ti ti-chevron-right chev"></i></div>
+    <div class="dtcard dtrowcard">
+      <div class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Hozzájárulások kezelése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <div class="dsec">Kapcsolódó szolgáltatások<i class="ti ti-info-circle"></i></div>
-    <div class="gcard">
-      <label class="lrow" for="s-detail-tv"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Yettel TV Basic</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">TV2 Play Premium</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></label>
+    <div class="dtcard dtdev">
+      <p class="dtct">Készülékeid</p>
+      <label class="dtrow" for="s-devdet4"><i class="ti ti-router dtic"></i><span class="n">Wi-Fi router<small>Bérelt · YR-300 067 402</small></span><i class="ti ti-chevron-right chev"></i></label>
+      <div class="dtpromo">
+        <p class="dtps">Új mobilt szeretnél?</p>
+        <p class="dtpt">Rendelj online akár extra kedvezménnyel</p>
+        <label class="dtpbtn" for="s-devbuy">Megnézem az ajánlatokat</label>
+      </div>
     </div>
-    <p class="relmail"><i class="ti ti-mail"></i>weinper.gyula@gmail.com</p>
+
+    <div class="dtcard">
+      <p class="dtct">Tarifacsomagod</p>
+      <div class="dtplan"><i class="ti ti-file-text dtic"></i><span>Otthoni Net 1000</span></div>
+      <ul class="dtchk">
+        <li><i class="ti ti-check"></i>Korlátlan adatforgalom belföldön</li>
+        <li><i class="ti ti-check"></i>1000 Mbit/s letöltés, 300 Mbit/s feltöltés</li>
+        <li><i class="ti ti-check"></i>Wi-Fi router bérlet</li>
+      </ul>
+      <p class="dtfine">A leírás tájékoztató jellegű. Egyedi tarifaelemeket nem jelenítünk meg, csak a csomagod általános leírását.</p>
+    </div>
+
+    <div class="dtcard">
+      <p class="dtct">Számlázás</p>
+      <div class="dtkv"><span>Fordulónap</span><b>2026.11.08.</b></div>
+      <div class="dtkv"><span>Így szoktad fizetni a számlád:</span><b>banki átutalás</b></div>
+      <div class="dtkv"><span>Így kéred a számlád:</span><b>elektronikus</b></div>
+      <div class="dtkv"><span>Értesítési email cím</span><b>weinper.gyula@gmail.com</b></div>
+      <div class="dtkv"><span>Értesítési szám</span><b>+36 20 290 7430</b></div>
+    </div>
 
     <button class="cancel" data-cancel="net net-new netpajzs"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+
   </div>
 
   <!-- ============= DETAIL: TV ============= -->
@@ -4606,7 +4650,7 @@
       <div class="meta"><p class="s">Otthoni Net 1000</p><p class="t" style="font-size:14px;">Veszprém, Tölgyfa u. 4</p></div>
     </div>
     <p class="mlab">Szolgáltatás elnevezése</p>
-    <input class="edfield" type="text" value="Veszprém, Tölgyfa u. 4" data-edold="Veszprém, Tölgyfa u. 4" maxlength="40">
+    <input class="edfield" type="text" value="Veszprém, Tölgyfa u. 4" data-edold="8200 Veszprém, Tölgyfa u. 4" maxlength="40">
     <p class="ednote">A telepítési cím megváltoztatásához átköltözést kell igényelned az ügyfélszolgálaton.</p>
     <label class="acont" for="s-detail-net" data-edsave>Mentés</label>
     <label class="gbtn" for="s-detail-net" data-edcancel>Mégse</label>
@@ -4623,7 +4667,7 @@
       <div class="meta"><p class="s">TV Prémium</p><p class="t" style="font-size:14px;">YettelTV</p></div>
     </div>
     <p class="mlab">Szolgáltatás elnevezése</p>
-    <input class="edfield" type="text" value="Veszprém, Tölgyfa u. 4" data-edold="Veszprém, Tölgyfa u. 4" maxlength="40">
+    <input class="edfield" type="text" value="Veszprém, Tölgyfa u. 4" data-edold="8200 Veszprém, Tölgyfa u. 4" maxlength="40">
     <p class="ednote">A telepítési cím megváltoztatásához átköltözést kell igényelned az ügyfélszolgálaton.</p>
     <label class="acont" for="s-detail-tv" data-edsave>Mentés</label>
     <label class="gbtn" for="s-detail-tv" data-edcancel>Mégse</label>
