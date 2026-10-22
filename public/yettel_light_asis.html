@@ -1455,6 +1455,89 @@
   #s-account:checked ~ .nav .nitem[for="s-account"]::before{
     background:rgba(20,36,94,.08) !important; border-color:transparent !important; box-shadow:none !important;
   }
+
+  /* ============================================================
+     MOBILE SUBSCRIPTION DETAIL — after the reference design
+     ============================================================ */
+  .dtscreen .dhead{ position:relative; z-index:2; margin-bottom:0; justify-content:space-between; }
+  .dtscreen .dhead .title{ font-size:20px; }
+  .dtid{ display:flex; align-items:center; gap:16px; margin:-28px -20px 18px; padding:40px 36px 16px; background:#FFFFFF; border-radius:0 0 26px 26px; }
+  .dtid > i{ font-size:28px; color:var(--navy); }
+  .dtid .meta .s{ margin:0; font-size:14px; color:var(--navy); }
+  .dtid .meta .t{ margin:1px 0 0; font-family:'Sora'; font-size:17px; font-weight:800; color:var(--navy); }
+  .dtcard{ background:#FFFFFF; border-radius:22px; padding:18px 16px; margin-bottom:16px; }
+  .dtct{ margin:0 0 14px; font-family:'Sora'; font-size:15px; font-weight:800; color:var(--navy); }
+  /* nickname */
+  .nkrow{ display:flex; align-items:center; gap:12px; }
+  .nkrow .edfield{ flex:1; min-width:0; padding:14px 16px; border:2px solid #E3E8EE; border-radius:14px; font-size:14px; font-weight:500; }
+  .nkbtn{ flex-shrink:0; align-self:flex-start; margin-top:2px; padding:10px 22px; border:none; border-radius:999px; font-family:'Manrope'; font-weight:700; font-size:13px; cursor:pointer;
+          background:#0C1740; color:#fff; }
+  .nkrow:has(.edfield:placeholder-shown) .nkbtn{ background:#D3D9E0; color:var(--mid); pointer-events:none; }
+  .nknote{ margin:10px 0 0; font-size:12.5px; line-height:1.4; color:var(--mid); }
+  /* usage tabs */
+  .dttabcard{ padding:0; overflow:hidden; }
+  .dttabs{ display:flex; border-bottom:1px solid #E3E8EE; }
+  .dttab{ flex:1; text-align:center; padding:18px 6px 16px; font-family:'Sora'; font-size:14px; font-weight:700; color:var(--mid); cursor:pointer; position:relative; }
+  .dttab::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:4px; border-radius:4px 4px 0 0; background:transparent; }
+  .dtpane{ display:none; padding:4px 16px 16px; }
+  .dttabcard > input:nth-of-type(1):checked ~ .dtp-a,
+  .dttabcard > input:nth-of-type(2):checked ~ .dtp-b{ display:block; }
+  .dttabcard > input:nth-of-type(1):checked ~ .dttabs .dttab:nth-child(1),
+  .dttabcard > input:nth-of-type(2):checked ~ .dttabs .dttab:nth-child(2){ color:var(--navy); }
+  .dttabcard > input:nth-of-type(1):checked ~ .dttabs .dttab:nth-child(1)::after,
+  .dttabcard > input:nth-of-type(2):checked ~ .dttabs .dttab:nth-child(2)::after{ background:#0C1740; }
+  .dtblk{ padding:16px 0; border-bottom:1px solid #E3E8EE; }
+  .dtblk:last-child{ border-bottom:none; padding-bottom:4px; }
+  .dth{ display:flex; align-items:center; gap:14px; margin:0 0 12px; font-family:'Sora'; font-size:14.5px; font-weight:700; color:var(--navy); }
+  .dth i{ font-size:24px; }
+  .dtval{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
+  .dtval span{ font-size:14.5px; font-weight:500; color:var(--navy); line-height:1.3; }
+  .dtval small{ display:block; margin-top:2px; font-size:11.5px; color:var(--navy); font-weight:400; }
+  .dtval b{ flex-shrink:0; font-size:12.5px; font-weight:600; color:var(--navy); }
+  .dtline{ display:flex; align-items:center; justify-content:space-between; }
+  .dtline .dth{ margin:0; }
+  .dtbig{ font-size:15px; font-weight:600; color:var(--navy); }
+  .dtp-b{ padding-top:18px; }
+  .dtp-b .stat{ margin-bottom:16px; }
+  .dtover{ padding-top:8px; border-top:1px solid #E3E8EE; }
+  /* extras */
+  .dtxgrid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .dtx{ display:flex; flex-direction:column; align-items:center; gap:12px; padding:14px 8px 16px; border:2px solid #E3E8EE; border-radius:18px; font-size:13px; font-weight:500; color:var(--navy); cursor:pointer; }
+  .dtxic{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--icb); }
+  .dtxic i{ font-size:22px; color:var(--navy); }
+  /* family offer */
+  .dtfamh{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  .dtfamh .dtct{ margin:0; }
+  .dtlink{ flex-shrink:0; font-size:12.5px; color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  .dtsub{ margin:4px 0 14px; font-size:13px; color:var(--navy); }
+  .dtphones{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .dtph{ display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; font-size:12px; line-height:1.35; color:var(--navy); cursor:pointer; }
+  .dtphimg{ width:100%; height:104px; background-size:contain; background-repeat:no-repeat; background-position:center; }
+  /* rows */
+  .dtrowcard{ padding:4px 16px; }
+  .dtrow{ display:flex; align-items:center; gap:16px; padding:14px 0; border:none !important; cursor:pointer; }
+  .dtrow .n{ flex:1; font-size:13.5px; font-weight:600; color:var(--navy); }
+  .dtrow .n small{ display:block; font-weight:400; font-size:11.5px; color:var(--mid); margin-top:2px; }
+  .dtic{ font-size:26px; color:var(--navy); }
+  .dtrow .chev{ color:var(--mid); }
+  /* devices promo */
+  .dtdev{ padding:18px 0 0; overflow:hidden; }
+  .dtdev .dtct{ padding:0 16px; }
+  .dtdev .dtrow{ padding:6px 16px 16px; }
+  .dtpromo{ background:#C5DEE8; padding:18px 16px 20px; }
+  .dtps{ margin:0 0 8px; font-size:12.5px; color:var(--navy); }
+  .dtpt{ margin:0 0 16px; font-family:'Sora'; font-size:20px; font-weight:800; line-height:1.25; color:var(--navy); }
+  .dtpbtn{ display:inline-block; padding:13px 24px; border-radius:999px; background:#0C1740; color:#fff; font-weight:700; font-size:13.5px; cursor:pointer; }
+  /* plan + billing */
+  .dtplan{ display:flex; align-items:center; gap:16px; padding-bottom:14px; border-bottom:1px solid #E3E8EE; font-size:13.5px; font-weight:600; color:var(--navy); }
+  .dtchk{ list-style:none; margin:14px 0 10px; padding:0; }
+  .dtchk li{ display:flex; align-items:center; gap:18px; padding:6px 0; font-size:13px; font-weight:500; color:var(--navy); }
+  .dtchk i{ font-size:20px; color:var(--navy); }
+  .dtfine{ margin:0; font-size:10.5px; line-height:1.45; color:var(--mid); }
+  .dtkv{ margin-bottom:14px; }
+  .dtkv:last-child{ margin-bottom:0; }
+  .dtkv span{ display:block; font-size:12.5px; color:var(--mid); }
+  .dtkv b{ display:block; margin-top:2px; font-size:13px; font-weight:600; color:var(--navy); }
 </style>
 </head>
 <body>
@@ -1747,126 +1830,100 @@
   </div>
 
   <!-- ============= DETAIL ============= -->
-  <div class="screen" data-screen="detail" style="display:none;">
-
+  <div class="screen dtscreen" data-screen="detail" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Szolgáltatás részletei</span>
-      <div class="icon-btn"><i class="ti ti-headset"></i></div>
+      <div style="width:42px"></div>
+    </div>
+    <div class="dtid">
+      <i class="ti ti-phone-call"></i>
+      <div class="meta"><p class="s">Prime Plus 2024</p><p class="t">+36 20 290 7430</p></div>
     </div>
 
-    <!-- ===== Fejkártya: kicsoda + mit fizet + mennyi maradt — nyitogatás nélkül ===== -->
-    <div class="sdsum">
-      <div class="sdid">
-        <div class="itile"><i class="ti ti-device-mobile"></i></div>
-        <div class="meta"><p class="s">Prime Plus 2024</p><p class="t">+36 20 290 7430</p></div>
-        <label class="edit icon" for="s-edmob"><i class="ti ti-pencil"></i></label>
+    <div class="dtcard nkcard">
+      <div class="nkrow">
+        <input class="edfield" type="text" value="" placeholder="Nevezd el az előfizetést" data-edold="+36 20 290 7430" maxlength="40">
+        <button class="nkbtn" type="button" data-edsave>Mentés</button>
       </div>
-      <div class="sdbody">
-      <div class="sdtop">
-        <div>
-          <p class="sdfee">7 990 Ft <span>/ hó</span></p>
-          <p class="sdren"><i class="ti ti-calendar-event"></i>Megújul · 2026. 07. 31.</p>
-        </div>
-        <span class="g5">Havidíjas</span>
-      </div>
+      <p class="nknote">Becenév nélkül a telefonszám fogja azonosítani az előfizetést.</p>
+    </div>
 
-      <div class="sdusage">
-        <div class="ring-wrap">
-          <svg width="92" height="92" viewBox="0 0 92 92">
-            <circle cx="46" cy="46" r="38" fill="none" stroke="#E4E8F1" stroke-width="7"/>
-            <circle cx="46" cy="46" r="38" fill="none" stroke="url(#rg)" data-dring="7430" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="90.7" transform="rotate(-90 46 46)"/>
-          </svg>
-          <div class="ring-center"><b>12,4</b><span data-dtot="7430">/ 20 GB</span></div>
+    <div class="dtcard dttabcard">
+      <input class="rt" type="radio" name="dt-7430" id="dt-7430-a" checked>
+      <input class="rt" type="radio" name="dt-7430" id="dt-7430-b">
+      <div class="dttabs"><label class="dttab" for="dt-7430-a">Felhasználható</label><label class="dttab" for="dt-7430-b">Havi fogyasztásom</label></div>
+      <div class="dtpane dtp-a">
+        <div class="dtblk">
+          <p class="dth"><i class="ti ti-device-mobile-plus"></i>Belföldi és EU net</p>
+          <div class="dtval"><span>Prime Plus 2024 adatkeret<small>Megújul: 2026.07.31.</small></span><b>7,6 GB</b></div>
         </div>
-        <div class="stats">
-          <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">210<span class="u"> / 300</span></span></div><div class="track"><div class="fill" style="width:70%"></div></div></div>
-          <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">74<span class="u"> / 100</span></span></div><div class="track"><div class="fill amber" style="width:74%"></div></div></div>
+        <div class="dtblk">
+          <p class="dth"><i class="ti ti-device-mobile"></i>Lebeszélhető</p>
+          <div class="dtval"><span>Perc lebeszélhetőség belföldön és 1. roaming díjzónában<small>Megújul: 2026.07.31.</small></span><b>90 perc</b></div>
+        </div>
+        <div class="dtblk dtline">
+          <p class="dth"><i class="ti ti-file-dollar"></i>Mobilvásárlásra felhasználható</p><b class="dtbig">5000 Ft</b>
         </div>
       </div>
-
-      <div class="sdfoot">
-        <div class="krow"><span class="k">Csomagon felüli forgalom</span><span class="v strong">1 240 Ft</span></div>
-        <div class="stat"><div class="lab"><span class="k">EU-s adatroaming</span><span class="v">4,2<span class="u"> / 6,4 GB</span></span></div><div class="track"><div class="fill" style="width:66%"></div></div></div>
-      </div>
-
-      <div class="cactions">
-        <label class="cbtn" for="s-xdata1"><span class="c"><i class="ti ti-plus"></i></span>Extra adat</label>
-        <label class="cbtn" for="s-tarifch1"><span class="c"><i class="ti ti-arrow-up"></i></span>Csomagváltás</label>
-      </div>
+      <div class="dtpane dtp-b">
+        <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">12,4<span class="u" data-dtot="7430"> / 20 GB</span></span></div><div class="track"><div class="fill" data-dfill="7430" style="width:62%"></div></div></div>
+        <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">210<span class="u"> / 300</span></span></div><div class="track"><div class="fill" style="width:70%"></div></div></div>
+        <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">74<span class="u"> / 100</span></span></div><div class="track"><div class="fill amber" style="width:74%"></div></div></div>
+        <div class="dtval dtover"><span>Csomagon felüli forgalom</span><b>1 240 Ft</b></div>
       </div>
     </div>
 
-    <!-- ===== Amim van ===== -->
-    <p class="mlab">Szolgáltatásom</p>
-    <div class="sdcard">
-
-      <details class="sdx">
-        <summary><span class="sic"><i class="ti ti-file-description"></i></span><span class="n">Szerződés és csomag<small class="ninv">Lejár: 2026. 11. 30. · 5 hónap hűség</small></span><i class="ti ti-chevron-down chev"></i></summary>
-        <div class="sdxb">
-          <p class="saclab">Szerződéses részletek</p>
-          <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2026. 11. 30.</span></div>
-          <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">5 hónap</span></div>
-          <div class="krow"><span class="k">Havidíj</span><span class="v">7 990 Ft / hó</span></div>
-          <div class="krow"><span class="k">Szerződés típusa</span><span class="v">Határozott idejű</span></div>
-          <p class="saclab">Csomag adatai</p>
-          <div class="krow"><span class="k">Csomag neve</span><span class="v">Prime Plus 2024</span></div>
-          <div class="krow"><span class="k">Csomag típusa</span><span class="v">Havidíjas</span></div>
-          <div class="krow"><span class="k">Aktiválás dátuma</span><span class="v">2024. 12. 01.</span></div>
-          <div class="krow"><span class="k">Havi adatkeret</span><span class="v">20 GB</span></div>
-          <div class="krow"><span class="k">Lebeszélhető percek</span><span class="v">300 perc</span></div>
-          <div class="krow"><span class="k">SMS keret</span><span class="v">100 SMS</span></div>
-          <label class="svcmod" for="s-edmob"><i class="ti ti-adjustments-alt"></i>Szolgáltatás módosítása</label>
-        </div>
-      </details>
-
-      <details class="sdx">
-        <summary><span class="sic"><i class="ti ti-stack-2"></i></span><span class="n">Kapcsolt szolgáltatások<small class="ninv">YettelTV · HBO Max</small></span><i class="ti ti-chevron-down chev"></i></summary>
-        <div class="sdxb">
-          <label class="lrow" for="s-detail-tv"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV<small class="ninv">TV Prémium</small></span><i class="ti ti-chevron-right chev"></i></label>
-          <label class="lrow" for="s-strm3"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">HBO Max<small class="ninv">Streaming</small></span><i class="ti ti-chevron-right chev"></i></label>
-        </div>
-      </details>
-
-      <details class="sdx">
-        <summary><span class="sic"><i class="ti ti-devices"></i></span><span class="n">Kapcsolódó eszközök<small class="ninv">iPhone 15 Pro · +4 további</small></span><i class="ti ti-chevron-down chev"></i></summary>
-        <div class="sdxb">
-          <label class="lrow" for="s-devdetail"><span class="sic"><i class="ti ti-device-mobile"></i></span><span class="n">iPhone 15 Pro<small class="ninv">Hátralévő részletek · 12 hónap</small></span><i class="ti ti-chevron-right chev"></i></label>
-          <label class="lrow" for="s-devdet2"><span class="sic"><i class="ti ti-device-watch"></i></span><span class="n">Apple Watch SE<small class="ninv">Hátralévő részletek · 8 hónap</small></span><i class="ti ti-chevron-right chev"></i></label>
-          <label class="lrow" for="s-devdet3"><span class="sic"><i class="ti ti-device-mobile"></i></span><span class="n">Samsung Galaxy A55<small class="ninv">Kifizetve</small></span><i class="ti ti-chevron-right chev"></i></label>
-          <label class="lrow" for="s-devdet4"><span class="sic"><i class="ti ti-router"></i></span><span class="n">Wi-Fi router<small class="ninv">Bérelt · Otthoni Net 1000</small></span><i class="ti ti-chevron-right chev"></i></label>
-          <label class="lrow" for="s-devdet5"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">Beltéri egység<small class="ninv">Bérelt · TV Prémium</small></span><i class="ti ti-chevron-right chev"></i></label>
-          <label class="addsvc" for="s-devbuy"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
-        </div>
-      </details>
+    <div class="dtcard">
+      <p class="dtct">Extra szolgáltatások</p>
+      <div class="dtxgrid">
+        <label class="dtx" for="s-xdata1"><span class="dtxic"><i class="ti ti-shopping-cart"></i></span>Extra vásárlás</label>
+        <div class="dtx dtxwip"><span class="dtxic"><i class="ti ti-device-mobile-plus"></i></span>Aktív extráid</div>
+      </div>
     </div>
 
-    <!-- ===== Amit hozzávehetek — egy helyen, árral ===== -->
-    <p class="mlab">Bővítés</p>
-    <div class="sdcard">
-      <label class="lrow" for="s-tarifch1"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás<small class="ninv">Nagyobb keret, ugyanez a szám</small></span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-xdata1"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><span class="val">890 Ft-tól</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming adat</span><span class="val">1 490 Ft-tól</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><span class="val">990 Ft-tól</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-addonsvc"><span class="sic"><i class="ti ti-plus"></i></span><span class="n">Kiegészítő szolgáltatás<small class="ninv">TV, streaming, biztonság</small></span><i class="ti ti-chevron-right chev"></i></label>
+    <div class="dtcard">
+      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><label class="dtlink" for="s-devbuy">Összes készülék</label></div>
+      <p class="dtsub">Új szám, új mobil, pár kattintással.</p>
+      <div class="dtphones">
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</label>
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</label>
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</label>
+      </div>
     </div>
 
-    <!-- ===== Ügyintézés ===== -->
-    <p class="mlab">Ügyintézés</p>
-    <div class="sdcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Hívásrészletező</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-arrows-exchange"></i></span><span class="n">Számhordozás</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-device-sim"></i></span><span class="n">SIM-csere / eSIM</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-settings"></i></span><span class="n">Hívásbeállítások</span><i class="ti ti-chevron-right chev"></i></div>
+    <div class="dtcard dtrowcard">
+      <div class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Hozzájárulások kezelése</span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
 
-      <details class="sdx">
-        <summary><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok<small class="ninv">Szerződés · ÁSZF · számla</small></span><i class="ti ti-chevron-down chev"></i></summary>
-        <div class="sdxb">
-          <div class="lrow"><span class="sic"><i class="ti ti-file-invoice"></i></span><span class="n">Szerződés<small class="ninv">PDF · 240 KB</small></span><i class="ti ti-download chev"></i></div>
-          <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">ÁSZF<small class="ninv">PDF · 1,1 MB</small></span><i class="ti ti-download chev"></i></div>
-          <div class="lrow"><span class="sic"><i class="ti ti-receipt"></i></span><span class="n">Legutóbbi számla<small class="ninv">PDF · 180 KB</small></span><i class="ti ti-download chev"></i></div>
-        </div>
-      </details>
+    <div class="dtcard dtdev">
+      <p class="dtct">Készülékeid</p>
+      <label class="dtrow" for="s-devdetail"><i class="ti ti-device-mobile dtic"></i><span class="n">iPhone 15 Pro<small>Hátralévő részletek · 12 hónap</small></span><i class="ti ti-chevron-right chev"></i></label>
+      <div class="dtpromo">
+        <p class="dtps">Új mobilt szeretnél?</p>
+        <p class="dtpt">Rendelj online akár extra kedvezménnyel</p>
+        <label class="dtpbtn" for="s-devbuy">Megnézem az ajánlatokat</label>
+      </div>
+    </div>
+
+    <div class="dtcard">
+      <p class="dtct">Tarifacsomagod</p>
+      <div class="dtplan"><i class="ti ti-file-text dtic"></i><span>Prime Plus 2024</span></div>
+      <ul class="dtchk">
+        <li><i class="ti ti-check"></i>20 GB adat belföldön és az 1. díjzónában</li>
+        <li><i class="ti ti-check"></i>300 perc beszéd</li>
+        <li><i class="ti ti-check"></i>100 SMS belföldön</li>
+      </ul>
+      <p class="dtfine">A leírás tájékoztató jellegű. Egyedi tarifaelemeket nem jelenítünk meg, csak a csomagod általános leírását.</p>
+    </div>
+
+    <div class="dtcard">
+      <p class="dtct">Számlázás</p>
+      <div class="dtkv"><span>Fordulónap</span><b>2026.07.31.</b></div>
+      <div class="dtkv"><span>Így szoktad fizetni a számlád:</span><b>banki átutalás</b></div>
+      <div class="dtkv"><span>Így kéred a számlád:</span><b>elektronikus</b></div>
+      <div class="dtkv"><span>Értesítési email cím</span><b>weinper.gyula@gmail.com</b></div>
+      <div class="dtkv"><span>Értesítési szám</span><b>+36 20 290 7430</b></div>
     </div>
 
     <button class="cancel" data-cancel="mob-7430 tv strm-hbo strm-nflx strm-rtl gyv"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
@@ -5600,65 +5657,103 @@
   </div>
 
   <!-- ============= DETAIL: HAVIDÍJAS MOBIL 2 (7566) ============= -->
-  <div class="screen" data-screen="detail-mob2" style="display:none;">
+  <div class="screen dtscreen" data-screen="detail-mob2" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Szolgáltatás részletei</span>
       <div style="width:42px"></div>
     </div>
-
-    <div class="planbar">
-      <div class="itile"><i class="ti ti-device-mobile"></i></div>
+    <div class="dtid">
+      <i class="ti ti-phone-call"></i>
       <div class="meta"><p class="s">Prime Plus 2025</p><p class="t">+36 20 290 7566</p></div>
-      <label class="edit icon" for="s-edmob"><i class="ti ti-pencil"></i></label>
     </div>
 
-    <p class="mlab">Szerződés</p>
-    <div class="gcard">
-      <div class="krow"><span class="k">Szerződés lejárata</span><span class="v">2027. 01. 15.</span></div>
-      <div class="krow"><span class="k">Fennmaradó hűségidő</span><span class="v">7 hónap</span></div>
-      <div class="krow"><span class="k">Havidíj</span><span class="v">6 490 Ft / hó</span></div>
-      <div class="krow"><span class="k">Tarifacsomagom</span><span class="link">Részletek</span></div>
+    <div class="dtcard nkcard">
+      <div class="nkrow">
+        <input class="edfield" type="text" value="" placeholder="Nevezd el az előfizetést" data-edold="+36 20 290 7566" maxlength="40">
+        <button class="nkbtn" type="button" data-edsave>Mentés</button>
+      </div>
+      <p class="nknote">Becenév nélkül a telefonszám fogja azonosítani az előfizetést.</p>
     </div>
 
-    <p class="mlab">Elérhető keret</p>
-    <div class="gcard keret">
-      <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">3,1<span class="u" data-dtot="7566"> / 5 GB</span></span></div><div class="track"><div class="fill" data-dfill="7566" style="width:62%"></div></div></div>
-      <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">60<span class="u"> / 100</span></span></div><div class="track"><div class="fill" style="width:60%"></div></div></div>
-      <div class="stat" style="margin-bottom:6px;"><div class="lab"><span class="k">SMS</span><span class="v">18<span class="u"> / 50</span></span></div><div class="track"><div class="fill amber" style="width:36%"></div></div></div>
-      <div class="krow" style="padding:12px 0 0; border-top:1px solid rgba(255,255,255,.07);"><span class="k">Csomagon felüli forgalom</span><span class="v strong">0 Ft</span></div>
-      <div class="krow" style="padding:10px 0 0;"><span class="k" style="display:flex;align-items:center;gap:7px;color:var(--mid);font-size:12px;"><i class="ti ti-calendar-event" style="font-size:15px"></i>Megújul</span><span class="v strong">2026. 07. 22.</span></div>
+    <div class="dtcard dttabcard">
+      <input class="rt" type="radio" name="dt-7566" id="dt-7566-a" checked>
+      <input class="rt" type="radio" name="dt-7566" id="dt-7566-b">
+      <div class="dttabs"><label class="dttab" for="dt-7566-a">Felhasználható</label><label class="dttab" for="dt-7566-b">Havi fogyasztásom</label></div>
+      <div class="dtpane dtp-a">
+        <div class="dtblk">
+          <p class="dth"><i class="ti ti-device-mobile-plus"></i>Belföldi és EU net</p>
+          <div class="dtval"><span>Prime Plus 2025 adatkeret<small>Megújul: 2026.07.22.</small></span><b>1,9 GB</b></div>
+        </div>
+        <div class="dtblk">
+          <p class="dth"><i class="ti ti-device-mobile"></i>Lebeszélhető</p>
+          <div class="dtval"><span>Perc lebeszélhetőség belföldön és 1. roaming díjzónában<small>Megújul: 2026.07.22.</small></span><b>40 perc</b></div>
+        </div>
+        <div class="dtblk dtline">
+          <p class="dth"><i class="ti ti-file-dollar"></i>Mobilvásárlásra felhasználható</p><b class="dtbig">5000 Ft</b>
+        </div>
+      </div>
+      <div class="dtpane dtp-b">
+        <div class="stat"><div class="lab"><span class="k">Adat</span><span class="v">3,1<span class="u" data-dtot="7566"> / 5 GB</span></span></div><div class="track"><div class="fill" data-dfill="7566" style="width:62%"></div></div></div>
+        <div class="stat"><div class="lab"><span class="k">Percek</span><span class="v">60<span class="u"> / 100</span></span></div><div class="track"><div class="fill" style="width:60%"></div></div></div>
+        <div class="stat"><div class="lab"><span class="k">SMS</span><span class="v">18<span class="u"> / 50</span></span></div><div class="track"><div class="fill amber" style="width:36%"></div></div></div>
+        <div class="dtval dtover"><span>Csomagon felüli forgalom</span><b>0 Ft</b></div>
+      </div>
     </div>
 
-    <p class="mlab">Roaming keret</p>
-    <div class="gcard" style="padding:15px 16px;">
-      <div class="stat" style="margin:0;"><div class="lab"><span class="k">EU-s adatroaming</span><span class="v">1,0<span class="u"> / 3,2 GB</span></span></div><div class="track"><div class="fill" style="width:31%"></div></div></div>
+    <div class="dtcard">
+      <p class="dtct">Extra szolgáltatások</p>
+      <div class="dtxgrid">
+        <label class="dtx" for="s-xdata2"><span class="dtxic"><i class="ti ti-shopping-cart"></i></span>Extra vásárlás</label>
+        <div class="dtx dtxwip"><span class="dtxic"><i class="ti ti-device-mobile-plus"></i></span>Aktív extráid</div>
+      </div>
     </div>
 
-    <p class="mlab">Az előfizetéshez elérhető vásárlási opciók</p>
-    <div class="gcard">
-      <label class="lrow" for="s-tarifch2"><span class="sic"><i class="ti ti-arrow-up"></i></span><span class="n">Csomagváltás</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-tvselsvc" data-tvpre="tvs-o2"><span class="sic"><i class="ti ti-device-tv"></i></span><span class="n">YettelTV szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-strpick" data-strpre="strsrc-mob"><span class="sic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-gyvpick"><span class="sic"><i class="ti ti-shield-check"></i></span><span class="n">Gyermekvédelmi szolgáltatás</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-xdata2"><span class="sic"><i class="ti ti-database"></i></span><span class="n">Extra adat</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-xdatar"><span class="sic"><i class="ti ti-world"></i></span><span class="n">Extra roaming adat</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="lrow" for="s-xmin"><span class="sic"><i class="ti ti-phone"></i></span><span class="n">Extra percek</span><i class="ti ti-chevron-right chev"></i></label>
+    <div class="dtcard">
+      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><label class="dtlink" for="s-devbuy">Összes készülék</label></div>
+      <p class="dtsub">Új szám, új mobil, pár kattintással.</p>
+      <div class="dtphones">
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</label>
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</label>
+        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</label>
+      </div>
     </div>
 
-    <p class="mlab">Extrák</p>
-    <div class="gcard">
-      <div class="lrow"><span class="sic"><i class="ti ti-file-text"></i></span><span class="n">Hívásrészletező</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-arrows-exchange"></i></span><span class="n">Számhordozás</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-device-sim"></i></span><span class="n">SIM-csere / eSIM</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="lrow"><span class="sic"><i class="ti ti-settings"></i></span><span class="n">Hívásbeállítások</span><i class="ti ti-chevron-right chev"></i></div>
+    <div class="dtcard dtrowcard">
+      <div class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Hozzájárulások kezelése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <div class="gcard" style="margin-top:22px;">
-      <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+    <div class="dtcard dtdev">
+      <p class="dtct">Készülékeid</p>
+      <div class="dtpromo">
+        <p class="dtps">Új mobilt szeretnél?</p>
+        <p class="dtpt">Rendelj online akár extra kedvezménnyel</p>
+        <label class="dtpbtn" for="s-devbuy">Megnézem az ajánlatokat</label>
+      </div>
+    </div>
+
+    <div class="dtcard">
+      <p class="dtct">Tarifacsomagod</p>
+      <div class="dtplan"><i class="ti ti-file-text dtic"></i><span>Prime Plus 2025</span></div>
+      <ul class="dtchk">
+        <li><i class="ti ti-check"></i>5 GB adat belföldön és az 1. díjzónában</li>
+        <li><i class="ti ti-check"></i>100 perc beszéd</li>
+        <li><i class="ti ti-check"></i>50 SMS belföldön</li>
+      </ul>
+      <p class="dtfine">A leírás tájékoztató jellegű. Egyedi tarifaelemeket nem jelenítünk meg, csak a csomagod általános leírását.</p>
+    </div>
+
+    <div class="dtcard">
+      <p class="dtct">Számlázás</p>
+      <div class="dtkv"><span>Fordulónap</span><b>2026.07.22.</b></div>
+      <div class="dtkv"><span>Így szoktad fizetni a számlád:</span><b>banki átutalás</b></div>
+      <div class="dtkv"><span>Így kéred a számlád:</span><b>elektronikus</b></div>
+      <div class="dtkv"><span>Értesítési email cím</span><b>weinper.gyula@gmail.com</b></div>
+      <div class="dtkv"><span>Értesítési szám</span><b>+36 20 290 7566</b></div>
     </div>
 
     <button class="cancel" data-cancel="mob-7566"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
+
   </div>
 
   <!-- ============= SIKERES TRANZAKCIÓ (extra adat / feltöltés) ============= -->
@@ -6323,7 +6418,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
