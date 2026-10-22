@@ -940,11 +940,10 @@
   .accouter > .accotop{padding:6px 2px 14px;}
   .accotop .at,.hst,[data-screen="home"] .sec h3{font-family:'Sora'; font-size:15px; font-weight:700; letter-spacing:-.01em; color:var(--navy);}
   /* "Szerkesztés" link above the quick tiles */
-  .qedit{display:flex; align-items:center; justify-content:space-between; padding:6px 2px 14px;}
+  .qedit{display:flex; align-items:center; justify-content:space-between; padding:6px 2px 4px;}
   .qedit .link{font-size:13px; font-weight:700; color:var(--navy); text-decoration:none; cursor:pointer;}
   /* primary mobile subscription: framed, with its own heading + edit */
-  .primbox{border:1.5px solid var(--lime3); border-radius:26px; padding:12px 10px 1px; margin-bottom:14px;
-           background:rgba(198,242,78,.10); box-shadow:0 12px 26px -18px rgba(164,216,46,.8);}
+  .primbox{border:1.5px solid var(--lime3); border-radius:26px; padding:12px 10px 1px; margin-bottom:14px;}
   .primbox:not(:has(.sub)){display:none;}
   .primhead{display:flex; align-items:center; justify-content:space-between; padding:0 6px 10px;}
   .primt{font-family:'Sora'; font-size:15px; font-weight:700; letter-spacing:-.01em; color:var(--navy);}
@@ -1135,7 +1134,7 @@
   .bban.p1{ background:#22346E !important; }
   .bban.p2{ background:#3B6FFF !important; }
   .bban.p3{ background:#7A4BE0 !important; }
-  .quick{ margin-top:20px !important; }
+  .quick{ margin-top:6px !important; }
   .acclink{ margin-left:auto; font-size:13px; font-weight:700; color:#14245E; cursor:pointer; text-decoration:none; }
   /* fix: glass/stroke were undefined -> transparent bluish cards. Make them white. */
   :root{ --glass:#FFFFFF; --stroke:var(--line); }
@@ -1560,11 +1559,12 @@
 
 
     <div class="top">
-      <span class="brand">Yettel<span class="bdot"></span></span>
       <div class="top-actions">
-        <div class="icon-btn"><i class="ti ti-message-circle"></i></div>
-        <label class="icon-btn" for="s-notif"><i class="ti ti-bell"></i><span class="nbadge">2</span></label>
         <label class="icon-btn burger" for="s-menu"><i class="ti ti-menu-2"></i></label>
+        <span class="brand">Yettel<span class="bdot"></span></span>
+      </div>
+      <div class="top-actions">
+        <div class="icon-btn"><i class="ti ti-search"></i></div>
       </div>
     </div>
 
@@ -1618,28 +1618,6 @@
           <i class="ti ti-chevron-right chev"></i>
         </div>
         <span data-anchor="otthoni" hidden></span>
-      </div>
-    </div>
-
-    <div class="acc accouter">
-      <div class="acc-head accotop"><span class="at">Eszközeim</span><label class="acclink" for="s-alldev">Összes</label></div>
-      <div class="acc-body">
-    <label class="addsvc" for="s-devbuy" style="margin-bottom:14px;"><span class="c"><i class="ti ti-plus"></i></span>Új készülék vásárlása</label>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdetail"></label>
-      <div class="itile"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">iPhone 15 Pro</p><p class="s">Hátralévő részletek · 12 hónap</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet2"></label>
-      <div class="itile blue"><i class="ti ti-device-watch"></i></div>
-      <div class="meta"><p class="t">Apple Watch SE</p><p class="s">Hátralévő részletek · 8 hónap</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet3"></label>
-      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">Samsung Galaxy A55</p><p class="s">Kifizetve</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
       </div>
     </div>
 
