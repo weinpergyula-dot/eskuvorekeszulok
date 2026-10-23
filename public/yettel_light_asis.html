@@ -3145,12 +3145,13 @@
   .flbar span{ position:absolute; top:12px; transform:translateX(-50%); font-size:9.5px; color:rgba(255,255,255,.6); }
   .fl2 .fllist{ background:#fff; border-color:#fff; }
   .fl2 .fsbtn[data-flclose]{ margin-top:18px; }
+  .flbuy{ gap:8px; cursor:pointer; }
+  .flbuy i{ font-size:18px; }
   .ipdeal{ position:absolute; z-index:3; right:16px; top:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; width:72px; height:72px; border-radius:50%; background:var(--lime); color:#09223D; transform:rotate(-10deg); box-shadow:0 8px 18px -6px rgba(0,0,0,.4); animation:ipdeal 3.4s ease-in-out infinite; }
   .ipdeal b{ font-size:17px; font-weight:800; line-height:1; letter-spacing:-.02em; }
   .ipdeal small{ font-size:9px; font-weight:700; line-height:1.15; }
   @keyframes ipdeal{ 0%,100%{ transform:rotate(-10deg) scale(1); } 50%{ transform:rotate(-4deg) scale(1.07); } }
   .hfb{ display:inline-block; margin-left:6px; padding:2px 7px; border-radius:999px; background:var(--lime); font-size:9.5px; font-weight:700; line-height:1.3; color:var(--navy); vertical-align:1px; white-space:nowrap; }
-  .substrm .hfb{ margin-right:8px; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -3371,7 +3372,7 @@
             <i class="ti ti-chevron-right chev"></i>
           </label>
           <div class="subrel" data-related="net">
-            <label class="substrm" data-sub="net-tv" for="s-detail-tv"><span class="ssic"><i class="ictv"></i></span><span class="ssn">Yettel TV Basic</span><span class="hfb">-15% Full</span><i class="ti ti-chevron-right chev"></i></label>
+            <label class="substrm" data-sub="net-tv" for="s-detail-tv"><span class="ssic"><i class="ictv"></i></span><span class="ssn">Yettel TV Basic <span class="hfb">-15% Full</span></span><i class="ti ti-chevron-right chev"></i></label>
             <label class="substrm" data-sub="net-tv2" for="s-strm3"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">TV2 Play Prémium</span><i class="ti ti-chevron-right chev"></i></label>
             <label class="substrm" data-sub="net-rtl" for="s-strm3"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></label>
           </div>
@@ -9366,7 +9367,7 @@
     + '<div class="flline"><span>Havidíjak kedvezmény nélkül</span><b data-flfull></b></div>'
     + '<div class="flline"><span>Havidíjak Full kedvezménnyel</span><b data-flnow></b></div>'
     + '<div class="flline sv"><span>Havi megtakarításod</span><b data-flsave></b></div><div class="flhint" data-flhint></div></div>'
-    + '<button type="button" class="fsbtn" data-flclose>Rendben</button>'
+    + '<label class="fsbtn flbuy" for="s-tshop" data-flclose><i class="ti ti-shopping-cart"></i>Vásárlás</label>'
     + '</div></div>';
   app.appendChild(ov);
   var on = {m1:true, m2:true, n1:true, tv:true}, cnt = {mob:0, net:0, tvn:0, max:0};
