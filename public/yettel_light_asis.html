@@ -1779,8 +1779,10 @@
   .adscr .formbody > input[id$="-perm"]:checked ~ .adpick .adopt[for$="-perm"]{ border-color:#09223D; background:#F1F9FD; }
   .adscr .formbody > input[id$="-perm"]:checked ~ .adpick .adopt[for$="-perm"] .adchk{ display:flex; }
   .adform{ display:none; }
-  .adscr .formbody > input[id$="-new"]:checked ~ .adpick{ display:none; }
-  .adscr .formbody > input[id$="-new"]:checked ~ .adform{ display:block; }
+  .adscr .formbody > input[id$="-new"]:checked ~ .adpick .adopt[for$="-new"]{ border-color:#09223D; background:#F1F9FD; }
+  .adscr .formbody > input[id$="-new"]:checked ~ .adpick .adopt[for$="-new"] .adchk{ display:flex; }
+  .adscr.adon .adpick{ display:none; }
+  .adscr.adon .adform{ display:block; }
   .adsub{ margin:-6px 0 16px; font-size:12px; line-height:1.4; color:var(--navy); }
   .adl{ display:block; margin:0 0 8px; font-size:12px; font-weight:700; color:var(--navy); }
   .adin{ display:block; width:100%; height:44px; margin:0 0 16px; padding:0 14px; border:2px solid #E3E8EE; border-radius:10px; background:#FFFFFF;
@@ -1795,8 +1797,7 @@
   .adscr .adnext{ background:#09223D !important; color:#FFFFFF !important; border-radius:999px !important; box-shadow:none !important; }
   .adscr .adnext.off{ background:#CDD4DC !important; color:#8592A6 !important; pointer-events:none; }
   .adnote{ margin:12px 14px 0; font-size:11px; line-height:1.4; color:var(--navy); }
-  .adscr .formbody > input[id$="-new"]:checked ~ * .adnote{ display:none; }
-  .adscr:has(input[id$="-new"]:checked) .adnote{ display:none; }
+  .adscr.adon .adnote{ display:none; }
 
   /* ===== Extra szolgáltatások: subscription sheet ===== */
   .xsheet{ position:absolute; inset:0; z-index:110; display:none; }
@@ -2585,6 +2586,83 @@
   .anp{ margin:0 8px; font-size:12.5px; line-height:1.5; color:var(--navy); }
   .anfoot{ position:absolute; left:16px; right:16px; bottom:30px; }
   .anfoot .lgbtn{ display:block; }
+
+  /* on-screen keyboard (desktop preview only) */
+  .askb{ flex-shrink:0; padding:8px 3px 26px; background:#D1D4DA; }
+  .kbr{ display:flex; justify-content:center; gap:5px; margin-bottom:10px; }
+  .kbr:last-child{ margin-bottom:0; }
+  .kbk{ flex:1 1 0; min-width:0; height:42px; padding:0; border:none; border-radius:5px; background:#fff; box-shadow:0 1px 0 #898A8D;
+        font-family:-apple-system,'SF Pro Text','Yettel',sans-serif; font-size:20px; color:#000; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .kbk:active{ background:#BCC0C7; }
+  .kbk i{ font-size:20px; }
+  .kbf{ flex:1.4 1 0; background:#ABB0BA; }
+  .kbf[disabled]{ visibility:hidden; }
+  .kbw{ flex:1.3 1 0; font-size:15px; }
+  .kbsp{ flex:5 1 0; font-size:15px; }
+  .kbgo{ flex:2 1 0; font-size:15px; background:#0A84FF; color:#fff; }
+  .askb.up .kbk:not(.kbf):not(.kbsp):not(.kbgo){ text-transform:uppercase; }
+  .askb.up .kbsh{ background:#fff; }
+  @media (hover:none) and (pointer:coarse){ .askb{ display:none; } }
+
+  /* internet offers (HiperNet = FBB, OtthonNet = FWA) */
+  .ofscr{ padding-bottom:0 !important; background:#fff; }
+  .ofscr .dhead{ margin-bottom:14px; }
+  .ofh{ margin:0 0 8px; font-size:20px; font-weight:700; color:var(--navy); }
+  .ofaddr{ margin:0 0 6px; font-size:12px; color:var(--navy); }
+  .ofchg{ display:inline-block; font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
+  .ofcar{ display:flex; gap:12px; margin:8px -16px 0; padding:12px 16px 4px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-padding:0 16px; scrollbar-width:none; }
+  .ofcar::-webkit-scrollbar{ display:none; }
+  .ofcard{ position:relative; flex:0 0 84%; display:flex; flex-direction:column; scroll-snap-align:start; border:1.5px solid #D5DCE3; border-radius:14px; background:#fff; }
+  .ofcard.sel{ border:2px solid #09223D; background:#EFF8FD; }
+  .ofbadge{ position:absolute; top:-10px; left:50%; transform:translateX(-50%); padding:3px 10px; border-radius:999px; background:#E3E8EE; white-space:nowrap; font-size:10px; font-weight:700; color:var(--navy); }
+  .ofcard.sel .ofbadge{ background:#09223D; color:#fff; }
+  .ofname{ margin:20px 0 10px; text-align:center; font-size:18px; font-weight:700; color:var(--navy); }
+  .ofspd{ display:flex; align-items:center; gap:10px; margin:0 auto 14px; padding:8px 16px; border-radius:10px; background:#CFE3EE; }
+  .ofspd > i{ font-size:30px; color:var(--navy); }
+  .ofspd b{ display:block; font-size:15px; font-weight:700; color:var(--navy); }
+  .ofspd small{ display:block; font-size:10px; color:var(--navy); }
+  .offt{ display:flex; gap:10px; margin:0 14px 12px; }
+  .offt > i{ flex-shrink:0; font-size:20px; color:var(--navy); }
+  .offt b{ display:block; font-size:11px; font-weight:700; color:var(--navy); }
+  .offt small{ display:block; margin-top:2px; font-size:10px; line-height:1.35; font-weight:300; color:var(--navy); }
+  .ofdet{ display:block; margin:6px 0 14px; text-align:center; font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
+  .ofpromo{ align-self:flex-start; margin:auto 12px 8px; padding:3px 6px; border-radius:4px; background:#3E7C9B; font-size:10px; color:#fff; }
+  .ofprice{ padding:10px 14px 14px; border-radius:0 0 12px 12px; background:var(--lime); text-align:center; color:var(--navy); }
+  .ofprice > p{ margin:0; font-size:10px; }
+  .ofbig{ display:flex; align-items:center; justify-content:center; gap:4px; margin:4px 0 2px; }
+  .ofbig b{ font-size:27px; font-weight:700; }
+  .ofbig span{ font-size:11px; font-weight:700; line-height:1.1; text-align:left; }
+  .ofbig span small{ display:block; font-size:11px; font-weight:400; }
+  .ofbtn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:42px; margin-top:10px; border:2px solid #09223D; border-radius:999px; background:transparent;
+          font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .ofcard.sel .ofbtn{ background:#09223D; color:#fff; }
+  .ofdots{ display:flex; justify-content:center; gap:6px; margin:12px 0 18px; }
+  .ofdots i{ width:6px; height:6px; border-radius:50%; background:#C3CAD3; }
+  .ofdots i.on{ background:#09223D; }
+  .ofkid{ padding:14px; border:1.5px solid #E3E8EE; border-radius:14px; }
+  .ofkidh{ display:flex; align-items:flex-start; gap:10px; }
+  .ofkidh > i{ font-size:22px; color:var(--navy); }
+  .ofkidh b{ flex:1; font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .ofsw{ position:relative; flex-shrink:0; width:40px; height:22px; margin-top:2px; }
+  .ofsw input{ position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; z-index:1; }
+  .ofsw span{ position:absolute; inset:0; border-radius:999px; background:#D5DCE3; transition:background .2s; }
+  .ofsw span::after{ content:''; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.2); transition:transform .2s; }
+  .ofsw input:checked + span{ background:#09223D; }
+  .ofsw input:checked + span::after{ transform:translateX(18px); }
+  .ofkid p{ margin:12px 0 0; font-size:12px; line-height:1.4; font-weight:300; color:var(--navy); }
+  .ofhelp{ position:relative; margin:18px 0 0; padding:16px; border-radius:14px; background:#CDE4EF; }
+  .ofhelp small{ display:block; font-size:12px; color:var(--navy); }
+  .ofhelp b{ display:block; max-width:62%; margin-top:8px; font-size:15px; font-weight:700; line-height:1.3; color:var(--navy); }
+  .ofhelp svg{ position:absolute; right:16px; top:14px; width:74px; height:74px; }
+  .ofhelp .ofchat{ display:flex; align-items:center; justify-content:center; width:100%; height:40px; margin-top:16px; border:none; border-radius:999px; background:#09223D;
+          font-family:'Yettel'; font-size:13px; font-weight:700; color:#fff; cursor:pointer; }
+  .offoot{ display:flex; align-items:center; gap:12px; margin:20px -16px 0; padding:12px 16px calc(14px + env(safe-area-inset-bottom)); border-top:1px solid #E3E8EE; background:#fff; z-index:5; }
+  .ofscr.stk .offoot{ position:sticky; bottom:0; box-shadow:0 -6px 16px -10px rgba(9,34,61,.25); }
+  .ofsum{ flex:1; display:grid; grid-template-columns:auto 1fr; column-gap:8px; row-gap:4px; font-size:12px; color:var(--navy); }
+  .ofsum b{ text-align:right; font-weight:700; }
+  .ofnext{ display:flex; align-items:center; justify-content:center; height:44px; padding:0 26px; border-radius:999px; background:#09223D; font-size:14px; font-weight:700; color:#fff; cursor:pointer; position:relative; }
+  .ofnext.jspin.loading{ color:transparent; }
+  .ofnext.jspin.loading::after{ content:''; position:absolute; top:50%; left:50%; width:16px; height:16px; margin:-8px 0 0 -8px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
 </style>
 </head>
 <body>
@@ -3352,7 +3430,7 @@
       <input class="rt" type="radio" name="adr-net" id="adr-net-new">
       <div class="adpick">
         <label class="adopt" for="adr-net-perm"><span class="adtx"><b>Állandó lakcímedre</b><small>8200 Veszprém, Tölgyfa u. 4</small></span><span class="adchk"><i class="ti ti-check"></i></span></label>
-        <label class="adopt" for="adr-net-new"><span class="adtx"><b>Másik címed adok meg</b></span></label>
+        <label class="adopt" for="adr-net-new"><span class="adtx"><b>Másik címed adok meg</b></span><span class="adchk"><i class="ti ti-check"></i></span></label>
       </div>
       <div class="adform">
         <p class="adsub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
@@ -4326,56 +4404,32 @@
     </div>
   </div>
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
-  <div class="screen" data-screen="offers-svc" style="display:none;">
+  <!-- ============= OTTHONI INTERNET AJÁNLATOK: offers-svc ============= -->
+  <div class="screen ofscr" data-screen="offers-svc" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-addrsvc"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Ajánlatok</span>
-      <div style="width:42px"></div>
+      <span class="title">Otthoni internet</span>
+      <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
     </div>
-    <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Ajánlatok a címeden</h2>
-    <div class="offaddr">
-      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
-      <label class="offchg" for="s-addrsvc">Másik címet adok meg.</label>
+    <h2 class="ofh">Válassz otthoni internetcsomagot!</h2>
+    <p class="ofaddr">Címed: <span data-ofaddr>8200 Veszprém, Tölgyfa u. 4</span></p>
+    <label class="ofchg" for="s-addrsvc" data-ofnew>Másik cím megadása</label>
+    <div class="ofcar"></div>
+    <div class="ofdots"></div>
+    <div class="ofkid">
+      <div class="ofkidh"><i class="ti ti-shield-half"></i><b>Aktiválod a gyermekvédelmi tartalomszűrőt?</b><span class="ofsw"><input type="checkbox" aria-label="Gyermekvédelmi tartalomszűrő"><span></span></span></div>
+      <p>A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.</p>
+      <p>A szolgáltatás díjmentes, később is igényelheted és bármikor lemondhatod.</p>
     </div>
-    <p class="offsec">Internet</p>
-    <label class="tfcard jpkg jspin" for="s-extrasvc" data-pkg="HiperNet L" data-bw="1000 Mbit/s" data-price="7 990 Ft">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">1000 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-    <label class="tfcard jpkg jspin" for="s-extrasvc" data-pkg="HiperNet M" data-bw="500 Mbit/s" data-price="6 990 Ft">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">500 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-    <div class="tfhelp">
-      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
-      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
+    <div class="ofhelp">
+      <small>Segíthetünk?</small>
+      <b>Chatelj kollégánkkal, ha elakadtál</b>
+      <svg viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M18 46V38a22 22 0 0 1 44 0v8" stroke="#09223D" stroke-width="7" stroke-linecap="round"/><rect x="10" y="40" width="16" height="24" rx="8" fill="#B4FF00" stroke="#09223D" stroke-width="3"/><rect x="54" y="40" width="16" height="24" rx="8" fill="#09223D"/><path d="M62 64c0 7-8 10-18 10" stroke="#09223D" stroke-width="3" stroke-linecap="round"/><circle cx="42" cy="74" r="4" fill="#09223D"/></svg>
+      <button type="button" class="ofchat" data-chatpop>Chat indítása</button>
+    </div>
+    <div class="offoot">
+      <div class="ofsum"><span>Vásárláskor:</span><b>0 Ft</b><span>Havonta:</span><b data-ofmon>7 990 Ft/hó</b></div>
+      <label class="ofnext jspin jpkg" for="s-extrasvc" data-pkg="HiperNet L" data-bw="1000 Mbit/s" data-price="7 990 Ft">Tovább</label>
     </div>
   </div>
 
@@ -6055,7 +6109,7 @@
       <input class="rt" type="radio" name="adr-ctv" id="adr-ctv-new">
       <div class="adpick">
         <label class="adopt" for="adr-ctv-perm"><span class="adtx"><b>Állandó lakcímedre</b><small>8200 Veszprém, Tölgyfa u. 4</small></span><span class="adchk"><i class="ti ti-check"></i></span></label>
-        <label class="adopt" for="adr-ctv-new"><span class="adtx"><b>Másik címed adok meg</b></span></label>
+        <label class="adopt" for="adr-ctv-new"><span class="adtx"><b>Másik címed adok meg</b></span><span class="adchk"><i class="ti ti-check"></i></span></label>
       </div>
       <div class="adform">
         <p class="adsub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
@@ -8052,7 +8106,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.ofdet,.ofcb,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -8148,7 +8202,7 @@
   var ov = document.createElement('div'); ov.className = 'asov'; ov.innerHTML =
     '<div class="ashead"><button type="button" class="asback" aria-label="Vissza"><i class="ti ti-arrow-left"></i></button><span class="astitle"></span></div>'
     + '<div class="asbar"><i class="ti ti-search"></i><input type="text" autocomplete="off"><button type="button" class="asx" aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div>'
-    + '<p class="aserr">Kérjük, válassz a listából.</p><div class="aslist"></div>';
+    + '<p class="aserr">Kérjük, válassz a listából.</p><div class="aslist"></div><div class="askb"></div>';
   document.querySelector('.app').appendChild(ov);
   var asIn = ov.querySelector('input'), asList = ov.querySelector('.aslist'), asErr = ov.querySelector('.aserr'), cur = null;
   function renderList(){
@@ -8163,8 +8217,37 @@
     ov.querySelector('.astitle').textContent = TITLES[key];
     asIn.value = sc._vals[key] || ''; asIn.placeholder = sc.querySelector('[data-adf="'+key+'"] .adv').getAttribute('data-ph');
     asErr.classList.remove('on'); ov.classList.remove('err');
-    renderList(); ov.classList.add('on'); setTimeout(function(){ asIn.focus(); }, 30);
+    renderList(); kbMode(key === 'house' ? 'num' : 'abc'); ov.classList.add('on'); asIn.focus();
   }
+  var kb = ov.querySelector('.askb'), kbShift = false;
+  var KB = {abc:['qwertzuiopő','asdfghjkléá','^yxcvbnm<','#_>'], num:['1234567890','-/:;()&@".','*.,?!\'<','A_>']};
+  function kbMode(m){
+    kb.setAttribute('data-m', m);
+    kb.innerHTML = KB[m].map(function(row){
+      return '<div class="kbr">' + row.split('').map(function(c){
+        if (c === '^') return '<button type="button" class="kbk kbf kbsh" data-k="shift"><i class="ti ti-arrow-big-up"></i></button>';
+        if (c === '*') return '<button type="button" class="kbk kbf" data-k="" disabled></button>';
+        if (c === '<') return '<button type="button" class="kbk kbf" data-k="bs"><i class="ti ti-backspace"></i></button>';
+        if (c === '#') return '<button type="button" class="kbk kbf kbw" data-k="num">123</button>';
+        if (c === 'A') return '<button type="button" class="kbk kbf kbw" data-k="abc">ABC</button>';
+        if (c === '_') return '<button type="button" class="kbk kbsp" data-k=" ">szóköz</button>';
+        if (c === '>') return '<button type="button" class="kbk kbgo" data-k="go">Kész</button>';
+        return '<button type="button" class="kbk" data-k="'+c.replace('"','&quot;')+'">'+c+'</button>';
+      }).join('') + '</div>';
+    }).join('');
+    kb.classList.toggle('up', kbShift);
+  }
+  kb.addEventListener('mousedown', function(e){ e.preventDefault(); });
+  kb.addEventListener('click', function(e){
+    var b = e.target.closest('.kbk'); if (!b || !cur) return;
+    var k = b.getAttribute('data-k'), st = asIn.selectionStart, en = asIn.selectionEnd;
+    if (k === 'shift'){ kbShift = !kbShift; kb.classList.toggle('up', kbShift); return; }
+    if (k === 'num' || k === 'abc'){ kbMode(k); return; }
+    if (k === 'go'){ asIn.dispatchEvent(new KeyboardEvent('keydown', {key:'Enter'})); return; }
+    if (k === 'bs'){ if (st === en && st > 0) st--; asIn.setRangeText('', st, en, 'end'); }
+    else { asIn.setRangeText(kbShift ? k.toUpperCase() : k, st, en, 'end'); if (kbShift){ kbShift = false; kb.classList.remove('up'); } }
+    asIn.dispatchEvent(new Event('input', {bubbles:true}));
+  });
   function closeSearch(){ ov.classList.remove('on'); asIn.blur(); cur = null; }
   asIn.addEventListener('input', function(){ cur.pristine = false; asErr.classList.remove('on'); ov.classList.remove('err'); renderList(); });
   asIn.addEventListener('keydown', function(e){
@@ -8196,7 +8279,7 @@
       t.textContent = v[k] || t.getAttribute('data-ph');
     });
     var newR = sc.querySelector('input[id$="-new"]');
-    sc.querySelector('.adnext').classList.toggle('off', newR.checked && !ORDER.every(function(k){ return v[k]; }));
+    sc.querySelector('.adnext').classList.toggle('off', sc.classList.contains('adon') && !ORDER.every(function(k){ return v[k]; }));
   }
   /* "Betöltés folyamatban" with bouncing dots */
   var ld = document.createElement('div'); ld.className = 'adload';
@@ -8215,9 +8298,10 @@
       if (f && !f.classList.contains('dis')) openSearch(sc, f.getAttribute('data-adf'));
     });
     [newR, permR].forEach(function(r){ r.addEventListener('change', function(){ paint(sc); }); });
-    back.addEventListener('click', function(e){ if (newR.checked){ e.preventDefault(); permR.checked = true; paint(sc); } });
+    back.addEventListener('click', function(e){ if (sc.classList.contains('adon')){ e.preventDefault(); sc.classList.remove('adon'); paint(sc); sc.scrollTop = 0; } });
     next.addEventListener('click', function(){
       if (next.classList.contains('off')) return;
+      if (newR.checked && !sc.classList.contains('adon')){ sc.classList.add('adon'); paint(sc); sc.scrollTop = 0; return; }
       var v = sc._vals, unit = UNITS.filter(function(u){ return u[0] === v.unit; })[0];
       var scenario = newR.checked ? (unit ? unit[1] : 'both') : 'both';
       window.yAddr = {scenario:scenario, address: newR.checked ? (v.city+', '+v.street+' '+v.house+', '+v.unit.replace(/\s*\(.*\)$/, '')) : '8200 Veszprém, Tölgyfa u. 4'};
@@ -8226,6 +8310,11 @@
       setTimeout(function(){ ld.classList.remove('on'); }, 2800);
     });
     paint(sc);
+  });
+  /* "Másik cím megadása" on the offers screen opens the form straight away */
+  document.addEventListener('click', function(e){
+    var l = e.target.closest && e.target.closest('[data-ofnew]'); if (!l) return;
+    var sc = document.querySelector('[data-screen="addr-svc"]'); sc.querySelector('input[id$="-new"]').checked = true; sc.classList.add('adon'); paint(sc);
   });
 })();
 </script>
@@ -8847,6 +8936,62 @@
   });
   re.addEventListener('click', function(){ if (re.disabled) return; reset(); timer(); });
   document.addEventListener('change', function(e){ if (e.target.id === 's-otp' && e.target.checked){ reset(); timer(); setTimeout(function(){ boxes[0].focus(); }, 50); } });
+})();
+</script>
+<script>
+/* internet offers: HiperNet (FBB) and OtthonNet (FWA) cards depending on what the searched address has */
+(function(){
+  var sc = document.querySelector('[data-screen="offers-svc"]'); if (!sc) return;
+  var FBB = [['ti-world','Vezetékes optikai internet',''],['ti-router','WiFi 7 router','A legújabb technológia, több eszköz egyidejű kezeléséhez.'],['ti-circle-check','Díjmentesen telepítjük otthonodba','Szakértő segítséggel, az általad választott időpontban.']];
+  var FWA = [['ti-world','Vezeték nélküli korlátlan internet',''],['ti-backpack','Hordozható a Bárhol Móddal','Belföldön 30 naponta 10 napig díjmentesen magaddal viheted.'],['ti-circle-check','Nincs kábel, egyszerű a beüzemelés','Aktiválás után önállóan, pár lépésben üzembe helyezheted WiFi 6 routered.']];
+  var PKGS = [
+    {name:'HiperNet L', t:'fbb', bw:'1000 Mbit/s', bws:'max letöltési sebesség', promo:'50% havidíj kedvezmény 184 napig', first:'az első 184 napban <b>3 995 Ft/hó</b> utána', price:'7 990'},
+    {name:'HiperNet M', t:'fbb', bw:'500 Mbit/s', bws:'max letöltési sebesség', promo:'50% havidíj kedvezmény 184 napig', first:'az első 184 napban <b>3 495 Ft/hó</b> utána', price:'6 990'},
+    {name:'OtthonNet L', t:'fwa', bw:'1000 Mbit/s', bws:'becsült max letöltési sebesség', promo:'100% havidíj kedvezmény 30 napig', first:'az első 30 napban <b>0 Ft/hó</b> utána', price:'7 990'},
+    {name:'OtthonNet M', t:'fwa', bw:'50 Mbit/s', bws:'becsült max letöltési sebesség', promo:'100% havidíj kedvezmény 30 napig', first:'az első 30 napban <b>0 Ft/hó</b> utána', price:'7 990'}
+  ];
+  var car = sc.querySelector('.ofcar'), dots = sc.querySelector('.ofdots'), go = sc.querySelector('.ofnext'), list = [];
+  function card(p, i, canSel){
+    return '<div class="ofcard" data-i="'+i+'"><span class="ofbadge">Próbáld ki 30 napig kötöttségek nélkül!</span>'
+      + '<p class="ofname">'+p.name+'</p>'
+      + '<div class="ofspd"><i class="ti ti-gauge"></i><span><b>'+p.bw+'</b><small>'+p.bws+'</small></span></div>'
+      + (p.t === 'fbb' ? FBB : FWA).map(function(f){ return '<div class="offt"><i class="ti '+f[0]+'"></i><span><b>'+f[1]+'</b>'+(f[2] ? '<small>'+f[2]+'</small>' : '')+'</span></div>'; }).join('')
+      + '<span class="ofdet tfdet">Részletek</span>'
+      + '<span class="ofpromo">'+p.promo+'</span>'
+      + '<div class="ofprice"><p>'+p.first+'</p><div class="ofbig"><b>'+p.price+'</b><span>Ft<small>/hó</small></span></div><p>e-Komfort csomaggal, 12 hónap hűséggel</p>'
+      + (canSel ? '<button type="button" class="ofbtn" data-ofsel></button>' : '<button type="button" class="ofbtn tfhb">Visszahívást kérek</button>')
+      + '</div></div>';
+  }
+  function select(i){
+    Array.prototype.forEach.call(car.children, function(c){
+      var on = +c.getAttribute('data-i') === i, b = c.querySelector('[data-ofsel]');
+      c.classList.toggle('sel', on);
+      if (b) b.innerHTML = on ? 'Kiválasztva <i class="ti ti-check"></i>' : 'Kiválasztom';
+    });
+    var p = list[i];
+    go.setAttribute('data-pkg', p.name); go.setAttribute('data-bw', p.bw); go.setAttribute('data-price', p.price + ' Ft');
+    sc.querySelector('[data-ofmon]').textContent = p.price + ' Ft/hó';
+  }
+  function render(){
+    var a = window.yAddr || {scenario:'both', address:'8200 Veszprém, Tölgyfa u. 4'};
+    list = PKGS.filter(function(p){ return a.scenario === 'both' || p.t === a.scenario; });
+    /* where fibre is available, OtthonNet is only offered via a call back */
+    car.innerHTML = list.map(function(p, i){ return card(p, i, p.t === 'fbb' || a.scenario === 'fwa'); }).join('');
+    dots.innerHTML = list.map(function(p, i){ return '<i'+(i ? '' : ' class="on"')+'></i>'; }).join('');
+    sc.querySelector('[data-ofaddr]').textContent = a.address;
+    select(0);
+    sc.classList.remove('stk'); sc.scrollTop = 0; car.scrollLeft = 0;
+  }
+  car.addEventListener('click', function(e){ var b = e.target.closest('[data-ofsel]'); if (b) select(+b.closest('.ofcard').getAttribute('data-i')); });
+  car.addEventListener('scroll', function(){
+    var c = car.children[0]; if (!c) return;
+    var n = Math.round(car.scrollLeft / (c.offsetWidth + 12));
+    Array.prototype.forEach.call(dots.children, function(d, i){ d.classList.toggle('on', i === n); });
+  });
+  /* the footer only sticks once the page has been scrolled to its end */
+  sc.addEventListener('scroll', function(){ if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) sc.classList.add('stk'); });
+  document.addEventListener('change', function(e){ if (e.target && e.target.id === 's-offsvc') render(); });
+  render();
 })();
 </script>
 </body>
