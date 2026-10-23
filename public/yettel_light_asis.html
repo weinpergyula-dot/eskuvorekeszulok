@@ -2,7 +2,7 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>Yettel — as-is (light)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
@@ -2449,7 +2449,7 @@
 
   /* ===== welcome: bouncing logo mark — square ↔ triangle on every bounce, lands at the baseline as the round dot ===== */
   .wylogo .ytri{ display:none; }
-  .wylogo .ybox{ display:inline-block; width:.28em; height:.28em; margin-left:.05em; background:var(--navy); vertical-align:baseline;
+  .wylogo .ybox{ position:static; right:auto; top:auto; border:none; display:inline-block; width:.28em; height:.28em; margin-left:.04em; background:var(--navy); vertical-align:baseline;
                  animation:ybox 4.2s cubic-bezier(.45,0,.55,1) infinite; transform-origin:50% 100%; }
   @keyframes ybox{
     0%  { transform:translateY(-1.6em) rotate(0deg);   clip-path:polygon(0 0,100% 0,100% 100%,0 100%);   border-radius:0; }
@@ -2522,7 +2522,7 @@
   .lgin.bad2{ border-color:#F0603C; }
   .otp{ display:flex; justify-content:center; gap:8px; margin:22px 0 6px; }
   .otp input{ width:44px; height:52px; padding:0; border:2px solid #E3E8EE; border-radius:9px; background:#fff; text-align:center;
-              font-family:'Yettel'; font-size:22px; font-weight:700; color:var(--navy); outline:none; -webkit-appearance:none; caret-color:var(--navy); }
+              font-family:'Yettel'; font-size:22px; font-weight:300; color:var(--navy); outline:none; -webkit-appearance:none; caret-color:var(--navy); }
   .otp input:focus{ border-color:var(--navy); }
   .otp input.bad{ border-color:#F0603C; color:#F0603C; }
   .otp input.ok{ border-color:#2F9E4F; }
