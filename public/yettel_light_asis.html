@@ -351,6 +351,10 @@
   #s-docs:checked ~ [data-screen="docs"],
   #s-docdet:checked ~ [data-screen="doc-det"],
   #s-consent2:checked ~ [data-screen="consent2"],
+  #s-pwforgot:checked ~ [data-screen="pw-forgot"],
+  #s-smslogin:checked ~ [data-screen="sms-login"],
+  #s-idme:checked ~ [data-screen="id-me"],
+  #s-iddap:checked ~ [data-screen="id-dap"],
   #s-ktopup:checked ~ [data-screen="kt-topup"],
   #s-ktfriends:checked ~ [data-screen="kt-friends"],
   #s-savedcard:checked ~ [data-screen="saved-card"],
@@ -2441,6 +2445,77 @@
   .csok{ display:none; align-items:center; gap:8px; margin:0 0 14px; padding:12px 14px; border-radius:6px; background:#DDF5E3; font-size:12px; font-weight:700; color:var(--navy); }
   .csok i{ font-size:16px; color:#2F9E4F; }
   .csok.on{ display:flex; animation:brfade .3s ease-out; }
+
+  /* ===== welcome: bouncing logo mark — square ↔ triangle on every bounce, lands at the baseline as the round dot ===== */
+  .wylogo .ytri{ display:none; }
+  .wylogo .ybox{ display:inline-block; width:.28em; height:.28em; margin-left:.05em; background:var(--navy); vertical-align:baseline;
+                 animation:ybox 4.2s cubic-bezier(.45,0,.55,1) infinite; transform-origin:50% 100%; }
+  @keyframes ybox{
+    0%  { transform:translateY(-1.6em) rotate(0deg);   clip-path:polygon(0 0,100% 0,100% 100%,0 100%);   border-radius:0; }
+    13% { transform:translateY(0) rotate(90deg);        clip-path:polygon(0 0,100% 0,100% 100%,0 100%);   border-radius:0; animation-timing-function:ease-out; }
+    22% { transform:translateY(-.8em) rotate(180deg);   clip-path:polygon(50% 0,50% 0,100% 100%,0 100%); border-radius:0; animation-timing-function:ease-in; }
+    31% { transform:translateY(0) rotate(240deg);       clip-path:polygon(50% 0,50% 0,100% 100%,0 100%); border-radius:0; animation-timing-function:ease-out; }
+    38% { transform:translateY(-.42em) rotate(300deg);  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);   border-radius:0; animation-timing-function:ease-in; }
+    45% { transform:translateY(0) rotate(360deg);       clip-path:polygon(0 0,100% 0,100% 100%,0 100%);   border-radius:0; animation-timing-function:ease-out; }
+    50% { transform:translateY(-.18em) rotate(360deg);  clip-path:polygon(50% 0,50% 0,100% 100%,0 100%); border-radius:0; animation-timing-function:ease-in; }
+    55% { transform:translateY(0) rotate(360deg);       clip-path:polygon(0 0,100% 0,100% 100%,0 100%);   border-radius:50%; }
+    94% { transform:translateY(0) rotate(360deg);       clip-path:polygon(0 0,100% 0,100% 100%,0 100%);   border-radius:50%; opacity:1; }
+    97% { transform:translateY(0) rotate(360deg);       border-radius:50%; opacity:0; }
+    100%{ transform:translateY(-1.6em) rotate(360deg);  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);   border-radius:0; opacity:0; }
+  }
+  @media (prefers-reduced-motion: reduce){ .wylogo .ybox{ animation:none; border-radius:50%; } }
+  /* ===== login journey ===== */
+  .lgin.bad{ border-color:#F0603C; }
+  .lgerr{ display:none; margin:-10px 0 16px; font-size:12px; color:#F0603C; }
+  .lgerr.on{ display:block; }
+  [data-screen="login"] .lgerr{ margin:-6px 0 14px; }
+  .lgforgot{ display:inline-block; }
+  .lgsub{ display:block; }
+  .lgbig{ margin:18px 0 16px; font-size:24px; }
+  .lgmid{ margin-top:150px; }
+  .lgp{ margin:0 0 18px; font-size:13px; line-height:1.5; color:var(--navy); }
+  .lgpb{ font-weight:700; margin-bottom:12px; }
+  .lgbottom{ position:absolute; left:20px; right:20px; bottom:28px; border:none; width:auto !important; font-family:"Yettel"; }
+  button.lgbtn{ width:100%; border:none; font-family:'Yettel'; }
+  .lgsent{ display:none; align-items:center; gap:8px; padding:12px 14px; border-radius:6px; background:#DDF5E3; font-size:12px; font-weight:700; color:var(--navy); }
+  .lgsent i{ font-size:18px; color:#2F9E4F; } .lgsent.on{ display:flex; }
+  .smsin{ display:flex; align-items:center; height:48px; margin-bottom:14px; border:2px solid #E3E8EE; border-radius:10px; background:#fff; }
+  .smsin[hidden]{ display:none; }
+  .smsin span{ padding:0 14px; border-right:1px solid #E3E8EE; font-size:14px; color:var(--navy); }
+  .smsin input{ flex:1; min-width:0; height:100%; padding:0 14px 0 40px; border:none; background:none; outline:none; font-family:'Yettel'; font-size:14px; color:var(--navy); }
+  .smscode input{ padding-left:16px; letter-spacing:.1em; }
+  .smsin:focus-within{ border-color:var(--navy); }
+  .lgback{ display:block; margin-top:22px; text-align:center; font-size:14px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .idscreen{ padding:0 26px 30px !important; }
+  .idh{ margin:20px 0 14px; font-size:20px; }
+  .idul{ margin:0 0 18px; padding-left:20px; font-size:13px; font-weight:700; line-height:1.55; color:var(--navy); }
+  .idul li + li{ margin-top:6px; }
+  .idit{ font-weight:700; cursor:pointer; }
+  .idbtns{ display:flex; flex-direction:column; gap:12px; margin-top:26px; }
+  .idbtns > *{ margin:0 !important; text-align:center; }
+  .lgbtn.sec{ background:#fff; color:var(--navy); border:2px solid var(--navy); }
+  .dapid{ display:inline-flex; margin-left:8px; font-size:18px; font-weight:800; letter-spacing:-.04em; }
+  .dapscreen{ text-align:center; }
+  .dapill{ position:relative; width:220px; height:200px; margin:16px auto 30px; }
+  .dapill i{ position:absolute; color:var(--navy); }
+  .dwiz{ position:absolute; left:72px; top:44px; font-size:76px; filter:grayscale(.2); }
+  .dw1{ left:150px; top:60px; font-size:40px; color:#9AE000 !important; transform:rotate(15deg); }
+  .dw2{ left:56px; top:0; font-size:44px; color:#9AE000 !important; }
+  .dw3{ left:158px; top:0; font-size:42px; }
+  .dw4{ left:166px; top:110px; font-size:46px; transform:rotate(-20deg); }
+  .dw5{ left:0; top:126px; font-size:44px; color:#9AE000 !important; transform:rotate(-25deg); }
+  .dw6{ left:6px; top:36px; font-size:40px; transform:rotate(-15deg); }
+  .dw7{ left:94px; top:142px; font-size:46px; color:#9AE000 !important; transform:rotate(-60deg); }
+  .dw8{ left:130px; top:16px; font-size:22px; } .dw9{ left:44px; top:100px; font-size:20px; }
+  .daph{ margin:0 0 14px; font-size:19px; font-weight:700; color:var(--navy); }
+  .dapp{ margin:0 10px; font-size:13px; line-height:1.55; color:var(--navy); }
+  .dapback{ position:absolute; left:0; right:0; bottom:60px; text-decoration:underline; text-underline-offset:3px; }
+  /* ===== logout splash ===== */
+  .losplash{ position:absolute; inset:0; z-index:140; display:none; align-items:center; justify-content:center; background:var(--lime); }
+  .losplash.on{ display:flex; animation:brfade .25s ease-out; }
+  .lologo{ font-family:'Yettel'; font-size:44px; font-weight:700; letter-spacing:-.02em; color:var(--navy); animation:lopulse 1s ease-in-out infinite; }
+  .lologo i{ display:inline-block; width:.2em; height:.2em; margin-left:.04em; border-radius:50%; background:var(--navy); }
+  @keyframes lopulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.08); } }
 </style>
 </head>
 <body>
@@ -2543,6 +2618,10 @@
   <input class="rt" type="radio" name="nav" id="s-docs">
   <input class="rt" type="radio" name="nav" id="s-docdet">
   <input class="rt" type="radio" name="nav" id="s-consent2">
+  <input class="rt" type="radio" name="nav" id="s-pwforgot">
+  <input class="rt" type="radio" name="nav" id="s-smslogin">
+  <input class="rt" type="radio" name="nav" id="s-idme">
+  <input class="rt" type="radio" name="nav" id="s-iddap">
   <input class="rt" type="radio" name="nav" id="s-ktopup">
   <input class="rt" type="radio" name="nav" id="s-ktfriends">
   <input class="rt" type="radio" name="nav" id="s-savedcard">
@@ -2569,7 +2648,7 @@
     <div class="mlist mfoot">
       <div class="mrow"><i class="ti ti-headset mi"></i><span class="n">Kapcsolat</span></div>
       <div class="mrow"><i class="ti ti-settings mi"></i><span class="n">Beállítások</span></div>
-      <label class="mrow" for="s-welcome"><i class="ti ti-logout mi"></i><span class="n">Kijelentkezés</span></label>
+      <label class="mrow" for="s-welcome" data-logout><i class="ti ti-logout mi"></i><span class="n">Kijelentkezés</span></label>
     </div>
   </div>
 
@@ -2578,7 +2657,7 @@
     <div class="wbg"></div>
     <div class="wblob b1"></div><div class="wblob b2"></div>
     <div class="wframe wy">
-      <div class="wytop"><span class="wylogo">Yettel<i class="ytri"></i></span><span class="wyeng">ENG</span></div>
+      <div class="wytop"><span class="wylogo">Yettel<i class="ybox"></i></span><span class="wyeng">ENG</span></div>
       <div class="wymid">
         <div class="yepp" aria-label="Yepp"><span>Y</span><span>e</span><span>p</span><span>p</span></div>
       </div>
@@ -2598,15 +2677,16 @@
     <div class="lgtop"><label class="lgx" for="s-welcome" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
     <h2 class="lgh">Belépés</h2>
     <label class="lgl">E-mail cím <span>*</span></label>
-    <input class="lgin" type="email" placeholder="pelda@e-mail.com" data-lgin>
+    <input class="lgin" type="email" placeholder="pelda@e-mail.com" data-lgin data-lgmail>
     <label class="lgl">Jelszó <span>*</span></label>
     <div class="lgpw"><input class="lgin" type="password" placeholder="************" data-lgin data-lgpw><button type="button" class="lgeye" data-lgeye aria-label="Jelszó megjelenítése"><i class="ti ti-eye"></i></button></div>
-    <span class="lgforgot">Elfelejtettem a jelszavam</span>
+    <p class="lgerr" data-lgerr>Érvénytelen e-mail cím.</p>
+    <label class="lgforgot" for="s-pwforgot">Elfelejtettem a jelszavam</label>
     <label class="lgbtn off" for="s-home" data-lgbtn>Belépek</label>
     <div class="lgor"><span>vagy</span></div>
     <div class="lgbox">
-      <label class="lgrow" for="s-home"><i class="ti ti-message"></i><b>SMS kóddal</b><i class="ti ti-chevron-right chev"></i></label>
-      <div class="lgrow lgreg"><i class="ti ti-user"></i><b>Regisztrálok</b><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lgrow" for="s-smslogin"><i class="ti ti-message"></i><b>SMS kóddal</b><i class="ti ti-chevron-right chev"></i></label>
+      <label class="lgrow" for="s-idme"><i class="ti ti-user"></i><b>Regisztrálok</b><i class="ti ti-chevron-right chev"></i></label>
     </div>
   </div>
 
@@ -6680,7 +6760,7 @@
       <label class="tbrow" for="s-docs"><span class="tbic"><i class="ti ti-file-download"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="tbrow" for="s-consent2"><span class="tbic"><i class="ti ti-file-certificate"></i></span><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
-    <label class="tbout" for="s-welcome">Kijelentkezés<i class="ti ti-logout"></i></label>
+    <label class="tbout" for="s-welcome" data-logout>Kijelentkezés<i class="ti ti-logout"></i></label>
   </div>
 
   <!-- ============= GYORS ELÉRÉS: SZEMÉLYRE SZABÁS ============= -->
@@ -7060,6 +7140,57 @@
     </div>
   </div>
 
+  <!-- ============= ELFELEJTETT JELSZÓ ============= -->
+  <div class="screen loginscr lgn lgsub" data-screen="pw-forgot" style="display:none;">
+    <div class="lgtop"><label class="lgx" for="s-login" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <h2 class="lgh lgbig">Elfelejtett jelszó</h2>
+    <p class="lgp">A jelszóváltoztatáshoz add meg Yettel fiókodhoz tartozó e-mail címedet, ahova az új jelszó beállításához szükséges linket küldhetjük.</p>
+    <label class="lgl">E-mail cím <span>*</span></label>
+    <input class="lgin" type="email" placeholder="e-mail@gmail.com" data-pwmail>
+    <p class="lgerr" data-pwerr>Érvénytelen e-mail cím.</p>
+    <p class="lgsent" data-pwsent><i class="ti ti-circle-check"></i>Elküldtük a jelszó beállításához szükséges linket.</p>
+    <button type="button" class="lgbtn lgbottom off" data-pwgo>Tovább</button>
+  </div>
+
+  <!-- ============= SMS BELÉPÉS ============= -->
+  <div class="screen loginscr lgn" data-screen="sms-login" style="display:none;">
+    <div class="lgtop"><label class="lgx" for="s-login" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <h2 class="lgh lgbig lgmid">SMS belépés</h2>
+    <p class="lgp lgpb" data-smstxt>Add meg a számot, amire az SMS-t küldjük.</p>
+    <div class="smsin" data-smsstep="num"><span>+36</span><input type="tel" inputmode="numeric" placeholder="20 345 6789" maxlength="11" data-smsnum></div>
+    <div class="smsin smscode" data-smsstep="code" hidden><input type="tel" inputmode="numeric" placeholder="SMS kód (6 számjegy)" maxlength="6" data-smscode></div>
+    <button type="button" class="lgbtn off" data-smsgo>Kérem az SMS kódot</button>
+    <label class="lgback" for="s-login" data-smsback>Vissza</label>
+  </div>
+
+  <!-- ============= AZONOSÍTOM MAGAM ============= -->
+  <div class="screen loginscr lgn idscreen" data-screen="id-me" style="display:none;">
+    <div class="lgtop"><label class="lgx" for="s-login" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <h2 class="lgh idh">Azonosítom magam</h2>
+    <p class="lgp">Jó hírünk van! Yettel fiókod mostantól egyszerűbb és biztonságosabb.</p>
+    <ul class="idul"><li>Bevezettük a kétfaktoros azonosítást, amihez hitelesítjük e-mail címed.</li><li>Biometrikus azonosítást is használhatsz a gyorsabb belépéshez.</li><li>Belépés után minden hozzád tartozó előfizetésed és szolgáltatásod automatikusan megtalálod egy helyen, a Yettel fiókodban!</li></ul>
+    <p class="lgp">Ehhez csak végig kell menned egy gyors ügyfélazonosítási folyamaton, melyről bővebben <u class="idit">itt</u> tájékozódhatsz. Válassz az alábbi lehetőségek közül <b>vagy csak látogass el valamelyik Yettel üzletbe!</b></p>
+    <div class="idbtns">
+      <span class="lgbtn idb">Szelfis azonosítás</span>
+      <label class="lgbtn sec" for="s-iddap">DÁP alkalmazás <b class="dapid">iD</b></label>
+      <span class="lgbtn sec idb">Videochat</span>
+      <span class="lgbtn sec idb">Időpont az üzletbe</span>
+    </div>
+  </div>
+
+  <!-- ============= DÁP: AZONOSÍTÁS MEGKEZDŐDÖTT ============= -->
+  <div class="screen loginscr lgn dapscreen" data-screen="id-dap" style="display:none;">
+    <div class="lgtop"><label class="lgx" for="s-login" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <div class="dapill" aria-hidden="true">
+      <i class="ti ti-wand dw1"></i><i class="ti ti-wifi dw2"></i><i class="ti ti-shield-half-filled dw3"></i><i class="ti ti-device-tablet dw4"></i>
+      <i class="ti ti-device-sim dw5"></i><i class="ti ti-device-watch dw6"></i><i class="ti ti-device-mobile dw7"></i><i class="ti ti-sparkles dw8"></i><i class="ti ti-sparkles dw9"></i>
+      <span class="dwiz">🧙</span>
+    </div>
+    <h2 class="daph">Az azonosítás megkezdődött</h2>
+    <p class="dapp">A DÁP alkalmazásban hagyd jóvá a két adatkérést, ne lépj ki addig, amíg a folyamat tart. A jóváhagyás után térj vissza ide, a Yettel alkalmazásba.</p>
+    <label class="lgback dapback" for="s-idme">Vissza</label>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
@@ -7238,6 +7369,7 @@
       <button class="cpgo" type="button" data-docerrx>Bezár</button>
     </div>
   </div>
+  <div class="losplash" id="losplash"><span class="lologo">Yettel<i></i></span></div>
   <div class="wip" id="wip">
     <div class="wipcard">
       <span class="wipic"><i class="ti ti-tool"></i></span>
@@ -7820,11 +7952,11 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -7914,7 +8046,7 @@
 <script>
 /* back arrows walk the journey backwards (previously visited screen), falling back to their own target */
 (function(){
-  var ROOTS = {'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
+  var ROOTS = {'s-idme':1,'s-smslogin':1,'s-pwforgot':1,'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
   var stack = [];
   function curId(){ var c = document.querySelector('input.rt[name="nav"]:checked'); return c ? c.id : null; }
   function screenOf(){ var all = document.querySelectorAll('[data-screen]');
@@ -7993,15 +8125,62 @@
 })();
 </script>
 <script>
-/* login: show/hide password, Belépek only with both fields filled */
+/* login journey: e-mail check, password eye, forgotten password, SMS login, logout splash */
 (function(){
-  var sc = document.querySelector('[data-screen="login"]'); if (!sc) return;
-  var ins = Array.prototype.slice.call(sc.querySelectorAll('[data-lgin]')), btn = sc.querySelector('[data-lgbtn]');
-  function upd(){ btn.classList.toggle('off', !ins.every(function(i){ return i.value.trim(); })); }
-  ins.forEach(function(i){ i.addEventListener('input', upd); });
-  var eye = sc.querySelector('[data-lgeye]'), pw = sc.querySelector('[data-lgpw]');
-  eye.addEventListener('click', function(){ var show = pw.type === 'password'; pw.type = show ? 'text' : 'password'; eye.querySelector('i').className = 'ti ' + (show ? 'ti-eye-off' : 'ti-eye'); });
-  upd();
+  var RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  function $(q, r){ return (r || document).querySelector(q); }
+  function go(id){ var r = document.getElementById(id); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } }
+  /* Belépés */
+  var sc = $('[data-screen="login"]');
+  if (sc){
+    var mail = $('[data-lgmail]', sc), pw = $('[data-lgpw]', sc), btn = $('[data-lgbtn]', sc), err = $('[data-lgerr]', sc), touched = false;
+    function upd(){
+      var v = mail.value.trim(), bad = touched && v && !RE.test(v);
+      mail.classList.toggle('bad', !!bad); err.classList.toggle('on', !!bad);
+      btn.classList.toggle('off', !RE.test(v) || !pw.value);
+    }
+    mail.addEventListener('input', function(){ if (touched) upd(); else upd(); });
+    mail.addEventListener('blur', function(){ touched = true; upd(); });
+    pw.addEventListener('focus', function(){ touched = true; upd(); });
+    pw.addEventListener('input', upd);
+    var eye = $('[data-lgeye]', sc);
+    eye.addEventListener('click', function(){ var show = pw.type === 'password'; pw.type = show ? 'text' : 'password'; eye.querySelector('i').className = 'ti ' + (show ? 'ti-eye-off' : 'ti-eye'); });
+    upd();
+  }
+  /* Elfelejtett jelszó */
+  var pf = $('[data-screen="pw-forgot"]');
+  if (pf){
+    var pm = $('[data-pwmail]', pf), pe = $('[data-pwerr]', pf), pg = $('[data-pwgo]', pf), ps = $('[data-pwsent]', pf), pt = false;
+    function pu(){ var v = pm.value.trim(), bad = pt && v && !RE.test(v); pm.classList.toggle('bad', !!bad); pe.classList.toggle('on', !!bad); pg.classList.toggle('off', !RE.test(v)); ps.classList.remove('on'); }
+    pm.addEventListener('input', pu); pm.addEventListener('blur', function(){ pt = true; pu(); });
+    pg.addEventListener('click', function(){ if (pg.classList.contains('off')) return; ps.classList.add('on'); setTimeout(function(){ go('s-login'); }, 1800); });
+  }
+  /* SMS belépés: number → code → in */
+  var sm = $('[data-screen="sms-login"]');
+  if (sm){
+    var num = $('[data-smsnum]', sm), code = $('[data-smscode]', sm), sg = $('[data-smsgo]', sm), txt = $('[data-smstxt]', sm), step = 'num';
+    function digits(x){ return x.value.replace(/\D/g, ''); }
+    function setStep(st){
+      step = st;
+      $('[data-smsstep="num"]', sm).hidden = st !== 'num'; $('[data-smsstep="code"]', sm).hidden = st !== 'code';
+      txt.textContent = st === 'num' ? 'Add meg a számot, amire az SMS-t küldjük.' : 'Add meg az SMS-ben kapott 6 jegyű kódot.';
+      sg.textContent = st === 'num' ? 'Kérem az SMS kódot' : 'Belépek'; su();
+    }
+    function su(){ sg.classList.toggle('off', step === 'num' ? digits(num).length !== 9 : digits(code).length !== 6); }
+    num.addEventListener('input', function(){ var d = digits(num).slice(0, 9); num.value = d.replace(/^(\d{2})(\d{0,3})(\d{0,4}).*/, function(m, a, b2, c){ return [a, b2, c].filter(Boolean).join(' '); }); su(); });
+    code.addEventListener('input', function(){ code.value = digits(code).slice(0, 6); su(); });
+    sg.addEventListener('click', function(){ if (sg.classList.contains('off')) return; if (step === 'num') setStep('code'); else { go('s-home'); setStep('num'); num.value = ''; code.value = ''; } });
+    $('[data-smsback]', sm).addEventListener('click', function(e){ if (step === 'code'){ e.preventDefault(); setStep('num'); } });
+    document.addEventListener('change', function(e){ if (e.target.id === 's-smslogin' && e.target.checked) setStep('num'); });
+  }
+  /* Kijelentkezés: short pulsing logo before the welcome screen */
+  var sp = document.getElementById('losplash');
+  document.addEventListener('click', function(e){
+    var l = e.target.closest && e.target.closest('[data-logout]'); if (!l || !sp) return;
+    e.preventDefault(); sp.classList.add('on');
+    setTimeout(function(){ go('s-welcome'); }, 1500);
+    setTimeout(function(){ sp.classList.remove('on'); }, 1700);
+  });
 })();
 /* Yetteles leszek: banner carousel with dots, auto-advancing */
 (function(){
