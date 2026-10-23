@@ -295,6 +295,7 @@
   #s-strm2:checked ~ [data-screen="strm-2"],
   #s-strm3:checked ~ [data-screen="strm-3"],
   #s-offsvc:checked ~ [data-screen="offers-svc"],
+  #s-tvoff:checked ~ [data-screen="tv-offers"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
   #s-tvselsvc:checked ~ [data-screen="tvsel-svc"],
   #s-topup1:checked ~ [data-screen="topup-1"],
@@ -2695,12 +2696,41 @@
   .cbopt.sel{ border:2px solid #09223D; }
   .cblegal{ margin:0; font-size:12px; line-height:1.45; color:var(--navy); }
   .cblegal .odlnk{ font-size:12px; }
+
+  /* first load: gear on lime until the Yettel font and the welcome screen are ready */
+  .bootsplash{ position:absolute; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; background:var(--lime); transition:opacity .3s ease; }
+  .bootsplash.out{ opacity:0; pointer-events:none; }
+  .bootgear{ display:block; width:34px; height:34px; color:var(--navy); animation:ligear 1.6s linear infinite; }
+  .bootgear svg{ display:block; width:100%; height:100%; }
+  .boot .welcome, .boot .welcome *{ animation-play-state:paused !important; }
+
+  /* TV offers */
+  .tvinfo{ margin-top:4px; }
+  .tvinfo p{ margin:4px 0 0; font-size:12px; line-height:1.4; color:var(--navy); }
+  .ofcard.tvno{ align-items:center; justify-content:center; gap:14px; min-height:380px; cursor:pointer; }
+  .tvno > i{ font-size:42px; color:#8592A6; }
+  .tvno b{ font-size:20px; font-weight:700; color:var(--navy); }
+  .tvsp{ gap:12px; padding:10px 18px; }
+  .tvsp b{ font-size:15px; }
+  .tvboxsec{ margin:2px 0 4px; }
+  .tvbh{ margin:0 0 18px; font-size:18px; font-weight:700; color:var(--navy); }
+  .tvbx{ position:relative; display:flex; align-items:center; gap:12px; width:100%; padding:16px 14px 14px; border:1.5px solid #D5DCE3; border-radius:12px; background:#fff; cursor:pointer; font-family:'Yettel'; text-align:left; }
+  .tvbx.on{ border:2px solid #09223D; background:#EFF8FD; }
+  .tvbx.on .ofbadge{ background:#09223D; color:#fff; }
+  .tvbimg{ flex-shrink:0; width:44px; height:28px; }
+  .tvbt{ flex:1; font-size:14px; font-weight:700; color:var(--navy); }
+  .tvbic{ font-size:24px; color:var(--navy); }
+  .tvblnk{ display:inline-block; margin-top:12px; font-size:12px; }
+  .tvscr.busy .tvbx{ pointer-events:none; opacity:.6; }
+  .tvscr .ofhelp{ margin-top:22px; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
 </head>
 <body>
+<script>document.documentElement.classList.add('boot');</script>
 <div class="app" role="img" aria-label="Prémium Yettel app-koncepció világos témában, kék és lime akcenttel.">
+  <div class="bootsplash" id="bootsplash"><span class="bootgear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></svg></span></div>
   <h2 class="sr-only">Prémium Yettel app-koncepció (világos): előfizetéseim és szolgáltatás részletei.</h2>
   <input class="rt" type="radio" name="nav" id="s-welcome" checked>
   <input class="rt" type="radio" name="nav" id="s-login">
@@ -2718,6 +2748,7 @@
   <input class="rt" type="radio" name="nav" id="s-tarifbuy">
   <input class="rt" type="radio" name="nav" id="s-tarifsvc">
   <input class="rt" type="radio" name="nav" id="s-offsvc">
+  <input class="rt" type="radio" name="nav" id="s-tvoff">
   <input class="rt" type="radio" name="nav" id="s-tvselbuy">
   <input class="rt" type="radio" name="nav" id="s-tvselsvc">
   <input class="rt" type="radio" name="nav" id="s-topup1">
@@ -3724,6 +3755,36 @@
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
 
 
+
+  <!-- ============= TV AJÁNLATOK: tv-offers ============= -->
+  <div class="screen ofscr tvscr" data-screen="tv-offers" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-offsvc"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">TV</span>
+      <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
+    </div>
+    <h2 class="ofh">Válassz TV-csomagot!</h2>
+    <div class="ofinfo tvinfo"><i class="ti ti-alert-circle"></i><div><b>Most válassz előfizetésed mellé további szolgáltatásokat!</b><p>TV-t és extra szolgáltatásokat csak most tudsz új előfizetésed mellé rendelni, az utólagos vásárlás még nem érhető el.</p></div></div>
+    <div class="ofcar"></div>
+    <div class="ofdots"></div>
+    <div class="tvboxsec">
+      <h3 class="tvbh">TV box</h3>
+      <button type="button" class="tvbx" data-tvbox><span class="ofbadge">Próbáld ki 30 napig díjmentesen!</span>
+        <svg class="tvbimg" viewBox="0 0 44 28" aria-hidden="true"><rect x="2" y="6" width="40" height="16" rx="3" fill="#2B2F36"/><rect x="2" y="6" width="40" height="5" rx="2.5" fill="#3B4048"/><circle cx="36" cy="16" r="1.3" fill="#B4FF00"/><rect x="6" y="22" width="5" height="2" rx="1" fill="#1A1D22"/><rect x="33" y="22" width="5" height="2" rx="1" fill="#1A1D22"/></svg>
+        <b class="tvbt">TV box hozzáadása</b><i class="ti ti-circle-plus tvbic"></i></button>
+      <span class="odlnk tvblnk">Szükségem van TV box-ra?</span>
+    </div>
+    <div class="ofhelp">
+      <small>Segíthetünk?</small>
+      <b>Chatelj kollégánkkal, ha elakadtál</b>
+      <svg viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M18 46V38a22 22 0 0 1 44 0v8" stroke="#09223D" stroke-width="7" stroke-linecap="round"/><rect x="10" y="40" width="16" height="24" rx="8" fill="#B4FF00" stroke="#09223D" stroke-width="3"/><rect x="54" y="40" width="16" height="24" rx="8" fill="#09223D"/><path d="M62 64c0 7-8 10-18 10" stroke="#09223D" stroke-width="3" stroke-linecap="round"/><circle cx="42" cy="74" r="4" fill="#09223D"/></svg>
+      <button type="button" class="ofchat" data-chatpop>Chat indítása</button>
+    </div>
+    <div class="offoot">
+      <div class="ofsum"><span>Vásárláskor:</span><b>0 Ft</b><span>Havonta:</span><b data-ofmon>7 990 Ft/hó</b></div>
+      <button type="button" class="ofnext tvnext">Tovább</button>
+    </div>
+  </div>
 
   <!-- ============= Csomagváltás: tarifch-1 ============= -->
 
@@ -7309,7 +7370,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.odlnk,.ofnext,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.odlnk,.tvnext,.tvdet,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -8225,8 +8286,9 @@
   app.appendChild(snack);
   var snackT;
   function toast(ok, text){
-    var ar = app.getBoundingClientRect(), fr = foot.getBoundingClientRect();
-    var gap = fr.top < ar.bottom && sc.offsetParent ? ar.bottom - fr.top + 12 : 16;
+    var vf = Array.prototype.filter.call(document.querySelectorAll('.offoot'), function(f){ return f.offsetParent; })[0];
+    var ar = app.getBoundingClientRect(), fr = vf ? vf.getBoundingClientRect() : ar;
+    var gap = vf && fr.top < ar.bottom ? ar.bottom - fr.top + 12 : 16;
     snack.style.bottom = Math.max(16, gap) + 'px';
     snack.classList.toggle('bad', !ok);
     snack.querySelector('i').className = 'ti ' + (ok ? 'ti-circle-check-filled' : 'ti-alert-circle-filled');
@@ -8235,10 +8297,11 @@
     snackT = setTimeout(function(){ snack.classList.remove('on'); }, 3000);
   }
   /* every basket change: Tovább + toggle disabled and a spinner for the price while it saves */
-  function busy(ok, done){
-    sc.classList.add('busy'); kid.disabled = true;
+  function busy(scr, ok, done){
+    var ins = scr.querySelectorAll('.ofsw input');
+    scr.classList.add('busy'); Array.prototype.forEach.call(ins, function(x){ x.disabled = true; });
     setTimeout(function(){
-      sc.classList.remove('busy'); kid.disabled = false;
+      scr.classList.remove('busy'); Array.prototype.forEach.call(ins, function(x){ x.disabled = false; });
       done(ok);
       toast(ok, ok ? 'Kosarad frissült.' : 'Nem sikerült frissíteni a kosarad. Kérjük, próbáld újra!');
     }, 1200);
@@ -8248,7 +8311,7 @@
     if (b && !sc.classList.contains('busy')){
       var i = +b.closest('.ofcard').getAttribute('data-i'), prev = selI; if (i === prev) return;
       mark(i);
-      busy(!list[i].fail, function(ok){ apply(ok ? i : prev); });
+      busy(sc, !list[i].fail, function(ok){ apply(ok ? i : prev); });
       return;
     }
     var d = e.target.closest('[data-ofdet]'); if (d) openDet(list[+d.closest('.ofcard').getAttribute('data-i')].name);
@@ -8256,11 +8319,14 @@
   });
   kid.addEventListener('change', function(){
     var want = kid.checked;
-    busy(true, function(ok){ if (!ok) kid.checked = !want; });
+    busy(sc, true, function(ok){ if (!ok) kid.checked = !want; });
   });
 
+  var lastA = null;
   function render(){
     var a = window.yAddr || {scenario:'both', address:'8200 Veszprém, Tölgyfa u. 4'};
+    /* coming back from the TV step keeps the chosen package */
+    if (a === lastA) return; lastA = a;
     list = PKGS.filter(function(p){ return a.scenario === 'both' || p.t === a.scenario; });
     /* where fibre is available, OtthonNet is only offered via a call back */
     car.innerHTML = list.map(function(p, i){ return card(p, i, p.t === 'fbb' || a.scenario === 'fwa'); }).join('');
@@ -8325,8 +8391,93 @@
     if (nOk && tOk){ cb.classList.remove('on'); toast(true, 'Visszahívási kérésedet rögzítettük.'); }
   });
   cb.addEventListener('input', function(e){ var f = e.target.closest('.cbin'); if (f) f.classList.remove('err'); });
+  /* ---- TV step: Internet + TV starts on TV Plus, plain Internet on "Nem kérek TV-t" ---- */
+  var tsc = document.querySelector('[data-screen="tv-offers"]'), tcar = tsc.querySelector('.ofcar'), tdots = tsc.querySelector('.ofdots'), tbox = tsc.querySelector('[data-tvbox]');
+  var TVS = [
+    {name:'Yettel TV Plus', ch:'100 csatorna', hd:'ebből 56 HD', strm:true, price:6500},
+    {name:'Yettel TV Basic', ch:'42 csatorna', hd:'ebből 27 HD', strm:true, price:4500},
+    {name:'Yettel TV Mini', ch:'6 csatorna', hd:'ebből 6 HD', strm:false, price:2000},
+    {name:'Nem kérek TV-t', none:true, price:0}
+  ];
+  var BOX = 990, tlist = [], tSel = 0, boxOn = false;
+  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function tvCard(t, i){
+    if (t.none) return '<div class="ofcard tvno" data-i="'+i+'" data-tvsel><i class="ti ti-device-tv-off"></i><b>Nem kérek TV-t</b></div>';
+    return '<div class="ofcard" data-i="'+i+'"><p class="ofname">'+t.name+'</p>'
+      + '<div class="ofspd tvsp"><i class="ti ti-device-tv"></i><b>'+t.ch+'</b></div>'
+      + '<div class="offt"><i class="ti ti-badge-hd"></i><span><b>'+t.hd+'</b></span></div>'
+      + (t.strm ? '<div class="offt"><i class="ti ti-cast"></i><span><b>Díjmentes RTL+ Active, TV2 Play Prémium</b></span></div>' : '')
+      + '<span class="ofdet tvdet">Csatornák és részletek</span>'
+      + '<span class="ofpromo">100% havidíj kedvezmény 30 napig</span>'
+      + '<div class="ofprice"><p>az első 30 napban <b>0 Ft/hó</b> utána</p><div class="ofbig"><b>'+fmt(t.price)+'</b><span>Ft<small>/hó</small></span></div>'
+      + '<button type="button" class="ofbtn" data-tvsel></button></div></div>';
+  }
+  function tvMark(i){
+    Array.prototype.forEach.call(tcar.children, function(c){
+      var on = +c.getAttribute('data-i') === i, b = c.querySelector('button[data-tvsel]');
+      c.classList.toggle('sel', on);
+      if (b) b.innerHTML = on ? 'Kiválasztva <i class="ti ti-check"></i>' : 'Kiválasztom';
+    });
+    tsc.querySelector('.tvboxsec').hidden = !!tlist[i].none;
+  }
+  function tvSum(){
+    var net = list[selI] ? +list[selI].price.replace(/\D/g, '') : 0, t = tlist[tSel];
+    tsc.querySelector('[data-ofmon]').textContent = fmt(net + t.price + (boxOn && !t.none ? BOX : 0)) + ' Ft/hó';
+  }
+  function tvBox(on){ boxOn = on; tbox.classList.toggle('on', on); tbox.querySelector('.tvbt').textContent = on ? 'TV box hozzáadva' : 'TV box hozzáadása'; tbox.querySelector('.tvbic').className = 'ti tvbic ' + (on ? 'ti-circle-check-filled' : 'ti-circle-plus'); }
+  function renderTv(){
+    var combo = window.yAddr && window.yAddr.from === 'ctv-addr';
+    tlist = combo ? TVS.slice() : [TVS[3]].concat(TVS.slice(0, 3));
+    tcar.innerHTML = tlist.map(tvCard).join('');
+    tdots.innerHTML = tlist.map(function(t, i){ return '<i'+(i ? '' : ' class="on"')+'></i>'; }).join('');
+    tsc.querySelector('.adx').setAttribute('for', window.yAddr && window.yAddr.guest ? 's-newcust' : 's-tshop');
+    tSel = 0; tvBox(false); tvMark(0); tvSum();
+    tsc.classList.remove('stk'); tsc.scrollTop = 0; tcar.scrollLeft = 0;
+  }
+  sc.querySelector('.ofnext').addEventListener('click', function(){
+    renderTv();
+    var r = document.getElementById('s-tvoff'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
+    tsc.scrollTop = 0; tcar.scrollLeft = 0;  /* only takes effect once the screen is shown */
+  });
+  tcar.addEventListener('click', function(e){
+    var b = e.target.closest('[data-tvsel]');
+    if (!b || tsc.classList.contains('busy')) return;
+    var i = +b.closest('.ofcard').getAttribute('data-i'), prev = tSel; if (i === prev) return;
+    tvMark(i);
+    busy(tsc, true, function(ok){ tSel = ok ? i : prev; tvMark(tSel); tvSum(); });
+  });
+  tbox.addEventListener('click', function(){
+    if (tsc.classList.contains('busy')) return;
+    var want = !boxOn; tvBox(want);
+    busy(tsc, true, function(ok){ if (!ok) tvBox(!want); tvSum(); });
+  });
+  tcar.addEventListener('scroll', function(){
+    var c = tcar.children[0]; if (!c) return;
+    var n = Math.round(tcar.scrollLeft / (c.offsetWidth + 12));
+    Array.prototype.forEach.call(tdots.children, function(d, i){ d.classList.toggle('on', i === n); });
+  });
+  tsc.addEventListener('scroll', function(){ if (tsc.scrollTop + tsc.clientHeight >= tsc.scrollHeight - 4) tsc.classList.add('stk'); });
+
   [od, cb].forEach(function(ov){ ov.addEventListener('click', function(e){ if (e.target.closest('[data-fsclose]')) ov.classList.remove('on'); }); });
   render();
+})();
+</script>
+<script>
+/* first load: hide the gear once the fonts (Yettel + icons) and the page are in */
+(function(){
+  var bs = document.getElementById('bootsplash'); if (!bs) return;
+  var t0 = Date.now(), done = false;
+  function hide(){
+    if (done) return; done = true;
+    setTimeout(function(){
+      bs.classList.add('out'); document.documentElement.classList.remove('boot');
+      setTimeout(function(){ bs.remove(); }, 350);
+    }, Math.max(0, 900 - (Date.now() - t0)));
+  }
+  var loaded = new Promise(function(r){ if (document.readyState === 'complete') r(); else window.addEventListener('load', r); });
+  var fonts = document.fonts ? Promise.all(['300 16px Yettel','400 16px Yettel','700 16px Yettel'].map(function(f){ return document.fonts.load(f).catch(function(){}); })).then(function(){ return document.fonts.ready; }) : Promise.resolve();
+  Promise.all([loaded, fonts]).then(hide, hide);
+  setTimeout(hide, 6000);
 })();
 </script>
 </body>
