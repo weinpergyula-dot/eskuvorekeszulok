@@ -3213,6 +3213,8 @@
   .gmfoot .ktbtn.busy::after{ content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
   .gmfoot .ktbtn.done{ background:var(--lime); border-color:var(--lime); color:var(--navy); }
   .nolink{ cursor:default !important; }
+  .nav{ background-color:rgba(255,255,255,.52) !important; -webkit-backdrop-filter:blur(10px) saturate(1.8) !important; backdrop-filter:blur(10px) saturate(1.8) !important; }
+  .nitem::before{ inset:0 -5px !important; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -3558,12 +3560,12 @@
     </div>
 
     <div class="dtcard">
-      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><label class="dtlink" for="s-devbuy">Összes készülék</label></div>
+      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><span class="dtlink nolink">Összes készülék</span></div>
       <p class="dtsub">Új szám, új mobil, pár kattintással.</p>
       <div class="dtphones">
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</label>
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</label>
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</label>
+        <span class="dtph nolink"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</span>
+        <span class="dtph nolink"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</span>
+        <span class="dtph nolink"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</span>
       </div>
     </div>
 
@@ -6626,12 +6628,12 @@
     </div>
 
     <div class="dtcard">
-      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><label class="dtlink" for="s-devbuy">Összes készülék</label></div>
+      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><span class="dtlink nolink">Összes készülék</span></div>
       <p class="dtsub">Új szám, új mobil, pár kattintással.</p>
       <div class="dtphones">
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</label>
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</label>
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</label>
+        <span class="dtph nolink"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</span>
+        <span class="dtph nolink"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</span>
+        <span class="dtph nolink"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</span>
       </div>
     </div>
 
@@ -6709,7 +6711,7 @@
       <label class="tbrow" for="s-buynew"><span class="tbic"><i class="ti ti-shopping-cart"></i></span><span class="n">Új szolgáltatás vásárlás</span><i class="ti ti-chevron-right chev"></i></label>
       <div class="tbrow" data-xsheet><span class="tbic"><i class="ti ti-circle-plus"></i></span><span class="n">Extra szolgáltatások</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <div class="tbsec"><p>Mobilfizetés</p><label class="tblink" for="s-topup1">Keretfeltöltés</label></div>
+    <div class="tbsec"><p>Mobilfizetés</p><label class="tblink" for="s-ktopup">Keretfeltöltés</label></div>
     <div class="tblist tbboxed">
       <div class="tbrow"><span class="tbic"><i class="ti ti-parking-circle"></i></span><span class="n">Parkoló jegy</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="tbrow"><span class="tbic"><i class="ti ti-road"></i></span><span class="n">Autópálya matrica</span><i class="ti ti-chevron-right chev"></i></div>
@@ -6804,8 +6806,8 @@
     <div class="bnlist">
       <label class="bncard" for="s-ctvaddr" style="--img:url('yettel/buy-net-tv.webp')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
       <label class="bncard" for="s-addrsvc" style="--img:url('yettel/buy-net.webp')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
-      <label class="bncard" for="s-tvselsvc" data-tvpre="none" style="--img:url('yettel/buy-tv.webp')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></label>
-      <label class="bncard" for="s-addservice" data-tab="ts-mobil" style="--img:url('yettel/buy-mobile.webp')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></label>
+      <div class="bncard" data-wip style="--img:url('yettel/buy-tv.webp')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></div>
+      <div class="bncard" data-wip style="--img:url('yettel/buy-mobile.webp')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></div>
     </div>
   </div>
 
@@ -7373,7 +7375,7 @@
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
     <label class="nitem" for="s-tfin"><i class="nift"></i><span class="nbdg" data-billbadge>1</span>Pénzügyek</label>
     <label class="nitem" for="s-tshop"><i class="ti ti-shopping-cart"></i>Vásárlás</label>
-    <label class="nitem" for="s-fun"><i class="ti ti-star"></i>Bónusz</label>
+    <div class="nitem" data-wip><i class="ti ti-star"></i>Bónusz</div>
     <label class="nitem" for="s-tprof"><i class="ti ti-user"></i>Profil</label>
   </div>
 
@@ -7940,7 +7942,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.odlnk,.tvchan,.smdoc,.annotify,.idb,.idit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '[data-wip],.odlnk,.tvchan,.smdoc,.annotify,.idb,.idit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
