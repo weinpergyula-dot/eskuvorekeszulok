@@ -299,6 +299,8 @@
   #s-offsvc:checked ~ [data-screen="offers-svc"],
   #s-tvoff:checked ~ [data-screen="tv-offers"],
   #s-tvext:checked ~ [data-screen="tv-extras"],
+  #s-addrtaken:checked ~ [data-screen="addr-taken"],
+  #s-bconsent:checked ~ [data-screen="bconsent"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
   #s-tvselsvc:checked ~ [data-screen="tvsel-svc"],
   #s-topup1:checked ~ [data-screen="topup-1"],
@@ -2804,6 +2806,40 @@
   .gslogo.rtl i{ display:flex; align-items:center; justify-content:center; width:34px; height:26px; font-style:normal; font-size:18px; font-weight:700; color:#fff; }
   .gslogo.rtl i:nth-child(1){ background:#3D57F2; } .gslogo.rtl i:nth-child(2){ background:#3F8BF0; } .gslogo.rtl i:nth-child(3){ background:#8A3FE0; }
   .gslogo.rtl b{ font-size:30px; color:#1A1A1A; }
+
+  /* taken address + purchase consent */
+  .antk i{ color:#8592A6; } .antk{ background:#E3E8EE; }
+  .anp b{ font-weight:700; }
+  #s-bconsent:checked ~ .bcscreen{ display:flex !important; flex-direction:column; }
+  .bcscreen{ background:#fff; padding-bottom:0 !important; }
+  .bcscreen > *{ flex-shrink:0; }
+  .bchead{ display:grid; grid-template-columns:32px 1fr 32px; align-items:center; padding:calc(22px + env(safe-area-inset-top)) 0 18px; }
+  .bcsteps{ display:flex; justify-content:center; gap:4px; }
+  .bcsteps i{ width:52px; height:4px; border-radius:2px; background:#E3E8EE; }
+  .bcsteps i.on{ background:#09223D; }
+  .bcx{ display:flex; justify-content:flex-end; cursor:pointer; }
+  .bcx i{ font-size:24px; color:#8592A6; }
+  .bccard{ padding:18px 14px 16px; border:1.5px solid #E3E8EE; border-radius:14px; }
+  .bch{ margin:0 0 12px; font-size:18px; font-weight:700; color:var(--navy); }
+  .bcp{ margin:0 0 16px; font-size:12px; line-height:1.45; color:var(--navy); }
+  .bcopt{ display:flex; align-items:center; gap:10px; padding:7px 0; font-size:13px; color:var(--navy); cursor:pointer; }
+  .bcopt input{ position:absolute; opacity:0; pointer-events:none; }
+  .bcr{ width:18px; height:18px; border:1.5px solid #A9B3BF; border-radius:50%; background:#fff; box-sizing:border-box; transition:border .15s; }
+  .bcopt input:checked + .bcr{ border:5px solid #09223D; }
+  .bclink{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .bclink span{ text-decoration:underline; }
+  .bclink i{ font-size:18px; color:#8592A6; text-decoration:none; }
+  .bcerr{ display:none; margin:10px 0 0; font-size:12px; color:#F0603C; }
+  .bcscreen.err .bcerr{ display:block; }
+  .bcfoot{ margin:auto -16px 0; padding:14px 16px calc(16px + env(safe-area-inset-bottom)); border-top:1px solid #EEF1F4; background:#fff; }
+  .bcnext{ position:relative; display:flex; align-items:center; justify-content:center; width:100%; height:46px; border:none; border-radius:999px; background:#09223D; font-family:'Yettel'; font-size:14px; font-weight:700; color:#fff; cursor:pointer; }
+  .bcscreen.busy .bcopt, .bcscreen.busy .bclink, .bcscreen.busy .bcnext{ pointer-events:none; }
+  .bcscreen.busy .bcr{ background:#CDD4DC; border-color:#CDD4DC; }
+  .bcscreen.busy .bcopt input:checked + .bcr{ border-color:#8592A6; }
+  .bcscreen.busy .bclink{ color:#A9B3BF; }
+  .bcscreen.busy .bcnext{ background:#3E5670; }
+  .bcscreen.busy .bcnext span{ visibility:hidden; }
+  .bcscreen.busy .bcnext::after{ content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -2831,6 +2867,8 @@
   <input class="rt" type="radio" name="nav" id="s-offsvc">
   <input class="rt" type="radio" name="nav" id="s-tvoff">
   <input class="rt" type="radio" name="nav" id="s-tvext">
+  <input class="rt" type="radio" name="nav" id="s-addrtaken">
+  <input class="rt" type="radio" name="nav" id="s-bconsent">
   <input class="rt" type="radio" name="nav" id="s-tvselbuy">
   <input class="rt" type="radio" name="nav" id="s-tvselsvc">
   <input class="rt" type="radio" name="nav" id="s-topup1">
@@ -6914,6 +6952,31 @@
     </div>
   </div>
 
+  <!-- ============= FOGLALT CÍM: addr-taken ============= -->
+  <div class="screen loginscr lgn anscreen" data-screen="addr-taken" style="display:none;">
+    <span class="anic antk"><i class="ti ti-circle-minus"></i></span>
+    <h2 class="anh">A címeden van már vezetékes internet előfizetés</h2>
+    <p class="anp">Szolgáltatásváltással történő szerződéskötésre jelenleg még nincs lehetőség, de a folyamat kialakításán dolgozunk, hamarosan elérhető lesz. Addig is <b>hívd a 1220-at vagy kérj visszahívást</b>, és kollégánk tájékoztatni fog, hogy mi szükséges ahhoz, hogy megrendelhesd tőlünk új otthoni internet csomagod, amit díjmentesen telepítünk majd otthonodba.</p>
+    <div class="anfoot">
+      <span class="lgbtn" data-takencb>Visszahívást kérek</span>
+      <label class="lgback" for="s-home" data-gohome>Vissza a főoldalra</label>
+    </div>
+  </div>
+
+  <!-- ============= HOZZÁJÁRULÁS A VÁSÁRLÁSBAN: bconsent ============= -->
+  <div class="screen bcscreen" data-screen="bconsent" style="display:none;">
+    <div class="bchead"><span></span><div class="bcsteps"><i class="on"></i><i></i><i></i></div><label class="bcx adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <div class="bccard">
+      <h2 class="bch">Hozzájárulási beállítások</h2>
+      <p class="bcp">Szeretnél általános és személyre szóló ajánlatokat, kedvezményeket kapni e-mailben, postai úton, telefonon, yettel.hu honlapon, a Yettel appban, automatizált hívórendszer (SMS, MMS, SMS push) útján, melyhez a megadott, a szolgáltatás igénybevétele során keletkezett adataidat automatizált módon elemezzük és melyeket piac - és közvélemény kutatás céljából kezeljük</p>
+      <label class="bcopt"><input type="radio" name="bc-all" value="y"><span class="bcr"></span>Összes elfogadása</label>
+      <label class="bcopt"><input type="radio" name="bc-all" value="n"><span class="bcr"></span>Összes elutasítása</label>
+      <label class="bclink" for="s-consent2" data-csfrom><span>Egyedi beállítások</span><i class="ti ti-chevron-right"></i></label>
+      <p class="bcerr">Kérjük, válassz egy lehetőséget, vagy add meg egyedi beállításaidat.</p>
+    </div>
+    <div class="bcfoot"><button type="button" class="bcnext" data-bcnext><span>Tovább</span></button></div>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
@@ -7486,7 +7549,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.odlnk,.exnext,.tvchan,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.odlnk,.tvchan,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -7567,7 +7630,7 @@
   var STREETS_BP1144 = ['Ond vezér útja','Ond vezér park','Örs vezér tere','Kerepesi út','Kassai utca','Kántorné sétány','Füredi utca','Szentmihályi út','Vezér utca'];
   var STREETS = ['Fő utca','Petőfi Sándor utca','Kossuth Lajos utca','Rákóczi Ferenc utca','Ady Endre utca','Deák Ferenc utca','Tölgyfa utca','Jókai Mór utca','Arany János utca','Szabadság tér','Béke utca','Táncsics Mihály utca'];
   var HOUSES_OND = ['1','3','5','7','9','11','13-15','17','19-21','23','25'];
-  var UNITS = [['fszt. 1. ajtó (Van FBB+FWA)','both'],['2. emelet 1. ajtó (Van FBB)','fbb'],['5. emelet 12. ajtó (Van FWA)','fwa'],['9. emelet 3. ajtó (Nincs szolgáltatás)','none']];
+  var UNITS = [['fszt. 1. ajtó (Van FBB+FWA)','both'],['2. emelet 1. ajtó (Van FBB)','fbb'],['5. emelet 12. ajtó (Van FWA)','fwa'],['9. emelet 3. ajtó (Nincs szolgáltatás)','none'],['3. emelet 7. ajtó (Foglalt cím)','both',true]];
   var TITLES = {city:'Település és irányítószám', street:'Közterület', house:'Házszám', unit:'Lépcsőház, emelet, ajtó'};
   var ORDER = ['city','street','house','unit'];
   function options(k, v){
@@ -7684,8 +7747,8 @@
       if (newR.checked && !sc.classList.contains('adon')){ sc.classList.add('adon'); paint(sc); sc.scrollTop = 0; return; }
       var v = sc._vals, unit = UNITS.filter(function(u){ return u[0] === v.unit; })[0];
       var scenario = newR.checked ? (unit ? unit[1] : 'both') : 'both';
-      window.yAddr = {from:sc.getAttribute('data-screen'), guest:sc.classList.contains('guest'), scenario:scenario, address: newR.checked ? (v.city+', '+v.street+' '+v.house+', '+v.unit.replace(/\s*\(.*\)$/, '')) : '8200 Veszprém, Tölgyfa u. 4'};
-      var hb = document.querySelector('[data-gohome]'); if (hb) hb.setAttribute('for', sc.classList.contains('guest') ? 's-newcust' : 's-home');
+      window.yAddr = {from:sc.getAttribute('data-screen'), guest:sc.classList.contains('guest'), taken:!!(newR.checked && unit && unit[2]), scenario:scenario, address: newR.checked ? (v.city+', '+v.street+' '+v.house+', '+v.unit.replace(/\s*\(.*\)$/, '')) : '8200 Veszprém, Tölgyfa u. 4'};
+      Array.prototype.forEach.call(document.querySelectorAll('[data-gohome]'), function(hb){ hb.setAttribute('for', sc.classList.contains('guest') ? 's-newcust' : 's-home'); });
       ld.classList.add('on');
       setTimeout(function(){ go(scenario === 'none' ? 's-addrnone' : next.getAttribute('data-adgo')); }, 2600);
       setTimeout(function(){ ld.classList.remove('on'); }, 2800);
@@ -7712,7 +7775,7 @@
 <script>
 /* back arrows walk the journey backwards (previously visited screen), falling back to their own target */
 (function(){
-  var ROOTS = {'s-addrnone':1,'s-otp':1,'s-idme':1,'s-smslogin':1,'s-pwforgot':1,'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
+  var ROOTS = {'s-addrnone':1,'s-addrtaken':1,'s-otp':1,'s-idme':1,'s-smslogin':1,'s-pwforgot':1,'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
   var stack = [];
   function curId(){ var c = document.querySelector('input.rt[name="nav"]:checked'); return c ? c.id : null; }
   function screenOf(){ var all = document.querySelectorAll('[data-screen]');
@@ -8270,13 +8333,27 @@
       ok.classList.remove('on');
       if (missing.length){ missing[0].scrollIntoView({block:'center', behavior:'smooth'}); return; }
       save.classList.add('busy'); form.classList.add('busy');
-      setTimeout(function(){ save.classList.remove('busy'); form.classList.remove('busy'); ok.classList.add('on'); }, 1600);
+      setTimeout(function(){
+        save.classList.remove('busy'); form.classList.remove('busy'); ok.classList.add('on');
+        var ret = sc.getAttribute('data-ret');
+        if (ret) setTimeout(function(){
+          if (window.yConsentSaved) window.yConsentSaved();
+          var r = document.getElementById(ret); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
+        }, 900);
+      }, 1600);
     }
   });
   sc.addEventListener('change', function(e){
     var q = e.target.closest('[data-csq]'); if (q && e.target.type === 'radio') q.classList.remove('err');
     ok.classList.remove('on'); sync();
   });
+  /* opened from the purchase consent: back and Mentés return there */
+  var back = sc.querySelector('.dhead label[for]');
+  document.addEventListener('click', function(e){
+    var l = e.target.closest && e.target.closest('label[for="s-consent2"]'); if (!l) return;
+    if (l.hasAttribute('data-csfrom')){ sc.setAttribute('data-ret', 's-bconsent'); back.setAttribute('for', 's-bconsent'); }
+    else { sc.removeAttribute('data-ret'); back.setAttribute('for', 's-tprof'); }
+  }, true);
   /* preset: newsletter on with every channel, the other two unanswered */
   sc.querySelector('input[name="cs-info"][value="y"]').checked = true; sync();
   document.addEventListener('change', function(e){ if (e.target.id === 's-consent2' && e.target.checked){ ok.classList.remove('on'); qs.forEach(function(q){ q.classList.remove('err','tip'); }); sc.scrollTop = 0; } });
@@ -8452,7 +8529,7 @@
     var back = a.from === 'ctv-addr' ? 's-ctvaddr' : 's-addrsvc';
     sc.querySelector('[data-ofback]').setAttribute('for', back); sc.querySelector('[data-ofnew]').setAttribute('for', back);
     sc.querySelector('.adx').setAttribute('for', a.guest ? 's-newcust' : 's-tshop');
-    var hb = document.querySelector('[data-gohome]'); if (hb) hb.setAttribute('for', a.guest ? 's-newcust' : 's-home');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-gohome]'), function(hb){ hb.setAttribute('for', a.guest ? 's-newcust' : 's-home'); });
     apply(0); kid.checked = false;
     sc.classList.remove('stk'); sc.scrollTop = 0; car.scrollLeft = 0;
   }
@@ -8678,6 +8755,30 @@
       exSum();
     });
   });
+  /* Extrák Tovább: loader, then the taken-address info or the consent step */
+  var bc = document.querySelector('[data-screen="bconsent"]');
+  esc.querySelector('.exnext').addEventListener('click', function(){
+    var ld = document.querySelector('.adload'), a = window.yAddr || {};
+    ld.classList.add('on');
+    setTimeout(function(){
+      if (!a.taken){
+        Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; });
+        bc.classList.remove('err', 'busy'); bc.querySelector('.adx').setAttribute('for', a.guest ? 's-newcust' : 's-tshop');
+      }
+      var r = document.getElementById(a.taken ? 's-addrtaken' : 's-bconsent'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
+    }, 2600);
+    setTimeout(function(){ ld.classList.remove('on'); }, 2800);
+  });
+  document.querySelector('[data-takencb]').addEventListener('click', openCb);
+  /* consent: an answer (or saved custom settings) is needed, then a short save */
+  var bcCustom = false;
+  bc.addEventListener('change', function(){ bc.classList.remove('err'); });
+  bc.querySelector('[data-bcnext]').addEventListener('click', function(){
+    if (!bc.querySelector('input[name="bc-all"]:checked') && !bcCustom){ bc.classList.add('err'); return; }
+    bc.classList.add('busy');
+    setTimeout(function(){ bc.classList.remove('busy'); document.getElementById('wip').classList.add('on'); }, 1600);
+  });
+  window.yConsentSaved = function(){ bcCustom = true; Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; }); bc.classList.remove('err'); };
   /* add-on detail sheets */
   var EXTRY = rows([['ti-percentage','Próbáld ki 30 napig díjmentesen','Amennyiben jelen megrendelésedre érvényesül, úgy a próbaidőszak alatt bármikor megszüntetheted az előfizetést, ha mégsem lennél elégedett. Megéri kipróbálni! <span class="odlnk">További részletek</span>'],
     ['ti-tag','','A csomagok havidíja a Központi Statisztikai Hivatal által közzétett éves átlagos fogyasztói árindex mértékével változik, a közlemény közzétételét követő 60 napon belül.']]);
