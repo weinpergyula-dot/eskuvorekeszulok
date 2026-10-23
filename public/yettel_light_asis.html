@@ -2977,6 +2977,67 @@
   .ofpromos{ display:flex; flex-wrap:wrap; gap:6px; margin:auto 12px 8px; }
   .ofpromos .ofpromo{ margin:0; }
   .ofpromo.offp{ background:var(--lime); color:var(--navy); font-weight:700; }
+
+  /* banner carousel with a pager: dots, swipe, autoplay */
+  .rcar.js > *{ animation:none !important; opacity:0; transform:scale(.98); transition:opacity .45s ease, transform .45s ease; pointer-events:none; }
+  .rcar.js > .on{ opacity:1; transform:none; pointer-events:auto; }
+  .rdots{ display:flex; justify-content:center; gap:6px; margin:10px 0 2px; }
+  .rdots button{ width:7px; height:7px; padding:0; border:none; border-radius:4px; background:#C3CAD3; cursor:pointer; transition:width .25s, background .25s; }
+  .rdots button.on{ width:20px; background:#09223D; }
+  [data-fullpop]{ cursor:pointer; }
+  /* Yettel Full popup + calculator */
+  .flov .fsbody{ padding-bottom:28px; }
+  .flhero{ margin:0 0 18px; padding:20px 18px; border-radius:16px; background:var(--lime); color:var(--navy); }
+  .flhero b{ display:block; font-size:22px; font-weight:800; line-height:1.2; }
+  .flhero p{ margin:8px 0 0; font-size:13px; line-height:1.45; }
+  .flben{ display:flex; gap:12px; margin-bottom:14px; }
+  .flben > i{ flex-shrink:0; display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:#CFE3EE; font-size:19px; color:var(--navy); }
+  .flben b{ display:block; font-size:13px; font-weight:700; color:var(--navy); }
+  .flben p{ margin:2px 0 0; font-size:12px; line-height:1.4; color:var(--navy); }
+  .fltiers{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:6px 0 24px; }
+  .fltier{ padding:12px 6px; border:1.5px solid #E3E8EE; border-radius:12px; text-align:center; color:var(--navy); transition:all .2s; }
+  .fltier b{ display:block; font-size:22px; font-weight:800; }
+  .fltier span{ font-size:10.5px; line-height:1.3; }
+  .fltier.on{ border-color:#09223D; background:#09223D; color:var(--lime); }
+  .fltier.on span{ color:#fff; }
+  .flh{ margin:0 0 6px; font-size:17px; font-weight:700; color:var(--navy); }
+  .flsub{ margin:0 0 12px; font-size:12px; line-height:1.4; color:#5B6B80; }
+  .fllist{ margin-bottom:18px; padding:2px 12px; border:1.5px solid #E3E8EE; border-radius:12px; }
+  .flrow{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #EEF1F4; cursor:pointer; }
+  .flrow:last-child{ border-bottom:none; }
+  .flrow input{ position:absolute; opacity:0; pointer-events:none; }
+  .flck{ flex-shrink:0; display:flex; align-items:center; justify-content:center; width:20px; height:20px; border:1.5px solid #A9B3BF; border-radius:5px; }
+  .flck i{ display:none; font-size:14px; color:#fff; }
+  .flrow input:checked + .flck{ background:#09223D; border-color:#09223D; }
+  .flrow input:checked + .flck i{ display:block; }
+  .flrow.dis{ cursor:default; opacity:.55; }
+  .flmid{ flex:1; min-width:0; font-size:13px; color:var(--navy); }
+  .flmid small{ display:block; font-size:10.5px; color:#5B6B80; }
+  .flpr{ flex-shrink:0; text-align:right; font-size:12px; color:var(--navy); }
+  .flpr s{ display:block; font-size:10px; color:#8592A6; }
+  .flpr em{ display:inline-block; margin-top:2px; padding:1px 6px; border-radius:999px; background:var(--lime); font-style:normal; font-size:9.5px; font-weight:700; }
+  .flstep{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #EEF1F4; }
+  .flstep:last-child{ border-bottom:none; }
+  .flcnt{ display:flex; align-items:center; gap:10px; }
+  .flcnt button{ display:flex; align-items:center; justify-content:center; width:30px; height:30px; padding:0; border:1.5px solid #09223D; border-radius:50%; background:#fff; cursor:pointer; }
+  .flcnt button i{ font-size:16px; color:var(--navy); }
+  .flcnt button:disabled{ border-color:#D5DCE3; } .flcnt button:disabled i{ color:#C3CAD3; }
+  .flcnt b{ min-width:14px; text-align:center; font-size:15px; color:var(--navy); }
+  .flres{ margin:6px 0 18px; padding:18px 16px; border-radius:16px; background:#09223D; color:#fff; }
+  .flres .flpct{ display:flex; align-items:baseline; justify-content:space-between; }
+  .flres .flpct span{ font-size:13px; }
+  .flres .flpct b{ font-size:40px; font-weight:800; color:var(--lime); line-height:1; }
+  .flres .flline{ display:flex; justify-content:space-between; margin-top:12px; font-size:12px; color:#C9D2DC; }
+  .flres .flline b{ color:#fff; font-size:13px; }
+  .flres .flline.sv b{ color:var(--lime); font-size:16px; }
+  .flhint{ display:flex; gap:8px; margin-top:14px; padding:10px 12px; border-radius:10px; background:rgba(180,255,0,.14); font-size:12px; line-height:1.4; color:#fff; }
+  .flhint i{ color:var(--lime); font-size:16px; }
+  .flhint:empty{ display:none; }
+  .flacc{ margin-top:6px; border:1.5px solid #E3E8EE; border-radius:12px; padding:0 14px; }
+  .flacc .gsaccb{ font-size:13px; }
+  .flacc ul{ margin:0 0 12px; padding-left:18px; font-size:12px; line-height:1.55; color:var(--navy); }
+  .flacc .flg{ margin:4px 0 4px; font-size:12px; font-weight:700; color:var(--navy); }
+  .flcta{ margin-top:20px; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -3243,12 +3304,12 @@
         <span class="go">Címellenőrzés <i class="ti ti-arrow-right" style="font-size:15px"></i></span>
         <div class="pct">1000<small>Mbit</small></div>
       </label>
-      <div class="promo">
+      <div class="promo" data-fullpop>
         <div class="blob"></div><div class="blob2"></div>
         <h4>FULL kedvezmények</h4>
-        <p>FULL-tagként a szolgáltatásaid árából akár 20%-ot is elengedünk.</p>
-        <button class="go">Megnézem <i class="ti ti-arrow-right" style="font-size:15px"></i></button>
-        <div class="pct">20<small>%</small></div>
+        <p>Fogd össze előfizetéseidet, és a havidíjakból akár 30%-ot is elengedünk.</p>
+        <button class="go" type="button">Kiszámolom <i class="ti ti-arrow-right" style="font-size:15px"></i></button>
+        <div class="pct">30<small>%</small></div>
       </div>
       <div class="bban p1">
         <div class="bb1"></div><div class="bb2"></div>
@@ -7647,7 +7708,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = '[data-fullpop],.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9091,6 +9152,123 @@
   setTimeout(function(){ bs.classList.add('fok'); }, 1500);
   Promise.all([loaded, fonts]).then(hide, hide);
   setTimeout(hide, 6000);
+})();
+</script>
+<script>
+/* dashboard banners: pager (dots, swipe, autoplay) */
+(function(){
+  Array.prototype.slice.call(document.querySelectorAll('.rcar')).forEach(function(car){
+    var slides = Array.prototype.slice.call(car.children); if (slides.length < 2) return;
+    car.classList.add('js');
+    var dots = document.createElement('div'); dots.className = 'rdots';
+    dots.innerHTML = slides.map(function(s, i){ return '<button type="button" aria-label="'+(i + 1)+'. ajánlat"></button>'; }).join('');
+    car.parentNode.insertBefore(dots, car.nextSibling);
+    var cur = 0, timer;
+    function show(i){
+      cur = (i + slides.length) % slides.length;
+      slides.forEach(function(s, k){ s.classList.toggle('on', k === cur); });
+      Array.prototype.forEach.call(dots.children, function(d, k){ d.classList.toggle('on', k === cur); });
+    }
+    function auto(){ clearInterval(timer); timer = setInterval(function(){ show(cur + 1); }, 6000); }
+    dots.addEventListener('click', function(e){ var b = e.target.closest('button'); if (!b) return; show(Array.prototype.indexOf.call(dots.children, b)); auto(); });
+    var x0 = null, moved = false;
+    car.addEventListener('pointerdown', function(e){ x0 = e.clientX; moved = false; });
+    car.addEventListener('pointermove', function(e){ if (x0 !== null && Math.abs(e.clientX - x0) > 10) moved = true; });
+    car.addEventListener('pointerup', function(e){
+      if (x0 === null) return; var dx = e.clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40){ show(cur + (dx < 0 ? 1 : -1)); auto(); }
+    });
+    car.addEventListener('pointercancel', function(){ x0 = null; });
+    /* a swipe is not a tap on the banner */
+    car.addEventListener('click', function(e){ if (moved){ e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    show(0); auto();
+  });
+})();
+
+/* Yettel Full popup: what Full is + calculator with the customer's own subscriptions */
+(function(){
+  var app = document.querySelector('.app');
+  /* eligible: Yettel Prime / M Talk mobile plans and OtthonNet / HiperNet home internet; tiers by their count */
+  function tier(n){ return n >= 4 ? 30 : n === 3 ? 20 : n === 2 ? 15 : 0; }
+  var MINE = [
+    {k:'m1', ic:'ti-phone-call', t:'+36 20 290 7566', s:'Prime Plus 2025', p:9990, kind:'base'},
+    {k:'m2', ic:'ti-phone-call', t:'+36 20 290 7430', s:'Prime Plus 2024', p:8490, kind:'base'},
+    {k:'n1', ic:'ti-home-signal', t:'HiperNet L', s:'8200 Veszprém, Tölgyfa u. 4', p:7990, kind:'base'},
+    {k:'tv', ic:'ti-device-tv', t:'Yettel TV Basic', s:'HiperNet L mellé', p:4500, kind:'tv'},
+    {k:'pre', ic:'ti-phone-call', t:'+36 20 290 9734', s:'XS+ · Feltöltőkártyás – nem számít bele', p:0, kind:'no'}
+  ];
+  var ADD = [
+    {k:'mob', ic:'ti-device-mobile', t:'Új mobil-előfizetés', s:'pl. Yettel Prime Plus 2024 · 8 490 Ft/hó', p:8490, kind:'base'},
+    {k:'net', ic:'ti-home-signal', t:'Új otthoni internet', s:'pl. HiperNet L · 7 990 Ft/hó', p:7990, kind:'base'},
+    {k:'tvn', ic:'ti-device-tv', t:'Yettel TV', s:'pl. Yettel TV Plus · 6 500 Ft/hó', p:6500, kind:'tv'},
+    {k:'max', ic:'ti-movie', t:'HBO Max', s:'2 390 Ft/hó', p:2390, kind:'tv'}
+  ];
+  var ELIG = {'OtthonNet csomagok':['HiperNet L','HiperNet M','OtthonNet L','OtthonNet M','OtthonNet','OtthonNet Basic','OtthonNet Pro'],
+    'Yettel Prime mobilcsomagok':['Yettel Prime M Net','Yettel Prime M Talk','Yettel Prime L','Yettel Prime L+','Yettel Prime XXL','Yettel Prime 2022','Yettel Prime Plus 2022','Yettel Prime Max 2022','Yettel Prime+','Yettel Prime Plus+','Yettel Prime Max+','Yettel Prime Simple Net 2024','Yettel Prime Simple 2024','Yettel Prime Plus Talk 2024','Yettel Prime Plus 2024','Yettel Prime Extra 2024','Yettel Prime Max 2024','Yettel Prime','Yettel Prime Simple Net','Yettel Prime Simple','Yettel Prime Plus','Yettel Prime Extra','Yettel Prime Max','Yettel Prime XS','Yettel Prime S','Yettel Prime M'],
+    'Egyéb kiemelt mobilcsomagok':['Yettel M Talk','Yettel M Talk+']};
+  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  var ov = document.createElement('div'); ov.className = 'fsov flov';
+  ov.innerHTML = '<div class="fsbody"><div class="fshead"><b>Yettel Full</b><button type="button" class="fsx" data-flclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<div class="flhero"><b>Több szolgáltatás,<br>több kedvezmény!</b><p>Fogd össze mobil- és otthoni internet-előfizetéseidet a Yettel Full-ban, és minden jogosult havidíjadból kedvezményt kapsz – akár 30%-ot is, hónapról hónapra.</p></div>'
+    + '<div class="flben"><i class="ti ti-percentage"></i><div><b>Akár 30% havidíjkedvezmény</b><p>Minél több mobil- és otthoni internet-előfizetésed van a neveden, annál nagyobb a kedvezmény.</p></div></div>'
+    + '<div class="flben"><i class="ti ti-phone-call"></i><div><b>Díjmentes hívások a csomagon belül</b><p>A Full-ba tartozó számok korlátlanul, díjmentesen hívhatják egymást.</p></div></div>'
+    + '<div class="flben"><i class="ti ti-device-tv"></i><div><b>15% a Yettel TV-re és a Max-ra</b><p>A Yettel TV (az XS csomag kivételével) és a Max előfizetés havidíjából is 15% jár.</p></div></div>'
+    + '<div class="fltiers"><div class="fltier" data-t="15"><b>15%</b><span>2 előfizetés<br>pl. 2 mobil vagy mobil + net</span></div><div class="fltier" data-t="20"><b>20%</b><span>3 előfizetés<br>pl. 3 mobil</span></div><div class="fltier" data-t="30"><b>30%</b><span>4 vagy több<br>pl. 3 mobil + net</span></div></div>'
+    + '<p class="flh">Számold ki a kedvezményed!</p><p class="flsub">Bejelöltük a jelenlegi előfizetéseidet. Vedd ki, ami nem kell, vagy tegyél hozzá újat, és rögtön látod, mennyi jár.</p>'
+    + '<p class="fullsub">Meglévő szolgáltatásaid</p><div class="fllist" data-flmine></div>'
+    + '<p class="fullsub">Ha még ezeket is választanád</p><div class="fllist" data-fladd></div>'
+    + '<div class="flres"><div class="flpct"><span>Full kedvezményed</span><b data-flpct></b></div>'
+    + '<div class="flline"><span>Havidíjak kedvezmény nélkül</span><b data-flfull></b></div>'
+    + '<div class="flline"><span>Havidíjak Full kedvezménnyel</span><b data-flnow></b></div>'
+    + '<div class="flline sv"><span>Havi megtakarításod</span><b data-flsave></b></div><div class="flhint" data-flhint></div></div>'
+    + '<div class="flacc gsacc"><button type="button" class="gsaccb"><span>Melyik tarifákra érvényes a Full kedvezmény?</span><i class="ti ti-chevron-down"></i></button><div class="gsaccp">'
+    + '<p class="flsub" style="margin-top:0">A sávos kedvezmény akkor érvényes, ha legalább két jogosult szolgáltatás van a neveden. A feltöltőkártyás előfizetések nem számítanak bele.</p>'
+    + Object.keys(ELIG).map(function(g){ return '<p class="flg">'+g+'</p><ul>'+ELIG[g].map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>'; }).join('')
+    + '</div></div>'
+    + '<button type="button" class="fsbtn flcta" data-flclose>Rendben</button></div>';
+  app.appendChild(ov);
+  var on = {m1:true, m2:true, n1:true, tv:true}, cnt = {mob:0, net:0, tvn:0, max:0};
+  function price(it, pct){ var off = it.kind === 'base' ? pct : it.kind === 'tv' && pct ? 15 : 0; return {off:off, now:Math.round(it.p * (100 - off) / 100)}; }
+  function pr(it, pct, n){
+    if (it.kind === 'no') return '<div class="flpr">–</div>';
+    var x = price(it, pct), mul = n || 1;
+    return '<div class="flpr">'+(x.off ? '<s>'+fmt(it.p * mul)+' Ft</s>' : '')+fmt(x.now * mul)+' Ft/hó'+(x.off ? '<br><em>-'+x.off+'%</em>' : '')+'</div>';
+  }
+  function calc(){
+    var n = MINE.filter(function(it){ return it.kind === 'base' && on[it.k]; }).length + cnt.mob + cnt.net, pct = tier(n);
+    var full = 0, now = 0;
+    MINE.forEach(function(it){ if (on[it.k] && it.kind !== 'no'){ full += it.p; now += price(it, pct).now; } });
+    ADD.forEach(function(it){ full += it.p * cnt[it.k]; now += price(it, pct).now * cnt[it.k]; });
+    ov.querySelector('[data-flmine]').innerHTML = MINE.map(function(it){
+      var dis = it.kind === 'no';
+      return '<label class="flrow'+(dis ? ' dis' : '')+'"><input type="checkbox" data-flk="'+it.k+'"'+(on[it.k] ? ' checked' : '')+(dis ? ' disabled' : '')+'><span class="flck"><i class="ti ti-check"></i></span>'
+        + '<span class="flmid">'+it.t+'<small>'+it.s+'</small></span>'+(on[it.k] || dis ? pr(it, pct) : '<div class="flpr">'+fmt(it.p)+' Ft/hó</div>')+'</label>';
+    }).join('');
+    ov.querySelector('[data-fladd]').innerHTML = ADD.map(function(it){
+      return '<div class="flstep"><span class="flmid">'+it.t+'<small>'+it.s+'</small></span>'
+        + '<div class="flcnt"><button type="button" data-fla="'+it.k+'" data-d="-1"'+(cnt[it.k] ? '' : ' disabled')+' aria-label="Kevesebb"><i class="ti ti-minus"></i></button><b>'+cnt[it.k]+'</b><button type="button" data-fla="'+it.k+'" data-d="1"'+(cnt[it.k] >= 5 ? ' disabled' : '')+' aria-label="Több"><i class="ti ti-plus"></i></button></div></div>';
+    }).join('');
+    ov.querySelector('[data-flpct]').textContent = pct + '%';
+    ov.querySelector('[data-flfull]').textContent = fmt(full) + ' Ft/hó';
+    ov.querySelector('[data-flnow]').textContent = fmt(now) + ' Ft/hó';
+    ov.querySelector('[data-flsave]').textContent = fmt(full - now) + ' Ft/hó';
+    Array.prototype.forEach.call(ov.querySelectorAll('.fltier'), function(t){ t.classList.toggle('on', +t.getAttribute('data-t') === pct); });
+    var next = n < 2 ? 2 : n < 3 ? 3 : n < 4 ? 4 : 0;
+    ov.querySelector('[data-flhint]').innerHTML = next
+      ? '<i class="ti ti-bulb"></i><span>Még '+(next - n)+' mobil- vagy otthoni internet-előfizetéssel '+tier(next)+'% kedvezmény járna'+(n < 2 ? ', és a TV-re, Max-ra is 15%.' : '.')+'</span>'
+      : '<i class="ti ti-rosette-discount-check"></i><span>A legmagasabb, 30%-os Full kedvezmény jár neked – ennél többet már nem lehet. :)</span>';
+  }
+  ov.addEventListener('change', function(e){ var k = e.target.getAttribute('data-flk'); if (k){ on[k] = e.target.checked; calc(); } });
+  ov.addEventListener('click', function(e){
+    var b = e.target.closest('[data-fla]'); if (b){ var k = b.getAttribute('data-fla'); cnt[k] = Math.max(0, Math.min(5, cnt[k] + +b.getAttribute('data-d'))); calc(); return; }
+    var a = e.target.closest('.gsaccb'); if (a){ a.parentNode.classList.toggle('open'); return; }
+    if (e.target.closest('[data-flclose]')) ov.classList.remove('on');
+  });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest || !e.target.closest('[data-fullpop]')) return;
+    on = {m1:true, m2:true, n1:true, tv:true}; cnt = {mob:0, net:0, tvn:0, max:0}; calc();
+    ov.querySelector('.fsbody').scrollTop = 0; ov.classList.add('on');
+  });
 })();
 </script>
 </body>
