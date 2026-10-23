@@ -350,6 +350,7 @@
   #s-billdata:checked ~ [data-screen="bill-data"],
   #s-docs:checked ~ [data-screen="docs"],
   #s-docdet:checked ~ [data-screen="doc-det"],
+  #s-consent2:checked ~ [data-screen="consent2"],
   #s-ktopup:checked ~ [data-screen="kt-topup"],
   #s-ktfriends:checked ~ [data-screen="kt-friends"],
   #s-savedcard:checked ~ [data-screen="saved-card"],
@@ -360,7 +361,7 @@
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-docdet:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-ktfriends:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-ktfriends:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -2390,8 +2391,8 @@
   .docmeta{ display:flex; align-items:center; gap:10px; margin:0; font-size:12px; color:var(--navy); }
   .docmeta i{ font-size:22px; }
   .doct{ margin:8px 0 0 32px; font-size:13.5px; font-weight:700; color:var(--navy); }
-  .docd{ margin:18px 2px 0; font-size:12px; line-height:1.5; color:var(--navy); min-height:460px; }
-  .docbtn{ position:sticky; bottom:96px; display:flex; align-items:center; justify-content:center; width:100%; height:48px; border:none; border-radius:999px;
+  .docd{ margin:18px 2px 0; font-size:12px; line-height:1.5; color:var(--navy); }
+  .docbtn{ position:absolute; left:16px; right:16px; bottom:26px; width:auto !important; display:flex; align-items:center; justify-content:center; width:100%; height:48px; border:none; border-radius:999px;
            background:var(--navy); color:#fff; font-family:'Yettel'; font-size:14px; font-weight:700; cursor:pointer; transition:background .2s; }
   .docspin{ display:none; width:18px; height:18px; border-radius:50%; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; animation:docspin .8s linear infinite; }
   @keyframes docspin{ to{ transform:rotate(360deg); } }
@@ -2399,6 +2400,47 @@
   .docbtn.busy span{ display:none; } .docbtn.busy .docspin{ display:block; }
   .dexic{ display:inline-flex; width:52px; height:52px; margin-bottom:18px; border-radius:50%; background:#FDE4D6; align-items:center; justify-content:center; }
   .dexic i{ font-size:28px; color:#F0603C; }
+
+  /* ===== active filter count + no results ===== */
+  .bhfbtn{ position:relative; }
+  .bhfbtn.on::after{ display:none; }
+  .bhfbtn.cnt::before{ content:attr(data-n); position:absolute; right:-6px; top:-9px; min-width:15px; height:15px; padding:0 4px; border-radius:999px;
+                       background:var(--navy); color:#fff; font-size:9.5px; font-weight:700; line-height:15px; text-align:center; }
+  .nores{ padding:28px 0 26px; text-align:center; }
+  .nores p{ margin:14px 0 6px; font-size:16px; font-weight:700; color:var(--navy); }
+  .nores small{ font-size:12px; color:var(--navy); }
+  /* ===== Hozzájárulások beállítása ===== */
+  .csscreen{ background:#FFFFFF; padding-bottom:0 !important; }
+  .cstop{ display:flex; gap:10px; margin:18px 0 6px; padding:12px 14px; border-radius:8px; background:#DCEFFC; }
+  .cstop i{ font-size:20px; color:#3D8DE0; } .cstop b{ font-size:12px; font-weight:700; color:var(--navy); }
+  .csq{ padding:14px 0 6px; }
+  .csqh{ position:relative; display:flex; gap:10px; align-items:flex-start; margin-bottom:8px; }
+  .csqh p{ flex:1; margin:0; font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .csi{ border:none; background:none; padding:0; cursor:pointer; display:flex; }
+  .csi i{ font-size:17px; color:var(--mid); }
+  .cstip{ display:none; position:absolute; z-index:3; left:-4px; right:-4px; top:calc(100% + 4px); padding:12px 14px; border-radius:6px; background:#09223D;
+          color:#fff; font-size:11px; line-height:1.5; box-shadow:0 10px 30px -10px rgba(9,34,61,.5); }
+  .csq.tip .cstip{ display:block; }
+  .csr,.csck{ display:flex; align-items:flex-start; gap:12px; padding:7px 0; font-size:12px; font-weight:300; line-height:1.4; color:var(--navy); cursor:pointer; }
+  .csr input,.csck input{ display:none; }
+  .csr span{ width:16px; height:16px; flex-shrink:0; border-radius:50%; border:1.5px solid #C9D1DC; }
+  .csr input:checked + span{ border:5px solid var(--navy); }
+  .cssub{ display:none; padding-left:26px; }
+  .csq.yes .cssub{ display:block; }
+  .csck span{ display:flex; align-items:center; justify-content:center; width:16px; height:16px; flex-shrink:0; border-radius:3px; border:1.5px solid #C9D1DC; }
+  .csck input:checked + span{ background:var(--navy); border-color:var(--navy); }
+  .csck input:checked + span::after{ content:""; width:8px; height:4px; margin-top:-2px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg); }
+  .cserr{ display:none; margin:4px 0 0; font-size:11px; color:#E5484D; }
+  .csq.err .cserr{ display:block; }
+  .csq.err .csr span{ border-color:#E5484D; }
+  .csform.busy{ pointer-events:none; }
+  .csform.busy .csr span,.csform.busy .csck span{ background:#CDD4DC !important; border-color:#B7C0CB !important; }
+  .csform.busy .csck input:checked + span{ background:#9AA6B4 !important; }
+  .csfoot{ position:sticky; bottom:0; z-index:2; margin:10px -16px 0; padding:14px 16px 26px; background:linear-gradient(rgba(255,255,255,0), #fff 18px); }
+  .csfoot .docbtn{ position:static; width:100% !important; }
+  .csok{ display:none; align-items:center; gap:8px; margin:0 0 14px; padding:12px 14px; border-radius:6px; background:#DDF5E3; font-size:12px; font-weight:700; color:var(--navy); }
+  .csok i{ font-size:16px; color:#2F9E4F; }
+  .csok.on{ display:flex; animation:brfade .3s ease-out; }
 </style>
 </head>
 <body>
@@ -2500,6 +2542,7 @@
   <input class="rt" type="radio" name="nav" id="s-billdata">
   <input class="rt" type="radio" name="nav" id="s-docs">
   <input class="rt" type="radio" name="nav" id="s-docdet">
+  <input class="rt" type="radio" name="nav" id="s-consent2">
   <input class="rt" type="radio" name="nav" id="s-ktopup">
   <input class="rt" type="radio" name="nav" id="s-ktfriends">
   <input class="rt" type="radio" name="nav" id="s-savedcard">
@@ -2767,7 +2810,7 @@
     </div>
 
     <div class="dtcard dtrowcard">
-      <div class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Hozzájárulások kezelése</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lrow dtrow" for="s-consent2"><i class="ti ti-file-certificate dtic"></i><span class="n">Hozzájárulások kezelése</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
     <div class="dtcard dtdev">
@@ -2845,7 +2888,7 @@
     </div>
 
     <label class="dtcard dtrowcard nprow" for="s-docs"><span class="dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></span></label>
-    <div class="dtcard dtrowcard nprow"><span class="lrow dtrow"><i class="ti ti-file-text dtic"></i><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></span></div>
+    <label class="dtcard dtrowcard nprow" for="s-consent2"><span class="dtrow"><i class="ti ti-file-text dtic"></i><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></span></label>
     <label class="dtcard dtrowcard nprow" for="s-billdata"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
 
     <div class="dtcard">
@@ -6508,7 +6551,7 @@
     </div>
 
     <div class="dtcard dtrowcard">
-      <div class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Hozzájárulások kezelése</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lrow dtrow" for="s-consent2"><i class="ti ti-file-certificate dtic"></i><span class="n">Hozzájárulások kezelése</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
 
     <div class="dtcard dtdev">
@@ -6635,7 +6678,7 @@
     </div>
     <div class="tbgroup">
       <label class="tbrow" for="s-docs"><span class="tbic"><i class="ti ti-file-download"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></label>
-      <div class="tbrow"><span class="tbic"><i class="ti ti-file-certificate"></i></span><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="tbrow" for="s-consent2"><span class="tbic"><i class="ti ti-file-certificate"></i></span><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
     <label class="tbout" for="s-welcome">Kijelentkezés<i class="ti ti-logout"></i></label>
   </div>
@@ -6880,7 +6923,7 @@
       <div class="scwallet"><b>Barion tárca</b><span class="scbic"><i class="ti ti-refresh"></i></span></div>
       <span class="scbtn pri">Barion tárca kezelése</span>
       <span class="scbtn sec">Kártyacsere</span>
-      <span class="scbtn txt">Hozzájárulás kezelése</span>
+      <label class="scbtn txt" for="s-consent2">Hozzájárulás kezelése</label>
     </div>
   </div>
 
@@ -6974,6 +7017,47 @@
     <div class="dochd"><p class="docmeta"><i class="ti ti-clipboard-text"></i><span data-docmeta></span></p><p class="doct" data-doct></p></div>
     <p class="docd" data-docd></p>
     <button type="button" class="docbtn" data-docbtn><span>Megnyitás</span><i class="docspin"></i></button>
+  </div>
+
+  <!-- ============= HOZZÁJÁRULÁSOK BEÁLLÍTÁSA ============= -->
+  <div class="screen csscreen" data-screen="consent2" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-tprof"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Hozzájárulások beállítása</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="csform" data-csform>
+    <div class="cstop"><i class="ti ti-bulb"></i><b>Értesülj neked szóló, kedvezményes ajánlatokról!</b></div>
+    <div class="csq" data-csq="info">
+      <div class="csqh"><p>Szeretnél a Yettel ajánlatairól, szolgáltatásairól tájékoztatást kapni?</p><button type="button" class="csi" data-csi aria-label="Részletek"><i class="ti ti-info-circle"></i></button><div class="cstip">Szeretném, hogy a Yettel szolgáltatásairól és ajánlatairól tájékoztasson, és velem e célból kapcsolatba lépjen postai úton, automatizált hívórendszer útján, pl. SMS segítségével, telefonon, e-mailen vagy a Yettel.hu weboldalon, valamint aloldalain, a Yettel fiókban és alkalmazáson, valamint egyéb Yetteles alkalmazásokon keresztül.</div></div>
+      <label class="csr"><input type="radio" name="cs-info" value="y"><span></span>Igen</label>
+      <div class="cssub">
+        <label class="csck"><input type="checkbox" checked><span></span>Postai úton</label>
+        <label class="csck"><input type="checkbox" checked><span></span>Automatizált hívórendszer útján, pl. SMS segítségével</label>
+        <label class="csck"><input type="checkbox" checked><span></span>Telefonon keresztül</label>
+        <label class="csck"><input type="checkbox" checked><span></span>E-mailen keresztül</label>
+        <label class="csck"><input type="checkbox" checked><span></span>Yettel.hu weboldalon, valamint aloldalain, a Yettel fiókban és alkalmazáson, valamint egyéb Yetteles alkalmazásokon keresztül</label>
+      </div>
+      <label class="csr"><input type="radio" name="cs-info" value="n"><span></span>Nem szeretnék</label>
+      <p class="cserr">Valamelyik mező megjelölése kötelező!</p>
+    </div>
+    <div class="csq" data-csq="pers">
+      <div class="csqh"><p>Szeretnél személyre szabott ajánlatokat, kedvezményeket kapni?</p><button type="button" class="csi" data-csi aria-label="Részletek"><i class="ti ti-info-circle"></i></button><div class="cstip">Szeretném, hogy a Yettel szolgáltatások nyújtásával, igénybevételével összefüggésben keletkezett, valamint a Yettel részére megadott adataimat személyre szabott ajánlatadás és releváns szolgáltatások ajánlása céljából automatizált módon elemezze, kiértékelje (profilalkotás).</div></div>
+      <label class="csr"><input type="radio" name="cs-pers" value="y"><span></span>Igen</label>
+      <label class="csr"><input type="radio" name="cs-pers" value="n"><span></span>Nem</label>
+      <p class="cserr">Valamelyik mező megjelölése kötelező!</p>
+    </div>
+    <div class="csq" data-csq="res">
+      <div class="csqh"><p>Szeretnél piac és közvélemény kutatásban részt venni?</p><button type="button" class="csi" data-csi aria-label="Részletek"><i class="ti ti-info-circle"></i></button><div class="cstip">Szeretném, hogy a Yettel szolgáltatások nyújtásával, igénybevételével összefüggésben keletkezett, valamint a Yettel részére megadott adataimat piac- és közvélemény kutatás céljából kezelje és velem e célból kapcsolatba lépjen.</div></div>
+      <label class="csr"><input type="radio" name="cs-res" value="y"><span></span>Igen</label>
+      <label class="csr"><input type="radio" name="cs-res" value="n"><span></span>Nem</label>
+      <p class="cserr">Valamelyik mező megjelölése kötelező!</p>
+    </div>
+    </div>
+    <div class="csfoot">
+      <p class="csok" data-csok><i class="ti ti-check"></i>A módosítást sikeresen elmentettük!</p>
+      <button type="button" class="docbtn cssave" data-cssave><span>Mentés</span><i class="docspin"></i></button>
+    </div>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -7740,7 +7824,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -7991,9 +8075,10 @@
       var ic = {paid:'ti-circle-check bhok', open:'ti-clock bhopen', overdue:'ti-alert-circle bhod', writeoff:'ti-ban bhwo'}[b.st];
       return '<div class="bhrow" data-billopen="'+b.id+'"><i class="ti '+ic+'"></i><div class="bhtx"><b>'+fmt(b.amt)+'</b><span>Határidő: '+b.due+'</span><small>'+b.sub+'</small>'
            + '<span class="bhtags"><em>'+b.tag+'</em>'+(b.name?'<em class="bhname">'+b.name+'</em>':'')+'</span></div><span class="fbdet">Részletek</span></div>';
-    }).join('') : '<p class="bhempty">Nincs a szűrésnek megfelelő számla.</p>';
+    }).join('') : '<div class="nores"><span class="fbnic"><i class="ti ti-info-circle"></i></span><p>Nincs találat</p><small>Próbálj meg másra szűrni.</small></div>';
     var dflt = FILTER.sort === 'new' && FILTER.type === 'all' && +FILTER.from === +defFrom() && +FILTER.to === +today;
-    var fb = q('.bhfbtn'); if (fb) fb.classList.toggle('on', !dflt);
+    var n = (FILTER.sort !== 'new' ? 1 : 0) + (FILTER.type !== 'all' ? 1 : 0) + ((+FILTER.from !== +defFrom() || +FILTER.to !== +today) ? 1 : 0);
+    var fb = q('[data-bhfilt]'); if (fb){ fb.classList.toggle('cnt', !!n); fb.setAttribute('data-n', n); }
   }
   function find(id){ return all().filter(function(b){ return b.id === id; })[0]; }
   function renderDet(b){
@@ -8284,9 +8369,9 @@
     }).sort(function(a, b){ return F.sort === 'new' ? dt(b.d[1]) - dt(a.d[1]) : dt(a.d[1]) - dt(b.d[1]); });
     list.innerHTML = rows.length ? rows.map(function(x){ var d = x.d;
       return '<div class="dcrow" data-docopen="'+x.i+'"><i class="ti ti-clipboard-text dcic"></i><div class="dctx"><b>'+d[0]+'</b><span>'+d[1]+' | '+NUM[d[2]]+'</span></div><i class="ti ti-chevron-right chev"></i></div>';
-    }).join('') : '<p class="bhempty">Nincs a szűrésnek megfelelő dokumentum.</p>';
-    var on = F.sort !== 'new' || F.types.length || F.from || F.to;
-    var b = document.querySelector('[data-dcfilt]'); if (b) b.classList.toggle('on', !!on);
+    }).join('') : '<div class="nores"><span class="fbnic"><i class="ti ti-info-circle"></i></span><p>Nincs találat</p><small>Próbálj meg másra szűrni.</small></div>';
+    var n = (F.sort !== 'new' ? 1 : 0) + F.types.length + (F.from ? 1 : 0) + (F.to ? 1 : 0);
+    var b = document.querySelector('[data-dcfilt]'); if (b){ b.classList.toggle('cnt', !!n); b.setAttribute('data-n', n); }
   }
   window.yDocs = {
     get: function(){ return sub; },
@@ -8316,6 +8401,40 @@
     if (e.target === docErr || e.target.closest('[data-docerrx]')) docErr.classList.remove('on');
   });
   render();
+})();
+</script>
+<script>
+/* Hozzájárulások beállítása: info tooltips, required answers, loading → saved */
+(function(){
+  var sc = document.querySelector('[data-screen="consent2"]'); if (!sc) return;
+  var form = sc.querySelector('[data-csform]'), save = sc.querySelector('[data-cssave]'), ok = sc.querySelector('[data-csok]');
+  var qs = Array.prototype.slice.call(sc.querySelectorAll('[data-csq]'));
+  function closeTips(except){ qs.forEach(function(q){ if (q !== except) q.classList.remove('tip'); }); }
+  function sync(){
+    var info = sc.querySelector('input[name="cs-info"]:checked');
+    sc.querySelector('[data-csq="info"]').classList.toggle('yes', !!info && info.value === 'y');
+  }
+  sc.addEventListener('click', function(e){
+    var i = e.target.closest('[data-csi]');
+    if (i){ var q = i.closest('[data-csq]'); closeTips(q); q.classList.toggle('tip'); return; }
+    if (!e.target.closest('.cstip')) closeTips(null);
+    if (e.target.closest('[data-cssave]')){
+      if (save.classList.contains('busy')) return;
+      var missing = qs.filter(function(q){ return !q.querySelector('input[type="radio"]:checked'); });
+      qs.forEach(function(q){ q.classList.toggle('err', missing.indexOf(q) >= 0); });
+      ok.classList.remove('on');
+      if (missing.length){ missing[0].scrollIntoView({block:'center', behavior:'smooth'}); return; }
+      save.classList.add('busy'); form.classList.add('busy');
+      setTimeout(function(){ save.classList.remove('busy'); form.classList.remove('busy'); ok.classList.add('on'); }, 1600);
+    }
+  });
+  sc.addEventListener('change', function(e){
+    var q = e.target.closest('[data-csq]'); if (q && e.target.type === 'radio') q.classList.remove('err');
+    ok.classList.remove('on'); sync();
+  });
+  /* preset: newsletter on with every channel, the other two unanswered */
+  sc.querySelector('input[name="cs-info"][value="y"]').checked = true; sync();
+  document.addEventListener('change', function(e){ if (e.target.id === 's-consent2' && e.target.checked){ ok.classList.remove('on'); qs.forEach(function(q){ q.classList.remove('err','tip'); }); sc.scrollTop = 0; } });
 })();
 </script>
 </body>
