@@ -347,12 +347,17 @@
   #s-netpend:checked ~ [data-screen="net-pend"],
   #s-billhist:checked ~ [data-screen="bill-hist"],
   #s-billdet:checked ~ [data-screen="bill-det"],
+  #s-ktopup:checked ~ [data-screen="kt-topup"],
+  #s-ktfriends:checked ~ [data-screen="kt-friends"],
+  #s-savedcard:checked ~ [data-screen="saved-card"],
+  #s-mobbill:checked ~ [data-screen="mob-bill"],
+  #s-mobpay:checked ~ [data-screen="mob-pay"],
   #s-newcust:checked ~ [data-screen="newcust"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-ktfriends:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -2287,6 +2292,64 @@
   .brshop{ width:100%; padding:12px; border:none; border-radius:999px; background:#09223D; color:#fff; font-family:'Yettel'; font-size:12px; cursor:pointer; }
   .brfoot{ margin:20px 0 0; text-align:center; font-size:9px; line-height:1.9; color:var(--mid); }
   .brfoot b{ color:#1E7FD6; font-weight:700; } .brfoot span{ color:#1E7FD6; }
+
+  /* ===== Pénzügyek sub-pages: Kártyás feltöltés, Ismerősök, Mentett bankkártya, Mobilszámlás fizetés, Mobilfizetés ===== */
+  .ktcard{ margin-top:16px; padding:16px; border-radius:16px; background:#FFFFFF; }
+  .kth{ margin:0 0 6px; font-size:13px; font-weight:700; color:var(--navy); }
+  .ktrow{ display:flex; align-items:center; gap:14px; padding:12px 0; cursor:pointer; }
+  .ktrow + .ktrow{ border-top:1px solid #EEF1F4; }
+  .ktic{ width:36px; height:36px; flex-shrink:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#C9DDE8; }
+  .ktic i{ font-size:18px; color:var(--navy); }
+  .ktu{ width:36px; text-align:center; font-size:22px; color:var(--navy); }
+  .kttx{ flex:1; min-width:0; }
+  .kttx small{ display:block; font-size:11px; font-weight:300; color:var(--navy); }
+  .kttx b{ display:block; font-size:14px; font-weight:700; color:var(--navy); }
+  .kttx b.sm{ font-size:12.5px; }
+  .ktrow .chev{ font-size:18px; color:var(--mid); }
+  .ktnote{ display:flex; gap:10px; margin:16px 4px 0; }
+  .ktnote i{ font-size:18px; color:var(--navy); }
+  .ktnote p{ margin:0; font-size:11.5px; line-height:1.45; color:var(--navy); }
+  .ktnew{ display:flex; align-items:center; gap:14px; cursor:pointer; font-size:13px; font-weight:700; color:var(--navy); }
+  .ktnew i{ font-size:22px; }
+  .ktedit{ display:block; margin-top:180px; padding:12px; border:2px solid var(--navy); border-radius:999px; text-align:center; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .scname{ margin:4px 0 4px; font-size:16px; font-weight:700; color:var(--navy); }
+  .scid,.scdate{ margin:0; font-size:11px; color:var(--navy); }
+  .scdate{ margin:16px 0 12px; }
+  .scwallet{ position:relative; height:110px; padding:16px; border-radius:6px; background:#C5DEE8; }
+  .scwallet b{ font-size:12px; font-weight:700; color:var(--navy); }
+  .scbic{ position:absolute; right:12px; bottom:12px; width:34px; height:34px; border-radius:6px; background:linear-gradient(135deg,#2E9BE6,#0D6FC6); display:flex; align-items:center; justify-content:center; }
+  .scbic i{ font-size:20px; color:#fff; }
+  .scbtn{ display:block; margin-top:12px; padding:11px; border-radius:999px; text-align:center; font-family:'Yettel'; font-size:13px; font-weight:700; cursor:pointer; border:2px solid var(--navy); }
+  .scbtn.pri{ background:var(--navy); color:#fff; } .scbtn.sec{ background:#fff; color:var(--navy); } .scbtn.txt{ border-color:transparent; background:none; color:var(--navy); }
+  .sccard .scbtn.pri{ margin-top:18px; }
+  .mbscreen .dhead{ position:relative; z-index:2; margin-bottom:0; }
+  .mbhero{ position:relative; height:170px; margin:-28px -16px 0; overflow:hidden; background:linear-gradient(160deg,#C5DEE8 0%,#9DBCC9 100%); }
+  .mbimg{ position:absolute; right:26px; top:14px; width:250px; height:270px; background:url('yettel/hero-man1.webp') center top/contain no-repeat; }
+  .mbintro{ position:relative; margin-top:-26px; }
+  .mbh{ margin:0 0 8px; font-size:17px; font-weight:700; line-height:1.25; color:var(--navy); }
+  .mbh.sm{ font-size:13px; }
+  .mbs{ margin:0 0 4px; font-size:11.5px; line-height:1.45; color:var(--navy); }
+  .mbwhy{ margin:22px 4px 12px; font-size:13px; font-weight:700; color:var(--navy); }
+  .mbfeat{ display:flex; gap:12px; margin:0 4px 14px; }
+  .mbfeat i{ font-size:20px; color:var(--navy); }
+  .mbfeat b{ font-size:12.5px; font-weight:700; color:var(--navy); }
+  .mbfeat p{ margin:3px 0 0; font-size:11px; line-height:1.4; color:var(--navy); }
+  .mbill{ display:flex; justify-content:center; margin:4px 0 12px; transform:scale(.85); }
+  .mbhow{ margin-top:22px; }
+  .mbsteps{ margin:8px 0 6px; padding-left:18px; font-size:11.5px; line-height:2; color:var(--navy); }
+  .mpnum{ margin-top:14px; padding:14px 16px; border-radius:10px; background:#09223D; color:#fff; }
+  .mpnum small{ display:block; font-size:10.5px; opacity:.85; }
+  .mpnum div{ display:flex; align-items:baseline; justify-content:space-between; margin-top:4px; }
+  .mpnum b{ font-size:17px; font-weight:700; } .mpnum span{ font-size:11px; color:var(--lime); }
+  .mptiles{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  .mptile{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 6px; border-radius:10px; background:#fff; cursor:pointer; }
+  .mptile i{ font-size:24px; color:var(--navy); } .mptile span{ font-size:11.5px; font-weight:700; color:var(--navy); }
+  .mpk{ display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px; color:var(--navy); }
+  .mplink{ display:block; margin-top:14px; text-align:center; font-size:12.5px; font-weight:700; color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  .mprow{ display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; font-size:12.5px; font-weight:700; color:var(--navy); }
+  .mprow span{ flex:1; } .mprow i:first-child{ font-size:20px; } .mprow .chev{ font-size:18px; color:var(--mid); }
+  .mpnmfr{ display:flex; align-items:center; gap:14px; padding:14px 16px; }
+  .mpnmfr i{ font-size:30px; color:#3DA35D; } .mpnmfr p{ margin:0; font-size:11px; font-weight:700; line-height:1.4; color:var(--navy); }
 </style>
 </head>
 <body>
@@ -2385,6 +2448,11 @@
   <input class="rt" type="radio" name="nav" id="s-netpend">
   <input class="rt" type="radio" name="nav" id="s-billhist">
   <input class="rt" type="radio" name="nav" id="s-billdet">
+  <input class="rt" type="radio" name="nav" id="s-ktopup">
+  <input class="rt" type="radio" name="nav" id="s-ktfriends">
+  <input class="rt" type="radio" name="nav" id="s-savedcard">
+  <input class="rt" type="radio" name="nav" id="s-mobbill">
+  <input class="rt" type="radio" name="nav" id="s-mobpay">
   <input class="rt" type="radio" name="nav" id="s-newcust">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
@@ -6491,9 +6559,9 @@
     </div>
     <div class="tblist">
       <label class="tbrow tbsolo" for="s-billhist"><span class="tbic"><i class="ti ti-file-certificate"></i></span><span class="n">Számlatörténet</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="tbrow tbsolo" for="s-topup1"><span class="tbic"><i class="ti ti-file-upload"></i></span><span class="n">Kártyás feltöltés</span><i class="ti ti-chevron-right chev"></i></label>
-      <div class="tbrow tbsolo"><span class="tbic"><i class="ti ti-credit-card"></i></span><span class="n">Mentett bankkártya kezelése</span><i class="ti ti-chevron-right chev"></i></div>
-      <div class="tbrow tbsolo"><span class="tbic"><i class="ti ti-device-mobile"></i></span><span class="n">Mobilszámlás fizetés</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="tbrow tbsolo" for="s-ktopup"><span class="tbic"><i class="ti ti-file-upload"></i></span><span class="n">Kártyás feltöltés</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="tbrow tbsolo" for="s-savedcard"><span class="tbic"><i class="ti ti-credit-card"></i></span><span class="n">Mentett bankkártya kezelése</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="tbrow tbsolo" for="s-mobbill"><span class="tbic"><i class="ti ti-device-mobile"></i></span><span class="n">Mobilszámlás fizetés</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
   </div>
 
@@ -6709,6 +6777,109 @@
     </div>
     <div class="bdinfo" data-bdinfo></div>
     <div class="bdbtns" data-bdbtns></div>
+  </div>
+
+  <!-- ============= KÁRTYÁS FELTÖLTÉS ============= -->
+  <div class="screen ktscreen" data-screen="kt-topup" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-tfin"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Egyenlegfeltöltés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="ktcard">
+      <p class="kth">Kinek menjen a feltöltés?</p>
+        <label class="ktrow" for="s-topup1"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>XS+ · Feltöltőkártyás</small><b>+36 20 290 9734</b></span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="ktrow" for="s-topup2"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>XS · Feltöltőkártyás</small><b>+36 20 290 8812</b></span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="ktrow" for="s-topup1"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>Prime Plus 2025</small><b>+36 20 290 7566</b></span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="ktrow" for="s-topup1"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>Prime Plus 2024</small><b>+36 20 290 7430</b></span><i class="ti ti-chevron-right chev"></i></label>
+        <label class="ktrow" for="s-ktfriends"><span class="ktic"><i class="ti ti-users"></i></span><span class="kttx"><b class="sm">Ismerősnek</b></span><i class="ti ti-chevron-right chev"></i></label>
+    </div>
+    <div class="ktnote"><i class="ti ti-info-circle"></i><p>Ha számlás előfizetőként töltesz fel egyenleget, akkor a mobilvásárláshoz használható keretedet növeled (például parkolásra, lottóra). Feltöltheted családtagjaid kártyás vagy mobilvásárlási egyenlegét is, a feltöltés tényéről SMS-ben értesítjük őket.</p></div>
+  </div>
+
+  <!-- ============= ISMERŐSÖK ============= -->
+  <div class="screen ktscreen" data-screen="kt-friends" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-ktopup"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Ismerősök</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="ktcard">
+      <p class="kth">Kinek menjen a feltöltés?</p>
+        <div class="ktrow ktfr"><i class="ti ti-user ktu"></i><span class="kttx"><b class="sm">Anya</b><small>+36 20 123 4567</small></span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="ktrow ktfr"><i class="ti ti-user ktu"></i><span class="kttx"><b class="sm">Péter</b><small>+36 30 765 4321</small></span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="ktrow ktfr"><i class="ti ti-user ktu"></i><span class="kttx"><b class="sm">Kata</b><small>+36 70 222 3344</small></span><i class="ti ti-chevron-right chev"></i></div>
+    </div>
+    <div class="ktcard ktnew"><i class="ti ti-plus"></i><span>Új ismerős</span></div>
+    <span class="ktedit">Szerkesztés</span>
+  </div>
+
+  <!-- ============= MENTETT BANKKÁRTYÁM ============= -->
+  <div class="screen ktscreen" data-screen="saved-card" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-tfin"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Mentett bankkártyám</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="ktcard sccard">
+      <p class="scname">Weinper Gyula</p>
+      <p class="scid">Yettel azonosító: 7894322977</p>
+      <p class="scdate">Mentés ideje: 2024.03.11.</p>
+      <div class="scwallet"><b>Barion tárca</b><span class="scbic"><i class="ti ti-refresh"></i></span></div>
+      <span class="scbtn pri">Barion tárca kezelése</span>
+      <span class="scbtn sec">Kártyacsere</span>
+      <span class="scbtn txt">Hozzájárulás kezelése</span>
+    </div>
+  </div>
+
+  <!-- ============= MOBILSZÁMLÁS FIZETÉS ============= -->
+  <div class="screen ktscreen mbscreen" data-screen="mob-bill" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-tfin"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Mobilszámlás fizetés</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="mbhero"><span class="mbimg"></span></div>
+    <div class="ktcard mbintro">
+      <p class="mbh">Fizess mobilszámláddal a Google Play-en és az App Store-ban!</p>
+      <p class="mbs">Élvezd a biztonságos és egyszerű digitális vásárlást mobilszámláddal!</p>
+      <label class="scbtn pri" for="s-mobpay">Beállítom</label>
+    </div>
+    <p class="mbwhy">Miért válaszd a mobilszámlás fizetést?</p>
+    <div class="mbfeat"><i class="ti ti-pointer"></i><div><b>Vedd meg most, fizess később</b><p>Vásárolj kényelmesen pár gombnyomással, fizess később mobilszámláddal együtt!</p></div></div>
+    <div class="mbfeat"><i class="ti ti-file-search"></i><div><b>Költés nyomonkövetése</b><p>Tekintsd meg korábbi vásárlásaidat és költéseidet egy helyen!</p></div></div>
+    <div class="mbfeat"><i class="ti ti-users-group"></i><div><b>Szülői felügyelet</b><p>Korlátozd a költéseket, állítsd be gyermeked telefonján is a mobilszámlás fizetést.</p></div></div>
+    <div class="ktcard mbsafe">
+      <div class="mbill"><div class="brill"><i class="ti ti-wifi brwifi"></i><span class="brph"><span class="brft">Ft</span><span class="brbtn"></span></span><i class="ti ti-hand-finger brhand"></i><i class="ti ti-check brchk"></i><span class="brheart"><i class="ti ti-heart-filled"></i></span></div></div>
+      <p class="mbh sm">Biztonság és kontroll egy helyen!</p>
+      <p class="mbs">Egy vásárláskor max. 15 000 Ft-ot költhetsz, ellenőrizd Yettel appon a rendelkezésre álló hitelkereted és korábbi költéseidet a számlaképen!</p>
+      <label class="scbtn pri" for="s-mobpay">Hitelkeret</label>
+      <p class="mbh sm mbhow">Így állíthatod be:</p>
+      <ol class="mbsteps"><li>Nyisd meg az App Store fizetési beállításait.</li><li>Válaszd a mobilszámlás fizetést.</li><li>Vásárolj kényelmesen és biztonságosan!</li></ol>
+      <span class="scbtn pri">Irány az App Store!</span>
+      <span class="scbtn sec">További részletek</span>
+    </div>
+  </div>
+
+  <!-- ============= MOBILFIZETÉS ============= -->
+  <div class="screen ktscreen" data-screen="mob-pay" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-mobbill"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Mobilfizetés</span>
+      <div class="icon-btn"><i class="ti ti-settings"></i></div>
+    </div>
+    <div class="mpnum"><small>Terhelt telefonszámod</small><div><b>+36 20 290 7566</b><span>Prime Plus 2025</span></div></div>
+    <div class="mptiles">
+      <div class="mptile"><i class="ti ti-parking-circle"></i><span>MobilParkolás</span></div>
+      <div class="mptile"><i class="ti ti-road"></i><span>Autópálya-matrica</span></div>
+    </div>
+    <div class="ktcard mpframe">
+      <div class="mpk"><b>Mobil vásárlási keret</b><b>20 000 Ft</b></div>
+      <label class="scbtn sec" for="s-ktopup">Keret feltöltése</label>
+      <span class="mplink">Korábbi vásárlásaim</span>
+    </div>
+    <div class="ktcard mprow"><i class="ti ti-message-dots"></i><span>Hogyan működik?</span><i class="ti ti-chevron-right chev"></i></div>
+    <div class="ktcard mpnmfr"><i class="ti ti-shield-check"></i><p>A Yettel a Nemzeti Mobilfizetési Rendszer hivatalos viszonteladó partnere</p></div>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -7444,7 +7615,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
