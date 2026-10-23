@@ -1748,9 +1748,10 @@
   .bntv svg{ width:100%; height:100%; }
   .bnt{ font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); }
   /* ===== Address screens ===== */
-  .adscr{ background:#FFFFFF; padding-bottom:24px !important; }
-  .adscr .formbody{ min-height:calc(var(--apph) - 216px - env(safe-area-inset-top)); }
-  .adscr:has(input[id$="-new"]:checked) .formbody{ min-height:calc(var(--apph) - 196px - env(safe-area-inset-top)); }
+  .adscr{ background:#FFFFFF; padding-bottom:calc(16px + env(safe-area-inset-bottom)) !important; }
+  #s-addrsvc:checked ~ .adscr[data-screen="addr-svc"], #s-ctvaddr:checked ~ .adscr[data-screen="ctv-addr"]{ display:flex !important; flex-direction:column; }
+  .adscr > *{ flex-shrink:0; }
+  .adscr .formbody{ flex:1 0 auto; }
   .adq{ margin:16px 0 14px; font-family:'Yettel'; font-size:17px; font-weight:700; color:var(--navy); }
   .adpick{ display:flex; flex-direction:column; gap:12px; }
   .adopt{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 14px; border:2px solid #E3E8EE; border-radius:12px; cursor:pointer; }
@@ -1772,7 +1773,7 @@
   .adin:focus{ border-color:#09223D; }
   .adin:disabled{ border-color:#CDD4DC; background:#CDD4DC; }
   .adin::placeholder{ color:#8592A6; }
-  .adhelp{ display:flex; align-items:center; gap:12px; margin-top:22px; padding:14px; border-radius:10px; background:#DCEFFC; font-size:12px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .adhelp{ display:flex; align-items:center; gap:12px; margin-top:12px; padding:14px; border-radius:10px; background:#DCEFFC; font-size:12px; font-weight:700; color:var(--navy); cursor:pointer; }
   .adhelp > i:first-child{ font-size:22px; }
   .adhelp span{ flex:1; }
   .adhelp .chev{ font-size:18px; color:var(--mid); }
@@ -3782,7 +3783,7 @@
       </div>
     </div>
     <div class="tabpane tp-otthon">
-      <label class="svccard s-blue" for="s-addrsvc">
+      <label class="svccard s-blue" for="s-addrsvc" data-adguest>
         <span class="sbadge">30 nap díjmentes</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-router"></i></span>
@@ -3803,7 +3804,7 @@
         </div>
         <span class="svcgo"><i class="ti ti-arrow-right"></i></span>
       </label>
-      <label class="svccard s-violet" for="s-ctvaddr">
+      <label class="svccard s-violet" for="s-ctvaddr" data-adguest>
         <span class="sbadge">Csomagban</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-device-tv"></i></span>
@@ -6381,8 +6382,8 @@
     </div>
     <div class="nwdots" data-nwdots><span class="on"></span><span></span><span></span></div>
     <div class="bnlist nwlist">
-      <label class="bncard" for="s-ctvaddr" style="--img:url('yettel/buy-net-tv.webp')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
-      <label class="bncard" for="s-addrsvc" style="--img:url('yettel/buy-net.webp')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
+      <label class="bncard" for="s-ctvaddr" data-adguest style="--img:url('yettel/buy-net-tv.webp')"><span class="bnic"><i class="ti ti-home-signal"></i><b>+</b><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">Otthoni internet + TV</span></label>
+      <label class="bncard" for="s-addrsvc" data-adguest style="--img:url('yettel/buy-net.webp')"><span class="bnic"><i class="ti ti-home-signal"></i></span><span class="bnt">Otthoni internet</span></label>
       <label class="bncard" for="s-tvselsvc" data-tvpre="none" style="--img:url('yettel/buy-tv.webp')"><span class="bnic"><span class="bntv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="3"/><path d="M7 8h4M9 8v5.5M13 8l2 5.5L17 8"/><path d="M5 20h14"/></svg></span></span><span class="bnt">TV, Extra</span></label>
       <label class="bncard" for="s-buy" style="--img:url('yettel/buy-mobile.webp')"><span class="bnic"><i class="ti ti-device-mobile"></i></span><span class="bnt">Mobil</span></label>
     </div>
@@ -6732,7 +6733,7 @@
     <p class="anp">Pillanatnyilag otthoni internet szolgáltatásunk nem érhető el a körzetedben. Ne szomorkodj, hálózatunkat folyamatosan bővítjük.</p>
     <div class="anfoot">
       <span class="lgbtn annotify" data-annotify>Értesítést kérek</span>
-      <label class="lgback" for="s-home">Vissza a főoldalra</label>
+      <label class="lgback" for="s-home" data-gohome>Vissza a főoldalra</label>
     </div>
   </div>
 
@@ -7500,19 +7501,30 @@
       if (f && !f.classList.contains('dis')) openSearch(sc, f.getAttribute('data-adf'));
     });
     [newR, permR].forEach(function(r){ r.addEventListener('change', function(){ paint(sc); }); });
-    back.addEventListener('click', function(e){ if (sc.classList.contains('adon')){ e.preventDefault(); sc.classList.remove('adon'); paint(sc); sc.scrollTop = 0; } });
+    back.addEventListener('click', function(e){ if (sc.classList.contains('adon') && !sc.classList.contains('guest')){ e.preventDefault(); sc.classList.remove('adon'); paint(sc); sc.scrollTop = 0; } });
     next.addEventListener('click', function(){
       if (next.classList.contains('off')) return;
       if (newR.checked && !sc.classList.contains('adon')){ sc.classList.add('adon'); paint(sc); sc.scrollTop = 0; return; }
       var v = sc._vals, unit = UNITS.filter(function(u){ return u[0] === v.unit; })[0];
       var scenario = newR.checked ? (unit ? unit[1] : 'both') : 'both';
-      window.yAddr = {from:sc.getAttribute('data-screen'), scenario:scenario, address: newR.checked ? (v.city+', '+v.street+' '+v.house+', '+v.unit.replace(/\s*\(.*\)$/, '')) : '8200 Veszprém, Tölgyfa u. 4'};
+      window.yAddr = {from:sc.getAttribute('data-screen'), guest:sc.classList.contains('guest'), scenario:scenario, address: newR.checked ? (v.city+', '+v.street+' '+v.house+', '+v.unit.replace(/\s*\(.*\)$/, '')) : '8200 Veszprém, Tölgyfa u. 4'};
+      var hb = document.querySelector('[data-gohome]'); if (hb) hb.setAttribute('for', sc.classList.contains('guest') ? 's-newcust' : 's-home');
       ld.classList.add('on');
       setTimeout(function(){ go(scenario === 'none' ? 's-addrnone' : next.getAttribute('data-adgo')); }, 2600);
       setTimeout(function(){ ld.classList.remove('on'); }, 2800);
     });
     paint(sc);
   });
+  /* entering from the shop: logged out (data-adguest) skips the saved address choice, logged in starts on it */
+  document.addEventListener('click', function(e){
+    var l = e.target.closest && e.target.closest('label[for="s-addrsvc"], label[for="s-ctvaddr"]'); if (!l || l.hasAttribute('data-ofnew') || l.hasAttribute('data-ofback') || l.hasAttribute('data-adback')) return;
+    var sc = document.querySelector(l.getAttribute('for') === 's-ctvaddr' ? '[data-screen="ctv-addr"]' : '[data-screen="addr-svc"]');
+    var guest = l.hasAttribute('data-adguest');
+    sc.classList.toggle('guest', guest); sc.classList.toggle('adon', guest);
+    sc.querySelector(guest ? 'input[id$="-new"]' : 'input[id$="-perm"]').checked = true;
+    sc.querySelector('.adx').setAttribute('for', guest ? 's-newcust' : 's-tshop');
+    sc.scrollTop = 0; paint(sc);
+  }, true);
   /* "Másik cím megadása" on the offers screen opens the form straight away */
   document.addEventListener('click', function(e){
     var l = e.target.closest && e.target.closest('[data-ofnew]'); if (!l) return;
@@ -8257,6 +8269,8 @@
     sc.querySelector('.ofinfo').hidden = a.scenario !== 'fwa';
     var back = a.from === 'ctv-addr' ? 's-ctvaddr' : 's-addrsvc';
     sc.querySelector('[data-ofback]').setAttribute('for', back); sc.querySelector('[data-ofnew]').setAttribute('for', back);
+    sc.querySelector('.adx').setAttribute('for', a.guest ? 's-newcust' : 's-tshop');
+    var hb = document.querySelector('[data-gohome]'); if (hb) hb.setAttribute('for', a.guest ? 's-newcust' : 's-home');
     apply(0); kid.checked = false;
     sc.classList.remove('stk'); sc.scrollTop = 0; car.scrollLeft = 0;
   }
