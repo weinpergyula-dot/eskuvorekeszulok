@@ -2967,6 +2967,7 @@
   .fullsub{ margin:0 0 8px; font-size:12px; font-weight:700; color:var(--navy); }
   .gsacc.card{ margin-top:6px; padding:0 14px; border:1.5px solid #E3E8EE; border-radius:12px; }
   .gsacc.card .gsaccb{ font-size:13px; }
+  .subrel:not(:has(.substrm)){ display:none; }   /* no linked services yet */
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -3210,8 +3211,6 @@
           <div class="subuse"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>7,6 GB</b><b>90 perc</b></p><p class="ur">Megújul: 2026.07.31</p></div><label class="ubtn" for="s-xdata1">Extrák</label></div>
           <div class="subrel" data-related="mob-7430">
             <span class="relanchor" data-relhead="mob-7430" hidden></span>
-            <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ictv"></i></span><span class="ssn">YettelTV</span><i class="ti ti-chevron-right chev"></i></label>
-            <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-wifi"></i></span><span class="ssn">HBO Max</span><i class="ti ti-chevron-right chev"></i></label>
           </div>
           <div class="subacct">weinper.gyula@gmail.com</div>
         </div>
@@ -3222,14 +3221,6 @@
             <i class="ti ti-chevron-right chev"></i>
           </label>
           <div class="subuse subpre"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>3,2 GB</b><b>0 perc</b><b data-bal="9734">3 450 Ft</b></p><p class="ur">Felhasználható: 2026.11.30.-ig</p></div><label class="ubtn" for="s-topup1">Egyenlegfeltöltés</label></div>
-        </div>
-        <div class="sub subgroup" data-sub="mob-8812">
-          <label class="subhead" for="s-detailpre2">
-            <div class="itile"><i class="ti ti-phone-call"></i></div>
-            <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">XS · Feltöltőkártyás</p></div>
-            <i class="ti ti-chevron-right chev"></i>
-          </label>
-          <div class="subuse subpre"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>1,4 GB</b><b>0 perc</b><b data-bal="8812">1 280 Ft</b></p><p class="ur">Felhasználható: 2026.11.15.-ig</p></div><label class="ubtn" for="s-topup2">Egyenlegfeltöltés</label></div>
         </div>
         <span data-anchor="otthoni" hidden></span>
       </div>
@@ -3524,8 +3515,6 @@
       </label>
       <div class="subrel" data-related="mob-7430">
         <span class="relanchor" data-relhead="mob-7430" hidden></span>
-        <label class="substrm" data-sub="tv" for="s-detail-tv"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">YettelTV<span class="sssub">TV Prémium</span></span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="substrm" data-sub="strm-hbo" for="s-strm3"><span class="ssic"><i class="ti ti-player-play"></i></span><span class="ssn">HBO Max<span class="sssub">Streaming</span></span><i class="ti ti-chevron-right chev"></i></label>
       </div>
     </div>
     <div class="sub" style="position:relative;" data-sub="mob-7566"><label class="subcover" for="s-detailmob2"></label>
@@ -3536,11 +3525,6 @@
     <div class="sub" style="position:relative;" data-sub="mob-9734"><label class="subcover" for="s-detailpre1"></label>
       <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
       <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">Feltöltőkártyás · XS+</p></div>
-      <i class="ti ti-chevron-right chev"></i>
-    </div>
-    <div class="sub" style="position:relative;" data-sub="mob-8812"><label class="subcover" for="s-detailpre2"></label>
-      <div class="itile slate"><i class="ti ti-device-mobile"></i></div>
-      <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">Feltöltőkártyás · XS</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
 
@@ -8003,7 +7987,6 @@
     {id:'7430', ic:'ti-phone-call', plan:'Prime Plus 2024', t:'+36 20 290 7430', kind:'mob', det:'s-detail', data:'s-xdata1',
      act:[['YettelTV Prémium','Megújuló','4 490 Ft/hó','s-detail-tv'],['HBO Max','Megújuló','2 490 Ft/hó','s-strm3']]},
     {id:'9734', ic:'ti-phone-call', plan:'XS+ · Feltöltőkártyás', t:'+36 20 290 9734', kind:'mob', det:'s-detailpre1', data:'s-topup1'},
-    {id:'8812', ic:'ti-phone-call', plan:'XS · Feltöltőkártyás', t:'+36 20 290 8812', kind:'mob', det:'s-detailpre2', data:'s-topup2'},
     {id:'net', ic:'ti-home-signal', plan:'HiperNet L', t:'8200 Veszprém, Tölgyfa u. 4', kind:'net', det:'s-detail-net',
      act:[['Yettel TV Basic','Megújuló','2 990 Ft/hó','s-detail-tv'],['TV2 Play Premium','Megújuló','1 990 Ft/hó','s-strm3'],['RTL+ Active','Megújuló','1 590 Ft/hó','s-strm3']]}
   ];
@@ -9048,7 +9031,7 @@
   /* Yettel Full: needs mobile + home internet; mobile and internet subscriptions together give the rate
      (2 → 15%, 3 → 20%, 4 or more → 30%), every Yettel TV and streaming subscription gets 15% */
   var EXIST = [['ti-phone-call','+36 20 290 7566','Prime Plus 2025','m'],['ti-phone-call','+36 20 290 7430','Prime Plus 2024','m'],
-    ['ti-home-signal','HiperNet L','8200 Veszprém, Tölgyfa u. 4','n'],['ti-device-tv','Yettel TV Basic','','t'],['ti-device-tv','YettelTV','+36 20 290 7430','t'],['ti-movie','HBO Max','+36 20 290 7430','t']];
+    ['ti-home-signal','HiperNet L','8200 Veszprém, Tölgyfa u. 4','n'],['ti-device-tv','Yettel TV Basic','','t']];
   function fullPct(guest){
     if (guest) return 0;
     var cnt = EXIST.filter(function(e){ return e[3] !== 't'; }).length + 1;
