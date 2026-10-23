@@ -344,12 +344,13 @@
   #s-xsvc:checked ~ [data-screen="xsvc"],
   #s-xsmine:checked ~ [data-screen="xs-mine"],
   #s-primedit:checked ~ [data-screen="prim-edit"],
+  #s-netpend:checked ~ [data-screen="net-pend"],
   #s-newcust:checked ~ [data-screen="newcust"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -2010,6 +2011,61 @@
   .pesave.off{ background:#CDD4DC; color:#8592A6; pointer-events:none; }
   .pescreen .peopts{ min-height:0; }
   .pescreen .petip{ margin-bottom:calc(812px - 640px); }
+
+  /* ===== Welcome: logo triangle bounces (same rhythm as the old dot) ===== */
+  .wylogo .ytri{ position:absolute; right:-11px; top:2px; width:9px; height:8px; border:none; background:var(--navy);
+                 clip-path:polygon(50% 0,100% 100%,0 100%); transform-origin:50% 66%; animation:ytri 4s ease-in-out infinite; }
+  @keyframes ytri{
+    0%{ transform:translateY(-14px) rotate(0deg); }
+    12%{ transform:translateY(0) rotate(240deg); }
+    21%{ transform:translateY(-7px) rotate(300deg); }
+    30%{ transform:translateY(0) rotate(360deg); }
+    37%{ transform:translateY(-3px) rotate(360deg); }
+    44%,96%{ transform:translateY(0) rotate(360deg); }
+    100%{ transform:translateY(-14px) rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce){ .wylogo .ytri{ animation:none; } }
+
+  /* ===== prepaid usage on the primary card ===== */
+  .primbox .subuse.subpre{ flex-wrap:wrap; }
+  .subuse.subpre .ublk{ flex:1 1 100%; }
+  .subuse.subpre .uv{ gap:12px; }
+  .subuse.subpre .uv b + b{ padding-left:12px; }
+  .subuse.subpre .ubtn{ margin:10px auto 0; padding:7px 24px; transform:translateX(-25px); }
+
+  /* ===== HiperNet detail pages ===== */
+  .npid{ position:relative; }
+  .npid .meta{ flex:1; }
+  .nppend{ align-self:center; padding:3px 10px; border-radius:999px; background:#DCEBFA; font-size:11px; font-weight:700; color:var(--navy); white-space:nowrap; }
+  .npspec{ display:flex; flex-direction:column; gap:12px; }
+  .npspec b{ display:block; font-size:14px; font-weight:700; color:var(--navy); }
+  .npspec span{ display:block; font-size:11px; font-weight:300; color:var(--navy); }
+  .npinfos{ padding:4px 16px; }
+  .npinfo{ padding:14px 0; border-bottom:1px solid #E3E8EE; }
+  .npinfo:last-child{ border-bottom:none; }
+  .npih{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .npih b{ font-size:13px; font-weight:700; color:var(--navy); }
+  .npmod{ flex-shrink:0; font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  .npinfo p{ margin:10px 0 0; font-size:13px; font-weight:300; color:var(--navy); }
+  .nppromo{ position:relative; display:flex; align-items:center; min-height:132px; margin-bottom:16px; padding:16px; border-radius:16px; background:#09223D; overflow:hidden; }
+  .nppt{ position:relative; z-index:1; max-width:62%; }
+  .npph{ margin:0 0 6px; font-size:13px; font-weight:700; color:#FFFFFF; }
+  .npps{ margin:0 0 12px; font-size:12px; line-height:1.35; color:#FFFFFF; }
+  .nppb{ display:inline-block; padding:5px 18px; border-radius:999px; background:var(--lime); color:#09223D; font-size:11px; font-weight:700; cursor:pointer; }
+  .nppart{ position:absolute; right:10px; top:50%; transform:translateY(-50%); width:110px; height:100px; }
+  .npptri{ position:absolute; inset:0; background:#4E6276; clip-path:polygon(18% 30%,100% 0,78% 100%); opacity:.6; }
+  .nppart i{ position:absolute; right:14px; top:14px; font-size:68px; color:var(--lime); }
+  .nptiles{ grid-template-columns:repeat(3,1fr); gap:8px; }
+  .nptiles .ntile{ padding:10px 4px 10px; gap:6px; border:2px solid #E3E8EE; border-radius:10px; }
+  .nptiles .ntile .nic{ width:36px; height:36px; background:#DCEFFC; }
+  .nptiles .ntile .nic i{ font-size:19px; }
+  .nptiles .ntile span:last-child{ font-size:11.5px; font-weight:400; }
+  .nprow{ display:block; padding:2px 16px; margin-bottom:12px; cursor:pointer; }
+  .npksh{ display:flex; align-items:center; justify-content:space-between; }
+  .npksh .dtct{ margin:0 0 4px; }
+  .npksh i{ font-size:20px; color:var(--mid); }
+  .npictv{ width:24px; height:24px; margin:0 1px; }
+  .npmail{ margin:0; padding:12px 0 0; border-top:1px solid #E3E8EE; font-size:12px; font-weight:300; color:var(--navy); }
 </style>
 </head>
 <body>
@@ -2105,6 +2161,7 @@
   <input class="rt" type="radio" name="nav" id="s-xsvc">
   <input class="rt" type="radio" name="nav" id="s-xsmine">
   <input class="rt" type="radio" name="nav" id="s-primedit">
+  <input class="rt" type="radio" name="nav" id="s-netpend">
   <input class="rt" type="radio" name="nav" id="s-newcust">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
@@ -2135,7 +2192,7 @@
     <div class="wbg"></div>
     <div class="wblob b1"></div><div class="wblob b2"></div>
     <div class="wframe wy">
-      <div class="wytop"><span class="wylogo">Yettel<i></i></span><span class="wyeng">ENG</span></div>
+      <div class="wytop"><span class="wylogo">Yettel<i class="ytri"></i></span><span class="wyeng">ENG</span></div>
       <div class="wymid">
         <div class="yepp" aria-label="Yepp"><span>Y</span><span>e</span><span>p</span><span>p</span></div>
       </div>
@@ -2214,15 +2271,15 @@
         <div class="sub subgroup" data-sub="net">
           <label class="subhead" for="s-detail-net">
             <div class="itile"><i class="ti ti-home-signal"></i></div>
-            <div class="meta"><p class="t">8200 Veszprém, Tölgyfa u. 4</p><p class="s">Otthoni Net 1000</p></div>
+            <div class="meta"><p class="t">8200 Veszprém, Tölgyfa u. 4</p><p class="s">HiperNet L</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
         </div>
         <div class="sub subgroup subpend" data-sub="net-pend">
           <span class="pendtag">Folyamatban</span>
-          <label class="subhead" for="s-detail-net">
+          <label class="subhead" for="s-netpend">
             <div class="itile"><i class="ti ti-home-signal"></i></div>
-            <div class="meta"><p class="t">8200 Veszprém, Jutasi út 12</p><p class="s">Otthoni Net 500</p></div>
+            <div class="meta"><p class="t">8200 Veszprém, Jutasi út 12</p><p class="s">HiperNet M</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
         </div>
@@ -2246,7 +2303,7 @@
             <div class="meta"><p class="t">+36 20 290 9734</p><p class="s">XS+ · Feltöltőkártyás</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
-          <div class="subuse"><div class="ublk"><p class="ul">Egyenleg</p><p class="uv"><b data-bal="9734">3 450 Ft</b></p><p class="ur">Havidíj nélkül</p></div><label class="ubtn" for="s-topup1">Feltöltés</label></div>
+          <div class="subuse subpre"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>3,2 GB</b><b>0 perc</b><b data-bal="9734">3 450 Ft</b></p><p class="ur">Felhasználható: 2026.11.30.-ig</p></div><label class="ubtn" for="s-topup1">Egyenlegfeltöltés</label></div>
         </div>
         <div class="sub subgroup" data-sub="mob-8812">
           <label class="subhead" for="s-detailpre2">
@@ -2254,7 +2311,7 @@
             <div class="meta"><p class="t">+36 20 290 8812</p><p class="s">XS · Feltöltőkártyás</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
-          <div class="subuse"><div class="ublk"><p class="ul">Egyenleg</p><p class="uv"><b data-bal="8812">1 280 Ft</b></p><p class="ur">Havidíj nélkül</p></div><label class="ubtn" for="s-topup2">Feltöltés</label></div>
+          <div class="subuse subpre"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>1,4 GB</b><b>0 perc</b><b data-bal="8812">1 280 Ft</b></p><p class="ur">Felhasználható: 2026.11.15.-ig</p></div><label class="ubtn" for="s-topup2">Egyenlegfeltöltés</label></div>
         </div>
         <span data-anchor="otthoni" hidden></span>
       </div>
@@ -2399,15 +2456,16 @@
   </div>
 
   <!-- ============= DETAIL: OTTHONI INTERNET ============= -->
-  <div class="screen dtscreen" data-screen="detail-net" style="display:none;">
+  <div class="screen dtscreen npscreen" data-screen="detail-net" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Szolgáltatás részletei</span>
-      <div style="width:42px"></div>
+      <span class="title">Előfizetés részletei</span>
+      <div class="icon-btn"><i class="ti ti-message-question"></i></div>
     </div>
-    <div class="dtid">
+    <div class="dtid npid">
       <i class="ti ti-home-signal"></i>
-      <div class="meta"><p class="s">Otthoni Net 1000</p><p class="t">8200 Veszprém, Tölgyfa u. 4</p></div>
+      <div class="meta"><p class="s">HiperNet L</p><p class="t">8200 Veszprém, Tölgyfa u. 4</p></div>
+      
     </div>
 
     <div class="dtcard nkcard">
@@ -2418,73 +2476,36 @@
       <p class="nknote">Becenév nélkül a cím fogja azonosítani az előfizetést.</p>
     </div>
 
-    <div class="dtcard dttabcard">
-      <input class="rt" type="radio" name="dt-net" id="dt-net-a" checked>
-      <input class="rt" type="radio" name="dt-net" id="dt-net-b">
-      <div class="dttabs"><label class="dttab" for="dt-net-a">Felhasználható</label><label class="dttab" for="dt-net-b">Havi fogyasztásom</label></div>
-      <div class="dtpane dtp-a">
-        <div class="dtblk">
-          <p class="dth"><i class="ti ti-home-signal"></i>Otthoni internet</p>
-          <div class="dtval"><span>Otthoni Net 1000 belföldi adatkeret<small>Megújul: 2026.11.08.</small></span><b class="dtinf">∞</b></div>
-        </div>
-        <div class="dtblk dtline">
-          <p class="dth"><i class="ti ti-file-dollar"></i>Mobilvásárlásra felhasználható</p><b class="dtbig">0 Ft</b>
-        </div>
-      </div>
-      <div class="dtpane dtp-b">
-        <div class="dtval dtover"><span>Letöltött adat ebben a hónapban</span><b>412 GB</b></div>
-        <div class="dtval dtover"><span>Feltöltött adat ebben a hónapban</span><b>58 GB</b></div>
-        <div class="dtval dtover"><span>Átlagos letöltési sebesség</span><b>874 Mbit/s</b></div>
-      </div>
+    <div class="dtcard npspec">
+      <div><b>1 000 Mbit/s</b><span>max. letöltési sebesség</span></div>
+      <div><b>300 Mbit/s</b><span>max. feltöltési sebesség</span></div>
+      <div><b>YR-300 067 402</b><span>Wi-Fi router széria szám</span></div>
+    </div>
+
+    <div class="nppromo">
+      <div class="nppt"><p class="npph">NetPajzs 3 hónapig ajándékba</p><p class="npps">Védd meg az otthoni hálózatod minden eszközét a káros oldalaktól — 3 hónapig díjmentesen.</p><label class="nppb" for="s-nppick">Megnézem</label></div>
+      <div class="nppart"><span class="npptri"></span><i class="ti ti-gift"></i></div>
     </div>
 
     <div class="dtcard">
-      <p class="dtct">Extra szolgáltatások</p>
-      <div class="dtxgrid">
-        <label class="dtx" for="s-addonsvc"><span class="dtxic"><i class="ti ti-shopping-cart"></i></span>Extra vásárlás</label>
-        <div class="dtx dtxwip"><span class="dtxic"><i class="ti ti-device-mobile-plus"></i></span>Aktív extráid</div>
+      <p class="dtct">Vedd fel velünk a kapcsolatot!</p>
+      <div class="ntiles c3 nptiles">
+        <div class="ntile"><span class="nic"><i class="ti ti-building-store"></i></span><span>Üzletkereső</span></div>
+        <div class="ntile"><span class="nic"><i class="ti ti-message-question"></i></span><span>Chat</span></div>
+        <div class="ntile"><span class="nic"><i class="ti ti-phone-call"></i></span><span>Hívás</span></div>
       </div>
     </div>
 
+    <div class="dtcard dtrowcard nprow"><span class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></span></div>
+    <div class="dtcard dtrowcard nprow"><span class="lrow dtrow"><i class="ti ti-file-text dtic"></i><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></span></div>
+    <label class="dtcard dtrowcard nprow" for="s-billing"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
+
     <div class="dtcard">
-      <p class="dtct">Kapcsolódó szolgáltatások</p>
-      <label class="dtrow" for="s-detail-tv"><i class="ti ti-device-tv dtic"></i><span class="n">Yettel TV Basic</span><i class="ti ti-chevron-right chev"></i></label>
-      <label class="dtrow" for="s-strm3"><i class="ti ti-player-play dtic"></i><span class="n">TV2 Play Premium</span><i class="ti ti-chevron-right chev"></i></label>
+      <div class="npksh"><p class="dtct">Kapcsolódó szolgáltatások</p><i class="ti ti-info-circle"></i></div>
+      <label class="dtrow" for="s-detail-tv"><i class="ictv npictv"></i><span class="n">Yettel TV Basic</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="dtrow" for="s-strm3"><i class="ti ti-device-tv dtic"></i><span class="n">TV2 Play Prémium</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="dtrow" for="s-strm3"><i class="ti ti-device-tv dtic"></i><span class="n">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></label>
-    </div>
-
-    <div class="dtcard dtrowcard">
-      <div class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Hozzájárulások kezelése</span><i class="ti ti-chevron-right chev"></i></div>
-    </div>
-
-    <div class="dtcard dtdev">
-      <p class="dtct">Készülékeid</p>
-      <label class="dtrow" for="s-devdet4"><i class="ti ti-router dtic"></i><span class="n">Wi-Fi router<small>Bérelt · YR-300 067 402</small></span><i class="ti ti-chevron-right chev"></i></label>
-      <div class="dtpromo">
-        <p class="dtps">Új mobilt szeretnél?</p>
-        <p class="dtpt">Rendelj online akár extra kedvezménnyel</p>
-        <label class="dtpbtn" for="s-devbuy">Megnézem az ajánlatokat</label>
-      </div>
-    </div>
-
-    <div class="dtcard">
-      <p class="dtct">Tarifacsomagod</p>
-      <div class="dtplan"><i class="ti ti-file-text dtic"></i><span>Otthoni Net 1000</span></div>
-      <ul class="dtchk">
-        <li><i class="ti ti-check"></i>Korlátlan adatforgalom belföldön</li>
-        <li><i class="ti ti-check"></i>1000 Mbit/s letöltés, 300 Mbit/s feltöltés</li>
-        <li><i class="ti ti-check"></i>Wi-Fi router bérlet</li>
-      </ul>
-      <p class="dtfine">A leírás tájékoztató jellegű. Egyedi tarifaelemeket nem jelenítünk meg, csak a csomagod általános leírását.</p>
-    </div>
-
-    <div class="dtcard">
-      <p class="dtct">Számlázás</p>
-      <div class="dtkv"><span>Fordulónap</span><b>2026.11.08.</b></div>
-      <div class="dtkv"><span>Így szoktad fizetni a számlád:</span><b>banki átutalás</b></div>
-      <div class="dtkv"><span>Így kéred a számlád:</span><b>elektronikus</b></div>
-      <div class="dtkv"><span>Értesítési email cím</span><b>weinper.gyula@gmail.com</b></div>
-      <div class="dtkv"><span>Értesítési szám</span><b>+36 20 290 7430</b></div>
+      <p class="npmail">weinper.gyula@gmail.com</p>
     </div>
 
     <button class="cancel" data-cancel="net net-new netpajzs"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
@@ -2611,7 +2632,7 @@
     <p class="mlab">Otthoni szolgáltatások</p>
     <div class="sub" style="position:relative;" data-sub="net"><label class="subcover" for="s-detail-net"></label>
       <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · HiperNet L</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
   </div>
@@ -2647,7 +2668,7 @@
     <p class="mlab">Bérelt készülékek</p>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet4"></label>
       <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="t">Wi-Fi router</p><p class="s">Bérelt · Otthoni Net 1000</p></div>
+      <div class="meta"><p class="t">Wi-Fi router</p><p class="s">Bérelt · HiperNet L</p></div>
       <i class="ti ti-chevron-right chev"></i>
     </div>
     <div class="sub" style="position:relative;"><label class="subcover" for="s-devdet5"></label>
@@ -2930,7 +2951,7 @@
     <p class="mlab">Otthoni internet</p>
     <label class="sub selopt" for="tvb-o3">
       <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · HiperNet L</p></div>
     </label>
     <p class="tvgate"><i class="ti ti-arrow-up"></i>Válassz egy szolgáltatást, és itt jelennek meg a TV-csomagok.</p>
     <div class="tvpacks">
@@ -3015,7 +3036,7 @@
     <p class="mlab">Otthoni internet</p>
     <label class="sub selopt" for="tvs-o3">
       <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · HiperNet L</p></div>
     </label>
     <p class="tvgate"><i class="ti ti-arrow-up"></i>Válassz egy szolgáltatást, és itt jelennek meg a TV-csomagok.</p>
     <div class="tvpacks">
@@ -4925,7 +4946,7 @@
     </div>
     <div class="planbar">
       <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="s">Otthoni Net 1000</p><p class="t" style="font-size:14px;">Veszprém, Tölgyfa u. 4</p></div>
+      <div class="meta"><p class="s">HiperNet L</p><p class="t" style="font-size:14px;">Veszprém, Tölgyfa u. 4</p></div>
     </div>
     <p class="mlab">Szolgáltatás elnevezése</p>
     <input class="edfield" type="text" value="Veszprém, Tölgyfa u. 4" data-edold="8200 Veszprém, Tölgyfa u. 4" maxlength="40">
@@ -5385,7 +5406,7 @@
     <p class="mlab">Bérlet</p>
     <div class="gcard">
       <div class="krow"><span class="k">Állapot</span><span class="v strong">Bérelt</span></div>
-      <label class="krow krlink" for="s-detail-net"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">Internet · Otthoni Net 1000</span></label>
+      <label class="krow krlink" for="s-detail-net"><span class="k">Kapcsolódó szolgáltatás</span><span class="v link">Internet · HiperNet L</span></label>
       <div class="krow"><span class="k">Bérleti díj</span><span class="v">A szolgáltatás díja tartalmazza</span></div>
     </div>
     <p class="mlab">Lehetőségek</p>
@@ -5948,7 +5969,7 @@
     </label>
     <label class="sub selopt" for="strsrc-net">
       <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · HiperNet L</p></div>
     </label>
     <p class="mlab">Streaming csomagok</p>
     <label class="strow"><input type="checkbox" class="rt strpick-in" id="sp-hbo" data-strm="HBO Max" data-price="2490"><span class="stric"><i class="ti ti-player-play"></i></span><span class="strn">HBO Max<small>2 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
@@ -5990,7 +6011,7 @@
     <p class="mlab">Ehhez a szolgáltatáshoz</p>
     <div class="sub">
       <div class="itile blue"><i class="ti ti-router"></i></div>
-      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · Otthoni Net 1000</p></div>
+      <div class="meta"><p class="t" style="font-size:11px; text-transform:uppercase; letter-spacing:.03em;">Veszprém, Tölgyfa u. 4</p><p class="s">Internet · HiperNet L</p></div>
     </div>
     <div class="xcard">
       <span class="xic"><i class="ti ti-shield-lock"></i></span>
@@ -6392,6 +6413,52 @@
     <div class="peopts" data-peopts></div>
     <div class="petip"><i class="ti ti-bulb"></i><div><b>Hiányolsz valamit?</b><p>Ha nem látod itt valamelyik szolgáltatásodat, akkor azt nem lehet elsődlegesnek választani</p></div></div>
     <label class="pesave off" for="s-home" data-pesave>Mentés</label>
+  </div>
+
+  <!-- ============= HIPERNET M: FOLYAMATBAN LÉVŐ MEGRENDELÉS ============= -->
+  <div class="screen dtscreen npscreen" data-screen="net-pend" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Előfizetés részletei</span>
+      <div class="icon-btn"><i class="ti ti-message-question"></i></div>
+    </div>
+    <div class="dtid npid">
+      <i class="ti ti-home-signal"></i>
+      <div class="meta"><p class="s">HiperNet M</p><p class="t">8200 Veszprém, Jutasi út 12</p></div>
+      <span class="nppend">Folyamatban</span>
+    </div>
+
+    <div class="dtcard nkcard">
+      <div class="nkrow">
+        <input class="edfield" type="text" value="" placeholder="Nevezd el az előfizetést" data-edold="8200 Veszprém, Jutasi út 12" maxlength="40">
+        <button class="nkbtn" type="button" data-edsave>Mentés</button>
+      </div>
+      <p class="nknote">Becenév nélkül a cím fogja azonosítani az előfizetést.</p>
+    </div>
+
+    <div class="dtcard npinfos">
+      <div class="npinfo"><div class="npih"><b>Telepítés időpontja</b><span class="npmod">Módosítom</span></div><p>2026.11.05. · 09:00–12:00</p></div>
+      <div class="npinfo"><div class="npih"><b>Megjegyzés a szakteknikusnak</b><span class="npmod">Módosítom</span></div><p>Csengessen, mert nem hallom a kopogást.</p></div>
+      <div class="npinfo"><div class="npih"><b>Kapcsolattartó neve</b><span class="npmod">Módosítom</span></div><p>Weinper Gyula</p></div>
+      <div class="npinfo"><div class="npih"><b>Értesítési telefonszám</b><span class="npmod">Módosítom</span></div><p>+36 20 290 7566</p></div>
+    </div>
+
+    <div class="nppromo">
+      <div class="nppt"><p class="npph">NetPajzs 3 hónapig ajándékba</p><p class="npps">Védd meg az otthoni hálózatod minden eszközét a káros oldalaktól — 3 hónapig díjmentesen.</p><label class="nppb" for="s-nppick">Megnézem</label></div>
+      <div class="nppart"><span class="npptri"></span><i class="ti ti-gift"></i></div>
+    </div>
+
+    <div class="dtcard">
+      <p class="dtct">Vedd fel velünk a kapcsolatot!</p>
+      <div class="ntiles c3 nptiles">
+        <div class="ntile"><span class="nic"><i class="ti ti-building-store"></i></span><span>Üzletkereső</span></div>
+        <div class="ntile"><span class="nic"><i class="ti ti-message-question"></i></span><span>Chat</span></div>
+        <div class="ntile"><span class="nic"><i class="ti ti-phone-call"></i></span><span>Hívás</span></div>
+      </div>
+    </div>
+
+    <div class="dtcard dtrowcard nprow"><span class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></span></div>
+    <label class="dtcard dtrowcard nprow" for="s-billing"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -6812,14 +6879,14 @@
     on('[data-screen="str-pick"] .acont[for="s-dsvcsum"]', function(){
       dsvc.kind='Streaming';
       var src=document.querySelector('input[name="strsrc"]:checked');
-      dsvc.target = src ? (src.id==='strsrc-net' ? 'Internet · Otthoni Net 1000' : 'Havidíjas mobil · Prime Plus 2024') : '';
+      dsvc.target = src ? (src.id==='strsrc-net' ? 'Internet · HiperNet L' : 'Havidíjas mobil · Prime Plus 2024') : '';
       dsvc.items = Array.prototype.slice.call(document.querySelectorAll('[data-screen="str-pick"] .strpick-in:checked')).map(function(c){
         return {name:c.getAttribute('data-strm'), price:parseInt(c.getAttribute('data-price'),10)};
       });
       render();
     });
     on('[data-screen="gyv-pick"] .acont[for="s-dsvcsum"]', function(){ dsvc.kind='Gyermekvédelem'; dsvc.target=''; dsvc.items=[{name:'Gyermekvédelmi szűrő', price:0, free:true}]; render(); });
-    on('[data-screen="np-pick"] .acont[for="s-dsvcsum"]', function(){ dsvc.kind='NetPajzs'; dsvc.target='Internet · Otthoni Net 1000'; dsvc.items=[{name:'NetPajzs', price:490}]; render(); });
+    on('[data-screen="np-pick"] .acont[for="s-dsvcsum"]', function(){ dsvc.kind='NetPajzs'; dsvc.target='Internet · HiperNet L'; dsvc.items=[{name:'NetPajzs', price:490}]; render(); });
     on('[data-screen="net-sec"] .acont[for="s-dsvcsum"]', function(){
       var sel=document.querySelector('input[name="netsec"]:checked');
       if(!sel) return;
@@ -7041,7 +7108,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -7174,7 +7241,7 @@
      act:[['YettelTV Prémium','Megújuló','4 490 Ft/hó','s-detail-tv'],['HBO Max','Megújuló','2 490 Ft/hó','s-strm3']]},
     {id:'9734', ic:'ti-phone-call', plan:'XS+ · Feltöltőkártyás', t:'+36 20 290 9734', kind:'mob', det:'s-detailpre1', data:'s-topup1'},
     {id:'8812', ic:'ti-phone-call', plan:'XS · Feltöltőkártyás', t:'+36 20 290 8812', kind:'mob', det:'s-detailpre2', data:'s-topup2'},
-    {id:'net', ic:'ti-home-signal', plan:'Otthoni Net 1000', t:'8200 Veszprém, Tölgyfa u. 4', kind:'net', det:'s-detail-net',
+    {id:'net', ic:'ti-home-signal', plan:'HiperNet L', t:'8200 Veszprém, Tölgyfa u. 4', kind:'net', det:'s-detail-net',
      act:[['Yettel TV Basic','Megújuló','2 990 Ft/hó','s-detail-tv'],['TV2 Play Premium','Megújuló','1 990 Ft/hó','s-strm3'],['RTL+ Active','Megújuló','1 590 Ft/hó','s-strm3']]}
   ];
   var sheet = document.getElementById('xsheet'), sc = document.querySelector('[data-screen="xsvc"]');
