@@ -2970,12 +2970,13 @@
   .subrel:not(:has(.substrm)){ display:none; }   /* no linked services yet */
 
   /* Full discount on tariff cards */
-  .offb{ display:inline-flex; align-items:center; gap:4px; margin:0 0 6px; padding:3px 10px; border-radius:999px; background:#09223D; font-size:10px; font-weight:700; color:var(--lime); }
   .ofbig s{ align-self:center; margin-right:4px; font-size:12px; font-weight:400; color:#4A5B70; }
-  .offi{ display:flex; align-items:flex-start; justify-content:center; gap:4px; margin:6px 0 0 !important; font-size:9.5px !important; line-height:1.35; color:#24364F; }
-  .offi i{ font-size:12px; }
   .exfb{ display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; background:var(--lime); font-size:9px; font-weight:700; color:var(--navy); vertical-align:1px; }
   .expr s{ display:block; font-size:10px; color:#8592A6; text-align:right; }
+
+  .ofpromos{ display:flex; flex-wrap:wrap; gap:6px; margin:auto 12px 8px; }
+  .ofpromos .ofpromo{ margin:0; }
+  .ofpromo.offp{ background:var(--lime); color:var(--navy); font-weight:700; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -8551,11 +8552,15 @@
   function num(x){ return typeof x === 'number' ? x : +String(x).replace(/\D/g, ''); }
   function netNow(p){ var f = fPct(), v = num(p.price); return f ? Math.round(v * (100 - f) / 100) : v; }
   function tvNow(v){ return fPct() ? Math.round(num(v) * 0.85) : num(v); }
-  function fullBits(full, now, pct, kind){
-    return {badge: pct ? '<span class="offb"><i class="ti ti-percentage"></i>-'+pct+'% Full kedvezménnyel</span>' : '',
-      old: pct ? '<s>'+fmt(full)+' Ft</s>' : '',
-      info: pct ? '<p class="offi"><i class="ti ti-info-circle"></i>A Full kedvezményt meglévő mobil- és internet-előfizetéseid alapján számoltuk.</p>'
-        : '<p class="offi"><i class="ti ti-info-circle"></i>'+(kind === 'tv' ? 'Yettel Full ügyfélként 15% kedvezmény jár rá.' : 'Mobil-előfizetéssel együtt Full kedvezmény is járhat.')+'</p>'};
+  function fullBits(full, now, pct){ return {old: pct ? '<s>'+fmt(full)+' Ft</s>' : ''}; }
+  /* "why Full" row for the detail sheets */
+  function fullWhy(kind){
+    var pc = fPct(); if (!pc) return '';
+    var mob = EXIST.filter(function(e){ return e[3] === 'm'; }).length, net = EXIST.filter(function(e){ return e[3] === 'n'; }).length;
+    var txt = kind === 'net'
+      ? 'Meglévő előfizetéseid ('+mob+' mobil és '+net+' otthoni internet) és ez az új internet együtt '+(mob + net + 1)+' Full-ba számító előfizetés, ezért az új csomagod havidíjából '+pc+'% Yettel Full kedvezmény jár.'
+      : 'Yettel Full ügyfélként minden Yettel TV és streaming előfizetés havidíjából 15% kedvezmény jár.';
+    return '<div class="odrow"><i class="ti ti-percentage"></i><div><b>'+(kind === 'net' ? pc : 15)+'% Full kedvezmény</b><p>'+txt+' A kedvezményt ezzel a vásárlással aktiváljuk, ha korábban még nem aktiváltuk.</p></div></div>';
   }
   var list = [], selI = 0;
   function card(p, i, canSel){
@@ -8564,9 +8569,9 @@
       + '<div class="ofspd"><i class="ti ti-gauge"></i><span><b>'+p.bw+'</b><small>'+p.bws+'</small></span></div>'
       + (p.t === 'fbb' ? FBB : FWA).map(function(f){ return '<div class="offt"><i class="ti '+f[0]+'"></i><span><b>'+f[1]+'</b>'+(f[2] ? '<small>'+f[2]+'</small>' : '')+'</span></div>'; }).join('')
       + '<span class="ofdet" data-ofdet>Részletek</span>'
-      + '<span class="ofpromo">'+p.promo+'</span>'
+      + '<div class="ofpromos"><span class="ofpromo">'+p.promo+'</span>'+(fPct() ? '<span class="ofpromo offp">'+fPct()+'% Full kedvezmény</span>' : '')+'</div>'
       + (function(){ var pc = fPct(), fb = fullBits(num(p.price), netNow(p), pc, 'net');
-          return '<div class="ofprice">'+fb.badge+'<p>'+p.first+'</p><div class="ofbig">'+fb.old+'<b>'+fmt(netNow(p))+'</b><span>Ft<small>/hó</small></span></div><p>e-Komfort csomaggal, 12 hónap hűséggel</p>'+fb.info; })()
+          return '<div class="ofprice"><p>'+p.first+'</p><div class="ofbig">'+fb.old+'<b>'+fmt(netNow(p))+'</b><span>Ft<small>/hó</small></span></div><p>e-Komfort csomaggal, 12 hónap hűséggel</p>'; })()
       + (canSel ? '<button type="button" class="ofbtn" data-ofsel></button>' : '<button type="button" class="ofbtn" data-ofcb>Visszahívást kérek</button>')
       + '</div></div>';
   }
@@ -8655,7 +8660,7 @@
   app.appendChild(od);
   function openDet(name){
     od.querySelector('.odt').textContent = name;
-    od.querySelector('.odlist').innerHTML = DET[name].map(function(r){
+    od.querySelector('.odlist').innerHTML = fullWhy('net') + DET[name].map(function(r){
       return '<div class="odrow"><i class="ti '+r[0]+'"></i><div>'+(r[1] ? '<b>'+r[1]+'</b>' : '')+(r[2] ? '<p>'+r[2]+'</p>' : '')+(r[3] ? '<span class="odlnk">'+r[3]+'</span>' : '')+'</div></div>';
     }).join('');
     od.querySelector('.fsbody').scrollTop = 0; od.classList.add('on'); snack.classList.remove('on');
@@ -8706,9 +8711,9 @@
       + '<div class="offt"><i class="ti ti-badge-hd"></i><span><b>'+t.hd+'</b></span></div>'
       + (t.strm ? '<div class="offt"><i class="ti ti-cast"></i><span><b>Díjmentes RTL+ Active, TV2 Play Prémium</b></span></div>' : '')
       + '<span class="ofdet" data-tvdet>Csatornák és részletek</span>'
-      + '<span class="ofpromo">100% havidíj kedvezmény 30 napig</span>'
+      + '<div class="ofpromos"><span class="ofpromo">100% havidíj kedvezmény 30 napig</span>'+(fPct() ? '<span class="ofpromo offp">15% Full kedvezmény</span>' : '')+'</div>'
       + (function(){ var pc = fPct() ? 15 : 0, fb = fullBits(t.price, tvNow(t.price), pc, 'tv');
-          return '<div class="ofprice">'+fb.badge+'<p>az első 30 napban <b>0 Ft/hó</b> utána</p><div class="ofbig">'+fb.old+'<b>'+fmt(tvNow(t.price))+'</b><span>Ft<small>/hó</small></span></div>'+fb.info; })()
+          return '<div class="ofprice"><p>az első 30 napban <b>0 Ft/hó</b> utána</p><div class="ofbig">'+fb.old+'<b>'+fmt(tvNow(t.price))+'</b><span>Ft<small>/hó</small></span></div>'; })()
       + '<button type="button" class="ofbtn" data-tvsel></button></div></div>';
   }
   function tvMark(i){
@@ -8807,7 +8812,7 @@
   var KSH_TV = ['ti-tag','','A Yettel TV csomagok havidíja a Központi Statisztikai Hivatal által közzétett éves átlagos fogyasztói árindex mértékével változik, a közlemény közzétételét követő 60 napon belül.'];
   function openTvDet(name){
     var mini = /Mini/.test(name);
-    sheet(name, '<img class="gsimg" src="yettel/buy-tv.webp" alt="">' + rows((mini ? TVROWS.mini : TVROWS.full).concat([KSH_TV]))
+    sheet(name, '<img class="gsimg" src="yettel/buy-tv.webp" alt="">' + fullWhy('tv') + rows((mini ? TVROWS.mini : TVROWS.full).concat([KSH_TV]))
       + (mini ? '' : '<p class="gsnote">*A funkciók elérhetősége csatornánként eltérő lehet. Egyes műsorok elérése és funkciókon keresztül korlátozott lehet, ami a tartalomszolgáltató jeltovábbítási jogosultságától függ.</p>'),
       '<button type="button" class="fsbtn tvchan">Csatornák</button><button type="button" class="fsbtx" data-fsclose>Bezár</button>');
   }
@@ -9058,7 +9063,8 @@
   esc.addEventListener('click', function(e){
     var d = e.target.closest('[data-exdet]'); if (!d) return;
     var x = EXDET[d.getAttribute('data-exdet')];
-    sheet(x[0], x[1], '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
+    var add = d.getAttribute('data-exdet') !== 'rtl' && d.closest('.excard').querySelector('.exfb') ? fullWhy('tv') : '';
+    sheet(x[0], x[1].replace(/(<\/div>)/, '$1' + add), '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
   });
   esc.addEventListener('scroll', function(){ if (esc.scrollTop + esc.clientHeight >= esc.scrollHeight - 4) esc.classList.add('stk'); });
 
