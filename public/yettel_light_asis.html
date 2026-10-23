@@ -303,6 +303,7 @@
   #s-bconsent:checked ~ [data-screen="bconsent"],
   #s-bappt:checked ~ [data-screen="bappt"],
   #s-bsum:checked ~ [data-screen="bsum"],
+  #s-bok:checked ~ [data-screen="bok"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
   #s-tvselsvc:checked ~ [data-screen="tvsel-svc"],
   #s-topup1:checked ~ [data-screen="topup-1"],
@@ -2881,7 +2882,7 @@
   .apv{ margin:10px 0 0; font-size:12px; color:var(--navy); }
   .apin{ display:block; width:100%; height:40px; margin-top:8px; padding:0 12px; border:1.5px solid #09223D; border-radius:8px; font-family:'Yettel'; font-size:16px; color:var(--navy); outline:none; box-sizing:border-box; }
   .apin[hidden], .aprow.ed .apv{ display:none; }
-  .apscreen .bcfoot{ margin-top:auto; position:sticky; bottom:0; z-index:2; }
+  .apscreen .bcfoot{ margin-top:auto; }
   .apscreen.busy .apnote input:checked + .apchk{ background:#CDD4DC; border-color:#CDD4DC; }
   .apscreen.busy .apcal, .apscreen.busy .apslots, .apscreen.busy .apnote, .apscreen.busy .apmod{ pointer-events:none; }
   .apscreen.busy .apd.av{ color:#8592A6; }
@@ -2927,6 +2928,7 @@
   .smtr div b{ font-size:20px; color:var(--lime); }
   .smfull{ display:flex; align-items:center; gap:10px; padding:14px; border-radius:10px; background:var(--lime); font-size:12px; font-weight:700; line-height:1.35; color:var(--navy); cursor:pointer; }
   .smfull i:first-child{ font-size:22px; } .smfull span{ flex:1; }
+  .smfull[hidden]{ display:none; }
   .smnote{ margin:12px 0 0; font-size:10px; line-height:1.4; color:#C9D2DC; }
   .smdocs{ display:flex; flex-direction:column; gap:12px; margin:4px 0 20px; }
   .smdoc{ display:flex; align-items:center; gap:10px; font-size:12px; color:var(--navy); text-decoration:underline; cursor:pointer; }
@@ -2945,6 +2947,26 @@
   .smtxt .odlnk{ font-size:11px; }
   .smfoot{ margin-top:20px; }
   .smfine{ margin:12px 0 0; text-align:center; font-size:10px; line-height:1.45; color:#5B6B80; }
+
+  /* order success */
+  .okic2{ width:84px; height:84px; background:#DDF7DC; }
+  .okic2 i{ font-size:46px; color:#3DB86A; }
+  .okscreen .anp{ margin-bottom:14px; }
+  .okscreen .anp b{ font-weight:700; }
+  /* Full info sheet */
+  .fullimg{ display:flex; align-items:center; justify-content:center; width:170px; height:84px; margin:4px auto 20px; background:var(--lime); font-family:'Yettel'; font-size:60px; font-weight:900; letter-spacing:-.03em; color:#1F3A7A;
+            text-shadow:2px 2px 0 #10224A, 4px 4px 0 #0A1734, 6px 6px 8px rgba(0,0,0,.35); }
+  .fulllist{ margin:0 0 18px; padding:4px 12px; border:1.5px solid #E3E8EE; border-radius:12px; }
+  .fullit{ display:flex; align-items:center; gap:12px; padding:10px 0; }
+  .fullic{ display:flex; align-items:center; justify-content:center; flex-shrink:0; width:40px; height:40px; border-radius:50%; background:#CFE3EE; }
+  .fullic.nw{ background:#E3E8EE; }
+  .fullic i{ font-size:20px; color:var(--navy); }
+  .fullit div{ flex:1; font-size:13px; color:var(--navy); }
+  .fullit div small{ display:block; font-size:10px; color:#5B6B80; }
+  .fullpc{ padding:2px 8px; border-radius:999px; background:var(--lime); font-size:10px; font-weight:700; color:var(--navy); }
+  .fullsub{ margin:0 0 8px; font-size:12px; font-weight:700; color:var(--navy); }
+  .gsacc.card{ margin-top:6px; padding:0 14px; border:1.5px solid #E3E8EE; border-radius:12px; }
+  .gsacc.card .gsaccb{ font-size:13px; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -2976,6 +2998,7 @@
   <input class="rt" type="radio" name="nav" id="s-bconsent">
   <input class="rt" type="radio" name="nav" id="s-bappt">
   <input class="rt" type="radio" name="nav" id="s-bsum">
+  <input class="rt" type="radio" name="nav" id="s-bok">
   <input class="rt" type="radio" name="nav" id="s-tvselbuy">
   <input class="rt" type="radio" name="nav" id="s-tvselsvc">
   <input class="rt" type="radio" name="nav" id="s-topup1">
@@ -7112,8 +7135,8 @@
     <div class="smitems" data-smitems></div>
     <div class="smtot">
       <div class="smtr"><span>Vásárláskor fizetendő</span><b>0 Ft</b></div>
-      <div class="smtr"><span>Havonta fizetendő<br>Full kedvezménnyel</span><div><s data-smold></s><b data-smnew></b></div></div>
-      <div class="smfull"><i class="ti ti-percentage"></i><span>Jár neked a Full kedvezmény! Nézd meg, melyik szolgáltatásodra jár</span><i class="ti ti-chevron-right"></i></div>
+      <div class="smtr"><span>Havonta fizetendő<span data-smfl><br>Full kedvezménnyel</span></span><div><s data-smold></s><b data-smnew></b></div></div>
+      <div class="smfull" data-smfull><i class="ti ti-percentage"></i><span>Jár neked a Full kedvezmény! Nézd meg, melyik szolgáltatásodra jár</span><i class="ti ti-chevron-right"></i></div>
       <p class="smnote">A havidíjak a promóciós kedvezmények lejárta után a csomag teljes havidíjával számlázódnak.</p>
     </div>
     <div class="smdocs"><span class="smdoc"><i class="ti ti-file-text"></i>Szerződés összefoglaló</span><span class="smdoc"><i class="ti ti-file-text"></i>Egyedi előfizetői szerződés</span><span class="smdoc"><i class="ti ti-file-text"></i>Általános Szerződési Feltételek</span></div>
@@ -7125,12 +7148,23 @@
       <div class="smblk"><div class="aprh"><b>Telepítési időpont</b><label class="apmod" for="s-bappt">Módosítom</label></div><p data-smappt></p>
         <div data-smnote><b>Megjegyzés a szaktechnikusnak</b><p data-smnotev></p></div>
         <b>Ezen kapcsolattartó</b><p data-smct></p></div>
-      <div class="smblk"><b>Számlázás <i class="ti ti-info-circle smi"></i></b><p>Elektronikus számla<br>weinper.gyula@pelda.hu<br>+36 70 788 8787</p></div>
+      <div class="smblk"><b>Számlázás <i class="ti ti-info-circle smi" data-smbill></i></b><p>Elektronikus számla<br>weinper.gyula@pelda.hu<br>+36 70 788 8787</p></div>
     </div>
     <p class="smtxt">A vásárlással elfogadod, hogy megismerted a szerződéses dokumentumokat. <span class="odlnk">További információk</span></p>
     <p class="smtxt">A telepítési díjat és a havidíjat a következő számládon találod, az előfizetői szerződésben foglaltak szerint.</p>
     <div class="bcfoot smfoot"><button type="button" class="bcnext" data-smorder><span>Megrendelem</span></button>
       <p class="smfine">A Megrendelem gomb megnyomásával fizetési kötelezettséggel járó előfizetői szerződést kötsz a Yettellel. A szerződést az ÁSZF szerint, a próbaidőszak alatt kötbérmentesen felmondhatod.</p></div>
+  </div>
+
+  <!-- ============= SIKERES MEGRENDELÉS: bok ============= -->
+  <div class="screen loginscr lgn anscreen okscreen" data-screen="bok" style="display:none;">
+    <span class="anic okic2"><i class="ti ti-check"></i></span>
+    <h2 class="anh">Sikeres megrendelés</h2>
+    <p class="anp">Köszönjük, megrendelésed sikeresen rögzítettük!</p>
+    <p class="anp">Rendelésed visszaigazolását és részleteit elküldtük a megadott e-mail címedre:<br><b>weinper.gyula@pelda.hu</b></p>
+    <p class="anp">Rendelésed száma: <b data-okno></b></p>
+    <p class="anp">A dokumentumaidat a Yettel alkalmazásban, a Dokumentumok menüpont alatt találod majd meg.</p>
+    <div class="anfoot"><label class="lgbtn" for="s-home" data-gohome>Vissza a főoldalra</label></div>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -7705,7 +7739,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.odlnk,.tvchan,.smfull,.smdoc,.smi,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.odlnk,.tvchan,.smdoc,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -9011,23 +9045,35 @@
       + (opt.desc ? '<p>'+opt.desc+'</p>' : '') + (opt.promo ? '<p class="smb"><b>• '+opt.promo+'</b> a havi díjból még levonásra kerül</p>' : '')
       + '</div><div class="smpr">'+(opt.off ? '<s>'+fmt(price)+' Ft/hó</s>' : '')+fmt(now)+' Ft/hó</div></div>'};
   }
+  /* Yettel Full: needs mobile + home internet; mobile and internet subscriptions together give the rate
+     (2 → 15%, 3 → 20%, 4 or more → 30%), every Yettel TV and streaming subscription gets 15% */
+  var EXIST = [['ti-phone-call','+36 20 290 7566','Prime Plus 2025','m'],['ti-phone-call','+36 20 290 7430','Prime Plus 2024','m'],
+    ['ti-home-signal','HiperNet L','8200 Veszprém, Tölgyfa u. 4','n'],['ti-device-tv','Yettel TV Basic','','t'],['ti-device-tv','YettelTV','+36 20 290 7430','t'],['ti-movie','HBO Max','+36 20 290 7430','t']];
+  function fullPct(guest){
+    if (guest) return 0;
+    var cnt = EXIST.filter(function(e){ return e[3] !== 't'; }).length + 1;
+    return cnt >= 4 ? 30 : cnt === 3 ? 20 : cnt === 2 ? 15 : 0;
+  }
+  var smNew = [], smPct = 0;
   function openSum(){
-    var a = window.yAddr || {}, n = list[selI], t = tlist[tSel], it = [];
-    it.push(smItem('ti-home-signal', n.name, +n.price.replace(/\D/g, ''), {off:20, trial:'30 napig kötöttségek nélkül', desc:'e-Komfort csomaggal, 12 hónap hűséggel' + (n.t === 'fbb' ? ', ingyenes telepítéssel' : ''), promo:n.promo}));
+    var a = window.yAddr || {}, n = list[selI], t = tlist[tSel], it = [], pct = fullPct(a.guest), tvp = pct ? 15 : 0;
+    smPct = pct; smNew = [['ti-home-signal', n.name, pct]];
+    it.push(smItem('ti-home-signal', n.name, +n.price.replace(/\D/g, ''), {off:pct, trial:'30 napig kötöttségek nélkül', desc:'e-Komfort csomaggal, 12 hónap hűséggel' + (n.t === 'fbb' ? ', ingyenes telepítéssel' : ''), promo:n.promo}));
     it.push(smItem('ti-router', n.t === 'fbb' ? 'WiFi 7 router' : 'WiFi 6 router', 0));
     if (kid.checked) it.push(smItem('ti-shield-half', 'Gyermekvédelmi tartalomszűrő', 0));
     if (t && !t.none){
-      it.push(smItem('ti-device-tv', t.name, t.price, {off:15, promo:'100% havidíj kedvezmény 30 napig'}));
+      it.push(smItem('ti-device-tv', t.name, t.price, {off:tvp, promo:'100% havidíj kedvezmény 30 napig'})); if (tvp) smNew.push(['ti-device-tv', t.name, tvp]);
       if (t.strm){ it.push(smItem('ti-cast', 'TV2 Play Prémium', 0)); it.push(smItem('ti-cast', 'RTL+ Active', 0)); }
       if (boxOn) it.push(smItem('ti-box', 'TV box', BOX, {desc:'1 db', promo:'100% havidíj kedvezmény 30 napig'}));
     }
     Array.prototype.forEach.call(esc.querySelectorAll('[data-xp]:checked'), function(x){
       var nm = x.closest('.excard').getAttribute('data-ex'), hb = /HBO/.test(nm);
-      it.push(smItem(hb ? 'ti-movie' : 'ti-cast', nm, +x.getAttribute('data-xp'), hb ? {off:15, promo:'100% havidíj kedvezmény 30 napig'} : {}));
+      it.push(smItem(hb ? 'ti-movie' : 'ti-cast', nm, +x.getAttribute('data-xp'), {off:tvp, promo:hb ? '100% havidíj kedvezmény 30 napig' : ''})); if (tvp) smNew.push([hb ? 'ti-movie' : 'ti-cast', nm, tvp]);
     });
     sm.querySelector('[data-smitems]').innerHTML = it.map(function(x){ return x.html; }).join('');
     var full = it.reduce(function(s, x){ return s + x.full; }, 0), now = it.reduce(function(s, x){ return s + x.now; }, 0);
-    sm.querySelector('[data-smold]').textContent = fmt(full) + ' Ft / hó';
+    sm.querySelector('[data-smold]').textContent = full !== now ? fmt(full) + ' Ft / hó' : '';
+    sm.querySelector('[data-smfl]').hidden = !pct; sm.querySelector('[data-smfull]').hidden = !pct;
     sm.querySelector('[data-smnew]').textContent = fmt(now) + ' Ft / hó';
     sm.querySelector('[data-smaddr]').textContent = a.address || '';
     var d = new Date(apSel), p2 = function(x){ return (x < 10 ? '0' : '') + x; };
@@ -9040,7 +9086,32 @@
   }
   sm.querySelector('[data-smorder]').addEventListener('click', function(){
     var ld = document.querySelector('.adload'); ld.classList.add('on');
-    setTimeout(function(){ ld.classList.remove('on'); document.getElementById('wip').classList.add('on'); }, 2600);
+    document.querySelector('[data-okno]').textContent = String(2100000 + Math.floor(Math.random() * 899999));
+    setTimeout(function(){ var r = document.getElementById('s-bok'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); }, 2600);
+    setTimeout(function(){ ld.classList.remove('on'); }, 2800);
+  });
+  function fullRow(e, pc, nw){
+    return '<div class="fullit"><span class="fullic'+(nw ? ' nw' : '')+'"><i class="ti '+e[0]+'"></i></span><div>'+e[1]+(e[2] && !nw ? '<small>'+e[2]+'</small>' : '')+'</div><span class="fullpc">-'+pc+'%</span></div>';
+  }
+  sm.querySelector('[data-smfull]').addEventListener('click', function(){
+    sheet('Jár neked a Full kedvezmény!', '<div class="fullimg">Full</div>'
+      + '<p class="gsp">Minél több mobil- és otthoni internet szolgáltatásod van, annál több kedvezmény jár!</p>'
+      + '<p class="gsh">Elérhető kedvezményeid</p><p class="gsp">Az <b>otthoni internet vásárlásod után</b> az alábbi Full havidíjkedvezményeket kapod az előfizetési díjaidból.</p>'
+      + '<p class="fullsub">Meglévő szolgáltatásaidra:</p><div class="fulllist">' + EXIST.map(function(e){ return fullRow(e, e[3] === 't' ? 15 : smPct); }).join('') + '</div>'
+      + '<p class="fullsub">Új szolgáltatásaidra:</p><div class="fulllist">' + smNew.map(function(e){ return fullRow(e, e[2], true); }).join('') + '</div>'
+      + '<div class="gsacc card"><button type="button" class="gsaccb"><span>Miért jár neked a Full kedvezmény?</span><i class="ti ti-chevron-down"></i></button>'
+      + '<div class="gsaccp"><p>Több szolgáltatás több kedvezmény!</p><p>A Yettel Full egy csomagajánlat. Minél több mobil és otthoni internet szolgáltatásod van, annál nagyobb kedvezményt kaphatsz. Így 15, 20 vagy akár 30% havidíjkedvezményt is elérhetsz. Ráadásul csomagon belül díjmentesen hívhatjátok egymást és 15% kedvezmény jár minden Yettel TV vagy streaming előfizetéshez is.</p><p>A kedvezmények Yettel Full aktiválással járnak neked. Ezt ezzel a vásárlásoddal be is aktiváljuk neked (ha korábban még nem aktiváltuk).</p></div></div>',
+      '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
+  });
+  sm.querySelector('[data-smbill]').addEventListener('click', function(){
+    sheet('Számlázás', '<p class="gsh">Környezetünk védelme érdekében az elektronikus fizetési és számlázási módokat részesítjük előnyben.</p>'
+      + '<p class="gsp">A cél érdekében tarifacsomagjaink kizárólag beépített e-Komfort csomaggal vehetők igénybe.</p>'
+      + '<p class="gsp">Az e-Komfort csomagnak feltételei vannak, amelyek ha nem teljesülnek, akkor a havi 1 000 Ft előre érvényesített díjkedvezmény visszavonásra kerül, és utólag felszámítjuk a következő számlában.</p>'
+      + '<p class="gsp">Az e-Komfort csomag feltételei:</p>'
+      + '<p class="gsh2">Számládat elektronikus formában küldjük.</p><p class="gsp">A számla elkészültéről SMS-ben és/vagy e-mailben értesítünk, a részleteit a Yettel Fiókban vagy a Yettel appban tudod megnézni.</p>'
+      + '<p class="gsh2">Számládat elektronikus fizetési módokkal kell kiegyenlítened.</p><p class="gsp">A Yettel Fiók online ügyfélszolgálaton keresztül, a Yettel appban, csoportos beszedési megbízással, banki átutalással vagy ATM bank automatán keresztül fizetheted.</p>'
+      + '<p class="gsh2">Számládat a feltüntetett fizetési határidőig rendezned kell.</p><p class="gsp">Ha számládat nem egyenlíted ki a feltüntetett fizetési határidőig, az e-Komfort csomag feltételeit nem teljesíted, és a díját utólag felszámítjuk a következő számlában.</p>',
+      '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
   });
   window.yConsentSaved = function(){
     bcCustom = true; Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; }); bc.classList.remove('err');
