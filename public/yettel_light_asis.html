@@ -3125,14 +3125,13 @@
   .flsec{ margin:22px 0 10px; font-size:15px; font-weight:700; color:var(--navy); }
   .flpane > .flsec:first-child, .flbens + .flsec{ margin-top:22px; }
   .flbens{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-  .flbc{ display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:14px 10px 12px; border-radius:16px; background:#fff; }
+  .flbc{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:14px 8px 12px; border-radius:16px; background:#fff; text-align:center; }
   .flbc i{ display:flex; align-items:center; justify-content:center; width:34px; height:34px; margin-bottom:8px; border-radius:50%; background:var(--lime); font-size:18px; color:var(--navy); }
   .flbc b{ font-size:18px; font-weight:800; line-height:1.1; color:var(--navy); }
   .flbc span{ font-size:11px; line-height:1.3; color:var(--navy); }
   .flbc small{ display:block; margin-top:3px; font-size:9.5px; font-weight:300; }
-  .fl2 .fltiers{ margin:16px 0 0; align-items:end; }
+  .fl2 .fltiers{ margin:16px 0 0; align-items:stretch; }
   .fl2 .fltier{ background:#fff; border-color:#fff; }
-  .fl2 .fladder .fltier[data-t="15"]{ padding-top:16px; } .fl2 .fladder .fltier[data-t="20"]{ padding-top:26px; } .fl2 .fladder .fltier[data-t="30"]{ padding-top:36px; }
   .fl2 .fltier.on{ background:#09223D; border-color:#09223D; }
   .flsteps{ display:flex; flex-direction:column; gap:10px; }
   .flst{ display:flex; gap:12px; padding:14px; border-radius:16px; background:#fff; }
@@ -9470,7 +9469,7 @@
     + '<div class="flbc"><i class="ti ti-device-tv"></i><b>15%</b><span>Yettel TV és Max<small>XS csomag kivételével</small></span></div>'
     + '</div>'
     + '<p class="flsec">Kedvezménysávok</p>'
-    + '<div class="fltiers fladder"><div class="fltier" data-t="15"><b>15%</b><span>2 előfizetés</span></div><div class="fltier" data-t="20"><b>20%</b><span>3 előfizetés</span></div><div class="fltier" data-t="30"><b>30%</b><span>4 vagy több előfizetés</span></div></div>'
+    + '<div class="fltiers fladder"><div class="fltier" data-t="15"><b>15%</b><span>2 előfizetés</span></div><div class="fltier" data-t="20"><b>20%</b><span>3 előfizetés</span></div><div class="fltier" data-t="30"><b>30%</b><span>4+ előfizetés</span></div></div>'
     + '<p class="flsec">Hogyan működik?</p>'
     + '<div class="flsteps">'
     + '<div class="flst"><span>1</span><div><b>Legalább két jogosult előfizetés</b><p>Yettel Prime mobil- vagy OtthonNet / HiperNet csomag a neveden.</p></div></div>'
