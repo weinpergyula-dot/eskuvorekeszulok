@@ -302,6 +302,7 @@
   #s-addrtaken:checked ~ [data-screen="addr-taken"],
   #s-bconsent:checked ~ [data-screen="bconsent"],
   #s-bappt:checked ~ [data-screen="bappt"],
+  #s-bsum:checked ~ [data-screen="bsum"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
   #s-tvselsvc:checked ~ [data-screen="tvsel-svc"],
   #s-topup1:checked ~ [data-screen="topup-1"],
@@ -2890,6 +2891,60 @@
   .apscreen.busy .apslot.sel{ border-color:#D5DCE3; }
   .apscreen.busy .apchk{ background:#CDD4DC; border-color:#CDD4DC; }
   .apscreen.busy .apmod{ color:#A9B3BF; }
+
+  /* contact popup */
+  .cth{ margin:6px 0 24px; font-size:18px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .ctl span{ color:var(--navy); }
+  .ctov:not(.tel) .ctpre{ display:none; }
+  .ctov.busy .cbin{ background:#CDD4DC; border-color:#CDD4DC; }
+  .ctov.busy .cbin input, .ctov.busy .ctpre{ color:#8592A6; }
+  .ctov .fsfoot{ border-top:none; }
+  .ctov.busy .fsbtn{ position:relative; background:#3E5670; pointer-events:none; }
+  .ctov.busy .fsbtn span{ visibility:hidden; }
+  .ctov.busy .fsbtn::after{ content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
+  /* summary */
+  #s-bsum:checked ~ .smscreen[data-screen="bsum"]{ display:flex !important; flex-direction:column; }
+  .smaddr{ margin:0 0 16px; font-size:12px; color:#5B6B80; }
+  .smaddr b{ display:block; margin-top:2px; font-weight:400; color:var(--navy); }
+  .smitems{ padding:4px 14px; border:1.5px solid #E3E8EE; border-radius:14px; }
+  .smit{ display:flex; gap:10px; padding:14px 0; border-bottom:1px solid #EEF1F4; }
+  .smit:last-child{ border-bottom:none; }
+  .smit > i{ flex-shrink:0; font-size:20px; color:var(--navy); }
+  .smmid{ flex:1; min-width:0; }
+  .smmid > b{ display:block; font-size:13px; font-weight:700; color:var(--navy); }
+  .smtag{ display:inline-block; margin:6px 4px 0 0; padding:2px 8px; border-radius:999px; background:#E3E8EE; font-size:10px; font-weight:700; color:var(--navy); }
+  .smtag.full{ background:var(--lime); }
+  .smmid p{ margin:6px 0 0; font-size:11px; line-height:1.4; color:var(--navy); }
+  .smmid p.smb{ font-size:10px; color:#5B6B80; }
+  .smmid p.smb b{ color:var(--navy); }
+  .smpr{ flex-shrink:0; text-align:right; font-size:11px; color:var(--navy); }
+  .smpr s{ display:block; font-size:10px; color:#8592A6; }
+  .smtot{ margin:16px 0; padding:18px 16px 16px; border-radius:14px; background:#09223D; color:#fff; }
+  .smtr{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; font-size:12px; line-height:1.4; }
+  .smtr > b{ font-size:18px; color:var(--lime); }
+  .smtr > div{ text-align:right; }
+  .smtr s{ display:block; font-size:12px; color:#A9B3BF; }
+  .smtr div b{ font-size:20px; color:var(--lime); }
+  .smfull{ display:flex; align-items:center; gap:10px; padding:14px; border-radius:10px; background:var(--lime); font-size:12px; font-weight:700; line-height:1.35; color:var(--navy); cursor:pointer; }
+  .smfull i:first-child{ font-size:22px; } .smfull span{ flex:1; }
+  .smnote{ margin:12px 0 0; font-size:10px; line-height:1.4; color:#C9D2DC; }
+  .smdocs{ display:flex; flex-direction:column; gap:12px; margin:4px 0 20px; }
+  .smdoc{ display:flex; align-items:center; gap:10px; font-size:12px; color:var(--navy); text-decoration:underline; cursor:pointer; }
+  .smdoc i{ font-size:20px; text-decoration:none; }
+  .smdata{ padding:4px 14px; border:1.5px solid #E3E8EE; border-radius:14px; }
+  .smdata .aph2{ margin:14px 0 6px; }
+  .smblk{ padding:12px 0; border-bottom:1px solid #EEF1F4; font-size:12px; color:var(--navy); }
+  .smblk:last-child{ border-bottom:none; }
+  .smblk b{ display:block; font-size:12px; font-weight:700; }
+  .smblk .aprh b{ display:inline; }
+  .smblk p{ margin:6px 0 10px; line-height:1.5; }
+  .smblk p:last-child{ margin-bottom:0; }
+  .smblk [data-smnote] p{ margin-bottom:10px; }
+  .smi{ font-size:15px; vertical-align:-2px; cursor:pointer; }
+  .smtxt{ margin:16px 8px 0; text-align:center; font-size:11px; line-height:1.45; color:var(--navy); }
+  .smtxt .odlnk{ font-size:11px; }
+  .smfoot{ margin-top:20px; }
+  .smfine{ margin:12px 0 0; text-align:center; font-size:10px; line-height:1.45; color:#5B6B80; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -2920,6 +2975,7 @@
   <input class="rt" type="radio" name="nav" id="s-addrtaken">
   <input class="rt" type="radio" name="nav" id="s-bconsent">
   <input class="rt" type="radio" name="nav" id="s-bappt">
+  <input class="rt" type="radio" name="nav" id="s-bsum">
   <input class="rt" type="radio" name="nav" id="s-tvselbuy">
   <input class="rt" type="radio" name="nav" id="s-tvselsvc">
   <input class="rt" type="radio" name="nav" id="s-topup1">
@@ -7043,9 +7099,38 @@
     <label class="apnote"><input type="checkbox" data-apnote><span class="apchk"><i class="ti ti-check"></i></span>Megjegyzés a szaktechnikusnak</label>
     <textarea class="aptext" rows="3" placeholder="Pl. kapukód, emelet, mikor vagy otthon…" hidden></textarea>
     <h3 class="aph2">Kit kereshetünk a telepítéssel kapcsolatban?</h3>
-    <div class="aprow" data-apf><div class="aprh"><b>Kapcsolattartó neve</b><button type="button" class="apmod">Módosítom</button></div><p class="apv">Kovács Péter</p><input class="apin" type="text" autocomplete="name" hidden></div>
-    <div class="aprow" data-apf><div class="aprh"><b>Értesítési telefonszám</b><button type="button" class="apmod">Módosítom</button></div><p class="apv">+36 20 615 7557</p><input class="apin" type="tel" inputmode="tel" hidden></div>
+    <div class="aprow"><div class="aprh"><b>Kapcsolattartó neve</b><button type="button" class="apmod" data-apk="name">Módosítom</button></div><p class="apv" data-apv="name">Weinper Gyula</p></div>
+    <div class="aprow"><div class="aprh"><b>Értesítési telefonszám</b><button type="button" class="apmod" data-apk="tel">Módosítom</button></div><p class="apv" data-apv="tel">+36 70 788 8787</p></div>
     <div class="bcfoot"><button type="button" class="bcnext" data-apnext><span>Tovább</span></button></div>
+  </div>
+
+  <!-- ============= ÖSSZEFOGLALÓ: bsum ============= -->
+  <div class="screen bcscreen smscreen" data-screen="bsum" style="display:none;">
+    <div class="bchead"><span></span><div class="bcsteps"><i class="on"></i><i class="on"></i><i class="on"></i></div><label class="bcx adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <h2 class="aph">Ezt rendeled meg</h2>
+    <p class="smaddr">Szolgáltatási cím:<b data-smaddr></b></p>
+    <div class="smitems" data-smitems></div>
+    <div class="smtot">
+      <div class="smtr"><span>Vásárláskor fizetendő</span><b>0 Ft</b></div>
+      <div class="smtr"><span>Havonta fizetendő<br>Full kedvezménnyel</span><div><s data-smold></s><b data-smnew></b></div></div>
+      <div class="smfull"><i class="ti ti-percentage"></i><span>Jár neked a Full kedvezmény! Nézd meg, melyik szolgáltatásodra jár</span><i class="ti ti-chevron-right"></i></div>
+      <p class="smnote">A havidíjak a promóciós kedvezmények lejárta után a csomag teljes havidíjával számlázódnak.</p>
+    </div>
+    <div class="smdocs"><span class="smdoc"><i class="ti ti-file-text"></i>Szerződés összefoglaló</span><span class="smdoc"><i class="ti ti-file-text"></i>Egyedi előfizetői szerződés</span><span class="smdoc"><i class="ti ti-file-text"></i>Általános Szerződési Feltételek</span></div>
+    <div class="smdata">
+      <h3 class="aph2">Szerződéses adataid</h3>
+      <div class="smblk"><b>Kapcsolattartó</b><p>+36 70 788 8787<br>weinper.gyula@pelda.hu</p></div>
+      <div class="smblk"><b>Személyes adatok</b><p>Weinper Gyula<br>Budapest, 1985.04.12.<br>Anyja neve: Kiss Mária<br>Személyi igazolvány: 123456AB</p></div>
+      <div class="smblk"><b>Lakcím</b><p>8200 Veszprém, Tölgyfa u. 4</p></div>
+      <div class="smblk"><div class="aprh"><b>Telepítési időpont</b><label class="apmod" for="s-bappt">Módosítom</label></div><p data-smappt></p>
+        <div data-smnote><b>Megjegyzés a szaktechnikusnak</b><p data-smnotev></p></div>
+        <b>Ezen kapcsolattartó</b><p data-smct></p></div>
+      <div class="smblk"><b>Számlázás <i class="ti ti-info-circle smi"></i></b><p>Elektronikus számla<br>weinper.gyula@pelda.hu<br>+36 70 788 8787</p></div>
+    </div>
+    <p class="smtxt">A vásárlással elfogadod, hogy megismerted a szerződéses dokumentumokat. <span class="odlnk">További információk</span></p>
+    <p class="smtxt">A telepítési díjat és a havidíjat a következő számládon találod, az előfizetői szerződésben foglaltak szerint.</p>
+    <div class="bcfoot smfoot"><button type="button" class="bcnext" data-smorder><span>Megrendelem</span></button>
+      <p class="smfine">A Megrendelem gomb megnyomásával fizetési kötelezettséggel járó előfizetői szerződést kötsz a Yettellel. A szerződést az ÁSZF szerint, a próbaidőszak alatt kötbérmentesen felmondhatod.</p></div>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -7620,7 +7705,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.odlnk,.tvchan,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.odlnk,.tvchan,.smfull,.smdoc,.smi,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -8882,19 +8967,85 @@
     var d = e.target.closest('.apd.av'); if (d){ apSel = +d.getAttribute('data-t'); apRender(); return; }
     var nv = e.target.closest('[data-apm]'); if (nv){ view.setMonth(view.getMonth() + +nv.getAttribute('data-apm')); apRender(); return; }
     var sl = e.target.closest('.apslot'); if (sl){ Array.prototype.forEach.call(ap.querySelectorAll('.apslot'), function(b){ b.classList.toggle('sel', b === sl); }); return; }
-    var md = e.target.closest('.apmod');
-    if (md){
-      var row = md.closest('[data-apf]'), v = row.querySelector('.apv'), inp = row.querySelector('.apin');
-      if (row.classList.contains('ed')){ if (inp.value.trim()) v.textContent = inp.value.trim(); row.classList.remove('ed'); inp.hidden = true; md.textContent = 'Módosítom'; }
-      else { inp.value = v.textContent; row.classList.add('ed'); inp.hidden = false; md.textContent = 'Kész'; inp.focus(); }
-    }
+    var md = e.target.closest('[data-apk]'); if (md) openContact(md.getAttribute('data-apk'));
+  });
+  /* contact popup: name needs first + last name, phone a Hungarian mobile number; short save */
+  var ct = document.createElement('div'); ct.className = 'fsov ctov';
+  ct.innerHTML = '<div class="fsbody"><div class="fshead"><button type="button" class="fsx" data-fsclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<h2 class="cth"></h2><label class="adl ctl"></label><div class="cbin"><span class="ctpre">+36</span><input type="text"></div><p class="cberr">Helytelen formátum</p></div>'
+    + '<div class="fsfoot ctfoot"><button type="button" class="fsbtn" data-ctsave><span>Mentés</span></button></div>';
+  app.appendChild(ct);
+  var ctKey, ctIn = ct.querySelector('input'), ctBox = ct.querySelector('.cbin');
+  function openContact(k){
+    ctKey = k; var tel = k === 'tel', v = ap.querySelector('[data-apv="'+k+'"]').textContent;
+    ct.querySelector('.cth').textContent = tel ? 'Milyen számon kereshetjük?' : 'Kit kereshetünk a telepítéssel kapcsolatban?';
+    ct.querySelector('.ctl').innerHTML = (tel ? 'Értesítési telefonszám' : 'Név') + ' <span>*</span>';
+    ct.classList.toggle('tel', tel); ctIn.type = tel ? 'tel' : 'text'; ctIn.inputMode = tel ? 'tel' : 'text'; ctIn.autocomplete = tel ? 'tel-national' : 'name';
+    ctIn.value = tel ? v.replace(/^\+36\s*/, '') : v; ctIn.disabled = false;
+    ctBox.classList.remove('err'); ct.classList.remove('busy'); ct.classList.add('on'); ctIn.focus();
+  }
+  ctIn.addEventListener('input', function(){ ctBox.classList.remove('err'); });
+  ctIn.addEventListener('keydown', function(e){ if (e.key === 'Enter') ct.querySelector('[data-ctsave]').click(); });
+  ct.addEventListener('click', function(e){
+    if (e.target.closest('[data-fsclose]')){ ct.classList.remove('on'); return; }
+    if (!e.target.closest('[data-ctsave]') || ct.classList.contains('busy')) return;
+    var v = ctIn.value.trim(), d = v.replace(/\D/g, ''), ok, out;
+    if (ctKey === 'tel'){ ok = /^(20|30|31|50|70)\d{7}$/.test(d); out = '+36 ' + d.slice(0, 2) + ' ' + d.slice(2, 5) + ' ' + d.slice(5); }
+    else { var parts = v.split(/\s+/); ok = /^[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű.' -]+$/.test(v) && parts.length >= 2 && parts.every(function(x){ return x.length >= 2; }); out = v.replace(/\s+/g, ' '); }
+    if (!ok){ ctBox.classList.add('err'); return; }
+    ct.classList.add('busy'); ctIn.disabled = true; ctIn.blur();
+    setTimeout(function(){ ap.querySelector('[data-apv="'+ctKey+'"]').textContent = out; ct.classList.remove('on', 'busy'); }, 1200);
   });
   ap.querySelector('[data-apnote]').addEventListener('change', function(e){ var t = ap.querySelector('.aptext'); t.hidden = !e.target.checked; if (e.target.checked) t.focus(); });
   ap.querySelector('[data-apnext]').addEventListener('click', function(){
     ap.classList.add('busy');
-    setTimeout(function(){ ap.classList.remove('busy'); document.getElementById('wip').classList.add('on'); }, 1600);
+    setTimeout(function(){ ap.classList.remove('busy'); openSum(); }, 1600);
   });
-  window.yConsentSaved = function(){ bcCustom = true; Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; }); bc.classList.remove('err'); };
+  /* summary of everything chosen in the journey; Full discount: 20% internet, 15% TV and HBO */
+  var sm = document.querySelector('[data-screen="bsum"]');
+  function smItem(icon, name, price, opt){
+    opt = opt || {};
+    var now = opt.off ? Math.round(price * (100 - opt.off) / 100) : price;
+    return {now:now, full:price, html:'<div class="smit"><i class="ti '+icon+'"></i><div class="smmid"><b>'+name+'</b>'
+      + (opt.trial ? '<span class="smtag">'+opt.trial+'</span>' : '') + (opt.off ? '<span class="smtag full">'+opt.off+'% Full kedvezménnyel</span>' : '')
+      + (opt.desc ? '<p>'+opt.desc+'</p>' : '') + (opt.promo ? '<p class="smb"><b>• '+opt.promo+'</b> a havi díjból még levonásra kerül</p>' : '')
+      + '</div><div class="smpr">'+(opt.off ? '<s>'+fmt(price)+' Ft/hó</s>' : '')+fmt(now)+' Ft/hó</div></div>'};
+  }
+  function openSum(){
+    var a = window.yAddr || {}, n = list[selI], t = tlist[tSel], it = [];
+    it.push(smItem('ti-home-signal', n.name, +n.price.replace(/\D/g, ''), {off:20, trial:'30 napig kötöttségek nélkül', desc:'e-Komfort csomaggal, 12 hónap hűséggel' + (n.t === 'fbb' ? ', ingyenes telepítéssel' : ''), promo:n.promo}));
+    it.push(smItem('ti-router', n.t === 'fbb' ? 'WiFi 7 router' : 'WiFi 6 router', 0));
+    if (kid.checked) it.push(smItem('ti-shield-half', 'Gyermekvédelmi tartalomszűrő', 0));
+    if (t && !t.none){
+      it.push(smItem('ti-device-tv', t.name, t.price, {off:15, promo:'100% havidíj kedvezmény 30 napig'}));
+      if (t.strm){ it.push(smItem('ti-cast', 'TV2 Play Prémium', 0)); it.push(smItem('ti-cast', 'RTL+ Active', 0)); }
+      if (boxOn) it.push(smItem('ti-box', 'TV box', BOX, {desc:'1 db', promo:'100% havidíj kedvezmény 30 napig'}));
+    }
+    Array.prototype.forEach.call(esc.querySelectorAll('[data-xp]:checked'), function(x){
+      var nm = x.closest('.excard').getAttribute('data-ex'), hb = /HBO/.test(nm);
+      it.push(smItem(hb ? 'ti-movie' : 'ti-cast', nm, +x.getAttribute('data-xp'), hb ? {off:15, promo:'100% havidíj kedvezmény 30 napig'} : {}));
+    });
+    sm.querySelector('[data-smitems]').innerHTML = it.map(function(x){ return x.html; }).join('');
+    var full = it.reduce(function(s, x){ return s + x.full; }, 0), now = it.reduce(function(s, x){ return s + x.now; }, 0);
+    sm.querySelector('[data-smold]').textContent = fmt(full) + ' Ft / hó';
+    sm.querySelector('[data-smnew]').textContent = fmt(now) + ' Ft / hó';
+    sm.querySelector('[data-smaddr]').textContent = a.address || '';
+    var d = new Date(apSel), p2 = function(x){ return (x < 10 ? '0' : '') + x; };
+    sm.querySelector('[data-smappt]').innerHTML = d.getFullYear() + '.' + p2(d.getMonth() + 1) + '.' + p2(d.getDate()) + '.<br>' + ap.querySelector('.apslot.sel').textContent;
+    var note = ap.querySelector('[data-apnote]').checked && ap.querySelector('.aptext').value.trim();
+    sm.querySelector('[data-smnote]').hidden = !note; sm.querySelector('[data-smnotev]').textContent = note || '';
+    sm.querySelector('[data-smct]').innerHTML = ap.querySelector('[data-apv="name"]').textContent + '<br>' + ap.querySelector('[data-apv="tel"]').textContent;
+    sm.querySelector('.adx').setAttribute('for', a.guest ? 's-newcust' : 's-tshop');
+    var r = document.getElementById('s-bsum'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); sm.scrollTop = 0;
+  }
+  sm.querySelector('[data-smorder]').addEventListener('click', function(){
+    var ld = document.querySelector('.adload'); ld.classList.add('on');
+    setTimeout(function(){ ld.classList.remove('on'); document.getElementById('wip').classList.add('on'); }, 2600);
+  });
+  window.yConsentSaved = function(){
+    bcCustom = true; Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; }); bc.classList.remove('err');
+    setTimeout(function(){ bc.querySelector('[data-bcnext]').click(); }, 250);
+  };
   /* add-on detail sheets */
   var EXTRY = rows([['ti-percentage','Próbáld ki 30 napig díjmentesen','Amennyiben jelen megrendelésedre érvényesül, úgy a próbaidőszak alatt bármikor megszüntetheted az előfizetést, ha mégsem lennél elégedett. Megéri kipróbálni! <span class="odlnk">További részletek</span>'],
     ['ti-tag','','A csomagok havidíja a Központi Statisztikai Hivatal által közzétett éves átlagos fogyasztói árindex mértékével változik, a közlemény közzétételét követő 60 napon belül.']]);
