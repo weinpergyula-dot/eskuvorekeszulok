@@ -353,6 +353,7 @@
   #s-consent2:checked ~ [data-screen="consent2"],
   #s-pwforgot:checked ~ [data-screen="pw-forgot"],
   #s-otp:checked ~ [data-screen="otp"],
+  #s-addrnone:checked ~ [data-screen="addr-none"],
   #s-smslogin:checked ~ [data-screen="sms-login"],
   #s-idme:checked ~ [data-screen="id-me"],
   #s-iddap:checked ~ [data-screen="id-dap"],
@@ -2539,6 +2540,51 @@
   .lit{ margin:30px 0 16px; font-family:'Yettel'; font-size:20px; font-weight:700; color:var(--navy); }
   .lis{ margin:0; font-size:13px; font-weight:300; color:var(--navy); }
   @media (prefers-reduced-motion: reduce){ .ligear{ animation-duration:4s; } }
+
+  /* ===== address search ===== */
+  .adfw[hidden]{ display:none; }
+  .adfld{ position:relative; display:flex; align-items:center; height:46px; margin:0 0 16px; padding:0 40px 0 14px; border:2px solid #E3E8EE; border-radius:10px; background:#fff; cursor:pointer; }
+  .adv{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px; color:#8592A6; }
+  .adfld.filled .adv{ color:var(--navy); }
+  .adfld.dis{ border-color:#CDD4DC; background:#CDD4DC; cursor:default; }
+  .adclr{ display:none; position:absolute; right:8px; top:50%; transform:translateY(-50%); border:none; background:none; padding:4px; cursor:pointer; }
+  .adclr i{ font-size:20px; color:var(--navy); }
+  .adfld.filled .adclr{ display:flex; }
+  .adhelp > i:first-child{ font-size:22px; }
+  .asov{ position:absolute; inset:0; z-index:118; display:none; flex-direction:column; background:#fff; }
+  .asov.on{ display:flex; animation:xsup .22s ease-out; }
+  .ashead{ position:relative; display:flex; align-items:center; justify-content:center; height:92px; padding-top:26px; background:var(--lime); border-radius:0 0 22px 22px; flex-shrink:0; }
+  .asback{ position:absolute; left:12px; top:46px; border:none; background:none; padding:6px; cursor:pointer; display:flex; }
+  .asback i{ font-size:22px; color:var(--navy); }
+  .astitle{ font-size:15px; font-weight:700; color:var(--navy); }
+  .asbar{ display:flex; align-items:center; gap:8px; height:44px; margin:14px 16px 0; padding:0 8px 0 12px; border:2px solid var(--navy); border-radius:10px; }
+  .asov.err .asbar{ border-color:#F0603C; }
+  .asbar > i{ font-size:20px; color:var(--navy); }
+  .asbar input{ flex:1; min-width:0; height:100%; border:none; outline:none; background:none; font-family:'Yettel'; font-size:16px; color:var(--navy); }
+  .asbar input::placeholder{ color:#A3ABB8; }
+  .asx{ display:none; border:none; background:none; padding:2px; cursor:pointer; }
+  .asov.typed .asx{ display:flex; }
+  .asx i{ font-size:22px; color:var(--navy); }
+  .aserr{ display:none; margin:6px 18px 0; font-size:12px; color:#F0603C; }
+  .aserr.on{ display:block; }
+  .aslist{ flex:1; overflow-y:auto; padding:8px 16px 20px; }
+  .asitem{ display:block; width:100%; padding:14px 2px; border:none; border-bottom:1px solid #EEF1F4; background:none; text-align:left; font-family:'Yettel'; font-size:14px; font-weight:300; color:var(--navy); cursor:pointer; }
+  .asnone{ margin:16px 2px; font-size:13px; color:var(--mid); }
+  .adload{ position:absolute; inset:0; z-index:130; display:none; flex-direction:column; align-items:center; justify-content:center; padding-bottom:120px; background:#fff; text-align:center; }
+  .adload.on{ display:flex; animation:brfade .2s ease-out; }
+  .adldic{ display:flex; align-items:center; justify-content:center; gap:4px; width:60px; height:60px; border-radius:50%; background:#DCEFFC; }
+  .adldic i{ width:6px; height:6px; border-radius:50%; background:#3D8DE0; animation:adbounce 1s ease-in-out infinite; }
+  .adldic i:nth-child(2){ animation-delay:.12s; } .adldic i:nth-child(3){ animation-delay:.24s; } .adldic i:nth-child(4){ animation-delay:.36s; }
+  @keyframes adbounce{ 0%,60%,100%{ transform:translateY(0); } 30%{ transform:translateY(-8px); } }
+  .adldt{ margin:22px 0 8px; font-size:20px; font-weight:700; color:var(--navy); }
+  .adlds{ margin:0; font-size:12px; color:var(--navy); }
+  .anscreen{ text-align:center; padding:90px 22px 30px !important; }
+  .anic{ display:inline-flex; width:66px; height:66px; border-radius:50%; background:#DCEFFC; align-items:center; justify-content:center; }
+  .anic i{ font-size:34px; color:#3D8DE0; }
+  .anh{ margin:24px 10px 18px; font-size:22px; font-weight:700; line-height:1.25; color:var(--navy); }
+  .anp{ margin:0 8px; font-size:12.5px; line-height:1.5; color:var(--navy); }
+  .anfoot{ position:absolute; left:16px; right:16px; bottom:30px; }
+  .anfoot .lgbtn{ display:block; }
 </style>
 </head>
 <body>
@@ -2643,6 +2689,7 @@
   <input class="rt" type="radio" name="nav" id="s-consent2">
   <input class="rt" type="radio" name="nav" id="s-pwforgot">
   <input class="rt" type="radio" name="nav" id="s-otp">
+  <input class="rt" type="radio" name="nav" id="s-addrnone">
   <input class="rt" type="radio" name="nav" id="s-smslogin">
   <input class="rt" type="radio" name="nav" id="s-idme">
   <input class="rt" type="radio" name="nav" id="s-iddap">
@@ -3297,7 +3344,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-buynew" data-adback><i class="ti ti-arrow-left"></i></label>
       <span class="title">Címed</span>
-      <div style="width:42px"></div>
+      <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
     </div>
     <div class="formbody">
       <h2 class="adq">Hova szeretnél otthoni internetet?</h2>
@@ -3309,16 +3356,18 @@
       </div>
       <div class="adform">
         <p class="adsub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
-        <label class="adl">Település, vagy irányítószám <span>*</span></label>
-        <input class="adin" type="text" placeholder="1097">
-        <label class="adl">Közterület <span>*</span></label>
-        <input class="adin" type="text" placeholder="Deák Ferenc utca" disabled>
-        <label class="adl">Házszám <span>*</span></label>
-        <input class="adin" type="text" placeholder="6" disabled>
-        <div class="adhelp"><i class="ti ti-message-chatbot"></i><span>Nem találod a címed? Jelezd nekünk.</span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="adfw" data-adw="city"><label class="adl">Település vagy irányítószám <span>*</span></label>
+        <div class="adfld" data-adf="city"><span class="adv" data-ph="1097">1097</span><button type="button" class="adclr" data-adclr aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div></div>
+        <div class="adfw" data-adw="street"><label class="adl">Közterület <span>*</span></label>
+        <div class="adfld" data-adf="street"><span class="adv" data-ph="Deák Ferenc utca">Deák Ferenc utca</span><button type="button" class="adclr" data-adclr aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div></div>
+        <div class="adfw" data-adw="house"><label class="adl">Házszám <span>*</span></label>
+        <div class="adfld" data-adf="house"><span class="adv" data-ph="6">6</span><button type="button" class="adclr" data-adclr aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div></div>
+        <div class="adfw" data-adw="unit" hidden><label class="adl">Lépcsőház, emelet, ajtó <span>*</span></label>
+        <div class="adfld" data-adf="unit"><span class="adv" data-ph="2. emelet 1. ajtó">2. emelet 1. ajtó</span><button type="button" class="adclr" data-adclr aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div></div>
+        <div class="adhelp"><i class="ti ti-message-question"></i><span>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</span><i class="ti ti-chevron-right chev"></i></div>
       </div>
     </div>
-    <label class="acont jbtn adnext" for="s-loadavail">Tovább</label>
+    <button type="button" class="acont adnext" data-adgo="s-offsvc">Tovább</button>
     <p class="adnote">A Tovább gomb megnyomása után, a megadott címedre vonatkozóan személyre szabott ajánlatról tájékoztatunk.</p>
   </div>
 
@@ -5998,7 +6047,7 @@
     <div class="dhead">
       <label class="icon-btn" for="s-buynew" data-adback><i class="ti ti-arrow-left"></i></label>
       <span class="title">Címed</span>
-      <div style="width:42px"></div>
+      <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
     </div>
     <div class="formbody">
       <h2 class="adq">Hova szeretnél internetet és TV-t?</h2>
@@ -6010,16 +6059,18 @@
       </div>
       <div class="adform">
         <p class="adsub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
-        <label class="adl">Település, vagy irányítószám <span>*</span></label>
-        <input class="adin" type="text" placeholder="1097">
-        <label class="adl">Közterület <span>*</span></label>
-        <input class="adin" type="text" placeholder="Deák Ferenc utca" disabled>
-        <label class="adl">Házszám <span>*</span></label>
-        <input class="adin" type="text" placeholder="6" disabled>
-        <div class="adhelp"><i class="ti ti-message-chatbot"></i><span>Nem találod a címed? Jelezd nekünk.</span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="adfw" data-adw="city"><label class="adl">Település vagy irányítószám <span>*</span></label>
+        <div class="adfld" data-adf="city"><span class="adv" data-ph="1097">1097</span><button type="button" class="adclr" data-adclr aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div></div>
+        <div class="adfw" data-adw="street"><label class="adl">Közterület <span>*</span></label>
+        <div class="adfld" data-adf="street"><span class="adv" data-ph="Deák Ferenc utca">Deák Ferenc utca</span><button type="button" class="adclr" data-adclr aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div></div>
+        <div class="adfw" data-adw="house"><label class="adl">Házszám <span>*</span></label>
+        <div class="adfld" data-adf="house"><span class="adv" data-ph="6">6</span><button type="button" class="adclr" data-adclr aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div></div>
+        <div class="adfw" data-adw="unit" hidden><label class="adl">Lépcsőház, emelet, ajtó <span>*</span></label>
+        <div class="adfld" data-adf="unit"><span class="adv" data-ph="2. emelet 1. ajtó">2. emelet 1. ajtó</span><button type="button" class="adclr" data-adclr aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div></div>
+        <div class="adhelp"><i class="ti ti-message-question"></i><span>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</span><i class="ti ti-chevron-right chev"></i></div>
       </div>
     </div>
-    <label class="acont jbtn adnext" for="s-ctvloadavail">Tovább</label>
+    <button type="button" class="acont adnext" data-adgo="s-ctvavail">Tovább</button>
     <p class="adnote">A Tovább gomb megnyomása után, a megadott címedre vonatkozóan személyre szabott ajánlatról tájékoztatunk.</p>
   </div>
 
@@ -7228,6 +7279,17 @@
     <button type="button" class="otpre" data-otpre disabled>Újraküldés<br><span data-otpsec>(30 sec)</span></button>
   </div>
 
+  <!-- ============= SZOLGÁLTATÁS NEM ÉRHETŐ EL ============= -->
+  <div class="screen loginscr lgn anscreen" data-screen="addr-none" style="display:none;">
+    <span class="anic"><i class="ti ti-info-circle"></i></span>
+    <h2 class="anh">Szolgáltatásunk még nem érhető el a címeden</h2>
+    <p class="anp">Pillanatnyilag otthoni internet szolgáltatásunk nem érhető el a körzetedben. Ne szomorkodj, hálózatunkat folyamatosan bővítjük.</p>
+    <div class="anfoot">
+      <span class="lgbtn annotify" data-annotify>Értesítést kérek</span>
+      <label class="lgback" for="s-home">Vissza a főoldalra</label>
+    </div>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
@@ -7990,11 +8052,11 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -8062,29 +8124,115 @@
 })();
 </script>
 <script>
-/* address screens: "Állandó lakcímedre" or a new address typed step by step */
+/* address screens: permanent address or a searched one (search overlay per field), then "Betöltés folyamatban" */
 (function(){
+  var TOWNS = ['Aba','Abaliget','Abasár','Abaújalpár','Abaújkér','Abaújszántó','Abony','Ács','Adony','Ajka','Albertirsa','Alsóörs','Bácsalmás','Baja','Balatonfüred','Békéscsaba','Debrecen','Dombóvár','Eger','Érd','Esztergom','Győr','Kaposvár','Kecskemét','Miskolc','Nyíregyháza','Pécs','Sopron','Szeged','Székesfehérvár','Szolnok','Szombathely','Tatabánya','Törökbálint','Veszprém','Zalaegerszeg'];
+  var ZIP = {'Budapest':['1011','1051','1097','1111','1134','1144','1149','1182'],'Veszprém':['8200'],'Érd':['2030'],'Törökbálint':['2045'],'Debrecen':['4024','4032'],'Győr':['9021','9024'],'Szeged':['6720','6724'],'Pécs':['7621']};
+  var CITIES = []; Object.keys(ZIP).forEach(function(t){ ZIP[t].forEach(function(z){ CITIES.push(z+' '+t); }); });
+  TOWNS.forEach(function(t){ if (!ZIP[t]) CITIES.push(t); });
+  var STREETS_BP1144 = ['Ond vezér útja','Ond vezér park','Örs vezér tere','Kerepesi út','Kassai utca','Kántorné sétány','Füredi utca','Szentmihályi út','Vezér utca'];
+  var STREETS = ['Fő utca','Petőfi Sándor utca','Kossuth Lajos utca','Rákóczi Ferenc utca','Ady Endre utca','Deák Ferenc utca','Tölgyfa utca','Jókai Mór utca','Arany János utca','Szabadság tér','Béke utca','Táncsics Mihály utca'];
+  var HOUSES_OND = ['1','3','5','7','9','11','13-15','17','19-21','23','25'];
+  var UNITS = [['fszt. 1. ajtó (Van FBB+FWA)','both'],['2. emelet 1. ajtó (Van FBB)','fbb'],['5. emelet 12. ajtó (Van FWA)','fwa'],['9. emelet 3. ajtó (Nincs szolgáltatás)','none']];
+  var TITLES = {city:'Település és irányítószám', street:'Közterület', house:'Házszám', unit:'Lépcsőház, emelet, ajtó'};
+  var ORDER = ['city','street','house','unit'];
+  function options(k, v){
+    if (k === 'city') return CITIES;
+    if (k === 'street') return /^1144 Budapest$/.test(v.city) ? STREETS_BP1144 : STREETS;
+    if (k === 'house'){ if (v.street === 'Ond vezér útja') return HOUSES_OND; var h = []; for (var i = 1; i <= 40; i++) h.push(String(i)); return h; }
+    return UNITS.map(function(u){ return u[0]; });
+  }
+  function norm(x){ return x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+
+  /* search overlay */
+  var ov = document.createElement('div'); ov.className = 'asov'; ov.innerHTML =
+    '<div class="ashead"><button type="button" class="asback" aria-label="Vissza"><i class="ti ti-arrow-left"></i></button><span class="astitle"></span></div>'
+    + '<div class="asbar"><i class="ti ti-search"></i><input type="text" autocomplete="off"><button type="button" class="asx" aria-label="Törlés"><i class="ti ti-circle-x"></i></button></div>'
+    + '<p class="aserr">Kérjük, válassz a listából.</p><div class="aslist"></div>';
+  document.querySelector('.app').appendChild(ov);
+  var asIn = ov.querySelector('input'), asList = ov.querySelector('.aslist'), asErr = ov.querySelector('.aserr'), cur = null;
+  function renderList(){
+    var q = cur.pristine ? '' : norm(asIn.value.trim()), opts = options(cur.key, cur.vals);
+    ov.classList.toggle('typed', !!asIn.value);
+    if (!q && cur.key !== 'unit'){ asList.innerHTML = ''; return; }
+    var hits = opts.filter(function(o){ return !q || norm(o).indexOf(q) >= 0; }).slice(0, 40);
+    asList.innerHTML = hits.length ? hits.map(function(o){ return '<button type="button" class="asitem">'+o+'</button>'; }).join('') : '<p class="asnone">Nincs találat</p>';
+  }
+  function openSearch(sc, key){
+    cur = {sc:sc, key:key, vals:sc._vals, pristine:true};
+    ov.querySelector('.astitle').textContent = TITLES[key];
+    asIn.value = sc._vals[key] || ''; asIn.placeholder = sc.querySelector('[data-adf="'+key+'"] .adv').getAttribute('data-ph');
+    asErr.classList.remove('on'); ov.classList.remove('err');
+    renderList(); ov.classList.add('on'); setTimeout(function(){ asIn.focus(); }, 30);
+  }
+  function closeSearch(){ ov.classList.remove('on'); asIn.blur(); cur = null; }
+  asIn.addEventListener('input', function(){ cur.pristine = false; asErr.classList.remove('on'); ov.classList.remove('err'); renderList(); });
+  asIn.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter') return;
+    var exact = options(cur.key, cur.vals).filter(function(o){ return norm(o) === norm(asIn.value.trim()); })[0];
+    if (exact) pick(exact); else { asErr.classList.add('on'); ov.classList.add('err'); }
+  });
+  ov.querySelector('.asx').addEventListener('click', function(){ cur.pristine = false; asIn.value = ''; asErr.classList.remove('on'); ov.classList.remove('err'); renderList(); asIn.focus(); });
+  ov.querySelector('.asback').addEventListener('click', function(){
+    /* leaving with typed text that is not from the list → show the error first */
+    if (asIn.value.trim() && asIn.value.trim() !== (cur.vals[cur.key] || '') && !ov.classList.contains('err')){ asErr.classList.add('on'); ov.classList.add('err'); return; }
+    closeSearch();
+  });
+  asList.addEventListener('click', function(e){ var it = e.target.closest('.asitem'); if (it) pick(it.textContent); });
+  function pick(val){
+    var sc = cur.sc, i = ORDER.indexOf(cur.key);
+    if (sc._vals[cur.key] !== val) ORDER.slice(i + 1).forEach(function(k){ delete sc._vals[k]; });
+    sc._vals[cur.key] = val; closeSearch(); paint(sc);
+  }
+
+  /* form */
+  function paint(sc){
+    var v = sc._vals;
+    ORDER.forEach(function(k, i){
+      var w = sc.querySelector('[data-adw="'+k+'"]'), f = w.querySelector('.adfld'), t = f.querySelector('.adv');
+      var enabled = i === 0 || !!v[ORDER[i - 1]];
+      if (k === 'unit') w.hidden = !v.house;
+      f.classList.toggle('dis', !enabled); f.classList.toggle('filled', !!v[k]);
+      t.textContent = v[k] || t.getAttribute('data-ph');
+    });
+    var newR = sc.querySelector('input[id$="-new"]');
+    sc.querySelector('.adnext').classList.toggle('off', newR.checked && !ORDER.every(function(k){ return v[k]; }));
+  }
+  /* "Betöltés folyamatban" with bouncing dots */
+  var ld = document.createElement('div'); ld.className = 'adload';
+  ld.innerHTML = '<span class="adldic"><i></i><i></i><i></i><i></i></span><p class="adldt">Betöltés folyamatban</p><p class="adlds">Van, amire érdemes picit várni...</p>';
+  document.querySelector('.app').appendChild(ld);
+  function go(id){ var r = document.getElementById(id); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } }
+
   Array.prototype.slice.call(document.querySelectorAll('.adscr')).forEach(function(sc){
+    sc._vals = {};
     var newR = sc.querySelector('input[id$="-new"]'), permR = sc.querySelector('input[id$="-perm"]');
-    var ins = Array.prototype.slice.call(sc.querySelectorAll('.adin'));
     var next = sc.querySelector('.adnext'), back = sc.querySelector('[data-adback]');
-    function upd(){
-      for (var i = 1; i < ins.length; i++) ins[i].disabled = !ins[i-1].value.trim() || ins[i-1].disabled;
-      var full = ins.every(function(x){ return !x.disabled && x.value.trim(); });
-      next.classList.toggle('off', newR.checked && !full);
-    }
-    ins.forEach(function(x){ x.addEventListener('input', upd); });
-    [newR, permR].forEach(function(r){ r.addEventListener('change', upd); });
-    /* on the typed-address step, the back arrow returns to the address choice */
-    back.addEventListener('click', function(e){ if (newR.checked){ e.preventDefault(); permR.checked = true; upd(); } });
-    upd();
+    sc.addEventListener('click', function(e){
+      var clr = e.target.closest('[data-adclr]');
+      if (clr){ var k = clr.closest('[data-adf]').getAttribute('data-adf'); ORDER.slice(ORDER.indexOf(k)).forEach(function(x){ delete sc._vals[x]; }); paint(sc); return; }
+      var f = e.target.closest('[data-adf]');
+      if (f && !f.classList.contains('dis')) openSearch(sc, f.getAttribute('data-adf'));
+    });
+    [newR, permR].forEach(function(r){ r.addEventListener('change', function(){ paint(sc); }); });
+    back.addEventListener('click', function(e){ if (newR.checked){ e.preventDefault(); permR.checked = true; paint(sc); } });
+    next.addEventListener('click', function(){
+      if (next.classList.contains('off')) return;
+      var v = sc._vals, unit = UNITS.filter(function(u){ return u[0] === v.unit; })[0];
+      var scenario = newR.checked ? (unit ? unit[1] : 'both') : 'both';
+      window.yAddr = {scenario:scenario, address: newR.checked ? (v.city+', '+v.street+' '+v.house+', '+v.unit.replace(/\s*\(.*\)$/, '')) : '8200 Veszprém, Tölgyfa u. 4'};
+      ld.classList.add('on');
+      setTimeout(function(){ go(scenario === 'none' ? 's-addrnone' : next.getAttribute('data-adgo')); }, 2600);
+      setTimeout(function(){ ld.classList.remove('on'); }, 2800);
+    });
+    paint(sc);
   });
 })();
 </script>
 <script>
 /* back arrows walk the journey backwards (previously visited screen), falling back to their own target */
 (function(){
-  var ROOTS = {'s-otp':1,'s-idme':1,'s-smslogin':1,'s-pwforgot':1,'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
+  var ROOTS = {'s-addrnone':1,'s-otp':1,'s-idme':1,'s-smslogin':1,'s-pwforgot':1,'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
   var stack = [];
   function curId(){ var c = document.querySelector('input.rt[name="nav"]:checked'); return c ? c.id : null; }
   function screenOf(){ var all = document.querySelectorAll('[data-screen]');
