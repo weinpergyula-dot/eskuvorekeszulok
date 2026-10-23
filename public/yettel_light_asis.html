@@ -349,6 +349,7 @@
   #s-billdet:checked ~ [data-screen="bill-det"],
   #s-billdata:checked ~ [data-screen="bill-data"],
   #s-docs:checked ~ [data-screen="docs"],
+  #s-docdet:checked ~ [data-screen="doc-det"],
   #s-ktopup:checked ~ [data-screen="kt-topup"],
   #s-ktfriends:checked ~ [data-screen="kt-friends"],
   #s-savedcard:checked ~ [data-screen="saved-card"],
@@ -359,7 +360,7 @@
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-ktfriends:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-docdet:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-ktfriends:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -2372,6 +2373,32 @@
   .dctx b{ display:block; font-size:12.5px; font-weight:400; line-height:1.35; color:var(--navy); }
   .dctx span{ display:block; margin-top:2px; font-size:11.5px; font-weight:300; color:var(--navy); }
   .dcrow .chev{ font-size:18px; color:var(--mid); }
+
+  /* ===== filter overlay modes ===== */
+  .bfov .bfm-doc{ display:none; }
+  .bfov[data-mode="doc"] .bfm-doc{ display:block; }
+  .bfov[data-mode="doc"] .bfm-bill{ display:none; }
+  .bfc{ display:flex; align-items:center; gap:12px; padding:7px 0; font-size:12.5px; font-weight:300; color:var(--navy); cursor:pointer; }
+  .bfc input{ display:none; }
+  .bfc span{ display:flex; align-items:center; justify-content:center; width:18px; height:18px; flex-shrink:0; border-radius:4px; border:1.5px solid #C9D1DC; }
+  .bfc input:checked + span{ background:var(--navy); border-color:var(--navy); }
+  .bfc input:checked + span::after{ content:""; width:9px; height:5px; margin-top:-3px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg); }
+  .bfdin span.ph{ color:#A3ABB8; }
+  /* ===== Dokumentum ===== */
+  .docscreen{ background:#FFFFFF; }
+  .dochd{ padding:18px 2px 16px; border-bottom:1px solid #E3E8EE; }
+  .docmeta{ display:flex; align-items:center; gap:10px; margin:0; font-size:12px; color:var(--navy); }
+  .docmeta i{ font-size:22px; }
+  .doct{ margin:8px 0 0 32px; font-size:13.5px; font-weight:700; color:var(--navy); }
+  .docd{ margin:18px 2px 0; font-size:12px; line-height:1.5; color:var(--navy); min-height:460px; }
+  .docbtn{ position:sticky; bottom:96px; display:flex; align-items:center; justify-content:center; width:100%; height:48px; border:none; border-radius:999px;
+           background:var(--navy); color:#fff; font-family:'Yettel'; font-size:14px; font-weight:700; cursor:pointer; transition:background .2s; }
+  .docspin{ display:none; width:18px; height:18px; border-radius:50%; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; animation:docspin .8s linear infinite; }
+  @keyframes docspin{ to{ transform:rotate(360deg); } }
+  .docbtn.busy{ background:#38516B; cursor:default; }
+  .docbtn.busy span{ display:none; } .docbtn.busy .docspin{ display:block; }
+  .dexic{ display:inline-flex; width:52px; height:52px; margin-bottom:18px; border-radius:50%; background:#FDE4D6; align-items:center; justify-content:center; }
+  .dexic i{ font-size:28px; color:#F0603C; }
 </style>
 </head>
 <body>
@@ -2472,6 +2499,7 @@
   <input class="rt" type="radio" name="nav" id="s-billdet">
   <input class="rt" type="radio" name="nav" id="s-billdata">
   <input class="rt" type="radio" name="nav" id="s-docs">
+  <input class="rt" type="radio" name="nav" id="s-docdet">
   <input class="rt" type="radio" name="nav" id="s-ktopup">
   <input class="rt" type="radio" name="nav" id="s-ktfriends">
   <input class="rt" type="radio" name="nav" id="s-savedcard">
@@ -6932,8 +6960,20 @@
       <div class="icon-btn"><i class="ti ti-message-question"></i></div>
     </div>
     <div class="bhsel" data-dcsel><i class="ti ti-layout-grid" data-dcselic></i><span class="bhselt"><small data-dcsels></small><b data-dcselb>Összes előfizetés</b></span><i class="ti ti-chevron-down"></i></div>
-    <div class="bhfilt"><span class="bhfbtn dcsort" data-dcsort>Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
+    <div class="bhfilt"><span class="bhfbtn" data-dcfilt>Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
     <div class="bhlist" data-dclist></div>
+  </div>
+
+  <!-- ============= DOKUMENTUM ============= -->
+  <div class="screen docscreen" data-screen="doc-det" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-docs"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Dokumentum</span>
+      <div class="icon-btn"><i class="ti ti-message-question"></i></div>
+    </div>
+    <div class="dochd"><p class="docmeta"><i class="ti ti-clipboard-text"></i><span data-docmeta></span></p><p class="doct" data-doct></p></div>
+    <p class="docd" data-docd></p>
+    <button type="button" class="docbtn" data-docbtn><span>Megnyitás</span><i class="docspin"></i></button>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -7041,11 +7081,21 @@
       <label class="bfr"><input type="radio" name="bfsort" value="new"><span></span>Legújabb elöl</label>
       <label class="bfr"><input type="radio" name="bfsort" value="old"><span></span>Legrégebbi elöl</label>
       <hr>
+      <div class="bfm-bill">
       <p class="bfh">Számla típusa</p>
       <label class="bfr"><input type="radio" name="bftype" value="all"><span></span>Minden számla</label>
       <label class="bfr"><input type="radio" name="bftype" value="havi"><span></span>Havi számla</label>
       <label class="bfr"><input type="radio" name="bftype" value="pre"><span></span>Feltöltőkártyás gyűjtőszámla</label>
       <label class="bfr"><input type="radio" name="bftype" value="yepp"><span></span>Yepp számla</label>
+      </div>
+      <div class="bfm-doc">
+      <p class="bfh">Dokumentum típusa</p>
+      <label class="bfc"><input type="checkbox" name="bfdoc" value="elo"><span></span>Előfizetői szerződések</label>
+      <label class="bfc"><input type="checkbox" name="bfdoc" value="mell"><span></span>Mellékletek</label>
+      <label class="bfc"><input type="checkbox" name="bfdoc" value="eseti"><span></span>Eseti szerződések</label>
+      <label class="bfc"><input type="checkbox" name="bfdoc" value="nyil"><span></span>Nyilatkozatok</label>
+      <label class="bfc"><input type="checkbox" name="bfdoc" value="megh"><span></span>Meghatalmazások</label>
+      </div>
       <hr>
       <p class="bfh">Időszak</p>
       <div class="bfdates">
@@ -7094,6 +7144,14 @@
       <p class="cps">Módosítani kollégánk segítségével tudsz.</p>
       <button class="cpgo" type="button" data-cpclose>Chat indítása</button>
       <button class="cpx" type="button" data-cpclose>Bezár</button>
+    </div>
+  </div>
+  <div class="wip" id="docerr">
+    <div class="wipcard cpcard">
+      <span class="dexic"><i class="ti ti-x"></i></span>
+      <p class="cpt">Nem sikerült megnyitni a dokumentumot</p>
+      <p class="cps">Sajnos valami hiba történt, próbáld meg újra később.</p>
+      <button class="cpgo" type="button" data-docerrx>Bezár</button>
     </div>
   </div>
   <div class="wip" id="wip">
@@ -7678,11 +7736,11 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.dcrow,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -8033,7 +8091,8 @@
   }
 
   /* ---------- filter overlay ---------- */
-  var ov = $('#bfov'), work = null, active = null;
+  var ov = $('#bfov'), work = null, active = null, fmode = 'bill';
+  function src(){ return fmode === 'doc' ? window.yDocs.filter : api; }
   var pick = $('[data-bfpick]'), err = $('[data-bferr]'), go = $('[data-bfgo]');
   var cols = {m:$('[data-col="m"]', pick), d:$('[data-col="d"]', pick), y:$('[data-col="y"]', pick)};
   var Y0 = api.today.getFullYear() - 10, Y1 = api.today.getFullYear();
@@ -8060,6 +8119,13 @@
   }
   function validate(){
     var f = work, msg = '';
+    if (fmode === 'doc'){
+      if (f.from && f.to && f.from > f.to) msg = 'A kezdődátum nem lehet később mint a végdátum';
+      err.textContent = msg;
+      $$('.bfdin').forEach(function(b){ b.classList.toggle('bad', !!msg && b.getAttribute('data-bfd') === 'from'); });
+      go.classList.toggle('off', !!msg);
+      return;
+    }
     var min8 = new Date(api.today); min8.setFullYear(min8.getFullYear() - 8);
     var max1 = new Date(f.from); max1.setFullYear(max1.getFullYear() + 1);
     if (f.from > f.to) msg = 'A kezdődátum nem lehet későbbi a végdátumnál';
@@ -8073,7 +8139,8 @@
   function paint(){
     $$('input[name="bfsort"]', ov).forEach(function(r){ r.checked = r.value === work.sort; });
     $$('input[name="bftype"]', ov).forEach(function(r){ r.checked = r.value === work.type; });
-    $('[data-bfdv="from"]').textContent = fmtD(work.from); $('[data-bfdv="to"]').textContent = fmtD(work.to);
+    $$('input[name="bfdoc"]', ov).forEach(function(c){ c.checked = !!(work.types && work.types.indexOf(c.value) >= 0); });
+    ['from','to'].forEach(function(k){ var v = $('[data-bfdv="'+k+'"]'); v.textContent = work[k] ? fmtD(work[k]) : 'ÉÉÉÉ.HH.NN'; v.classList.toggle('ph', !work[k]); });
     $$('.bfdin').forEach(function(b){ b.classList.toggle('act', b.getAttribute('data-bfd') === active); });
     validate();
   }
@@ -8081,9 +8148,18 @@
   function openPick(which){
     active = which;
     var row = $('.bfdates', ov); row.parentNode.insertBefore(pick, err.nextSibling);
-    pick.hidden = false; paint(); show(work[which]);
+    pick.hidden = false;
+    /* nice to have: an empty end date opens on the start date (and vice versa) */
+    var start = work[which] || work[which === 'to' ? 'from' : 'to'] || api.today;
+    if (!work[which]) work[which] = new Date(start);
+    paint(); show(work[which]);
   }
-  function openOv(){ var f = api.get(); work = {sort:f.sort, type:f.type, from:new Date(f.from), to:new Date(f.to), sub:f.sub}; active = null; pick.hidden = true; paint(); ov.classList.add('on'); }
+  function openOv(m){
+    fmode = m || 'bill'; ov.setAttribute('data-mode', fmode);
+    var f = src().get();
+    work = {sort:f.sort, type:f.type, types:(f.types || []).slice(), from:f.from ? new Date(f.from) : null, to:f.to ? new Date(f.to) : null, sub:f.sub};
+    active = null; pick.hidden = true; paint(); ov.classList.add('on'); $('[data-bfbody]').scrollTop = 0;
+  }
   ['m','d','y'].forEach(function(k){
     var t;
     cols[k].addEventListener('scroll', function(){
@@ -8096,6 +8172,7 @@
   ov.addEventListener('change', function(e){
     if (e.target.name === 'bfsort') work.sort = e.target.value;
     if (e.target.name === 'bftype') work.type = e.target.value;
+    if (e.target.name === 'bfdoc') work.types = $$('input[name="bfdoc"]:checked', ov).map(function(c){ return c.value; });
     if (active) closePick();
   });
   $('[data-bfbody]').addEventListener('scroll', function(){ if (active && !pick.contains(document.activeElement)) closePick(); }, {passive:true});
@@ -8104,18 +8181,19 @@
     var din = t.closest('[data-bfd]');
     if (din){ var w = din.getAttribute('data-bfd'); if (active === w) closePick(); else openPick(w); return; }
     var st = t.closest('[data-bfstep]');
-    if (st && active){ var d = new Date(work[active]); var day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + (+st.getAttribute('data-bfstep')));
+    if (st && active){ var d = new Date(work[active] || api.today); var day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + (+st.getAttribute('data-bfstep')));
       d.setDate(Math.min(day, dim(d.getFullYear(), d.getMonth()))); if (d.getFullYear() >= Y0 && d.getFullYear() <= Y1){ work[active] = d; show(d); paint(); } return; }
     if (t.closest('[data-bfmy]')){ closePick(); return; }
     if (t.closest('[data-bfclose]')){ ov.classList.remove('on'); return; }
-    if (t.closest('[data-bfclr]')){ work = api.def(); closePick(); return; }
-    if (t.closest('[data-bfgo]')){ if (go.classList.contains('off')) return; api.set(work); ov.classList.remove('on'); return; }
+    if (t.closest('[data-bfclr]')){ work = src().def(); closePick(); return; }
+    if (t.closest('[data-bfgo]')){ if (go.classList.contains('off')) return; src().set(work); ov.classList.remove('on'); return; }
     if (active && !t.closest('[data-bfpick]')) closePick();
   });
 
   document.addEventListener('click', function(e){
     if (!e.target.closest) return;
-    if (e.target.closest('[data-bhfilt]')){ openOv(); return; }
+    if (e.target.closest('[data-bhfilt]')){ openOv('bill'); return; }
+    if (e.target.closest('[data-dcfilt]')){ openOv('doc'); return; }
     if (e.target.closest('[data-bhsel]')){ openSheet('bill'); return; }
     if (e.target.closest('[data-dcsel]')){ openSheet('doc'); return; }
     if (e.target.closest('[data-bhclose]')){ sheet.classList.remove('on'); return; }
@@ -8176,24 +8254,39 @@
 (function(){
   var list = document.querySelector('[data-dclist]'); if (!list) return;
   var DOCS = [
-    ['Lakossági Ajánlati Összefoglaló Yettel HiperNet L internetszolgáltatásra','2026.03.03','net'],
-    ['Szolgáltatás szüneteltetéséhez kapcsolódó szerződés módosítás','2026.02.18','7566'],
-    ['Eszköz leadás nyomtatvány','2026.01.09','net'],
-    ['Egyéb szerződéshez kapcsolódó dokumentum','2025.12.02','7430'],
-    ['Kérelem','2025.10.21','7566'],
-    ['Átíráshoz lemondó nyilatkozat','2025.08.14','9734'],
-    ['Részletvételi megállapodás','2025.07.15','7430'],
-    ['Eszközbérleti szerződés','2025.05.30','net'],
-    ['Előfizetői szerződés','2024.12.01','8812']
+    ['Lakossági Ajánlati Összefoglaló Yettel HiperNet L internetszolgáltatásra','2026.03.03','net','elo'],
+    ['Előfizetői szerződés módosítása','2026.02.18','7566','eseti'],
+    ['Eszköz leadás nyomtatvány','2026.01.09','net','mell'],
+    ['Egyéb szerződéshez kapcsolódó dokumentum','2025.12.02','7430','mell'],
+    ['Kérelem','2025.10.21','7566','nyil'],
+    ['Átíráshoz lemondó nyilatkozat','2025.08.14','9734','nyil'],
+    ['Részletvételi megállapodás','2025.07.15','7430','eseti'],
+    ['Eszközbérleti szerződés','2025.05.30','net','eseti'],
+    ['Meghatalmazás ügyintézéshez','2025.03.10','7566','megh'],
+    ['Előfizetői szerződés','2024.12.01','8812','elo']
   ];
+  var DESC = {
+    elo:'Az előfizetői jogviszonyod alapját képező szerződés és a hozzá tartozó általános tájékoztatás.',
+    eseti:'Az általad kötött előfizetői szerződés üzletünkben vagy interneten kezdeményezett módosításáról szóló dokumentum. Ilyen pl. tarifacsomag-váltás, címmódosítás, névváltozás.',
+    mell:'A szerződésedhez tartozó kiegészítő dokumentum, amely további részleteket tartalmaz a szolgáltatásodról.',
+    nyil:'Az általad tett nyilatkozat, amely az előfizetésedhez kapcsolódó ügyintézés része.',
+    megh:'Meghatalmazás, amellyel más személyt jogosítottál fel az előfizetésed ügyeinek intézésére.'
+  };
   var NUM = {'7566':'+36 20 290 7566','7430':'+36 20 290 7430','9734':'+36 20 290 9734','8812':'+36 20 290 8812','net':'186545678'};
-  var sub = 'all', newest = true;
+  function dt(str){ var p = str.split('.'); return new Date(+p[0], +p[1]-1, +p[2]); }
+  var sub = 'all';
+  function defF(){ return {sort:'new', types:[], from:null, to:null}; }
+  var F = defF();
   function render(){
-    var rows = DOCS.filter(function(d){ return sub === 'all' || d[2] === sub; }).sort(function(a, b){ return newest ? (a[1] < b[1] ? 1 : -1) : (a[1] < b[1] ? -1 : 1); });
-    list.innerHTML = rows.length ? rows.map(function(d){
-      return '<div class="dcrow"><i class="ti ti-clipboard-text dcic"></i><div class="dctx"><b>'+d[0]+'</b><span>'+d[1]+' | '+NUM[d[2]]+'</span></div><i class="ti ti-chevron-right chev"></i></div>';
-    }).join('') : '<p class="bhempty">Ehhez az előfizetéshez nincs dokumentum.</p>';
-    var b = document.querySelector('[data-dcsort]'); if (b) b.classList.toggle('on', !newest);
+    var rows = DOCS.map(function(d, i){ return {d:d, i:i}; }).filter(function(x){
+      var d = x.d, t = dt(d[1]);
+      return (sub === 'all' || d[2] === sub) && (!F.types.length || F.types.indexOf(d[3]) >= 0) && (!F.from || t >= F.from) && (!F.to || t <= F.to);
+    }).sort(function(a, b){ return F.sort === 'new' ? dt(b.d[1]) - dt(a.d[1]) : dt(a.d[1]) - dt(b.d[1]); });
+    list.innerHTML = rows.length ? rows.map(function(x){ var d = x.d;
+      return '<div class="dcrow" data-docopen="'+x.i+'"><i class="ti ti-clipboard-text dcic"></i><div class="dctx"><b>'+d[0]+'</b><span>'+d[1]+' | '+NUM[d[2]]+'</span></div><i class="ti ti-chevron-right chev"></i></div>';
+    }).join('') : '<p class="bhempty">Nincs a szűrésnek megfelelő dokumentum.</p>';
+    var on = F.sort !== 'new' || F.types.length || F.from || F.to;
+    var b = document.querySelector('[data-dcfilt]'); if (b) b.classList.toggle('on', !!on);
   }
   window.yDocs = {
     get: function(){ return sub; },
@@ -8201,9 +8294,27 @@
       document.querySelector('[data-dcselic]').className = 'ti ' + x.ic;
       document.querySelector('[data-dcselb]').textContent = x.t;
       document.querySelector('[data-dcsels]').textContent = x.s || '';
-      render(); }
+      render(); },
+    filter: { get: function(){ return F; }, def: defF, set: function(f){ F = {sort:f.sort, types:f.types || [], from:f.from, to:f.to}; render(); } }
   };
-  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('[data-dcsort]')){ newest = !newest; render(); } });
+  /* open a document: details → Megnyitás (loading) → error dialog */
+  var docErr = document.getElementById('docerr'), openBtn = document.querySelector('[data-docbtn]');
+  document.addEventListener('click', function(e){
+    if (!e.target.closest) return;
+    var o = e.target.closest('[data-docopen]');
+    if (o){ var d = DOCS[+o.getAttribute('data-docopen')];
+      document.querySelector('[data-docmeta]').textContent = d[1] + ' | ' + NUM[d[2]];
+      document.querySelector('[data-doct]').textContent = d[0];
+      document.querySelector('[data-docd]').textContent = DESC[d[3]];
+      openBtn.classList.remove('busy');
+      var r = document.getElementById('s-docdet'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
+      return; }
+    if (e.target.closest('[data-docbtn]') && !openBtn.classList.contains('busy')){
+      openBtn.classList.add('busy');
+      setTimeout(function(){ openBtn.classList.remove('busy'); docErr.classList.add('on'); }, 1800);
+      return; }
+    if (e.target === docErr || e.target.closest('[data-docerrx]')) docErr.classList.remove('on');
+  });
   render();
 })();
 </script>
