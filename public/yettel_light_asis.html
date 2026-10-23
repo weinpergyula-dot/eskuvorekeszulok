@@ -2530,6 +2530,15 @@
   .otpre{ display:block; margin:18px auto 0; border:none; background:none; font-family:'Yettel'; font-size:14px; font-weight:700; line-height:1.4;
           color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
   .otpre:disabled{ color:#8592A6; cursor:default; }
+
+  /* ===== login loading: rotating gear ===== */
+  .lisplash{ position:absolute; inset:0; z-index:140; display:none; flex-direction:column; align-items:center; justify-content:center; padding:0 30px; background:var(--lime); text-align:center; }
+  .lisplash.on{ display:flex; animation:brfade .25s ease-out; }
+  .ligear{ font-size:32px; color:var(--navy); animation:ligear 1.6s linear infinite; }
+  @keyframes ligear{ to{ transform:rotate(360deg); } }
+  .lit{ margin:30px 0 16px; font-family:'Yettel'; font-size:20px; font-weight:700; color:var(--navy); }
+  .lis{ margin:0; font-size:13px; font-weight:300; color:var(--navy); }
+  @media (prefers-reduced-motion: reduce){ .ligear{ animation-duration:4s; } }
 </style>
 </head>
 <body>
@@ -7397,6 +7406,7 @@
       <button class="cpgo" type="button" data-docerrx>Bezár</button>
     </div>
   </div>
+  <div class="lisplash" id="lisplash"><i class="ti ti-settings ligear"></i><p class="lit">Belépés folyamatban...</p><p class="lis">Megkezdtük az inicializálást</p></div>
   <div class="losplash" id="losplash"><span class="lologo">Yettel<i></i></span></div>
   <div class="wip" id="wip">
     <div class="wipcard">
@@ -8665,7 +8675,15 @@
   function check(){
     var code = boxes.map(function(b){ return b.value; }).join('');
     if (code.length < 6) return;
-    if (code === '222222'){ clearInterval(t); boxes.forEach(function(b){ b.classList.add('ok'); }); setTimeout(function(){ go('s-home'); boxes.forEach(function(b){ b.value = ''; b.classList.remove('ok'); }); pw.value = ''; }, 500); }
+    if (code === '222222'){
+      clearInterval(t); boxes.forEach(function(b){ b.classList.add('ok'); b.blur(); });
+      var ls = document.getElementById('lisplash');
+      setTimeout(function(){
+        ls.classList.add('on');
+        setTimeout(function(){ go('s-home'); boxes.forEach(function(b){ b.value = ''; b.classList.remove('ok'); }); pw.value = ''; }, 3500);
+        setTimeout(function(){ ls.classList.remove('on'); }, 3700);
+      }, 400);
+    }
     else { boxes.forEach(function(b){ b.classList.add('bad'); }); err.classList.add('on'); }
   }
   boxes.forEach(function(b, i){
