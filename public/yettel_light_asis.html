@@ -3038,6 +3038,17 @@
   .flacc ul{ margin:0 0 12px; padding-left:18px; font-size:12px; line-height:1.55; color:var(--navy); }
   .flacc .flg{ margin:4px 0 4px; font-size:12px; font-weight:700; color:var(--navy); }
   .flcta{ margin-top:20px; }
+
+  /* Profil: Yettel Full status */
+  .tbfull{ display:flex; align-items:center; gap:14px; margin-top:12px; padding:18px 16px; background:#FFFFFF; border-radius:22px; cursor:pointer; }
+  .tbfic{ flex-shrink:0; display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; background:#DDF7DC; }
+  .tbfic i{ font-size:18px; color:#3DB86A; }
+  .tbftx{ flex:1; min-width:0; }
+  .tbftx b{ display:block; font-size:13px; font-weight:700; color:var(--navy); }
+  .tbftx span{ display:block; margin-top:3px; font-size:12px; line-height:1.4; color:var(--navy); }
+  .tbfgo{ font-size:24px; color:#8592A6; }
+  .tbfull[data-fullstate="off"] .tbfic{ background:#E3E8EE; }
+  .tbfull[data-fullstate="off"] .tbfic i{ color:#8592A6; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -6585,6 +6596,11 @@
       <span class="tbav"><i class="ti ti-user"></i></span>
       <div><p class="tbmn">Weinper Gyula</p><p class="tbme2">weinper.gyula@gmail.com</p></div>
     </div>
+    <div class="tbfull" data-fullpop data-fullstate="on">
+      <span class="tbfic"><i class="ti ti-check"></i></span>
+      <div class="tbftx"><b data-fullt>Yettel Full aktiválva van</b><span data-fulls>Nézd meg milyen kedvezményeket nyújt a Full!</span></div>
+      <i class="ti ti-external-link tbfgo"></i>
+    </div>
     <div class="tbgroup">
       <div class="tbrow"><span class="tbic"><i class="ti ti-mail"></i></span><span class="n">E-mail cím módosítás</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="tbrow"><span class="tbic"><i class="ti ti-phone-call"></i></span><span class="n">Kapcsolattartási telefonszám csere</span><i class="ti ti-chevron-right chev"></i></div>
@@ -9187,6 +9203,15 @@
 
 /* Yettel Full popup: what Full is + calculator with the customer's own subscriptions */
 (function(){
+  /* Profil status card: the demo customer has Full active; ySetFull(false) shows the inactive look */
+  window.ySetFull = function(on){
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fullstate]'), function(c){
+      c.setAttribute('data-fullstate', on ? 'on' : 'off');
+      c.querySelector('.tbfic i').className = 'ti ' + (on ? 'ti-check' : 'ti-minus');
+      c.querySelector('[data-fullt]').textContent = on ? 'Yettel Full aktiválva van' : 'Yettel Full nincs aktiválva';
+      c.querySelector('[data-fulls]').textContent = on ? 'Nézd meg milyen kedvezményeket nyújt a Full!' : 'Számold ki, mennyit spórolhatnál a Full-lal!';
+    });
+  };
   var app = document.querySelector('.app');
   /* eligible: Yettel Prime / M Talk mobile plans and OtthonNet / HiperNet home internet; tiers by their count */
   function tier(n){ return n >= 4 ? 30 : n === 3 ? 20 : n === 2 ? 15 : 0; }
