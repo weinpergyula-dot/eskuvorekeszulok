@@ -301,6 +301,7 @@
   #s-tvext:checked ~ [data-screen="tv-extras"],
   #s-addrtaken:checked ~ [data-screen="addr-taken"],
   #s-bconsent:checked ~ [data-screen="bconsent"],
+  #s-bappt:checked ~ [data-screen="bappt"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
   #s-tvselsvc:checked ~ [data-screen="tvsel-svc"],
   #s-topup1:checked ~ [data-screen="topup-1"],
@@ -2810,7 +2811,7 @@
   /* taken address + purchase consent */
   .antk i{ color:#8592A6; } .antk{ background:#E3E8EE; }
   .anp b{ font-weight:700; }
-  #s-bconsent:checked ~ .bcscreen{ display:flex !important; flex-direction:column; }
+  #s-bconsent:checked ~ .bcscreen[data-screen="bconsent"]{ display:flex !important; flex-direction:column; }
   .bcscreen{ background:#fff; padding-bottom:0 !important; }
   .bcscreen > *{ flex-shrink:0; }
   .bchead{ display:grid; grid-template-columns:32px 1fr 32px; align-items:center; padding:calc(22px + env(safe-area-inset-top)) 0 18px; }
@@ -2840,6 +2841,55 @@
   .bcscreen.busy .bcnext{ background:#3E5670; }
   .bcscreen.busy .bcnext span{ visibility:hidden; }
   .bcscreen.busy .bcnext::after{ content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
+
+  /* installation date */
+  #s-bappt:checked ~ .apscreen[data-screen="bappt"]{ display:flex !important; flex-direction:column; }
+  .aph{ margin:4px 0 14px; font-size:18px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .apsub{ margin:0 0 14px; font-size:13px; font-weight:700; color:var(--navy); }
+  .apmon{ display:flex; align-items:center; justify-content:space-between; padding:6px 0 10px; border-bottom:1px solid #EEF1F4; }
+  .apmon b{ font-size:13px; font-weight:700; color:var(--navy); }
+  .apnav{ display:flex; padding:4px; border:none; background:none; cursor:pointer; }
+  .apnav i{ font-size:18px; color:var(--navy); }
+  .apnav:disabled i{ color:#C3CAD3; }
+  .apwd, .apdays{ display:grid; grid-template-columns:repeat(7,1fr); text-align:center; }
+  .apwd span{ padding:12px 0 6px; font-size:12px; font-weight:700; color:var(--navy); }
+  .apd{ display:flex; align-items:center; justify-content:center; width:30px; height:30px; margin:2px auto; padding:0; border:1.5px solid transparent; border-radius:50%; background:none;
+         font-family:'Yettel'; font-size:12px; color:#B7C0CA; }
+  .apd.av{ font-weight:700; color:var(--navy); cursor:pointer; }
+  .apd.today{ border-color:#A9B3BF; color:var(--navy); }
+  .apd.sel{ background:#09223D; border-color:#09223D; color:#fff; }
+  .apl{ margin:18px 0 10px; font-size:13px; font-weight:700; color:var(--navy); }
+  .apslots{ display:flex; gap:10px; }
+  .apslot{ flex:1; height:40px; border:1.5px solid #D5DCE3; border-radius:8px; background:#fff; font-family:'Yettel'; font-size:12px; color:var(--navy); cursor:pointer; }
+  .apslot.sel{ border:2px solid #09223D; background:#EFF8FD; }
+  .apnote{ display:flex; align-items:center; gap:10px; margin:18px 0 0; font-size:11px; color:var(--navy); cursor:pointer; }
+  .apnote input{ position:absolute; opacity:0; pointer-events:none; }
+  .apchk{ display:flex; align-items:center; justify-content:center; width:16px; height:16px; border:1.5px solid #A9B3BF; border-radius:3px; }
+  .apchk i{ display:none; font-size:12px; color:#fff; }
+  .apnote input:checked + .apchk{ background:#09223D; border-color:#09223D; }
+  .apnote input:checked + .apchk i{ display:block; }
+  .aptext{ display:block; width:100%; margin-top:10px; padding:10px 12px; border:1.5px solid #D5DCE3; border-radius:8px; font-family:'Yettel'; font-size:16px; color:var(--navy); resize:none; outline:none; box-sizing:border-box; }
+  .aptext[hidden]{ display:none; }
+  .aptext:focus{ border-color:#09223D; }
+  .aph2{ margin:26px 0 14px; font-size:16px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .aprow{ padding:0 0 14px; margin-bottom:14px; border-bottom:1px solid #EEF1F4; }
+  .aprow:last-of-type{ border-bottom:none; }
+  .aprh{ display:flex; align-items:center; justify-content:space-between; }
+  .aprh b{ font-size:12px; font-weight:700; color:var(--navy); }
+  .apmod{ padding:0; border:none; background:none; font-family:'Yettel'; font-size:11px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
+  .apv{ margin:10px 0 0; font-size:12px; color:var(--navy); }
+  .apin{ display:block; width:100%; height:40px; margin-top:8px; padding:0 12px; border:1.5px solid #09223D; border-radius:8px; font-family:'Yettel'; font-size:16px; color:var(--navy); outline:none; box-sizing:border-box; }
+  .apin[hidden], .aprow.ed .apv{ display:none; }
+  .apscreen .bcfoot{ margin-top:auto; position:sticky; bottom:0; z-index:2; }
+  .apscreen.busy .apnote input:checked + .apchk{ background:#CDD4DC; border-color:#CDD4DC; }
+  .apscreen.busy .apcal, .apscreen.busy .apslots, .apscreen.busy .apnote, .apscreen.busy .apmod{ pointer-events:none; }
+  .apscreen.busy .apd.av{ color:#8592A6; }
+  .apscreen.busy .apd.sel{ background:#CDD4DC; border-color:#CDD4DC; color:#fff; }
+  .apscreen.busy .apnav i{ color:#C3CAD3; }
+  .apscreen.busy .apslot{ color:#8592A6; border-color:#E3E8EE; }
+  .apscreen.busy .apslot.sel{ border-color:#D5DCE3; }
+  .apscreen.busy .apchk{ background:#CDD4DC; border-color:#CDD4DC; }
+  .apscreen.busy .apmod{ color:#A9B3BF; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -2869,6 +2919,7 @@
   <input class="rt" type="radio" name="nav" id="s-tvext">
   <input class="rt" type="radio" name="nav" id="s-addrtaken">
   <input class="rt" type="radio" name="nav" id="s-bconsent">
+  <input class="rt" type="radio" name="nav" id="s-bappt">
   <input class="rt" type="radio" name="nav" id="s-tvselbuy">
   <input class="rt" type="radio" name="nav" id="s-tvselsvc">
   <input class="rt" type="radio" name="nav" id="s-topup1">
@@ -6977,6 +7028,26 @@
     <div class="bcfoot"><button type="button" class="bcnext" data-bcnext><span>Tovább</span></button></div>
   </div>
 
+  <!-- ============= TELEPÍTÉSI IDŐPONT: bappt ============= -->
+  <div class="screen bcscreen apscreen" data-screen="bappt" style="display:none;">
+    <div class="bchead"><span></span><div class="bcsteps"><i class="on"></i><i class="on"></i><i></i></div><label class="bcx adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <h2 class="aph">Mi hozzuk az internetet, te csak mondd, mikor!</h2>
+    <p class="apsub">Válaszd ki a telepítés időpontját!</p>
+    <div class="apcal">
+      <div class="apmon"><button type="button" class="apnav" data-apm="-1" aria-label="Előző hónap"><i class="ti ti-chevron-left"></i></button><b data-aptitle></b><button type="button" class="apnav" data-apm="1" aria-label="Következő hónap"><i class="ti ti-chevron-right"></i></button></div>
+      <div class="apwd"><span>H</span><span>K</span><span>Sz</span><span>Cs</span><span>P</span><span>Sz</span><span>V</span></div>
+      <div class="apdays" data-apdays></div>
+    </div>
+    <p class="apl">Válassz idősávot!</p>
+    <div class="apslots"><button type="button" class="apslot sel">09:00-12:00</button><button type="button" class="apslot">12:00-16:00</button></div>
+    <label class="apnote"><input type="checkbox" data-apnote><span class="apchk"><i class="ti ti-check"></i></span>Megjegyzés a szaktechnikusnak</label>
+    <textarea class="aptext" rows="3" placeholder="Pl. kapukód, emelet, mikor vagy otthon…" hidden></textarea>
+    <h3 class="aph2">Kit kereshetünk a telepítéssel kapcsolatban?</h3>
+    <div class="aprow" data-apf><div class="aprh"><b>Kapcsolattartó neve</b><button type="button" class="apmod">Módosítom</button></div><p class="apv">Kovács Péter</p><input class="apin" type="text" autocomplete="name" hidden></div>
+    <div class="aprow" data-apf><div class="aprh"><b>Értesítési telefonszám</b><button type="button" class="apmod">Módosítom</button></div><p class="apv">+36 20 615 7557</p><input class="apin" type="tel" inputmode="tel" hidden></div>
+    <div class="bcfoot"><button type="button" class="bcnext" data-apnext><span>Tovább</span></button></div>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
@@ -8339,6 +8410,8 @@
         if (ret) setTimeout(function(){
           if (window.yConsentSaved) window.yConsentSaved();
           var r = document.getElementById(ret); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
+          sc.scrollTop = 0;
+          var to = document.querySelector('[data-screen="bconsent"]'); if (to) to.scrollTop = 0;
         }, 900);
       }, 1600);
     }
@@ -8776,7 +8849,50 @@
   bc.querySelector('[data-bcnext]').addEventListener('click', function(){
     if (!bc.querySelector('input[name="bc-all"]:checked') && !bcCustom){ bc.classList.add('err'); return; }
     bc.classList.add('busy');
-    setTimeout(function(){ bc.classList.remove('busy'); document.getElementById('wip').classList.add('on'); }, 1600);
+    setTimeout(function(){ bc.classList.remove('busy'); openAppt(); }, 1600);
+  });
+  /* installation date: weekdays of the next ~2 weeks, a time slot, optional note, contact */
+  var ap = document.querySelector('[data-screen="bappt"]'), apDays = ap.querySelector('[data-apdays]');
+  var MON = ['Január','Február','Március','Április','Május','Június','Július','Augusztus','Szeptember','Október','November','December'];
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var avail = [];
+  (function(){ var d = new Date(today); while (avail.length < 8){ d.setDate(d.getDate() + 1); if (d.getDay() % 6) avail.push(d.getTime()); } })();
+  var view, apSel;
+  function apRender(){
+    var y = view.getFullYear(), m = view.getMonth(), first = new Date(y, m, 1), lead = (first.getDay() + 6) % 7, n = new Date(y, m + 1, 0).getDate(), h = '';
+    ap.querySelector('[data-aptitle]').textContent = y + ' ' + MON[m];
+    for (var i = 0; i < lead; i++) h += '<span></span>';
+    for (var dd = 1; dd <= n; dd++){
+      var t = new Date(y, m, dd).getTime(), av = avail.indexOf(t) >= 0;
+      h += '<button type="button" class="apd'+(av ? ' av' : '')+(t === today.getTime() ? ' today' : '')+(t === apSel ? ' sel' : '')+'"'+(av ? ' data-t="'+t+'"' : ' disabled')+'>'+dd+'</button>';
+    }
+    apDays.innerHTML = h;
+    var last = new Date(avail[avail.length - 1]);
+    ap.querySelector('[data-apm="-1"]').disabled = y === today.getFullYear() && m === today.getMonth();
+    ap.querySelector('[data-apm="1"]').disabled = y === last.getFullYear() && m === last.getMonth();
+  }
+  function openAppt(){
+    apSel = avail[0]; view = new Date(apSel); view.setDate(1); apRender();
+    Array.prototype.forEach.call(ap.querySelectorAll('.apslot'), function(b, i){ b.classList.toggle('sel', !i); });
+    ap.querySelector('[data-apnote]').checked = false; ap.querySelector('.aptext').hidden = true; ap.querySelector('.aptext').value = '';
+    ap.classList.remove('busy'); ap.querySelector('.adx').setAttribute('for', window.yAddr && window.yAddr.guest ? 's-newcust' : 's-tshop');
+    var r = document.getElementById('s-bappt'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); ap.scrollTop = 0;
+  }
+  ap.addEventListener('click', function(e){
+    var d = e.target.closest('.apd.av'); if (d){ apSel = +d.getAttribute('data-t'); apRender(); return; }
+    var nv = e.target.closest('[data-apm]'); if (nv){ view.setMonth(view.getMonth() + +nv.getAttribute('data-apm')); apRender(); return; }
+    var sl = e.target.closest('.apslot'); if (sl){ Array.prototype.forEach.call(ap.querySelectorAll('.apslot'), function(b){ b.classList.toggle('sel', b === sl); }); return; }
+    var md = e.target.closest('.apmod');
+    if (md){
+      var row = md.closest('[data-apf]'), v = row.querySelector('.apv'), inp = row.querySelector('.apin');
+      if (row.classList.contains('ed')){ if (inp.value.trim()) v.textContent = inp.value.trim(); row.classList.remove('ed'); inp.hidden = true; md.textContent = 'Módosítom'; }
+      else { inp.value = v.textContent; row.classList.add('ed'); inp.hidden = false; md.textContent = 'Kész'; inp.focus(); }
+    }
+  });
+  ap.querySelector('[data-apnote]').addEventListener('change', function(e){ var t = ap.querySelector('.aptext'); t.hidden = !e.target.checked; if (e.target.checked) t.focus(); });
+  ap.querySelector('[data-apnext]').addEventListener('click', function(){
+    ap.classList.add('busy');
+    setTimeout(function(){ ap.classList.remove('busy'); document.getElementById('wip').classList.add('on'); }, 1600);
   });
   window.yConsentSaved = function(){ bcCustom = true; Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; }); bc.classList.remove('err'); };
   /* add-on detail sheets */
