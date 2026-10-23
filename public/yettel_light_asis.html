@@ -347,6 +347,8 @@
   #s-netpend:checked ~ [data-screen="net-pend"],
   #s-billhist:checked ~ [data-screen="bill-hist"],
   #s-billdet:checked ~ [data-screen="bill-det"],
+  #s-billdata:checked ~ [data-screen="bill-data"],
+  #s-docs:checked ~ [data-screen="docs"],
   #s-ktopup:checked ~ [data-screen="kt-topup"],
   #s-ktfriends:checked ~ [data-screen="kt-friends"],
   #s-savedcard:checked ~ [data-screen="saved-card"],
@@ -357,7 +359,7 @@
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-ktfriends:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-ktfriends:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -2350,6 +2352,26 @@
   .mprow span{ flex:1; } .mprow i:first-child{ font-size:20px; } .mprow .chev{ font-size:18px; color:var(--mid); }
   .mpnmfr{ display:flex; align-items:center; gap:14px; padding:14px 16px; }
   .mpnmfr i{ font-size:30px; color:#3DA35D; } .mpnmfr p{ margin:0; font-size:11px; font-weight:700; line-height:1.4; color:var(--navy); }
+
+  /* ===== chat popup ===== */
+  .cpcard{ max-width:300px; padding:30px 18px 16px; }
+  .cplogo{ display:block; width:58px; height:58px; margin:0 auto 22px; }
+  .cpt{ margin:0 0 8px; font-size:16px; font-weight:700; color:var(--navy); }
+  .cps{ margin:0 0 22px; font-size:12px; color:var(--navy); }
+  .cpgo{ width:100%; padding:13px; border:none; border-radius:999px; background:var(--navy); color:#fff; font-family:'Yettel'; font-size:14px; font-weight:700; cursor:pointer; }
+  .cpx{ width:100%; margin-top:10px; padding:10px; border:none; background:none; font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+  /* ===== Számlázási adatok ===== */
+  .bdatascreen{ background:#FFFFFF; }
+  .bdlist{ padding:22px 2px; }
+  .bdlist .bdkv + .bdkv{ margin-top:16px; }
+  /* ===== Dokumentumok ===== */
+  .dcrow{ display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid #EEF1F4; cursor:pointer; }
+  .dcrow:last-child{ border-bottom:none; }
+  .dcic{ font-size:24px; color:var(--navy); }
+  .dctx{ flex:1; min-width:0; }
+  .dctx b{ display:block; font-size:12.5px; font-weight:400; line-height:1.35; color:var(--navy); }
+  .dctx span{ display:block; margin-top:2px; font-size:11.5px; font-weight:300; color:var(--navy); }
+  .dcrow .chev{ font-size:18px; color:var(--mid); }
 </style>
 </head>
 <body>
@@ -2448,6 +2470,8 @@
   <input class="rt" type="radio" name="nav" id="s-netpend">
   <input class="rt" type="radio" name="nav" id="s-billhist">
   <input class="rt" type="radio" name="nav" id="s-billdet">
+  <input class="rt" type="radio" name="nav" id="s-billdata">
+  <input class="rt" type="radio" name="nav" id="s-docs">
   <input class="rt" type="radio" name="nav" id="s-ktopup">
   <input class="rt" type="radio" name="nav" id="s-ktfriends">
   <input class="rt" type="radio" name="nav" id="s-savedcard">
@@ -2792,9 +2816,9 @@
       </div>
     </div>
 
-    <div class="dtcard dtrowcard nprow"><span class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></span></div>
+    <label class="dtcard dtrowcard nprow" for="s-docs"><span class="dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></span></label>
     <div class="dtcard dtrowcard nprow"><span class="lrow dtrow"><i class="ti ti-file-text dtic"></i><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></span></div>
-    <label class="dtcard dtrowcard nprow" for="s-billing"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
+    <label class="dtcard dtrowcard nprow" for="s-billdata"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
 
     <div class="dtcard">
       <div class="npksh"><p class="dtct">Kapcsolódó szolgáltatások</p><i class="ti ti-info-circle"></i></div>
@@ -5129,7 +5153,7 @@
       <div class="lrow"><span class="sic"><i class="ti ti-settings"></i></span><span class="n">Hívásbeállítások</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
     <div class="gcard" style="margin-top:22px;">
-      <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lrow" for="s-docs"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
   </div>
 
@@ -5174,7 +5198,7 @@
       <div class="lrow"><span class="sic"><i class="ti ti-settings"></i></span><span class="n">Hívásbeállítások</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
     <div class="gcard" style="margin-top:22px;">
-      <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="lrow" for="s-docs"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
   </div>
 
@@ -6582,7 +6606,7 @@
       <div class="tbrow"><span class="tbic"><i class="ti ti-lock"></i></span><span class="n">Jelszó módosítás</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
     <div class="tbgroup">
-      <div class="tbrow"><span class="tbic"><i class="ti ti-file-download"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
+      <label class="tbrow" for="s-docs"><span class="tbic"><i class="ti ti-file-download"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></label>
       <div class="tbrow"><span class="tbic"><i class="ti ti-file-certificate"></i></span><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
     <label class="tbout" for="s-welcome">Kijelentkezés<i class="ti ti-logout"></i></label>
@@ -6728,10 +6752,10 @@
     </div>
 
     <div class="dtcard npinfos">
-      <div class="npinfo"><div class="npih"><b>Telepítés időpontja</b><span class="npmod">Módosítom</span></div><p>2026.11.05. · 09:00–12:00</p></div>
-      <div class="npinfo"><div class="npih"><b>Megjegyzés a szakteknikusnak</b><span class="npmod">Módosítom</span></div><p>Csengessen, mert nem hallom a kopogást.</p></div>
-      <div class="npinfo"><div class="npih"><b>Kapcsolattartó neve</b><span class="npmod">Módosítom</span></div><p>Weinper Gyula</p></div>
-      <div class="npinfo"><div class="npih"><b>Értesítési telefonszám</b><span class="npmod">Módosítom</span></div><p>+36 20 290 7566</p></div>
+      <div class="npinfo"><div class="npih"><b>Telepítés időpontja</b><span class="npmod" data-chatpop>Módosítom</span></div><p>2026.11.05. · 09:00–12:00</p></div>
+      <div class="npinfo"><div class="npih"><b>Megjegyzés a szakteknikusnak</b><span class="npmod" data-chatpop>Módosítom</span></div><p>Csengessen, mert nem hallom a kopogást.</p></div>
+      <div class="npinfo"><div class="npih"><b>Kapcsolattartó neve</b><span class="npmod" data-chatpop>Módosítom</span></div><p>Weinper Gyula</p></div>
+      <div class="npinfo"><div class="npih"><b>Értesítési telefonszám</b><span class="npmod" data-chatpop>Módosítom</span></div><p>+36 20 290 7566</p></div>
     </div>
 
     <div class="nppromo">
@@ -6748,8 +6772,8 @@
       </div>
     </div>
 
-    <div class="dtcard dtrowcard nprow"><span class="lrow dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></span></div>
-    <label class="dtcard dtrowcard nprow" for="s-billing"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
+    <label class="dtcard dtrowcard nprow" for="s-docs"><span class="dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></span></label>
+    <label class="dtcard dtrowcard nprow" for="s-billdata"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
   </div>
 
   <!-- ============= SZÁMLATÖRTÉNET ============= -->
@@ -6880,6 +6904,36 @@
     </div>
     <div class="ktcard mprow"><i class="ti ti-message-dots"></i><span>Hogyan működik?</span><i class="ti ti-chevron-right chev"></i></div>
     <div class="ktcard mpnmfr"><i class="ti ti-shield-check"></i><p>A Yettel a Nemzeti Mobilfizetési Rendszer hivatalos viszonteladó partnere</p></div>
+  </div>
+
+  <!-- ============= SZÁMLÁZÁSI ADATOK ============= -->
+  <div class="screen bdatascreen" data-screen="bill-data" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-detail-net"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Számlázási adatok</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="bdlist">
+      <div class="bdkv"><span>Számlázási név</span><b>Weinper Gyula</b></div>
+      <div class="bdkv"><span>Számlázási cím</span><b>8200 Veszprém, Tölgyfa u. 4</b></div>
+      <div class="bdkv"><span>Értesítési szám</span><b>06 20 290 7566</b></div>
+      <div class="bdkv"><span>Értesítési e-mail cím</span><b>weinper.gyula@gmail.com</b></div>
+      <div class="bdkv"><span>Fordulónap</span><b>Minden hónap 12. nap</b></div>
+      <div class="bdkv"><span>Számlafizetési mód</span><b>Átutalás</b></div>
+      <div class="bdkv"><span>Számla formája</span><b>Elektronikus</b></div>
+    </div>
+  </div>
+
+  <!-- ============= DOKUMENTUMOK ============= -->
+  <div class="screen bhscreen" data-screen="docs" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-tprof"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Dokumentumok</span>
+      <div class="icon-btn"><i class="ti ti-message-question"></i></div>
+    </div>
+    <div class="bhsel" data-dcsel><i class="ti ti-layout-grid" data-dcselic></i><span class="bhselt"><small data-dcsels></small><b data-dcselb>Összes előfizetés</b></span><i class="ti ti-chevron-down"></i></div>
+    <div class="bhfilt"><span class="bhfbtn dcsort" data-dcsort>Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
+    <div class="bhlist" data-dclist></div>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -7031,6 +7085,15 @@
       <p class="xsq">Melyik előfizetésedhez vásárolnál extra szolgáltatást?</p>
       <div class="xsopts"></div>
       <button type="button" class="xsgo" data-xsgo>Tovább</button>
+    </div>
+  </div>
+  <div class="wip" id="chatpop">
+    <div class="wipcard cpcard">
+      <svg viewBox="0 0 64 64" class="cplogo" aria-hidden="true"><path d="M14 38V30a18 18 0 0 1 18-18" fill="none" stroke="#B4FF00" stroke-width="6" stroke-linecap="round"/><path d="M32 12a18 18 0 0 1 18 18v8" fill="none" stroke="#09223D" stroke-width="6" stroke-linecap="round"/><rect x="8" y="33" width="11" height="16" rx="5.5" fill="none" stroke="#B4FF00" stroke-width="5"/><rect x="45" y="33" width="11" height="16" rx="5.5" fill="none" stroke="#09223D" stroke-width="5"/><path d="M50 49c0 6-6 9-14 9" fill="none" stroke="#09223D" stroke-width="5" stroke-linecap="round"/></svg>
+      <p class="cpt">Csevegj kollégánkkal</p>
+      <p class="cps">Módosítani kollégánk segítségével tudsz.</p>
+      <button class="cpgo" type="button" data-cpclose>Chat indítása</button>
+      <button class="cpx" type="button" data-cpclose>Bezár</button>
     </div>
   </div>
   <div class="wip" id="wip">
@@ -7615,11 +7678,11 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.dcrow,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -7949,8 +8012,11 @@
     {k:'net', ic:'ti-home-signal', s:'HiperNet L', t:'8200 Veszprém, Tölgyfa u. 4'}
   ];
   var sheet = $('#bhsheet'), opts = $('[data-bhopts]');
-  function openSheet(){
-    var cur = api.get().sub;
+  var mode = 'bill';
+  function openSheet(m){
+    mode = m || 'bill';
+    var cur = mode === 'doc' && window.yDocs ? window.yDocs.get() : api.get().sub;
+    sheet.querySelector('.xsq').textContent = mode === 'doc' ? 'Melyik előfizetés dokumentumait szeretnéd megnézni?' : 'Melyik előfizetés számláit szeretnéd megnézni?';
     opts.innerHTML = SUBS.map(function(x){
       return '<label class="xsopt'+(x.k==='all'?' bhall':'')+'"><input type="radio" name="bhsub" value="'+x.k+'"'+(x.k===cur?' checked':'')+'><span class="xsoic"><i class="ti '+x.ic+'"></i></span>'
            + '<span class="xsotx">'+(x.s?'<small>'+x.s+'</small>':'')+'<b>'+x.t+'</b></span><span class="xschk"><i class="ti ti-check"></i></span></label>';
@@ -7959,6 +8025,7 @@
   }
   function applySub(k){
     var x = SUBS.filter(function(s){ return s.k === k; })[0]; if (!x) return;
+    if (mode === 'doc'){ if (window.yDocs) window.yDocs.set(k, x); return; }
     $('[data-bhselic]').className = 'ti ' + x.ic;
     $('[data-bhselb]').textContent = x.t;
     $('[data-bhsels]').textContent = x.s || '';
@@ -8049,7 +8116,8 @@
   document.addEventListener('click', function(e){
     if (!e.target.closest) return;
     if (e.target.closest('[data-bhfilt]')){ openOv(); return; }
-    if (e.target.closest('[data-bhsel]')){ openSheet(); return; }
+    if (e.target.closest('[data-bhsel]')){ openSheet('bill'); return; }
+    if (e.target.closest('[data-dcsel]')){ openSheet('doc'); return; }
     if (e.target.closest('[data-bhclose]')){ sheet.classList.remove('on'); return; }
     if (e.target.closest('[data-bhgo]')){ var v = opts.querySelector('input:checked'); if (v) applySub(v.value); sheet.classList.remove('on'); }
   });
@@ -8092,6 +8160,51 @@
       Array.prototype.forEach.call(ov.querySelectorAll('.bracc'), function(x){ x.classList.remove('open'); x.querySelector('.brah i:last-child').className = 'ti ti-chevron-down'; });
       if (!was){ a.classList.add('open'); acc.querySelector('i:last-child').className = 'ti ti-chevron-up'; } }
   });
+})();
+</script>
+<script>
+/* "Módosítom" on a pending order → chat with a colleague */
+(function(){
+  var pop = document.getElementById('chatpop'); if (!pop) return;
+  document.addEventListener('click', function(e){
+    if (!e.target.closest) return;
+    if (e.target.closest('[data-chatpop]')){ pop.classList.add('on'); return; }
+    if (e.target === pop || e.target.closest('[data-cpclose]')) pop.classList.remove('on');
+  });
+})();
+/* Dokumentumok: list per subscription (shares the "Előfizetéseid" sheet with Számlatörténet) */
+(function(){
+  var list = document.querySelector('[data-dclist]'); if (!list) return;
+  var DOCS = [
+    ['Lakossági Ajánlati Összefoglaló Yettel HiperNet L internetszolgáltatásra','2026.03.03','net'],
+    ['Szolgáltatás szüneteltetéséhez kapcsolódó szerződés módosítás','2026.02.18','7566'],
+    ['Eszköz leadás nyomtatvány','2026.01.09','net'],
+    ['Egyéb szerződéshez kapcsolódó dokumentum','2025.12.02','7430'],
+    ['Kérelem','2025.10.21','7566'],
+    ['Átíráshoz lemondó nyilatkozat','2025.08.14','9734'],
+    ['Részletvételi megállapodás','2025.07.15','7430'],
+    ['Eszközbérleti szerződés','2025.05.30','net'],
+    ['Előfizetői szerződés','2024.12.01','8812']
+  ];
+  var NUM = {'7566':'+36 20 290 7566','7430':'+36 20 290 7430','9734':'+36 20 290 9734','8812':'+36 20 290 8812','net':'186545678'};
+  var sub = 'all', newest = true;
+  function render(){
+    var rows = DOCS.filter(function(d){ return sub === 'all' || d[2] === sub; }).sort(function(a, b){ return newest ? (a[1] < b[1] ? 1 : -1) : (a[1] < b[1] ? -1 : 1); });
+    list.innerHTML = rows.length ? rows.map(function(d){
+      return '<div class="dcrow"><i class="ti ti-clipboard-text dcic"></i><div class="dctx"><b>'+d[0]+'</b><span>'+d[1]+' | '+NUM[d[2]]+'</span></div><i class="ti ti-chevron-right chev"></i></div>';
+    }).join('') : '<p class="bhempty">Ehhez az előfizetéshez nincs dokumentum.</p>';
+    var b = document.querySelector('[data-dcsort]'); if (b) b.classList.toggle('on', !newest);
+  }
+  window.yDocs = {
+    get: function(){ return sub; },
+    set: function(k, x){ sub = k;
+      document.querySelector('[data-dcselic]').className = 'ti ' + x.ic;
+      document.querySelector('[data-dcselb]').textContent = x.t;
+      document.querySelector('[data-dcsels]').textContent = x.s || '';
+      render(); }
+  };
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('[data-dcsort]')){ newest = !newest; render(); } });
+  render();
 })();
 </script>
 </body>
