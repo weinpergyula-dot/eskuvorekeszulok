@@ -1372,6 +1372,7 @@
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){
     html,body{ height:100%; overflow:hidden; overscroll-behavior:none; }
     body{ display:block; padding:0; background:#EFF3F6; }
+    :root{ --apph:100vh; --apph:100dvh; }
     .app{
       width:100%; max-width:none;
       height:100vh;                 /* tartalék a régi böngészőknek */
@@ -1748,8 +1749,8 @@
   .bnt{ font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); }
   /* ===== Address screens ===== */
   .adscr{ background:#FFFFFF; padding-bottom:24px !important; }
-  .adscr .formbody{ min-height:calc(812px - 80px - 24px - 52px - 60px); }
-  .adscr:has(input[id$="-new"]:checked) .formbody{ min-height:calc(812px - 80px - 24px - 52px - 40px); }
+  .adscr .formbody{ min-height:calc(var(--apph) - 216px - env(safe-area-inset-top)); }
+  .adscr:has(input[id$="-new"]:checked) .formbody{ min-height:calc(var(--apph) - 196px - env(safe-area-inset-top)); }
   .adq{ margin:16px 0 14px; font-family:'Yettel'; font-size:17px; font-weight:700; color:var(--navy); }
   .adpick{ display:flex; flex-direction:column; gap:12px; }
   .adopt{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 14px; border:2px solid #E3E8EE; border-radius:12px; cursor:pointer; }
@@ -2642,6 +2643,59 @@
   .ofsum{ flex:1; display:grid; grid-template-columns:auto 1fr; column-gap:8px; row-gap:4px; font-size:12px; color:var(--navy); }
   .ofsum b{ text-align:right; font-weight:700; }
   .ofnext{ display:flex; align-items:center; justify-content:center; height:44px; padding:0 26px; border-radius:999px; background:#09223D; font-size:14px; font-weight:700; color:#fff; cursor:pointer; position:relative; }
+
+  /* offers: OtthonNet info, busy state, snackbar */
+  .ofinfo{ display:flex; gap:10px; margin:14px 0 2px; padding:14px; border:1px solid #F5C878; border-radius:10px; background:#FFF6E3; }
+  .ofinfo[hidden]{ display:none; }
+  .ofinfo i{ flex-shrink:0; font-size:20px; color:#F0A500; }
+  .ofinfo b{ font-size:13px; font-weight:700; line-height:1.4; color:var(--navy); }
+  .ofscr.busy .ofnext{ background:#CDD4DC; color:#8592A6; pointer-events:none; }
+  .ofscr.busy .ofsw{ opacity:.45; pointer-events:none; }
+  .ofscr.busy .ofcar{ pointer-events:none; }
+  .ofscr.busy [data-ofmon]{ position:relative; color:transparent; }
+  .ofscr.busy [data-ofmon]::after{ content:''; position:absolute; right:0; top:50%; width:14px; height:14px; margin-top:-7px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
+  .ofsnack{ position:absolute; left:16px; right:16px; z-index:125; display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:8px; background:#E4F6D9; border:1px solid #BFE6A3;
+            box-shadow:0 8px 20px -8px rgba(9,34,61,.35); font-size:13px; color:var(--navy); opacity:0; transform:translateY(8px); transition:opacity .2s, transform .2s; pointer-events:none; }
+  .ofsnack.on{ opacity:1; transform:none; }
+  .ofsnack i{ font-size:20px; color:#3E9A1F; }
+  .ofsnack.bad{ background:#FDE9E5; border-color:#F6B7A9; }
+  .ofsnack.bad i{ color:#E5452B; }
+
+  /* full-screen sheets: package details and call back request */
+  .fsov{ position:absolute; inset:0; z-index:122; display:none; flex-direction:column; background:#fff; }
+  .fsov.on{ display:flex; animation:xsup .22s ease-out; }
+  .fsbody{ flex:1; overflow-y:auto; padding:0 16px 20px; scrollbar-width:none; }
+  .fshead{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:calc(52px + env(safe-area-inset-top)) 0 14px; }
+  .fshead b{ font-size:18px; font-weight:700; color:var(--navy); }
+  .fsx{ border:none; background:none; padding:2px; margin-left:auto; cursor:pointer; display:flex; }
+  .fsx i{ font-size:24px; color:#8592A6; }
+  .fsfoot{ flex-shrink:0; padding:12px 16px calc(16px + env(safe-area-inset-bottom)); border-top:1px solid #EEF1F4; background:#fff; }
+  .fsbtn{ display:flex; align-items:center; justify-content:center; width:100%; height:46px; border:none; border-radius:999px; background:#09223D; font-family:'Yettel'; font-size:14px; font-weight:700; color:#fff; cursor:pointer; }
+  .odimg{ display:block; width:100%; height:150px; margin:0 0 18px; border-radius:6px; object-fit:cover; }
+  .odrow{ display:flex; gap:12px; margin-bottom:16px; }
+  .odrow > i{ flex-shrink:0; font-size:20px; color:var(--navy); }
+  .odrow b{ display:block; font-size:12px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .odrow p{ margin:2px 0 0; font-size:11px; line-height:1.4; font-weight:300; color:var(--navy); }
+  .odlnk{ display:inline-block; margin-top:2px; font-size:11px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
+  .cbh{ margin:0 0 12px; font-size:26px; font-weight:700; line-height:1.2; color:var(--navy); }
+  .cbp{ margin:0 0 24px; font-size:13px; line-height:1.45; color:var(--navy); }
+  .cbin{ display:flex; align-items:center; height:48px; margin:0 0 6px; padding:0 14px; border:1.5px solid #D5DCE3; border-radius:8px; background:#fff; }
+  .cbin:focus-within{ border-color:#09223D; }
+  .cbin.err{ border-color:#F0603C; }
+  .cbin span{ padding-right:10px; margin-right:10px; border-right:1px solid #D5DCE3; font-size:14px; color:#8592A6; }
+  .cbin input{ flex:1; min-width:0; height:100%; border:none; outline:none; background:none; font-family:'Yettel'; font-size:16px; color:var(--navy); }
+  .cberr{ display:none; margin:0 0 10px; font-size:12px; color:#F0603C; }
+  .cbin.err + .cberr{ display:block; }
+  .cbgap{ height:12px; }
+  .cbopts{ display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+  .cbopt{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:64px; padding:10px; border:1.5px solid #D5DCE3; border-radius:8px; background:#fff; cursor:pointer; font-family:'Yettel'; color:var(--navy); }
+  .cbopt b{ font-size:14px; font-weight:700; }
+  .cbopt small{ font-size:12px; }
+  .cbopt.sel{ border:2px solid #09223D; }
+  .cblegal{ margin:0; font-size:12px; line-height:1.45; color:var(--navy); }
+  .cblegal .odlnk{ font-size:12px; }
+  :root{ --apph:812px; }
+  @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
 </head>
 <body>
@@ -4202,10 +4256,11 @@
     <h2 class="ofh">Válassz otthoni internetcsomagot!</h2>
     <p class="ofaddr">Címed: <span data-ofaddr>8200 Veszprém, Tölgyfa u. 4</span></p>
     <label class="ofchg" for="s-addrsvc" data-ofnew>Másik cím megadása</label>
+    <div class="ofinfo" hidden><i class="ti ti-alert-circle"></i><b>Címeden még nincs vezetékes internetünk, de az OtthonNettel kábelek nélkül is netezhetsz.</b></div>
     <div class="ofcar"></div>
     <div class="ofdots"></div>
     <div class="ofkid">
-      <div class="ofkidh"><i class="ti ti-shield-half"></i><b>Aktiválod a gyermekvédelmi tartalomszűrőt?</b><span class="ofsw"><input type="checkbox" aria-label="Gyermekvédelmi tartalomszűrő"><span></span></span></div>
+      <div class="ofkidh"><i class="ti ti-shield-half"></i><b>Aktiválod a gyermekvédelmi tartalomszűrőt?</b><span class="ofsw"><input type="checkbox" data-ofkid aria-label="Gyermekvédelmi tartalomszűrő"><span></span></span></div>
       <p>A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.</p>
       <p>A szolgáltatás díjmentes, később is igényelheted és bármikor lemondhatod.</p>
     </div>
@@ -7253,7 +7308,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.ofdet,.ofnext,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.odlnk,.ofnext,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -8089,36 +8144,109 @@
 /* internet offers: HiperNet (FBB) and OtthonNet (FWA) cards depending on what the searched address has */
 (function(){
   var sc = document.querySelector('[data-screen="offers-svc"]'); if (!sc) return;
+  var app = document.querySelector('.app');
   var FBB = [['ti-world','Vezetékes optikai internet',''],['ti-router','WiFi 7 router','A legújabb technológia, több eszköz egyidejű kezeléséhez.'],['ti-circle-check','Díjmentesen telepítjük otthonodba','Szakértő segítséggel, az általad választott időpontban.']];
   var FWA = [['ti-world','Vezeték nélküli korlátlan internet',''],['ti-backpack','Hordozható a Bárhol Móddal','Belföldön 30 naponta 10 napig díjmentesen magaddal viheted.'],['ti-circle-check','Nincs kábel, egyszerű a beüzemelés','Aktiválás után önállóan, pár lépésben üzembe helyezheted WiFi 6 routered.']];
   var PKGS = [
     {name:'HiperNet L', t:'fbb', bw:'1000 Mbit/s', bws:'max letöltési sebesség', promo:'50% havidíj kedvezmény 184 napig', first:'az első 184 napban <b>3 995 Ft/hó</b> utána', price:'7 990'},
     {name:'HiperNet M', t:'fbb', bw:'500 Mbit/s', bws:'max letöltési sebesség', promo:'50% havidíj kedvezmény 184 napig', first:'az első 184 napban <b>3 495 Ft/hó</b> utána', price:'6 990'},
     {name:'OtthonNet L', t:'fwa', bw:'1000 Mbit/s', bws:'becsült max letöltési sebesség', promo:'100% havidíj kedvezmény 30 napig', first:'az első 30 napban <b>0 Ft/hó</b> utána', price:'7 990'},
-    {name:'OtthonNet M', t:'fwa', bw:'50 Mbit/s', bws:'becsült max letöltési sebesség', promo:'100% havidíj kedvezmény 30 napig', first:'az első 30 napban <b>0 Ft/hó</b> utána', price:'7 990'}
+    /* demo: choosing OtthonNet M fails, so the error snackbar and the roll back can be shown */
+    {name:'OtthonNet M', t:'fwa', bw:'50 Mbit/s', bws:'becsült max letöltési sebesség', promo:'100% havidíj kedvezmény 30 napig', first:'az első 30 napban <b>0 Ft/hó</b> utána', price:'7 990', fail:true}
   ];
-  var car = sc.querySelector('.ofcar'), dots = sc.querySelector('.ofdots'), go = sc.querySelector('.ofnext'), list = [];
+
+  /* "Részletek" content per package: [icon, title, text, link] */
+  var MORE = 'További részletek', TABLES = 'További részletek az internet leíró táblázatokban';
+  var TRIAL_HN = 'Amennyiben jelen megrendelésedre érvényesül, úgy a próbaidőszak alatt bármikor megszüntetheted az előfizetést. A kötbérmentes visszavételi lehetőség mellett 6 hónapig 50%-os havidíjkedvezmény érhető el lakossági ügyfelek első HiperNet vásárlása esetén, 2026. szeptember 10-től visszavonásig.';
+  var TRIAL_ON = 'Első OtthonNet tarifacsomag vásárlása esetén 30 napos díjmentes kipróbálási lehetőséget biztosítunk lakossági ügyfelek számára, 2026. június 3-tól visszavonásig. Amennyiben jelen megrendelésedre érvényesül, úgy a próbaidőszak alatt bármikor megszüntetheted az előfizetést.';
+  var LOYAL = ['ti-rosette-discount-check','Hűségidő nélküli internetet szeretnél?','Ajánlatért és további részletekért hívd ügyfélszolgálatunkat: 1220.'];
+  var KSH = ['ti-tag','','A tarifacsomagok havidíja a Központi Statisztikai Hivatal által közzétett éves átlagos fogyasztói árindex mértékével változik, a közlemény közzétételét követő 60 napon belül.'];
+  var R7 = ['ti-router','WiFi 7 router - A legújabb technológia','Kiemelkedő sebességet és extra stabil adatátvitelt nyújt több eszköz egyidejű használata mellett is. A routert 0 Ft-ért adjuk a szolgáltatás mellé.'];
+  var R6 = ['ti-router','WiFi 6 router','Zökkenőmentes internetezéshez, TV-zéshez és streaminghez megbízható, nagy sebességű kapcsolatot biztosít a mindennapi felhasználáshoz. A routert 0 Ft-ért adjuk a szolgáltatás mellé.'];
+  var INST = ['ti-circle-check','Díjmentesen telepítjük otthonodba','A profi technikusok az általad kiválasztott időpontban érkeznek.'];
+  var WIRED = ['ti-world','Vezetékes, korlátlan internet','Stabil és megbízható vezetékes optikai internet.'];
+  var WLESS = ['ti-world','Vezeték nélküli, korlátlan internet','Stabil és megbízható vezeték nélküli internet a Yettel villámgyors mobilhálózatán.'];
+  var FAM_ON = ['ti-users-group','Nagy családoknak, home office-ban dolgozóknak','Azoknak, akik modern, gyors és megbízható netet szeretnének otthon, amit könnyen beüzemelhetnek, kábelek nélkül, és alkalmanként belföldön magukkal is vihetnek.'];
+  var DET = {
+    'HiperNet L':[WIRED, ['ti-users-group','Nagy családoknak, gamereknek, home office-ban dolgozóknak','Azoknak, akik a gigabites sebességet, stabilitást és modern WiFi élményt keresik.'],
+      ['ti-percentage','Próbáld ki 30 napig kötöttségek nélkül',TRIAL_HN,MORE], INST,
+      ['ti-download','1000 Mbit/s max letöltési sebesség','300 Mbit/s minimális letöltési sebesség<br>700 Mbit/s rendes körülmények között elérhető sebesség',TABLES],
+      ['ti-upload','300 Mbit/s max feltöltési sebesség','75 Mbit/s minimális feltöltési sebesség<br>210 Mbit/s rendes körülmények között elérhető sebesség',TABLES], R7, LOYAL, KSH],
+    'HiperNet M':[WIRED, ['ti-users-group','Nagy családoknak, gamereknek, home office-ban dolgozóknak','Azoknak, akik a stabilitást és modern WiFi élményt keresik.'],
+      ['ti-percentage','Próbáld ki 30 napig kötöttségek nélkül',TRIAL_HN,MORE], INST,
+      ['ti-download','500 Mbit/s max letöltési sebesség','200 Mbit/s minimális letöltési sebesség<br>400 Mbit/s rendes körülmények között elérhető sebesség','Internet-hozzáférési szolgáltatások'],
+      ['ti-upload','300 Mbit/s max feltöltési sebesség','75 Mbit/s minimális feltöltési sebesség<br>210 Mbit/s rendes körülmények között elérhető sebesség',TABLES], R7, LOYAL, KSH],
+    'OtthonNet L':[WLESS, FAM_ON, ['ti-percentage','Próbáld ki 30 napig kötöttségek nélkül',TRIAL_ON,MORE], ['ti-circle-check','Nincs kábel, egyszerűen beüzemelhető',''],
+      ['ti-access-point','OtthonNet Bárhol Mód','Szabadon magaddal viheted belföldön 10 napra, külön díj nélkül.'],
+      ['ti-download','1000 Mbit/s becsült max letöltési sebesség','A letöltési sebesség területenként eltérhet.'],
+      ['ti-upload','150 Mbit/s becsült max feltöltési sebesség','A feltöltési sebesség területenként eltérhet.'], R6, LOYAL, KSH],
+    'OtthonNet M':[WLESS, FAM_ON, ['ti-percentage','Próbáld ki 30 napig kötöttségek nélkül',TRIAL_ON,MORE], ['ti-circle-check','Nincs kábel, egyszerűen beüzemelhető',''],
+      ['ti-access-point','OtthonNet Bárhol Mód','Szabadon magaddal viheted belföldön 10 napra, külön díj nélkül.'],
+      ['ti-download','50 Mbit/s becsült max letöltési sebesség','A letöltési sebesség területenként eltérhet.'],
+      ['ti-upload','25 Mbit/s becsült max feltöltési sebesség','A feltöltési sebesség területenként eltérhet.'], R6, LOYAL, KSH]
+  };
+
+  var car = sc.querySelector('.ofcar'), dots = sc.querySelector('.ofdots'), foot = sc.querySelector('.offoot'), kid = sc.querySelector('[data-ofkid]');
+  var list = [], selI = 0;
   function card(p, i, canSel){
     return '<div class="ofcard" data-i="'+i+'"><span class="ofbadge">Próbáld ki 30 napig kötöttségek nélkül!</span>'
       + '<p class="ofname">'+p.name+'</p>'
       + '<div class="ofspd"><i class="ti ti-gauge"></i><span><b>'+p.bw+'</b><small>'+p.bws+'</small></span></div>'
       + (p.t === 'fbb' ? FBB : FWA).map(function(f){ return '<div class="offt"><i class="ti '+f[0]+'"></i><span><b>'+f[1]+'</b>'+(f[2] ? '<small>'+f[2]+'</small>' : '')+'</span></div>'; }).join('')
-      + '<span class="ofdet tfdet">Részletek</span>'
+      + '<span class="ofdet" data-ofdet>Részletek</span>'
       + '<span class="ofpromo">'+p.promo+'</span>'
       + '<div class="ofprice"><p>'+p.first+'</p><div class="ofbig"><b>'+p.price+'</b><span>Ft<small>/hó</small></span></div><p>e-Komfort csomaggal, 12 hónap hűséggel</p>'
-      + (canSel ? '<button type="button" class="ofbtn" data-ofsel></button>' : '<button type="button" class="ofbtn tfhb">Visszahívást kérek</button>')
+      + (canSel ? '<button type="button" class="ofbtn" data-ofsel></button>' : '<button type="button" class="ofbtn" data-ofcb>Visszahívást kérek</button>')
       + '</div></div>';
   }
-  function select(i){
+  function mark(i){
     Array.prototype.forEach.call(car.children, function(c){
       var on = +c.getAttribute('data-i') === i, b = c.querySelector('[data-ofsel]');
       c.classList.toggle('sel', on);
       if (b) b.innerHTML = on ? 'Kiválasztva <i class="ti ti-check"></i>' : 'Kiválasztom';
     });
-    var p = list[i];
-    go.setAttribute('data-pkg', p.name); go.setAttribute('data-bw', p.bw); go.setAttribute('data-price', p.price + ' Ft');
-    sc.querySelector('[data-ofmon]').textContent = p.price + ' Ft/hó';
   }
+  function apply(i){ selI = i; mark(i); sc.querySelector('[data-ofmon]').textContent = list[i].price + ' Ft/hó'; }
+
+  /* snackbar floats above the footer when that is on screen, otherwise at the bottom */
+  var snack = document.createElement('div'); snack.className = 'ofsnack'; snack.innerHTML = '<i class="ti"></i><span></span>';
+  app.appendChild(snack);
+  var snackT;
+  function toast(ok, text){
+    var ar = app.getBoundingClientRect(), fr = foot.getBoundingClientRect();
+    var gap = fr.top < ar.bottom && sc.offsetParent ? ar.bottom - fr.top + 12 : 16;
+    snack.style.bottom = Math.max(16, gap) + 'px';
+    snack.classList.toggle('bad', !ok);
+    snack.querySelector('i').className = 'ti ' + (ok ? 'ti-circle-check-filled' : 'ti-alert-circle-filled');
+    snack.querySelector('span').textContent = text;
+    snack.classList.add('on'); clearTimeout(snackT);
+    snackT = setTimeout(function(){ snack.classList.remove('on'); }, 3000);
+  }
+  /* every basket change: Tovább + toggle disabled and a spinner for the price while it saves */
+  function busy(ok, done){
+    sc.classList.add('busy'); kid.disabled = true;
+    setTimeout(function(){
+      sc.classList.remove('busy'); kid.disabled = false;
+      done(ok);
+      toast(ok, ok ? 'Kosarad frissült.' : 'Nem sikerült frissíteni a kosarad. Kérjük, próbáld újra!');
+    }, 1200);
+  }
+  car.addEventListener('click', function(e){
+    var b = e.target.closest('[data-ofsel]');
+    if (b && !sc.classList.contains('busy')){
+      var i = +b.closest('.ofcard').getAttribute('data-i'), prev = selI; if (i === prev) return;
+      mark(i);
+      busy(!list[i].fail, function(ok){ apply(ok ? i : prev); });
+      return;
+    }
+    var d = e.target.closest('[data-ofdet]'); if (d) openDet(list[+d.closest('.ofcard').getAttribute('data-i')].name);
+    if (e.target.closest('[data-ofcb]')) openCb();
+  });
+  kid.addEventListener('change', function(){
+    var want = kid.checked;
+    busy(true, function(ok){ if (!ok) kid.checked = !want; });
+  });
+
   function render(){
     var a = window.yAddr || {scenario:'both', address:'8200 Veszprém, Tölgyfa u. 4'};
     list = PKGS.filter(function(p){ return a.scenario === 'both' || p.t === a.scenario; });
@@ -8126,12 +8254,12 @@
     car.innerHTML = list.map(function(p, i){ return card(p, i, p.t === 'fbb' || a.scenario === 'fwa'); }).join('');
     dots.innerHTML = list.map(function(p, i){ return '<i'+(i ? '' : ' class="on"')+'></i>'; }).join('');
     sc.querySelector('[data-ofaddr]').textContent = a.address;
+    sc.querySelector('.ofinfo').hidden = a.scenario !== 'fwa';
     var back = a.from === 'ctv-addr' ? 's-ctvaddr' : 's-addrsvc';
     sc.querySelector('[data-ofback]').setAttribute('for', back); sc.querySelector('[data-ofnew]').setAttribute('for', back);
-    select(0);
+    apply(0); kid.checked = false;
     sc.classList.remove('stk'); sc.scrollTop = 0; car.scrollLeft = 0;
   }
-  car.addEventListener('click', function(e){ var b = e.target.closest('[data-ofsel]'); if (b) select(+b.closest('.ofcard').getAttribute('data-i')); });
   car.addEventListener('scroll', function(){
     var c = car.children[0]; if (!c) return;
     var n = Math.round(car.scrollLeft / (c.offsetWidth + 12));
@@ -8140,6 +8268,50 @@
   /* the footer only sticks once the page has been scrolled to its end */
   sc.addEventListener('scroll', function(){ if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) sc.classList.add('stk'); });
   document.addEventListener('change', function(e){ if (e.target && e.target.id === 's-offsvc') render(); });
+
+  /* Részletek sheet */
+  var od = document.createElement('div'); od.className = 'fsov odov';
+  od.innerHTML = '<div class="fsbody"><div class="fshead"><b class="odt"></b><button type="button" class="fsx" data-fsclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<img class="odimg" src="yettel/buy-net.webp" alt=""><div class="odlist"></div></div>'
+    + '<div class="fsfoot"><button type="button" class="fsbtn" data-fsclose>Bezár</button></div>';
+  app.appendChild(od);
+  function openDet(name){
+    od.querySelector('.odt').textContent = name;
+    od.querySelector('.odlist').innerHTML = DET[name].map(function(r){
+      return '<div class="odrow"><i class="ti '+r[0]+'"></i><div>'+(r[1] ? '<b>'+r[1]+'</b>' : '')+(r[2] ? '<p>'+r[2]+'</p>' : '')+(r[3] ? '<span class="odlnk">'+r[3]+'</span>' : '')+'</div></div>';
+    }).join('');
+    od.querySelector('.fsbody').scrollTop = 0; od.classList.add('on'); snack.classList.remove('on');
+  }
+
+  /* Visszahívás kérése sheet */
+  var SLOTS = [['Bármikor','8-18 óra között'],['Délelőtt','8-12 óra között'],['Délután','12-18 óra között'],['Minél','hamarabb']];
+  var cb = document.createElement('div'); cb.className = 'fsov cbov';
+  cb.innerHTML = '<div class="fsbody"><div class="fshead"><button type="button" class="fsx" data-fsclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<h2 class="cbh">Visszahívás kérése</h2>'
+    + '<p class="cbp">Add meg elérhetőségedet és hamarosan visszahívunk. A megnövekedett érdeklődésre való tekintettel elképzelhető, hogy kicsit tovább kell várnod a visszahívásra. Kollegáink igyekeznek minél hamarabb a segítségedre sietni, kérünk, ha ugyanazzal a kérdéssel fordulnál hozzánk ne adj le új visszahívás igényt, mert ezzel növeled a várakozási időt. Köszönjük türelmedet!</p>'
+    + '<label class="adl">Teljes név <span>*</span></label><div class="cbin" data-cbf="name"><input type="text" autocomplete="name"></div><p class="cberr">Kérjük, add meg a neved.</p><div class="cbgap"></div>'
+    + '<label class="adl">Telefonszám <span>*</span></label><div class="cbin" data-cbf="tel"><span>+36</span><input type="tel" inputmode="tel" autocomplete="tel-national"></div><p class="cberr">Kérjük, adj meg egy érvényes telefonszámot.</p><div class="cbgap"></div>'
+    + '<label class="adl">Mikor hívhatunk? <span>*</span></label><div class="cbopts">'
+    + SLOTS.map(function(o, i){ return '<button type="button" class="cbopt'+(i ? '' : ' sel')+'"><b>'+o[0]+'</b><small>'+o[1]+'</small></button>'; }).join('')
+    + '</div><p class="cblegal">A megadott adatokat kizárólag a kért visszahívás céljából, a <span class="odlnk">Jogi Közleményben</span> leírtaknak megfelelően kezeljük.</p></div>'
+    + '<div class="fsfoot"><button type="button" class="fsbtn" data-cbsend>Visszahívást kérek</button></div>';
+  app.appendChild(cb);
+  function openCb(){
+    Array.prototype.forEach.call(cb.querySelectorAll('.cbin'), function(f){ f.classList.remove('err'); f.querySelector('input').value = ''; });
+    Array.prototype.forEach.call(cb.querySelectorAll('.cbopt'), function(o, i){ o.classList.toggle('sel', !i); });
+    cb.querySelector('.fsbody').scrollTop = 0; cb.classList.add('on'); snack.classList.remove('on');
+  }
+  cb.addEventListener('click', function(e){
+    var o = e.target.closest('.cbopt');
+    if (o){ Array.prototype.forEach.call(cb.querySelectorAll('.cbopt'), function(x){ x.classList.toggle('sel', x === o); }); return; }
+    if (!e.target.closest('[data-cbsend]')) return;
+    var n = cb.querySelector('[data-cbf="name"]'), t = cb.querySelector('[data-cbf="tel"]');
+    var nOk = n.querySelector('input').value.trim().length > 1, tOk = t.querySelector('input').value.replace(/\D/g, '').length >= 9;
+    n.classList.toggle('err', !nOk); t.classList.toggle('err', !tOk);
+    if (nOk && tOk){ cb.classList.remove('on'); toast(true, 'Visszahívási kérésedet rögzítettük.'); }
+  });
+  cb.addEventListener('input', function(e){ var f = e.target.closest('.cbin'); if (f) f.classList.remove('err'); });
+  [od, cb].forEach(function(ov){ ov.addEventListener('click', function(e){ if (e.target.closest('[data-fsclose]')) ov.classList.remove('on'); }); });
   render();
 })();
 </script>
