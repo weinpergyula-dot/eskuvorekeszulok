@@ -351,6 +351,8 @@
   #s-ktfriends:checked ~ [data-screen="kt-friends"],
   #s-ktedit:checked ~ [data-screen="kt-edit"],
   #s-ktamt:checked ~ [data-screen="kt-amount"],
+  #s-games:checked ~ [data-screen="games"],
+  #s-game:checked ~ [data-screen="game"],
   #s-savedcard:checked ~ [data-screen="saved-card"],
   #s-mobbill:checked ~ [data-screen="mob-bill"],
   #s-mobpay:checked ~ [data-screen="mob-pay"],
@@ -3184,6 +3186,34 @@
   .ktamt.sel .ktrad{ border:5px solid #E3E8EE; background:#09223D; box-shadow:inset 0 0 0 0 #fff; }
   .ktamt b{ display:block; font-size:16px; font-weight:700; color:var(--navy); }
   .ktamt small{ display:block; margin-top:3px; font-size:11px; color:var(--navy); }
+
+  /* nyereményjátékok */
+  .gmsec{ margin:22px 2px 12px; font-size:15px; font-weight:700; color:#8592A6; }
+  .gmcard{ display:flex; align-items:center; gap:18px; padding:16px 18px 16px 12px; border-radius:22px; background:#fff; cursor:pointer; }
+  .gmthumb{ width:96px; height:96px; flex-shrink:0; object-fit:contain; }
+  .gmtx{ flex:1; min-width:0; }
+  .gmtx b{ display:block; font-size:15px; font-weight:700; color:var(--navy); }
+  .gmtx small{ display:block; margin-top:3px; font-size:12.5px; color:var(--navy); }
+  .gmtx small.ok{ color:#2F9E4F; font-weight:700; }
+  .gmcard .chev{ font-size:20px; color:var(--mid); }
+  #s-game:checked ~ .gmcol[data-screen="game"]{ display:flex !important; flex-direction:column; }
+  .gmcol{ padding-bottom:0 !important; }
+  .gmcol > *{ flex-shrink:0; }
+  .gmdet{ margin-top:16px; padding:14px 14px 18px; border-radius:22px; background:#fff; }
+  .gmhero{ overflow:hidden; border-radius:16px; background:#09223D; }
+  .gmhero img{ display:block; width:100%; height:auto; }
+  .gmhero span{ display:block; padding:9px 12px; background:var(--lime); font-size:12px; font-weight:700; color:var(--navy); }
+  .gmdet h2{ margin:20px 0 10px; font-size:21px; font-weight:800; color:var(--navy); }
+  .gmdet p{ margin:0 0 10px; font-size:13.5px; line-height:1.45; color:var(--navy); }
+  .gmdet small{ display:block; font-size:11.5px; color:var(--navy); }
+  .gmfoot{ margin:auto -16px 0; padding:20px 16px calc(18px + env(safe-area-inset-bottom)); background:#fff; text-align:center; }
+  .gmfoot p{ margin:18px 0 0; font-size:11.5px; line-height:1.45; color:var(--navy); }
+  .gmlink{ color:#2F7BE0; text-decoration:underline; cursor:pointer; }
+  .gmfoot .ktbtn{ position:relative; }
+  .gmfoot .ktbtn.busy span{ visibility:hidden; }
+  .gmfoot .ktbtn.busy::after{ content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
+  .gmfoot .ktbtn.done{ background:var(--lime); border-color:var(--lime); color:var(--navy); }
+  .nolink{ cursor:default !important; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -3288,6 +3318,8 @@
   <input class="rt" type="radio" name="nav" id="s-ktfriends">
   <input class="rt" type="radio" name="nav" id="s-ktedit">
   <input class="rt" type="radio" name="nav" id="s-ktamt">
+  <input class="rt" type="radio" name="nav" id="s-games">
+  <input class="rt" type="radio" name="nav" id="s-game">
   <input class="rt" type="radio" name="nav" id="s-savedcard">
   <input class="rt" type="radio" name="nav" id="s-mobbill">
   <input class="rt" type="radio" name="nav" id="s-mobpay">
@@ -3379,7 +3411,7 @@
       <div class="qtile"><div class="qic"><i class="ti ti-parking-circle"></i></div><span>Parkolás</span></div>
       <div class="qtile"><div class="qic"><i class="ti ti-discount"></i></div><span>Kuponok</span></div>
       <label class="qtile" for="s-ktopup"><div class="qic"><i class="ti ti-file-upload"></i></div><span>Kártyás feltöltés</span></label>
-      <label class="qtile" for="s-fun"><div class="qic"><i class="ti ti-gift"></i></div><span>Játssz és nyerj!</span></label>
+      <label class="qtile" for="s-games"><div class="qic"><i class="ti ti-gift"></i></div><span>Játssz és nyerj!</span></label>
     </div>
 
     <!-- shared ring gradient (detail screens reference url(#rg)) -->
@@ -3865,12 +3897,12 @@
       <span class="fungo"><i class="ti ti-player-play"></i></span>
     </div>
 
-    <div class="funcard c3">
+    <label class="funcard c3" for="s-games">
       <div class="fb1"></div><div class="fb2"></div>
       <span class="funic"><i class="ti ti-trophy"></i></span>
-      <div class="funtx"><p class="ft">Játssz és nyerj</p><p class="fs">Heti nyereményjáték · 3 sorsolás</p></div>
+      <div class="funtx"><p class="ft">Játssz és nyerj</p><p class="fs">Nyereményjáték · iPhone 18 Pro</p></div>
       <span class="fungo"><i class="ti ti-player-play"></i></span>
-    </div>
+    </label>
 
     <div class="funcard c4">
       <div class="fb1"></div><div class="fb2"></div>
@@ -6666,12 +6698,12 @@
       <div class="icon-btn"><i class="ti ti-message-chatbot"></i></div>
     </div>
     <div class="dtcard tbfam">
-      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><label class="dtlink" for="s-devbuy">Összes készülék</label></div>
+      <div class="dtfamh"><p class="dtct">Bővítenéd a Yettel családot?</p><span class="dtlink nolink">Összes készülék</span></div>
       <p class="dtsub">Új szám, új mobil, pár kattintással.</p>
       <div class="dtphones">
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</label>
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</label>
-        <label class="dtph" for="s-devbuy"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</label>
+        <span class="dtph nolink"><span class="dtphimg pi-xiaomi"></span>Xiaomi 17T Pro<br>512GB</span>
+        <span class="dtph nolink"><span class="dtphimg pi-samsung"></span>Samsung Galaxy A27<br>128GB</span>
+        <span class="dtph nolink"><span class="dtphimg pi-moto"></span>Motorola Edge 70 Fusion<br>256GB</span>
       </div>
     </div>
     <div class="tblist tbboxed">
@@ -6805,7 +6837,7 @@
     <div class="xslist" data-xslist="net" hidden>
         <div class="xsrow"><span class="xsic dark"><i class="ti ti-tag"></i></span><span class="n">Ajánlataid</span><i class="ti ti-chevron-right chev"></i></div>
         <label class="xsrow" for="s-netsec"><span class="xsic"><i class="ti ti-shield-check"></i></span><span class="n">Internetvédelem</span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="xsrow" for="s-strpick"><span class="xsic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></label>
+        <div class="xsrow nolink"><span class="xsic"><i class="ti ti-player-play"></i></span><span class="n">Streaming</span><i class="ti ti-chevron-right chev"></i></div>
         <label class="xsrow" for="s-tvselsvc"><span class="xsic"><i class="ti ti-device-tv"></i></span><span class="n">TV csomagok</span><i class="ti ti-chevron-right chev"></i></label>
         <label class="xsrow" for="s-addonsvc"><span class="xsic"><i class="ti ti-circle-plus"></i></span><span class="n">Kiegészítő szolgáltatások</span><i class="ti ti-chevron-right chev"></i></label>
     </div>
@@ -7300,6 +7332,41 @@
     <p class="anp">Rendelésed száma: <b data-okno></b></p>
     <p class="anp">A dokumentumaidat a Yettel alkalmazásban, a Dokumentumok menüpont alatt találod majd meg.</p>
     <div class="anfoot"><label class="lgbtn" for="s-home" data-gohome>Vissza a főoldalra</label></div>
+  </div>
+
+  <!-- ============= NYEREMÉNYJÁTÉKOK ============= -->
+  <div class="screen gmscreen" data-screen="games" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Nyereményjátékok</span>
+      <div style="width:42px"></div>
+    </div>
+    <p class="gmsec">Aktuális játékok</p>
+    <label class="gmcard" for="s-game">
+      <img class="gmthumb" src="yettel/game-iphone18-thumb.webp" alt="">
+      <span class="gmtx"><b>Vadiúj iPhone 18 Pro</b><small data-gmstate>Jelentkezés 10.31-ig</small></span>
+      <i class="ti ti-chevron-right chev"></i>
+    </label>
+  </div>
+
+  <!-- ============= NYEREMÉNYJÁTÉK ============= -->
+  <div class="screen gmscreen gmcol" data-screen="game" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-games"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Nyereményjáték</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="gmdet">
+      <div class="gmhero"><img src="yettel/game-iphone18.webp" alt="iPhone 18 Pro burgundy"><span>Jelentkezz és nyerj!</span></div>
+      <h2>Vadiúj iPhone 18 Pro</h2>
+      <p>Legyen tied az új iPhone 18 Pro 256 GB burgundy színben és élvezd a kreatív szabadságot meghosszabbított üzemidővel!</p>
+      <p>Játék időtartama: 2026.10.01-10.31., sorsolás 11.03-án.</p>
+      <small>A nyertest email-ben, vagy SMS-ben értesítjük!</small>
+    </div>
+    <div class="gmfoot">
+      <button type="button" class="ktbtn" data-gmjoin><span>Jelentkezem</span></button>
+      <p>A "Jelentkezem" gombra kattintással elfogadod a <span class="gmlink" data-gmrules>Nyereményjáték szabályzatot és Adatkezelési tájékoztatót</span></p>
+    </div>
   </div>
 
   <!-- ============= NAV ============= -->
@@ -7878,7 +7945,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = '.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -7908,7 +7975,7 @@
     park:{t:'Parkolás', ic:'ti-parking-circle'},
     hwy:{t:'Autópálya matrica', ic:'ti-road'},
     topup:{t:'Kártyás feltöltés', ic:'ti-file-upload', to:'s-topup1'},
-    fun:{t:'Játssz és nyerj!', ic:'ti-gift', to:'s-fun'},
+    fun:{t:'Játssz és nyerj!', ic:'ti-gift', to:'s-games'},
     tv:{t:'Yettel TV', ic:'ti-device-tv', to:'s-detail-tv'},
     speed:{t:'Speedtest', ic:'ti-brand-speedtest'}
   };
@@ -9592,6 +9659,27 @@
     if (window.yBarion) window.yBarion.start(amt, done); else done();
   });
   list();
+})();
+</script>
+<script>
+/* nyereményjáték: Jelentkezem → short save → joined (button + list state + toast) */
+(function(){
+  var sc = document.querySelector('[data-screen="game"]'); if (!sc) return;
+  var b = sc.querySelector('[data-gmjoin]'), joined = false;
+  var toast = document.createElement('div'); toast.className = 'ofsnack'; toast.innerHTML = '<i class="ti ti-circle-check-filled"></i><span>Sikeresen jelentkeztél a nyereményjátékra! Sok sikert!</span>';
+  document.querySelector('.app').appendChild(toast);
+  b.addEventListener('click', function(){
+    if (joined || b.classList.contains('busy')) return;
+    b.classList.add('busy');
+    setTimeout(function(){
+      b.classList.remove('busy'); joined = true; b.classList.add('done');
+      b.querySelector('span').innerHTML = 'Jelentkeztél <i class="ti ti-check"></i>';
+      var st = document.querySelector('[data-gmstate]'); st.textContent = 'Jelentkeztél · sorsolás 11.03-án'; st.classList.add('ok');
+      var fb = sc.querySelector('.gmfoot').getBoundingClientRect(), ab = document.querySelector('.app').getBoundingClientRect();
+      toast.style.bottom = (ab.bottom - fb.top + 12) + 'px'; toast.classList.add('on'); setTimeout(function(){ toast.classList.remove('on'); }, 3200);
+    }, 1200);
+  });
+  sc.querySelector('[data-gmrules]').addEventListener('click', function(){ document.getElementById('wip').classList.add('on'); });
 })();
 </script>
 </body>
