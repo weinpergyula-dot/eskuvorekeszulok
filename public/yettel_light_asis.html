@@ -2514,7 +2514,7 @@
               font-family:'Yettel'; font-size:22px; font-weight:300; color:var(--navy); outline:none; -webkit-appearance:none; caret-color:var(--navy); }
   .otp input:focus{ border-color:var(--navy); }
   .otp input.bad{ border-color:#F0603C; color:#F0603C; }
-  .otp input.ok{ border-color:#2F9E4F; }
+  .otp input.ok{ border-color:#CDD4DC; background:#CDD4DC; color:#8592A6; transition:background .15s, border-color .15s; }
   .otperr{ margin:8px 0 0; text-align:center; }
   .otpre{ display:block; margin:18px auto 0; border:none; background:none; font-family:'Yettel'; font-size:14px; font-weight:700; line-height:1.4;
           color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
@@ -2783,6 +2783,27 @@
   .exinc{ margin:12px 0 0; padding-top:10px; border-top:1px solid #DDE4EA; font-size:12px; color:var(--navy); }
   .ofsw input:disabled:checked + span{ background:#A9B3BF; }
   .exscr .ofhelp{ margin-top:4px; }
+
+  /* Extrák variants, loading look, detail sheets */
+  .exscr.lite .exfull, .exscr:not(.lite) .exlite{ display:none; }
+  .exdet{ display:inline-block; margin-top:2px; font-size:11px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
+  .exscr.busy .ofsw input + span{ background:#B7C0CA; }
+  .excard.ld .exlogo, .excard.ld .exmid, .excard.ld .expr{ opacity:.35; }
+  .excard.ld .exrow{ position:relative; }
+  .excard.ld .exrow::after{ content:''; position:absolute; right:126px; top:50%; width:16px; height:16px; margin-top:-8px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
+  .gsul{ margin:0 0 18px; padding-left:18px; font-size:12px; line-height:1.5; color:var(--navy); }
+  .gsh2{ margin:0 0 10px; font-size:14px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .gslogo{ display:flex; align-items:center; justify-content:center; width:150px; height:96px; margin:4px auto 22px; border-radius:6px; font-family:'Yettel'; }
+  .gslogo.hbomax{ flex-direction:column; background:radial-gradient(circle at 50% 40%,#3A3D5C,#121322); color:#fff; line-height:.9; }
+  .gslogo.hbomax b{ font-size:30px; font-weight:900; letter-spacing:-.03em; } .gslogo.hbomax span{ font-size:26px; font-weight:700; }
+  .gslogo.hbopak{ background:linear-gradient(135deg,#2B3F6B,#5A7BB5); color:#fff; font-size:28px; font-weight:900; letter-spacing:-.03em; gap:6px; }
+  .gslogo.hbopak span{ font-weight:400; }
+  .gslogo.tv2{ flex-direction:column; width:156px; background:#141726; color:#D9B25B; }
+  .gslogo.tv2 b{ font-size:40px; font-weight:900; line-height:1; } .gslogo.tv2 span{ font-size:12px; font-weight:700; margin-top:4px; }
+  .gslogo.rtl{ gap:6px; background:#F7F7F9; }
+  .gslogo.rtl i{ display:flex; align-items:center; justify-content:center; width:34px; height:26px; font-style:normal; font-size:18px; font-weight:700; color:#fff; }
+  .gslogo.rtl i:nth-child(1){ background:#3D57F2; } .gslogo.rtl i:nth-child(2){ background:#3F8BF0; } .gslogo.rtl i:nth-child(3){ background:#8A3FE0; }
+  .gslogo.rtl b{ font-size:30px; color:#1A1A1A; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -3856,17 +3877,19 @@
     </div>
     <h2 class="ofh">Válassz extra szolgáltatásokat!</h2>
     <div class="ofinfo tvinfo"><i class="ti ti-alert-circle"></i><div><b>Most válassz előfizetésed mellé további szolgáltatásokat!</b><p>TV-t és extra szolgáltatásokat csak most tudsz új előfizetésed mellé rendelni, az utólagos vásárlás még nem érhető el.</p></div></div>
-    <h3 class="tvbh exh">HBO szolgáltatás</h3>
+    <h3 class="tvbh exh"><span class="exfull">HBO szolgáltatás</span><span class="exlite">HBO Max</span></h3>
     <div class="excard" data-ex="HBO Max"><span class="ofbadge">Próbáld ki 30 napig díjmentesen!</span>
-      <div class="exrow"><span class="exlogo exhbo">HBO<i>max</i></span><div class="exmid"><b>HBO Max</b><span class="odlnk">Részletek</span></div><span class="expr">2 390 Ft/hó</span><span class="ofsw"><input type="checkbox" data-hbo="2390" aria-label="HBO Max"><span></span></span></div></div>
-    <div class="excard" data-ex="HBO Pak"><span class="ofbadge">Próbáld ki 30 napig díjmentesen!</span>
-      <div class="exrow"><span class="exlogo exhbo">HBO<i>Pak</i></span><div class="exmid"><b>HBO Pak</b><span class="odlnk">Részletek</span></div><span class="expr">2 390 Ft/hó</span><span class="ofsw"><input type="checkbox" data-hbo="2390" aria-label="HBO Pak"><span></span></span></div></div>
-    <div class="exincl">
-      <h3 class="tvbh exh">TV2 Play Premium</h3>
-      <div class="excard inc"><div class="exrow"><span class="exlogo extv2">TV2 PLAY<i>PREMIUM</i></span><div class="exmid"><b>TV2 Play Prémium</b><span class="odlnk">Részletek</span></div><span class="expr">0 Ft/hó</span><span class="ofsw"><input type="checkbox" checked disabled data-lock aria-label="TV2 Play Prémium"><span></span></span></div><p class="exinc">TV csomag része</p></div>
-      <h3 class="tvbh exh">RTL+ Active</h3>
-      <div class="excard inc"><div class="exrow"><span class="exlogo exrtl"><i>R</i><i>T</i><i>L</i>+</span><div class="exmid"><b>RTL+ Active</b><span class="odlnk">Részletek</span></div><span class="expr">0 Ft/hó</span><span class="ofsw"><input type="checkbox" checked disabled data-lock aria-label="RTL+ Active"><span></span></span></div><p class="exinc">TV csomag része</p></div>
-    </div>
+      <div class="exrow"><span class="exlogo exhbo">HBO<i>max</i></span><div class="exmid"><b>HBO Max</b><span class="exdet" data-exdet="hbomax">Részletek</span></div><span class="expr">2 390 Ft/hó</span><span class="ofsw"><input type="checkbox" data-xp="2390" data-grp="hbo" aria-label="HBO Max"><span></span></span></div></div>
+    <div class="excard exfull" data-ex="HBO Pak"><span class="ofbadge">Próbáld ki 30 napig díjmentesen!</span>
+      <div class="exrow"><span class="exlogo exhbo">HBO<i>Pak</i></span><div class="exmid"><b>HBO Pak</b><span class="exdet" data-exdet="hbopak">Részletek</span></div><span class="expr">2 390 Ft/hó</span><span class="ofsw"><input type="checkbox" data-xp="2390" data-grp="hbo" aria-label="HBO Pak"><span></span></span></div></div>
+    <h3 class="tvbh exh">TV2 Play Premium</h3>
+    <div class="excard inc exfull" data-ex="TV2 Play Prémium">
+      <div class="exrow"><span class="exlogo extv2">TV2 PLAY<i>PREMIUM</i></span><div class="exmid"><b>TV2 Play Prémium</b><span class="exdet" data-exdet="tv2">Részletek</span></div><span class="expr">0 Ft/hó</span><span class="ofsw"><input type="checkbox" checked disabled data-lock aria-label="TV2 Play Prémium"><span></span></span></div><p class="exinc">TV csomag része</p></div>
+    <div class="excard exlite" data-ex="TV2 Play Prémium">
+      <div class="exrow"><span class="exlogo extv2">TV2 PLAY<i>PREMIUM</i></span><div class="exmid"><b>TV2 Play Prémium</b><span class="exdet" data-exdet="tv2">Részletek</span></div><span class="expr">1 990 Ft/hó</span><span class="ofsw"><input type="checkbox" data-xp="1990" aria-label="TV2 Play Prémium"><span></span></span></div></div>
+    <h3 class="tvbh exh exfull">RTL+ Active</h3>
+    <div class="excard inc exfull" data-ex="RTL+ Active">
+      <div class="exrow"><span class="exlogo exrtl"><i>R</i><i>T</i><i>L</i>+</span><div class="exmid"><b>RTL+ Active</b><span class="exdet" data-exdet="rtl">Részletek</span></div><span class="expr">0 Ft/hó</span><span class="ofsw"><input type="checkbox" checked disabled data-lock aria-label="RTL+ Active"><span></span></span></div><p class="exinc">TV csomag része</p></div>
     <div class="ofhelp">
       <small>Segíthetünk?</small>
       <b>Chatelj kollégánkkal, ha elakadtál</b>
@@ -8287,7 +8310,7 @@
         ls.classList.add('on');
         setTimeout(function(){ go('s-home'); boxes.forEach(function(b){ b.value = ''; b.classList.remove('ok'); }); pw.value = ''; }, 3500);
         setTimeout(function(){ ls.classList.remove('on'); }, 3700);
-      }, 400);
+      }, 700);
     }
     else { boxes.forEach(function(b){ b.classList.add('bad'); }); err.classList.add('on'); }
   }
@@ -8623,13 +8646,14 @@
   var esc = document.querySelector('[data-screen="tv-extras"]'), hbo = 0;
   function exSum(){
     var net = list[selI] ? +list[selI].price.replace(/\D/g, '') : 0, t = tlist[tSel];
-    esc.querySelector('[data-ofmon]').textContent = fmt(net + t.price + (boxOn ? BOX : 0) + hbo) + ' Ft/hó';
+    esc.querySelector('[data-ofmon]').textContent = fmt(net + t.price + (boxOn && !t.none ? BOX : 0) + hbo) + ' Ft/hó';
   }
   function toExtras(){
     var ld = document.querySelector('.adload'), t = tlist[tSel];
     hbo = 0;
-    Array.prototype.forEach.call(esc.querySelectorAll('[data-hbo]'), function(x){ x.checked = false; x.closest('.excard').classList.remove('on'); });
-    esc.querySelector('.exincl').hidden = !t.strm;
+    Array.prototype.forEach.call(esc.querySelectorAll('[data-xp]'), function(x){ x.checked = false; x.closest('.excard').classList.remove('on'); });
+    /* TV Plus / Basic: HBO Max + HBO Pak, TV2 and RTL+ included; no TV or TV Mini: HBO Max and TV2 Play Prémium to buy */
+    esc.classList.toggle('lite', !t.strm);
     esc.querySelector('.adx').setAttribute('for', window.yAddr && window.yAddr.guest ? 's-newcust' : 's-tshop');
     exSum(); esc.classList.remove('stk');
     ld.classList.add('on');
@@ -8638,20 +8662,44 @@
   }
   tsc.querySelector('.tvnext').addEventListener('click', function(){
     var t = tlist[tSel];
-    if (t.none){ document.getElementById('wip').classList.add('on'); return; }
+    if (t.none){ if (list[selI] && list[selI].t === 'fbb') toExtras(); else document.getElementById('wip').classList.add('on'); return; }
     if (!boxOn){ nb.classList.add('on'); return; }
     toExtras();
   });
-  /* HBO Max and HBO Pak exclude each other */
+  /* add-ons: HBO Max and HBO Pak exclude each other; the switched card fades with a spinner while it saves */
   esc.addEventListener('change', function(e){
-    var x = e.target.closest('[data-hbo]'); if (!x) return;
-    var all = esc.querySelectorAll('[data-hbo]'), prev = Array.prototype.map.call(all, function(y){ return y !== x && y.checked; });
-    if (x.checked) Array.prototype.forEach.call(all, function(y){ if (y !== x) y.checked = false; });
+    var x = e.target.closest('[data-xp]'); if (!x) return;
+    var all = esc.querySelectorAll('[data-xp]'), c = x.closest('.excard'), g = x.getAttribute('data-grp');
+    if (x.checked && g) Array.prototype.forEach.call(all, function(y){ if (y !== x && y.getAttribute('data-grp') === g) y.checked = false; });
+    c.classList.add('ld'); c.classList.toggle('on', x.checked);
     busy(esc, true, function(){
-      hbo = 0;
-      Array.prototype.forEach.call(all, function(y){ y.closest('.excard').classList.toggle('on', y.checked); if (y.checked) hbo += +y.getAttribute('data-hbo'); });
+      c.classList.remove('ld'); hbo = 0;
+      Array.prototype.forEach.call(all, function(y){ y.closest('.excard').classList.toggle('on', y.checked); if (y.checked) hbo += +y.getAttribute('data-xp'); });
       exSum();
     });
+  });
+  /* add-on detail sheets */
+  var EXTRY = rows([['ti-percentage','Próbáld ki 30 napig díjmentesen','Amennyiben jelen megrendelésedre érvényesül, úgy a próbaidőszak alatt bármikor megszüntetheted az előfizetést, ha mégsem lennél elégedett. Megéri kipróbálni! <span class="odlnk">További részletek</span>'],
+    ['ti-tag','','A csomagok havidíja a Központi Statisztikai Hivatal által közzétett éves átlagos fogyasztói árindex mértékével változik, a közlemény közzétételét követő 60 napon belül.']]);
+  var HBOTX = '<p class="gsh2">Fedezd fel az HBO Max streaming szolgáltatást!</p>'
+    + '<p class="gsp">Rengeteg filmet és sorozatot nézhetsz, az új filmeket gyakran már a mozipremier után nem sokkal megtalálod a kínálatban. Párhuzamosan két eszközön is eléred HD minőségben, hűségvállalás nélkül.</p>'
+    + '<p class="gsp">Ha szereted a minőségi sorozatokat és filmeket, az HBO Max a jó választás.</p>';
+  var EXDET = {
+    hbomax:['HBO Max', '<div class="gslogo hbomax"><b>HBO</b><span>max</span></div>' + HBOTX + EXTRY],
+    hbopak:['HBO Pak', '<div class="gslogo hbopak">HBO<span>Pak</span></div><p class="gsh2">Mit tartalmaz?</p>'
+      + '<ul class="gsul"><li>Lineáris TV csatornák: HBO, HBO 2 és HBO 3 lineáris HD minőségben.</li><li>Hozzáférést az HBO Max streaming szolgáltatáshoz</li></ul>'
+      + HBOTX + '<p class="gsp">Az HBO Pak a Yettel TV Plus és Basic csomagok mellé rendelhető meg.</p>' + EXTRY],
+    tv2:['TV2 Play Prémium', '<div class="gslogo tv2"><b>2</b><span>TV2 Play</span></div>'
+      + '<p class="gsp">A TV2 Play Prémium hozzáférést biztosít Európa kiemelkedő nemzeti focibajnokságainak élő meccseihez, a legnagyobb hollywoodi sztárok filmjeihez, a legnagyobb klasszikusokhoz, humoros sorozatokhoz és népszerű gyerekműsorokhoz.</p>'
+      + '<p class="gsh2">Mik a legfontosabb tudnivalók a szolgáltatással kapcsolatban?</p><ul class="gsul"><li>Izgalmas tartalmak az egész család számára</li><li>Korlátlan számú eszközről használható</li><li>Akár két élő közvetítést is nézhetsz egyszerre</li><li>Mind a 7 csatorna tartalmai reklám megszakítás nélkül visszanézhetők</li><li>Díjmentesen, hűségvállalás nélkül biztosítjuk a Yettel TV Plus és Basic csomagok mellé</li><li>Megrendelheted önállóan is 1990 Ft-os havidíjért</li></ul>'],
+    rtl:['RTL+ Active', '<div class="gslogo rtl"><i>R</i><i>T</i><i>L</i><b>+</b></div>'
+      + '<p class="gsp">Az RTL+ Active streaming szolgáltatás, amely extra tartalmakat és reklámcsökkentett műsorokat kínál a hagyományos tévés tartalmak mellé.</p>'
+      + '<p class="gsp">Díjmentesen, hűségvállalás nélkül biztosítjuk a Yettel TV Plus és Basic csomagok mellé.</p>']
+  };
+  esc.addEventListener('click', function(e){
+    var d = e.target.closest('[data-exdet]'); if (!d) return;
+    var x = EXDET[d.getAttribute('data-exdet')];
+    sheet(x[0], x[1], '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
   });
   esc.addEventListener('scroll', function(){ if (esc.scrollTop + esc.clientHeight >= esc.scrollHeight - 4) esc.classList.add('stk'); });
 
