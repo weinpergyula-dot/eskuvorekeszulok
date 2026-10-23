@@ -349,6 +349,8 @@
   #s-iddap:checked ~ [data-screen="id-dap"],
   #s-ktopup:checked ~ [data-screen="kt-topup"],
   #s-ktfriends:checked ~ [data-screen="kt-friends"],
+  #s-ktedit:checked ~ [data-screen="kt-edit"],
+  #s-ktamt:checked ~ [data-screen="kt-amount"],
   #s-savedcard:checked ~ [data-screen="saved-card"],
   #s-mobbill:checked ~ [data-screen="mob-bill"],
   #s-mobpay:checked ~ [data-screen="mob-pay"],
@@ -357,7 +359,7 @@
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-ktfriends:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -3152,6 +3154,36 @@
   .ipdeal small{ font-size:9px; font-weight:700; line-height:1.15; }
   @keyframes ipdeal{ 0%,100%{ transform:rotate(-10deg) scale(1); } 50%{ transform:rotate(-4deg) scale(1.07); } }
   .hfb{ display:inline-block; margin-left:6px; padding:2px 7px; border-radius:999px; background:var(--lime); font-size:9.5px; font-weight:700; line-height:1.3; color:var(--navy); vertical-align:1px; white-space:nowrap; }
+
+  /* Kártyás feltöltés: friends, contact form, amount */
+  #s-ktfriends:checked ~ .ktcol[data-screen="kt-friends"], #s-ktedit:checked ~ .ktcol[data-screen="kt-edit"], #s-ktamt:checked ~ .ktcol[data-screen="kt-amount"]{ display:flex !important; flex-direction:column; }
+  .ktcol{ padding-bottom:calc(24px + env(safe-area-inset-bottom)) !important; }
+  .ktcol > *{ flex-shrink:0; }
+  .ktfoot{ display:flex; flex-direction:column; gap:12px; margin-top:auto; padding-top:24px; }
+  .ktbtn{ display:flex; align-items:center; justify-content:center; width:100%; height:48px; border:2px solid #09223D; border-radius:999px; background:#09223D; font-family:'Yettel'; font-size:15px; font-weight:700; color:#fff; cursor:pointer; }
+  .ktbtn.out{ background:transparent; color:var(--navy); }
+  .ktbtn[hidden]{ display:none; }
+  .ktbtn:disabled{ background:#CDD4DC; border-color:#CDD4DC; color:#8592A6; cursor:default; }
+  .ktrow .ktpen{ font-size:20px; color:#8592A6; }
+  .ktnew2{ display:flex; align-items:center; gap:22px; padding:18px 16px; cursor:pointer; font-size:14px; font-weight:700; color:var(--navy); }
+  .ktnew2 i{ font-size:24px; width:36px; text-align:center; }
+  .ktform, .ktcol[data-screen="kt-amount"]{ background:#fff; }
+  [data-ktlist] .ktrow{ padding:14px 0; }
+  [data-ktlist] .kttx b.sm{ font-size:14px; }
+  [data-ktlist] .kttx small{ font-size:13px; color:var(--navy); }
+  .ktcol .kth{ font-size:15px; }
+  .ktl{ margin-top:22px; }
+  .ktin{ height:52px; }
+  .ktwho{ margin:18px 0 0; font-size:12px; color:#5B6B80; }
+  .ktwho b{ color:var(--navy); }
+  .kth2{ margin:12px 0 10px; font-size:15px; }
+  .ktamts{ display:flex; flex-direction:column; gap:10px; }
+  .ktamt{ display:flex; align-items:center; gap:16px; padding:14px 16px; border:1.5px solid #E3E8EE; border-radius:10px; background:#fff; cursor:pointer; text-align:left; font-family:'Yettel'; }
+  .ktamt.sel{ border:2px solid #09223D; background:#F1F9FD; }
+  .ktrad{ flex-shrink:0; width:22px; height:22px; border:2px solid #E3E8EE; border-radius:50%; box-sizing:border-box; }
+  .ktamt.sel .ktrad{ border:5px solid #E3E8EE; background:#09223D; box-shadow:inset 0 0 0 0 #fff; }
+  .ktamt b{ display:block; font-size:16px; font-weight:700; color:var(--navy); }
+  .ktamt small{ display:block; margin-top:3px; font-size:11px; color:var(--navy); }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -3254,6 +3286,8 @@
   <input class="rt" type="radio" name="nav" id="s-iddap">
   <input class="rt" type="radio" name="nav" id="s-ktopup">
   <input class="rt" type="radio" name="nav" id="s-ktfriends">
+  <input class="rt" type="radio" name="nav" id="s-ktedit">
+  <input class="rt" type="radio" name="nav" id="s-ktamt">
   <input class="rt" type="radio" name="nav" id="s-savedcard">
   <input class="rt" type="radio" name="nav" id="s-mobbill">
   <input class="rt" type="radio" name="nav" id="s-mobpay">
@@ -3344,7 +3378,7 @@
     <div class="quick" data-quick>
       <div class="qtile"><div class="qic"><i class="ti ti-parking-circle"></i></div><span>Parkolás</span></div>
       <div class="qtile"><div class="qic"><i class="ti ti-discount"></i></div><span>Kuponok</span></div>
-      <label class="qtile" for="s-topup1"><div class="qic"><i class="ti ti-file-upload"></i></div><span>Kártyás feltöltés</span></label>
+      <label class="qtile" for="s-ktopup"><div class="qic"><i class="ti ti-file-upload"></i></div><span>Kártyás feltöltés</span></label>
       <label class="qtile" for="s-fun"><div class="qic"><i class="ti ti-gift"></i></div><span>Játssz és nyerj!</span></label>
     </div>
 
@@ -6908,16 +6942,16 @@
     </div>
     <div class="ktcard">
       <p class="kth">Kinek menjen a feltöltés?</p>
-        <label class="ktrow" for="s-topup1"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>XS+ · Feltöltőkártyás</small><b>+36 20 290 9734</b></span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="ktrow" for="s-topup1"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>Prime Plus 2025</small><b>+36 20 290 7566</b></span><i class="ti ti-chevron-right chev"></i></label>
-        <label class="ktrow" for="s-topup1"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>Prime Plus 2024</small><b>+36 20 290 7430</b></span><i class="ti ti-chevron-right chev"></i></label>
+        <div class="ktrow" data-ktto="+36 20 290 9734" data-ktname="XS+ · Feltöltőkártyás"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>XS+ · Feltöltőkártyás</small><b>+36 20 290 9734</b></span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="ktrow" data-ktto="+36 20 290 7566" data-ktname="Prime Plus 2025"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>Prime Plus 2025</small><b>+36 20 290 7566</b></span><i class="ti ti-chevron-right chev"></i></div>
+        <div class="ktrow" data-ktto="+36 20 290 7430" data-ktname="Prime Plus 2024"><span class="ktic"><i class="ti ti-phone-call"></i></span><span class="kttx"><small>Prime Plus 2024</small><b>+36 20 290 7430</b></span><i class="ti ti-chevron-right chev"></i></div>
         <label class="ktrow" for="s-ktfriends"><span class="ktic"><i class="ti ti-users"></i></span><span class="kttx"><b class="sm">Ismerősnek</b></span><i class="ti ti-chevron-right chev"></i></label>
     </div>
     <div class="ktnote"><i class="ti ti-info-circle"></i><p>Ha számlás előfizetőként töltesz fel egyenleget, akkor a mobilvásárláshoz használható keretedet növeled (például parkolásra, lottóra). Feltöltheted családtagjaid kártyás vagy mobilvásárlási egyenlegét is, a feltöltés tényéről SMS-ben értesítjük őket.</p></div>
   </div>
 
   <!-- ============= ISMERŐSÖK ============= -->
-  <div class="screen ktscreen" data-screen="kt-friends" style="display:none;">
+  <div class="screen ktscreen ktcol" data-screen="kt-friends" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-ktopup"><i class="ti ti-arrow-left"></i></label>
       <span class="title">Ismerősök</span>
@@ -6925,12 +6959,37 @@
     </div>
     <div class="ktcard">
       <p class="kth">Kinek menjen a feltöltés?</p>
-        <div class="ktrow ktfr"><i class="ti ti-user ktu"></i><span class="kttx"><b class="sm">Anya</b><small>+36 20 123 4567</small></span><i class="ti ti-chevron-right chev"></i></div>
-        <div class="ktrow ktfr"><i class="ti ti-user ktu"></i><span class="kttx"><b class="sm">Péter</b><small>+36 30 765 4321</small></span><i class="ti ti-chevron-right chev"></i></div>
-        <div class="ktrow ktfr"><i class="ti ti-user ktu"></i><span class="kttx"><b class="sm">Kata</b><small>+36 70 222 3344</small></span><i class="ti ti-chevron-right chev"></i></div>
+      <div data-ktlist></div>
     </div>
-    <div class="ktcard ktnew"><i class="ti ti-plus"></i><span>Új ismerős</span></div>
-    <span class="ktedit">Szerkesztés</span>
+    <div class="ktcard ktnew2" data-ktnew><i class="ti ti-plus"></i><span>Új ismerős</span></div>
+    <div class="ktfoot"><button type="button" class="ktbtn out" data-ktedit>Szerkesztés</button></div>
+  </div>
+
+  <!-- ============= ISMERŐS ADATAI ============= -->
+  <div class="screen ktscreen ktcol ktform" data-screen="kt-edit" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-ktfriends"><i class="ti ti-arrow-left"></i></label>
+      <span class="title" data-kfttl>Adatok módosítása</span>
+      <div style="width:42px"></div>
+    </div>
+    <label class="adl ktl">Telefonszám <span>*</span></label>
+    <div class="cbin ktin" data-kff="tel"><span>+36</span><input type="tel" inputmode="tel" placeholder="20 123 4567"></div><p class="cberr">Kérjük, adj meg egy érvényes mobilszámot.</p>
+    <label class="adl ktl">Ismerős neve <span>*</span></label>
+    <div class="cbin ktin" data-kff="name"><input type="text" placeholder="Pl. Anya"></div><p class="cberr">Kérjük, add meg az ismerősöd nevét.</p>
+    <div class="ktfoot"><button type="button" class="ktbtn" data-kfsave disabled>Mentés</button><button type="button" class="ktbtn out" data-kfdel>Törlés</button></div>
+  </div>
+
+  <!-- ============= FELTÖLTÉS ÖSSZEGE ============= -->
+  <div class="screen ktscreen ktcol" data-screen="kt-amount" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-ktfriends" data-ktback><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Feltöltés összege</span>
+      <div style="width:42px"></div>
+    </div>
+    <p class="ktwho" data-ktwho></p>
+    <p class="kth kth2">Mennyivel töltesz fel?</p>
+    <div class="ktamts" data-ktamts></div>
+    <div class="ktfoot"><button type="button" class="ktbtn" data-ktpay>Feltöltés</button></div>
   </div>
 
   <!-- ============= MENTETT BANKKÁRTYÁM ============= -->
@@ -7815,7 +7874,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.odlnk,.tvchan,.smdoc,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.odlnk,.tvchan,.smdoc,.annotify,.idb,.idit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -9457,6 +9516,82 @@
   /* the frame itself never scrolls; undo any scroll the browser applies to reveal a field */
   if (app) app.addEventListener('scroll', function(){ if (!isField(document.activeElement)) app.scrollTop = 0; });
   window.addEventListener('orientationchange', function(){ setTimeout(settle, 300); });
+})();
+</script>
+<script>
+/* Kártyás feltöltés: own numbers or friends → amount → Barion; friends can be added, edited, deleted */
+(function(){
+  var fr = document.querySelector('[data-screen="kt-friends"]'), ed = document.querySelector('[data-screen="kt-edit"]'), am = document.querySelector('[data-screen="kt-amount"]'), top = document.querySelector('[data-screen="kt-topup"]');
+  if (!fr || !ed || !am) return;
+  var FR = [{n:'Anya', t:'20 123 4567'}, {n:'Péter', t:'30 765 4321'}, {n:'Kata', t:'70 222 3344'}, {n:'Bence', t:'20 555 6601'}];
+  var AMTS = [1500, 3000, 5000, 10000, 15000], editing = false, cur = -1, amt = 3000, target = null;
+  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function go(id){ var r = document.getElementById(id); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); }
+  function nice(d){ return d.slice(0, 2) + ' ' + d.slice(2, 5) + ' ' + d.slice(5); }
+  function list(){
+    fr.querySelector('[data-ktlist]').innerHTML = FR.map(function(f, i){
+      return '<div class="ktrow" data-kfi="'+i+'"><i class="ti ti-user ktu"></i><span class="kttx"><b class="sm">'+f.n+'</b><small>+36 '+f.t+'</small></span>'
+        + (editing ? '<i class="ti ti-pencil ktpen"></i>' : '<i class="ti ti-chevron-right chev"></i>') + '</div>';
+    }).join('');
+    var b = fr.querySelector('[data-ktedit]'); b.textContent = editing ? 'Szerkesztés befejezése' : 'Szerkesztés'; b.classList.toggle('out', !editing);
+  }
+  function openAmount(to, name, back){
+    target = {to:to, name:name}; amt = 3000;
+    am.querySelector('[data-ktwho]').innerHTML = 'Feltöltés ide: <b>'+name+'</b> · '+to;
+    am.querySelector('[data-ktback]').setAttribute('for', back);
+    paintAmts(); go('s-ktamt'); am.scrollTop = 0;
+  }
+  function paintAmts(){
+    am.querySelector('[data-ktamts]').innerHTML = AMTS.map(function(a){
+      return '<button type="button" class="ktamt'+(a === amt ? ' sel' : '')+'" data-kta="'+a+'"><span class="ktrad"></span><span><b>'+fmt(a)+' Ft</b><small>365 napig felhasználható</small></span></button>';
+    }).join('');
+  }
+  /* contact form */
+  var tel = ed.querySelector('[data-kff="tel"]'), nm = ed.querySelector('[data-kff="name"]'), save = ed.querySelector('[data-kfsave]'), del = ed.querySelector('[data-kfdel]'), orig;
+  function openForm(i){
+    cur = i; var f = i >= 0 ? FR[i] : {n:'', t:''};
+    ed.querySelector('[data-kfttl]').textContent = i >= 0 ? 'Adatok módosítása' : 'Új ismerős';
+    tel.querySelector('input').value = f.t; nm.querySelector('input').value = f.n; orig = f.t + '|' + f.n;
+    [tel, nm].forEach(function(x){ x.classList.remove('err'); });
+    del.hidden = i < 0; save.disabled = true; go('s-ktedit');
+  }
+  ed.addEventListener('input', function(){
+    [tel, nm].forEach(function(x){ x.classList.remove('err'); });
+    save.disabled = (tel.querySelector('input').value.trim() + '|' + nm.querySelector('input').value.trim()) === orig || !tel.querySelector('input').value.trim() || !nm.querySelector('input').value.trim();
+  });
+  save.addEventListener('click', function(){
+    var d = tel.querySelector('input').value.replace(/\D/g, ''), n = nm.querySelector('input').value.trim();
+    var okT = /^(20|30|31|50|70)\d{7}$/.test(d), okN = n.length >= 2;
+    tel.classList.toggle('err', !okT); nm.classList.toggle('err', !okN);
+    if (!okT || !okN) return;
+    var f = {n:n, t:nice(d)};
+    if (cur >= 0) FR[cur] = f; else FR.push(f);
+    list(); go('s-ktfriends');
+  });
+  del.addEventListener('click', function(){ if (cur >= 0) FR.splice(cur, 1); list(); go('s-ktfriends'); });
+  /* friends list */
+  fr.addEventListener('click', function(e){
+    if (e.target.closest('[data-ktedit]')){ editing = !editing; list(); return; }
+    if (e.target.closest('[data-ktnew]')){ openForm(-1); return; }
+    var r = e.target.closest('[data-kfi]'); if (!r) return;
+    var i = +r.getAttribute('data-kfi');
+    if (editing) openForm(i); else openAmount('+36 ' + FR[i].t, FR[i].n, 's-ktfriends');
+  });
+  if (top) top.addEventListener('click', function(e){ var r = e.target.closest('[data-ktto]'); if (r) openAmount(r.getAttribute('data-ktto'), r.getAttribute('data-ktname'), 's-ktopup'); });
+  document.addEventListener('change', function(e){ if (e.target && e.target.id === 's-ktfriends' && e.target.checked){ editing = false; list(); } });
+  /* amount → Barion → back to the start with a confirmation */
+  am.addEventListener('click', function(e){ var b = e.target.closest('[data-kta]'); if (b){ amt = +b.getAttribute('data-kta'); paintAmts(); } });
+  var toast = document.createElement('div'); toast.className = 'ofsnack'; toast.innerHTML = '<i class="ti ti-circle-check-filled"></i><span></span>';
+  document.querySelector('.app').appendChild(toast);
+  am.querySelector('[data-ktpay]').addEventListener('click', function(){
+    var done = function(){
+      go('s-ktopup');
+      toast.querySelector('span').textContent = fmt(amt) + ' Ft feltöltve ide: ' + target.name + ' (' + target.to + ').';
+      toast.style.bottom = '24px'; toast.classList.add('on'); setTimeout(function(){ toast.classList.remove('on'); }, 3200);
+    };
+    if (window.yBarion) window.yBarion.start(amt, done); else done();
+  });
+  list();
 })();
 </script>
 </body>
