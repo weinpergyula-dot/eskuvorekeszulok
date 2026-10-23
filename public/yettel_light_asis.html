@@ -3361,7 +3361,7 @@
       <div class="wycopy">
         <p class="wyh">Korlátlan belföldi net? Yepp!</p>
         <p class="wys">Próbáld ki a Yepp előfizetést 7 napig ingyen. Szerződj az appban hűségidő nélkül. Csak lakossági felhasználásra.</p>
-        <button class="wyout wytry" type="button">Kipróbálom ingyen</button>
+        <button class="wyout wytry" type="button" data-quicklogin>Kipróbálom ingyen</button>
       </div>
       <div class="wynew"><span class="wybadge">Új</span><div><b>Már elérhető vezetékes internet szolgáltatásunk!</b><p>Meglévő ügyfélként lépj be, új ügyfélként nézz körül az ajánlatok között.</p></div></div>
       <label class="wyprim" for="s-login">Yettel ügyfél vagyok</label>
@@ -7946,7 +7946,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9681,6 +9681,19 @@
     }, 1200);
   });
   sc.querySelector('[data-gmrules]').addEventListener('click', function(){ document.getElementById('wip').classList.add('on'); });
+})();
+</script>
+<script>
+/* welcome: "Kipróbálom ingyen" = quick demo login straight to the dashboard */
+(function(){
+  var b = document.querySelector('[data-quicklogin]'), ls = document.getElementById('lisplash'); if (!b) return;
+  b.addEventListener('click', function(){
+    function home(){ var r = document.getElementById('s-home'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); }
+    if (!ls){ home(); return; }
+    ls.classList.add('on');
+    setTimeout(home, 1800);
+    setTimeout(function(){ ls.classList.remove('on'); }, 2000);
+  });
 })();
 </script>
 </body>
