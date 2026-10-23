@@ -352,6 +352,7 @@
   #s-docdet:checked ~ [data-screen="doc-det"],
   #s-consent2:checked ~ [data-screen="consent2"],
   #s-pwforgot:checked ~ [data-screen="pw-forgot"],
+  #s-otp:checked ~ [data-screen="otp"],
   #s-smslogin:checked ~ [data-screen="sms-login"],
   #s-idme:checked ~ [data-screen="id-me"],
   #s-iddap:checked ~ [data-screen="id-dap"],
@@ -2516,6 +2517,19 @@
   .lologo{ font-family:'Yettel'; font-size:44px; font-weight:700; letter-spacing:-.02em; color:var(--navy); animation:lopulse 1s ease-in-out infinite; }
   .lologo i{ display:inline-block; width:.2em; height:.2em; margin-left:.04em; border-radius:50%; background:var(--navy); }
   @keyframes lopulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.08); } }
+
+  /* ===== demo login + SMS-hitelesítés ===== */
+  .lgin.bad2{ border-color:#F0603C; }
+  .otp{ display:flex; justify-content:center; gap:8px; margin:22px 0 6px; }
+  .otp input{ width:44px; height:52px; padding:0; border:2px solid #E3E8EE; border-radius:9px; background:#fff; text-align:center;
+              font-family:'Yettel'; font-size:22px; font-weight:700; color:var(--navy); outline:none; -webkit-appearance:none; caret-color:var(--navy); }
+  .otp input:focus{ border-color:var(--navy); }
+  .otp input.bad{ border-color:#F0603C; color:#F0603C; }
+  .otp input.ok{ border-color:#2F9E4F; }
+  .otperr{ margin:8px 0 0; text-align:center; }
+  .otpre{ display:block; margin:18px auto 0; border:none; background:none; font-family:'Yettel'; font-size:14px; font-weight:700; line-height:1.4;
+          color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  .otpre:disabled{ color:#8592A6; cursor:default; }
 </style>
 </head>
 <body>
@@ -2619,6 +2633,7 @@
   <input class="rt" type="radio" name="nav" id="s-docdet">
   <input class="rt" type="radio" name="nav" id="s-consent2">
   <input class="rt" type="radio" name="nav" id="s-pwforgot">
+  <input class="rt" type="radio" name="nav" id="s-otp">
   <input class="rt" type="radio" name="nav" id="s-smslogin">
   <input class="rt" type="radio" name="nav" id="s-idme">
   <input class="rt" type="radio" name="nav" id="s-iddap">
@@ -2681,8 +2696,9 @@
     <label class="lgl">Jelszó <span>*</span></label>
     <div class="lgpw"><input class="lgin" type="password" placeholder="************" data-lgin data-lgpw><button type="button" class="lgeye" data-lgeye aria-label="Jelszó megjelenítése"><i class="ti ti-eye"></i></button></div>
     <p class="lgerr" data-lgerr>Érvénytelen e-mail cím.</p>
+    <p class="lgerr" data-lgcred>Hibás e-mail cím vagy jelszó.</p>
     <label class="lgforgot" for="s-pwforgot">Elfelejtettem a jelszavam</label>
-    <label class="lgbtn off" for="s-home" data-lgbtn>Belépek</label>
+    <button type="button" class="lgbtn off" data-lgbtn>Belépek</button>
     <div class="lgor"><span>vagy</span></div>
     <div class="lgbox">
       <label class="lgrow" for="s-smslogin"><i class="ti ti-message"></i><b>SMS kóddal</b><i class="ti ti-chevron-right chev"></i></label>
@@ -7191,6 +7207,18 @@
     <label class="lgback dapback" for="s-idme">Vissza</label>
   </div>
 
+  <!-- ============= SMS-HITELESÍTÉS ============= -->
+  <div class="screen loginscr lgn" data-screen="otp" style="display:none;">
+    <div class="lgtop"><label class="lgx" for="s-login" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <h2 class="lgh lgbig lgmid">SMS-hitelesítés</h2>
+    <p class="lgp">A hitelesítő kódot elküldtük kapcsolattartói telefonszámodra, néhány percbe telhet, mire megérkezik. A kapott kódot írd be a lenti mezőbe.</p>
+    <div class="otp" data-otp>
+      <input type="tel" inputmode="numeric" maxlength="1" autocomplete="one-time-code"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1">
+    </div>
+    <p class="lgerr otperr" data-otperr>Hibás kód. Kérjük, próbáld újra.</p>
+    <button type="button" class="otpre" data-otpre disabled>Újraküldés<br><span data-otpsec>(30 sec)</span></button>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
@@ -7956,7 +7984,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -8046,7 +8074,7 @@
 <script>
 /* back arrows walk the journey backwards (previously visited screen), falling back to their own target */
 (function(){
-  var ROOTS = {'s-idme':1,'s-smslogin':1,'s-pwforgot':1,'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
+  var ROOTS = {'s-otp':1,'s-idme':1,'s-smslogin':1,'s-pwforgot':1,'s-home':1,'s-tshop':1,'s-tfin':1,'s-tprof':1,'s-fun':1,'s-welcome':1,'s-login':1};
   var stack = [];
   function curId(){ var c = document.querySelector('input.rt[name="nav"]:checked'); return c ? c.id : null; }
   function screenOf(){ var all = document.querySelectorAll('[data-screen]');
@@ -8614,6 +8642,45 @@
   /* preset: newsletter on with every channel, the other two unanswered */
   sc.querySelector('input[name="cs-info"][value="y"]').checked = true; sync();
   document.addEventListener('change', function(e){ if (e.target.id === 's-consent2' && e.target.checked){ ok.classList.remove('on'); qs.forEach(function(q){ q.classList.remove('err','tip'); }); sc.scrollTop = 0; } });
+})();
+</script>
+<script>
+/* demo login: only admin@yettel.hu / admin, then SMS verification (code 222222, 30 s resend timer) */
+(function(){
+  var sc = document.querySelector('[data-screen="login"]'), otpSc = document.querySelector('[data-screen="otp"]');
+  if (!sc || !otpSc) return;
+  var btn = sc.querySelector('[data-lgbtn]'), mail = sc.querySelector('[data-lgmail]'), pw = sc.querySelector('[data-lgpw]'), cred = sc.querySelector('[data-lgcred]');
+  function go(id){ var r = document.getElementById(id); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } }
+  [mail, pw].forEach(function(i){ i.addEventListener('input', function(){ cred.classList.remove('on'); mail.classList.remove('bad2'); pw.classList.remove('bad2'); }); });
+  btn.addEventListener('click', function(){
+    if (btn.classList.contains('off')) return;
+    if (mail.value.trim().toLowerCase() === 'admin@yettel.hu' && pw.value === 'admin'){ cred.classList.remove('on'); go('s-otp'); }
+    else { cred.classList.add('on'); mail.classList.add('bad2'); pw.classList.add('bad2'); }
+  });
+  var boxes = Array.prototype.slice.call(otpSc.querySelectorAll('[data-otp] input')), err = otpSc.querySelector('[data-otperr]');
+  var re = otpSc.querySelector('[data-otpre]'), sec = otpSc.querySelector('[data-otpsec]'), t = null, left = 30;
+  function tick(){ sec.textContent = left > 0 ? '(' + left + ' sec)' : ''; re.disabled = left > 0; }
+  function timer(){ clearInterval(t); left = 30; tick(); t = setInterval(function(){ left--; tick(); if (left <= 0) clearInterval(t); }, 1000); }
+  function reset(){ boxes.forEach(function(b){ b.value = ''; b.classList.remove('bad'); }); err.classList.remove('on'); boxes[0].focus(); }
+  function check(){
+    var code = boxes.map(function(b){ return b.value; }).join('');
+    if (code.length < 6) return;
+    if (code === '222222'){ clearInterval(t); boxes.forEach(function(b){ b.classList.add('ok'); }); setTimeout(function(){ go('s-home'); boxes.forEach(function(b){ b.value = ''; b.classList.remove('ok'); }); pw.value = ''; }, 500); }
+    else { boxes.forEach(function(b){ b.classList.add('bad'); }); err.classList.add('on'); }
+  }
+  boxes.forEach(function(b, i){
+    b.addEventListener('input', function(){
+      var d = b.value.replace(/\D/g, '');
+      if (d.length > 1){ d.split('').slice(0, 6 - i).forEach(function(c, k){ boxes[i + k].value = c; }); var n = Math.min(5, i + d.length); boxes[n].focus(); }
+      else { b.value = d; if (d && i < 5) boxes[i + 1].focus(); }
+      if (err.classList.contains('on')){ err.classList.remove('on'); boxes.forEach(function(x){ x.classList.remove('bad'); }); }
+      check();
+    });
+    b.addEventListener('keydown', function(e){ if (e.key === 'Backspace' && !b.value && i > 0){ boxes[i - 1].value = ''; boxes[i - 1].focus(); } });
+    b.addEventListener('focus', function(){ b.select(); });
+  });
+  re.addEventListener('click', function(){ if (re.disabled) return; reset(); timer(); });
+  document.addEventListener('change', function(e){ if (e.target.id === 's-otp' && e.target.checked){ reset(); timer(); setTimeout(function(){ boxes[0].focus(); }, 50); } });
 })();
 </script>
 </body>
