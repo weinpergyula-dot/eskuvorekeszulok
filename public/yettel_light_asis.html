@@ -280,7 +280,6 @@
   #s-devdetail:checked ~ [data-screen="device-detail"],
   #s-fun:checked ~ [data-screen="fun"],
   #s-buy:checked ~ [data-screen="buy"],
-  #s-addrbuy:checked ~ [data-screen="addr-buy"],
   #s-addrsvc:checked ~ [data-screen="addr-svc"],
   #s-notif:checked ~ [data-screen="notif"],
   #s-devbuy:checked ~ [data-screen="devbuy"],
@@ -288,29 +287,16 @@
   #s-tarifsvc:checked ~ [data-screen="tarif-svc"],
   #s-prebuy:checked ~ [data-screen="pre-buy"],
   #s-presvc:checked ~ [data-screen="pre-svc"],
-  #s-offbuy:checked ~ [data-screen="offers-buy"],
   #s-devdet2:checked ~ [data-screen="devdet-2"],
   #s-devdet3:checked ~ [data-screen="devdet-3"],
   #s-devdet4:checked ~ [data-screen="devdet-4"],
   #s-devdet5:checked ~ [data-screen="devdet-5"],
-  #s-persdata:checked ~ [data-screen="personal-data"],
-  #s-load1:checked ~ [data-screen="load-1"],
-  #s-addrdata:checked ~ [data-screen="address-data"],
-  #s-load2:checked ~ [data-screen="load-2"],
-  #s-loadavail:checked ~ [data-screen="load-avail"],
-  #s-consent:checked ~ [data-screen="consent-decl"],
-  #s-appt:checked ~ [data-screen="appt-set"],
-  #s-ordsum:checked ~ [data-screen="order-sum"],
-  #s-ordok:checked ~ [data-screen="order-ok"],
   #s-strm1:checked ~ [data-screen="strm-1"],
   #s-strm2:checked ~ [data-screen="strm-2"],
   #s-strm3:checked ~ [data-screen="strm-3"],
-  #s-offbuy1:checked ~ [data-screen="offers-buy-1"],
   #s-offsvc:checked ~ [data-screen="offers-svc"],
   #s-tvselbuy:checked ~ [data-screen="tvsel-buy"],
   #s-tvselsvc:checked ~ [data-screen="tvsel-svc"],
-  #s-extrabuy:checked ~ [data-screen="extra-buy"],
-  #s-extrasvc:checked ~ [data-screen="extra-svc"],
   #s-topup1:checked ~ [data-screen="topup-1"],
   #s-topup2:checked ~ [data-screen="topup-2"],
   #s-account:checked ~ [data-screen="account"],
@@ -324,11 +310,6 @@
   #s-xmin:checked ~ [data-screen="xmin"],
   #s-tvpkg:checked ~ [data-screen="tvpkg"],
   #s-ctvaddr:checked ~ [data-screen="ctv-addr"],
-  #s-ctvavail:checked ~ [data-screen="ctv-avail"],
-  #s-ctvxnet:checked ~ [data-screen="ctv-xnet"],
-  #s-ctvtvsel:checked ~ [data-screen="ctv-tvsel"],
-  #s-ctvxtv:checked ~ [data-screen="ctv-xtv"],
-  #s-ctvloadavail:checked ~ [data-screen="ctv-loadavail"],
   #s-strpick:checked ~ [data-screen="str-pick"],
   #s-gyvpick:checked ~ [data-screen="gyv-pick"],
   #s-nppick:checked ~ [data-screen="np-pick"],
@@ -2661,8 +2642,6 @@
   .ofsum{ flex:1; display:grid; grid-template-columns:auto 1fr; column-gap:8px; row-gap:4px; font-size:12px; color:var(--navy); }
   .ofsum b{ text-align:right; font-weight:700; }
   .ofnext{ display:flex; align-items:center; justify-content:center; height:44px; padding:0 26px; border-radius:999px; background:#09223D; font-size:14px; font-weight:700; color:#fff; cursor:pointer; position:relative; }
-  .ofnext.jspin.loading{ color:transparent; }
-  .ofnext.jspin.loading::after{ content:''; position:absolute; top:50%; left:50%; width:16px; height:16px; margin:-8px 0 0 -8px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
 </style>
 </head>
 <body>
@@ -2680,16 +2659,12 @@
   <input class="rt" type="radio" name="nav" id="s-devdetail">
   <input class="rt" type="radio" name="nav" id="s-fun">
   <input class="rt" type="radio" name="nav" id="s-buy">
-  <input class="rt" type="radio" name="nav" id="s-addrbuy">
   <input class="rt" type="radio" name="nav" id="s-addrsvc">
   <input class="rt" type="radio" name="nav" id="s-tarifbuy">
   <input class="rt" type="radio" name="nav" id="s-tarifsvc">
-  <input class="rt" type="radio" name="nav" id="s-offbuy">
   <input class="rt" type="radio" name="nav" id="s-offsvc">
   <input class="rt" type="radio" name="nav" id="s-tvselbuy">
   <input class="rt" type="radio" name="nav" id="s-tvselsvc">
-  <input class="rt" type="radio" name="nav" id="s-extrabuy">
-  <input class="rt" type="radio" name="nav" id="s-extrasvc">
   <input class="rt" type="radio" name="nav" id="s-topup1">
   <input class="rt" type="radio" name="nav" id="s-topup2">
   <input class="rt" type="radio" name="nav" id="s-account">
@@ -2707,19 +2682,9 @@
   <input class="rt" type="radio" name="nav" id="s-menu">
   <input class="rt" type="radio" name="nav" id="s-prebuy">
   <input class="rt" type="radio" name="nav" id="s-presvc">
-  <input class="rt" type="radio" name="nav" id="s-offbuy1">
   <input class="rt" type="radio" name="nav" id="s-strm1">
   <input class="rt" type="radio" name="nav" id="s-strm2">
   <input class="rt" type="radio" name="nav" id="s-strm3">
-  <input class="rt" type="radio" name="nav" id="s-consent">
-  <input class="rt" type="radio" name="nav" id="s-appt">
-  <input class="rt" type="radio" name="nav" id="s-ordsum">
-  <input class="rt" type="radio" name="nav" id="s-ordok">
-  <input class="rt" type="radio" name="nav" id="s-persdata">
-  <input class="rt" type="radio" name="nav" id="s-load1">
-  <input class="rt" type="radio" name="nav" id="s-addrdata">
-  <input class="rt" type="radio" name="nav" id="s-load2">
-  <input class="rt" type="radio" name="nav" id="s-loadavail">
   <input class="rt" type="radio" name="nav" id="s-devdet2">
   <input class="rt" type="radio" name="nav" id="s-devdet3">
   <input class="rt" type="radio" name="nav" id="s-devdet4">
@@ -2735,11 +2700,6 @@
   <input class="rt" type="radio" name="nav" id="s-edacc">
   <input class="rt" type="radio" name="nav" id="s-tvpkg">
   <input class="rt" type="radio" name="nav" id="s-ctvaddr">
-  <input class="rt" type="radio" name="nav" id="s-ctvavail">
-  <input class="rt" type="radio" name="nav" id="s-ctvxnet">
-  <input class="rt" type="radio" name="nav" id="s-ctvtvsel">
-  <input class="rt" type="radio" name="nav" id="s-ctvxtv">
-  <input class="rt" type="radio" name="nav" id="s-ctvloadavail">
   <input class="rt" type="radio" name="nav" id="s-strpick">
   <input class="rt" type="radio" name="nav" id="s-gyvpick">
   <input class="rt" type="radio" name="nav" id="s-nppick">
@@ -3396,26 +3356,6 @@
 
   <!-- ============= ÚJ SZOLGÁLTATÁS (belső) ============= -->
 
-  <!-- ============= CÍMKERESŐ: addr-buy ============= -->
-  <div class="screen formscr" data-screen="addr-buy" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-offbuy1"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Címed</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="formbody">
-      <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Hova szeretnél otthoni internetet?</h2>
-      <p class="buysub">Add meg a címed, és mutatjuk az ajánlatokat! Ha nem találod, amit keresel, gépelj tovább a pontosabb találatokért.</p>
-      <label class="afl">Település vagy irányítószám <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="1097"></div>
-      <label class="afl">Közterület <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="Deák Ferenc utca"></div>
-      <label class="afl">Házszám <span>*</span></label>
-      <div class="afield"><input type="text" placeholder="6"></div>
-      <div class="ahelp"><span class="ahic"><i class="ti ti-help"></i></span><p>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</p><i class="ti ti-chevron-right"></i></div>
-    </div>
-    <label class="acont" for="s-offbuy">Tovább</label>
-  </div>
 
   <!-- ============= CÍMKERESŐ: addr-svc ============= -->
   <div class="screen formscr adscr" data-screen="addr-svc" style="display:none;">
@@ -3516,13 +3456,9 @@
 
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
 
   <!-- ============= Szolgáltatásvásárlás ============= -->
 
@@ -3532,9 +3468,7 @@
 
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
 
   <!-- ============= Szolgáltatásvásárlás ============= -->
 
@@ -3718,115 +3652,23 @@
   </div>
 
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
 
-  <!-- ============= EXTRÁK: extra-buy ============= -->
-  <div class="screen" data-screen="extra-buy" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-offbuy"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Extrák</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
-    <h2 class="buyhead">Extrák választása</h2>
-    <p class="buysub">Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé.</p>
 
-    <div class="xcard">
-      <span class="xic"><i class="ti ti-shield-check"></i></span>
-      <div class="xtx">
-        <p class="xt">Gyermekvédelmi tartalomszűrő</p>
-        <p class="xs">A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat. Később is igényelheted és bármikor lemondhatod.</p>
-        <span class="xfree">Díjmentes</span>
-      </div>
-    </div>
-
-    <input class="rt" type="radio" name="x-extra-buy" id="xb-yes" checked>
-    <input class="rt" type="radio" name="x-extra-buy" id="xb-no">
-    <div class="xchoice">
-      <label class="xopt" for="xb-yes"><i class="ti ti-check"></i>Kérem</label>
-      <label class="xopt" for="xb-no"><i class="ti ti-x"></i>Nem kérem</label>
-    </div>
-    <div class="xcard" style="margin-top:16px;">
-      <span class="xic"><i class="ti ti-shield-lock"></i></span>
-      <div class="xtx">
-        <p class="xt">NetPajzs</p>
-        <p class="xs">Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen — a hálózat szintjén, minden otthoni eszközödön.</p>
-        <span class="xprice">490 Ft / hó</span>
-      </div>
-    </div>
-    <input class="rt" type="radio" name="x-netpajzs-buy" id="npb-yes">
-    <input class="rt" type="radio" name="x-netpajzs-buy" id="npb-no" checked>
-    <div class="xchoice">
-      <label class="xopt" for="npb-yes"><i class="ti ti-check"></i>Kérem</label>
-      <label class="xopt" for="npb-no"><i class="ti ti-x"></i>Nem kérem</label>
-    </div>
-
-    <label class="acont jspin" for="s-persdata">Tovább</label>
-  </div>
-
-  <!-- ============= EXTRÁK: extra-svc ============= -->
-  <div class="screen" data-screen="extra-svc" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-offsvc"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Extrák</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
-    <h2 class="buyhead">Extrák választása</h2>
-    <p class="buysub">Válaszd ki, milyen kiegészítőt szeretnél a szolgáltatásod mellé.</p>
-
-    <div class="xcard">
-      <span class="xic"><i class="ti ti-shield-check"></i></span>
-      <div class="xtx">
-        <p class="xt">Gyermekvédelmi tartalomszűrő</p>
-        <p class="xs">A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat. Később is igényelheted és bármikor lemondhatod.</p>
-        <span class="xfree">Díjmentes</span>
-      </div>
-    </div>
-
-    <input class="rt" type="radio" name="x-extra-svc" id="xs-yes" checked>
-    <input class="rt" type="radio" name="x-extra-svc" id="xs-no">
-    <div class="xchoice">
-      <label class="xopt" for="xs-yes"><i class="ti ti-check"></i>Kérem</label>
-      <label class="xopt" for="xs-no"><i class="ti ti-x"></i>Nem kérem</label>
-    </div>
-    <div class="xcard" style="margin-top:16px;">
-      <span class="xic"><i class="ti ti-shield-lock"></i></span>
-      <div class="xtx">
-        <p class="xt">NetPajzs</p>
-        <p class="xs">Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen — a hálózat szintjén, minden otthoni eszközödön.</p>
-        <span class="xprice">490 Ft / hó</span>
-      </div>
-    </div>
-    <input class="rt" type="radio" name="x-netpajzs-svc" id="nps-yes">
-    <input class="rt" type="radio" name="x-netpajzs-svc" id="nps-no" checked>
-    <div class="xchoice">
-      <label class="xopt" for="nps-yes"><i class="ti ti-check"></i>Kérem</label>
-      <label class="xopt" for="nps-no"><i class="ti ti-x"></i>Nem kérem</label>
-    </div>
-
-    <label class="acont jspin" for="s-persdata">Tovább</label>
-  </div>
 
   <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
 
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
 
   <!-- ============= KÉSZÜLÉKVÁSÁRLÁS ============= -->
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-buy ============= -->
 
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
 
   <!-- ============= Csomagváltás: tarifch-1 ============= -->
 
@@ -3886,7 +3728,7 @@
       </div>
     </div>
     <div class="tabpane tp-otthon">
-      <label class="svccard s-blue" for="s-offbuy1">
+      <label class="svccard s-blue" for="s-addrsvc">
         <span class="sbadge">30 nap díjmentes</span>
         <div class="sb1"></div><div class="sb2"></div>
         <span class="svcic"><i class="ti ti-router"></i></span>
@@ -4129,9 +3971,7 @@
 
   <!-- ============= HAVIDÍJAS TARIFÁK: tarif-svc ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-svc ============= -->
 
   <!-- ============= Csomagváltás: tarifch-1 ============= -->
 
@@ -4351,63 +4191,11 @@
     </div>
   </div>
 
-  <!-- ============= AJÁNLATOK A CÍMEDEN: offers-buy ============= -->
-  <div class="screen" data-screen="offers-buy" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-addrbuy"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Ajánlatok</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Ajánlatok a címeden</h2>
-    <div class="offaddr">
-      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
-      <label class="offchg" for="s-addrbuy">Másik címet adok meg.</label>
-    </div>
-    <p class="offsec">Internet</p>
-    <label class="tfcard" for="s-extrabuy">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">1000 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-    <label class="tfcard" for="s-extrabuy">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">500 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-    <div class="tfhelp">
-      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
-      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
-    </div>
-  </div>
 
   <!-- ============= OTTHONI INTERNET AJÁNLATOK: offers-svc ============= -->
   <div class="screen ofscr" data-screen="offers-svc" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-addrsvc"><i class="ti ti-arrow-left"></i></label>
+      <label class="icon-btn" for="s-addrsvc" data-ofback><i class="ti ti-arrow-left"></i></label>
       <span class="title">Otthoni internet</span>
       <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
     </div>
@@ -4429,7 +4217,7 @@
     </div>
     <div class="offoot">
       <div class="ofsum"><span>Vásárláskor:</span><b>0 Ft</b><span>Havonta:</span><b data-ofmon>7 990 Ft/hó</b></div>
-      <label class="ofnext jspin jpkg" for="s-extrasvc" data-pkg="HiperNet L" data-bw="1000 Mbit/s" data-price="7 990 Ft">Tovább</label>
+      <button type="button" class="ofnext">Tovább</button>
     </div>
   </div>
 
@@ -5758,54 +5546,6 @@
     </div>
   </div>
 
-  <div class="screen" data-screen="offers-buy-1" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-buy"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Internet tarifák</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Válaszd ki az<br>internetcsomagod.</h2>
-    <p class="buysub">Előbb nézd meg a csomagokat, majd ellenőrizd az elérhetőséget a címeden.</p>
-    <p class="offsec">Internet</p>
-    <label class="tfcard" for="s-addrbuy">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">1000 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Címellenőrzés</span>
-        </div>
-      </div>
-    </label>
-    <label class="tfcard" for="s-addrbuy">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">500 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Címellenőrzés</span>
-        </div>
-      </div>
-    </label>
-    <div class="tfhelp">
-      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
-      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
-    </div>
-  </div>
 
 
   <!-- ============= STREAMING RÉSZLETEK ============= -->
@@ -6124,426 +5864,23 @@
         <div class="adhelp"><i class="ti ti-message-question"></i><span>Nem találod a címed? Jelezd nekünk, hogy segíthessünk!</span><i class="ti ti-chevron-right chev"></i></div>
       </div>
     </div>
-    <button type="button" class="acont adnext" data-adgo="s-ctvavail">Tovább</button>
+    <button type="button" class="acont adnext" data-adgo="s-offsvc">Tovább</button>
     <p class="adnote">A Tovább gomb megnyomása után, a megadott címedre vonatkozóan személyre szabott ajánlatról tájékoztatunk.</p>
   </div>
 
-  <!-- ============= INTERNET + TV FLOW: AJÁNLATOK ============= -->
-  <div class="screen" data-screen="ctv-avail" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-ctvaddr"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Ajánlatok</span>
-      <div style="width:42px"></div>
-    </div>
-    <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Ajánlatok a címeden</h2>
-    <div class="offaddr">
-      <p class="oav">1144 Budapest XIV. ker., Ond vezér útja 13-15. 1. em. 12.</p>
-      <label class="offchg" for="s-ctvaddr">Másik címet adok meg.</label>
-    </div>
-    <p class="offsec">Internet</p>
-    <label class="tfcard jpkg jspin" for="s-ctvxnet" data-pkg="HiperNet L" data-bw="1000 Mbit/s" data-price="7 990 Ft">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet L</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">1000 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">7 990 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-    <label class="tfcard jpkg jspin" for="s-ctvxnet" data-pkg="HiperNet M" data-bw="500 Mbit/s" data-price="6 990 Ft">
-      <span class="tfbadge">30 nap díjmentes</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">HiperNet M</p><span class="tfnote">e-Komfort, 12 hó hűséggel</span></div>
-        <p class="tfdata">500 Mbit/s</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-world"></i>Optikai internet</span>
-          <span><i class="ti ti-router"></i>WiFi 7 router</span>
-          <span><i class="ti ti-circle-check"></i>Díjmentes telepítés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">6 990 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-    <div class="tfhelp">
-      <span class="tfhb"><i class="ti ti-message-circle"></i>Chat</span>
-      <span class="tfhb"><i class="ti ti-phone-call"></i>Visszahívást kérek</span>
-    </div>
-  </div>
 
-  <!-- ============= INTERNET + TV FLOW: INTERNET EXTRÁK ============= -->
-  <div class="screen" data-screen="ctv-xnet" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-ctvavail"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Extrák</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
-    <h2 class="buyhead">Extrák választása</h2>
-    <p class="xscope"><i class="ti ti-router"></i>Ezek az extrák az <b>otthoni internetedhez</b> tartoznak</p>
 
-    <div class="xcard">
-      <span class="xic"><i class="ti ti-shield-check"></i></span>
-      <div class="xtx">
-        <p class="xt">Gyermekvédelmi tartalomszűrő</p>
-        <p class="xs">A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat. Később is igényelheted és bármikor lemondhatod.</p>
-        <span class="xfree">Díjmentes</span>
-      </div>
-    </div>
-    <input class="rt" type="radio" name="x-gyv-ctv" id="cxg-yes" checked>
-    <input class="rt" type="radio" name="x-gyv-ctv" id="cxg-no">
-    <div class="xchoice" style="margin-bottom:16px;">
-      <label class="xopt" for="cxg-yes"><i class="ti ti-check"></i>Kérem</label>
-      <label class="xopt" for="cxg-no"><i class="ti ti-x"></i>Nem kérem</label>
-    </div>
 
-    <div class="xcard">
-      <span class="xic"><i class="ti ti-shield-lock"></i></span>
-      <div class="xtx">
-        <p class="xt">NetPajzs</p>
-        <p class="xs">Beépített védelem a káros és csaló weboldalak, vírusok és adathalász támadások ellen — a hálózat szintjén, minden otthoni eszközödön.</p>
-        <span class="xprice">490 Ft / hó</span>
-      </div>
-    </div>
-    <input class="rt" type="radio" name="x-netpajzs-ctv" id="cxn-yes">
-    <input class="rt" type="radio" name="x-netpajzs-ctv" id="cxn-no" checked>
-    <div class="xchoice">
-      <label class="xopt" for="cxn-yes"><i class="ti ti-check"></i>Kérem</label>
-      <label class="xopt" for="cxn-no"><i class="ti ti-x"></i>Nem kérem</label>
-    </div>
 
-    <label class="acont jspin" for="s-ctvtvsel">Tovább a TV-hez</label>
-  </div>
 
-  <!-- ============= INTERNET + TV FLOW: TV CSOMAGVÁLASZTÁS ============= -->
-  <div class="screen" data-screen="ctv-tvsel" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-ctvxnet"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">TV-csomag</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
-    <h2 class="buyhead">Válaszd ki a<br>TV-csomagod.</h2>
-    <p class="buysub">Mediaboxos TV az optikai internet mellé — előfeltétele az otthoni internet. (Ez nem a YettelTV, hanem beltéri egységgel működő TV.)</p>
-    <p class="mlab">Elérhető TV-csomagok</p>
-    <label class="tfcard pop jspin" for="s-ctvxtv" data-tvpkg="TV Extra" data-tvprice="4 490 Ft">
-      <span class="tfbadge">Népszerű</span>
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">TV Extra</p><span class="tfnote">12 hónapos hűséggel</span></div>
-        <p class="tfdata">110+ csatorna</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-device-tv"></i>HD minőség</span>
-          <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
-          <span><i class="ti ti-list"></i>Felvétel</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">4 490 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-    <label class="tfcard jspin" for="s-ctvxtv" data-tvpkg="TV Start" data-tvprice="2 990 Ft">
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">TV Start</p><span class="tfnote">12 hónapos hűséggel</span></div>
-        <p class="tfdata">60+ csatorna</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-device-tv"></i>HD minőség</span>
-          <span><i class="ti ti-refresh"></i>7 napos visszanézés</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">2 990 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-    <label class="tfcard jspin" for="s-ctvxtv" data-tvpkg="TV Prémium" data-tvprice="6 490 Ft">
-      <div class="tfmain">
-        <div class="tfnamerow"><p class="tfname">TV Prémium</p><span class="tfnote">12 hónapos hűséggel</span></div>
-        <p class="tfdata">160+ csatorna</p>
-        <div class="tfspecs">
-          <span><i class="ti ti-device-tv"></i>4K minőség</span>
-          <span><i class="ti ti-trophy"></i>Sportcsatornák</span>
-          <span><i class="ti ti-list"></i>Felvétel</span>
-        </div>
-        <span class="tfdet">Részletek</span>
-        <div class="tfprice">
-          <span class="tfp">6 490 Ft<small> / hó</small></span>
-          <span class="tford">Kiválasztom</span>
-        </div>
-      </div>
-    </label>
-  </div>
 
-  <!-- ============= INTERNET + TV FLOW: TV EXTRÁK ============= -->
-  <div class="screen" data-screen="ctv-xtv" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-ctvtvsel"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">TV extrák</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
-    <h2 class="buyhead">TV extrák</h2>
-    <p class="xscope"><i class="ti ti-device-tv"></i>Ezek az extrák a <b>TV szolgáltatáshoz</b> tartoznak</p>
 
-    <div class="xcard">
-      <span class="xic"><i class="ti ti-device-tv"></i></span>
-      <div class="xtx">
-        <p class="xt">Médiabox</p>
-        <p class="xs">Kiegészítő beltéri egység további TV-khez. Az elsőt díjmentesen adjuk, legfeljebb 3 médiaboxot kérhetsz.</p>
-        <span class="xprice">Első díjmentes · továbbiak 990 Ft / hó</span>
-      </div>
-    </div>
-    <p class="afl">Hány médiaboxot kérsz?</p>
-    <input class="rt" type="radio" name="x-mbox-ctv" id="mb-0" checked>
-    <input class="rt" type="radio" name="x-mbox-ctv" id="mb-1">
-    <input class="rt" type="radio" name="x-mbox-ctv" id="mb-2">
-    <input class="rt" type="radio" name="x-mbox-ctv" id="mb-3">
-    <div class="xchoice mboxchoice" style="margin-bottom:16px;">
-      <label class="xopt" for="mb-0">0</label>
-      <label class="xopt" for="mb-1">1</label>
-      <label class="xopt" for="mb-2">2</label>
-      <label class="xopt" for="mb-3">3</label>
-    </div>
 
-    <p class="afl">Streaming szolgáltatások</p>
-    <label class="strow"><input type="checkbox" class="rt strchk-in" id="cs-hbo" data-strm="HBO Max"><span class="stric"><i class="ti ti-player-play"></i></span><span class="strn">HBO Max<small>2 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
-    <label class="strow"><input type="checkbox" class="rt strchk-in" id="cs-nflx" data-strm="Netflix"><span class="stric"><i class="ti ti-movie"></i></span><span class="strn">Netflix<small>4 490 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
-    <label class="strow" style="margin-bottom:16px;"><input type="checkbox" class="rt strchk-in" id="cs-rtl" data-strm="RTL Plusz"><span class="stric"><i class="ti ti-device-tv"></i></span><span class="strn">RTL Plusz<small>1 590 Ft / hó</small></span><span class="strbox"><i class="ti ti-check"></i></span></label>
 
-    <label class="acont jspin" for="s-persdata">Tovább</label>
-  </div>
 
-  <!-- ============= INTERNET JOURNEY: HOZZAJARULASOK ============= -->
-  <div class="screen formscr" data-screen="consent-decl" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-addrdata"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Hozzájárulások</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span></div>
-    <div class="formbody">
-      <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Hozzájárulások és<br>nyilatkozatok</h2>
-      <p class="buysub">A megrendelés véglegesítéséhez fogadd el az alábbi kötelező nyilatkozatokat.</p>
-      <label class="consent">
-        <input type="checkbox" class="rt creq">
-        <span class="cschk"><i class="ti ti-check"></i></span>
-        <div class="cstx"><p class="cst">Általános Szerződési Feltételek <span class="csreq">Kötelező</span></p><p class="css">Elfogadom a lakossági Általános Szerződési Feltételeket és a mindenkori Díjszabást.</p></div>
-      </label>
-      <label class="consent">
-        <input type="checkbox" class="rt creq">
-        <span class="cschk"><i class="ti ti-check"></i></span>
-        <div class="cstx"><p class="cst">Egyedi előfizetői szerződés <span class="csreq">Kötelező</span></p><p class="css">Elfogadom az egyedi előfizetői szerződés feltételeit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
-      </label>
-      <label class="consent">
-        <input type="checkbox" class="rt creq">
-        <span class="cschk"><i class="ti ti-check"></i></span>
-        <div class="cstx"><p class="cst">Adatkezelési tájékoztató <span class="csreq">Kötelező</span></p><p class="css">Megismertem az Adatkezelési tájékoztatót, és tudomásul veszem személyes adataim kezelését a szerződés teljesítéséhez.</p></div>
-      </label>
-      <label class="consent">
-        <input type="checkbox" class="rt">
-        <span class="cschk"><i class="ti ti-check"></i></span>
-        <div class="cstx"><p class="cst">Marketing megkeresés <span class="csopt">Opcionális</span></p><p class="css">Hozzájárulok, hogy a Yettel elektronikus úton személyre szabott ajánlatokat és hírlevelet küldjön. Lorem ipsum dolor sit amet.</p></div>
-      </label>
-      <label class="consent">
-        <input type="checkbox" class="rt">
-        <span class="cschk"><i class="ti ti-check"></i></span>
-        <div class="cstx"><p class="cst">Adatátadás partnereknek <span class="csopt">Opcionális</span></p><p class="css">Hozzájárulok adataim marketingcélú átadásához partnervállalatoknak. Sed do eiusmod tempor incididunt ut labore.</p></div>
-      </label>
-    </div>
-    <label class="acont jbtn jspin" for="s-appt">Tovább</label>
-  </div>
 
-  <!-- ============= INTERNET JOURNEY: IDOPONTVALASZTAS ============= -->
-  <div class="screen formscr" data-screen="appt-set" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-consent"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Időpontválasztás</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span></div>
-    <div class="formbody">
-      <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Mikor menjen ki a<br>szaktechnikus?</h2>
-      <p class="buysub">A bekötéshez szaktechnikus érkezik a megadott címre. Válaszd ki a napot és az idősávot.</p>
-      <div class="calwrap">
-        <div class="calhead"><button class="calnav" data-cal="prev" type="button"><i class="ti ti-chevron-left"></i></button><span class="calmon" id="calmon"></span><button class="calnav" data-cal="next" type="button"><i class="ti ti-chevron-right"></i></button></div>
-        <div class="caldow"><span>H</span><span>K</span><span>Sze</span><span>Cs</span><span>P</span><span>Szo</span><span>V</span></div>
-        <div class="calgrid" id="calgrid"></div>
-      </div>
-      <p class="afl apptslotlbl" style="display:none;">Szabad idősávok</p>
-      <input class="rt" type="radio" name="appt-slot" id="as-1">
-      <input class="rt" type="radio" name="appt-slot" id="as-2">
-      <input class="rt" type="radio" name="appt-slot" id="as-3">
-      <div class="slotgrid" id="apptslots" style="display:none;">
-        <label class="slot" for="as-1"><i class="ti ti-clock"></i>08:00 – 12:00</label>
-        <label class="slot" for="as-2"><i class="ti ti-clock"></i>12:00 – 16:00</label>
-        <label class="slot" for="as-3"><i class="ti ti-clock"></i>16:00 – 20:00</label>
-      </div>
-      <p class="afl">Kapcsolattartó neve</p>
-      <div class="afield"><input id="apptName" type="text" placeholder="Add meg a nevet"></div>
-      <p class="afl">Telefonszám</p>
-      <div class="afield"><input id="apptPhone" type="tel" placeholder="+36 20 000 0000"></div>
-      <p class="afl">Megjegyzés a szaktechnikusnak <span style="color:var(--mid); font-weight:500;">(opcionális)</span></p>
-      <div class="afield afieldtx"><textarea id="apptNote" placeholder="Pl. kapucsengő nem működik, hívjon telefonon"></textarea></div>
-    </div>
-    <label class="acont jbtn jslot jspin" for="s-ordsum">Tovább</label>
-  </div>
 
-  <!-- ============= INTERNET JOURNEY: OSSZEFOGLALO ============= -->
-  <div class="screen" data-screen="order-sum" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-appt"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Összefoglaló</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp on"></span></div>
-    <h2 class="buyhead" style="font-size:20px; margin-top:14px;">Rendelés áttekintése</h2>
-    <p class="mlab">Megrendelt szolgáltatások</p>
-    <div class="gcard" id="sumlist"></div>
-    <p class="mlab">Fizetendő havidíj</p>
-    <div class="tubal" style="display:block;">
-      <p class="tubl">Összesen</p>
-      <p class="tubv"><span class="sumtotal">—</span><span style="font-size:12px; font-weight:600; color:var(--mid);"> / hó</span></p>
-      <p class="tube">Az első számla a bekötés után érkezik. A telepítés díjmentes.</p>
-    </div>
-    <div class="mlabrow"><p class="mlab">Kiszállási információk</p><label class="mlabedit" for="s-appt">Módosítom</label></div>
-    <div class="gcard">
-      <div class="krow"><span class="k">Cím</span><span class="v" style="text-align:right; max-width:60%;">1144 Budapest, Ond vezér útja 13-15.</span></div>
-      <div class="krow"><span class="k">Időpont</span><span class="v strong apptwhen">2026. 07. 28. · 08:00 – 12:00</span></div>
-      <div class="krow"><span class="k">Kapcsolattartó</span><span class="v apptname">Weinper Gyula</span></div>
-      <div class="krow"><span class="k">Telefonszám</span><span class="v apptphone">Nincs megadva</span></div>
-      <div class="krow"><span class="k">Megjegyzés</span><span class="v apptnote" style="text-align:right; max-width:58%;">Nincs megadva</span></div>
-    </div>
-    <p class="mlab">Dokumentumok</p>
-    <div class="gcard">
-      <div class="lrow"><span class="sic ok"><i class="ti ti-file-download"></i></span><span class="n">Előszerződés<small class="ninv">PDF · elkészült</small></span><i class="ti ti-download chev"></i></div>
-    </div>
-    <label class="acont jbtn jspin" for="s-ordok">Megrendelés véglegesítése</label>
-  </div>
 
-  <!-- ============= INTERNET JOURNEY: SIKERES ============= -->
-  <div class="screen okscr" data-screen="order-ok" style="display:none;">
-    <div class="okinner">
-    <div class="okwrap">
-      <span class="okic"><i class="ti ti-circle-check"></i></span>
-      <h2 class="okt">Köszönjük a<br>megrendelését!</h2>
-      <p class="oks">A szaktechnikus a megadott időpontban — <b class="apptwhenok">2026. 07. 28. · 08:00 – 12:00</b> — érkezik a bekötéshez a megadott címre. A részleteket e-mailben is elküldtük.</p>
-    </div>
-    <label class="acont jbtn" for="s-home">Vissza a Kezdőlapra</label>
-    </div>
-  </div>
-
-  <!-- ============= INTERNET JOURNEY: SZEMELYES ADATOK ============= -->
-  <div class="screen formscr" data-screen="personal-data" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-extrasvc"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Személyes adatok</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
-    <div class="formbody">
-      <h2 class="buyhead" style="font-size:20px; margin-top:8px;">Személyes adatok</h2>
-      <div class="infobox"><span class="ibic"><i class="ti ti-shield-lock"></i></span><p>Az adatok hitelességét ellenőrizzük, ami néha hosszabb időt is igénybe vehet. Kérjük, pontosan úgy töltsd ki, ahogyan a hivatalos dokumentumodban szerepel.</p></div>
-      <p class="afl">Igazolvány típusa</p>
-      <input class="rt" type="radio" name="idtype" id="idt-1" checked>
-      <input class="rt" type="radio" name="idtype" id="idt-2">
-      <input class="rt" type="radio" name="idtype" id="idt-3">
-      <div class="xchoice idchoice">
-        <label class="xopt" for="idt-1"><i class="ti ti-id"></i>Személyi</label>
-        <label class="xopt" for="idt-2"><i class="ti ti-car"></i>Jogosítvány</label>
-        <label class="xopt" for="idt-3"><i class="ti ti-book"></i>Útlevél</label>
-      </div>
-      <p class="afl">Okmány száma</p>
-      <div class="afield"><input type="text" placeholder="pl. 123456AB" value="123456AB"></div>
-      <p class="afl">Név előtag</p>
-      <div class="afield"><input type="text" placeholder="pl. Dr. (nem kötelező)"></div>
-      <p class="afl">Vezetéknév</p>
-      <div class="afield"><input type="text" placeholder="Ahogy az okmányban szerepel" value="Weinper"></div>
-      <p class="afl">Keresztnév</p>
-      <div class="afield"><input type="text" placeholder="Ahogy az okmányban szerepel" value="Gyula"></div>
-      <p class="afl">Születési név</p>
-      <div class="afield"><input type="text" placeholder="Ha eltér, add meg" value="Weinper Gyula"></div>
-      <p class="afl">Anyja neve</p>
-      <div class="afield"><input type="text" placeholder="Anyja születési neve" value="Kovács Mária"></div>
-      <p class="afl">Születési hely</p>
-      <div class="afield"><input type="text" placeholder="Város" value="Budapest"></div>
-      <p class="afl">Születési idő</p>
-      <div class="afield"><input type="text" placeholder="ÉÉÉÉ. HH. NN." value="1990. 05. 12."></div>
-    </div>
-    <label class="acont jbtn" for="s-load1">Adatok ellenőrzése</label>
-  </div>
-
-  <!-- ============= JOURNEY: ELLENORZES (1) ============= -->
-  <div class="screen loadscr" data-screen="load-1" style="display:none;">
-    <div class="loadinner">
-      <div class="loadspin" id="loadspin1"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet — érdemes egy picit várni. Kérjük, ne zárd be az ablakot.</p></div>
-      <div class="loadok" id="loadok1" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres ellenőrzés!</p></div>
-    </div>
-  </div>
-
-  <!-- ============= INTERNET JOURNEY: LAKCIM ADATOK ============= -->
-  <div class="screen formscr" data-screen="address-data" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-persdata"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Lakcím adatok</span>
-      <div style="width:42px"></div>
-    </div>
-    <div class="stepper"><span class="stp"></span><span class="stp"></span><span class="stp on"></span><span class="stp"></span><span class="stp"></span><span class="stp"></span></div>
-    <div class="formbody">
-      <h2 class="buyhead" style="font-size:20px; margin-top:8px;">Lakcím adatok</h2>
-      <div class="infobox"><span class="ibic"><i class="ti ti-home-check"></i></span><p>Az adatok hitelességét ellenőrizzük, ami néha hosszabb időt is igénybe vehet. Kérjük, pontosan úgy töltsd ki, <b>ahogyan a lakcímkártyádon szerepel</b>.</p></div>
-      <p class="afl">Irányítószám</p>
-      <div class="afield"><input type="text" placeholder="pl. 1144" value="1144"></div>
-      <p class="afl">Település neve</p>
-      <div class="afield"><input type="text" placeholder="pl. Budapest" value="Budapest"></div>
-      <p class="afl">Közterület neve</p>
-      <div class="afield"><input type="text" placeholder="pl. Ond vezér" value="Ond vezér"></div>
-      <p class="afl">Közterület típusa</p>
-      <div class="afield"><input type="text" placeholder="pl. útja, utca, tér" value="útja"></div>
-      <p class="afl">Házszám</p>
-      <div class="afield"><input type="text" placeholder="pl. 13-15." value="13-15."></div>
-      <p class="afl">Emelet</p>
-      <div class="afield"><input type="text" placeholder="pl. 1. (nem kötelező)" value="1."></div>
-      <p class="afl">Ajtó</p>
-      <div class="afield"><input type="text" placeholder="pl. 12. (nem kötelező)" value="12."></div>
-    </div>
-    <label class="acont jbtn" for="s-load2">Adatok ellenőrzése</label>
-  </div>
-
-  <!-- ============= JOURNEY: ELLENORZES (2) ============= -->
-  <div class="screen loadscr" data-screen="load-2" style="display:none;">
-    <div class="loadinner">
-      <div class="loadspin" id="loadspin2"><div class="spinner"></div><p class="loadt">Adatok ellenőrzése folyamatban…</p><p class="loads">Ez néha hosszabb időt is igénybe vehet — érdemes egy picit várni. Kérjük, ne zárd be az ablakot.</p></div>
-      <div class="loadok" id="loadok2" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres ellenőrzés!</p></div>
-    </div>
-  </div>
-
-  <!-- ============= JOURNEY: ELERHETOSEG ELLENORZESE ============= -->
-  <div class="screen loadscr" data-screen="load-avail" style="display:none;">
-    <div class="loadinner">
-      <div class="loadspin" id="loadspinA"><div class="spinner"></div><p class="loadt">Elérhetőség ellenőrzése…</p><p class="loads">Megnézzük, elérhető-e a kért szolgáltatás a megadott címen. Érdemes egy picit várni.</p></div>
-      <div class="loadok" id="loadokA" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Elérhető a címeden!</p></div>
-    </div>
-  </div>
-
-  <!-- ============= INTERNET + TV FLOW: CÍM ELLENŐRZÉSE ============= -->
-  <div class="screen loadscr" data-screen="ctv-loadavail" style="display:none;">
-    <div class="loadinner">
-      <div class="loadspin" id="loadspinC"><div class="spinner"></div><p class="loadt">Cím ellenőrzése…</p><p class="loads">Megnézzük, elérhető-e az internet és a TV a megadott címen. Érdemes egy picit várni.</p></div>
-      <div class="loadok" id="loadokC" style="display:none;"><span class="okic okpop"><i class="ti ti-check"></i></span><p class="loadt">Sikeres címkeresés!</p></div>
-    </div>
-  </div>
 
   <!-- ============= DIGITÁLIS SZOLGÁLTATÁS: STREAMING VÁLASZTÁS ============= -->
   <div class="screen" data-screen="str-pick" style="display:none;">
@@ -7640,88 +6977,6 @@
     });
     pop.addEventListener("click", function(e){ if(e.target===pop || e.target.closest(".wipb")) pop.classList.remove("on"); });
   })();
-  /* appointment calendar: future weekdays within one month */
-  (function(){
-    var grid = document.getElementById('calgrid'); if(!grid) return;
-    var monEl = document.getElementById('calmon');
-    var prevBtn = document.querySelector('.calnav[data-cal="prev"]');
-    var nextBtn = document.querySelector('.calnav[data-cal="next"]');
-    var slotLbl = document.querySelector('.apptslotlbl');
-    var slots = document.getElementById('apptslots');
-    var MON = ['január','február','március','április','május','június','július','augusztus','szeptember','október','november','december'];
-    var today = new Date(); today.setHours(0,0,0,0);
-    var maxDate = new Date(today); maxDate.setMonth(maxDate.getMonth()+1);
-    var view = new Date(today.getFullYear(), today.getMonth(), 1);
-    var selected = null;
-    function ym(d){ return d.getFullYear()*12 + d.getMonth(); }
-    function fmt(d){ return d.getFullYear()+'. '+('0'+(d.getMonth()+1)).slice(-2)+'. '+('0'+d.getDate()).slice(-2)+'.'; }
-    function updateSummary(){
-      var slot = document.querySelector('input[name="appt-slot"]:checked');
-      var slotTxt = slot ? document.querySelector('.slot[for="'+slot.id+'"]').textContent.trim() : '';
-      var whenFull = selected ? (fmt(selected) + (slotTxt ? ' · ' + slotTxt : '')) : '';
-      var sumRow = document.querySelector('[data-screen="order-sum"] .apptwhen');
-      if(sumRow && selected) sumRow.textContent = whenFull;
-      var okB = document.querySelector('[data-screen="order-ok"] .apptwhenok');
-      if(okB && selected && slotTxt) okB.textContent = whenFull;
-    }
-    function pick(date, el){
-      selected = date;
-      Array.prototype.slice.call(grid.querySelectorAll('.calday')).forEach(function(x){ x.classList.remove('sel'); });
-      el.classList.add('sel');
-      if(slotLbl) slotLbl.style.display = '';
-      if(slots) slots.style.display = '';
-      Array.prototype.slice.call(document.querySelectorAll('input[name="appt-slot"]')).forEach(function(r){ r.checked = false; });
-      updateSummary();
-    }
-    function render(){
-      monEl.textContent = view.getFullYear() + '. ' + MON[view.getMonth()];
-      grid.innerHTML = '';
-      var first = new Date(view.getFullYear(), view.getMonth(), 1);
-      var startDow = (first.getDay() + 6) % 7;
-      for(var i=0;i<startDow;i++){ var e=document.createElement('div'); e.className='calday empty'; grid.appendChild(e); }
-      var dim = new Date(view.getFullYear(), view.getMonth()+1, 0).getDate();
-      for(var d=1; d<=dim; d++){
-        var date = new Date(view.getFullYear(), view.getMonth(), d);
-        var btn = document.createElement('button'); btn.type='button'; btn.textContent = d;
-        var dow = date.getDay();
-        var avail = date > today && date <= maxDate && dow!==0 && dow!==6;
-        if(!avail){ btn.className='calday'; btn.disabled = true; }
-        else {
-          btn.className='calday avail';
-          (function(dt){ btn.addEventListener('click', function(){ pick(dt, this); }); })(date);
-        }
-        if(selected && date.getTime()===selected.getTime()) btn.classList.add('sel');
-        grid.appendChild(btn);
-      }
-      prevBtn.disabled = ym(view) <= ym(today);
-      nextBtn.disabled = ym(view) >= ym(maxDate);
-    }
-    prevBtn.addEventListener('click', function(){ view.setMonth(view.getMonth()-1); render(); });
-    nextBtn.addEventListener('click', function(){ view.setMonth(view.getMonth()+1); render(); });
-    Array.prototype.slice.call(document.querySelectorAll('input[name="appt-slot"]')).forEach(function(r){
-      r.addEventListener('change', updateSummary);
-    });
-    render();
-  })();
-  /* KYC verification loading: 5s spinner, 2s success tick, then advance */
-  (function(){
-    function runLoad(btnId, spinId, okId, nextRadioId){
-      var btn = document.querySelector('label.jbtn[for="'+btnId+'"]');
-      var spin = document.getElementById(spinId), ok = document.getElementById(okId);
-      if(!btn || !spin || !ok) return;
-      btn.addEventListener('click', function(){
-        spin.style.display = 'flex'; ok.style.display = 'none';
-        setTimeout(function(){
-          spin.style.display = 'none'; ok.style.display = 'flex';
-          var icon = ok.querySelector('.okpop');
-          if(icon){ icon.style.animation = 'none'; void icon.offsetWidth; icon.style.animation = ''; }
-          setTimeout(function(){ var r = document.getElementById(nextRadioId); if(r) r.checked = true; }, 2000);
-        }, 5000);
-      });
-    }
-    runLoad('s-load1', 'loadspin1', 'loadok1', 's-addrdata');
-    runLoad('s-load2', 'loadspin2', 'loadok2', 's-consent');
-  })();
   /* internet journey: 1.2s spinner on plain navigation CTAs */
   (function(){
     Array.prototype.slice.call(document.querySelectorAll('.jspin')).forEach(function(el){
@@ -7735,43 +6990,6 @@
           var r = document.getElementById(target); if(r) r.checked = true;
         }, 1200);
       });
-    });
-  })();
-  /* availability check loader */
-  (function(){
-    var btn = document.querySelector('label.jbtn[for="s-loadavail"]');
-    var spin = document.getElementById('loadspinA'), ok = document.getElementById('loadokA');
-    if(!btn || !spin || !ok) return;
-    btn.addEventListener('click', function(){
-      spin.style.display = 'flex'; ok.style.display = 'none';
-      setTimeout(function(){
-        spin.style.display = 'none'; ok.style.display = 'flex';
-        var ic = ok.querySelector('.okpop'); if(ic){ ic.style.animation='none'; void ic.offsetWidth; ic.style.animation=''; }
-        setTimeout(function(){ var r = document.getElementById('s-offsvc'); if(r) r.checked = true; }, 2000);
-      }, 5000);
-    });
-  })();
-  /* remember the chosen package for the summary */
-  (function(){
-    Array.prototype.slice.call(document.querySelectorAll('.jpkg')).forEach(function(card){
-      card.addEventListener('click', function(){
-        var pkg = card.getAttribute('data-pkg'), bw = card.getAttribute('data-bw'), price = card.getAttribute('data-price');
-        var e;
-        if((e=document.querySelector('.sumpkg'))) e.textContent = pkg;
-        if((e=document.querySelector('.sumbw'))) e.textContent = bw;
-        if((e=document.querySelector('.sumprice'))) e.textContent = price;
-      });
-    });
-  })();
-  /* carry the appointment details into the summary */
-  (function(){
-    var btn = document.querySelector('label.jslot[for="s-ordsum"]'); if(!btn) return;
-    function val(id, fallback){ var e = document.getElementById(id); var v = e ? e.value.trim() : ''; return v || fallback; }
-    btn.addEventListener('click', function(){
-      var e;
-      if((e=document.querySelector('.apptname')))  e.textContent = val('apptName', 'Weinper Gyula');
-      if((e=document.querySelector('.apptphone'))) e.textContent = val('apptPhone', 'Nincs megadva');
-      if((e=document.querySelector('.apptnote')))  e.textContent = val('apptNote', 'Nincs megadva');
     });
   })();
   /* menu: purchase entries preselect the right tab */
@@ -7796,63 +7014,6 @@
           var r = document.getElementById(ban.getAttribute('for')); if(r) r.checked = true;
         }
       }, true);
-    });
-  })();
-  /* internet / internet+TV journey: remember choices and build the summary */
-  (function(){
-    var od = {combo:false, gyv:true, np:false, netpkg:'', netbw:'', netprice:'', tvpkg:'', tvprice:'', mbox:0, strm:[]};
-    var STRM = {'HBO Max':2490, 'Netflix':4490, 'RTL Plusz':1590};
-    function chk(id){ var e=document.getElementById(id); return !!(e && e.checked); }
-    function on(sel, fn){ var e=document.querySelector(sel); if(e) e.addEventListener('click', fn); }
-    function num(s){ return parseInt(String(s||'').replace(/[^0-9]/g,''),10) || 0; }
-    function fmt(n){ var s=String(n), o=''; for(var i=0;i<s.length;i++){ if(i>0 && (s.length-i)%3===0) o+=' '; o+=s.charAt(i); } return o+' Ft'; }
-    Array.prototype.slice.call(document.querySelectorAll('.jpkg[data-pkg]')).forEach(function(c){
-      c.addEventListener('click', function(){ od.netpkg=c.getAttribute('data-pkg'); od.netbw=c.getAttribute('data-bw'); od.netprice=c.getAttribute('data-price'); });
-    });
-    on('[data-screen="extra-svc"] .acont[for="s-persdata"]', function(){ od.combo=false; od.gyv=chk('xs-yes'); od.np=chk('nps-yes'); });
-    on('[data-screen="extra-buy"] .acont[for="s-persdata"]', function(){ od.combo=false; od.gyv=chk('xb-yes'); od.np=chk('npb-yes'); });
-    on('[data-screen="ctv-xnet"] .acont[for="s-ctvtvsel"]', function(){ od.combo=true; od.gyv=chk('cxg-yes'); od.np=chk('cxn-yes'); });
-    Array.prototype.slice.call(document.querySelectorAll('[data-screen="ctv-tvsel"] label[for="s-ctvxtv"]')).forEach(function(l){
-      l.addEventListener('click', function(){ od.tvpkg=l.getAttribute('data-tvpkg')||''; od.tvprice=l.getAttribute('data-tvprice')||''; });
-    });
-    on('[data-screen="ctv-xtv"] .acont[for="s-persdata"]', function(){
-      var m=document.querySelector('input[name="x-mbox-ctv"]:checked'); od.mbox = m?parseInt(m.id.replace('mb-',''),10):0;
-      od.strm = Array.prototype.slice.call(document.querySelectorAll('.strchk-in:checked')).map(function(c){ return c.getAttribute('data-strm'); });
-    });
-    var sumBtn = document.querySelector('label.jslot[for="s-ordsum"]');
-    if(sumBtn) sumBtn.addEventListener('click', function(){
-      var list=document.getElementById('sumlist'); if(!list) return;
-      var rows=[], total=0;
-      function item(k, sub, price, free){
-        if(price) total += price;
-        var val = free ? 'Díjmentes' : (price!=null ? fmt(price)+' / hó' : '');
-        rows.push('<div class="krow"><span class="k">'+k+(sub?'<span class="sumsub">'+sub+'</span>':'')+'</span><span class="v strong">'+val+'</span></div>');
-      }
-      item('Otthoni internet', od.netpkg || 'HiperNet L', num(od.netprice) || 7990);
-      if(od.gyv) item('Gyermekvédelmi szűrő', 'Tartalomszűrő', 0, true);
-      if(od.np) item('NetPajzs', 'Hálózati védelem', 490);
-      if(od.combo){
-        item('TV szolgáltatás', od.tvpkg || 'TV Extra', num(od.tvprice) || 4490);
-        if(od.mbox>0){ var mc=(od.mbox-1)*990; item('Médiabox', od.mbox+' db (első díjmentes)', mc, mc===0); }
-        od.strm.forEach(function(s){ item(s, 'Streaming', STRM[s]||0); });
-      }
-      rows.push('<div class="krow"><span class="k">Hűségidő</span><span class="v">12 hónap</span></div>');
-      list.innerHTML = rows.join('');
-      var t=document.querySelector('.sumtotal'); if(t) t.textContent = fmt(total);
-    });
-  })();
-  /* combined flow: availability loader after the address step (5s + success tick) */
-  (function(){
-    var btn = document.querySelector('label.jbtn[for="s-ctvloadavail"]');
-    var spin = document.getElementById('loadspinC'), ok = document.getElementById('loadokC');
-    if(!btn || !spin || !ok) return;
-    btn.addEventListener('click', function(){
-      spin.style.display='flex'; ok.style.display='none';
-      setTimeout(function(){
-        spin.style.display='none'; ok.style.display='flex';
-        var ic=ok.querySelector('.okpop'); if(ic){ ic.style.animation='none'; void ic.offsetWidth; ic.style.animation=''; }
-        setTimeout(function(){ var r=document.getElementById('s-ctvavail'); if(r) r.checked=true; }, 2000);
-      }, 5000);
     });
   })();
   /* digital service order (streaming / gyermekvédelem / NetPajzs): pick -> summary -> success */
@@ -7962,20 +7123,6 @@
       } else if(kind==='Gyermekvédelem'){
         addRow('[data-relhead="mob-7430"]','after','gyv', featRow('gyv','Gyermekvédelmi szűrő','ti-shield-check'));
       }
-    });
-
-    /* ORDER: physical internet / internet+TV */
-    var ordBtn=document.querySelector('label[for="s-ordok"]');
-    if(ordBtn) ordBtn.addEventListener('click', function(){
-      var netPkg='', tvPkg='';
-      all('#sumlist .krow').forEach(function(r){
-        var k=r.querySelector('.k'); if(!k) return; var kt=k.textContent.trim();
-        var sub=k.querySelector('.sumsub'); var sv=sub?sub.textContent.trim():'';
-        if(kt.indexOf('Otthoni internet')===0) netPkg=sv||'HiperNet L';
-        if(kt.indexOf('TV szolgáltatás')===0) tvPkg=sv||'TV Extra';
-      });
-      if(netPkg) addRow('[data-anchor="otthoni"]','before','net-new', netSub(netPkg));
-      if(tvPkg) addRow('[data-anchor="otthoni"]','before','tv-new', tvSub(tvPkg));
     });
 
     /* CANCELLATION: any detail's "Szolgáltatás lemondása" */
@@ -8106,7 +7253,7 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.ofdet,.ofcb,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.ofdet,.ofnext,.annotify,.idb,.idit,.ktfr,.ktnew,.ktedit,.scbtn,.mptile,.mplink,.mprow,.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
@@ -8304,7 +7451,7 @@
       if (newR.checked && !sc.classList.contains('adon')){ sc.classList.add('adon'); paint(sc); sc.scrollTop = 0; return; }
       var v = sc._vals, unit = UNITS.filter(function(u){ return u[0] === v.unit; })[0];
       var scenario = newR.checked ? (unit ? unit[1] : 'both') : 'both';
-      window.yAddr = {scenario:scenario, address: newR.checked ? (v.city+', '+v.street+' '+v.house+', '+v.unit.replace(/\s*\(.*\)$/, '')) : '8200 Veszprém, Tölgyfa u. 4'};
+      window.yAddr = {from:sc.getAttribute('data-screen'), scenario:scenario, address: newR.checked ? (v.city+', '+v.street+' '+v.house+', '+v.unit.replace(/\s*\(.*\)$/, '')) : '8200 Veszprém, Tölgyfa u. 4'};
       ld.classList.add('on');
       setTimeout(function(){ go(scenario === 'none' ? 's-addrnone' : next.getAttribute('data-adgo')); }, 2600);
       setTimeout(function(){ ld.classList.remove('on'); }, 2800);
@@ -8314,7 +7461,7 @@
   /* "Másik cím megadása" on the offers screen opens the form straight away */
   document.addEventListener('click', function(e){
     var l = e.target.closest && e.target.closest('[data-ofnew]'); if (!l) return;
-    var sc = document.querySelector('[data-screen="addr-svc"]'); sc.querySelector('input[id$="-new"]').checked = true; sc.classList.add('adon'); paint(sc);
+    var sc = document.querySelector(l.getAttribute('for') === 's-ctvaddr' ? '[data-screen="ctv-addr"]' : '[data-screen="addr-svc"]'); sc.querySelector('input[id$="-new"]').checked = true; sc.classList.add('adon'); paint(sc);
   });
 })();
 </script>
@@ -8979,6 +8126,8 @@
     car.innerHTML = list.map(function(p, i){ return card(p, i, p.t === 'fbb' || a.scenario === 'fwa'); }).join('');
     dots.innerHTML = list.map(function(p, i){ return '<i'+(i ? '' : ' class="on"')+'></i>'; }).join('');
     sc.querySelector('[data-ofaddr]').textContent = a.address;
+    var back = a.from === 'ctv-addr' ? 's-ctvaddr' : 's-addrsvc';
+    sc.querySelector('[data-ofback]').setAttribute('for', back); sc.querySelector('[data-ofnew]').setAttribute('for', back);
     select(0);
     sc.classList.remove('stk'); sc.scrollTop = 0; car.scrollLeft = 0;
   }
