@@ -2990,12 +2990,13 @@
   .flhero{ margin:0 0 18px; padding:20px 18px; border-radius:16px; background:var(--lime); color:var(--navy); }
   .flhero b{ display:block; font-size:22px; font-weight:800; line-height:1.2; }
   .flhero p{ margin:8px 0 0; font-size:13px; line-height:1.45; }
-  .flben{ display:flex; gap:12px; margin-bottom:14px; }
+  .flben{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
   .flben > i{ flex-shrink:0; display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:#CFE3EE; font-size:19px; color:var(--navy); }
-  .flben b{ display:block; font-size:13px; font-weight:700; color:var(--navy); }
-  .flben p{ margin:2px 0 0; font-size:12px; line-height:1.4; color:var(--navy); }
-  .fltiers{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:6px 0 24px; }
-  .fltier{ padding:12px 6px; border:1.5px solid #E3E8EE; border-radius:12px; text-align:center; color:var(--navy); transition:all .2s; }
+  .flben b{ display:block; font-size:15px; font-weight:700; color:var(--navy); }
+  .flben p{ margin:1px 0 0; font-size:11px; font-weight:300; line-height:1.4; color:var(--navy); }
+  .fltiers{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:20px 0 24px; }
+  .fltier{ position:relative; padding:16px 6px 12px; border:1.5px solid #E3E8EE; border-radius:12px; text-align:center; color:var(--navy); transition:all .2s; }
+  .fltier .flcur{ position:absolute; top:-9px; left:50%; transform:translateX(-50%); padding:2px 8px; border-radius:999px; background:var(--lime); white-space:nowrap; font-size:9px; font-weight:700; color:var(--navy); }
   .fltier b{ display:block; font-size:22px; font-weight:800; }
   .fltier span{ font-size:10.5px; line-height:1.3; }
   .fltier.on{ border-color:#09223D; background:#09223D; color:var(--lime); }
@@ -9235,10 +9236,10 @@
   var ov = document.createElement('div'); ov.className = 'fsov flov';
   ov.innerHTML = '<div class="fsbody"><div class="fshead"><b>Yettel Full</b><button type="button" class="fsx" data-flclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
     + '<div class="flhero"><b>Több szolgáltatás,<br>több kedvezmény!</b><p>Fogd össze mobil- és otthoni internet-előfizetéseidet a Yettel Full-ban, és minden jogosult havidíjadból kedvezményt kapsz – akár 30%-ot is, hónapról hónapra.</p></div>'
-    + '<div class="flben"><i class="ti ti-percentage"></i><div><b>Akár 30% havidíjkedvezmény</b><p>Minél több mobil- és otthoni internet-előfizetésed van a neveden, annál nagyobb a kedvezmény.</p></div></div>'
-    + '<div class="flben"><i class="ti ti-phone-call"></i><div><b>Díjmentes hívások a csomagon belül</b><p>A Full-ba tartozó számok korlátlanul, díjmentesen hívhatják egymást.</p></div></div>'
-    + '<div class="flben"><i class="ti ti-device-tv"></i><div><b>15% a Yettel TV-re és a Max-ra</b><p>A Yettel TV (az XS csomag kivételével) és a Max előfizetés havidíjából is 15% jár.</p></div></div>'
-    + '<div class="fltiers"><div class="fltier" data-t="15"><b>15%</b><span>2 előfizetés<br>pl. 2 mobil vagy mobil + net</span></div><div class="fltier" data-t="20"><b>20%</b><span>3 előfizetés<br>pl. 3 mobil</span></div><div class="fltier" data-t="30"><b>30%</b><span>4 vagy több<br>pl. 3 mobil + net</span></div></div>'
+    + '<div class="flben"><i class="ti ti-percentage"></i><div><b>Akár 30% havidíjkedvezmény</b></div></div>'
+    + '<div class="flben"><i class="ti ti-phone-call"></i><div><b>Díjmentes hívások a csomagon belül</b></div></div>'
+    + '<div class="flben"><i class="ti ti-device-tv"></i><div><b>15% a Yettel TV-re és a Max-ra</b><p>az XS csomag kivételével</p></div></div>'
+    + '<div class="fltiers"><div class="fltier" data-t="15"><b>15%</b><span>2 előfizetés</span></div><div class="fltier" data-t="20"><b>20%</b><span>3 előfizetés</span></div><div class="fltier" data-t="30"><b>30%</b><span>4 vagy több előfizetés</span></div></div>'
     + '<p class="flh">Számold ki a kedvezményed!</p><p class="flsub">Bejelöltük a jelenlegi előfizetéseidet. Vedd ki, ami nem kell, vagy tegyél hozzá újat, és rögtön látod, mennyi jár.</p>'
     + '<p class="fullsub">Meglévő szolgáltatásaid</p><div class="fllist" data-flmine></div>'
     + '<p class="fullsub">Ha még ezeket is választanád</p><div class="fllist" data-fladd></div>'
@@ -9277,7 +9278,12 @@
     ov.querySelector('[data-flfull]').textContent = fmt(full) + ' Ft/hó';
     ov.querySelector('[data-flnow]').textContent = fmt(now) + ' Ft/hó';
     ov.querySelector('[data-flsave]').textContent = fmt(full - now) + ' Ft/hó';
-    Array.prototype.forEach.call(ov.querySelectorAll('.fltier'), function(t){ t.classList.toggle('on', +t.getAttribute('data-t') === pct); });
+    var mine = tier(MINE.filter(function(it){ return it.kind === 'base'; }).length);
+    Array.prototype.forEach.call(ov.querySelectorAll('.fltier'), function(t){
+      var v = +t.getAttribute('data-t'), b = t.querySelector('.flcur');
+      t.classList.toggle('on', v === pct);
+      if (v === mine && !b) t.insertAdjacentHTML('afterbegin', '<span class="flcur">Jelenlegi kedvezményed</span>');
+    });
     var next = n < 2 ? 2 : n < 3 ? 3 : n < 4 ? 4 : 0;
     ov.querySelector('[data-flhint]').innerHTML = next
       ? '<i class="ti ti-bulb"></i><span>Még '+(next - n)+' mobil- vagy otthoni internet-előfizetéssel '+tier(next)+'% kedvezmény járna'+(n < 2 ? ', és a TV-re, Max-ra is 15%.' : '.')+'</span>'
