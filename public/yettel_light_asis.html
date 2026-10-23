@@ -2153,6 +2153,57 @@
   .bdbtns{ display:flex; flex-direction:column; gap:10px; margin-top:28px; }
   .bdb{ display:block; width:100%; padding:13px; border-radius:999px; text-align:center; font-family:'Yettel'; font-size:14px; font-weight:700; cursor:pointer; border:2px solid var(--navy); }
   .bdb.pri{ background:var(--navy); color:#fff; } .bdb.sec{ background:#fff; color:var(--navy); }
+
+  /* ===== Számlatörténet: subscription selector + filters ===== */
+  .bhselt{ flex:1; min-width:0; }
+  .bhselt small{ display:block; font-size:11px; font-weight:300; color:var(--navy); }
+  .bhselt small:empty{ display:none; }
+  .bhfbtn.on::after{ content:""; width:7px; height:7px; margin-left:-4px; border-radius:50%; background:#E5484D; align-self:flex-start; }
+  .bhempty{ margin:0; padding:22px 0; text-align:center; font-size:12.5px; color:var(--mid); }
+  .bhsheet .bhall .xsotx b{ font-size:14px; }
+  .bfov{ position:absolute; inset:0; z-index:115; display:none; flex-direction:column; background:#FFFFFF; }
+  .bfov.on{ display:flex; animation:xsup .25s ease-out; }
+  .bfhead{ display:flex; align-items:center; justify-content:space-between; padding:30px 16px 6px; }
+  .bfhead p{ margin:0; font-family:'Yettel'; font-size:20px; font-weight:700; color:var(--navy); }
+  .bfx{ border:none; background:none; padding:4px; cursor:pointer; display:flex; }
+  .bfx i{ font-size:24px; color:var(--mid); }
+  .bfbody{ flex:1; overflow-y:auto; padding:8px 16px 16px; scrollbar-width:none; }
+  .bfbody hr{ border:none; border-top:1px solid #E3E8EE; margin:14px 0 4px; }
+  .bfh{ margin:16px 0 10px; font-size:13px; font-weight:700; color:var(--navy); }
+  .bfr{ display:flex; align-items:center; gap:12px; padding:7px 0; font-size:12.5px; font-weight:300; color:var(--navy); cursor:pointer; }
+  .bfr input{ display:none; }
+  .bfr span{ width:18px; height:18px; flex-shrink:0; border-radius:50%; border:1.5px solid #C9D1DC; }
+  .bfr input:checked + span{ border:5px solid var(--navy); }
+  .bfdates{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .bfdl{ display:block; margin-bottom:6px; font-size:11.5px; color:var(--navy); }
+  .bfdin{ display:flex; align-items:center; justify-content:space-between; width:100%; height:44px; padding:0 12px; border:1.5px solid #E3E8EE; border-radius:10px; background:#FFFFFF;
+          font-family:'Yettel'; font-size:13px; color:var(--navy); cursor:pointer; }
+  .bfdin i{ font-size:20px; color:var(--mid); }
+  .bfdin.act{ border-color:var(--navy); }
+  .bfdin.act span::after{ content:"|"; margin-left:3px; font-weight:300; animation:bfblink 1s steps(1) infinite; }
+  @keyframes bfblink{ 50%{ opacity:0; } }
+  .bfdin.bad{ border-color:#E5484D; }
+  .bferr{ margin:8px 0 0; font-size:11px; line-height:1.4; color:#E5484D; }
+  .bferr:empty{ display:none; }
+  .bfpick{ margin-top:12px; }
+  .bfpick[hidden]{ display:none; }
+  .bfph{ display:flex; align-items:center; justify-content:space-between; padding:0 4px 8px; }
+  .bfmy{ display:flex; align-items:center; gap:8px; border:none; background:none; padding:0; cursor:pointer; font-family:'Yettel'; color:var(--navy); }
+  .bfmy b{ font-size:13px; font-weight:700; } .bfmy i{ font-size:16px; }
+  .bfnav{ display:flex; gap:14px; } .bfnav button{ border:none; background:none; padding:0; cursor:pointer; display:flex; } .bfnav i{ font-size:18px; color:var(--low); }
+  .bfwheel{ position:relative; display:grid; grid-template-columns:1.6fr .8fr 1fr; height:130px; border-radius:14px; background:#FFFFFF;
+            box-shadow:0 6px 24px -8px rgba(9,34,61,.22), 0 0 0 1px #EEF1F4; overflow:hidden; }
+  .bfcol{ position:relative; z-index:1; height:130px; overflow-y:auto; scroll-snap-type:y mandatory; scrollbar-width:none; text-align:center; }
+  .bfcol::-webkit-scrollbar{ display:none; }
+  .bfcol i,.bfcol span{ display:block; height:26px; line-height:26px; scroll-snap-align:start; }
+  .bfcol span{ font-size:12px; color:#C3CAD4; cursor:pointer; transition:font-size .12s, color .12s; }
+  .bfcol span.n2{ font-size:12.5px; color:#B0B8C4; } .bfcol span.n1{ font-size:14px; color:#8592A6; }
+  .bfcol span.on{ font-size:16px; color:var(--navy); }
+  .bfband{ position:absolute; left:8px; right:8px; top:52px; height:26px; border-radius:7px; background:#EEF1F4; z-index:0; }
+  .bffoot{ padding:12px 16px 22px; border-top:1px solid #E3E8EE; }
+  .bfgo{ width:100%; padding:14px; border:none; border-radius:999px; background:var(--navy); color:#fff; font-family:'Yettel'; font-size:14px; font-weight:700; cursor:pointer; }
+  .bfgo.off{ background:#CDD4DC; color:#8592A6; cursor:default; }
+  .bfclr{ display:block; width:100%; margin-top:14px; border:none; background:none; font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
 </style>
 </head>
 <body>
@@ -6557,8 +6608,8 @@
       <span class="title">Számlatörténet</span>
       <div style="width:42px"></div>
     </div>
-    <div class="bhsel"><i class="ti ti-layout-grid"></i><b>Összes előfizetés</b><i class="ti ti-chevron-down"></i></div>
-    <div class="bhfilt"><span class="bhfbtn">Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
+    <div class="bhsel" data-bhsel><i class="ti ti-layout-grid" data-bhselic></i><span class="bhselt"><small data-bhsels></small><b data-bhselb>Összes előfizetés</b></span><i class="ti ti-chevron-down"></i></div>
+    <div class="bhfilt"><span class="bhfbtn" data-bhfilt>Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
     <div class="bhlist" data-bhlist></div>
   </div>
 
@@ -6630,6 +6681,49 @@
       <p class="wips">Add meg ezt a kódot a szolgáltatás appjában vagy weboldalán az aktiváláshoz.</p>
       <div class="codebox"><span id="codeval">----</span></div>
       <button class="wipb" type="button">Bezárás</button>
+    </div>
+  </div>
+  <div class="bfov" id="bfov">
+    <div class="bfhead"><p>Szűrők</p><button type="button" class="bfx" data-bfclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
+    <div class="bfbody" data-bfbody>
+      <p class="bfh">Rendezés</p>
+      <label class="bfr"><input type="radio" name="bfsort" value="new"><span></span>Legújabb elöl</label>
+      <label class="bfr"><input type="radio" name="bfsort" value="old"><span></span>Legrégebbi elöl</label>
+      <hr>
+      <p class="bfh">Számla típusa</p>
+      <label class="bfr"><input type="radio" name="bftype" value="all"><span></span>Minden számla</label>
+      <label class="bfr"><input type="radio" name="bftype" value="havi"><span></span>Havi számla</label>
+      <label class="bfr"><input type="radio" name="bftype" value="pre"><span></span>Feltöltőkártyás gyűjtőszámla</label>
+      <label class="bfr"><input type="radio" name="bftype" value="yepp"><span></span>Yepp számla</label>
+      <hr>
+      <p class="bfh">Időszak</p>
+      <div class="bfdates">
+        <div><span class="bfdl">-tól</span><button type="button" class="bfdin" data-bfd="from"><span data-bfdv="from"></span><i class="ti ti-calendar"></i></button></div>
+        <div><span class="bfdl">-ig</span><button type="button" class="bfdin" data-bfd="to"><span data-bfdv="to"></span><i class="ti ti-calendar"></i></button></div>
+      </div>
+      <p class="bferr" data-bferr></p>
+      <div class="bfpick" data-bfpick hidden>
+        <div class="bfph"><button type="button" class="bfmy" data-bfmy><b data-bfmyt></b><i class="ti ti-chevron-up"></i></button>
+          <span class="bfnav"><button type="button" data-bfstep="-1" aria-label="Előző hónap"><i class="ti ti-chevron-left"></i></button><button type="button" data-bfstep="1" aria-label="Következő hónap"><i class="ti ti-chevron-right"></i></button></span></div>
+        <div class="bfwheel">
+          <div class="bfcol" data-col="m"></div><div class="bfcol bfnum" data-col="d"></div><div class="bfcol bfnum" data-col="y"></div>
+          <span class="bfband"></span>
+        </div>
+      </div>
+    </div>
+    <div class="bffoot">
+      <button type="button" class="bfgo" data-bfgo>Szűrés</button>
+      <button type="button" class="bfclr" data-bfclr>Szűrési feltételek törlése</button>
+    </div>
+  </div>
+  <div class="xsheet bhsheet" id="bhsheet">
+    <div class="xsbg" data-bhclose></div>
+    <div class="xspanel">
+      <span class="xsgrab"></span>
+      <div class="xshead"><p>Előfizetéseid</p><button type="button" class="xsx" data-bhclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
+      <p class="xsq">Melyik előfizetés számláit szeretnéd megnézni?</p>
+      <div class="xsopts" data-bhopts></div>
+      <button type="button" class="xsgo" data-bhgo>Tovább</button>
     </div>
   </div>
   <div class="xsheet" id="xsheet">
@@ -7224,11 +7318,11 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.fblink,.bhsel,.bhfbtn,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.fblink,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -7421,12 +7515,12 @@
 (function(){
   var CARD = '<span class="bkcard"><b>Bankkártya</b><i class="mc"><i></i><i></i></i></span>';
   var BILLS = [
-    {id:'b1', name:'Nyitott számla', amt:6990, due:'2026.11.26', no:'1003 2047 5860', per:'2026.10.12 - 2026.11.11', total:6990, ded:0, sub:'+36 20 290 7566 és további 2 szám', tag:'Előfizetéses', st:'open', card:'ok'},
-    {id:'b2', name:'Nyitott számla, lejárt kártya', amt:6990, due:'2026.11.26', no:'1003 2047 5861', per:'2026.10.12 - 2026.11.11', total:6990, ded:0, sub:'+36 20 290 7430', tag:'Előfizetéses', st:'open', card:'expired'},
-    {id:'b3', name:'Nyitott számla, nincs mentett kártya', amt:9000, due:'2026.11.26', no:'1003 2047 5862', per:'2026.10.12 - 2026.11.11', total:9000, ded:0, sub:'186545678', tag:'Otthoni', st:'open', card:'none'},
-    {id:'b4', name:'Lejárt számla', amt:2000, due:'2026.10.20', no:'1003 2047 5863', per:'2026.09.12 - 2026.10.11', total:2000, ded:0, sub:'+36 20 290 9734', tag:'Feltöltőkártyás', st:'overdue', card:'ok'},
-    {id:'b5', name:'Befizetett számla', amt:6990, due:'2026.10.26', no:'1003 2047 5864', per:'2026.09.12 - 2026.10.11', total:6990, ded:0, sub:'+36 20 290 7566 és további 2 szám', tag:'Előfizetéses', st:'paid', card:'ok'},
-    {id:'b6', name:'Write off számla', amt:20150, due:'2021.01.26', no:'1003 2047 5865', per:'2020.12.20 - 2021.01.19', total:21000, ded:0, sub:'186545666', tag:'Jóváíró', st:'writeoff', card:'ok'}
+    {id:'b1', name:'Nyitott számla', amt:6990, iss:'2026.10.12', due:'2026.11.05', no:'1003 2047 5860', per:'2026.09.12 - 2026.10.11', total:6990, ded:0, sub:'+36 20 290 7566 és további 2 szám', sk:'7566', tag:'Előfizetéses', st:'open', card:'ok'},
+    {id:'b2', name:'Nyitott számla, lejárt kártya', amt:6990, iss:'2026.10.12', due:'2026.11.05', no:'1003 2047 5861', per:'2026.09.12 - 2026.10.11', total:6990, ded:0, sub:'+36 20 290 7430', sk:'7430', tag:'Előfizetéses', st:'open', card:'expired'},
+    {id:'b3', name:'Nyitott számla, nincs mentett kártya', amt:9000, iss:'2026.10.12', due:'2026.11.05', no:'1003 2047 5862', per:'2026.09.12 - 2026.10.11', total:9000, ded:0, sub:'186545678', sk:'net', tag:'Otthoni', st:'open', card:'none'},
+    {id:'b4', name:'Lejárt számla', amt:2000, iss:'2026.09.12', due:'2026.10.20', no:'1003 2047 5863', per:'2026.08.12 - 2026.09.11', total:2000, ded:0, sub:'+36 20 290 9734', sk:'9734', tag:'Feltöltőkártyás', st:'overdue', card:'ok'},
+    {id:'b5', name:'Befizetett számla', amt:6990, iss:'2026.09.12', due:'2026.10.06', no:'1003 2047 5864', per:'2026.08.12 - 2026.09.11', total:6990, ded:0, sub:'+36 20 290 7566 és további 2 szám', sk:'7566', tag:'Előfizetéses', st:'paid', card:'ok'},
+    {id:'b6', name:'Write off számla', amt:20150, iss:'2026.01.20', due:'2026.01.26', no:'1003 2047 5865', per:'2025.12.20 - 2026.01.19', total:21000, ded:0, sub:'186545666', sk:'net', tag:'Jóváíró', st:'writeoff', card:'ok'}
   ];
   var LBL = {open:'Nyitott', overdue:'Lejárt', paid:'Fizetve', writeoff:'Nem befizethető'};
   var sel = {}, curBill = null;
@@ -7453,18 +7547,37 @@
     var bd = q('[data-billbadge]'); if (bd){ bd.textContent = n; bd.style.display = n ? '' : 'none'; }
     var hn = q('#hnote'); if (hn && !n) hn.classList.add('off');
   }
+  var OLDER = (function(){
+    var spec = [['2026.08.12','7566','Előfizetéses'],['2026.07.12','9734','Feltöltőkártyás'],['2026.06.12','7430','Yepp'],['2026.05.12','net','Jóváíró'],
+                ['2026.04.12','7566','Előfizetéses'],['2026.03.12','net','Otthoni'],['2025.06.12','7566','Előfizetéses'],['2024.11.12','8812','Feltöltőkártyás'],['2019.05.12','7430','Yepp']];
+    var SUBTXT = {'7566':'+36 20 290 7566 (és további 2 szám)','7430':'+36 20 290 7430','9734':'+36 20 290 9734','8812':'+36 20 290 8812','net':'186545678'};
+    return spec.map(function(x, i){
+      var d = x[0].split('.'), due = d[0]+'.'+d[1]+'.'+('0'+(+d[2]+12)).slice(-2);
+      return {id:'h'+i, name:'', amt:18765 - i*1150, iss:x[0], due:due, no:'1003 2047 58'+(70+i), per:'—', total:18765 - i*1150, ded:0, sub:SUBTXT[x[1]], sk:x[1], tag:x[2], st:'paid', card:'ok'};
+    });
+  })();
+  function all(){ return BILLS.concat(OLDER); }
+  function dt(str){ var p = str.split('.'); return new Date(+p[0], +p[1]-1, +p[2]); }
+  var TYPE = {'Előfizetéses':'havi','Otthoni':'havi','Jóváíró':'havi','Feltöltőkártyás':'pre','Yepp':'yepp'};
+  var today = new Date(); today.setHours(0,0,0,0);
+  function defFrom(){ var d = new Date(today); d.setFullYear(d.getFullYear()-1); d.setDate(d.getDate()+1); return d; }
+  var FILTER = {sort:'new', type:'all', from:defFrom(), to:new Date(today), sub:'all'};
+  window.yBillFilter = {get:function(){ return FILTER; }, set:function(f){ FILTER = f; renderHist(); }, def:function(){ return {sort:'new', type:'all', from:defFrom(), to:new Date(today), sub:FILTER.sub}; }, today:today};
   function renderHist(){
     var list = q('[data-bhlist]'); if (!list) return;
-    var older = [];
-    for (var i = 0; i < 6; i++) older.push({id:'h'+i, amt:18765 - i*1250, due:'2026.0'+(9-i)+'.24', sub:'+36 20 290 7566 (és további 2 szám)', tag:['Előfizetéses','Feltöltőkártyás','Yepp','Jóváíró','Előfizetéses','Otthoni'][i], st:'paid', name:'', no:'1003 2047 58'+(70+i), per:'2026.0'+(8-i)+'.12 - 2026.0'+(9-i)+'.11', total:18765 - i*1250, ded:0, card:'ok'});
-    list.innerHTML = BILLS.concat(older).map(function(b){
+    var rows = all().filter(function(b){
+      var d = dt(b.iss);
+      return d >= FILTER.from && d <= FILTER.to && (FILTER.type === 'all' || TYPE[b.tag] === FILTER.type) && (FILTER.sub === 'all' || b.sk === FILTER.sub);
+    }).sort(function(x, y){ return FILTER.sort === 'new' ? dt(y.iss) - dt(x.iss) : dt(x.iss) - dt(y.iss); });
+    list.innerHTML = rows.length ? rows.map(function(b){
       var ic = {paid:'ti-circle-check bhok', open:'ti-clock bhopen', overdue:'ti-alert-circle bhod', writeoff:'ti-ban bhwo'}[b.st];
       return '<div class="bhrow" data-billopen="'+b.id+'"><i class="ti '+ic+'"></i><div class="bhtx"><b>'+fmt(b.amt)+'</b><span>Határidő: '+b.due+'</span><small>'+b.sub+'</small>'
            + '<span class="bhtags"><em>'+b.tag+'</em>'+(b.name?'<em class="bhname">'+b.name+'</em>':'')+'</span></div><span class="fbdet">Részletek</span></div>';
-    }).join('');
-    BILLS._older = older;
+    }).join('') : '<p class="bhempty">Nincs a szűrésnek megfelelő számla.</p>';
+    var dflt = FILTER.sort === 'new' && FILTER.type === 'all' && +FILTER.from === +defFrom() && +FILTER.to === +today;
+    var fb = q('.bhfbtn'); if (fb) fb.classList.toggle('on', !dflt);
   }
-  function find(id){ return BILLS.concat(BILLS._older || []).filter(function(b){ return b.id === id; })[0]; }
+  function find(id){ return all().filter(function(b){ return b.id === id; })[0]; }
   function renderDet(b){
     curBill = b;
     var st = q('[data-bdst]'); st.textContent = LBL[b.st]; st.className = 'bdst st-' + b.st;
@@ -7506,6 +7619,134 @@
     if (e.target.closest('[data-bdpay]') && curBill){ payBills([curBill.id]); renderDet(curBill); }
   });
   renderPay(); renderHist();
+})();
+</script>
+<script>
+/* Számlatörténet: "Összes előfizetés" sheet + full-screen "Szűrők" with an iOS-style wheel date picker */
+(function(){
+  var api = window.yBillFilter; if (!api) return;
+  var MON = ['Január','Február','Március','Április','Május','Június','Július','Augusztus','Szeptember','Október','November','December'];
+  var ROW = 26;
+  function $(s, r){ return (r || document).querySelector(s); }
+  function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function f2(n){ return ('0'+n).slice(-2); }
+  function fmtD(d){ return d.getFullYear()+'.'+f2(d.getMonth()+1)+'.'+f2(d.getDate()); }
+  function dim(y, m){ return new Date(y, m+1, 0).getDate(); }
+
+  /* ---------- subscription sheet ---------- */
+  var SUBS = [
+    {k:'all', ic:'ti-layout-grid', t:'Összes előfizetés'},
+    {k:'7566', ic:'ti-phone-call', s:'Prime Plus 2025', t:'+36 20 290 7566'},
+    {k:'7430', ic:'ti-phone-call', s:'Prime Plus 2024', t:'+36 20 290 7430'},
+    {k:'9734', ic:'ti-phone-call', s:'XS+ · Feltöltőkártyás', t:'+36 20 290 9734'},
+    {k:'8812', ic:'ti-phone-call', s:'XS · Feltöltőkártyás', t:'+36 20 290 8812'},
+    {k:'net', ic:'ti-home-signal', s:'HiperNet L', t:'8200 Veszprém, Tölgyfa u. 4'}
+  ];
+  var sheet = $('#bhsheet'), opts = $('[data-bhopts]');
+  function openSheet(){
+    var cur = api.get().sub;
+    opts.innerHTML = SUBS.map(function(x){
+      return '<label class="xsopt'+(x.k==='all'?' bhall':'')+'"><input type="radio" name="bhsub" value="'+x.k+'"'+(x.k===cur?' checked':'')+'><span class="xsoic"><i class="ti '+x.ic+'"></i></span>'
+           + '<span class="xsotx">'+(x.s?'<small>'+x.s+'</small>':'')+'<b>'+x.t+'</b></span><span class="xschk"><i class="ti ti-check"></i></span></label>';
+    }).join('');
+    sheet.classList.add('on');
+  }
+  function applySub(k){
+    var x = SUBS.filter(function(s){ return s.k === k; })[0]; if (!x) return;
+    $('[data-bhselic]').className = 'ti ' + x.ic;
+    $('[data-bhselb]').textContent = x.t;
+    $('[data-bhsels]').textContent = x.s || '';
+    var f = api.get(); f.sub = k; api.set(f);
+  }
+
+  /* ---------- filter overlay ---------- */
+  var ov = $('#bfov'), work = null, active = null;
+  var pick = $('[data-bfpick]'), err = $('[data-bferr]'), go = $('[data-bfgo]');
+  var cols = {m:$('[data-col="m"]', pick), d:$('[data-col="d"]', pick), y:$('[data-col="y"]', pick)};
+  var Y0 = api.today.getFullYear() - 10, Y1 = api.today.getFullYear();
+  function fill(col, items){ col.innerHTML = '<i></i><i></i>' + items.map(function(t){ return '<span>'+t+'</span>'; }).join('') + '<i></i><i></i>'; }
+  fill(cols.m, MON);
+  var yrs = []; for (var y = Y0; y <= Y1; y++) yrs.push(y); fill(cols.y, yrs);
+  function setDays(n){ var d = []; for (var i = 1; i <= n; i++) d.push(i); if (cols.d.children.length - 4 !== n) fill(cols.d, d); }
+  function mark(){ ['m','d','y'].forEach(function(k){ var c = cols[k], idx = Math.round(c.scrollTop / ROW);
+    Array.prototype.forEach.call(c.querySelectorAll('span'), function(sp, i){ sp.className = Math.abs(i - idx) === 0 ? 'on' : (Math.abs(i - idx) === 1 ? 'n1' : (Math.abs(i - idx) === 2 ? 'n2' : '')); }); }); }
+  var syncing = false;
+  function show(d){
+    syncing = true;
+    setDays(dim(d.getFullYear(), d.getMonth()));
+    cols.m.scrollTop = d.getMonth() * ROW; cols.d.scrollTop = (d.getDate()-1) * ROW; cols.y.scrollTop = (d.getFullYear() - Y0) * ROW;
+    $('[data-bfmyt]').textContent = d.getFullYear() + ' ' + MON[d.getMonth()];
+    mark(); setTimeout(function(){ syncing = false; }, 60);
+  }
+  function readWheel(){
+    var m = Math.round(cols.m.scrollTop / ROW), y = Y0 + Math.round(cols.y.scrollTop / ROW);
+    m = Math.max(0, Math.min(11, m)); y = Math.max(Y0, Math.min(Y1, y));
+    var n = dim(y, m); setDays(n);
+    var d = Math.max(1, Math.min(n, Math.round(cols.d.scrollTop / ROW) + 1));
+    return new Date(y, m, d);
+  }
+  function validate(){
+    var f = work, msg = '';
+    var min8 = new Date(api.today); min8.setFullYear(min8.getFullYear() - 8);
+    var max1 = new Date(f.from); max1.setFullYear(max1.getFullYear() + 1);
+    if (f.from > f.to) msg = 'A kezdődátum nem lehet későbbi a végdátumnál';
+    else if (f.from < min8) msg = 'A számlák legfeljebb 8 évre visszamenőleg érhetők el. Kérjük, módosítsd a kiválasztott időszakot.';
+    else if (f.to > api.today) msg = 'A végdátum nem lehet későbbi a mai napnál';
+    else if (f.to >= max1) msg = 'Egyszerre legfeljebb 1 évnyi számlát tudunk megmutatni. Kérjük, szűkítsd az időszakot.';
+    err.textContent = msg;
+    $$('.bfdin').forEach(function(b){ b.classList.toggle('bad', !!msg && (msg.indexOf('kezdő') >= 0 || msg.indexOf('8 évre') >= 0 || msg.indexOf('1 évnyi') >= 0 ? b.getAttribute('data-bfd') === 'from' : b.getAttribute('data-bfd') === 'to')); });
+    go.classList.toggle('off', !!msg);
+  }
+  function paint(){
+    $$('input[name="bfsort"]', ov).forEach(function(r){ r.checked = r.value === work.sort; });
+    $$('input[name="bftype"]', ov).forEach(function(r){ r.checked = r.value === work.type; });
+    $('[data-bfdv="from"]').textContent = fmtD(work.from); $('[data-bfdv="to"]').textContent = fmtD(work.to);
+    $$('.bfdin').forEach(function(b){ b.classList.toggle('act', b.getAttribute('data-bfd') === active); });
+    validate();
+  }
+  function closePick(){ active = null; pick.hidden = true; paint(); }
+  function openPick(which){
+    active = which;
+    var row = $('.bfdates', ov); row.parentNode.insertBefore(pick, err.nextSibling);
+    pick.hidden = false; paint(); show(work[which]);
+  }
+  function openOv(){ var f = api.get(); work = {sort:f.sort, type:f.type, from:new Date(f.from), to:new Date(f.to), sub:f.sub}; active = null; pick.hidden = true; paint(); ov.classList.add('on'); }
+  ['m','d','y'].forEach(function(k){
+    var t;
+    cols[k].addEventListener('scroll', function(){
+      mark(); if (syncing || !active) return;
+      clearTimeout(t); t = setTimeout(function(){ work[active] = readWheel(); $('[data-bfmyt]').textContent = work[active].getFullYear() + ' ' + MON[work[active].getMonth()]; paint(); }, 90);
+    }, {passive:true});
+    cols[k].addEventListener('click', function(e){ var sp = e.target.closest('span'); if (!sp) return;
+      var i = Array.prototype.indexOf.call(cols[k].querySelectorAll('span'), sp); cols[k].scrollTo({top:i*ROW, behavior:'smooth'}); });
+  });
+  ov.addEventListener('change', function(e){
+    if (e.target.name === 'bfsort') work.sort = e.target.value;
+    if (e.target.name === 'bftype') work.type = e.target.value;
+    if (active) closePick();
+  });
+  $('[data-bfbody]').addEventListener('scroll', function(){ if (active && !pick.contains(document.activeElement)) closePick(); }, {passive:true});
+  ov.addEventListener('click', function(e){
+    var t = e.target;
+    var din = t.closest('[data-bfd]');
+    if (din){ var w = din.getAttribute('data-bfd'); if (active === w) closePick(); else openPick(w); return; }
+    var st = t.closest('[data-bfstep]');
+    if (st && active){ var d = new Date(work[active]); var day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + (+st.getAttribute('data-bfstep')));
+      d.setDate(Math.min(day, dim(d.getFullYear(), d.getMonth()))); if (d.getFullYear() >= Y0 && d.getFullYear() <= Y1){ work[active] = d; show(d); paint(); } return; }
+    if (t.closest('[data-bfmy]')){ closePick(); return; }
+    if (t.closest('[data-bfclose]')){ ov.classList.remove('on'); return; }
+    if (t.closest('[data-bfclr]')){ work = api.def(); closePick(); return; }
+    if (t.closest('[data-bfgo]')){ if (go.classList.contains('off')) return; api.set(work); ov.classList.remove('on'); return; }
+    if (active && !t.closest('[data-bfpick]')) closePick();
+  });
+
+  document.addEventListener('click', function(e){
+    if (!e.target.closest) return;
+    if (e.target.closest('[data-bhfilt]')){ openOv(); return; }
+    if (e.target.closest('[data-bhsel]')){ openSheet(); return; }
+    if (e.target.closest('[data-bhclose]')){ sheet.classList.remove('on'); return; }
+    if (e.target.closest('[data-bhgo]')){ var v = opts.querySelector('input:checked'); if (v) applySub(v.value); sheet.classList.remove('on'); }
+  });
 })();
 </script>
 </body>
