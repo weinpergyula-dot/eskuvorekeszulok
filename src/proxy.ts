@@ -3,8 +3,8 @@ import { NextResponse, type NextRequest } from "next/server";
 
 /**
  * Basic-Auth gate for the Yettel mockup previews: the standalone static pages
- * (/yettel_dark, /yettel_light and their _eng and _cz pairs — served as static
- * HTML from /public) and the /yettel_web Next route (including its subpaths).
+ * (/yettel_dark, /yettel_light and /yettel_light_asis — served as static HTML
+ * from /public) and the /yettel_web Next route (including its subpaths).
  *
  * Any username is accepted; only the shared preview password is checked.
  * Handled at the very top of `proxy` so the Supabase session logic below is
@@ -15,17 +15,9 @@ const PREVIEW_REALM = "Yettel preview";
 const PREVIEW_PATHS = new Set([
   "/yettel_dark",
   "/yettel_light",
-  "/yettel_dark_eng",
-  "/yettel_light_eng",
-  "/yettel_dark_cz",
-  "/yettel_light_cz",
   "/yettel_light_asis",
   "/yettel_dark.html",
   "/yettel_light.html",
-  "/yettel_dark_eng.html",
-  "/yettel_light_eng.html",
-  "/yettel_dark_cz.html",
-  "/yettel_light_cz.html",
   "/yettel_light_asis.html",
 ]);
 
