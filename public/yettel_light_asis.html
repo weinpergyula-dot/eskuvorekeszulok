@@ -2996,6 +2996,7 @@
   .flben p{ margin:1px 0 0; font-size:11px; font-weight:300; line-height:1.4; color:var(--navy); }
   .fltiers{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:20px 0 24px; }
   .fltier{ position:relative; padding:16px 6px 12px; border:1.5px solid #E3E8EE; border-radius:12px; text-align:center; color:var(--navy); transition:all .2s; }
+  .fltier.on .flcur, .fltier .flcur{ color:var(--navy) !important; }
   .fltier .flcur{ position:absolute; top:-9px; left:50%; transform:translateX(-50%); padding:2px 8px; border-radius:999px; background:var(--lime); white-space:nowrap; font-size:9px; font-weight:700; color:var(--navy); }
   .fltier b{ display:block; font-size:22px; font-weight:800; }
   .fltier span{ font-size:10.5px; line-height:1.3; }
@@ -3050,6 +3051,52 @@
   .tbfgo{ font-size:24px; color:#8592A6; }
   .tbfull[data-fullstate="off"] .tbfic{ background:#E3E8EE; }
   .tbfull[data-fullstate="off"] .tbfic i{ color:#8592A6; }
+
+  /* ===== dashboard banners: premium look ===== */
+  .rcar .promo.ipro, .rcar .promo.fpro{ padding:0 !important; border-radius:24px; overflow:hidden; isolation:isolate; }
+  .pbtag{ display:inline-block; margin-bottom:6px; padding:3px 9px; border-radius:999px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.28); font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#fff; }
+  .pbtag.lime{ background:rgba(180,255,0,.14); border-color:rgba(180,255,0,.45); color:var(--lime); }
+  .pbgo{ position:relative; display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border:none; border-radius:999px; font-family:'Yettel'; font-size:12px; font-weight:700; cursor:pointer; overflow:hidden; }
+  .pbgo i{ font-size:15px; transition:transform .25s; }
+  .pbgo:hover i{ transform:translateX(3px); }
+  /* internet */
+  .rcar .promo.ipro{ background:linear-gradient(135deg,#1D3FD8 0%,#2F6BFF 48%,#0B1F5C 100%) !important; }
+  .ipbg{ position:absolute; inset:-40%; background:conic-gradient(from 0deg at 70% 60%, rgba(127,176,255,.0), rgba(127,176,255,.35), rgba(127,176,255,0) 40%); animation:pbspin 14s linear infinite; z-index:-1; }
+  .ipwave{ position:absolute; right:22px; top:22px; width:120px; height:120px; z-index:0; }
+  .ipwave i{ position:absolute; inset:0; border:2px solid rgba(255,255,255,.55); border-radius:50%; opacity:0; animation:ipwave 3.6s ease-out infinite; }
+  .ipwave i:nth-child(2){ animation-delay:1.2s; } .ipwave i:nth-child(3){ animation-delay:2.4s; }
+  .ipline{ position:absolute; height:2px; border-radius:2px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent); animation:ipline 2.6s linear infinite; }
+  .ipline.l1{ top:38px; width:90px; } .ipline.l2{ top:96px; width:60px; animation-delay:.9s; } .ipline.l3{ top:140px; width:110px; animation-delay:1.7s; }
+  .iptx, .fptx{ position:relative; z-index:2; padding:14px 18px 12px; }
+  .rcar .promo.ipro h4, .rcar .promo.fpro h4{ margin:0 0 5px; font-size:18px; font-weight:800; line-height:1.12; color:#fff; letter-spacing:-.01em; }
+  .rcar .promo.ipro p, .rcar .promo.fpro p{ max-width:62%; margin:0 0 10px; font-size:11.5px; line-height:1.4; color:rgba(255,255,255,.85); }
+  .ipgo{ background:#fff; color:#1D3FD8; box-shadow:0 8px 18px -8px rgba(0,0,0,.45); }
+  .ipspd{ position:absolute; right:20px; bottom:18px; z-index:2; text-align:right; color:#fff; line-height:1; }
+  .ipspd b{ display:block; font-size:34px; font-weight:800; letter-spacing:-.02em; text-shadow:0 4px 18px rgba(0,0,0,.25); }
+  .ipspd small{ font-size:11px; font-weight:700; opacity:.8; }
+  /* Full */
+  .rcar .promo.fpro{ background:radial-gradient(120% 140% at 0% 0%, #17305A 0%, #09223D 55%, #050F1E 100%) !important; border:1px solid rgba(180,255,0,.25); }
+  .fpglow{ position:absolute; border-radius:50%; filter:blur(28px); z-index:0; }
+  .fpglow.g1{ width:170px; height:170px; right:-40px; top:-60px; background:rgba(180,255,0,.32); animation:fpdrift 9s ease-in-out infinite alternate; }
+  .fpglow.g2{ width:140px; height:140px; left:-50px; bottom:-80px; background:rgba(61,141,224,.35); animation:fpdrift 11s ease-in-out infinite alternate-reverse; }
+  .fpshine{ position:absolute; top:0; bottom:0; left:-60%; width:45%; z-index:1; background:linear-gradient(100deg,transparent,rgba(255,255,255,.10),transparent); transform:skewX(-18deg); animation:fpshine 5.5s ease-in-out infinite; }
+  .fpdot{ position:absolute; z-index:1; font-family:'Yettel'; font-weight:800; color:rgba(180,255,0,.55); animation:fpfloat 6s ease-in-out infinite; }
+  .fpdot.d1{ right:132px; top:24px; font-size:13px; } .fpdot.d2{ right:20px; top:96px; font-size:11px; animation-delay:1.5s; } .fpdot.d3{ right:118px; bottom:16px; font-size:16px; animation-delay:3s; }
+  .fpgo{ background:var(--lime); color:#09223D; box-shadow:0 8px 22px -8px rgba(180,255,0,.65); }
+  .fpgo::after{ content:''; position:absolute; top:0; bottom:0; left:-80%; width:50%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent); transform:skewX(-18deg); animation:fpshine 3.2s ease-in-out infinite; }
+  .fpbig{ position:absolute; right:22px; top:50%; z-index:2; display:flex; align-items:center; justify-content:center; width:96px; height:96px; margin-top:-48px; }
+  .fpbig b{ position:relative; font-size:34px; font-weight:800; letter-spacing:-.03em; color:var(--lime); text-shadow:0 0 22px rgba(180,255,0,.45); animation:fppulse 3s ease-in-out infinite; }
+  .fpbig b small{ font-size:16px; }
+  .fpring{ position:absolute; inset:0; border-radius:50%; border:2px solid rgba(180,255,0,.55); border-top-color:transparent; border-left-color:transparent; animation:pbspin 6s linear infinite; }
+  .fpring.r2{ inset:12px; border-color:rgba(255,255,255,.25); border-bottom-color:transparent; border-right-color:transparent; animation-duration:9s; animation-direction:reverse; }
+  @keyframes pbspin{ to{ transform:rotate(360deg); } }
+  @keyframes ipwave{ 0%{ transform:scale(.25); opacity:.9; } 100%{ transform:scale(1.25); opacity:0; } }
+  @keyframes ipline{ 0%{ transform:translateX(380px); opacity:0; } 15%{ opacity:1; } 100%{ transform:translateX(-140px); opacity:0; } }
+  @keyframes fpdrift{ 0%{ transform:translate(0,0); } 100%{ transform:translate(-30px,24px); } }
+  @keyframes fpshine{ 0%,55%{ left:-80%; } 100%{ left:140%; } }
+  @keyframes fpfloat{ 0%,100%{ transform:translateY(0); opacity:.35; } 50%{ transform:translateY(-10px); opacity:.9; } }
+  @keyframes fppulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.06); } }
+  @media (prefers-reduced-motion: reduce){ .ipbg,.ipwave i,.ipline,.fpglow,.fpshine,.fpdot,.fpgo::after,.fpbig b,.fpring{ animation:none !important; } }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -3309,48 +3356,29 @@
     </div>
 
     <div class="rcar">
-      <label class="promo inet" for="s-addrsvc">
-        <div class="blob"></div><div class="blob2"></div>
-        <h4>Otthoni internet szuper áron</h4>
-        <p>Már 6 990 Ft / hó-tól, díjmentes telepítéssel. Nézd meg, elérhető-e a címeden!</p>
-        <span class="go">Címellenőrzés <i class="ti ti-arrow-right" style="font-size:15px"></i></span>
-        <div class="pct">1000<small>Mbit</small></div>
+      <label class="promo inet ipro" for="s-addrsvc">
+        <span class="ipbg"></span>
+        <span class="ipwave"><i></i><i></i><i></i></span>
+        <span class="ipline l1"></span><span class="ipline l2"></span><span class="ipline l3"></span>
+        <div class="iptx">
+          <span class="pbtag">Otthoni internet</span>
+          <h4>Villámgyors net,<br>otthonra</h4>
+          <p>Már 6 990 Ft/hó-tól, díjmentes telepítéssel.</p>
+          <span class="pbgo ipgo">Címellenőrzés <i class="ti ti-arrow-right"></i></span>
+        </div>
+        <div class="ipspd"><b>1000</b><small>Mbit/s</small></div>
       </label>
-      <div class="promo" data-fullpop>
-        <div class="blob"></div><div class="blob2"></div>
-        <h4>FULL kedvezmények</h4>
-        <p>Fogd össze előfizetéseidet, és a havidíjakból akár 30%-ot is elengedünk.</p>
-        <button class="go" type="button">Kiszámolom <i class="ti ti-arrow-right" style="font-size:15px"></i></button>
-        <div class="pct">30<small>%</small></div>
-      </div>
-      <div class="bban p1">
-        <div class="bb1"></div><div class="bb2"></div>
-        <div class="bimg pi-xiaomi"></div>
-        <div class="bbtx">
-          <span class="bbtag">Akció</span>
-          <p class="bbt">Xiaomi 17T Pro<br>30 000 Ft kedvezmény</p>
-          <p class="bbp">Most 299 990 Ft<span>vagy 12 500 Ft / hó</span></p>
+      <div class="promo fpro" data-fullpop>
+        <span class="fpglow g1"></span><span class="fpglow g2"></span><span class="fpshine"></span>
+        <span class="fpdot d1">%</span><span class="fpdot d2">%</span><span class="fpdot d3">%</span>
+        <div class="fptx">
+          <span class="pbtag lime">Yettel FULL</span>
+          <h4>Fogd össze,<br>és spórolj!</h4>
+          <p>Akár 30% kedvezmény minden jogosult havidíjadból.</p>
+          <button class="pbgo fpgo" type="button">Kiszámolom <i class="ti ti-arrow-right"></i></button>
         </div>
+        <div class="fpbig"><span class="fpring"></span><span class="fpring r2"></span><b>30<small>%</small></b></div>
       </div>
-      <div class="bban p3">
-        <div class="bb1"></div><div class="bb2"></div>
-        <div class="bimg pi-honor4"></div>
-        <div class="bbtx">
-          <span class="bbtag">Kihagyhatatlan</span>
-          <p class="bbt">HONOR 400 Pro<br>ajándék gyorstöltővel</p>
-          <p class="bbp">199 990 Ft<span>vagy 8 330 Ft / hó</span></p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ============= DETAIL ============= -->
-  <div class="screen dtscreen" data-screen="detail" style="display:none;">
-    <div class="dhead">
-      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Szolgáltatás részletei</span>
-      <div style="width:42px"></div>
     </div>
     <div class="dtid">
       <i class="ti ti-phone-call"></i>
@@ -7725,7 +7753,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-fullpop],.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = '[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
