@@ -3097,6 +3097,53 @@
   @keyframes fpfloat{ 0%,100%{ transform:translateY(0); opacity:.35; } 50%{ transform:translateY(-10px); opacity:.9; } }
   @keyframes fppulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.06); } }
   @media (prefers-reduced-motion: reduce){ .ipbg,.ipwave i,.ipline,.fpglow,.fpshine,.fpdot,.fpgo::after,.fpbig b,.fpring{ animation:none !important; } }
+
+  /* ===== Yettel Full popup v2: hero + tabs ===== */
+  .fl2 .fsbody{ padding:0 0 28px; background:#F4F6F8; }
+  .flhd{ position:relative; overflow:hidden; isolation:isolate; padding:calc(54px + env(safe-area-inset-top)) 20px 26px; background:radial-gradient(120% 140% at 0% 0%, #17305A 0%, #09223D 55%, #050F1E 100%); color:#fff; }
+  .flhd h2{ position:relative; z-index:2; margin:2px 0 8px; font-size:24px; font-weight:800; line-height:1.15; letter-spacing:-.01em; color:#fff; }
+  .flhd p{ position:relative; z-index:2; max-width:58%; margin:0; font-size:12.5px; line-height:1.45; color:rgba(255,255,255,.82); }
+  .flhd .pbtag{ position:relative; z-index:2; }
+  .flx{ position:absolute; z-index:3; top:calc(14px + env(safe-area-inset-top)); right:12px; display:flex; padding:6px; border:none; border-radius:50%; background:rgba(255,255,255,.12); cursor:pointer; }
+  .flx i{ font-size:20px; color:#fff; }
+  .flhdpct{ position:absolute; z-index:2; right:20px; bottom:22px; display:flex; flex-direction:column; align-items:center; justify-content:center; width:104px; height:104px; }
+  .flhdpct b{ font-size:36px; font-weight:800; line-height:1; color:var(--lime); text-shadow:0 0 22px rgba(180,255,0,.45); animation:fppulse 3s ease-in-out infinite; }
+  .flhdpct b small{ font-size:17px; }
+  .flhdpct em{ order:-1; font-style:normal; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.7); }
+  .fltabs{ position:sticky; top:0; z-index:4; display:grid; grid-template-columns:1fr 1fr; margin:-16px 16px 0; padding:4px; border-radius:999px; background:#fff; box-shadow:0 10px 24px -14px rgba(9,34,61,.45); }
+  .fltab{ position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; border:none; border-radius:999px; background:none; font-family:'Yettel'; font-size:13px; font-weight:700; color:#5B6B80; cursor:pointer; transition:color .25s; }
+  .fltab i{ font-size:17px; }
+  .fltab.on{ color:#fff; }
+  .fltabind{ position:absolute; top:4px; bottom:4px; left:4px; width:calc(50% - 4px); border-radius:999px; background:#09223D; transition:transform .3s cubic-bezier(.4,0,.2,1); }
+  .fltabs.r .fltabind{ transform:translateX(100%); }
+  .flpane{ display:none; padding:20px 16px 0; animation:brfade .25s ease-out; }
+  .flpane.on{ display:block; }
+  .flsec{ margin:22px 0 10px; font-size:15px; font-weight:700; color:var(--navy); }
+  .flpane > .flsec:first-child, .flbens + .flsec{ margin-top:22px; }
+  .flbens{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .flbc{ display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:14px 10px 12px; border-radius:16px; background:#fff; }
+  .flbc i{ display:flex; align-items:center; justify-content:center; width:34px; height:34px; margin-bottom:8px; border-radius:50%; background:var(--lime); font-size:18px; color:var(--navy); }
+  .flbc b{ font-size:18px; font-weight:800; line-height:1.1; color:var(--navy); }
+  .flbc span{ font-size:11px; line-height:1.3; color:var(--navy); }
+  .flbc small{ display:block; margin-top:3px; font-size:9.5px; font-weight:300; }
+  .fl2 .fltiers{ margin:16px 0 0; align-items:end; }
+  .fl2 .fltier{ background:#fff; border-color:#fff; }
+  .fl2 .fladder .fltier[data-t="15"]{ padding-top:16px; } .fl2 .fladder .fltier[data-t="20"]{ padding-top:26px; } .fl2 .fladder .fltier[data-t="30"]{ padding-top:36px; }
+  .fl2 .fltier.on{ background:#09223D; border-color:#09223D; }
+  .flsteps{ display:flex; flex-direction:column; gap:10px; }
+  .flst{ display:flex; gap:12px; padding:14px; border-radius:16px; background:#fff; }
+  .flst > span{ flex-shrink:0; display:flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background:#09223D; font-size:13px; font-weight:800; color:var(--lime); }
+  .flst b{ display:block; font-size:13px; font-weight:700; color:var(--navy); }
+  .flst p{ margin:3px 0 0; font-size:11.5px; font-weight:300; line-height:1.4; color:var(--navy); }
+  .fl2 .flacc{ margin-top:16px; background:#fff; border-color:#fff; }
+  .flgocalc{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:18px; }
+  .flgocalc i{ font-size:18px; }
+  .fl2 .flres{ margin:0 0 4px; }
+  .flbar{ position:relative; height:8px; margin:16px 0 22px; border-radius:4px; background:rgba(255,255,255,.14); }
+  .flbar i{ position:absolute; left:0; top:0; bottom:0; border-radius:4px; background:linear-gradient(90deg,#7FD400,var(--lime)); box-shadow:0 0 12px rgba(180,255,0,.55); transition:width .45s cubic-bezier(.4,0,.2,1); }
+  .flbar span{ position:absolute; top:12px; transform:translateX(-50%); font-size:9.5px; color:rgba(255,255,255,.6); }
+  .fl2 .fllist{ background:#fff; border-color:#fff; }
+  .fl2 .fsbtn[data-flclose]{ margin-top:18px; }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -9271,25 +9318,47 @@
     'Yettel Prime mobilcsomagok':['Yettel Prime M Net','Yettel Prime M Talk','Yettel Prime L','Yettel Prime L+','Yettel Prime XXL','Yettel Prime 2022','Yettel Prime Plus 2022','Yettel Prime Max 2022','Yettel Prime+','Yettel Prime Plus+','Yettel Prime Max+','Yettel Prime Simple Net 2024','Yettel Prime Simple 2024','Yettel Prime Plus Talk 2024','Yettel Prime Plus 2024','Yettel Prime Extra 2024','Yettel Prime Max 2024','Yettel Prime','Yettel Prime Simple Net','Yettel Prime Simple','Yettel Prime Plus','Yettel Prime Extra','Yettel Prime Max','Yettel Prime XS','Yettel Prime S','Yettel Prime M'],
     'Egyéb kiemelt mobilcsomagok':['Yettel M Talk','Yettel M Talk+']};
   function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
-  var ov = document.createElement('div'); ov.className = 'fsov flov';
-  ov.innerHTML = '<div class="fsbody"><div class="fshead"><b>Yettel Full</b><button type="button" class="fsx" data-flclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
-    + '<div class="flhero"><b>Több szolgáltatás,<br>több kedvezmény!</b><p>Fogd össze mobil- és otthoni internet-előfizetéseidet a Yettel Full-ban, és minden jogosult havidíjadból kedvezményt kapsz – akár 30%-ot is, hónapról hónapra.</p></div>'
-    + '<div class="flben"><i class="ti ti-percentage"></i><div><b>Akár 30% havidíjkedvezmény</b></div></div>'
-    + '<div class="flben"><i class="ti ti-phone-call"></i><div><b>Díjmentes hívások a csomagon belül</b></div></div>'
-    + '<div class="flben"><i class="ti ti-device-tv"></i><div><b>15% a Yettel TV-re és a Max-ra</b><p>az XS csomag kivételével</p></div></div>'
-    + '<div class="fltiers"><div class="fltier" data-t="15"><b>15%</b><span>2 előfizetés</span></div><div class="fltier" data-t="20"><b>20%</b><span>3 előfizetés</span></div><div class="fltier" data-t="30"><b>30%</b><span>4 vagy több előfizetés</span></div></div>'
-    + '<p class="flh">Számold ki a kedvezményed!</p><p class="flsub">Bejelöltük a jelenlegi előfizetéseidet. Vedd ki, ami nem kell, vagy tegyél hozzá újat, és rögtön látod, mennyi jár.</p>'
-    + '<p class="fullsub">Meglévő szolgáltatásaid</p><div class="fllist" data-flmine></div>'
-    + '<p class="fullsub">Ha még ezeket is választanád</p><div class="fllist" data-fladd></div>'
-    + '<div class="flres"><div class="flpct"><span>Full kedvezményed</span><b data-flpct></b></div>'
-    + '<div class="flline"><span>Havidíjak kedvezmény nélkül</span><b data-flfull></b></div>'
-    + '<div class="flline"><span>Havidíjak Full kedvezménnyel</span><b data-flnow></b></div>'
-    + '<div class="flline sv"><span>Havi megtakarításod</span><b data-flsave></b></div><div class="flhint" data-flhint></div></div>'
+  var ov = document.createElement('div'); ov.className = 'fsov flov fl2';
+  ov.innerHTML = '<div class="fsbody">'
+    /* premium hero, same language as the dashboard banner */
+    + '<div class="flhd"><span class="fpglow g1"></span><span class="fpglow g2"></span><span class="fpshine"></span>'
+    + '<button type="button" class="flx" data-flclose aria-label="Bezárás"><i class="ti ti-x"></i></button>'
+    + '<span class="pbtag lime">Yettel FULL</span><h2>Több szolgáltatás,<br>több kedvezmény</h2><p>Fogd össze előfizetéseidet, és spórolj minden hónapban.</p>'
+    + '<div class="flhdpct"><span class="fpring"></span><span class="fpring r2"></span><b>30<small>%</small></b><em>akár</em></div></div>'
+    /* tabs */
+    + '<div class="fltabs"><button type="button" class="fltab on" data-fltab="about"><i class="ti ti-sparkles"></i>Miről szól?</button><button type="button" class="fltab" data-fltab="calc"><i class="ti ti-calculator"></i>Kalkulátor</button><span class="fltabind"></span></div>'
+    /* tab 1: what Full is */
+    + '<div class="flpane on" data-flpane="about">'
+    + '<div class="flbens">'
+    + '<div class="flbc"><i class="ti ti-percentage"></i><b>Akár 30%</b><span>havidíjkedvezmény</span></div>'
+    + '<div class="flbc"><i class="ti ti-phone-call"></i><b>0 Ft</b><span>hívások egymás között</span></div>'
+    + '<div class="flbc"><i class="ti ti-device-tv"></i><b>15%</b><span>Yettel TV és Max<small>XS csomag kivételével</small></span></div>'
+    + '</div>'
+    + '<p class="flsec">Kedvezménysávok</p>'
+    + '<div class="fltiers fladder"><div class="fltier" data-t="15"><b>15%</b><span>2 előfizetés</span></div><div class="fltier" data-t="20"><b>20%</b><span>3 előfizetés</span></div><div class="fltier" data-t="30"><b>30%</b><span>4 vagy több előfizetés</span></div></div>'
+    + '<p class="flsec">Hogyan működik?</p>'
+    + '<div class="flsteps">'
+    + '<div class="flst"><span>1</span><div><b>Legalább két jogosult előfizetés</b><p>Yettel Prime mobil- vagy OtthonNet / HiperNet csomag a neveden.</p></div></div>'
+    + '<div class="flst"><span>2</span><div><b>Aktiváljuk a Full-t</b><p>Ügyfélszolgálaton, vagy új otthoni internet vásárlásakor automatikusan.</p></div></div>'
+    + '<div class="flst"><span>3</span><div><b>Minden hónapban spórolsz</b><p>A kedvezményt minden jogosult havidíjadból automatikusan levonjuk.</p></div></div>'
+    + '</div>'
     + '<div class="flacc gsacc"><button type="button" class="gsaccb"><span>Melyik tarifákra érvényes a Full kedvezmény?</span><i class="ti ti-chevron-down"></i></button><div class="gsaccp">'
     + '<p class="flsub" style="margin-top:0">A sávos kedvezmény akkor érvényes, ha legalább két jogosult szolgáltatás van a neveden. A feltöltőkártyás előfizetések nem számítanak bele.</p>'
     + Object.keys(ELIG).map(function(g){ return '<p class="flg">'+g+'</p><ul>'+ELIG[g].map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>'; }).join('')
     + '</div></div>'
-    + '<button type="button" class="fsbtn flcta" data-flclose>Rendben</button></div>';
+    + '<button type="button" class="fsbtn flgocalc" data-fltab="calc"><i class="ti ti-calculator"></i>Számold ki a kedvezményed</button>'
+    + '</div>'
+    /* tab 2: calculator */
+    + '<div class="flpane" data-flpane="calc">'
+    + '<div class="flres"><div class="flpct"><span>Full kedvezményed</span><b data-flpct></b></div>'
+    + '<div class="flbar"><i data-flbar></i><span style="left:37%">15%</span><span style="left:62%">20%</span><span style="left:94%">30%</span></div>'
+    + '<div class="flline"><span>Havidíjak kedvezmény nélkül</span><b data-flfull></b></div>'
+    + '<div class="flline"><span>Havidíjak Full kedvezménnyel</span><b data-flnow></b></div>'
+    + '<div class="flline sv"><span>Havi megtakarításod</span><b data-flsave></b></div><div class="flhint" data-flhint></div></div>'
+    + '<p class="flsec">Meglévő szolgáltatásaid</p><div class="fllist" data-flmine></div>'
+    + '<p class="flsec">Ha még ezeket is választanád</p><div class="fllist" data-fladd></div>'
+    + '<button type="button" class="fsbtn" data-flclose>Rendben</button>'
+    + '</div></div>';
   app.appendChild(ov);
   var on = {m1:true, m2:true, n1:true, tv:true}, cnt = {mob:0, net:0, tvn:0, max:0};
   function price(it, pct){ var off = it.kind === 'base' ? pct : it.kind === 'tv' && pct ? 15 : 0; return {off:off, now:Math.round(it.p * (100 - off) / 100)}; }
@@ -9313,6 +9382,7 @@
         + '<div class="flcnt"><button type="button" data-fla="'+it.k+'" data-d="-1"'+(cnt[it.k] ? '' : ' disabled')+' aria-label="Kevesebb"><i class="ti ti-minus"></i></button><b>'+cnt[it.k]+'</b><button type="button" data-fla="'+it.k+'" data-d="1"'+(cnt[it.k] >= 5 ? ' disabled' : '')+' aria-label="Több"><i class="ti ti-plus"></i></button></div></div>';
     }).join('');
     ov.querySelector('[data-flpct]').textContent = pct + '%';
+    ov.querySelector('[data-flbar]').style.width = (n >= 4 ? 100 : n === 3 ? 62 : n === 2 ? 37 : n === 1 ? 14 : 4) + '%';
     ov.querySelector('[data-flfull]').textContent = fmt(full) + ' Ft/hó';
     ov.querySelector('[data-flnow]').textContent = fmt(now) + ' Ft/hó';
     ov.querySelector('[data-flsave]').textContent = fmt(full - now) + ' Ft/hó';
@@ -9327,16 +9397,24 @@
       ? '<i class="ti ti-bulb"></i><span>Még '+(next - n)+' mobil- vagy otthoni internet-előfizetéssel '+tier(next)+'% kedvezmény járna'+(n < 2 ? ', és a TV-re, Max-ra is 15%.' : '.')+'</span>'
       : '<i class="ti ti-rosette-discount-check"></i><span>A legmagasabb, 30%-os Full kedvezmény jár neked – ennél többet már nem lehet. :)</span>';
   }
+  function flTab(t){
+    Array.prototype.forEach.call(ov.querySelectorAll('.fltab'), function(b){ b.classList.toggle('on', b.getAttribute('data-fltab') === t); });
+    Array.prototype.forEach.call(ov.querySelectorAll('.flpane'), function(p){ p.classList.toggle('on', p.getAttribute('data-flpane') === t); });
+    ov.querySelector('.fltabs').classList.toggle('r', t === 'calc');
+    var hd = ov.querySelector('.flhd'), body = ov.querySelector('.fsbody');
+    if (body.scrollTop > hd.offsetHeight) body.scrollTop = hd.offsetHeight;
+  }
   ov.addEventListener('change', function(e){ var k = e.target.getAttribute('data-flk'); if (k){ on[k] = e.target.checked; calc(); } });
   ov.addEventListener('click', function(e){
     var b = e.target.closest('[data-fla]'); if (b){ var k = b.getAttribute('data-fla'); cnt[k] = Math.max(0, Math.min(5, cnt[k] + +b.getAttribute('data-d'))); calc(); return; }
     var a = e.target.closest('.gsaccb'); if (a){ a.parentNode.classList.toggle('open'); return; }
+    var tb = e.target.closest('[data-fltab]'); if (tb){ flTab(tb.getAttribute('data-fltab')); return; }
     if (e.target.closest('[data-flclose]')) ov.classList.remove('on');
   });
   document.addEventListener('click', function(e){
     if (!e.target.closest || !e.target.closest('[data-fullpop]')) return;
     on = {m1:true, m2:true, n1:true, tv:true}; cnt = {mob:0, net:0, tvn:0, max:0}; calc();
-    ov.querySelector('.fsbody').scrollTop = 0; ov.classList.add('on');
+    flTab('about'); ov.querySelector('.fsbody').scrollTop = 0; ov.classList.add('on');
   });
 })();
 </script>
