@@ -9428,5 +9428,36 @@
   });
 })();
 </script>
+<script>
+/* phones: the on-screen keyboard pushes the page (and overflow:hidden frames that cannot be scrolled back by hand)
+   upwards; when the keyboard goes away, put everything back in place */
+(function(){
+  var app = document.querySelector('.app');
+  function isField(el){ return el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName); }
+  function settle(from){
+    if (isField(document.activeElement)) return;
+    window.scrollTo(0, 0);
+    if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+    var el = from || app;
+    while (el && el !== document.body){
+      if (el.scrollTop && getComputedStyle(el).overflowY === 'hidden') el.scrollTop = 0;
+      el = el.parentElement;
+    }
+    if (app) app.scrollTop = 0;
+  }
+  document.addEventListener('focusout', function(e){ var t = e.target; setTimeout(function(){ settle(t); }, 80); });
+  if (window.visualViewport){
+    var last = window.visualViewport.height;
+    window.visualViewport.addEventListener('resize', function(){
+      var h = window.visualViewport.height;
+      if (h > last + 80) settle();   /* keyboard closed */
+      last = h;
+    });
+  }
+  /* the frame itself never scrolls; undo any scroll the browser applies to reveal a field */
+  if (app) app.addEventListener('scroll', function(){ if (!isField(document.activeElement)) app.scrollTop = 0; });
+  window.addEventListener('orientationchange', function(){ setTimeout(settle, 300); });
+})();
+</script>
 </body>
 </html>
