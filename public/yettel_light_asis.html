@@ -3213,8 +3213,23 @@
   .gmfoot .ktbtn.busy::after{ content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
   .gmfoot .ktbtn.done{ background:var(--lime); border-color:var(--lime); color:var(--navy); }
   .nolink{ cursor:default !important; }
-  .nav{ background-color:rgba(255,255,255,.52) !important; -webkit-backdrop-filter:blur(10px) saturate(1.8) !important; backdrop-filter:blur(10px) saturate(1.8) !important; }
-  .nitem::before{ inset:0 -5px !important; }
+  /* ===== bottom nav — iOS 26 liquid glass tab bar (size + moving lens) ===== */
+  .nav{ left:20px !important; right:20px !important; height:62px !important; padding:0 4px !important;
+        background-color:rgba(255,255,255,.52) !important; -webkit-backdrop-filter:blur(10px) saturate(1.8) !important; backdrop-filter:blur(10px) saturate(1.8) !important;
+        transition:background-color .25s ease; overflow:visible !important; }
+  .nav.moving{ background-color:rgba(255,255,255,.86) !important; }
+  .nav.haspill .nitem::before{ display:none !important; }
+  .nav .nitem{ position:relative; z-index:1; flex:1 1 0; height:54px; }
+  .navpill{ position:absolute; z-index:0; top:4px; bottom:4px; left:0; width:0; border-radius:999px; pointer-events:none;
+            background:rgba(20,30,50,.085); opacity:0;
+            transition:left .46s cubic-bezier(.32,1.32,.5,1), width .46s cubic-bezier(.32,1.32,.5,1), transform .26s cubic-bezier(.3,1.4,.5,1), background .2s ease, box-shadow .2s ease, opacity .2s ease; }
+  .navpill.on{ opacity:1; }
+  .navpill.lens{ z-index:2; transform:scale(1.14,1.34); background:rgba(255,255,255,.16);
+                 -webkit-backdrop-filter:saturate(1.7) brightness(1.04) contrast(1.06); backdrop-filter:saturate(1.7) brightness(1.04) contrast(1.06);
+                 box-shadow:0 0 0 1px rgba(255,255,255,.95), inset 0 0 8px rgba(255,255,255,.95),
+                            inset 3px 0 4px -1px rgba(255,70,170,.45), inset -3px 0 4px -1px rgba(40,170,255,.45),
+                            inset 0 3px 4px -2px rgba(255,220,60,.4), 0 12px 26px -12px rgba(9,34,61,.45); }
+  @media (prefers-reduced-motion: reduce){ .navpill{ transition:none; } .navpill.lens{ transform:none; } }
   :root{ --apph:812px; }
   @media (max-width:640px), (orientation:landscape) and (max-height:600px) and (max-width:960px){ :root{ --apph:100vh; --apph:100dvh; } }
 </style>
@@ -9694,6 +9709,34 @@
     setTimeout(home, 1800);
     setTimeout(function(){ ls.classList.remove('on'); }, 2000);
   });
+})();
+</script>
+<script>
+/* bottom nav: one pill that glides to the active tab, turning into a liquid-glass lens while it moves */
+(function(){
+  var nav = document.querySelector('.nav'); if (!nav) return;
+  var pill = document.createElement('span'); pill.className = 'navpill'; nav.insertBefore(pill, nav.firstChild); nav.classList.add('haspill');
+  var lensT, first = true;
+  function activeItem(){
+    var r = document.querySelector('input.rt[name="nav"]:checked'); if (!r) return null;
+    return nav.querySelector('.nitem[for="'+r.id+'"]');
+  }
+  function place(animate){
+    var it = activeItem();
+    if (!it || !nav.offsetWidth){ pill.classList.remove('on'); return; }
+    var w = Math.min(it.offsetWidth * 1.16, it.offsetWidth + 16), l = it.offsetLeft + it.offsetWidth / 2 - w / 2;
+    l = Math.max(4, Math.min(l, nav.clientWidth - 4 - w));
+    var moved = pill.classList.contains('on') && Math.abs(parseFloat(pill.style.left || 0) - l) > 2;
+    if (!animate || first || !moved){ pill.style.transition = 'none'; pill.style.left = l + 'px'; pill.style.width = w + 'px'; void pill.offsetWidth; pill.style.transition = ''; pill.classList.add('on'); first = false; return; }
+    clearTimeout(lensT); pill.classList.add('lens'); nav.classList.add('moving');
+    pill.style.left = l + 'px'; pill.style.width = w + 'px';
+    lensT = setTimeout(function(){ pill.classList.remove('lens'); nav.classList.remove('moving'); }, 470);
+  }
+  document.addEventListener('change', function(e){ if (e.target && e.target.name === 'nav') requestAnimationFrame(function(){ place(true); }); });
+  window.addEventListener('resize', function(){ place(false); });
+  requestAnimationFrame(function(){ place(false); });
+  /* the nav may become visible later (e.g. after login) */
+  new MutationObserver(function(){ place(false); }).observe(nav, {attributes:true, attributeFilter:['style']});
 })();
 </script>
 </body>
