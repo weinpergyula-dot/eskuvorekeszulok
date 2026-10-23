@@ -345,12 +345,14 @@
   #s-xsmine:checked ~ [data-screen="xs-mine"],
   #s-primedit:checked ~ [data-screen="prim-edit"],
   #s-netpend:checked ~ [data-screen="net-pend"],
+  #s-billhist:checked ~ [data-screen="bill-hist"],
+  #s-billdet:checked ~ [data-screen="bill-det"],
   #s-newcust:checked ~ [data-screen="newcust"],
   #s-detailmob2:checked ~ [data-screen="detail-mob2"],
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -2066,6 +2068,91 @@
   .npksh i{ font-size:20px; color:var(--mid); }
   .npictv{ width:24px; height:24px; margin:0 1px; }
   .npmail{ margin:0; padding:12px 0 0; border-top:1px solid #E3E8EE; font-size:12px; font-weight:300; color:var(--navy); }
+
+  /* ===== Pénzügyek: bills to pay ===== */
+  .fbcard{ margin-top:18px; padding:16px; border-radius:16px; background:#FFFFFF; }
+  .fbh{ margin:0 0 12px; font-size:14px; font-weight:700; color:var(--navy); }
+  .fblist{ border:2px solid #E3E8EE; border-radius:14px; padding:4px 12px; }
+  .fbrow{ display:flex; align-items:center; gap:14px; padding:12px 0; }
+  .fbrow + .fbrow{ border-top:1px solid #EEF1F4; }
+  .fbchk input{ display:none; }
+  .fbchk span{ display:flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:5px; border:1.5px solid var(--low); cursor:pointer; }
+  .fbchk input:checked + span{ background:var(--navy); border-color:var(--navy); }
+  .fbchk input:checked + span::after{ content:""; width:10px; height:5px; margin-top:-3px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg); }
+  .fbtx{ flex:1; min-width:0; }
+  .fbtx b{ display:block; font-size:14px; font-weight:700; color:var(--navy); }
+  .fbtx span{ display:flex; align-items:center; gap:4px; margin-top:3px; font-size:11.5px; color:var(--navy); }
+  .fbtx span.fbod{ color:#E5484D; } .fbtx span.fbod i{ font-size:14px; }
+  .fbtx small{ display:block; margin-top:2px; font-size:11px; font-weight:300; color:var(--navy); }
+  .fbdet{ flex-shrink:0; font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  .fbsum{ display:flex; align-items:baseline; justify-content:space-between; margin:16px 0 12px; }
+  .fbsum span{ font-size:13px; font-weight:700; color:var(--navy); }
+  .fbsum b{ font-size:17px; font-weight:700; color:var(--navy); }
+  .fbpay{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; font-size:12.5px; color:var(--navy); }
+  .fblink{ font-size:11.5px; font-weight:700; color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  .fbcardrow{ display:flex; align-items:center; gap:14px; }
+  .bkcard{ position:relative; width:66px; height:40px; flex-shrink:0; border-radius:5px; background:linear-gradient(135deg,#CFE7EF,#B5D8E4); }
+  .bkcard b{ position:absolute; left:5px; top:4px; font-size:5.5px; font-weight:700; color:#3C6E58; }
+  .bkcard .mc{ position:absolute; right:5px; bottom:5px; }
+  .mc{ position:relative; display:inline-flex; width:18px; height:11px; }
+  .mc i{ position:absolute; top:0; width:11px; height:11px; border-radius:50%; }
+  .mc i:first-child{ left:0; background:#EB001B; } .mc i:last-child{ right:0; background:#F79E1B; opacity:.9; }
+  .bktx b{ display:block; font-size:14px; font-weight:700; color:var(--navy); }
+  .bktx small{ display:block; margin-top:2px; font-size:11px; color:var(--navy); }
+  .bktx.exp b{ color:#E5484D; }
+  .fbbtn{ width:100%; margin-top:16px; padding:14px; border:none; border-radius:999px; background:var(--navy); color:#fff; font-family:'Yettel'; font-size:14px; font-weight:700; cursor:pointer; }
+  .fbbtn.off{ background:#CDD4DC; color:#8592A6; pointer-events:none; }
+  .fbnone{ display:none; margin:6px 0 0; font-size:13px; color:var(--navy); }
+  .fbcard.empty > *:not(.fbh):not(.fbnone){ display:none; }
+  .fbcard.empty .fbnone{ display:block; }
+  .billtoast{ position:absolute; left:50%; bottom:96px; z-index:130; transform:translateX(-50%); display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:999px;
+              background:var(--navy); color:#fff; font-size:13px; font-weight:700; white-space:nowrap; animation:xsup .25s ease-out; }
+  .billtoast i{ font-size:18px; color:var(--lime); }
+  /* ===== Számlatörténet ===== */
+  .bhscreen .dhead{ position:relative; z-index:2; margin-bottom:0; }
+  .bhsel{ display:flex; align-items:center; gap:12px; margin:-28px -16px 0; padding:40px 26px 16px; background:#FFFFFF; border-radius:0 0 22px 22px; cursor:pointer; }
+  .bhsel i:first-child{ font-size:22px; color:var(--navy); }
+  .bhsel b{ flex:1; font-size:14px; font-weight:700; color:var(--navy); }
+  .bhsel i:last-child{ font-size:20px; color:var(--navy); }
+  .bhfilt{ display:flex; justify-content:flex-end; margin:14px 2px 10px; }
+  .bhfbtn{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .bhfbtn i{ font-size:18px; }
+  .bhlist{ padding:0 14px; border-radius:16px; background:#FFFFFF; }
+  .bhrow{ display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid #EEF1F4; cursor:pointer; }
+  .bhrow:last-child{ border-bottom:none; }
+  .bhrow > i{ font-size:22px; align-self:center; }
+  .bhok{ color:#3DA35D; } .bhopen{ color:var(--mid); } .bhod{ color:#E5484D; } .bhwo{ color:var(--low); }
+  .bhtx{ flex:1; min-width:0; }
+  .bhtx b{ display:block; font-size:14px; font-weight:700; color:var(--navy); }
+  .bhtx > span{ display:block; margin-top:2px; font-size:11.5px; color:var(--navy); }
+  .bhtx small{ display:block; margin-top:1px; font-size:11px; font-weight:300; color:var(--navy); }
+  .bhtags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px !important; }
+  .bhtags em{ padding:1px 8px; border-radius:999px; background:#EEF1F4; font-style:normal; font-size:10.5px; color:var(--navy); }
+  .bhtags em.bhname{ background:#E6F7B8; font-weight:700; }
+  /* ===== Számla részletei ===== */
+  .bdtop{ margin-top:18px; padding:16px; border-radius:16px; background:#FFFFFF; }
+  .bdtr{ display:flex; align-items:center; justify-content:space-between; }
+  .bdtr b{ font-size:14px; font-weight:700; color:var(--navy); }
+  .bdst{ padding:2px 10px; border-radius:999px; font-size:11px; font-weight:700; color:var(--navy); background:#E3E8EE; }
+  .bdst.st-overdue{ background:#FDE4D6; } .bdst.st-paid{ background:#DDF5E3; } .bdst.st-writeoff{ background:#FBF0C6; }
+  .bdamt{ display:flex; align-items:center; gap:10px; margin-top:14px; }
+  .bdamt > div{ flex:1; min-width:0; }
+  .bdamt p{ margin:0; font-size:20px; font-weight:700; color:var(--navy); }
+  .bdamt small{ display:block; margin-top:2px; font-size:11px; font-weight:300; color:var(--navy); }
+  .barion{ padding:4px 6px; border-radius:2px; background:#1EA0DB; color:#fff; font-size:11px; font-weight:700; letter-spacing:-.02em; }
+  .barion i{ font-style:normal; color:#B4E7FF; }
+  .bdamt > .mc{ width:28px; height:17px; } .bdamt > .mc i{ width:17px; height:17px; }
+  .bdinfo{ margin-top:14px; padding:16px; border-radius:16px; background:#FFFFFF; }
+  .bdkv + .bdkv{ margin-top:14px; }
+  .bdkv span{ display:block; font-size:11.5px; font-weight:300; color:var(--navy); }
+  .bdkv b{ display:flex; align-items:center; justify-content:space-between; margin-top:3px; font-size:14px; font-weight:700; color:var(--navy); }
+  .bdkv b.red{ color:#E5484D; } .bdkv b i{ font-size:20px; }
+  .bdpay{ margin-top:14px; }
+  .bdph{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; font-size:11.5px; color:var(--navy); }
+  .bdexp{ margin-left:auto; font-size:20px; color:#E5484D; }
+  .bdbtns{ display:flex; flex-direction:column; gap:10px; margin-top:28px; }
+  .bdb{ display:block; width:100%; padding:13px; border-radius:999px; text-align:center; font-family:'Yettel'; font-size:14px; font-weight:700; cursor:pointer; border:2px solid var(--navy); }
+  .bdb.pri{ background:var(--navy); color:#fff; } .bdb.sec{ background:#fff; color:var(--navy); }
 </style>
 </head>
 <body>
@@ -2162,6 +2249,8 @@
   <input class="rt" type="radio" name="nav" id="s-xsmine">
   <input class="rt" type="radio" name="nav" id="s-primedit">
   <input class="rt" type="radio" name="nav" id="s-netpend">
+  <input class="rt" type="radio" name="nav" id="s-billhist">
+  <input class="rt" type="radio" name="nav" id="s-billdet">
   <input class="rt" type="radio" name="nav" id="s-newcust">
   <label class="menuscrim" for="s-home"></label>
   <div class="menupanel">
@@ -2240,7 +2329,7 @@
 
     <div class="hnote" id="hnote">
       <div class="hnrow"><i class="ti ti-alert-circle hnic"></i><p class="hnt">Új számlád érkezett!</p><button class="hnx" type="button" data-hnclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
-      <div class="hnrow2"><p class="hns">1 számla vár befizetésre</p><label class="hnbtn" for="s-billing">Befizetem</label></div>
+      <div class="hnrow2"><p class="hns" data-billcount>1 számla vár befizetésre</p><label class="hnbtn" for="s-tfin">Befizetem</label></div>
     </div>
 
     <div class="qedit"><span class="hst">Gyors elérés</span><label class="link" for="s-qedit">Szerkesztés</label></div>
@@ -2274,6 +2363,12 @@
             <div class="meta"><p class="t">8200 Veszprém, Tölgyfa u. 4</p><p class="s">HiperNet L</p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
+          <div class="subrel" data-related="net">
+            <label class="substrm" data-sub="net-tv" for="s-detail-tv"><span class="ssic"><i class="ictv"></i></span><span class="ssn">Yettel TV Basic</span><i class="ti ti-chevron-right chev"></i></label>
+            <label class="substrm" data-sub="net-tv2" for="s-strm3"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">TV2 Play Prémium</span><i class="ti ti-chevron-right chev"></i></label>
+            <label class="substrm" data-sub="net-rtl" for="s-strm3"><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></label>
+          </div>
+          <div class="subacct">weinper.gyula@gmail.com</div>
         </div>
         <div class="sub subgroup subpend" data-sub="net-pend">
           <span class="pendtag">Folyamatban</span>
@@ -2451,7 +2546,6 @@
       <div class="dtkv"><span>Értesítési szám</span><b>+36 20 290 7430</b></div>
     </div>
 
-    <button class="cancel" data-cancel="mob-7430 tv strm-hbo strm-nflx strm-rtl gyv"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
 
   </div>
 
@@ -2508,7 +2602,6 @@
       <p class="npmail">weinper.gyula@gmail.com</p>
     </div>
 
-    <button class="cancel" data-cancel="net net-new netpajzs"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
 
   </div>
 
@@ -2585,7 +2678,6 @@
       </details>
     </div>
 
-    <button class="cancel" data-cancel="tv tv-new"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <!-- ============= ADD SERVICE ============= -->
@@ -4837,7 +4929,6 @@
     <div class="gcard" style="margin-top:22px;">
       <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel" data-cancel="mob-9734"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <div class="screen" data-screen="detail-pre2" style="display:none;">
@@ -4883,7 +4974,6 @@
     <div class="gcard" style="margin-top:22px;">
       <div class="lrow"><span class="sic"><i class="ti ti-files"></i></span><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel" data-cancel="mob-8812"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <!-- ============= SZERKESZTES ============= -->
@@ -5240,7 +5330,6 @@
     <div class="gcard">
       <div class="lrow codelink" data-code="HBOX-4821-9F3K"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel" data-cancel="strm-hbo"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <div class="screen" data-screen="strm-2" style="display:none;">
@@ -5269,7 +5358,6 @@
     <div class="gcard">
       <div class="lrow codelink" data-code="NFLX-7A2C-11QD"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
-    <button class="cancel" data-cancel="strm-nflx"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <div class="screen" data-screen="strm-3" style="display:none;">
@@ -5326,7 +5414,6 @@
       <div class="lrow codelink" data-code="RTLP-6620-8B4M"><span class="sic"><i class="ti ti-key"></i></span><span class="n">Aktiváló kód megjelenítése</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
 
-    <button class="cancel" data-cancel="strm-hbo"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
   </div>
 
   <!-- ============= TOVÁBBI KÉSZÜLÉK RÉSZLETEK ============= -->
@@ -6199,7 +6286,6 @@
       <div class="dtkv"><span>Értesítési szám</span><b>+36 20 290 7566</b></div>
     </div>
 
-    <button class="cancel" data-cancel="mob-7566"><i class="ti ti-circle-minus" style="font-size:16px"></i>Szolgáltatás lemondása</button>
 
   </div>
 
@@ -6260,16 +6346,19 @@
       <span class="title">Pénzügyek</span>
       <div style="width:42px"></div>
     </div>
-    <div class="tbbill">
-      <span class="tbbic"><i class="ti ti-file-invoice"></i></span>
-      <p class="tbbt">1 számla vár befizetésre</p>
-      <p class="tbbs">Fizetési határidő: 2026. 11. 05. · <b>7 990 Ft</b></p>
-      <label class="tbbbtn" for="s-billing">Befizetem</label>
+    <div class="fbcard" data-fbcard>
+      <p class="fbh">Fizetendő számlák</p>
+      <div class="fblist" data-fblist></div>
+      <div class="fbsum"><span>Kijelölt számlák összege:</span><b data-fbsum>0 Ft</b></div>
+      <div class="fbpay"><span>Fizetés: mentett kártya</span><span class="fblink">Mással fizetek</span></div>
+      <div class="fbcardrow"><span class="bkcard"><b>Bankkártya</b><i class="mc"><i></i><i></i></i></span><span class="bktx"><b>Mentett bankkártya</b><small>**** 2345 | Lejárat: 10/32</small></span></div>
+      <button type="button" class="fbbtn" data-fbpay>Befizetem</button>
+      <p class="fbnone" data-fbnone>Nincs befizetendő számlád. 🎉</p>
     </div>
     <div class="tblist">
-      <label class="tbrow tbsolo" for="s-billing"><span class="tbic"><i class="ti ti-receipt-2"></i></span><span class="n">Számlatörténet</span><i class="ti ti-chevron-right chev"></i></label>
+      <label class="tbrow tbsolo" for="s-billhist"><span class="tbic"><i class="ti ti-file-certificate"></i></span><span class="n">Számlatörténet</span><i class="ti ti-chevron-right chev"></i></label>
       <label class="tbrow tbsolo" for="s-topup1"><span class="tbic"><i class="ti ti-file-upload"></i></span><span class="n">Kártyás feltöltés</span><i class="ti ti-chevron-right chev"></i></label>
-      <div class="tbrow tbsolo"><span class="tbic"><i class="ti ti-credit-card"></i></span><span class="n">Mentett kártya kezelés</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="tbrow tbsolo"><span class="tbic"><i class="ti ti-credit-card"></i></span><span class="n">Mentett bankkártya kezelése</span><i class="ti ti-chevron-right chev"></i></div>
       <div class="tbrow tbsolo"><span class="tbic"><i class="ti ti-device-mobile"></i></span><span class="n">Mobilszámlás fizetés</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
   </div>
@@ -6461,10 +6550,37 @@
     <label class="dtcard dtrowcard nprow" for="s-billing"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
   </div>
 
+  <!-- ============= SZÁMLATÖRTÉNET ============= -->
+  <div class="screen bhscreen" data-screen="bill-hist" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-tfin"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Számlatörténet</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="bhsel"><i class="ti ti-layout-grid"></i><b>Összes előfizetés</b><i class="ti ti-chevron-down"></i></div>
+    <div class="bhfilt"><span class="bhfbtn">Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
+    <div class="bhlist" data-bhlist></div>
+  </div>
+
+  <!-- ============= SZÁMLA RÉSZLETEI ============= -->
+  <div class="screen bdscreen" data-screen="bill-det" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-billhist"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Számla részletei</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="bdtop">
+      <div class="bdtr"><b>Számla</b><span class="bdst" data-bdst>Nyitott</span></div>
+      <div class="bdamt"><div><p data-bdamt>6 990 Ft</p><small data-bdsub></small></div><span class="barion">bari<i>o</i>n</span><i class="mc"><i></i><i></i></i></div>
+    </div>
+    <div class="bdinfo" data-bdinfo></div>
+    <div class="bdbtns" data-bdbtns></div>
+  </div>
+
   <!-- ============= NAV ============= -->
   <div class="nav" style="display:none;">
     <label class="nitem" for="s-home"><i class="ti ti-home"></i>Kezdőlap</label>
-    <label class="nitem" for="s-tfin"><i class="nift"></i><span class="nbdg">1</span>Pénzügyek</label>
+    <label class="nitem" for="s-tfin"><i class="nift"></i><span class="nbdg" data-billbadge>1</span>Pénzügyek</label>
     <label class="nitem" for="s-tshop"><i class="ti ti-shopping-cart"></i>Vásárlás</label>
     <label class="nitem" for="s-fun"><i class="ti ti-star"></i>Bónusz</label>
     <label class="nitem" for="s-tprof"><i class="ti ti-user"></i>Profil</label>
@@ -7108,11 +7224,11 @@
 
   /* Anything that reads as a control. A click is only "dead" if it did not land
      on a label[for] (the CSS navigation) or on something with its own handler. */
-  var CONTROLS = '.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
+  var CONTROLS = '.fblink,.bhsel,.bhfbtn,.bdwip,.npmod,.xmrow,.wyout,.wyeng,.lgforgot,.lgreg,.nwban,.xsrow,.adhelp,.tbrow,.tbtile,.dtx,.lrow,.mrow,.svccard,.guard,.qtile,.chip,.tfdet,.tford,.tfhb,'
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = 'input,a[href],[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = 'input,a[href],[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -7298,6 +7414,98 @@
   function idx(){ return Math.round(car.scrollLeft / car.clientWidth); }
   car.addEventListener('scroll', function(){ var i = idx(); dots.forEach(function(d, k){ d.classList.toggle('on', k === i); }); }, {passive:true});
   setInterval(function(){ if (!car.clientWidth) return; var i = (idx() + 1) % dots.length; car.scrollTo({left: i * car.clientWidth, behavior:'smooth'}); }, 5000);
+})();
+</script>
+<script>
+/* billing: bills shared by Pénzügyek (to pay), Számlatörténet and Számla részletei */
+(function(){
+  var CARD = '<span class="bkcard"><b>Bankkártya</b><i class="mc"><i></i><i></i></i></span>';
+  var BILLS = [
+    {id:'b1', name:'Nyitott számla', amt:6990, due:'2026.11.26', no:'1003 2047 5860', per:'2026.10.12 - 2026.11.11', total:6990, ded:0, sub:'+36 20 290 7566 és további 2 szám', tag:'Előfizetéses', st:'open', card:'ok'},
+    {id:'b2', name:'Nyitott számla, lejárt kártya', amt:6990, due:'2026.11.26', no:'1003 2047 5861', per:'2026.10.12 - 2026.11.11', total:6990, ded:0, sub:'+36 20 290 7430', tag:'Előfizetéses', st:'open', card:'expired'},
+    {id:'b3', name:'Nyitott számla, nincs mentett kártya', amt:9000, due:'2026.11.26', no:'1003 2047 5862', per:'2026.10.12 - 2026.11.11', total:9000, ded:0, sub:'186545678', tag:'Otthoni', st:'open', card:'none'},
+    {id:'b4', name:'Lejárt számla', amt:2000, due:'2026.10.20', no:'1003 2047 5863', per:'2026.09.12 - 2026.10.11', total:2000, ded:0, sub:'+36 20 290 9734', tag:'Feltöltőkártyás', st:'overdue', card:'ok'},
+    {id:'b5', name:'Befizetett számla', amt:6990, due:'2026.10.26', no:'1003 2047 5864', per:'2026.09.12 - 2026.10.11', total:6990, ded:0, sub:'+36 20 290 7566 és további 2 szám', tag:'Előfizetéses', st:'paid', card:'ok'},
+    {id:'b6', name:'Write off számla', amt:20150, due:'2021.01.26', no:'1003 2047 5865', per:'2020.12.20 - 2021.01.19', total:21000, ded:0, sub:'186545666', tag:'Jóváíró', st:'writeoff', card:'ok'}
+  ];
+  var LBL = {open:'Nyitott', overdue:'Lejárt', paid:'Fizetve', writeoff:'Nem befizethető'};
+  var sel = {}, curBill = null;
+  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' Ft'; }
+  function payable(b){ return b.st === 'open' || b.st === 'overdue'; }
+  function q(s){ return document.querySelector(s); }
+  function go(id){ var r = document.getElementById(id); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } }
+
+  function renderPay(){
+    var list = q('[data-fblist]'); if (!list) return;
+    var open = BILLS.filter(payable);
+    list.innerHTML = open.map(function(b){
+      var od = b.st === 'overdue';
+      return '<div class="fbrow"><label class="fbchk"><input type="checkbox" data-fbsel="'+b.id+'"'+(sel[b.id]!==false?' checked':'')+'><span></span></label>'
+           + '<div class="fbtx"><b>'+fmt(b.amt)+'</b><span class="'+(od?'fbod':'')+'">'+(od?'<i class="ti ti-alert-circle"></i>':'')+'Határidő: '+b.due+'</span><small>'+b.sub+'</small></div>'
+           + '<span class="fbdet" data-billopen="'+b.id+'">Részletek</span></div>';
+    }).join('');
+    var sum = open.filter(function(b){ return sel[b.id] !== false; }).reduce(function(a, b){ return a + b.amt; }, 0);
+    q('[data-fbsum]').textContent = fmt(sum);
+    q('[data-fbpay]').classList.toggle('off', !sum);
+    q('[data-fbcard]').classList.toggle('empty', !open.length);
+    var n = open.length;
+    var c = q('[data-billcount]'); if (c) c.textContent = n ? (n + ' számla vár befizetésre') : 'Nincs befizetendő számlád';
+    var bd = q('[data-billbadge]'); if (bd){ bd.textContent = n; bd.style.display = n ? '' : 'none'; }
+    var hn = q('#hnote'); if (hn && !n) hn.classList.add('off');
+  }
+  function renderHist(){
+    var list = q('[data-bhlist]'); if (!list) return;
+    var older = [];
+    for (var i = 0; i < 6; i++) older.push({id:'h'+i, amt:18765 - i*1250, due:'2026.0'+(9-i)+'.24', sub:'+36 20 290 7566 (és további 2 szám)', tag:['Előfizetéses','Feltöltőkártyás','Yepp','Jóváíró','Előfizetéses','Otthoni'][i], st:'paid', name:'', no:'1003 2047 58'+(70+i), per:'2026.0'+(8-i)+'.12 - 2026.0'+(9-i)+'.11', total:18765 - i*1250, ded:0, card:'ok'});
+    list.innerHTML = BILLS.concat(older).map(function(b){
+      var ic = {paid:'ti-circle-check bhok', open:'ti-clock bhopen', overdue:'ti-alert-circle bhod', writeoff:'ti-ban bhwo'}[b.st];
+      return '<div class="bhrow" data-billopen="'+b.id+'"><i class="ti '+ic+'"></i><div class="bhtx"><b>'+fmt(b.amt)+'</b><span>Határidő: '+b.due+'</span><small>'+b.sub+'</small>'
+           + '<span class="bhtags"><em>'+b.tag+'</em>'+(b.name?'<em class="bhname">'+b.name+'</em>':'')+'</span></div><span class="fbdet">Részletek</span></div>';
+    }).join('');
+    BILLS._older = older;
+  }
+  function find(id){ return BILLS.concat(BILLS._older || []).filter(function(b){ return b.id === id; })[0]; }
+  function renderDet(b){
+    curBill = b;
+    var st = q('[data-bdst]'); st.textContent = LBL[b.st]; st.className = 'bdst st-' + b.st;
+    q('[data-bdamt]').textContent = fmt(b.amt); q('[data-bdsub]').textContent = b.sub;
+    var red = b.st === 'overdue' || b.st === 'writeoff';
+    var rows = [];
+    function kv(k, v, cls){ rows.push('<div class="bdkv"><span>'+k+'</span><b class="'+(cls||'')+'">'+v+'</b></div>'); }
+    if (b.st !== 'paid') kv('Fizetési határidő', b.due + (red ? '<i class="ti ti-alert-circle"></i>' : ''), red ? 'red' : '');
+    kv('Számlaszám', b.no); kv('Számlázási időszak', b.per); kv('Számlázási mód', 'Elektronikus');
+    if (b.st !== 'paid'){ kv('Számla végösszege', fmt(b.total)); kv('Levont összeg', fmt(b.ded)); }
+    if (payable(b) && b.card !== 'none'){
+      var exp = b.card === 'expired';
+      rows.push('<div class="bdpay"><div class="bdph"><span>Fizetés</span><span class="fblink">Mással fizetek</span></div><div class="fbcardrow">'+CARD
+        + '<span class="bktx'+(exp?' exp':'')+'"><b>Mentett bankkártya</b><small>**** 2345 | Lejárat: '+(exp?'09/26':'10/32')+'</small></span>'+(exp?'<i class="ti ti-alert-circle bdexp"></i>':'')+'</div></div>');
+    }
+    q('[data-bdinfo]').innerHTML = rows.join('');
+    var btns = [];
+    if (payable(b)){
+      btns.push(b.card === 'expired' ? '<span class="bdb pri bdwip">Kártyacsere és befizetés</span>' : '<button type="button" class="bdb pri" data-bdpay>Befizetem</button>');
+      btns.push('<span class="bdb sec bdwip">Számla megtekintése</span>');
+    } else btns.push('<span class="bdb pri bdwip">Számla megtekintése</span>');
+    q('[data-bdbtns]').innerHTML = btns.join('');
+  }
+  function payBills(ids){
+    ids.forEach(function(id){ var b = find(id); if (b && payable(b)) b.st = 'paid'; });
+    renderPay(); renderHist();
+    var t = document.createElement('div'); t.className = 'billtoast'; t.innerHTML = '<i class="ti ti-circle-check"></i>Sikeres fizetés';
+    document.querySelector('.app').appendChild(t); setTimeout(function(){ t.remove(); }, 2400);
+  }
+  document.addEventListener('change', function(e){
+    var id = e.target.getAttribute && e.target.getAttribute('data-fbsel'); if (!id) return;
+    sel[id] = e.target.checked; renderPay();
+  });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest) return;
+    var o = e.target.closest('[data-billopen]');
+    if (o){ var b = find(o.getAttribute('data-billopen')); if (b){ renderDet(b); go('s-billdet'); } return; }
+    if (e.target.closest('[data-fbpay]')){ payBills(BILLS.filter(function(b){ return payable(b) && sel[b.id] !== false; }).map(function(b){ return b.id; })); return; }
+    if (e.target.closest('[data-bdpay]') && curBill){ payBills([curBill.id]); renderDet(curBill); }
+  });
+  renderPay(); renderHist();
 })();
 </script>
 </body>
