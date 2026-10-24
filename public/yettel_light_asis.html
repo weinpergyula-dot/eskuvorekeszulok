@@ -3331,10 +3331,10 @@
       <label class="mclose" for="s-home"><i class="ti ti-x"></i></label>
     </div>
     <div class="mlist">
-      <label class="mrow" for="s-alldev"><i class="ti ti-device-mobile mi"></i><span class="n">Készülék</span></label>
+      <div class="mrow"><i class="ti ti-device-mobile mi"></i><span class="n">Készülék</span></div>
       <div class="mrow"><i class="ti ti-antenna mi"></i><span class="n">Hálózat</span></div>
       <div class="mrow"><i class="ti ti-device-mobile-dollar mi"></i><span class="n">Mobilszámlás fizetés</span></div>
-      <label class="mrow" for="s-detail-net"><i class="ti ti-home-signal mi"></i><span class="n">OtthonNet</span></label>
+      <div class="mrow"><i class="ti ti-home-signal mi"></i><span class="n">OtthonNet</span></div>
       <div class="mrow"><i class="ti ti-device-sim mi"></i><span class="n">Kártyás adategyeztetés</span></div>
       <div class="mrow"><i class="ti ti-cards mi"></i><span class="n">Kártya aktiválás</span></div>
       <label class="mrow" for="s-topup1"><i class="ti ti-file-upload mi"></i><span class="n">Kártyás feltöltés</span></label>
@@ -3428,7 +3428,7 @@
             <div class="meta"><p class="t">+36 20 290 7566</p><p class="s">Prime Plus 2025 <span class="hfb">-20% Full</span></p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
-          <div class="subuse"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>1,9 GB</b><b>40 perc</b></p><p class="ur">Megújul: 2026.07.22</p></div><label class="ubtn" for="s-xdata2">Extrák</label></div>
+          <div class="subuse"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>1,9 GB</b><b>40 perc</b></p><p class="ur">Megújul: 2026.07.22</p></div><label class="ubtn" for="s-xsvc" data-xsto="7566">Extrák</label></div>
         </div>
         </div>
         <div class="sub subgroup" data-sub="net">
@@ -3458,7 +3458,7 @@
             <div class="meta"><p class="t">+36 20 290 7430</p><p class="s">Prime Plus 2024 <span class="hfb">-20% Full</span></p></div>
             <i class="ti ti-chevron-right chev"></i>
           </label>
-          <div class="subuse"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>7,6 GB</b><b>90 perc</b></p><p class="ur">Megújul: 2026.07.31</p></div><label class="ubtn" for="s-xdata1">Extrák</label></div>
+          <div class="subuse"><div class="ublk"><p class="ul">Felhasználható</p><p class="uv"><b>7,6 GB</b><b>90 perc</b></p><p class="ur">Megújul: 2026.07.31</p></div><label class="ubtn" for="s-xsvc" data-xsto="7430">Extrák</label></div>
           <div class="subrel" data-related="mob-7430">
             <span class="relanchor" data-relhead="mob-7430" hidden></span>
           </div>
@@ -8224,14 +8224,16 @@
     sc.querySelector('[data-xsnum]').textContent = cur.t;
     var ml = document.querySelector('[data-xmlist]');
     if (ml) ml.innerHTML = (cur.act && cur.act.length) ? cur.act.map(function(a){
-      var inner = '<i class="ti ti-player-play xmic"></i><span class="xmtx"><b>'+a[0]+'</b><span><small>'+a[1]+'</small><small>'+a[2]+'</small></span></span><i class="ti ti-chevron-right chev"></i>';
-      return a[3] ? '<label class="xmrow" for="'+a[3]+'">'+inner+'</label>' : '<div class="xmrow">'+inner+'</div>';
+      /* service details are not built yet: a plain .xmrow opens the "Fejlesztés alatt!" popup */
+      return '<div class="xmrow"><i class="ti ti-player-play xmic"></i><span class="xmtx"><b>'+a[0]+'</b><span><small>'+a[1]+'</small><small>'+a[2]+'</small></span></span><i class="ti ti-chevron-right chev"></i></div>';
     }).join('') : '<p class="xmempty">Ehhez az előfizetéshez nincs aktív extra szolgáltatásod.</p>';
     var d = sc.querySelector('[data-xsdata]'); if (d && cur.data) d.setAttribute('for', cur.data);
     Array.prototype.slice.call(sc.querySelectorAll('[data-xslist]')).forEach(function(l){ l.hidden = l.getAttribute('data-xslist') !== cur.kind; });
   }
   document.addEventListener('click', function(e){
     if (!e.target.closest) return;
+    var to = e.target.closest('[data-xsto]');
+    if (to){ SUBS.forEach(function(x){ if (x.id === to.getAttribute('data-xsto')) cur = x; }); apply(); return; }
     if (e.target.closest('[data-xsheet]')){ open(); return; }
     if (e.target.closest('[data-xsclose]')){ sheet.classList.remove('on'); return; }
     if (e.target.closest('[data-xsgo]')){
