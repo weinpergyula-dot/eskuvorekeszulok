@@ -9267,7 +9267,8 @@
     var x = e.target.closest('[data-nsx]'); if (!x) return;
     var k = x.getAttribute('data-nsx'), want = x.checked, c = x.closest('.nscard');
     c.classList.add('ld');
-    busy(nsc, true, function(ok){ c.classList.remove('ld'); if (ok) ns[k] = want; nsMark(); nsSum(); });
+    /* NetPajzs and Gyermekvédelem exclude each other: switching one on switches the other off */
+    busy(nsc, true, function(ok){ c.classList.remove('ld'); if (ok){ ns[k] = want; if (want) ns[k === 'np' ? 'kid' : 'np'] = false; } nsMark(); nsSum(); });
   });
   nsc.addEventListener('click', function(e){
     var d = e.target.closest('[data-nsdet]'); if (!d) return;
