@@ -1999,8 +1999,8 @@
   .nsdinfo b{ display:block; margin-bottom:8px; font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
   .nsdinfo p{ margin:0; font-size:12px; line-height:1.5; color:var(--navy); }
   .nsdcard [hidden]{ display:none !important; }
-  /* ISP váltás: contact details of a pending HiperNet, edited in the app */
-  .app.foff-isp .npisp, .app:not(.foff-isp) .npinfos:not(.npisp){ display:none; }
+  /* Időpontmódosítás: installation time and contact details of a pending HiperNet, edited in the app */
+  .app.foff-idopont .npisp, .app:not(.foff-idopont) .npinfos:not(.npisp){ display:none; }
   .npisp small{ display:block; margin:12px 0 0; font-size:11.5px; color:var(--mid); }
   .npisp small + p{ margin-top:2px; font-weight:600; }
   .npedit{ display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; margin:-4px -4px 0 0; flex-shrink:0; cursor:pointer; color:var(--mid); }
@@ -7334,7 +7334,7 @@
       <div class="npinfo"><div class="npih"><b>Értesítési telefonszám</b><span class="npmod" data-chatpop>Módosítom</span></div><p>+36 20 290 7566</p></div>
     </div>
 
-    <!-- ISP váltás (Digital backlog): contact details edited in the app -->
+    <!-- Időpontmódosítás (Digital backlog): installation time and contact details edited in the app -->
     <div class="dtcard npinfos npisp">
       <div class="npinfo"><div class="npih"><b>Telepítés időpontja</b><span class="npedit" data-naopen aria-label="Módosítom"><i class="ti ti-pencil"></i></span></div><p data-nav>2026.11.05. · 09:00–12:00</p></div>
       <div class="npinfo"><div class="npih"><b>Elérhetőségi adatok</b><span class="npedit" data-ncopen aria-label="Módosítom"><i class="ti ti-pencil"></i></span></div>
@@ -7361,7 +7361,7 @@
     <label class="dtcard dtrowcard nprow" for="s-billdata"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
   </div>
 
-  <!-- ============= ELÉRHETŐSÉGI ADATOK módosítása (ISP váltás) ============= -->
+  <!-- ============= ELÉRHETŐSÉGI ADATOK módosítása (Időpontmódosítás) ============= -->
   <div class="screen ncscreen" data-screen="np-contact" style="display:none;">
     <div class="dhead">
       <div class="icon-btn" data-ncback><i class="ti ti-arrow-left"></i></div>
@@ -7384,7 +7384,7 @@
     <div class="ncfoot"><button type="button" class="fsbtn" data-ncgo>Módosítom</button><button type="button" class="fsbtn" data-ncre>Újratöltés</button></div>
   </div>
 
-  <!-- ============= TELEPÍTÉS IDŐPONTJA módosítása (ISP váltás) ============= -->
+  <!-- ============= TELEPÍTÉS IDŐPONTJA módosítása (Időpontmódosítás) ============= -->
   <div class="screen ncscreen nascreen" data-screen="np-appt" style="display:none;">
     <div class="dhead">
       <div class="icon-btn" data-naback><i class="ti ti-arrow-left"></i></div>
@@ -10711,7 +10711,7 @@
 })();
 </script>
 <script>
-/* ISP váltás (Digital backlog): contact details of a pending HiperNet. Pencil → loader → edit; Módosítom validates, saves with a
+/* Időpontmódosítás (Digital backlog): contact details of a pending HiperNet. Pencil → loader → edit; Módosítom validates, saves with a
    spinner, then back to the details with a snack. Holding the pencil (0,7 s) shows the loading error. Kept per browser. */
 (function(){
   var sc = document.querySelector('[data-screen="np-contact"]'); if (!sc) return;
@@ -10780,7 +10780,7 @@
 })();
 </script>
 <script>
-/* ISP váltás: installation time of a pending HiperNet. Pencil → loader → calendar (weekdays from the day after tomorrow,
+/* Időpontmódosítás: installation time of a pending HiperNet. Pencil → loader → calendar (weekdays from the day after tomorrow,
    30 days ahead) + time slot; Módosítom saves with a spinner, back to the details, snack. Holding the pencil shows the
    loading error. Same leave-without-saving question as the contact details. Kept per browser. */
 (function(){
