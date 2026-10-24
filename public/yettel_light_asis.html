@@ -336,6 +336,7 @@
   #s-xsmine:checked ~ [data-screen="xs-mine"],
   #s-nslist:checked ~ [data-screen="ns-list"],
   #s-nsdet:checked ~ [data-screen="ns-det"],
+  #s-nsset:checked ~ [data-screen="ns-set"],
   #s-primedit:checked ~ [data-screen="prim-edit"],
   #s-netpend:checked ~ [data-screen="net-pend"],
   #s-billhist:checked ~ [data-screen="bill-hist"],
@@ -1996,6 +1997,27 @@
   .nsdinfo b{ display:block; margin-bottom:8px; font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
   .nsdinfo p{ margin:0; font-size:12px; line-height:1.5; color:var(--navy); }
   .nsdcard [hidden]{ display:none !important; }
+  /* NetPajzs filter settings: one save for all switches */
+  .nssscreen{ padding-bottom:100px !important; }
+  .nssid{ cursor:default; }
+  .nsscard{ margin-top:14px; padding:16px; border-radius:16px; background:#fff; }
+  .nsscard > b, .nssh b{ font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .nssh{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .nsscard p{ margin:8px 0 0; font-size:11.5px; line-height:1.5; color:var(--mid); }
+  .nsslist{ margin-top:10px; }
+  .nssrow{ display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid #EEF1F5; }
+  .nssrow:first-child{ border-top:none; }
+  .nssrow > span:first-child{ flex:1; font-size:12.5px; color:var(--navy); }
+  .nssrow small{ display:block; margin-top:1px; font-size:10.5px; color:var(--mid); }
+  .nssrow .ofsw{ margin-top:0; }
+  .nssscreen.ld .nsslist .nssrow > span:first-child{ color:transparent; }
+  .nssscreen.ld .nsslist .nssrow > span:first-child::before{ content:''; display:block; width:58%; height:10px; border-radius:5px; background:#E6EAF0; }
+  .nssscreen.ld .nsslist small{ visibility:hidden; }
+  .nssscreen.ld .nsslist .ofsw{ opacity:.35; pointer-events:none; }
+  .nssfoot{ position:absolute; left:16px; right:16px; bottom:calc(20px + env(safe-area-inset-bottom)); }
+  .nssfoot .fsbtn.off{ background:#CDD4DC; color:#8592A6; pointer-events:none; }
+  .nssscreen.busy .fsbtn{ background:#3E5670; pointer-events:none; }
+  .nssscreen.busy .ofsw{ pointer-events:none; }
   /* Internetvédelem: cancel confirmation and the order / cancel result page */
   .nscf, .nsres{ position:absolute; inset:0; z-index:126; display:none; flex-direction:column; padding:calc(30px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); background:#fff; animation:xsup .28s cubic-bezier(.4,0,.2,1); }
   .nscf.on, .nsres.on{ display:flex; }
@@ -3541,6 +3563,7 @@
   <input class="rt" type="radio" name="nav" id="s-xsmine">
   <input class="rt" type="radio" name="nav" id="s-nslist">
   <input class="rt" type="radio" name="nav" id="s-nsdet">
+  <input class="rt" type="radio" name="nav" id="s-nsset">
   <input class="rt" type="radio" name="nav" id="s-primedit">
   <input class="rt" type="radio" name="nav" id="s-netpend">
   <input class="rt" type="radio" name="nav" id="s-billhist">
@@ -7163,9 +7186,24 @@
       <p class="nsdnote" data-nsdnote><i class="ti ti-alert-circle"></i><span></span></p>
       <span class="nsdmore" data-nsdmore></span>
     </div>
-    <div class="xsmine nsdset" data-wip><span class="ti ti-settings"></span><span>Szűrési beállítások</span><i class="ti ti-chevron-right chev"></i></div>
+    <label class="xsmine nsdset" for="s-nsset" data-nssopen><span class="ti ti-settings"></span><span>Szűrési beállítások</span><i class="ti ti-chevron-right chev"></i></label>
     <div class="nsdinfo"><i class="ti ti-bulb"></i><div><b>Egyszerre csak egy internetvédelmi szolgáltatás lehet aktív!</b><p data-nsdinfo>Tedd biztonságosabbá az internetezést a számodra megfelelő szolgáltatással. Ha másikat aktiválsz, a korábbi automatikusan lemondódik.</p></div></div>
     <div class="nsdfoot"><button type="button" class="fsbtn" data-nsdgo>Aktiválom</button><button type="button" class="nsdstop" data-nsdstop>Lemondom</button></div>
+  </div>
+
+  <!-- ============= NETPAJZS: szűrési beállítások (V2 egyszerre mentés) ============= -->
+  <div class="screen xsscreen nssscreen" data-screen="ns-set" style="display:none;">
+    <div class="dhead">
+      <div class="icon-btn" data-nssback><i class="ti ti-arrow-left"></i></div>
+      <span class="title">Beállítások</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="xsid nssid"><i class="ti ti-home-signal"></i><div class="meta"><p class="s">HiperNet L</p><p class="t">8200 Veszprém, Tölgyfa u. 4</p></div></div>
+    <div class="nsscard"><div class="nssh"><b>Adathalász és csaló oldalak blokkolása</b><span class="nsdtag act">Aktív</span></div>
+      <p>Banki vagy szolgáltató oldalt utánzó oldalak, csaló linkek, botnet-tevékenység blokkolása.</p></div>
+    <div class="nsscard"><b>Tartalom szűrés</b><p>Kapcsold be a védelmet és az adott kategória tartalmai helyett blokkoló oldal fog megjelenni.</p>
+      <div class="nsslist" data-nsslist></div></div>
+    <div class="nssfoot"><button type="button" class="fsbtn" data-nssgo>Mentés</button></div>
   </div>
 
   <!-- ============= SZOLGÁLTATÁSAID (aktív extrák) ============= -->
@@ -8302,7 +8340,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9373,7 +9411,7 @@
   var snackT;
   window.ySnack = function(ok, text){ toast(ok, text); };
   function toast(ok, text){
-    var vf = Array.prototype.filter.call(document.querySelectorAll('.offoot, .nsdfoot'), function(f){ return f.offsetParent; })[0];
+    var vf = Array.prototype.filter.call(document.querySelectorAll('.offoot, .nsdfoot, .nssfoot'), function(f){ return f.offsetParent; })[0];
     var ar = app.getBoundingClientRect(), fr = vf ? vf.getBoundingClientRect() : ar;
     var gap = vf && fr.top < ar.bottom ? ar.bottom - fr.top + 12 : 16;
     snack.style.bottom = Math.max(16, gap) + 'px';
@@ -10509,6 +10547,57 @@
   });
   /* an order placed or a logout ends what was in the cart */
   document.addEventListener('change', function(e){ if (e.target.id === 's-bok' || e.target.id === 's-welcome') left = null; });
+})();
+</script>
+<script>
+/* NetPajzs: content filter categories, switched freely and saved together (Mentés); leaving with unsaved changes asks first.
+   The saved state is kept per browser; a failed save keeps the switches as set so Mentés can be tried again. */
+(function(){
+  var sc = document.querySelector('[data-screen="ns-set"]'); if (!sc) return;
+  var CATS = ['Alkohol és dohány','Drogok és fegyverek','Étkezési zavarok','Felnőtt tartalom','Hacker','Online vásárlás','Politika','Rasszizmus','Social Media','Sportok','Szerencsejáték','Utazás, szórakozás','Üzenetküldés, levelezés, blogok','Vallás','Viselkedés rendellenességek'];
+  var saved = {}, work = {};
+  try { saved = JSON.parse(localStorage.getItem('yl-nsset') || '{}') || {}; } catch(e){ saved = {}; }
+  var list = sc.querySelector('[data-nsslist]'), btn = sc.querySelector('[data-nssgo]');
+  function go(id){ var r = document.getElementById(id); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } }
+  function dirty(){ return CATS.some(function(c, i){ return !!work[i] !== !!saved[i]; }); }
+  function paint(){
+    list.innerHTML = CATS.map(function(c, i){
+      return '<div class="nssrow"><span>'+c+'<small>'+(work[i] ? 'Blokkolva' : 'Nincs blokkolva')+'</small></span><span class="ofsw"><input type="checkbox" data-nssi="'+i+'"'+(work[i] ? ' checked' : '')+' aria-label="'+c+'"><span></span></span></div>';
+    }).join('');
+    btn.classList.toggle('off', !dirty());
+  }
+  /* opening: a short skeleton, then the last saved state */
+  document.addEventListener('change', function(e){
+    if (e.target.id !== 's-nsset' || !e.target.checked) return;
+    work = JSON.parse(JSON.stringify(saved)); paint(); sc.scrollTop = 0;
+    sc.classList.add('ld'); setTimeout(function(){ sc.classList.remove('ld'); }, 900);
+  });
+  list.addEventListener('change', function(e){ var i = e.target.getAttribute('data-nssi'); if (i === null) return; work[i] = e.target.checked; paint(); });
+  function save(fail){
+    sc.classList.add('busy');
+    setTimeout(function(){
+      sc.classList.remove('busy');
+      if (!fail){ saved = JSON.parse(JSON.stringify(work)); try { localStorage.setItem('yl-nsset', JSON.stringify(saved)); } catch(e){} paint(); }
+      if (window.ySnack) window.ySnack(!fail, fail ? 'Nem sikerült elmenteni a módosításokat' : 'A módosítást sikeresen elmentettük!');
+    }, 1200);
+  }
+  /* demo: holding Mentés (0,7 s) shows the failed save */
+  var hold = null, held = false;
+  btn.addEventListener('pointerdown', function(){ held = false; hold = setTimeout(function(){ held = true; save(true); }, 700); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function(t){ btn.addEventListener(t, function(){ clearTimeout(hold); }); });
+  btn.addEventListener('click', function(){ if (!held && !btn.classList.contains('off')) save(false); });
+  /* leaving with unsaved changes */
+  var ask = document.createElement('div'); ask.className = 'xsheet';
+  ask.innerHTML = '<div class="xsbg" data-nssstay></div><div class="xspanel"><span class="xsgrab"></span>'
+    + '<div class="xshead"><p>Biztosan kilépsz?</p><button type="button" class="xsx" data-nssstay aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<p class="xsq">Változtattál a korábbi beállításokon, de nem mentetted el. Ha most kilépsz, ezek elvesznek.</p>'
+    + '<button type="button" class="xsgo" data-nssstay>Folytatom a módosítást</button><button type="button" class="bxno" data-nssleave>Kilépek mentés nélkül</button></div>';
+  document.querySelector('.app').appendChild(ask);
+  sc.querySelector('[data-nssback]').addEventListener('click', function(){ if (dirty()) ask.classList.add('on'); else go('s-nsdet'); });
+  ask.addEventListener('click', function(e){
+    if (e.target.closest('[data-nssstay]')) ask.classList.remove('on');
+    else if (e.target.closest('[data-nssleave]')){ ask.classList.remove('on'); work = {}; go('s-nsdet'); }
+  });
 })();
 </script>
 </body>
