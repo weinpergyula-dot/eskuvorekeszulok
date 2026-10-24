@@ -340,6 +340,7 @@
   #s-primedit:checked ~ [data-screen="prim-edit"],
   #s-netpend:checked ~ [data-screen="net-pend"],
   #s-npcont:checked ~ [data-screen="np-contact"],
+  #s-npappt:checked ~ [data-screen="np-appt"],
   #s-billhist:checked ~ [data-screen="bill-hist"],
   #s-billdet:checked ~ [data-screen="bill-det"],
   #s-billdata:checked ~ [data-screen="bill-data"],
@@ -2025,6 +2026,23 @@
   .ncfail b{ display:block; margin:16px 0 8px; font-family:'Yettel'; font-size:16px; line-height:1.3; color:var(--navy); }
   .ncfail p{ margin:0; font-size:12px; line-height:1.5; color:var(--navy); }
   .ncscreen [data-ncre]{ display:none; }
+  .npisp small + p.nptel{ font-weight:300; }
+  #s-npappt:checked ~ .ncscreen[data-screen="np-appt"]{ display:flex !important; }
+  .nah{ margin:4px 0 14px; font-size:13px; font-weight:700; color:var(--navy); }
+  .nah2{ margin-top:18px; padding-top:18px; border-top:1px solid #E3E8EE; }
+  .nacal .lwcalh{ justify-content:center; gap:30px; padding-bottom:10px; border-bottom:1px solid #E3E8EE; }
+  .nacal .lwcalh b{ order:1; font-size:13px; }
+  .nacal .lwcalh [data-nam="-1"]{ order:0; } .nacal .lwcalh [data-nam="1"]{ order:2; }
+  .nacal .lwcalg{ margin-top:8px; }
+  .naslots{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .naslot{ padding:11px 6px; border:1.5px solid #D5DCE3; border-radius:8px; background:#fff; font-family:inherit; font-size:12.5px; color:var(--navy); cursor:pointer; }
+  .naslot.on{ border-color:#09223D; background:#F1F9FD; }
+  .nascreen.busy .nacal, .nascreen.busy .naslots{ opacity:.45; pointer-events:none; }
+  .nascreen.busy [data-nago]{ position:relative; background:#3E5670; color:transparent; pointer-events:none; }
+  .nascreen.busy [data-nago]::after{ content:''; position:absolute; left:50%; top:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
+  .ncscreen [data-nare]{ display:none; }
+  .ncscreen.err [data-nago]{ display:none; }
+  .ncscreen.err [data-nare]{ display:flex; }
   .ncscreen.err .ncform, .ncscreen.err [data-ncgo]{ display:none; }
   .ncscreen.err .ncfail, .ncscreen.err [data-ncre]{ display:block; }
   .ncscreen.err [data-ncre]{ display:flex; }
@@ -3598,6 +3616,7 @@
   <input class="rt" type="radio" name="nav" id="s-primedit">
   <input class="rt" type="radio" name="nav" id="s-netpend">
   <input class="rt" type="radio" name="nav" id="s-npcont">
+  <input class="rt" type="radio" name="nav" id="s-npappt">
   <input class="rt" type="radio" name="nav" id="s-billhist">
   <input class="rt" type="radio" name="nav" id="s-billdet">
   <input class="rt" type="radio" name="nav" id="s-billdata">
@@ -7317,10 +7336,10 @@
 
     <!-- ISP váltás (Digital backlog): contact details edited in the app -->
     <div class="dtcard npinfos npisp">
-      <div class="npinfo"><div class="npih"><b>Telepítés időpontja</b><span class="npedit" data-chatpop aria-label="Módosítom"><i class="ti ti-pencil"></i></span></div><p>2026.11.05. · 09:00–12:00</p></div>
+      <div class="npinfo"><div class="npih"><b>Telepítés időpontja</b><span class="npedit" data-naopen aria-label="Módosítom"><i class="ti ti-pencil"></i></span></div><p data-nav>2026.11.05. · 09:00–12:00</p></div>
       <div class="npinfo"><div class="npih"><b>Elérhetőségi adatok</b><span class="npedit" data-ncopen aria-label="Módosítom"><i class="ti ti-pencil"></i></span></div>
         <small>Kapcsolattartó neve</small><p data-ncv="name">Weinper Gyula</p>
-        <small>Értesítési telefonszám</small><p data-ncv="tel">+36 20 290 7566</p>
+        <small>Értesítési telefonszám</small><p class="nptel" data-ncv="tel">+36 20 290 7566</p>
         <small>Megjegyzés a szakteknikusnak</small><p data-ncv="note">Csengessen, mert nem hallom a kopogást.</p></div>
     </div>
 
@@ -7363,6 +7382,27 @@
       <p>Sajnos valami hiba történt, frissíts, vagy próbáld meg újra később.</p>
     </div>
     <div class="ncfoot"><button type="button" class="fsbtn" data-ncgo>Módosítom</button><button type="button" class="fsbtn" data-ncre>Újratöltés</button></div>
+  </div>
+
+  <!-- ============= TELEPÍTÉS IDŐPONTJA módosítása (ISP váltás) ============= -->
+  <div class="screen ncscreen nascreen" data-screen="np-appt" style="display:none;">
+    <div class="dhead">
+      <div class="icon-btn" data-naback><i class="ti ti-arrow-left"></i></div>
+      <span class="title">Telepítés időpontja</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="ncform">
+      <p class="nah">Válaszd ki a telepítés időpontját!</p>
+      <div class="nacal" data-nacal></div>
+      <p class="nah nah2">Válassz idősávot!</p>
+      <div class="naslots" data-naslots></div>
+    </div>
+    <div class="ncfail">
+      <span class="nsresic"><i class="ti ti-x"></i></span>
+      <b>Nem sikerült betölteni a telepítési időpontokat</b>
+      <p>Sajnos valami hiba történt, frissíts, vagy próbáld meg újra később.</p>
+    </div>
+    <div class="ncfoot"><button type="button" class="fsbtn" data-nago>Módosítom</button><button type="button" class="fsbtn" data-nare>Újratöltés</button></div>
   </div>
 
   <!-- ============= SZÁMLATÖRTÉNET ============= -->
@@ -8404,7 +8444,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -10735,6 +10775,85 @@
   ask.addEventListener('click', function(e){
     if (e.target.closest('[data-ncstay]')) ask.classList.remove('on');
     else if (e.target.closest('[data-ncleave]')){ ask.classList.remove('on'); leave(); }
+  });
+  show();
+})();
+</script>
+<script>
+/* ISP váltás: installation time of a pending HiperNet. Pencil → loader → calendar (weekdays from the day after tomorrow,
+   30 days ahead) + time slot; Módosítom saves with a spinner, back to the details, snack. Holding the pencil shows the
+   loading error. Same leave-without-saving question as the contact details. Kept per browser. */
+(function(){
+  var sc = document.querySelector('[data-screen="np-appt"]'); if (!sc) return;
+  var SLOTS = ['09:00-12:00', '12:00-16:00', '16:00-19:00'], MON = ['Január','Február','Március','Április','Május','Június','Július','Augusztus','Szeptember','Október','November','December'];
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var first = new Date(today); first.setDate(first.getDate() + 2);
+  var last = new Date(today); last.setDate(last.getDate() + 30);
+  function ok(d){ return d >= first && d <= last && d.getDay() % 6 !== 0; }
+  function nextOk(d){ d = new Date(d); while (!ok(d)) d.setDate(d.getDate() + 1); return d; }
+  var saved = {day:+new Date(2026, 10, 5), slot:0};
+  try { var x = JSON.parse(localStorage.getItem('yl-npappt') || 'null'); if (x) saved = x; } catch(e){}
+  var day, slot, view, start;
+  function key(){ return day + '|' + slot; }
+  function dfmt(t){ var d = new Date(t); return d.getFullYear()+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+('0'+d.getDate()).slice(-2)+'.'; }
+  function show(){ var v = document.querySelector('[data-nav]'); if (v) v.textContent = dfmt(saved.day) + ' · ' + SLOTS[saved.slot].replace('-', '–'); }
+  function go(id){ var r = document.getElementById(id); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } }
+  function paint(){
+    var y = view.getFullYear(), m = view.getMonth(), lead = (new Date(y, m, 1).getDay() + 6) % 7, n = new Date(y, m + 1, 0).getDate(), h = '';
+    for (var k = 0; k < lead; k++) h += '<span></span>';
+    for (var d = 1; d <= n; d++){
+      var dt = new Date(y, m, d), cl = (ok(dt) ? '' : ' off') + (+dt === +today ? ' now' : '') + (+dt === day ? ' on' : '');
+      h += '<button type="button" class="lwcd'+cl+'" data-naday="'+d+'">'+d+'</button>';
+    }
+    var prevOff = y < first.getFullYear() || (y === first.getFullYear() && m <= first.getMonth()), nextOff = y > last.getFullYear() || (y === last.getFullYear() && m >= last.getMonth());
+    sc.querySelector('[data-nacal]').innerHTML = '<div class="lwcalh"><b>'+y+' '+MON[m]+'</b><button type="button" data-nam="-1"'+(prevOff ? ' disabled' : '')+'><i class="ti ti-chevron-left"></i></button><button type="button" data-nam="1"'+(nextOff ? ' disabled' : '')+'><i class="ti ti-chevron-right"></i></button></div>'
+      + '<div class="lwcalg"><i>H</i><i>K</i><i>Sz</i><i>Cs</i><i>P</i><i>Sz</i><i>V</i>' + h + '</div>';
+    sc.querySelector('[data-naslots]').innerHTML = SLOTS.map(function(t, i){ return '<button type="button" class="naslot'+(i === slot ? ' on' : '')+'" data-naslot="'+i+'">'+t+'</button>'; }).join('');
+  }
+  function fill(){
+    var d = new Date(saved.day); if (!ok(d)) d = nextOk(first);
+    day = +d; slot = saved.slot; view = new Date(d.getFullYear(), d.getMonth(), 1); start = key(); paint();
+  }
+  function load(fail){
+    var ld = document.querySelector('.adload'); if (ld) ld.classList.add('on');
+    setTimeout(function(){
+      sc.classList.toggle('err', !!fail); fill();
+      if (!document.getElementById('s-npappt').checked) go('s-npappt');
+      (window.dataLayer = window.dataLayer || []).push({event:'page_visit', source:'erica_telepites_idopont'});
+      if (ld) ld.classList.remove('on');
+    }, 1200);
+  }
+  var hold = null, held = false;
+  document.addEventListener('pointerdown', function(e){ if (!e.target.closest || !e.target.closest('[data-naopen]')) return; held = false; hold = setTimeout(function(){ held = true; load(true); }, 700); });
+  ['pointerup', 'pointercancel'].forEach(function(t){ document.addEventListener(t, function(){ clearTimeout(hold); }); });
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('[data-naopen]') && !held) load(false); });
+  sc.querySelector('[data-nare]').addEventListener('click', function(){ load(false); });
+  sc.addEventListener('click', function(e){
+    var t;
+    if ((t = e.target.closest('[data-nam]'))){ if (!t.disabled){ view = new Date(view.getFullYear(), view.getMonth() + +t.getAttribute('data-nam'), 1); paint(); } return; }
+    if ((t = e.target.closest('[data-naday]'))){ if (!t.classList.contains('off')){ day = +new Date(view.getFullYear(), view.getMonth(), +t.getAttribute('data-naday')); paint(); } return; }
+    if ((t = e.target.closest('[data-naslot]'))){ slot = +t.getAttribute('data-naslot'); paint(); }
+  });
+  function leave(){ if (window.yBack) window.yBack('s-netpend'); else go('s-netpend'); }
+  sc.querySelector('[data-nago]').addEventListener('click', function(){
+    sc.classList.add('busy');
+    setTimeout(function(){
+      sc.classList.remove('busy'); saved = {day:day, slot:slot}; start = key();
+      try { localStorage.setItem('yl-npappt', JSON.stringify(saved)); } catch(e){}
+      show(); leave();
+      setTimeout(function(){ if (window.ySnack) window.ySnack(true, 'Időpont módosítva lett'); }, 50);
+    }, 1200);
+  });
+  var ask = document.createElement('div'); ask.className = 'xsheet';
+  ask.innerHTML = '<div class="xsbg" data-nastay></div><div class="xspanel"><span class="xsgrab"></span>'
+    + '<div class="xshead"><p>Biztosan kilépsz?</p><button type="button" class="xsx" data-nastay aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<p class="xsq">Változtattál a korábbi beállításaidon, de nem mentetted el. Ha most kilépsz, ezek elvesznek.</p>'
+    + '<button type="button" class="xsgo" data-nastay>Folytatom a módosítást</button><button type="button" class="bxno" data-naleave>Kilépek mentés nélkül</button></div>';
+  document.querySelector('.app').appendChild(ask);
+  sc.querySelector('[data-naback]').addEventListener('click', function(){ if (!sc.classList.contains('err') && key() !== start) ask.classList.add('on'); else leave(); });
+  ask.addEventListener('click', function(e){
+    if (e.target.closest('[data-nastay]')) ask.classList.remove('on');
+    else if (e.target.closest('[data-naleave]')){ ask.classList.remove('on'); leave(); }
   });
   show();
 })();
