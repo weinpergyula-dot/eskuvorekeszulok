@@ -9730,18 +9730,19 @@
 (function(){
   var STEPS = [
     {k:'step3', t:'STEP3', f:[['tvaddon','TV addon manipuláció'],['isp','ISP váltás'],['hivresz','Hívásrészletező'],['nontelco','Non-telco SAP'],['netpajzs','Netpajzs'],['gyermek','Gyermekvédelem'],['idopont','Időpontmódosítás'],['szemadat','Személyes adatok mód.'],['lead','Lead management'],['arindex','Árindexálás'],['collszun','Collection (szüneteltetés)']]},
-    {k:'step4', t:'STEP4', f:[['hfc','HFC portfólió'],['fullafter','FULL áras termékek after sales'],['collkorl','Collection (korlátozás)'],['trybuy','Try&Buy idotartam paraméterezhetőség'],['statusz','Státuszfüggetlen (Cancelled CA)']]},
-    {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','Sales journey és checkout HRSZ támogatása']]}
+    {k:'step4', t:'STEP4', f:[['hfc','HFC portfólió'],['fullafter','FULL áras termékek after sales'],['collkorl','Collection (korlátozás)'],['trybuy','Try&Buy időtartam'],['statusz','Státuszfüggetlen (Cancelled CA)']]},
+    {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
-  var KEY = 'yl-devfeat', app = document.querySelector('.app'), pop = document.getElementById('devlist');
+  /* everything starts switched off; only the switched-on keys are stored */
+  var KEY = 'yl-devfeat-on', app = document.querySelector('.app'), pop = document.getElementById('devlist');
   if (!pop) return;
-  var body = pop.querySelector('.dlbody'), off = {};
-  try { off = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ off = {}; }
-  function save(){ try { localStorage.setItem(KEY, JSON.stringify(off)); } catch(e){} }
+  var body = pop.querySelector('.dlbody'), on = {};
+  try { on = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ on = {}; }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(on)); } catch(e){} }
   function paint(){
-    STEPS.forEach(function(st){ st.f.forEach(function(x){ if (app) app.classList.toggle('foff-'+x[0], !!off[x[0]]); }); });
+    STEPS.forEach(function(st){ st.f.forEach(function(x){ if (app) app.classList.toggle('foff-'+x[0], !on[x[0]]); }); });
   }
-  window.yFeat = function(k){ return !off[k]; };
+  window.yFeat = function(k){ return !!on[k]; };
   function sw(attr, label){ return '<span class="ofsw"><input type="checkbox" '+attr+' aria-label="'+label+'"><span></span></span>'; }
   body.innerHTML = STEPS.map(function(st){
     return '<div class="dlstep" data-dlstep="'+st.k+'"><div class="dlrow dlsh"><span class="dltx" data-txt="'+st.t+'"></span>'+sw('data-dlall', st.t)+'</div>'
@@ -9750,17 +9751,17 @@
   function sync(){
     Array.prototype.forEach.call(body.querySelectorAll('[data-dlstep]'), function(g){
       var fs = g.querySelectorAll('[data-dlf]'), n = 0;
-      Array.prototype.forEach.call(fs, function(i){ i.checked = !off[i.getAttribute('data-dlf')]; if (i.checked) n++; });
+      Array.prototype.forEach.call(fs, function(i){ i.checked = !!on[i.getAttribute('data-dlf')]; if (i.checked) n++; });
       var all = g.querySelector('[data-dlall]'); all.checked = n === fs.length; all.indeterminate = n > 0 && n < fs.length;
     });
   }
   body.addEventListener('change', function(e){
     var i = e.target, g = i.closest('[data-dlstep]');
-    if (i.hasAttribute('data-dlall')) Array.prototype.forEach.call(g.querySelectorAll('[data-dlf]'), function(x){ off[x.getAttribute('data-dlf')] = !i.checked; });
-    else off[i.getAttribute('data-dlf')] = !i.checked;
-    Object.keys(off).forEach(function(k){ if (!off[k]) delete off[k]; });
+    if (i.hasAttribute('data-dlall')) Array.prototype.forEach.call(g.querySelectorAll('[data-dlf]'), function(x){ on[x.getAttribute('data-dlf')] = i.checked; });
+    else on[i.getAttribute('data-dlf')] = i.checked;
+    Object.keys(on).forEach(function(k){ if (!on[k]) delete on[k]; });
     save(); sync(); paint();
-    document.dispatchEvent(new CustomEvent('yfeat', {detail:{off:Object.keys(off)}}));
+    document.dispatchEvent(new CustomEvent('yfeat', {detail:{on:Object.keys(on)}}));
   });
   /* typewriter: rows are written one after the other each time the popup opens */
   var timer = null;
@@ -9777,8 +9778,8 @@
       if (c >= full.length){
         row.classList.remove('typing'); row.classList.add('shown');
         if (row.offsetTop + row.offsetHeight > body.scrollTop + body.clientHeight) body.scrollTop = row.offsetTop + row.offsetHeight - body.clientHeight;
-        r++; c = 0; timer = setTimeout(tick, 90);
-      } else timer = setTimeout(tick, 18);
+        r++; c = 0; timer = setTimeout(tick, 25);
+      } else timer = setTimeout(tick, 5);
     })();
   }
   function open(){ sync(); pop.classList.add('on'); type(); }
