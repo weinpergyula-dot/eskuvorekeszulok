@@ -2047,6 +2047,10 @@
   .ncfld.szlock{ background:#D5DCE3; border-color:#D5DCE3; } .ncfld.szlock select{ color:#8592A6; }
   .szlocknote{ margin:-10px 0 18px; font-size:11.5px; line-height:1.45; color:var(--mid); }
   .szscreen .ncfoot .nsdstop{ display:block; }
+  .szinfo .nsresin{ padding-top:70px; }
+  .szinfo .anic{ width:66px; height:66px; } .szinfo .anic i{ font-size:34px; }
+  .szinfo .nsdstop{ display:block; }
+  #chatpop{ z-index:130; }   /* also above the full-screen info pages */
   .npisp [data-nav]{ font-weight:600; }   /* installation time styled like the contact values */
   #s-npappt:checked ~ .ncscreen[data-screen="np-appt"]{ display:flex !important; }
   .nah{ margin:4px 0 14px; font-size:13px; font-weight:700; color:var(--navy); }
@@ -8590,7 +8594,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback],[data-relinfo],#relpop,[data-szopen],[data-szedit],[data-szback],.szscreen';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback],[data-relinfo],#relpop,[data-szopen],[data-szedit],[data-szback],.szscreen,[data-szbirth],.szinfo';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -11035,7 +11039,7 @@
   function view(){
     Object.keys(SEC).forEach(function(k){
       var x = SEC[k];
-      vw.querySelector('[data-szcard="'+k+'"]').innerHTML = '<div class="szch"><b>'+x.t+'</b><span class="npedit" '+(x.ro ? 'data-chatpop' : 'data-szedit="'+k+'"')+' aria-label="Módosítom"><i class="ti ti-pencil"></i></span></div>'
+      vw.querySelector('[data-szcard="'+k+'"]').innerHTML = '<div class="szch"><b>'+x.t+'</b><span class="npedit" '+(x.ro ? 'data-szbirth' : 'data-szedit="'+k+'"')+' aria-label="Módosítom"><i class="ti ti-pencil"></i></span></div>'
         + x.f.map(function(f){ return '<small>'+f[1]+'</small><p>'+(esc(data[f[0]]) || '-')+'</p>'; }).join('')
         + (x.ro ? '<p class="sznote"><i class="ti ti-info-circle"></i><span>Ezeket az adatokat jelenleg chat-en vagy üzletben tudod megváltoztatni</span></p>' : '');
     });
@@ -11063,6 +11067,14 @@
     if (e.target.closest('[data-szopen]')){ view(); loader(function(){ go('s-szview'); vw.scrollTop = 0; }); return; }
     var t = e.target.closest('[data-szedit]'); if (t) open(t.getAttribute('data-szedit'));
   });
+  /* Születési adatok: only by video chat or in a shop */
+  var bi = document.createElement('div'); bi.className = 'nsres szinfo';
+  bi.innerHTML = '<div class="nsresin"><span class="anic"><i class="ti ti-info-circle"></i></span><h2>Ezeket az adatokat chat-en vagy üzletben tudod módosítani</h2>'
+    + '<p>Születési adataid biztonsági okokból videó chat-en vagy üzletben tudod módosítani. Videó chat-es azonosításhoz készítsd elő az okmányaidat - a beszélgetés során ezzel kell igazolnod magad.</p></div>'
+    + '<div class="nscff"><button type="button" class="fsbtn" data-chatpop>Chat indítása</button><button type="button" class="nsdstop" data-szbx>Vissza</button></div>';
+  document.querySelector('.app').appendChild(bi);
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('[data-szbirth]')) bi.classList.add('on'); });
+  bi.addEventListener('click', function(e){ if (e.target.closest('[data-szbx]')) bi.classList.remove('on'); });
   ed.querySelector('[data-sztip]').addEventListener('click', function(){ ed.querySelector('[data-sztipt]').classList.toggle('on'); });
   ed.addEventListener('input', function(e){ var f = e.target.closest('.ncfld'); if (f) f.classList.remove('bad'); });
   function leave(){ if (window.yBack) window.yBack('s-szview'); else go('s-szview'); }
