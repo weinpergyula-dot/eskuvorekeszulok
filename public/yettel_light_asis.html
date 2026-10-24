@@ -1820,6 +1820,14 @@
   .xschk{ display:none; width:22px; height:22px; border-radius:50%; background:#09223D; align-items:center; justify-content:center; }
   .xschk i{ font-size:14px; color:#fff; }
   .xsopt:has(input:checked) .xschk{ display:flex; }
+  /* TV journey: how many TV boxes, sheet as tall as its content */
+  .bxsh .xsq{ margin:14px 0 22px; font-size:12.5px; line-height:1.45; }
+  .bxopt{ display:block; width:100%; margin:0 0 12px; padding:15px 16px; border:1.5px solid #E3E8EE; border-radius:12px; background:#fff; text-align:left; font-family:'Yettel'; font-size:14px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .bxopt.on{ border-color:#09223D; background:#F1F9FD; }
+  .bxno{ display:block; width:100%; margin-top:10px; padding:12px; border:none; background:none; font-family:'Yettel'; font-size:14px; font-weight:700; color:var(--navy); cursor:pointer; }
+  /* address search: "can't find your address" hint above the link */
+  .adhelp{ position:relative; }
+  .adtip{ position:absolute; left:50%; bottom:calc(100% + 6px); z-index:3; transform:translateX(-50%); padding:11px 14px; border-radius:10px; background:var(--navy); color:#fff; font-size:12px; font-weight:500; white-space:nowrap; pointer-events:none; animation:brfade .2s ease-out; }
   .xsgo{ width:100%; padding:14px; border:none; border-radius:999px; background:#09223D; color:#fff; font-family:'Yettel'; font-weight:700; font-size:14px; cursor:pointer; }
   /* ===== Extra szolgáltatások: list screen ===== */
   .xsid{ display:flex; align-items:center; gap:16px; margin:-28px -16px 18px; padding:40px 26px 16px; background:#FFFFFF; border-radius:0 0 26px 26px; cursor:pointer;
@@ -8002,7 +8010,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist]';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9058,7 +9066,7 @@
     {name:'Yettel TV Mini', ch:'6 csatorna', hd:'ebből 6 HD', strm:false, price:2000},
     {name:'Nem kérek TV-t', none:true, price:0}
   ];
-  var BOX = 990, tlist = [], tSel = 0, boxOn = false;
+  var BOX = 490, tlist = [], tSel = 0, boxOn = false, boxN = 0;
   function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
   function tvCard(t, i){
     if (t.none) return '<div class="ofcard tvno" data-i="'+i+'" data-tvsel><i class="ti ti-device-tv-off"></i><b>Nem kérek TV-t</b></div>';
@@ -9082,9 +9090,9 @@
   }
   function tvSum(){
     var net = list[selI] ? netNow(list[selI]) : 0, t = tlist[tSel];
-    tsc.querySelector('[data-ofmon]').textContent = fmt(net + (t.none ? 0 : tvNow(t.price)) + (boxOn && !t.none ? BOX : 0)) + ' Ft/hó';
+    tsc.querySelector('[data-ofmon]').textContent = fmt(net + (t.none ? 0 : tvNow(t.price)) + (boxOn && !t.none ? BOX * boxN : 0)) + ' Ft/hó';
   }
-  function tvBox(on){ boxOn = on; tbox.classList.toggle('on', on); tbox.querySelector('.tvbt').textContent = on ? 'TV box hozzáadva' : 'TV box hozzáadása'; tbox.querySelector('.tvbic').className = 'ti tvbic ' + (on ? 'ti-circle-check-filled' : 'ti-circle-plus'); }
+  function tvBox(n){ var on = n > 0; boxN = +n || 0; boxOn = on; tbox.classList.toggle('on', on); tbox.querySelector('.tvbt').textContent = on ? 'TV box hozzáadva ('+boxN+' db)' : 'TV box hozzáadása'; tbox.querySelector('.tvbic').className = 'ti tvbic ' + (on ? 'ti-circle-check-filled' : 'ti-circle-plus'); }
   function renderTv(){
     /* Internet + TV starts on TV Plus; plain Internet keeps the order but starts on the last card, "Nem kérek TV-t" */
     var combo = window.yAddr && window.yAddr.from === 'ctv-addr';
@@ -9093,7 +9101,7 @@
     tcar.innerHTML = tlist.map(tvCard).join('');
     tdots.innerHTML = tlist.map(function(t, i){ return '<i'+(i === tSel ? ' class="on"' : '')+'></i>'; }).join('');
     tsc.querySelector('.adx').setAttribute('for', window.yAddr && window.yAddr.guest ? 's-newcust' : 's-tshop');
-    tvBox(false); tvMark(tSel); tvSum();
+    tvBox(0); tvMark(tSel); tvSum();
     tsc.classList.remove('stk');
   }
   sc.querySelector('.ofnext').addEventListener('click', function(){
@@ -9113,11 +9121,28 @@
     tvMark(i);
     busy(tsc, true, function(ok){ tSel = ok ? i : prev; tvMark(tSel); tvSum(); });
   });
+  /* TV box: a sheet asks how many (1-3 or none), then the box button saves with its loader */
+  var bxs = document.createElement('div'); bxs.className = 'xsheet bxsh';
+  bxs.innerHTML = '<div class="xsbg" data-bxx></div><div class="xspanel"><span class="xsgrab"></span>'
+    + '<div class="xshead"><p>Hány TV boxot szeretnél?</p></div>'
+    + '<p class="xsq">Ha a tévéden szeretnéd nézni a szolgáltatást, de a tévéd nem okostévé, vagy 2022-nél régebbi modell, akkor szükséged lehet TV box-ra. Gondold át, hogy hány szobában szeretnél TV-zni, és válaszd ki a szükséges boxok számát.</p>'
+    + [1, 2, 3].map(function(n){ return '<button type="button" class="bxopt" data-bxn="'+n+'">'+n+' db ('+(n * BOX)+' Ft/hó)</button>'; }).join('')
+    + '<button type="button" class="bxopt" data-bxn="0">Nem kérek</button>'
+    + '<button type="button" class="bxno" data-bxx>Mégse</button></div>';
+  app.appendChild(bxs);
   function toggleBox(){
     if (tsc.classList.contains('busy')) return;
-    var want = !boxOn; tbox.classList.add('ld');
-    busy(tsc, true, function(ok){ tbox.classList.remove('ld'); tvBox(ok ? want : !want); tvSum(); });
+    Array.prototype.forEach.call(bxs.querySelectorAll('[data-bxn]'), function(b){ b.classList.toggle('on', +b.getAttribute('data-bxn') === boxN); });
+    bxs.classList.add('on');
   }
+  bxs.addEventListener('click', function(e){
+    if (e.target.closest('[data-bxx]')){ bxs.classList.remove('on'); return; }
+    var b = e.target.closest('[data-bxn]'); if (!b) return;
+    var want = +b.getAttribute('data-bxn'), prev = boxN; bxs.classList.remove('on');
+    if (want === prev) return;
+    tbox.classList.add('ld');
+    busy(tsc, true, function(ok){ tbox.classList.remove('ld'); tvBox(ok ? want : prev); tvSum(); });
+  });
   tbox.addEventListener('click', toggleBox);
   tcar.addEventListener('scroll', function(){
     var c = tcar.children[0]; if (!c) return;
@@ -9190,7 +9215,7 @@
   var esc = document.querySelector('[data-screen="tv-extras"]'), hbo = 0;
   function exSum(){
     var net = list[selI] ? netNow(list[selI]) : 0, t = tlist[tSel];
-    esc.querySelector('[data-ofmon]').textContent = fmt(net + (t.none ? 0 : tvNow(t.price)) + (boxOn && !t.none ? BOX : 0) + hbo) + ' Ft/hó';
+    esc.querySelector('[data-ofmon]').textContent = fmt(net + (t.none ? 0 : tvNow(t.price)) + (boxOn && !t.none ? BOX * boxN : 0) + hbo) + ' Ft/hó';
   }
   function toExtras(){
     var ld = document.querySelector('.adload'), t = tlist[tSel];
@@ -9346,7 +9371,7 @@
     if (t && !t.none){
       it.push(smItem('ti-device-tv', t.name, t.price, {off:tvp, promo:'100% havidíj kedvezmény 30 napig'})); if (tvp) smNew.push(['ti-device-tv', t.name, tvp]);
       if (t.strm){ it.push(smItem('ti-cast', 'TV2 Play Prémium', 0)); it.push(smItem('ti-cast', 'RTL+ Active', 0)); }
-      if (boxOn) it.push(smItem('ti-box', 'TV box', BOX, {desc:'1 db', promo:'100% havidíj kedvezmény 30 napig'}));
+      if (boxOn) it.push(smItem('ti-box', 'TV box', BOX * boxN, {desc:boxN+' db', promo:'100% havidíj kedvezmény 30 napig'}));
     }
     Array.prototype.forEach.call(esc.querySelectorAll('[data-xp]:checked'), function(x){
       var nm = x.closest('.excard').getAttribute('data-ex'), hb = /HBO/.test(nm);
@@ -9849,8 +9874,22 @@
   });
   cart.addEventListener('click', function(e){
     if (e.target === cart) cart.classList.remove('on');
-    else if (e.target.closest('[data-ckresume]')){ cart.classList.remove('on'); go(left); left = null; }
+    else if (e.target.closest('[data-ckresume]')){
+      /* back to the cart behind the "Betöltés folyamatban" loader */
+      var ld = document.querySelector('.adload'), to = left; cart.classList.remove('on'); left = null;
+      if (!ld){ go(to); return; }
+      ld.classList.add('on');
+      setTimeout(function(){ go(to); }, 1600);
+      setTimeout(function(){ ld.classList.remove('on'); }, 1800);
+    }
     else if (e.target.closest('[data-ckrestart]')){ cart.classList.remove('on'); left = null; go(entry); }
+  });
+  /* address search: "Nem találod a címed?" shows where to get help */
+  document.addEventListener('click', function(e){
+    var h = e.target.closest && e.target.closest('.adhelp'); if (!h) return;
+    var t = h.querySelector('.adtip');
+    if (!t){ t = document.createElement('span'); t.className = 'adtip'; t.textContent = 'Hívd a 1220-at, segítünk megoldani!'; h.appendChild(t); }
+    clearTimeout(h._tt); h._tt = setTimeout(function(){ t.remove(); }, 3000);
   });
   /* an order placed or a logout ends what was in the cart */
   document.addEventListener('change', function(e){ if (e.target.id === 's-bok' || e.target.id === 's-welcome') left = null; });
