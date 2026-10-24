@@ -3127,13 +3127,13 @@
 
   /* ===== Yettel Full popup v2: hero + tabs ===== */
   .fl2 .fsbody{ padding:0 0 28px; background:#F4F6F8; }
-  .flhd{ position:relative; overflow:hidden; isolation:isolate; padding:calc(54px + env(safe-area-inset-top)) 20px 26px; background:radial-gradient(120% 140% at 0% 0%, #17305A 0%, #09223D 55%, #050F1E 100%); color:#fff; }
+  .flhd{ position:relative; overflow:hidden; isolation:isolate; padding:calc(40px + env(safe-area-inset-top)) 20px 44px; background:radial-gradient(120% 140% at 0% 0%, #17305A 0%, #09223D 55%, #050F1E 100%); color:#fff; }
   .flhd h2{ position:relative; z-index:2; margin:2px 0 8px; font-size:24px; font-weight:800; line-height:1.15; letter-spacing:-.01em; color:#fff; }
   .flhd p{ position:relative; z-index:2; max-width:58%; margin:0; font-size:12.5px; line-height:1.45; color:rgba(255,255,255,.82); }
   .flhd .pbtag{ position:relative; z-index:2; }
   .flx{ position:absolute; z-index:3; top:calc(14px + env(safe-area-inset-top)); right:12px; display:flex; padding:6px; border:none; border-radius:50%; background:rgba(255,255,255,.12); cursor:pointer; }
   .flx i{ font-size:20px; color:#fff; }
-  .flhdpct{ position:absolute; z-index:2; right:20px; bottom:22px; display:flex; flex-direction:column; align-items:center; justify-content:center; width:104px; height:104px; }
+  .flhdpct{ position:absolute; z-index:2; right:20px; bottom:42px; display:flex; flex-direction:column; align-items:center; justify-content:center; width:104px; height:104px; }
   .flhdpct b{ font-size:36px; font-weight:800; line-height:1; color:var(--lime); text-shadow:0 0 22px rgba(180,255,0,.45); animation:fppulse 3s ease-in-out infinite; }
   .flhdpct b small{ font-size:17px; }
   .flhdpct em{ order:-1; font-style:normal; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.7); }
@@ -9780,12 +9780,12 @@
       if (r >= rows.length) return;
       var row = rows[r], tx = row.querySelector('.dltx'), full = tx.getAttribute('data-txt');
       row.classList.add('typing');
-      tx.textContent = full.slice(0, ++c);
+      c = Math.min(full.length, c + 3); tx.textContent = full.slice(0, c);
       if (c >= full.length){
         row.classList.remove('typing'); row.classList.add('shown');
         if (row.offsetTop + row.offsetHeight > body.scrollTop + body.clientHeight) body.scrollTop = row.offsetTop + row.offsetHeight - body.clientHeight;
-        r++; c = 0; timer = setTimeout(tick, 25);
-      } else timer = setTimeout(tick, 5);
+        r++; c = 0; timer = setTimeout(tick, 10);
+      } else timer = setTimeout(tick, 6);
     })();
   }
   function open(){ sync(); pop.classList.add('on'); type(); }
