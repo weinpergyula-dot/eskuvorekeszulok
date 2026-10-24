@@ -9729,7 +9729,7 @@
 </script>
 <script>
 /* Fejlesztések popup (search icon): features grouped by step, each with an on/off switch,
-   a step switch flips its whole group. State is kept per browser; off features get
+   a step switch flips its whole group. Every page load starts with all of them off; off features get
    a "foff-<key>" class on .app and window.yFeat(key) tells whether one is on. */
 (function(){
   var STEPS = [
@@ -9737,14 +9737,13 @@
     {k:'step4', t:'STEP4', f:[['hfc','HFC portfólió'],['fullafter','FULL áras termékek after sales'],['collkorl','Collection (korlátozás)'],['trybuy','Try&Buy időtartam'],['statusz','Státuszfüggetlen (Cancelled CA)']]},
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
-  /* everything starts switched off; only the switched-on keys are stored */
   /* features on the same page move together */
   var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom'};
-  var KEY = 'yl-devfeat-on', app = document.querySelector('.app'), pop = document.getElementById('devlist');
+  var app = document.querySelector('.app'), pop = document.getElementById('devlist');
   if (!pop) return;
   var body = pop.querySelector('.dlbody'), on = {};
-  try { on = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ on = {}; }
-  function save(){ try { localStorage.setItem(KEY, JSON.stringify(on)); } catch(e){} }
+  /* nothing is remembered between loads: drop what earlier versions saved */
+  try { localStorage.removeItem('yl-devfeat'); localStorage.removeItem('yl-devfeat-on'); } catch(e){}
   function paint(){
     STEPS.forEach(function(st){ st.f.forEach(function(x){ if (app) app.classList.toggle('foff-'+x[0], !on[x[0]]); }); });
   }
@@ -9766,7 +9765,7 @@
     if (i.hasAttribute('data-dlall')) Array.prototype.forEach.call(g.querySelectorAll('[data-dlf]'), function(x){ on[x.getAttribute('data-dlf')] = i.checked; });
     else { var k = i.getAttribute('data-dlf'); on[k] = i.checked; if (LINK[k]) on[LINK[k]] = i.checked; }
     Object.keys(on).forEach(function(k){ if (!on[k]) delete on[k]; });
-    save(); sync(); paint();
+    sync(); paint();
     document.dispatchEvent(new CustomEvent('yfeat', {detail:{on:Object.keys(on)}}));
   });
   /* typewriter: rows are written one after the other each time the popup opens */
