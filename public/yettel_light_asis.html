@@ -2736,6 +2736,27 @@
   .tvbic{ font-size:24px; color:var(--navy); }
   .tvblnk{ display:inline-block; margin-top:12px; font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
   #wip{ z-index:128; }   /* also above the full-screen sheets */
+  /* Fejlesztések: dev feature switches behind the search icon, typed in line by line */
+  #devlist{ z-index:127; }
+  .dlcard{width:100%; max-width:320px; max-height:100%; display:flex; flex-direction:column; text-align:left; border-radius:26px; padding:20px 18px 16px; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 30px 60px -28px rgba(20,36,94,.45);}
+  .dlhead{display:flex; align-items:center; justify-content:space-between; margin:0 0 10px;}
+  .dlhead p{font-family:'Yettel'; font-size:15px; font-weight:800; color:var(--hi); margin:0; letter-spacing:-.01em;}
+  .dlx{width:30px; height:30px; border:none; border-radius:50%; background:var(--page); color:var(--navy); cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .dlx i{font-size:16px;}
+  .dlbody{flex:1; overflow-y:auto; scrollbar-width:none; margin:0 -4px; padding:0 4px;}
+  .dlbody::-webkit-scrollbar{display:none;}
+  .dlstep{margin:0 0 12px;}
+  .dlstep:last-child{margin-bottom:0;}
+  .dlrow{display:flex; align-items:center; gap:12px; min-height:30px; padding:4px 0;}
+  .dlrow .ofsw{margin-top:0; opacity:0; transition:opacity .2s;}
+  .dlrow.shown .ofsw{opacity:1;}
+  .dltx{flex:1; font-size:12.5px; line-height:1.35; color:var(--hi);}
+  .dlsh{border-bottom:1px solid var(--line); margin-bottom:2px;}
+  .dlsh .dltx{font-family:'Yettel'; font-size:13px; font-weight:800; letter-spacing:.02em;}
+  .dlrow.typing .dltx::after{content:''; display:inline-block; width:1.5px; height:1em; margin-left:1px; vertical-align:-2px; background:var(--navy); animation:dlcar .7s steps(1) infinite;}
+  @keyframes dlcar{50%{opacity:0;}}
+  .ofsw input:indeterminate + span{ background:#7C8A9B; }
+  .ofsw input:indeterminate + span::after{ transform:translateX(9px); }
   .tvscr.busy .tvbx{ pointer-events:none; opacity:.6; }
   .tvscr .ofhelp{ margin-top:22px; }
 
@@ -3397,7 +3418,7 @@
         <span class="brand">Yettel<span class="bdot"></span></span>
       </div>
       <div class="top-actions">
-        <div class="icon-btn"><i class="ti ti-search"></i></div>
+        <div class="icon-btn" data-devlist><i class="ti ti-search"></i></div>
       </div>
     </div>
 
@@ -7549,6 +7570,12 @@
   </div>
   <div class="lisplash" id="lisplash"><i class="ti ti-settings ligear"></i><p class="lit">Belépés folyamatban...</p><p class="lis">Megkezdtük az inicializálást</p></div>
   <div class="losplash" id="losplash"><span class="lologo">Yettel<i></i></span></div>
+  <div class="wip" id="devlist">
+    <div class="dlcard">
+      <div class="dlhead"><p>Fejlesztések</p><button type="button" class="dlx" data-dlclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
+      <div class="dlbody"></div>
+    </div>
+  </div>
   <div class="wip" id="wip">
     <div class="wipcard">
       <span class="wipic"><i class="ti ti-tool"></i></span>
@@ -7945,7 +7972,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen]';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9694,6 +9721,72 @@
     setTimeout(home, 1800);
     setTimeout(function(){ ls.classList.remove('on'); }, 2000);
   });
+})();
+</script>
+<script>
+/* Fejlesztések popup (search icon): features grouped by step, each with an on/off switch,
+   a step switch flips its whole group. State is kept per browser; off features get
+   a "foff-<key>" class on .app and window.yFeat(key) tells whether one is on. */
+(function(){
+  var STEPS = [
+    {k:'step3', t:'STEP3', f:[['tvaddon','TV addon manipuláció'],['isp','ISP váltás'],['hivresz','Hívásrészletező'],['nontelco','Non-telco SAP'],['netpajzs','Netpajzs'],['gyermek','Gyermekvédelem'],['idopont','Időpontmódosítás'],['szemadat','Személyes adatok mód.'],['lead','Lead management'],['arindex','Árindexálás'],['collszun','Collection (szüneteltetés)']]},
+    {k:'step4', t:'STEP4', f:[['hfc','HFC portfólió'],['fullafter','FULL áras termékek after sales'],['collkorl','Collection (korlátozás)'],['trybuy','Try&Buy idotartam paraméterezhetőség'],['statusz','Státuszfüggetlen (Cancelled CA)']]},
+    {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','Sales journey és checkout HRSZ támogatása']]}
+  ];
+  var KEY = 'yl-devfeat', app = document.querySelector('.app'), pop = document.getElementById('devlist');
+  if (!pop) return;
+  var body = pop.querySelector('.dlbody'), off = {};
+  try { off = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ off = {}; }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(off)); } catch(e){} }
+  function paint(){
+    STEPS.forEach(function(st){ st.f.forEach(function(x){ if (app) app.classList.toggle('foff-'+x[0], !!off[x[0]]); }); });
+  }
+  window.yFeat = function(k){ return !off[k]; };
+  function sw(attr, label){ return '<span class="ofsw"><input type="checkbox" '+attr+' aria-label="'+label+'"><span></span></span>'; }
+  body.innerHTML = STEPS.map(function(st){
+    return '<div class="dlstep" data-dlstep="'+st.k+'"><div class="dlrow dlsh"><span class="dltx" data-txt="'+st.t+'"></span>'+sw('data-dlall', st.t)+'</div>'
+      + st.f.map(function(x){ return '<div class="dlrow"><span class="dltx" data-txt="'+x[1]+'"></span>'+sw('data-dlf="'+x[0]+'"', x[1])+'</div>'; }).join('') + '</div>';
+  }).join('');
+  function sync(){
+    Array.prototype.forEach.call(body.querySelectorAll('[data-dlstep]'), function(g){
+      var fs = g.querySelectorAll('[data-dlf]'), n = 0;
+      Array.prototype.forEach.call(fs, function(i){ i.checked = !off[i.getAttribute('data-dlf')]; if (i.checked) n++; });
+      var all = g.querySelector('[data-dlall]'); all.checked = n === fs.length; all.indeterminate = n > 0 && n < fs.length;
+    });
+  }
+  body.addEventListener('change', function(e){
+    var i = e.target, g = i.closest('[data-dlstep]');
+    if (i.hasAttribute('data-dlall')) Array.prototype.forEach.call(g.querySelectorAll('[data-dlf]'), function(x){ off[x.getAttribute('data-dlf')] = !i.checked; });
+    else off[i.getAttribute('data-dlf')] = !i.checked;
+    Object.keys(off).forEach(function(k){ if (!off[k]) delete off[k]; });
+    save(); sync(); paint();
+    document.dispatchEvent(new CustomEvent('yfeat', {detail:{off:Object.keys(off)}}));
+  });
+  /* typewriter: rows are written one after the other each time the popup opens */
+  var timer = null;
+  function type(){
+    clearTimeout(timer);
+    var rows = Array.prototype.slice.call(body.querySelectorAll('.dlrow')), r = 0, c = 0;
+    rows.forEach(function(x){ x.classList.remove('shown', 'typing'); x.querySelector('.dltx').textContent = ''; });
+    body.scrollTop = 0;
+    (function tick(){
+      if (r >= rows.length) return;
+      var row = rows[r], tx = row.querySelector('.dltx'), full = tx.getAttribute('data-txt');
+      row.classList.add('typing');
+      tx.textContent = full.slice(0, ++c);
+      if (c >= full.length){
+        row.classList.remove('typing'); row.classList.add('shown');
+        if (row.offsetTop + row.offsetHeight > body.scrollTop + body.clientHeight) body.scrollTop = row.offsetTop + row.offsetHeight - body.clientHeight;
+        r++; c = 0; timer = setTimeout(tick, 90);
+      } else timer = setTimeout(tick, 18);
+    })();
+  }
+  function open(){ sync(); pop.classList.add('on'); type(); }
+  function close(){ clearTimeout(timer); pop.classList.remove('on'); }
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('[data-devlist]')) open(); });
+  pop.addEventListener('click', function(e){ if (e.target === pop || e.target.closest('[data-dlclose]')) close(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+  paint();
 })();
 </script>
 </body>
