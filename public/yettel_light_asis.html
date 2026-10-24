@@ -1828,6 +1828,34 @@
   /* address search: "can't find your address" hint above the link */
   .adhelp{ position:relative; }
   .adtip{ position:absolute; left:50%; bottom:calc(100% + 6px); z-index:3; transform:translateX(-50%); padding:11px 14px; border-radius:10px; background:var(--navy); color:#fff; font-size:12px; font-weight:500; white-space:nowrap; pointer-events:none; animation:brfade .2s ease-out; }
+  /* Lead - Keress hamar: the "not available" screen offers the contact form (only with the backlog item on) */
+  .app.foff-leadhamar .anlead, .app:not(.foff-leadhamar) .anold{ display:none !important; }
+  .anlink{ display:inline-block; margin-top:26px; font-size:13px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
+  .lwv .lwverr{ display:none; margin:-12px 0 16px; font-size:11.5px; color:#F0603C; }
+  .lwv .bad + .lwverr{ display:block; }
+  .lwv .lwvfld.bad{ border-color:#F0603C; }
+  .lwvlbl .lwi{ position:relative; display:inline-flex; cursor:pointer; }
+  .lwtip{ display:none; margin:-2px 0 10px; padding:11px 14px; border-radius:8px; background:var(--navy); color:#fff; font-size:12px; line-height:1.45; }
+  .lwtip.on{ display:block; }
+  .lwvaddr{ margin:0 0 30px; font-size:12px; color:var(--navy); }
+  .lwvaddr b{ font-weight:700; }
+  .lwvsel{ position:relative; margin:0 0 18px; }
+  .lwvsel > button{ display:flex; align-items:center; justify-content:space-between; width:100%; padding:13px 14px; border:1.5px solid #E3E8EE; border-radius:8px; background:#fff; font-family:inherit; font-size:14px; color:var(--navy); text-align:left; cursor:pointer; }
+  .lwvsel.bad > button{ border-color:#F0603C; }
+  .lwvsel.open > button i{ transform:rotate(180deg); }
+  .lwvopts{ display:none; position:absolute; left:0; right:0; top:calc(100% + 4px); z-index:3; padding:4px 0; border-radius:8px; background:#fff; box-shadow:0 10px 30px -8px rgba(9,34,61,.3); }
+  .lwvsel.open .lwvopts{ display:block; }
+  .lwvopts button{ display:block; width:100%; padding:13px 14px; border:none; background:none; font-family:inherit; font-size:14px; color:var(--navy); text-align:left; cursor:pointer; }
+  .lwvopts button.on{ background:#F1F9FD; }
+  .lwvck{ display:flex; align-items:center; gap:10px; margin:-4px 0 18px; font-size:12.5px; color:var(--navy); cursor:pointer; }
+  .lwvck input{ width:18px; height:18px; margin:0; accent-color:var(--navy); }
+  .lwvseg{ display:block; width:100%; margin:0 0 12px; padding:12px; border:1.5px solid #E3E8EE; border-radius:8px; background:#fff; font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .lwvseg.on{ border:2px solid var(--navy); }
+  .lw2 .lwvok{ margin:60px 0 10px; }
+  .lw2 .lwvok .lwokic{ display:inline-flex; width:70px; height:70px; border-radius:50%; background:#DFF5E6; align-items:center; justify-content:center; }
+  .lw2 .lwvok .lwokic i{ font-size:36px; color:#2E9E4F; }
+  .lw2 .lwvok b{ font-size:20px; line-height:1.25; }
+  .lw2.sent .lwvfoot{ display:none; }
   /* Lead - Nem található cím: yettel.hu form opened in a webview */
   .lwv{ position:absolute; inset:0; z-index:126; display:none; flex-direction:column; background:#fff; animation:xsup .28s cubic-bezier(.4,0,.2,1); }
   .lwv.on{ display:flex; }
@@ -7319,10 +7347,14 @@
   <!-- ============= SZOLGÁLTATÁS NEM ÉRHETŐ EL ============= -->
   <div class="screen loginscr lgn anscreen" data-screen="addr-none" style="display:none;">
     <span class="anic"><i class="ti ti-info-circle"></i></span>
-    <h2 class="anh">Szolgáltatásunk még nem érhető el a címeden</h2>
-    <p class="anp">Pillanatnyilag otthoni internet szolgáltatásunk nem érhető el a körzetedben. Ne szomorkodj, hálózatunkat folyamatosan bővítjük.</p>
+    <h2 class="anh anold">Szolgáltatásunk még nem érhető el a címeden</h2>
+    <p class="anp anold">Pillanatnyilag otthoni internet szolgáltatásunk nem érhető el a körzetedben. Ne szomorkodj, hálózatunkat folyamatosan bővítjük.</p>
+    <h2 class="anh anlead">Szolgáltatásunk egyelőre nem érhető el a címeden</h2>
+    <p class="anp anlead">Jelenleg még nem tudunk otthoni internetet biztosítani a megadott címen. Add meg elérhetőséged és értesítünk, amint elérhetővé válik a szolgáltatás.</p>
+    <label class="anlink anlead" for="s-addrsvc" data-ofnew>Másik címet adok meg</label>
     <div class="anfoot">
-      <span class="lgbtn annotify" data-annotify>Értesítést kérek</span>
+      <span class="lgbtn annotify anold" data-annotify>Értesítést kérek</span>
+      <span class="lgbtn anlead" data-lw2open>Értesítést kérek</span>
       <label class="lgback" for="s-home" data-gohome>Vissza a főoldalra</label>
     </div>
   </div>
@@ -8051,7 +8083,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],.lwv';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9833,7 +9865,7 @@
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
   /* already built in the demo: marked with a "Kész" tag */
-  var DONE = {leadcim:1, fullafter:1, fulldash:1, fullcsom:1, fullmegt:1};
+  var DONE = {leadcim:1, leadhamar:1, fullafter:1, fulldash:1, fullcsom:1, fullmegt:1};
   /* features on the same page move together */
   var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom'};
   var app = document.querySelector('.app'), pop = document.getElementById('devlist');
@@ -9964,6 +9996,83 @@
     }
   });
   lwv.addEventListener('input', function(e){ var f = e.target.closest('.lwvfld'); if (f) f.classList.remove('bad'); });
+  /* Lead - Keress hamar (Digital backlog): contact form in a webview from the "not available at your address" screen */
+  var lw2 = document.createElement('div'); lw2.className = 'lwv lw2';
+  var TIPS = {mail:'Ide küldjük az értesítéseket és a kapcsolódó információkat.', tel:'Ezen a számon tudunk elérni, ha felvesszük veled a kapcsolatot.',
+              tech:'Válaszd ki a számodra érdekes technológiát.', time:'Válaszd ki, mikor tudunk a legkönnyebben elérni.'};
+  function lbl2(t, k, req){ return '<p class="lwvlbl">'+t+(req ? ' *' : '')+(TIPS[k] ? ' <span class="lwi" data-lwtip="'+k+'"><i class="ti ti-info-circle"></i></span>' : '')+'</p>'+(TIPS[k] ? '<p class="lwtip" data-lwtipt="'+k+'">'+TIPS[k]+'</p>' : ''); }
+  function fld2(t, ph, k, pre){ return lbl2(t, k, true)+'<div class="lwvfld" data-lwk="'+k+'">'+(pre ? '<span class="lwvpre">'+pre+'</span>' : '')+'<input type="'+(k === 'mail' ? 'email' : k === 'tel' ? 'tel' : 'text')+'" placeholder="'+ph+'"></div><p class="lwverr"></p>'; }
+  var TECH = ['Vezetékes vagy vezeték nélküli internet', 'Vezetékes internet', 'Vezeték nélküli internet'];
+  var TIMES = ['Bármikor (8-18 óra között)', 'Minél hamarabb', 'Délelőtt (8-12 óra között)', 'Délután (12-18 óra között)'];
+  lw2.innerHTML = '<div class="lwvbar"><button type="button" data-lwx aria-label="Bezárás"><i class="ti ti-x"></i></button>'
+    + '<div class="lwvurl"><b>(WEBVIEW)</b><span><i class="ti ti-lock"></i> www.yettel.hu</span></div>'
+    + '<button type="button" data-lwre aria-label="Újratöltés"><i class="ti ti-refresh"></i></button></div>'
+    + '<div class="lwvbody"><div class="lwvlogo">Yettel.</div><div class="lwvin">'
+    + '<div class="lwvform"><h2 class="lwvh">Elérhetőségi értesítés</h2>'
+    + '<p class="lwvp">Add meg a kért információkat, és értesítünk, amint elérhető lesz a preferált internetszolgáltatás címeden.</p>'
+    + '<p class="lwvaddr">Szolgáltatási cím: <b data-lw2addr></b></p>'
+    + '<p class="lwvsec">Kapcsolattartási adatok</p>'
+    + fld2('Neved', 'Kovács Péter', 'name') + fld2('E-mail címed', 'pelda@email.com', 'mail') + fld2('Telefonszámod', '20 345 6789', 'tel', '+36')
+    + '<p class="lwvsec" style="margin-top:30px">Érdeklődésed részletei</p>'
+    + lbl2('Melyik szolgáltatás érdekel?', 'tech', true)
+    + '<div class="lwvsel" data-lwsel><button type="button"><span data-lwselv>Technológia kiválasztása</span><i class="ti ti-chevron-down"></i></button><div class="lwvopts">'
+    + TECH.map(function(t, i){ return '<button type="button" data-lwopt="'+i+'">'+t+'</button>'; }).join('') + '</div></div><p class="lwverr">Kérjük, válassz a legördülő menüből!</p>'
+    + '<label class="lwvck"><input type="checkbox" data-lwtv>TV szolgáltatás is érdekel</label>'
+    + lbl2('Melyik napszakban kereshetünk?', 'time')
+    + TIMES.map(function(t, i){ return '<button type="button" class="lwvseg" data-lwtime="'+i+'">'+t+'</button>'; }).join('')
+    + '<p class="lwvcons">Az Értesítést kérek gomb megnyomása után az otthoni internet szolgáltatásainkkal kapcsolatos ajánlatokról és újdonságokról tájékoztatunk. Az adataid kezeléséről az <u>Adatkezelési tájékoztató</u>ban olvashatsz bővebben.</p>'
+    + '<button type="button" class="lwvgo" data-lw2go>Értesítést kérek</button></div>'
+    + '<div class="lwvok"><span class="lwokic"><i class="ti ti-check"></i></span><b>Kérésedet sikeresen rögzítettük</b><p>Kollégánk hamarosan jelentkezik a megadott elérhetőségen. A kérésedet e-mailben is visszaigazoljuk.</p><button type="button" class="lwvgo" data-lw2home>Vissza a főoldalra</button></div>'
+    + '</div><div class="lwvfoot"><div class="lwvflogo">Yettel.</div><p>Yettel</p><span>Rólunk</span><span>Céginformációk</span><span>Sajtóközlemények</span><span>Prosuli</span></div></div>';
+  document.querySelector('.app').appendChild(lw2);
+  var LW2 = {name:/^\S{2,}(\s+\S{2,})+$/, mail:/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, tel:/^\d{9}$/}, lwTech = -1, lwTime = 0;
+  function track(ev, data){ (window.dataLayer = window.dataLayer || []).push(Object.assign({event:ev, source:'erica_lead_keress_hamar'}, data || {})); }
+  function lw2Mark(){
+    Array.prototype.forEach.call(lw2.querySelectorAll('[data-lwtime]'), function(b){ b.classList.toggle('on', +b.getAttribute('data-lwtime') === lwTime); });
+    Array.prototype.forEach.call(lw2.querySelectorAll('[data-lwopt]'), function(b){ b.classList.toggle('on', +b.getAttribute('data-lwopt') === lwTech); });
+    lw2.querySelector('[data-lwselv]').textContent = lwTech < 0 ? 'Technológia kiválasztása' : TECH[lwTech];
+  }
+  function lw2Reset(){
+    lwTech = -1; lwTime = 0; lw2.classList.remove('sent'); lw2.querySelector('.lwvbody').scrollTop = 0;
+    lw2.querySelector('[data-lwtv]').checked = false; lw2.querySelector('[data-lwsel]').classList.remove('open', 'bad');
+    Array.prototype.forEach.call(lw2.querySelectorAll('.lwvfld'), function(f){ f.classList.remove('bad'); f.querySelector('input').value = ''; });
+    Array.prototype.forEach.call(lw2.querySelectorAll('.lwtip'), function(t){ t.classList.remove('on'); });
+    lw2.querySelector('[data-lw2addr]').textContent = (window.yAddr && window.yAddr.address) || '';
+    lw2Mark();
+  }
+  lw2.addEventListener('click', function(e){
+    var t;
+    if (e.target.closest('[data-lwx]')){ lw2.classList.remove('on'); return; }
+    if (e.target.closest('[data-lwre]')){ lw2Reset(); return; }
+    if ((t = e.target.closest('[data-lwtip]'))){ lw2.querySelector('[data-lwtipt="'+t.getAttribute('data-lwtip')+'"]').classList.toggle('on'); return; }
+    if ((t = e.target.closest('[data-lwopt]'))){ lwTech = +t.getAttribute('data-lwopt'); var sl = lw2.querySelector('[data-lwsel]'); sl.classList.remove('open', 'bad'); lw2Mark(); return; }
+    if (e.target.closest('[data-lwsel] > button')){ lw2.querySelector('[data-lwsel]').classList.toggle('open'); return; }
+    if ((t = e.target.closest('[data-lwtime]'))){ lwTime = +t.getAttribute('data-lwtime'); lw2Mark(); return; }
+    if (e.target.closest('[data-lw2home]')){ lw2.classList.remove('on'); var hb = document.querySelector('[data-screen="addr-none"] [data-gohome]'); go(hb ? hb.getAttribute('for') : 's-home'); return; }
+    if (e.target.closest('[data-lw2go]')){
+      var ok = true, first = null;
+      Array.prototype.forEach.call(lw2.querySelectorAll('.lwvfld'), function(f){
+        var k = f.getAttribute('data-lwk'), v = f.querySelector('input').value.trim(), raw = k === 'tel' ? v.replace(/\D/g, '') : v;
+        var msg = !raw ? 'A mező töltése kötelező' : !LW2[k].test(raw) ? 'Helytelen formátum' : '';
+        f.classList.toggle('bad', !!msg); f.nextElementSibling.textContent = msg;
+        if (msg){ ok = false; first = first || f; }
+      });
+      var sl = lw2.querySelector('[data-lwsel]'); sl.classList.toggle('bad', lwTech < 0); if (lwTech < 0){ ok = false; first = first || sl; }
+      if (!ok){ var b = lw2.querySelector('.lwvbody'); b.scrollTop = Math.max(0, first.offsetTop - 80); return; }
+      track('lead', {technology:TECH[lwTech], tv:lw2.querySelector('[data-lwtv]').checked, time:TIMES[lwTime]}); track('consent');
+      lw2.classList.add('sent'); lw2.querySelector('.lwvbody').scrollTop = 0;
+    }
+  });
+  lw2.addEventListener('input', function(e){ var f = e.target.closest('.lwvfld'); if (f) f.classList.remove('bad'); });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest || !e.target.closest('[data-lw2open]')) return;
+    lw2Reset(); lw2.classList.add('on'); track('page_visit');
+  });
+  /* "Másik címet adok meg" goes back to the address search the journey came from */
+  document.addEventListener('change', function(e){
+    if (e.target.id !== 's-addrnone' || !e.target.checked) return;
+    var a = window.yAddr || {}, l = document.querySelector('[data-screen="addr-none"] .anlink'); if (l) l.setAttribute('for', a.from === 'ctv-addr' ? 's-ctvaddr' : 's-addrsvc');
+  });
   /* address search: "Nem találod a címed?" opens the lead form when that backlog item is on, otherwise shows where to get help */
   document.addEventListener('click', function(e){
     var h = e.target.closest && e.target.closest('.adhelp'); if (!h) return;
