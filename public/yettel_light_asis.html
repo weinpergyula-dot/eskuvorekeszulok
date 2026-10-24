@@ -8579,15 +8579,20 @@
   }
   document.addEventListener('change', function(e){ if (e.target && e.target.name === 'nav') record(); });
   var firstId = curId(); if (firstId) stack = [firstId];
-  document.addEventListener('click', function(e){
-    var b = e.target.closest && e.target.closest('.dhead label.icon-btn');
-    if (!b || e.defaultPrevented || !b.querySelector('.ti-arrow-left')) return;
+  function back(){
     var c = curId();
     while (stack.length && stack[stack.length-1] === c) stack.pop();
     var t = stack[stack.length-1];
-    if (!t) return;                 /* nothing recorded: use the label's own target */
-    e.preventDefault();
+    if (!t) return false;           /* nothing recorded: use the label's own target */
     var r = document.getElementById(t); if (r) r.checked = true;
+    return true;
+  }
+  /* for back buttons with their own handling (e.g. an unsaved-changes question first) */
+  window.yBack = function(fallback){ if (!back() && fallback){ var r = document.getElementById(fallback); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } } };
+  document.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('.dhead label.icon-btn');
+    if (!b || e.defaultPrevented || !b.querySelector('.ti-arrow-left')) return;
+    if (back()) e.preventDefault();
   });
 })();
 </script>
@@ -10593,10 +10598,11 @@
     + '<p class="xsq">Változtattál a korábbi beállításokon, de nem mentetted el. Ha most kilépsz, ezek elvesznek.</p>'
     + '<button type="button" class="xsgo" data-nssstay>Folytatom a módosítást</button><button type="button" class="bxno" data-nssleave>Kilépek mentés nélkül</button></div>';
   document.querySelector('.app').appendChild(ask);
-  sc.querySelector('[data-nssback]').addEventListener('click', function(){ if (dirty()) ask.classList.add('on'); else go('s-nsdet'); });
+  function leave(){ if (window.yBack) window.yBack('s-nsdet'); else go('s-nsdet'); }
+  sc.querySelector('[data-nssback]').addEventListener('click', function(){ if (dirty()) ask.classList.add('on'); else leave(); });
   ask.addEventListener('click', function(e){
     if (e.target.closest('[data-nssstay]')) ask.classList.remove('on');
-    else if (e.target.closest('[data-nssleave]')){ ask.classList.remove('on'); work = {}; go('s-nsdet'); }
+    else if (e.target.closest('[data-nssleave]')){ ask.classList.remove('on'); work = {}; leave(); }
   });
 })();
 </script>
