@@ -1959,7 +1959,8 @@
   .xmrow .chev{ font-size:16px; color:var(--navy); }
   .xmempty{ margin:0 2px; font-size:12px; color:var(--mid); }
   /* Kiegészítő szolgáltatások: active-extras row, empty state, Internetvédelem pages (Netpajzs/Gyermekvédelem backlog items) */
-  .app.foff-netpajzs .nsadd{ display:none; }
+  .app.foff-netpajzs .nsadd, .app.foff-netpajzs .nsact{ display:none; }
+  .nsact[hidden]{ display:none; }
   .xsmine{ justify-content:flex-start; gap:14px; }
   .xsmine span:nth-child(2){ flex:1; }
   .xsmok{ width:40px; height:40px; flex-shrink:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--lime); }
@@ -3883,6 +3884,11 @@
     <div class="nppromo">
       <div class="nppt"><p class="npph">NetPajzs 3 hónapig ajándékba</p><p class="npps">Védd meg az otthoni hálózatod minden eszközét a káros oldalaktól — 3 hónapig díjmentesen.</p><label class="nppb" for="s-nppick">Megnézem</label></div>
       <div class="nppart"><span class="npptri"></span><i class="ti ti-gift"></i></div>
+    </div>
+
+    <div class="dtcard nsact" data-nsact hidden>
+      <p class="dtct">Internetvédelem</p>
+      <div data-nsactl></div>
     </div>
 
     <div class="dtcard">
@@ -8697,6 +8703,9 @@
     Array.prototype.slice.call(sc.querySelectorAll('[data-xslist]')).forEach(function(l){ l.hidden = l.getAttribute('data-xslist') !== kind; });
     sc.querySelector('[data-xslab]').hidden = kind === 'none';
     nsList();
+    /* HiperNet details: the active internet protection under its own card */
+    var na = document.querySelector('[data-nsact]'), al = Object.keys(NS).filter(function(k){ return nsActive[k]; });
+    if (na){ na.hidden = !al.length; na.querySelector('[data-nsactl]').innerHTML = al.map(function(k){ return '<label class="dtrow" for="s-nsdet" data-nsk="'+k+'"><i class="ti ti-shield dtic"></i><span class="n">'+NS[k].name+'</span><i class="ti ti-chevron-right chev"></i></label>'; }).join(''); }
   }
   document.addEventListener('click', function(e){
     if (!e.target.closest) return;
