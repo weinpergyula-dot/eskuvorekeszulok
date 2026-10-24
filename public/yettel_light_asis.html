@@ -2388,7 +2388,7 @@
   .npksh{ display:flex; align-items:center; justify-content:space-between; }
   .npksh .dtct{ margin:0 0 4px; }
   .npksh i{ font-size:20px; color:var(--mid); }
-  /* Collection (szüneteltetés) backlog item: the Érd HiperNet is paused — tag, notice, greyed services */
+  /* Collection (szüneteltetés) backlog item: the Érd HiperNet is paused — dashboard card, tag, notice, greyed services; hidden when the item is off */
   .app.foff-collszun .pausonly{ display:none !important; }
   .app:not(.foff-collszun) .pausgrey{ opacity:.4; pointer-events:none; }
   .paustag{ background:#FFF1C2 !important; }
@@ -3865,7 +3865,7 @@
           </div>
           <div class="subacct">weinper.gyula@gmail.com</div>
         </div>
-        <div class="sub subgroup" data-sub="netp">
+        <div class="sub subgroup pausonly" data-sub="netp">
           <span class="pendtag paustag pausonly">Szüneteltetve</span>
           <label class="subhead" for="s-detail-net2">
             <div class="itile"><i class="ti ti-home-signal"></i></div>
