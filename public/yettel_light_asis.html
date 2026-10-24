@@ -2756,6 +2756,8 @@
   .dlrow.typing .dltx::after{content:''; display:inline-block; width:1.5px; height:1em; margin-left:1px; vertical-align:-2px; background:var(--navy); animation:dlcar .7s steps(1) infinite;}
   @keyframes dlcar{50%{opacity:0;}}
   .ofsw input:indeterminate + span{ background:#7C8A9B; }
+  /* STEP5 FULL dashboard switched off: no Full badges on the dashboard */
+  .app.foff-fulldash [data-screen="home"] .hfb{ display:none; }
   .ofsw input:indeterminate + span::after{ transform:translateX(9px); }
   .tvscr.busy .tvbx{ pointer-events:none; opacity:.6; }
   .tvscr .ofhelp{ margin-top:22px; }
@@ -9577,6 +9579,8 @@
   });
   document.addEventListener('click', function(e){
     if (!e.target.closest || !e.target.closest('[data-fullpop]')) return;
+    /* STEP5 FULL csomagom switched off: the page is not ready yet */
+    if (window.yFeat && !window.yFeat('fullcsom')){ document.getElementById('wip').classList.add('on'); return; }
     on = {m1:true, m2:true, n1:true, tv:true}; cnt = {mob:0, net:0, tvn:0, max:0}; calc();
     flTab('about'); ov.querySelector('.fsbody').scrollTop = 0; ov.classList.add('on');
   });
@@ -9734,6 +9738,8 @@
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
   /* everything starts switched off; only the switched-on keys are stored */
+  /* features on the same page move together */
+  var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom'};
   var KEY = 'yl-devfeat-on', app = document.querySelector('.app'), pop = document.getElementById('devlist');
   if (!pop) return;
   var body = pop.querySelector('.dlbody'), on = {};
@@ -9758,7 +9764,7 @@
   body.addEventListener('change', function(e){
     var i = e.target, g = i.closest('[data-dlstep]');
     if (i.hasAttribute('data-dlall')) Array.prototype.forEach.call(g.querySelectorAll('[data-dlf]'), function(x){ on[x.getAttribute('data-dlf')] = i.checked; });
-    else on[i.getAttribute('data-dlf')] = i.checked;
+    else { var k = i.getAttribute('data-dlf'); on[k] = i.checked; if (LINK[k]) on[LINK[k]] = i.checked; }
     Object.keys(on).forEach(function(k){ if (!on[k]) delete on[k]; });
     save(); sync(); paint();
     document.dispatchEvent(new CustomEvent('yfeat', {detail:{on:Object.keys(on)}}));
