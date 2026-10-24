@@ -2792,8 +2792,9 @@
   .nsli li::before{ content:''; position:absolute; left:3px; top:7px; width:9px; height:5px; border-left:1.5px solid var(--navy); border-bottom:1.5px solid var(--navy); transform:rotate(-45deg); }
   .nsscr.busy .nscard:not(.ld){ opacity:.4; }
   .nscard.ld .nsrow{ position:relative; }
-  .nscard.ld .ofsw{ visibility:hidden; }
-  .nscard.ld .nsrow::after{ content:''; position:absolute; right:12px; top:50%; width:16px; height:16px; margin-top:-8px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
+  /* loading: the card fades, spinner in its middle */
+  .nscard.ld > *{ opacity:.35; }
+  .nscard.ld::after{ content:''; position:absolute; left:50%; top:50%; width:20px; height:20px; margin:-10px 0 0 -10px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
   .ofscr.busy .ofcar{ pointer-events:none; }
   .ofscr.busy .ofsum b{ position:relative; color:transparent; }
   .ofscr.busy .ofsum b::after{ content:''; position:absolute; right:0; top:50%; width:14px; height:14px; margin-top:-7px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
