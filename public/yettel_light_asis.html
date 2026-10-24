@@ -3461,7 +3461,7 @@
             <i class="ti ti-chevron-right chev"></i>
           </label>
           <div class="subrel" data-related="net">
-            <label class="substrm" data-sub="net-tv" for="s-detail-tv"><span class="ssic"><i class="ictv"></i></span><span class="ssn">Yettel TV Basic <span class="hfb">-15% Full</span></span><i class="ti ti-chevron-right chev"></i></label>
+            <div class="substrm" data-sub="net-tv" data-wip><span class="ssic"><i class="ictv"></i></span><span class="ssn">Yettel TV Basic <span class="hfb">-15% Full</span></span><i class="ti ti-chevron-right chev"></i></div>
             <div class="substrm" data-sub="net-tv2" data-wip><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">TV2 Play Prémium</span><i class="ti ti-chevron-right chev"></i></div>
             <div class="substrm" data-sub="net-rtl" data-wip><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></div>
           </div>
@@ -8229,10 +8229,8 @@
 /* Extra szolgáltatások: pick a subscription in a bottom sheet, then list what can be ordered for it */
 (function(){
   var SUBS = [
-    {id:'7566', ic:'ti-phone-call', plan:'Prime Plus 2025', t:'+36 20 290 7566', kind:'mob', det:'s-detailmob2', data:'s-xdata2',
-     act:[['Yettel TV XS','Megújuló','2 000 Ft/hó','s-detail-tv'],['Már igényeltél kódot','Egyszeri','0 Ft']]},
-    {id:'7430', ic:'ti-phone-call', plan:'Prime Plus 2024', t:'+36 20 290 7430', kind:'mob', det:'s-detail', data:'s-xdata1',
-     act:[['YettelTV Prémium','Megújuló','4 490 Ft/hó','s-detail-tv']]},
+    {id:'7566', ic:'ti-phone-call', plan:'Prime Plus 2025', t:'+36 20 290 7566', kind:'mob', det:'s-detailmob2', data:'s-xdata2'},
+    {id:'7430', ic:'ti-phone-call', plan:'Prime Plus 2024', t:'+36 20 290 7430', kind:'mob', det:'s-detail', data:'s-xdata1'},
     {id:'9734', ic:'ti-phone-call', plan:'XS+ · Feltöltőkártyás', t:'+36 20 290 9734', kind:'mob', det:'s-detailpre1', data:'s-topup1'},
     {id:'net', ic:'ti-home-signal', plan:'HiperNet L', t:'8200 Veszprém, Tölgyfa u. 4', kind:'net', det:'s-detail-net',
      act:[['Yettel TV Basic','Megújuló','2 990 Ft/hó','s-detail-tv'],['TV2 Play Premium','Megújuló','1 990 Ft/hó','s-strm3'],['RTL+ Active','Megújuló','1 590 Ft/hó','s-strm3']]}
