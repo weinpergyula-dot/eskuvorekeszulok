@@ -2478,10 +2478,20 @@
   .othlnk{ font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; white-space:nowrap; cursor:pointer; }
   .othshop{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--navy); white-space:nowrap; cursor:pointer; }
   .othshop i{ font-size:16px; color:var(--mid); }
-  .othsk .bhrow > *{ visibility:hidden; }
-  .othsk .bhrow{ position:relative; cursor:default; }
-  .othsk .bhrow::before{ content:''; position:absolute; left:0; top:50%; width:22px; height:22px; margin-top:-11px; border-radius:50%; background:#E6EAF0; }
-  .othsk .bhrow::after{ content:''; position:absolute; left:36px; top:16px; width:46%; height:40px; border-radius:6px; background:linear-gradient(#E6EAF0 0 10px, transparent 10px 15px, #E6EAF0 15px 25px, transparent 25px 30px, #E6EAF0 30px 40px); }
+  /* loading skeleton for both bill lists */
+  .bhsk{ display:none; }
+  .bhscreen.ld .bhsk{ display:block; }
+  .bhscreen.ld > .bhfilt, .bhscreen.ld > .bhlist, .bhscreen.ld .bhoth{ display:none !important; }
+  .bhskf{ width:96px; height:12px; margin:16px 2px 12px auto; border-radius:6px; background:#E3E8EE; }
+  .bhskr{ display:flex; align-items:center; gap:14px; padding:16px 0; border-bottom:1px solid #EEF1F4; }
+  .bhskr:last-child{ border-bottom:none; }
+  .bhskr > i{ width:22px; height:22px; flex-shrink:0; border-radius:50%; background:#E6EAF0; }
+  .bhskr > span{ flex:1; display:flex; flex-direction:column; gap:7px; }
+  .bhskr > span i{ display:block; height:9px; border-radius:5px; background:#E6EAF0; }
+  .bhskr > span i:nth-child(1){ width:30%; } .bhskr > span i:nth-child(2){ width:60%; } .bhskr > span i:nth-child(3){ width:85%; } .bhskr > span i:nth-child(4){ width:40%; }
+  .bhskr > b{ width:56px; height:12px; border-radius:6px; background:#E6EAF0; }
+  /* info icons used as tooltips: one size */
+  .relinfo i, .othshop i{ font-size:20px !important; color:var(--navy) !important; }
   .othmore{ display:flex; justify-content:center; padding:14px 0; }
   .othmore[hidden]{ display:none; }
   .othmore span{ width:20px; height:20px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
@@ -7632,6 +7642,7 @@
     <div class="bhtabs" data-bhtabs><button type="button" class="on" data-bhtab="havi">Havi számlák</button><button type="button" data-bhtab="oth">Egyéb számlák</button></div>
     <div class="bhfilt"><span class="bhfbtn" data-bhfilt>Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
     <div class="bhlist" data-bhlist></div>
+    <div class="bhsk" aria-hidden="true"><div class="bhskf"></div><div class="bhlist"></div></div>
     <!-- Non-telco SAP (Digital backlog): bills independent of the monthly one -->
     <div class="bhoth">
       <div class="bhfilt"><span class="bhfbtn" data-othfilt>Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
@@ -11283,6 +11294,9 @@
     return {amt:a, due:d, no:'1234'+f2(56 + i)+'76-876543'+f2(23 + i), paper:i === 0 || i === 7}; });
   function def(){ var fr = new Date(today); fr.setFullYear(fr.getFullYear() - 1); return {sort:'new', from:fr, to:new Date(today)}; }
   var F = def(), list = [], shown = 0, timer = null;
+  sc.querySelector('.bhsk .bhlist').innerHTML = new Array(9).join('<div class="bhskr"><i></i><span><i></i><i></i><i></i><i></i></span><b></b></div>');
+  var skT = null;
+  function skel(then){ sc.classList.add('ld'); clearTimeout(skT); skT = setTimeout(function(){ sc.classList.remove('ld'); if (then) then(); }, 1100); }
   window.yOther = {filter:{get:function(){ return F; }, set:function(f){ F = {sort:f.sort, from:f.from, to:f.to}; load(); }, def:def}};
   function row(b, i){
     return '<div class="bhrow othrow"><i class="ti ti-circle-check bhok"></i><div class="bhtx"><b>'+fmt(b.amt)+'</b><span>Határidő: '+fmtD(b.due)+'</span><small>'+b.no+'</small><span class="bhtags"><em>'+(b.paper ? 'Papíralapú' : 'Elektronikus')+'</em></span></div>'
@@ -11293,11 +11307,10 @@
     clearTimeout(timer);
     list = ALL.filter(function(b){ return (!F.from || b.due >= F.from) && (!F.to || b.due <= F.to); });
     list.sort(function(a, b){ return F.sort === 'old' ? a.due - b.due : b.due - a.due; });
-    shown = 0; rowsEl.classList.add('othsk'); rowsEl.innerHTML = new Array(8).join('<div class="bhrow"><span>.</span></div>'); more.hidden = false;
-    timer = setTimeout(function(){ rowsEl.classList.remove('othsk'); shown = Math.min(8, list.length); paint(); }, 1100);
+    shown = Math.min(8, list.length); paint(); skel();
   }
   sc.addEventListener('scroll', function(){
-    if (!sc.classList.contains('oth') || more.hidden || timer && rowsEl.classList.contains('othsk')) return;
+    if (!sc.classList.contains('oth') || more.hidden || sc.classList.contains('ld')) return;
     if (sc.scrollTop + sc.clientHeight < sc.scrollHeight - 40 || sc._othBusy) return;
     sc._othBusy = true;
     setTimeout(function(){ sc._othBusy = false; shown = Math.min(list.length, shown + 5); paint(); }, 800);
@@ -11305,8 +11318,10 @@
   function tab(t){
     sc.classList.toggle('oth', t === 'oth');
     Array.prototype.forEach.call(sc.querySelectorAll('[data-bhtab]'), function(b){ b.classList.toggle('on', b.getAttribute('data-bhtab') === t); });
-    if (t === 'oth') load();
+    if (t === 'oth') load(); else skel();
   }
+  /* Havi számlák: the same skeleton when the filter changes */
+  var bf = window.yBillFilter; if (bf){ var bset = bf.set; bf.set = function(f){ bset(f); skel(); }; }
   sc.addEventListener('click', function(e){
     var t = e.target.closest('[data-bhtab]'); if (t){ tab(t.getAttribute('data-bhtab')); return; }
     if (e.target.closest('[data-othtip]')){ sc.querySelector('[data-othtipt]').classList.toggle('on'); return; }
