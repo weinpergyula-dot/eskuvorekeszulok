@@ -4272,7 +4272,7 @@
   <!-- ============= TV AJÁNLATOK: tv-offers ============= -->
   <div class="screen ofscr tvscr" data-screen="tv-offers" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-offsvc"><i class="ti ti-arrow-left"></i></label>
+      <div style="width:42px"></div>
       <span class="title">TV</span>
       <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
     </div>
@@ -4302,7 +4302,7 @@
   <!-- ============= EXTRÁK (streaming): tv-extras ============= -->
   <div class="screen ofscr exscr" data-screen="tv-extras" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-tvoff"><i class="ti ti-arrow-left"></i></label>
+      <div style="width:42px"></div>
       <span class="title">Extrák</span>
       <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
     </div>
@@ -4858,7 +4858,7 @@
   <!-- ============= OTTHONI INTERNET AJÁNLATOK: offers-svc ============= -->
   <div class="screen ofscr" data-screen="offers-svc" style="display:none;">
     <div class="dhead">
-      <label class="icon-btn" for="s-addrsvc" data-ofback><i class="ti ti-arrow-left"></i></label>
+      <div style="width:42px"></div>
       <span class="title">Otthoni internet</span>
       <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
     </div>
@@ -9001,7 +9001,7 @@
     sc.querySelector('[data-ofaddr]').textContent = a.address;
     sc.querySelector('.ofinfo').hidden = a.scenario !== 'fwa';
     var back = a.from === 'ctv-addr' ? 's-ctvaddr' : 's-addrsvc';
-    sc.querySelector('[data-ofback]').setAttribute('for', back); sc.querySelector('[data-ofnew]').setAttribute('for', back);
+    sc.querySelector('[data-ofnew]').setAttribute('for', back);
     sc.querySelector('.adx').setAttribute('for', a.guest ? 's-newcust' : 's-tshop');
     Array.prototype.forEach.call(document.querySelectorAll('[data-gohome]'), function(hb){ hb.setAttribute('for', a.guest ? 's-newcust' : 's-home'); });
     apply(0); kid.checked = false;
@@ -9863,15 +9863,6 @@
     if (!e.target.closest) return;
     var x = e.target.closest('.adx');
     if (x && FLOW[cur()]){ e.preventDefault(); exitTo = x.getAttribute('for'); leave.classList.add('on'); return; }
-    /* back arrows inside the journey: from the internet offers it is leaving the purchase,
-       further on it is always the previous journey step (also after coming back to the cart) */
-    var bk = e.target.closest('.dhead label.icon-btn');
-    if (bk && FLOW[cur()] && bk.querySelector('.ti-arrow-left')){
-      e.preventDefault();
-      if (cur() === 's-offsvc'){ var ax = document.querySelector('[data-screen="offers-svc"] .adx'); exitTo = ax ? ax.getAttribute('for') : 's-tshop'; leave.classList.add('on'); }
-      else go(bk.getAttribute('for'));
-      return;
-    }
     var l = e.target.closest('label[for="s-addrsvc"], label[for="s-ctvaddr"]');
     if (l && left && !l.hasAttribute('data-ofnew') && !l.hasAttribute('data-ofback') && !l.hasAttribute('data-adback')){
       e.preventDefault(); entry = l.getAttribute('for'); cart.classList.add('on');
