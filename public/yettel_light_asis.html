@@ -275,6 +275,7 @@
   #s-edacc:checked ~ [data-screen="ed-acc"],
   #s-detail:checked ~ [data-screen="detail"],
   #s-detail-net:checked ~ [data-screen="detail-net"],
+  #s-detail-net2:checked ~ [data-screen="detail-net2"],
   #s-detail-tv:checked ~ [data-screen="detail-tv"],
   #s-addservice:checked ~ [data-screen="add-service"],
   #s-allsubs:checked ~ [data-screen="all-subs"],
@@ -367,7 +368,7 @@
   #s-actok:checked ~ [data-screen="act-ok"],
   #s-actload:checked ~ [data-screen="act-load"],
   #s-xdatar:checked ~ [data-screen="xdata-r"]{display:block !important;}
-  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
+  #s-home:checked ~ .nav,#s-tshop:checked ~ .nav,#s-buynew:checked ~ .nav,#s-xsvc:checked ~ .nav,#s-netpend:checked ~ .nav,#s-billhist:checked ~ .nav,#s-billdet:checked ~ .nav,#s-billdata:checked ~ .nav,#s-docs:checked ~ .nav,#s-ktopup:checked ~ .nav,#s-savedcard:checked ~ .nav,#s-mobbill:checked ~ .nav,#s-mobpay:checked ~ .nav,#s-xsmine:checked ~ .nav,#s-tfin:checked ~ .nav,#s-tprof:checked ~ .nav,#s-detail:checked ~ .nav,#s-detail-net:checked ~ .nav,#s-detail-net2:checked ~ .nav,#s-detail-tv:checked ~ .nav,#s-addservice:checked ~ .nav,#s-allsubs:checked ~ .nav,#s-alldev:checked ~ .nav,#s-devdetail:checked ~ .nav,#s-fun:checked ~ .nav,#s-notif:checked ~ .nav,#s-devbuy:checked ~ .nav,#s-topup1:checked ~ .nav,#s-topup2:checked ~ .nav,#s-account:checked ~ .nav,#s-billing:checked ~ .nav,#s-tarifch4:checked ~ .nav,#s-xdata2:checked ~ .nav,#s-tarifch1:checked ~ .nav,#s-tarifch2:checked ~ .nav,#s-tarifch3:checked ~ .nav,#s-xdata1:checked ~ .nav,#s-xmin:checked ~ .nav,#s-xdatar:checked ~ .nav,#s-detailpre1:checked ~ .nav,#s-detailpre2:checked ~ .nav,#s-strm1:checked ~ .nav,#s-strm2:checked ~ .nav,#s-strm3:checked ~ .nav,#s-devdet2:checked ~ .nav,#s-devdet3:checked ~ .nav,#s-devdet4:checked ~ .nav,#s-devdet5:checked ~ .nav{display:flex !important;}
   .subcover{position:absolute; inset:0; z-index:6; cursor:pointer;}
   .xdlist{display:flex; flex-direction:column; gap:9px;}
   .xdopt{display:flex; align-items:center; gap:12px; padding:14px 15px; border-radius:16px; cursor:pointer;
@@ -2331,6 +2332,18 @@
   .npksh{ display:flex; align-items:center; justify-content:space-between; }
   .npksh .dtct{ margin:0 0 4px; }
   .npksh i{ font-size:20px; color:var(--mid); }
+  /* Collection (szüneteltetés) backlog item: the Érd HiperNet is paused — tag, notice, greyed services */
+  .app.foff-collszun .pausonly{ display:none !important; }
+  .app:not(.foff-collszun) .pausgrey{ opacity:.4; pointer-events:none; }
+  .paustag{ background:#FFF1C2 !important; }
+  .pauswarn{ display:flex; gap:10px; margin:0 0 12px; padding:14px; border-radius:12px; background:#FFF6D9; }
+  .pauswarn > i{ font-size:20px; color:#E3A400; }
+  .pauswarn b{ display:block; margin:0 0 6px; font-size:12.5px; font-weight:700; color:var(--navy); }
+  .pauswarn p{ margin:0; font-size:11.5px; line-height:1.5; color:var(--navy); }
+  .relinfo{ display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; margin-right:-4px; cursor:pointer; }
+  .relic{ width:56px; height:56px; margin-bottom:16px; } .relic i{ font-size:28px; }
+  .relps{ margin-bottom:12px !important; text-align:left; line-height:1.5; }
+
   .npictv{ width:24px; height:24px; margin:0 1px; }
   .npmail{ margin:0; padding:12px 0 0; border-top:1px solid #E3E8EE; font-size:12px; font-weight:300; color:var(--navy); }
 
@@ -3537,6 +3550,7 @@
   <input class="rt" type="radio" name="nav" id="s-home">
   <input class="rt" type="radio" name="nav" id="s-detail">
   <input class="rt" type="radio" name="nav" id="s-detail-net">
+  <input class="rt" type="radio" name="nav" id="s-detail-net2">
   <input class="rt" type="radio" name="nav" id="s-detail-tv">
   <input class="rt" type="radio" name="nav" id="s-addservice">
   <input class="rt" type="radio" name="nav" id="s-allsubs">
@@ -3758,6 +3772,21 @@
             <div class="substrm" data-sub="net-rtl" data-wip><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></div>
           </div>
           <div class="subacct">weinper.gyula@gmail.com</div>
+        </div>
+        <div class="sub subgroup" data-sub="netp">
+          <span class="pendtag paustag pausonly">Szüneteltetve</span>
+          <label class="subhead" for="s-detail-net2">
+            <div class="itile"><i class="ti ti-home-signal"></i></div>
+            <div class="meta"><p class="t">2030 Érd, Harangvirág utca 100</p><p class="s">HiperNet L</p></div>
+            <i class="ti ti-chevron-right chev"></i>
+          </label>
+          <div class="subrel" data-related="netp">
+            <div class="substrm pausgrey" data-wip><span class="ssic"><i class="ictv"></i></span><span class="ssn">Yettel TV Basic</span><i class="ti ti-chevron-right chev"></i></div>
+            <div class="substrm pausgrey" data-wip><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></div>
+            <div class="substrm pausgrey" data-wip><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">TV2 Play Premium</span><i class="ti ti-chevron-right chev"></i></div>
+            <div class="substrm pausgrey" data-wip><span class="ssic"><i class="ti ti-device-tv"></i></span><span class="ssn">HBO Pak</span><i class="ti ti-chevron-right chev"></i></div>
+          </div>
+          <div class="subacct">peter.toth@gmail.com</div>
         </div>
         <div class="sub subgroup subpend" data-sub="net-pend">
           <span class="pendtag">Folyamatban</span>
@@ -3987,6 +4016,63 @@
     </div>
 
 
+  </div>
+
+  <!-- ============= DETAIL: HIPERNET (Érd) — szüneteltethető (Collection backlog) ============= -->
+  <div class="screen dtscreen npscreen" data-screen="detail-net2" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-home"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Előfizetés részletei</span>
+      <div class="icon-btn"><i class="ti ti-message-question"></i></div>
+    </div>
+    <div class="dtid npid">
+      <i class="ti ti-home-signal"></i>
+      <div class="meta"><p class="s">HiperNet L</p><p class="t">2030 Érd, Harangvirág utca 100</p></div>
+      <span class="nppend paustag pausonly">Szüneteltetve</span>
+    </div>
+
+    <div class="pauswarn pausonly"><i class="ti ti-alert-circle"></i><div><b>Előfizetésed szüneteltetve van</b><p>A szüneteltetés alatt nem tudsz új kiegészítő szolgáltatást vásárolni. Ha egy meglévőt szeretnél lemondani, először vissza kell aktiválnod az előfizetésed. Ehhez hívd a 1220-at, vagy látogass el üzletünkbe.</p></div></div>
+
+    <div class="dtcard npspec">
+      <div><b>1 000 Mbit/s</b><span>max. letöltési sebesség</span></div>
+      <div><b>300 Mbit/s</b><span>max. feltöltési sebesség</span></div>
+      <div><b>T0300067402</b><span>Wi-Fi router széria szám</span></div>
+    </div>
+
+    <div class="dtcard pausonly">
+      <p class="dtct">Kiegészítő szolgáltatások</p>
+      <div class="ntiles c2 nptiles pausgrey">
+        <div class="ntile"><span class="nic"><i class="ti ti-shopping-cart"></i></span><span>Kiegészítő vásárlás</span></div>
+        <div class="ntile"><span class="nic"><i class="ti ti-device-mobile-plus"></i></span><span>Aktív kiegészítők</span></div>
+      </div>
+    </div>
+
+    <div class="dtcard pausonly">
+      <p class="dtct">Internetvédelem</p>
+      <div class="dtrow pausgrey"><i class="ti ti-shield dtic"></i><span class="n">Otthoni NetPajzs</span></div>
+    </div>
+
+    <div class="dtcard">
+      <p class="dtct">Vedd fel velünk a kapcsolatot!</p>
+      <div class="ntiles c3 nptiles">
+        <div class="ntile"><span class="nic"><i class="ti ti-building-store"></i></span><span>Üzletkereső</span></div>
+        <div class="ntile"><span class="nic"><i class="ti ti-message-question"></i></span><span>Chat</span></div>
+        <div class="ntile"><span class="nic"><i class="ti ti-phone-call"></i></span><span>Hívás</span></div>
+      </div>
+    </div>
+
+    <label class="dtcard dtrowcard nprow" for="s-docs"><span class="dtrow"><i class="ti ti-file-certificate dtic"></i><span class="n">Dokumentumok</span><i class="ti ti-chevron-right chev"></i></span></label>
+    <label class="dtcard dtrowcard nprow" for="s-consent2"><span class="dtrow"><i class="ti ti-file-text dtic"></i><span class="n">Hozzájárulások</span><i class="ti ti-chevron-right chev"></i></span></label>
+    <label class="dtcard dtrowcard nprow" for="s-billdata"><span class="dtrow"><i class="ti ti-file-invoice dtic"></i><span class="n">Számlázási adatok</span><i class="ti ti-chevron-right chev"></i></span></label>
+
+    <div class="dtcard">
+      <div class="npksh"><p class="dtct">Kapcsolódó szolgáltatások</p><span class="relinfo" data-relinfo aria-label="Mit jelent?"><i class="ti ti-info-circle"></i></span></div>
+      <div class="dtrow pausgrey" data-wip><i class="ictv npictv"></i><span class="n">Yettel TV Basic</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="dtrow pausgrey" data-wip><i class="ti ti-device-tv dtic"></i><span class="n">RTL+ Active</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="dtrow pausgrey" data-wip><i class="ti ti-device-tv dtic"></i><span class="n">TV2 Play Premium</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="dtrow pausgrey" data-wip><i class="ti ti-device-tv dtic"></i><span class="n">HBO Pak</span><i class="ti ti-chevron-right chev"></i></div>
+      <p class="npmail">peter.toth@gmail.com</p>
+    </div>
   </div>
 
   <!-- ============= DETAIL: TV ============= -->
@@ -8048,6 +8134,15 @@
       <div class="dlbody"></div>
     </div>
   </div>
+  <div class="wip" id="relpop">
+    <div class="wipcard cpcard">
+      <span class="anic relic"><i class="ti ti-bulb"></i></span>
+      <p class="cpt">Előfizetés alá tartozó szolgáltatások</p>
+      <p class="cps relps">TV és Streaming szolgáltatás technikai okok miatt mindig egy előfizetéshez kapcsolódik.</p>
+      <p class="cps relps">Ennek az a jelentősége, hogy ha ugyan azzal az email címmel szeretnéd használni a TV-t és a Streaminget akkor ugyan ahhoz az előfizetéshez kell megvásárolnod őket. Illetve ha megszűnik az előfizetésed akkor az ahhoz vásárolt szolgáltatások is megszűnnek.</p>
+      <button class="cpgo" type="button" data-relx>Bezár</button>
+    </div>
+  </div>
   <div class="wip" id="wip">
     <div class="wipcard">
       <span class="wipic"><i class="ti ti-tool"></i></span>
@@ -8444,7 +8539,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback]';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback],[data-relinfo],#relpop';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -10856,6 +10951,14 @@
     else if (e.target.closest('[data-naleave]')){ ask.classList.remove('on'); leave(); }
   });
   show();
+})();
+</script>
+<script>
+/* Kapcsolódó szolgáltatások info icon: what the services under a subscription mean */
+(function(){
+  var pop = document.getElementById('relpop'); if (!pop) return;
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('[data-relinfo]')) pop.classList.add('on'); });
+  pop.addEventListener('click', function(e){ if (e.target === pop || e.target.closest('[data-relx]')) pop.classList.remove('on'); });
 })();
 </script>
 </body>
