@@ -1994,6 +1994,14 @@
   .nsdinfo > i{ font-size:22px; color:#3D8DE0; }
   .nsdinfo b{ display:block; margin-bottom:8px; font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
   .nsdinfo p{ margin:0; font-size:12px; line-height:1.5; color:var(--navy); }
+  .nsdcard [hidden]{ display:none !important; }
+  .nsdtag.act{ background:#DFF5E6; color:#1F7A3D; }
+  .nsdset{ margin-top:16px; }
+  .nsdset > .ti-settings{ font-size:24px; color:var(--navy); }
+  .nsdscreen .nsdset, .nsdscreen .nsdstop, .nsdscreen.act .fsbtn{ display:none; }
+  .nsdscreen.act.np .nsdset{ display:flex; }
+  .nsdscreen.act .nsdstop{ display:block; }
+  .nsdstop{ width:100%; padding:14px; border:none; background:none; font-family:'Yettel'; font-size:14px; font-weight:700; color:var(--navy); cursor:pointer; }
   .nsdfoot{ position:absolute; left:16px; right:16px; bottom:calc(20px + env(safe-area-inset-bottom)); }
 
   /* ===== Welcome (Yepp) ===== */
@@ -7106,7 +7114,7 @@
       <div style="width:42px"></div>
     </div>
     <div class="nsdcard">
-      <div class="nsdh"><b data-nsdname></b><span class="nsdtag">Rendelhető</span></div>
+      <div class="nsdh"><b data-nsdname></b><span class="nsdtag" data-nsdtag>Rendelhető</span></div>
       <p class="nsdren">Megújuló</p>
       <p class="nsdpr"><b data-nsdprice></b> Ft <small>/hó</small></p>
       <span class="ofpromo nspromo" data-nsdpromo>100% havidíj kedvezmény 30 napig</span>
@@ -7114,8 +7122,9 @@
       <p class="nsdnote" data-nsdnote><i class="ti ti-alert-circle"></i><span></span></p>
       <span class="nsdmore" data-nsdmore></span>
     </div>
-    <div class="nsdinfo"><i class="ti ti-bulb"></i><div><b>Egyszerre csak egy internetvédelmi szolgáltatás lehet aktív!</b><p>Tedd biztonságosabbá az internetezést a számodra megfelelő szolgáltatással. Ha másikat aktiválsz, a korábbi automatikusan lemondódik.</p></div></div>
-    <div class="nsdfoot"><button type="button" class="fsbtn" data-wip>Aktiválom</button></div>
+    <div class="xsmine nsdset" data-wip><span class="ti ti-settings"></span><span>Szűrési beállítások</span><i class="ti ti-chevron-right chev"></i></div>
+    <div class="nsdinfo"><i class="ti ti-bulb"></i><div><b>Egyszerre csak egy internetvédelmi szolgáltatás lehet aktív!</b><p data-nsdinfo>Tedd biztonságosabbá az internetezést a számodra megfelelő szolgáltatással. Ha másikat aktiválsz, a korábbi automatikusan lemondódik.</p></div></div>
+    <div class="nsdfoot"><button type="button" class="fsbtn" data-nsdgo>Aktiválom</button><button type="button" class="nsdstop" data-nsdstop>Lemondom</button></div>
   </div>
 
   <!-- ============= SZOLGÁLTATÁSAID (aktív extrák) ============= -->
@@ -8252,7 +8261,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore]';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -8519,7 +8528,8 @@
   var NS = {
     np:{name:'Otthoni NetPajzs', price:850, promo:true, tx:'A Yettel Otthoni NetPajzs egy internetvédelmi szolgáltatás, mellyel kiszűrhetők a csaló és kéretlen tartalmak a Yettel hálózatán. Hatékonyan megvéd az adathalász oldalak és számos más internetes csalás ellen.',
         note:'Ha nem Yetteles routert használsz (Bridge módot használsz) a szolgáltatás nem működik.'},
-    kid:{name:'Gyermekvédelmi tartalomszűrő', price:0, tx:'Díjmentes védelem a kiskorúak online biztonságáért. A hatósági (NMHH) lista szerinti felnőtt tartalmú weboldalak elérését blokkolja a Yettel hálózatán.'}
+    kid:{name:'Gyermekvédelmi tartalomszűrő', price:0, tx:'A Yettel Gyermekvédelmi tartalomszűrő egy internetvédelmi szolgáltatás, mellyel kiszűrhetők a felnőtt tartalmak a Yettel hálózatán.',
+        note:'Ha nem Yetteles routert használsz (Bridge módot használsz) a szolgáltatás nem működik.'}
   };
   var nsActive = {np:false, kid:false};
   function feat(k){ return !!(window.yFeat && window.yFeat(k)); }
@@ -8531,11 +8541,20 @@
       return '<label class="xmrow nsrowx" for="s-nsdet" data-nsk="'+k+'">'+(x.promo ? '<span class="ofpromo">100% havidíj kedvezmény 30 napig</span>' : '')
         + '<span class="nsl"><b>'+x.name+'</b><span>'+x.price+' Ft/hó</span><i class="ti ti-chevron-right chev"></i></span></label>'; }).join('');
   }
+  /* details: Aktív (trial until a date, Lemondom, NetPajzs also Szűrési beállítások) or Rendelhető (Aktiválom; the info box says
+     the other one gets cancelled when that one is active) */
+  var nsCur = 'np', nsUntil = null;
   function nsDet(k){
-    var x = NS[k], d = document.querySelector('[data-screen="ns-det"]');
+    k = k || nsCur; nsCur = k;
+    var x = NS[k], d = document.querySelector('[data-screen="ns-det"]'), on = nsActive[k], other = nsActive[k === 'np' ? 'kid' : 'np'];
+    d.classList.toggle('act', on); d.classList.toggle('np', k === 'np');
+    var tg = d.querySelector('[data-nsdtag]'); tg.textContent = on ? 'Aktív' : 'Rendelhető'; tg.classList.toggle('act', on);
     d.querySelector('[data-nsdname]').textContent = x.name;
     d.querySelector('[data-nsdprice]').textContent = x.price;
-    d.querySelector('[data-nsdpromo]').hidden = !x.promo;
+    var pr = d.querySelector('[data-nsdpromo]'); pr.hidden = !x.promo;
+    pr.textContent = on && nsUntil ? '100% havidíj kedvezmény ' + nsUntil + '-ig' : '100% havidíj kedvezmény 30 napig';
+    d.querySelector('[data-nsdinfo]').textContent = !on && other ? 'Ha egy újat szeretnél aktiválni a másik lemondódik.'
+      : 'Tedd biztonságosabbá az internetezést a számodra megfelelő szolgáltatással. Ha másikat aktiválsz, a korábbi automatikusan lemondódik.';
     d.querySelector('[data-nsdtx]').textContent = x.tx;
     var n = d.querySelector('[data-nsdnote]'); n.hidden = !x.note; n.querySelector('span').textContent = x.note || '';
     var m = d.querySelector('[data-nsdmore]'); m.textContent = 'Mit tud a '+x.name+'?'; m.setAttribute('data-nsdmore', k);
@@ -8559,6 +8578,9 @@
       /* service details are not built yet: a plain .xmrow opens the "Fejlesztés alatt!" popup */
       return '<div class="xmrow"><i class="ti ti-player-play xmic"></i><span class="xmtx"><b>'+a[0]+'</b><span><small>'+a[1]+'</small><small>'+a[2]+'</small></span></span><i class="ti ti-chevron-right chev"></i></div>';
     }).join('') : '<p class="xmempty">Ehhez az előfizetéshez nincs aktív extra szolgáltatásod.</p>';
+    if (ml && cur.kind === 'net' && feat('netpajzs')) ml.insertAdjacentHTML('afterbegin', Object.keys(NS).filter(function(k){ return nsActive[k]; }).map(function(k){
+      return '<label class="xmrow" for="s-nsdet" data-nsk="'+k+'"><i class="ti ti-shield-check xmic"></i><span class="xmtx"><b>'+NS[k].name+'</b><span><small>Megújuló</small><small>'+NS[k].price+' Ft/hó</small></span></span><i class="ti ti-chevron-right chev"></i></label>';
+    }).join(''));
     /* HiperNet with the Internetvédelem backlog item: only Internetvédelem, or the empty state if nothing is left / not active yet */
     var kind = cur.kind;
     if (kind === 'net' && feat('netpajzs')) kind = nsLeft().length ? 'netns' : 'none';
@@ -8572,6 +8594,18 @@
     var to = e.target.closest('[data-xsto]');
     if (to){ SUBS.forEach(function(x){ if (x.id === to.getAttribute('data-xsto')) cur = x; }); apply(); return; }
     var nk = e.target.closest('[data-nsk]'); if (nk){ nsDet(nk.getAttribute('data-nsk')); return; }
+    var ng = e.target.closest('[data-nsdgo], [data-nsdstop]');
+    if (ng){
+      var act = ng.hasAttribute('data-nsdgo'), ld = document.querySelector('.adload');
+      if (ld) ld.classList.add('on');
+      setTimeout(function(){
+        if (act){ nsActive.np = nsActive.kid = false; var u = new Date(); u.setDate(u.getDate() + 30); nsUntil = u.getFullYear()+'.'+('0'+(u.getMonth()+1)).slice(-2)+'.'+('0'+u.getDate()).slice(-2)+'.'; }
+        nsActive[nsCur] = act; apply(); nsDet();
+        if (ld) ld.classList.remove('on');
+        if (window.ySnack) window.ySnack(true, act ? NS[nsCur].name + ' aktiválva.' : NS[nsCur].name + ' lemondva.');
+      }, 1200);
+      return;
+    }
     var nm = e.target.closest('[data-screen="ns-det"] [data-nsdmore]'); if (nm){ if (window.yNsInfo) window.yNsInfo(nm.getAttribute('data-nsdmore')); return; }
     if (e.target.closest('[data-xsheet]')){ open(); return; }
     if (e.target.closest('[data-xsclose]')){ sheet.classList.remove('on'); return; }
@@ -9229,8 +9263,9 @@
   var snack = document.createElement('div'); snack.className = 'ofsnack'; snack.innerHTML = '<i class="ti"></i><span></span>';
   app.appendChild(snack);
   var snackT;
+  window.ySnack = function(ok, text){ toast(ok, text); };
   function toast(ok, text){
-    var vf = Array.prototype.filter.call(document.querySelectorAll('.offoot'), function(f){ return f.offsetParent; })[0];
+    var vf = Array.prototype.filter.call(document.querySelectorAll('.offoot, .nsdfoot'), function(f){ return f.offsetParent; })[0];
     var ar = app.getBoundingClientRect(), fr = vf ? vf.getBoundingClientRect() : ar;
     var gap = vf && fr.top < ar.bottom ? ar.bottom - fr.top + 12 : 16;
     snack.style.bottom = Math.max(16, gap) + 'px';
@@ -9398,11 +9433,11 @@
   });
   function nsInfo(k){
     if (k === 'np') sheet('Otthoni NetPajzs', '<p class="gsp">Prémium internetbiztonsági szolgáltatás, amely kiszűri a csaló és kéretlen tartalmakat a Yettel hálózatán, és megvéd az adathalászat ellen.</p>'
-      + rows([['ti-shield','Mi ellen véd','Csaló és adathalász oldalak, online shopping csalások, csaló SMS-ek és üzenetek linkjei, valamint botnet-tevékenység ellen.'],
+      + rows([['ti-shield','Mi ellen véd','Csaló és adathalász oldalak, online shopping csalások, vírusos tartalmak, felnőtt tartalmak, csaló SMS-ek és üzenetek linkjei, valamint botnet-tevékenység ellen.'],
         ['ti-settings','Hogyan működik','A Yettel hálózatán, állandóan frissülő adatbázis alapján azonosítja és szűri a csaló oldalakat. A szűrésekről riportot kapsz a Yettel appban.'],
         ['ti-filter','Testreszabható szűrés','A felnőtt tartalmakon túl több kategória is beállítható (pl. alkohol, dohány, drogok, fegyverek, étkezési zavarok), előfizetésenként külön.'],
         ['ti-users-group','Kinek, hány eszközön','Az egész családnak, SIM-kártyánként aktiválva. Eltérő védelem állítható be a különböző korú gyermekeknek, magadnak vagy a szüleidnek.'],
-        ['ti-circle-check','Aktiválás és lemondás','A Yettel appban vagy üzletben rendelhető meg. Nincs hűségidő, első megrendelés esetén az első hónap díjmentes.'],
+        ['ti-circle-check','Aktiválás és lemondás','A Yettel appban vagy üzletben rendelhető meg. Nincs hűségidő, első megrendelés esetén az első hónap díjmentes. Bármikor lemondható, hűségidő nélkül.'],
         ['ti-info-circle','Hol véd, fontos korlátok','Csak a Yettel hálózatán véd (nem Yetteles Wi-Fin és VPN-nel nem). Nem véd az appon belüli visszaélésektől és a bejövő hívásoktól.']], true),
       '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
     else sheet('Gyermekvédelmi tartalomszűrő', '<p class="gsp">Díjmentes védelem a kiskorúak online biztonságáért. Jogszabály alapján biztosított megoldás a felnőtt tartalmak kiszűrésére.</p>'
@@ -9410,7 +9445,7 @@
         ['ti-settings','Hogyan működik','A Yettel hálózatán futó, DNS-alapú technológiával. Ilyen oldalnál tájékoztató oldal jelenik meg, a keresett oldal nem töltődik be.'],
         ['ti-filter','Testreszabható szűrés','Nincs beállítási lehetőség: kizárólag a felnőtt tartalmakat szűri.'],
         ['ti-users-group','Kinek, hány eszközön','Ha többen használják az előfizetést (pl. OtthonNet), minden felhasználónál, minden csatlakozó eszközön blokkolva lesznek a felnőtt tartalmak.'],
-        ['ti-circle-check','Aktiválás és lemondás','Bármikor kérhető és lemondható, szerződésmódosítás nélkül. Új előfizetésnél azonnal, meglévőnél 48 órán belül.'],
+        ['ti-circle-check','Aktiválás és lemondás','Bármikor kérhető és lemondható, szerződésmódosítás és hűségidő nélkül. Új előfizetésnél azonnal, meglévőnél 48 órán belül.'],
         ['ti-info-circle','Hol véd, fontos korlátok','Csak a Yettel mobilhálózatán működik (Wi-Fin nem). VPN-nel vagy kézi DNS-beállítással megkerülhető.']], true),
       '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
   }
