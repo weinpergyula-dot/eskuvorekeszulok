@@ -334,6 +334,8 @@
   #s-buynew:checked ~ [data-screen="buy-new"],
   #s-xsvc:checked ~ [data-screen="xsvc"],
   #s-xsmine:checked ~ [data-screen="xs-mine"],
+  #s-nslist:checked ~ [data-screen="ns-list"],
+  #s-nsdet:checked ~ [data-screen="ns-det"],
   #s-primedit:checked ~ [data-screen="prim-edit"],
   #s-netpend:checked ~ [data-screen="net-pend"],
   #s-billhist:checked ~ [data-screen="bill-hist"],
@@ -1956,6 +1958,43 @@
   .xmtx small{ font-size:12px; color:var(--navy); }
   .xmrow .chev{ font-size:16px; color:var(--navy); }
   .xmempty{ margin:0 2px; font-size:12px; color:var(--mid); }
+  /* Kiegészítő szolgáltatások: active-extras row, empty state, Internetvédelem pages (Netpajzs/Gyermekvédelem backlog items) */
+  .app.foff-netpajzs .nsadd{ display:none; }
+  .xsmine{ justify-content:flex-start; gap:14px; }
+  .xsmine span:nth-child(2){ flex:1; }
+  .xsmok{ width:40px; height:40px; flex-shrink:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--lime); }
+  .xsmok i{ font-size:22px; color:var(--navy); }
+  .xsnone{ margin-top:24px; padding:30px 24px 32px; border-radius:16px; background:#fff; text-align:center; }
+  .xsnone[hidden]{ display:none; }
+  .xsnone .anic{ width:56px; height:56px; }
+  .xsnone .anic i{ font-size:28px; }
+  .xsnone b{ display:block; margin:18px 0 10px; font-family:'Yettel'; font-size:19px; line-height:1.3; color:var(--navy); }
+  .xsnone p{ margin:0; font-size:12.5px; line-height:1.5; color:var(--navy); }
+  .xslab[hidden]{ display:none; }
+  .nsrowx{ display:block; }
+  .nsrowx .ofpromo{ display:inline-block; margin:0 0 6px; }
+  .nsrowx .nsl{ display:flex; align-items:center; gap:12px; }
+  .nsrowx .nsl b{ flex:1; font-size:13px; font-weight:600; color:var(--navy); }
+  .nsrowx .nsl span{ font-size:13px; color:var(--navy); }
+  .nsdscreen{ padding-bottom:110px !important; }
+  .nsdcard{ margin-top:18px; padding:18px 16px; border-radius:16px; background:#fff; }
+  .nsdh{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .nsdh b{ font-family:'Yettel'; font-size:19px; font-weight:800; color:var(--navy); }
+  .nsdtag{ padding:3px 10px; border-radius:999px; background:#E3E8EE; font-size:11px; font-weight:700; color:var(--navy); white-space:nowrap; }
+  .nsdren{ margin:16px 0 2px; font-size:12px; color:var(--navy); }
+  .nsdpr{ margin:0 0 8px; font-size:15px; font-weight:700; color:var(--navy); }
+  .nsdpr b{ font-family:'Yettel'; font-size:28px; font-weight:800; }
+  .nsdpr small{ font-size:13px; font-weight:400; }
+  .nsdtx{ margin:12px 0; font-size:12.5px; line-height:1.55; color:var(--navy); }
+  .nsdnote{ display:flex; gap:8px; margin:0 0 16px; font-size:11px; line-height:1.45; color:var(--mid); }
+  .nsdnote[hidden]{ display:none; }
+  .nsdnote i{ font-size:15px; flex-shrink:0; }
+  .nsdmore{ font-size:13px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
+  .nsdinfo{ display:flex; gap:12px; margin-top:16px; padding:16px; border-radius:12px; background:#DCEFFC; }
+  .nsdinfo > i{ font-size:22px; color:#3D8DE0; }
+  .nsdinfo b{ display:block; margin-bottom:8px; font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .nsdinfo p{ margin:0; font-size:12px; line-height:1.5; color:var(--navy); }
+  .nsdfoot{ position:absolute; left:16px; right:16px; bottom:calc(20px + env(safe-area-inset-bottom)); }
 
   /* ===== Welcome (Yepp) ===== */
   .welcome .wblob{ display:none; }
@@ -3456,6 +3495,8 @@
   <input class="rt" type="radio" name="nav" id="s-buynew">
   <input class="rt" type="radio" name="nav" id="s-xsvc">
   <input class="rt" type="radio" name="nav" id="s-xsmine">
+  <input class="rt" type="radio" name="nav" id="s-nslist">
+  <input class="rt" type="radio" name="nav" id="s-nsdet">
   <input class="rt" type="radio" name="nav" id="s-primedit">
   <input class="rt" type="radio" name="nav" id="s-netpend">
   <input class="rt" type="radio" name="nav" id="s-billhist">
@@ -3786,6 +3827,14 @@
       <div><b>1 000 Mbit/s</b><span>max. letöltési sebesség</span></div>
       <div><b>300 Mbit/s</b><span>max. feltöltési sebesség</span></div>
       <div><b>YR-300 067 402</b><span>Wi-Fi router széria szám</span></div>
+    </div>
+
+    <div class="dtcard nsadd">
+      <p class="dtct">Kiegészítő szolgáltatások</p>
+      <div class="ntiles c2 nptiles">
+        <label class="ntile" for="s-xsvc" data-xsto="net"><span class="nic"><i class="ti ti-shopping-cart"></i></span><span>Kiegészítő vásárlás</span></label>
+        <label class="ntile" for="s-xsmine" data-xsto="net"><span class="nic"><i class="ti ti-device-mobile-plus"></i></span><span>Aktív kiegészítők</span></label>
+      </div>
     </div>
 
     <div class="nppromo">
@@ -6895,7 +6944,7 @@
     </div>
     <div class="tblist tbboxed">
       <label class="tbrow" for="s-buynew"><span class="tbic"><i class="ti ti-shopping-cart"></i></span><span class="n">Új szolgáltatás vásárlás</span><i class="ti ti-chevron-right chev"></i></label>
-      <div class="tbrow" data-xsheet><span class="tbic"><i class="ti ti-circle-plus"></i></span><span class="n">Extra szolgáltatások</span><i class="ti ti-chevron-right chev"></i></div>
+      <div class="tbrow" data-xsheet><span class="tbic"><i class="ti ti-circle-plus"></i></span><span class="n">Kiegészítő szolgáltatások</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
     <div class="tbsec"><p>Mobilfizetés</p><label class="tblink" for="s-ktopup">Keretfeltöltés</label></div>
     <div class="tblist tbboxed">
@@ -7001,7 +7050,7 @@
   <div class="screen xsscreen" data-screen="xsvc" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-tshop"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Szolgáltatások</span>
+      <span class="title">Kiegészítő szolgáltatások</span>
       <div style="width:42px"></div>
     </div>
     <div class="xsid" data-xsheet>
@@ -7009,8 +7058,8 @@
       <div class="meta"><p class="s" data-xsplan>Prime Plus 2025</p><p class="t" data-xsnum>+36 20 290 7566</p></div>
       <i class="ti ti-chevron-down xsdd"></i>
     </div>
-    <label class="xsmine" for="s-xsmine"><span>Szolgáltatásaid</span><i class="ti ti-chevron-right chev"></i></label>
-    <p class="xslab">Rendelhető</p>
+    <label class="xsmine" for="s-xsmine"><span class="xsmok"><i class="ti ti-check"></i></span><span>Aktív kiegészítő szolgáltatásaid</span><i class="ti ti-chevron-right chev"></i></label>
+    <p class="xslab" data-xslab>Rendelhető</p>
     <div class="xslist" data-xslist="mob">
         <div class="xsrow"><span class="xsic dark"><i class="ti ti-tag"></i></span><span class="n">Ajánlataid</span><i class="ti ti-chevron-right chev"></i></div>
         <div class="xsrow"><span class="xsic"><i class="ti ti-heart-handshake"></i></span><span class="n">Ajándékozás</span><span class="xsnew">Új!</span><i class="ti ti-chevron-right chev"></i></div>
@@ -7028,13 +7077,52 @@
         <div class="xsrow"><span class="xsic"><i class="ti ti-device-tv"></i></span><span class="n">TV csomagok</span><i class="ti ti-chevron-right chev"></i></div>
         <div class="xsrow"><span class="xsic"><i class="ti ti-circle-plus"></i></span><span class="n">Kiegészítő szolgáltatások</span><i class="ti ti-chevron-right chev"></i></div>
     </div>
+    <div class="xslist" data-xslist="netns" hidden>
+        <label class="xsrow" for="s-nslist"><span class="xsic"><i class="ti ti-shield-half"></i></span><span class="n">Internetvédelem</span><i class="ti ti-chevron-right chev"></i></label>
+    </div>
+    <div class="xsnone" data-xslist="none" hidden>
+      <span class="anic"><i class="ti ti-info-circle"></i></span>
+      <b>Jelenleg nincs rendelhető kiegészítőd</b>
+      <p>Ehhez az előfizetéshez jelenleg nem érhető el kiegészítő szolgáltatás. Kérjük, nézz vissza később, ha lesz, itt fogod megtalálni.</p>
+    </div>
+  </div>
+
+  <!-- ============= INTERNETVÉDELEM (kiegészítő): what can still be ordered ============= -->
+  <div class="screen xsscreen" data-screen="ns-list" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-xsvc"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Internetvédelem</span>
+      <div style="width:42px"></div>
+    </div>
+    <p class="xmlab">Megújuló</p>
+    <div class="xmlist" data-nslist></div>
+  </div>
+
+  <!-- ============= INTERNETVÉDELEM: részletek ============= -->
+  <div class="screen xsscreen nsdscreen" data-screen="ns-det" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-nslist"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Részletek</span>
+      <div style="width:42px"></div>
+    </div>
+    <div class="nsdcard">
+      <div class="nsdh"><b data-nsdname></b><span class="nsdtag">Rendelhető</span></div>
+      <p class="nsdren">Megújuló</p>
+      <p class="nsdpr"><b data-nsdprice></b> Ft <small>/hó</small></p>
+      <span class="ofpromo nspromo" data-nsdpromo>100% havidíj kedvezmény 30 napig</span>
+      <p class="nsdtx" data-nsdtx></p>
+      <p class="nsdnote" data-nsdnote><i class="ti ti-alert-circle"></i><span></span></p>
+      <span class="nsdmore" data-nsdmore></span>
+    </div>
+    <div class="nsdinfo"><i class="ti ti-bulb"></i><div><b>Egyszerre csak egy internetvédelmi szolgáltatás lehet aktív!</b><p>Tedd biztonságosabbá az internetezést a számodra megfelelő szolgáltatással. Ha másikat aktiválsz, a korábbi automatikusan lemondódik.</p></div></div>
+    <div class="nsdfoot"><button type="button" class="fsbtn" data-wip>Aktiválom</button></div>
   </div>
 
   <!-- ============= SZOLGÁLTATÁSAID (aktív extrák) ============= -->
   <div class="screen xsscreen" data-screen="xs-mine" style="display:none;">
     <div class="dhead">
       <label class="icon-btn" for="s-xsvc"><i class="ti ti-arrow-left"></i></label>
-      <span class="title">Szolgáltatásaid</span>
+      <span class="title">Aktív kiegészítő szolgáltatásaid</span>
       <div style="width:42px"></div>
     </div>
     <p class="xmlab">Aktív</p>
@@ -7716,7 +7804,7 @@
     <div class="xspanel">
       <span class="xsgrab"></span>
       <div class="xshead"><p>Előfizetéseid</p><button type="button" class="xsx" data-xsclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
-      <p class="xsq">Melyik előfizetésedhez vásárolnál extra szolgáltatást?</p>
+      <p class="xsq">Melyik előfizetésedhez vásárolnál kiegészítő szolgáltatást?</p>
       <div class="xsopts"></div>
       <button type="button" class="xsgo" data-xsgo>Tovább</button>
     </div>
@@ -8164,7 +8252,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet]';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -8423,13 +8511,40 @@
     {id:'7430', ic:'ti-phone-call', plan:'Prime Plus 2024', t:'+36 20 290 7430', kind:'mob', det:'s-detail', data:'s-xdata1'},
     {id:'9734', ic:'ti-phone-call', plan:'XS+ · Feltöltőkártyás', t:'+36 20 290 9734', kind:'mob', det:'s-detailpre1', data:'s-topup1'},
     {id:'net', ic:'ti-home-signal', plan:'HiperNet L', t:'8200 Veszprém, Tölgyfa u. 4', kind:'net', det:'s-detail-net',
-     act:[['Yettel TV Basic','Megújuló','2 990 Ft/hó','s-detail-tv'],['TV2 Play Premium','Megújuló','1 990 Ft/hó','s-strm3'],['RTL+ Active','Megújuló','1 590 Ft/hó','s-strm3']]}
+     act:[['Yettel TV Basic','Megújuló','2 990 Ft/hó','s-detail-tv'],['TV2 Play Premium','Megújuló','1 990 Ft/hó','s-strm3'],['RTL+ Active','Megújuló','1 590 Ft/hó','s-strm3']]},
+    /* pending HiperNet: listed with the Internetvédelem backlog item, nothing can be ordered for it yet */
+    {id:'netpend', ic:'ti-home-signal', plan:'HiperNet M', t:'8200 Veszprém, Jutasi út 12', kind:'netpend', det:'s-netpend', feat:'netpajzs'}
   ];
+  /* Internetvédelem on an active HiperNet: NetPajzs or Gyermekvédelem, only one can be active at a time */
+  var NS = {
+    np:{name:'Otthoni NetPajzs', price:850, promo:true, tx:'A Yettel Otthoni NetPajzs egy internetvédelmi szolgáltatás, mellyel kiszűrhetők a csaló és kéretlen tartalmak a Yettel hálózatán. Hatékonyan megvéd az adathalász oldalak és számos más internetes csalás ellen.',
+        note:'Ha nem Yetteles routert használsz (Bridge módot használsz) a szolgáltatás nem működik.'},
+    kid:{name:'Gyermekvédelmi tartalomszűrő', price:0, tx:'Díjmentes védelem a kiskorúak online biztonságáért. A hatósági (NMHH) lista szerinti felnőtt tartalmú weboldalak elérését blokkolja a Yettel hálózatán.'}
+  };
+  var nsActive = {np:false, kid:false};
+  function feat(k){ return !!(window.yFeat && window.yFeat(k)); }
+  function subs(){ return SUBS.filter(function(x){ return !x.feat || feat(x.feat); }); }
+  function nsLeft(){ return Object.keys(NS).filter(function(k){ return !nsActive[k]; }); }
+  function nsList(){
+    var l = document.querySelector('[data-nslist]'); if (!l) return;
+    l.innerHTML = nsLeft().map(function(k){ var x = NS[k];
+      return '<label class="xmrow nsrowx" for="s-nsdet" data-nsk="'+k+'">'+(x.promo ? '<span class="ofpromo">100% havidíj kedvezmény 30 napig</span>' : '')
+        + '<span class="nsl"><b>'+x.name+'</b><span>'+x.price+' Ft/hó</span><i class="ti ti-chevron-right chev"></i></span></label>'; }).join('');
+  }
+  function nsDet(k){
+    var x = NS[k], d = document.querySelector('[data-screen="ns-det"]');
+    d.querySelector('[data-nsdname]').textContent = x.name;
+    d.querySelector('[data-nsdprice]').textContent = x.price;
+    d.querySelector('[data-nsdpromo]').hidden = !x.promo;
+    d.querySelector('[data-nsdtx]').textContent = x.tx;
+    var n = d.querySelector('[data-nsdnote]'); n.hidden = !x.note; n.querySelector('span').textContent = x.note || '';
+    var m = d.querySelector('[data-nsdmore]'); m.textContent = 'Mit tud a '+x.name+'?'; m.setAttribute('data-nsdmore', k);
+  }
   var sheet = document.getElementById('xsheet'), sc = document.querySelector('[data-screen="xsvc"]');
   if (!sheet || !sc) return;
   var opts = sheet.querySelector('.xsopts'), cur = SUBS[0];
   function open(){
-    opts.innerHTML = SUBS.map(function(x){
+    opts.innerHTML = subs().map(function(x){
       return '<label class="xsopt"><input type="radio" name="xssub" value="'+x.id+'"'+(x===cur?' checked':'')+'>'
            + '<span class="xsoic"><i class="ti '+x.ic+'"></i></span><span class="xsotx"><small>'+x.plan+'</small><b>'+x.t+'</b></span><span class="xschk"><i class="ti ti-check"></i></span></label>';
     }).join('');
@@ -8444,12 +8559,20 @@
       /* service details are not built yet: a plain .xmrow opens the "Fejlesztés alatt!" popup */
       return '<div class="xmrow"><i class="ti ti-player-play xmic"></i><span class="xmtx"><b>'+a[0]+'</b><span><small>'+a[1]+'</small><small>'+a[2]+'</small></span></span><i class="ti ti-chevron-right chev"></i></div>';
     }).join('') : '<p class="xmempty">Ehhez az előfizetéshez nincs aktív extra szolgáltatásod.</p>';
-    Array.prototype.slice.call(sc.querySelectorAll('[data-xslist]')).forEach(function(l){ l.hidden = l.getAttribute('data-xslist') !== cur.kind; });
+    /* HiperNet with the Internetvédelem backlog item: only Internetvédelem, or the empty state if nothing is left / not active yet */
+    var kind = cur.kind;
+    if (kind === 'net' && feat('netpajzs')) kind = nsLeft().length ? 'netns' : 'none';
+    if (kind === 'netpend') kind = 'none';
+    Array.prototype.slice.call(sc.querySelectorAll('[data-xslist]')).forEach(function(l){ l.hidden = l.getAttribute('data-xslist') !== kind; });
+    sc.querySelector('[data-xslab]').hidden = kind === 'none';
+    nsList();
   }
   document.addEventListener('click', function(e){
     if (!e.target.closest) return;
     var to = e.target.closest('[data-xsto]');
     if (to){ SUBS.forEach(function(x){ if (x.id === to.getAttribute('data-xsto')) cur = x; }); apply(); return; }
+    var nk = e.target.closest('[data-nsk]'); if (nk){ nsDet(nk.getAttribute('data-nsk')); return; }
+    var nm = e.target.closest('[data-screen="ns-det"] [data-nsdmore]'); if (nm){ if (window.yNsInfo) window.yNsInfo(nm.getAttribute('data-nsdmore')); return; }
     if (e.target.closest('[data-xsheet]')){ open(); return; }
     if (e.target.closest('[data-xsclose]')){ sheet.classList.remove('on'); return; }
     if (e.target.closest('[data-xsgo]')){
@@ -8459,6 +8582,8 @@
       var r = document.getElementById('s-xsvc'); if (r && !r.checked){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); }
     }
   });
+  /* a backlog switch changed: the pending HiperNet may disappear, the net lists change */
+  document.addEventListener('yfeat', function(){ if (subs().indexOf(cur) < 0) cur = SUBS[0]; apply(); });
   apply();
 })();
 </script>
@@ -9271,9 +9396,8 @@
     /* NetPajzs and Gyermekvédelem exclude each other: switching one on switches the other off */
     busy(nsc, true, function(ok){ c.classList.remove('ld'); if (ok){ ns[k] = want; if (want) ns[k === 'np' ? 'kid' : 'np'] = false; } nsMark(); nsSum(); });
   });
-  nsc.addEventListener('click', function(e){
-    var d = e.target.closest('[data-nsdet]'); if (!d) return;
-    if (d.getAttribute('data-nsdet') === 'np') sheet('Otthoni NetPajzs', '<p class="gsp">Prémium internetbiztonsági szolgáltatás, amely kiszűri a csaló és kéretlen tartalmakat a Yettel hálózatán, és megvéd az adathalászat ellen.</p>'
+  function nsInfo(k){
+    if (k === 'np') sheet('Otthoni NetPajzs', '<p class="gsp">Prémium internetbiztonsági szolgáltatás, amely kiszűri a csaló és kéretlen tartalmakat a Yettel hálózatán, és megvéd az adathalászat ellen.</p>'
       + rows([['ti-shield','Mi ellen véd','Csaló és adathalász oldalak, online shopping csalások, csaló SMS-ek és üzenetek linkjei, valamint botnet-tevékenység ellen.'],
         ['ti-settings','Hogyan működik','A Yettel hálózatán, állandóan frissülő adatbázis alapján azonosítja és szűri a csaló oldalakat. A szűrésekről riportot kapsz a Yettel appban.'],
         ['ti-filter','Testreszabható szűrés','A felnőtt tartalmakon túl több kategória is beállítható (pl. alkohol, dohány, drogok, fegyverek, étkezési zavarok), előfizetésenként külön.'],
@@ -9289,7 +9413,9 @@
         ['ti-circle-check','Aktiválás és lemondás','Bármikor kérhető és lemondható, szerződésmódosítás nélkül. Új előfizetésnél azonnal, meglévőnél 48 órán belül.'],
         ['ti-info-circle','Hol véd, fontos korlátok','Csak a Yettel mobilhálózatán működik (Wi-Fin nem). VPN-nel vagy kézi DNS-beállítással megkerülhető.']], true),
       '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
-  });
+  }
+  window.yNsInfo = nsInfo;
+  nsc.addEventListener('click', function(e){ var d = e.target.closest('[data-nsdet]'); if (d) nsInfo(d.getAttribute('data-nsdet')); });
   nsc.addEventListener('scroll', function(){ if (nsc.scrollTop + nsc.clientHeight >= nsc.scrollHeight - 4) nsc.classList.add('stk'); });
   function toTv(){
     var ld = document.querySelector('.adload');
