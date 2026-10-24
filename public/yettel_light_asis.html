@@ -299,6 +299,7 @@
   #s-offsvc:checked ~ [data-screen="offers-svc"],
   #s-tvoff:checked ~ [data-screen="tv-offers"],
   #s-tvext:checked ~ [data-screen="tv-extras"],
+  #s-netadd:checked ~ [data-screen="net-addon"],
   #s-addrtaken:checked ~ [data-screen="addr-taken"],
   #s-bconsent:checked ~ [data-screen="bconsent"],
   #s-bappt:checked ~ [data-screen="bappt"],
@@ -1856,6 +1857,29 @@
   .lw2 .lwvok .lwokic i{ font-size:36px; color:#2E9E4F; }
   .lw2 .lwvok b{ font-size:20px; line-height:1.25; }
   .lw2.sent .lwvfoot{ display:none; }
+  .lw2 .lwvfail{ display:none; margin:60px 0 10px; text-align:center; }
+  .lw2.fail .lwvform{ display:none; }
+  .lw2.fail .lwvfail{ display:block; }
+  .lw2.fail .lwvfoot{ display:none; }
+  .lw2 .lwvfail .lwokic{ display:inline-flex; width:70px; height:70px; border-radius:50%; background:#FDE4D6; align-items:center; justify-content:center; }
+  .lw2 .lwvfail .lwokic i{ font-size:36px; color:#F0603C; }
+  .lw2 .lwvfail b{ display:block; margin:10px 0 6px; font-family:'Yettel'; font-size:20px; line-height:1.25; color:var(--navy); }
+  .lw2 .lwvfail p{ margin:0 0 22px; font-size:13px; line-height:1.5; color:var(--navy); }
+  .lwvdate{ position:relative; margin:0 0 18px; }
+  .lwvdate > button{ display:flex; align-items:center; justify-content:space-between; width:100%; padding:13px 14px; border:1.5px solid #E3E8EE; border-radius:8px; background:#fff; font-family:inherit; font-size:14px; color:var(--navy); text-align:left; cursor:pointer; }
+  .lwvdate > button .ph{ color:#9AA3BC; }
+  .lwvdate.bad > button{ border-color:#F0603C; }
+  .lwcal{ display:none; position:absolute; left:0; right:0; top:calc(100% + 4px); z-index:3; padding:12px; border-radius:8px; background:#fff; box-shadow:0 10px 30px -8px rgba(9,34,61,.3); }
+  .lwvdate.open .lwcal{ display:block; }
+  .lwcalh{ display:flex; align-items:center; justify-content:space-between; margin:0 0 8px; font-size:13px; color:var(--navy); }
+  .lwcalh button{ width:28px; height:28px; border:none; background:none; color:var(--navy); cursor:pointer; }
+  .lwcalh button:disabled{ opacity:.3; cursor:default; }
+  .lwcalg{ display:grid; grid-template-columns:repeat(7, 1fr); gap:2px; text-align:center; }
+  .lwcalg i{ font-style:normal; font-size:11px; font-weight:700; color:var(--mid); padding:4px 0; }
+  .lwcd{ width:32px; height:32px; margin:0 auto; padding:0; border:none; border-radius:50%; background:none; font-family:inherit; font-size:12.5px; color:var(--navy); cursor:pointer; }
+  .lwcd.off{ color:#C5CCD6; cursor:default; }
+  .lwcd.now{ box-shadow:inset 0 0 0 1.5px var(--navy); }
+  .lwcd.on{ background:var(--navy); color:#fff; }
   /* Lead - Nem található cím: yettel.hu form opened in a webview */
   .lwv{ position:absolute; inset:0; z-index:126; display:none; flex-direction:column; background:#fff; animation:xsup .28s cubic-bezier(.4,0,.2,1); }
   .lwv.on{ display:flex; }
@@ -2746,6 +2770,30 @@
   .ofinfo b{ font-size:13px; font-weight:700; line-height:1.4; color:var(--navy); }
   .ofscr.busy .ofnext{ background:#CDD4DC; color:#8592A6; pointer-events:none; }
   .ofscr.busy .ofsw{ opacity:.45; pointer-events:none; }
+  /* Internetvédelem step (NetPajzs + Gyermekvédelem) and the "remind me later" row */
+  .app:not(.foff-netpajzs) .ofkid{ display:none; }
+  .app.foff-leadamikor .ltrow{ display:none; }
+  .ltrow{ display:flex; align-items:center; gap:14px; margin:0 0 18px; padding:16px 14px; border:1.5px solid #E3E8EE; border-radius:14px; background:#fff; cursor:pointer; }
+  .ltrow > i:first-child{ font-size:22px; color:var(--navy); }
+  .ltrow b{ flex:1; font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .ltrow .chev{ font-size:18px; color:var(--mid); }
+  .nscard{ position:relative; margin:0 0 16px; padding:14px 12px 10px; border:1.5px solid #D5DCE3; border-radius:12px; background:#fff; transition:opacity .2s; }
+  .nscard.on{ border:2px solid #09223D; background:#F1F9FD; }
+  .nsrow{ display:flex; align-items:center; gap:10px; }
+  .nsic{ width:38px; height:38px; flex-shrink:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#C9DDE8; }
+  .nsic.lime{ background:var(--lime); }
+  .nsic i{ font-size:20px; color:var(--navy); }
+  .nsmid{ flex:1; min-width:0; }
+  .nsmid b{ display:block; font-size:13px; font-weight:700; line-height:1.3; color:var(--navy); }
+  .nspr{ font-size:12px; font-weight:700; color:var(--navy); white-space:nowrap; }
+  .nspromo{ display:inline-block; margin:10px 0 0; }
+  .nsli{ margin:10px 0 0; padding:8px 0 0; border-top:1px solid #E3E8EE; list-style:none; }
+  .nsli li{ position:relative; padding:4px 0 4px 22px; font-size:11.5px; color:var(--navy); }
+  .nsli li::before{ content:''; position:absolute; left:3px; top:7px; width:9px; height:5px; border-left:1.5px solid var(--navy); border-bottom:1.5px solid var(--navy); transform:rotate(-45deg); }
+  .nsscr.busy .nscard:not(.ld){ opacity:.4; }
+  .nscard.ld .nsrow{ position:relative; }
+  .nscard.ld .ofsw{ visibility:hidden; }
+  .nscard.ld .nsrow::after{ content:''; position:absolute; right:12px; top:50%; width:16px; height:16px; margin-top:-8px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
   .ofscr.busy .ofcar{ pointer-events:none; }
   .ofscr.busy .ofsum b{ position:relative; color:transparent; }
   .ofscr.busy .ofsum b::after{ content:''; position:absolute; right:0; top:50%; width:14px; height:14px; margin-top:-7px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
@@ -3346,6 +3394,7 @@
   <input class="rt" type="radio" name="nav" id="s-tarifsvc">
   <input class="rt" type="radio" name="nav" id="s-offsvc">
   <input class="rt" type="radio" name="nav" id="s-tvoff">
+  <input class="rt" type="radio" name="nav" id="s-netadd">
   <input class="rt" type="radio" name="nav" id="s-tvext">
   <input class="rt" type="radio" name="nav" id="s-addrtaken">
   <input class="rt" type="radio" name="nav" id="s-bconsent">
@@ -4369,6 +4418,36 @@
   </div>
 
   <!-- ============= EXTRÁK (streaming): tv-extras ============= -->
+  <!-- ============= INTERNETVÉDELEM: net addon (NetPajzs + Gyermekvédelem backlog items) ============= -->
+  <div class="screen ofscr nsscr" data-screen="net-addon" style="display:none;">
+    <div class="dhead">
+      <div style="width:42px"></div>
+      <span class="title">Internetvédelem</span>
+      <label class="icon-btn adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label>
+    </div>
+    <h2 class="ofh">Válassz neted mellé kiegészítő szolgáltatásokat!</h2>
+    <div class="nscard" data-ns="np">
+      <div class="nsrow"><span class="nsic lime"><i class="ti ti-shield-check"></i></span><div class="nsmid"><b>Otthoni NetPajzs</b><span class="exdet" data-nsdet="np">Részletek</span></div><span class="nspr">850 Ft/hó</span><span class="ofsw"><input type="checkbox" data-nsx="np" aria-label="Otthoni NetPajzs"><span></span></span></div>
+      <span class="ofpromo nspromo">100% havidíj kedvezmény 30 napig</span>
+      <ul class="nsli"><li>Felnőtt és káros tartalmak szűrése</li><li>Vírusok és csaló oldalak elleni védelem</li><li>Adathalászat és kéretlen SMS-ek blokkolása</li></ul>
+    </div>
+    <div class="nscard" data-ns="kid">
+      <div class="nsrow"><span class="nsic"><i class="ti ti-shield-half"></i></span><div class="nsmid"><b>Gyermekvédelmi tartalomszűrő</b><span class="exdet" data-nsdet="kid">Részletek</span></div><span class="nspr">0 Ft/hó</span><span class="ofsw"><input type="checkbox" data-nsx="kid" aria-label="Gyermekvédelmi tartalomszűrő"><span></span></span></div>
+      <ul class="nsli"><li>Felnőtt tartalmak szűrése a hatósági lista alapján</li></ul>
+    </div>
+    <div class="ltrow" data-lwbopen><i class="ti ti-bell"></i><b>Később vásárolnál? Kérj emlékeztetőt!</b><i class="ti ti-chevron-right chev"></i></div>
+    <div class="ofhelp">
+      <small>Segíthetünk?</small>
+      <b>Chatelj kollégánkkal, ha elakadtál</b>
+      <svg viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M18 46V38a22 22 0 0 1 44 0v8" stroke="#09223D" stroke-width="7" stroke-linecap="round"/><rect x="10" y="40" width="16" height="24" rx="8" fill="#B4FF00" stroke="#09223D" stroke-width="3"/><rect x="54" y="40" width="16" height="24" rx="8" fill="#09223D"/><path d="M62 64c0 7-8 10-18 10" stroke="#09223D" stroke-width="3" stroke-linecap="round"/><circle cx="42" cy="74" r="4" fill="#09223D"/></svg>
+      <button type="button" class="ofchat" data-chatpop>Chat indítása</button>
+    </div>
+    <div class="offoot">
+      <div class="ofsum"><span>Vásárláskor:</span><b>0 Ft</b><span>Havonta:</span><b data-ofmon>7 990 Ft/hó</b></div>
+      <button type="button" class="ofnext nsnext">Tovább</button>
+    </div>
+  </div>
+
   <div class="screen ofscr exscr" data-screen="tv-extras" style="display:none;">
     <div class="dhead">
       <div style="width:42px"></div>
@@ -4937,6 +5016,7 @@
     <div class="ofinfo" hidden><i class="ti ti-alert-circle"></i><b>Címeden még nincs vezetékes internetünk, de az OtthonNettel kábelek nélkül is netezhetsz.</b></div>
     <div class="ofcar"></div>
     <div class="ofdots"></div>
+    <div class="ltrow" data-lwbopen><i class="ti ti-bell"></i><b>Később vásárolnál? Kérj emlékeztetőt!</b><i class="ti ti-chevron-right chev"></i></div>
     <div class="ofkid">
       <div class="ofkidh"><i class="ti ti-shield-half"></i><b>Aktiválod a gyermekvédelmi tartalomszűrőt?</b><span class="ofsw"><input type="checkbox" data-ofkid aria-label="Gyermekvédelmi tartalomszűrő"><span></span></span></div>
       <p>A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.</p>
@@ -8083,7 +8163,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],.lwv';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9077,7 +9157,7 @@
     sc.querySelector('[data-ofnew]').setAttribute('for', back);
     sc.querySelector('.adx').setAttribute('for', a.guest ? 's-newcust' : 's-tshop');
     Array.prototype.forEach.call(document.querySelectorAll('[data-gohome]'), function(hb){ hb.setAttribute('for', a.guest ? 's-newcust' : 's-home'); });
-    apply(0); kid.checked = false;
+    apply(0); kid.checked = false; ns.np = false; ns.kid = false;
     sc.classList.remove('stk'); sc.scrollTop = 0; car.scrollLeft = 0;
   }
   car.addEventListener('scroll', function(){
@@ -9163,7 +9243,7 @@
   }
   function tvSum(){
     var net = list[selI] ? netNow(list[selI]) : 0, t = tlist[tSel];
-    tsc.querySelector('[data-ofmon]').textContent = fmt(net + (t.none ? 0 : tvNow(t.price)) + (boxOn && !t.none ? BOX * boxN : 0)) + ' Ft/hó';
+    tsc.querySelector('[data-ofmon]').textContent = fmt(net + npMon() + (t.none ? 0 : tvNow(t.price)) + (boxOn && !t.none ? BOX * boxN : 0)) + ' Ft/hó';
   }
   function tvBox(n){ var on = n > 0; boxN = +n || 0; boxOn = on; tbox.classList.toggle('on', on); tbox.querySelector('.tvbt').textContent = on ? 'TV box hozzáadva ('+boxN+' db)' : 'TV box hozzáadása'; tbox.querySelector('.tvbic').className = 'ti tvbic ' + (on ? 'ti-circle-check-filled' : 'ti-circle-plus'); }
   function renderTv(){
@@ -9177,13 +9257,53 @@
     tvBox(0); tvMark(tSel); tvSum();
     tsc.classList.remove('stk');
   }
-  sc.querySelector('.ofnext').addEventListener('click', function(){
+  /* Internetvédelem (NetPajzs + Gyermekvédelem backlog items): its own step after the internet offers */
+  var nsc = document.querySelector('[data-screen="net-addon"]'), ns = {np:false, kid:false}, NSP = {np:850, kid:0};
+  function nsOn(){ return !!(window.yFeat && window.yFeat('netpajzs')); }
+  function npMon(){ return nsOn() && ns.np ? NSP.np : 0; }
+  function nsSum(){ nsc.querySelector('[data-ofmon]').textContent = fmt((list[selI] ? netNow(list[selI]) : 0) + npMon()) + ' Ft/hó'; }
+  function nsMark(){ Array.prototype.forEach.call(nsc.querySelectorAll('[data-nsx]'), function(x){ var k = x.getAttribute('data-nsx'); x.checked = ns[k]; x.closest('.nscard').classList.toggle('on', ns[k]); }); }
+  nsc.addEventListener('change', function(e){
+    var x = e.target.closest('[data-nsx]'); if (!x) return;
+    var k = x.getAttribute('data-nsx'), want = x.checked, c = x.closest('.nscard');
+    c.classList.add('ld');
+    busy(nsc, true, function(ok){ c.classList.remove('ld'); if (ok) ns[k] = want; nsMark(); nsSum(); });
+  });
+  nsc.addEventListener('click', function(e){
+    var d = e.target.closest('[data-nsdet]'); if (!d) return;
+    if (d.getAttribute('data-nsdet') === 'np') sheet('Otthoni NetPajzs', '<p class="gsp">Prémium internetbiztonsági szolgáltatás, amely kiszűri a csaló és kéretlen tartalmakat a Yettel hálózatán, és megvéd az adathalászat ellen.</p>'
+      + rows([['ti-shield','Mi ellen véd','Csaló és adathalász oldalak, online shopping csalások, csaló SMS-ek és üzenetek linkjei, valamint botnet-tevékenység ellen.'],
+        ['ti-settings','Hogyan működik','A Yettel hálózatán, állandóan frissülő adatbázis alapján azonosítja és szűri a csaló oldalakat. A szűrésekről riportot kapsz a Yettel appban.'],
+        ['ti-filter','Testreszabható szűrés','A felnőtt tartalmakon túl több kategória is beállítható (pl. alkohol, dohány, drogok, fegyverek, étkezési zavarok), előfizetésenként külön.'],
+        ['ti-users-group','Kinek, hány eszközön','Az egész családnak, SIM-kártyánként aktiválva. Eltérő védelem állítható be a különböző korú gyermekeknek, magadnak vagy a szüleidnek.'],
+        ['ti-circle-check','Aktiválás és lemondás','A Yettel appban vagy üzletben rendelhető meg. Nincs hűségidő, első megrendelés esetén az első hónap díjmentes.'],
+        ['ti-info-circle','Hol véd, fontos korlátok','Csak a Yettel hálózatán véd (nem Yetteles Wi-Fin és VPN-nel nem). Nem véd az appon belüli visszaélésektől és a bejövő hívásoktól.']], true),
+      '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
+    else sheet('Gyermekvédelmi tartalomszűrő', '<p class="gsp">Díjmentes védelem a kiskorúak online biztonságáért. Jogszabály alapján biztosított megoldás a felnőtt tartalmak kiszűrésére.</p>'
+      + rows([['ti-shield','Mi ellen véd','A hatósági (NMHH) lista szerinti felnőtt tartalmú weboldalak elérését blokkolja.'],
+        ['ti-settings','Hogyan működik','A Yettel hálózatán futó, DNS-alapú technológiával. Ilyen oldalnál tájékoztató oldal jelenik meg, a keresett oldal nem töltődik be.'],
+        ['ti-filter','Testreszabható szűrés','Nincs beállítási lehetőség: kizárólag a felnőtt tartalmakat szűri.'],
+        ['ti-users-group','Kinek, hány eszközön','Ha többen használják az előfizetést (pl. OtthonNet), minden felhasználónál, minden csatlakozó eszközön blokkolva lesznek a felnőtt tartalmak.'],
+        ['ti-circle-check','Aktiválás és lemondás','Bármikor kérhető és lemondható, szerződésmódosítás nélkül. Új előfizetésnél azonnal, meglévőnél 48 órán belül.'],
+        ['ti-info-circle','Hol véd, fontos korlátok','Csak a Yettel mobilhálózatán működik (Wi-Fin nem). VPN-nel vagy kézi DNS-beállítással megkerülhető.']], true),
+      '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
+  });
+  nsc.addEventListener('scroll', function(){ if (nsc.scrollTop + nsc.clientHeight >= nsc.scrollHeight - 4) nsc.classList.add('stk'); });
+  function toTv(){
     var ld = document.querySelector('.adload');
     renderTv(); ld.classList.add('on');
     setTimeout(function(){
       var r = document.getElementById('s-tvoff'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
       tsc.scrollTop = 0; tcar.scrollLeft = tSel ? tcar.scrollWidth : 0;  /* only takes effect once the screen is shown */
     }, 2600);
+    setTimeout(function(){ ld.classList.remove('on'); }, 2800);
+  }
+  nsc.querySelector('.nsnext').addEventListener('click', toTv);
+  sc.querySelector('.ofnext').addEventListener('click', function(){
+    var ld = document.querySelector('.adload');
+    if (!nsOn()){ toTv(); return; }
+    nsMark(); nsSum(); nsc.classList.remove('stk', 'busy'); ld.classList.add('on');
+    setTimeout(function(){ var r = document.getElementById('s-netadd'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); nsc.scrollTop = 0; }, 2600);
     setTimeout(function(){ ld.classList.remove('on'); }, 2800);
   });
   tcar.addEventListener('click', function(e){
@@ -9288,7 +9408,7 @@
   var esc = document.querySelector('[data-screen="tv-extras"]'), hbo = 0;
   function exSum(){
     var net = list[selI] ? netNow(list[selI]) : 0, t = tlist[tSel];
-    esc.querySelector('[data-ofmon]').textContent = fmt(net + (t.none ? 0 : tvNow(t.price)) + (boxOn && !t.none ? BOX * boxN : 0) + hbo) + ' Ft/hó';
+    esc.querySelector('[data-ofmon]').textContent = fmt(net + npMon() + (t.none ? 0 : tvNow(t.price)) + (boxOn && !t.none ? BOX * boxN : 0) + hbo) + ' Ft/hó';
   }
   function toExtras(){
     var ld = document.querySelector('.adload'), t = tlist[tSel];
@@ -9440,7 +9560,8 @@
     smPct = pct; smNew = [['ti-home-signal', n.name, pct]];
     it.push(smItem('ti-home-signal', n.name, +n.price.replace(/\D/g, ''), {off:pct, trial:'30 napig kötöttségek nélkül', desc:'e-Komfort csomaggal, 12 hónap hűséggel' + (n.t === 'fbb' ? ', ingyenes telepítéssel' : ''), promo:n.promo}));
     it.push(smItem('ti-router', n.t === 'fbb' ? 'WiFi 7 router' : 'WiFi 6 router', 0));
-    if (kid.checked) it.push(smItem('ti-shield-half', 'Gyermekvédelmi tartalomszűrő', 0));
+    if (nsOn() && ns.np) it.push(smItem('ti-shield-check', 'Otthoni NetPajzs', NSP.np, {promo:'100% havidíj kedvezmény 30 napig'}));
+    if (nsOn() ? ns.kid : kid.checked) it.push(smItem('ti-shield-half', 'Gyermekvédelmi tartalomszűrő', 0));
     if (t && !t.none){
       it.push(smItem('ti-device-tv', t.name, t.price, {off:tvp, promo:'100% havidíj kedvezmény 30 napig'})); if (tvp) smNew.push(['ti-device-tv', t.name, tvp]);
       if (t.strm){ it.push(smItem('ti-cast', 'TV2 Play Prémium', 0)); it.push(smItem('ti-cast', 'RTL+ Active', 0)); }
@@ -9865,9 +9986,9 @@
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
   /* already built in the demo: marked with a "Kész" tag */
-  var DONE = {leadcim:1, leadhamar:1, fullafter:1, fulldash:1, fullcsom:1, fullmegt:1};
+  var DONE = {leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, fullafter:1, fulldash:1, fullcsom:1, fullmegt:1};
   /* features on the same page move together */
-  var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom'};
+  var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom', netpajzs:'gyermek', gyermek:'netpajzs'};
   var app = document.querySelector('.app'), pop = document.getElementById('devlist');
   if (!pop) return;
   var body = pop.querySelector('.dlbody'), on = {};
@@ -9928,7 +10049,7 @@
 /* sales journey: closing it (X) asks first; what was left behind stays in the cart for the rest
    of the session and starting a new address search offers to carry on from there */
 (function(){
-  var FLOW = {'s-offsvc':1,'s-tvoff':1,'s-tvext':1,'s-bconsent':1,'s-bappt':1,'s-bsum':1};
+  var FLOW = {'s-offsvc':1,'s-netadd':1,'s-tvoff':1,'s-tvext':1,'s-bconsent':1,'s-bappt':1,'s-bsum':1};
   var leave = document.getElementById('ckleave'), cart = document.getElementById('ckcart');
   if (!leave || !cart) return;
   var left = null, exitTo = null, entry = null;
@@ -9996,77 +10117,111 @@
     }
   });
   lwv.addEventListener('input', function(e){ var f = e.target.closest('.lwvfld'); if (f) f.classList.remove('bad'); });
-  /* Lead - Keress hamar (Digital backlog): contact form in a webview from the "not available at your address" screen */
-  var lw2 = document.createElement('div'); lw2.className = 'lwv lw2';
+  /* Lead forms (Digital backlog) in a webview: A - Keress hamar (contact time of day), B - Keress amikor (a date to call) */
   var TIPS = {mail:'Ide küldjük az értesítéseket és a kapcsolódó információkat.', tel:'Ezen a számon tudunk elérni, ha felvesszük veled a kapcsolatot.',
-              tech:'Válaszd ki a számodra érdekes technológiát.', time:'Válaszd ki, mikor tudunk a legkönnyebben elérni.'};
-  function lbl2(t, k, req){ return '<p class="lwvlbl">'+t+(req ? ' *' : '')+(TIPS[k] ? ' <span class="lwi" data-lwtip="'+k+'"><i class="ti ti-info-circle"></i></span>' : '')+'</p>'+(TIPS[k] ? '<p class="lwtip" data-lwtipt="'+k+'">'+TIPS[k]+'</p>' : ''); }
-  function fld2(t, ph, k, pre){ return lbl2(t, k, true)+'<div class="lwvfld" data-lwk="'+k+'">'+(pre ? '<span class="lwvpre">'+pre+'</span>' : '')+'<input type="'+(k === 'mail' ? 'email' : k === 'tel' ? 'tel' : 'text')+'" placeholder="'+ph+'"></div><p class="lwverr"></p>'; }
+              tech:'Válaszd ki a számodra érdekes technológiát.', time:'Válaszd ki, mikor tudunk a legkönnyebben elérni.',
+              date:'Ha most még nem aktuális számodra, megadhatod, hogy melyik napon keressünk.'};
   var TECH = ['Vezetékes vagy vezeték nélküli internet', 'Vezetékes internet', 'Vezeték nélküli internet'];
   var TIMES = ['Bármikor (8-18 óra között)', 'Minél hamarabb', 'Délelőtt (8-12 óra között)', 'Délután (12-18 óra között)'];
-  lw2.innerHTML = '<div class="lwvbar"><button type="button" data-lwx aria-label="Bezárás"><i class="ti ti-x"></i></button>'
-    + '<div class="lwvurl"><b>(WEBVIEW)</b><span><i class="ti ti-lock"></i> www.yettel.hu</span></div>'
-    + '<button type="button" data-lwre aria-label="Újratöltés"><i class="ti ti-refresh"></i></button></div>'
-    + '<div class="lwvbody"><div class="lwvlogo">Yettel.</div><div class="lwvin">'
-    + '<div class="lwvform"><h2 class="lwvh">Elérhetőségi értesítés</h2>'
-    + '<p class="lwvp">Add meg a kért információkat, és értesítünk, amint elérhető lesz a preferált internetszolgáltatás címeden.</p>'
-    + '<p class="lwvaddr">Szolgáltatási cím: <b data-lw2addr></b></p>'
-    + '<p class="lwvsec">Kapcsolattartási adatok</p>'
-    + fld2('Neved', 'Kovács Péter', 'name') + fld2('E-mail címed', 'pelda@email.com', 'mail') + fld2('Telefonszámod', '20 345 6789', 'tel', '+36')
-    + '<p class="lwvsec" style="margin-top:30px">Érdeklődésed részletei</p>'
-    + lbl2('Melyik szolgáltatás érdekel?', 'tech', true)
-    + '<div class="lwvsel" data-lwsel><button type="button"><span data-lwselv>Technológia kiválasztása</span><i class="ti ti-chevron-down"></i></button><div class="lwvopts">'
-    + TECH.map(function(t, i){ return '<button type="button" data-lwopt="'+i+'">'+t+'</button>'; }).join('') + '</div></div><p class="lwverr">Kérjük, válassz a legördülő menüből!</p>'
-    + '<label class="lwvck"><input type="checkbox" data-lwtv>TV szolgáltatás is érdekel</label>'
-    + lbl2('Melyik napszakban kereshetünk?', 'time')
-    + TIMES.map(function(t, i){ return '<button type="button" class="lwvseg" data-lwtime="'+i+'">'+t+'</button>'; }).join('')
-    + '<p class="lwvcons">Az Értesítést kérek gomb megnyomása után az otthoni internet szolgáltatásainkkal kapcsolatos ajánlatokról és újdonságokról tájékoztatunk. Az adataid kezeléséről az <u>Adatkezelési tájékoztató</u>ban olvashatsz bővebben.</p>'
-    + '<button type="button" class="lwvgo" data-lw2go>Értesítést kérek</button></div>'
-    + '<div class="lwvok"><span class="lwokic"><i class="ti ti-check"></i></span><b>Kérésedet sikeresen rögzítettük</b><p>Kollégánk hamarosan jelentkezik a megadott elérhetőségen. A kérésedet e-mailben is visszaigazoljuk.</p><button type="button" class="lwvgo" data-lw2home>Vissza a főoldalra</button></div>'
-    + '</div><div class="lwvfoot"><div class="lwvflogo">Yettel.</div><p>Yettel</p><span>Rólunk</span><span>Céginformációk</span><span>Sajtóközlemények</span><span>Prosuli</span></div></div>';
-  document.querySelector('.app').appendChild(lw2);
-  var LW2 = {name:/^\S{2,}(\s+\S{2,})+$/, mail:/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, tel:/^\d{9}$/}, lwTech = -1, lwTime = 0;
-  function track(ev, data){ (window.dataLayer = window.dataLayer || []).push(Object.assign({event:ev, source:'erica_lead_keress_hamar'}, data || {})); }
-  function lw2Mark(){
-    Array.prototype.forEach.call(lw2.querySelectorAll('[data-lwtime]'), function(b){ b.classList.toggle('on', +b.getAttribute('data-lwtime') === lwTime); });
-    Array.prototype.forEach.call(lw2.querySelectorAll('[data-lwopt]'), function(b){ b.classList.toggle('on', +b.getAttribute('data-lwopt') === lwTech); });
-    lw2.querySelector('[data-lwselv]').textContent = lwTech < 0 ? 'Technológia kiválasztása' : TECH[lwTech];
-  }
-  function lw2Reset(){
-    lwTech = -1; lwTime = 0; lw2.classList.remove('sent'); lw2.querySelector('.lwvbody').scrollTop = 0;
-    lw2.querySelector('[data-lwtv]').checked = false; lw2.querySelector('[data-lwsel]').classList.remove('open', 'bad');
-    Array.prototype.forEach.call(lw2.querySelectorAll('.lwvfld'), function(f){ f.classList.remove('bad'); f.querySelector('input').value = ''; });
-    Array.prototype.forEach.call(lw2.querySelectorAll('.lwtip'), function(t){ t.classList.remove('on'); });
-    lw2.querySelector('[data-lw2addr]').textContent = (window.yAddr && window.yAddr.address) || '';
-    lw2Mark();
-  }
-  lw2.addEventListener('click', function(e){
-    var t;
-    if (e.target.closest('[data-lwx]')){ lw2.classList.remove('on'); return; }
-    if (e.target.closest('[data-lwre]')){ lw2Reset(); return; }
-    if ((t = e.target.closest('[data-lwtip]'))){ lw2.querySelector('[data-lwtipt="'+t.getAttribute('data-lwtip')+'"]').classList.toggle('on'); return; }
-    if ((t = e.target.closest('[data-lwopt]'))){ lwTech = +t.getAttribute('data-lwopt'); var sl = lw2.querySelector('[data-lwsel]'); sl.classList.remove('open', 'bad'); lw2Mark(); return; }
-    if (e.target.closest('[data-lwsel] > button')){ lw2.querySelector('[data-lwsel]').classList.toggle('open'); return; }
-    if ((t = e.target.closest('[data-lwtime]'))){ lwTime = +t.getAttribute('data-lwtime'); lw2Mark(); return; }
-    if (e.target.closest('[data-lw2home]')){ lw2.classList.remove('on'); var hb = document.querySelector('[data-screen="addr-none"] [data-gohome]'); go(hb ? hb.getAttribute('for') : 's-home'); return; }
-    if (e.target.closest('[data-lw2go]')){
-      var ok = true, first = null;
-      Array.prototype.forEach.call(lw2.querySelectorAll('.lwvfld'), function(f){
-        var k = f.getAttribute('data-lwk'), v = f.querySelector('input').value.trim(), raw = k === 'tel' ? v.replace(/\D/g, '') : v;
-        var msg = !raw ? 'A mező töltése kötelező' : !LW2[k].test(raw) ? 'Helytelen formátum' : '';
-        f.classList.toggle('bad', !!msg); f.nextElementSibling.textContent = msg;
-        if (msg){ ok = false; first = first || f; }
-      });
-      var sl = lw2.querySelector('[data-lwsel]'); sl.classList.toggle('bad', lwTech < 0); if (lwTech < 0){ ok = false; first = first || sl; }
-      if (!ok){ var b = lw2.querySelector('.lwvbody'); b.scrollTop = Math.max(0, first.offsetTop - 80); return; }
-      track('lead', {technology:TECH[lwTech], tv:lw2.querySelector('[data-lwtv]').checked, time:TIMES[lwTime]}); track('consent');
-      lw2.classList.add('sent'); lw2.querySelector('.lwvbody').scrollTop = 0;
+  var MONTHS = ['Január','Február','Március','Április','Május','Június','Július','Augusztus','Szeptember','Október','November','December'];
+  var LW2 = {name:/^\S{2,}(\s+\S{2,})+$/, mail:/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, tel:/^\d{9}$/};
+  function dfmt(d){ return d.getFullYear()+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+('0'+d.getDate()).slice(-2)+'.'; }
+  function lbl2(t, k, req){ return '<p class="lwvlbl">'+t+(req ? ' *' : '')+(TIPS[k] ? ' <span class="lwi" data-lwtip="'+k+'"><i class="ti ti-info-circle"></i></span>' : '')+'</p>'+(TIPS[k] ? '<p class="lwtip" data-lwtipt="'+k+'">'+TIPS[k]+'</p>' : ''); }
+  function fld2(t, ph, k, pre){ return lbl2(t, k, true)+'<div class="lwvfld" data-lwk="'+k+'">'+(pre ? '<span class="lwvpre">'+pre+'</span>' : '')+'<input type="'+(k === 'mail' ? 'email' : k === 'tel' ? 'tel' : 'text')+'" placeholder="'+ph+'"></div><p class="lwverr"></p>'; }
+  function leadForm(cfg){
+    var w = document.createElement('div'); w.className = 'lwv lw2 ' + cfg.cls;
+    w.innerHTML = '<div class="lwvbar"><button type="button" data-lwx aria-label="Bezárás"><i class="ti ti-x"></i></button>'
+      + '<div class="lwvurl"><b>(WEBVIEW)</b><span><i class="ti ti-lock"></i> www.yettel.hu</span></div>'
+      + '<button type="button" data-lwre aria-label="Újratöltés"><i class="ti ti-refresh"></i></button></div>'
+      + '<div class="lwvbody"><div class="lwvlogo">Yettel.</div><div class="lwvin">'
+      + '<div class="lwvform"><h2 class="lwvh">'+cfg.title+'</h2><p class="lwvp">'+cfg.intro+'</p>'
+      + '<p class="lwvaddr">Szolgáltatási cím: <b data-lw2addr></b></p>'
+      + '<p class="lwvsec">Kapcsolattartási adatok</p>'
+      + fld2('Neved', 'Kovács Péter', 'name') + fld2('E-mail címed', 'pelda@email.com', 'mail') + fld2('Telefonszámod', '20 345 6789', 'tel', '+36')
+      + '<p class="lwvsec" style="margin-top:30px">Érdeklődésed részletei</p>'
+      + lbl2('Melyik szolgáltatás érdekel?', 'tech', true)
+      + '<div class="lwvsel" data-lwsel><button type="button"><span data-lwselv>Technológia kiválasztása</span><i class="ti ti-chevron-down"></i></button><div class="lwvopts">'
+      + TECH.map(function(t, i){ return '<button type="button" data-lwopt="'+i+'">'+t+'</button>'; }).join('') + '</div></div><p class="lwverr">Kérjük, válassz a legördülő menüből!</p>'
+      + '<label class="lwvck"><input type="checkbox" data-lwtv>TV szolgáltatás is érdekel</label>'
+      + (cfg.date
+        ? lbl2('Mikortól kereshetünk?', 'date', true) + '<div class="lwvdate" data-lwdate><button type="button"><span data-lwdatev></span><i class="ti ti-calendar"></i></button><div class="lwcal"></div></div><p class="lwverr">A mező töltése kötelező</p>'
+        : lbl2('Melyik napszakban kereshetünk?', 'time') + TIMES.map(function(t, i){ return '<button type="button" class="lwvseg" data-lwtime="'+i+'">'+t+'</button>'; }).join(''))
+      + '<p class="lwvcons">Az Értesítést kérek gomb megnyomása után az otthoni internet szolgáltatásainkkal kapcsolatos ajánlatokról és újdonságokról tájékoztatunk. Az adataid kezeléséről az <u>Adatkezelési tájékoztató</u>ban olvashatsz bővebben.</p>'
+      + '<button type="button" class="lwvgo" data-lw2go>Értesítést kérek</button></div>'
+      + '<div class="lwvok"><span class="lwokic"><i class="ti ti-check"></i></span><b>Kérésedet sikeresen rögzítettük</b><p>Kollégánk hamarosan jelentkezik a megadott elérhetőségen. A kérésedet e-mailben is visszaigazoljuk.</p><button type="button" class="lwvgo" data-lw2home>Vissza a főoldalra</button></div>'
+      + '<div class="lwvfail"><span class="lwokic"><i class="ti ti-x"></i></span><b>Nem sikerült elküldeni a kérésedet</b><p>Kérjük, próbáld meg újra később. Ha a hiba továbbra is fennáll, hívd a 1220-at, kollégánk segít.</p><button type="button" class="lwvgo" data-lw2home>Vissza a főoldalra</button></div>'
+      + '</div><div class="lwvfoot"><div class="lwvflogo">Yettel.</div><p>Yettel</p><span>Rólunk</span><span>Céginformációk</span><span>Sajtóközlemények</span><span>Prosuli</span></div></div>';
+    document.querySelector('.app').appendChild(w);
+    var tech = -1, time = 0, day = null, view = null, today = new Date(); today.setHours(0, 0, 0, 0);
+    function track(ev, data){ (window.dataLayer = window.dataLayer || []).push(Object.assign({event:ev, source:cfg.src}, data || {})); }
+    function cal(){
+      var c = w.querySelector('.lwcal'); if (!c) return;
+      var y = view.getFullYear(), m = view.getMonth(), lead = (new Date(y, m, 1).getDay() + 6) % 7, n = new Date(y, m + 1, 0).getDate(), h = '';
+      for (var k = 0; k < lead; k++) h += '<span></span>';
+      for (var d = 1; d <= n; d++){
+        var dt = new Date(y, m, d), cl = (dt < today ? ' off' : '') + (+dt === +today ? ' now' : '') + (day && +dt === +day ? ' on' : '');
+        h += '<button type="button" class="lwcd'+cl+'" data-lwday="'+d+'">'+d+'</button>';
+      }
+      var first = y === today.getFullYear() && m === today.getMonth();
+      c.innerHTML = '<div class="lwcalh"><b>'+y+' '+MONTHS[m]+'</b><span><button type="button" data-lwm="-1"'+(first ? ' disabled' : '')+'><i class="ti ti-chevron-left"></i></button><button type="button" data-lwm="1"><i class="ti ti-chevron-right"></i></button></span></div>'
+        + '<div class="lwcalg"><i>H</i><i>K</i><i>Sz</i><i>Cs</i><i>P</i><i>Sz</i><i>V</i>' + h + '</div>';
     }
-  });
-  lw2.addEventListener('input', function(e){ var f = e.target.closest('.lwvfld'); if (f) f.classList.remove('bad'); });
+    function mark(){
+      Array.prototype.forEach.call(w.querySelectorAll('[data-lwtime]'), function(b){ b.classList.toggle('on', +b.getAttribute('data-lwtime') === time); });
+      Array.prototype.forEach.call(w.querySelectorAll('[data-lwopt]'), function(b){ b.classList.toggle('on', +b.getAttribute('data-lwopt') === tech); });
+      w.querySelector('[data-lwselv]').textContent = tech < 0 ? 'Technológia kiválasztása' : TECH[tech];
+      var dv = w.querySelector('[data-lwdatev]');
+      if (dv){ dv.textContent = day ? dfmt(day) : dfmt(today); dv.classList.toggle('ph', !day); cal(); }
+    }
+    function reset(){
+      tech = -1; time = 0; day = null; view = new Date(today);
+      w.classList.remove('sent', 'fail'); w.querySelector('.lwvbody').scrollTop = 0;
+      w.querySelector('[data-lwtv]').checked = false; w.querySelector('[data-lwsel]').classList.remove('open', 'bad');
+      var dd = w.querySelector('[data-lwdate]'); if (dd) dd.classList.remove('open', 'bad');
+      Array.prototype.forEach.call(w.querySelectorAll('.lwvfld'), function(f){ f.classList.remove('bad'); f.querySelector('input').value = ''; });
+      Array.prototype.forEach.call(w.querySelectorAll('.lwtip'), function(t){ t.classList.remove('on'); });
+      w.querySelector('[data-lw2addr]').textContent = (window.yAddr && window.yAddr.address) || '';
+      mark();
+    }
+    w.addEventListener('click', function(e){
+      var t;
+      if (e.target.closest('[data-lwx]')){ w.classList.remove('on'); return; }
+      if (e.target.closest('[data-lwre]')){ reset(); return; }
+      if ((t = e.target.closest('[data-lwtip]'))){ w.querySelector('[data-lwtipt="'+t.getAttribute('data-lwtip')+'"]').classList.toggle('on'); return; }
+      if ((t = e.target.closest('[data-lwopt]'))){ tech = +t.getAttribute('data-lwopt'); w.querySelector('[data-lwsel]').classList.remove('open', 'bad'); mark(); return; }
+      if (e.target.closest('[data-lwsel] > button')){ w.querySelector('[data-lwsel]').classList.toggle('open'); return; }
+      if ((t = e.target.closest('[data-lwtime]'))){ time = +t.getAttribute('data-lwtime'); mark(); return; }
+      if ((t = e.target.closest('[data-lwm]'))){ if (!t.disabled){ view = new Date(view.getFullYear(), view.getMonth() + +t.getAttribute('data-lwm'), 1); cal(); } return; }
+      if ((t = e.target.closest('[data-lwday]'))){ if (!t.classList.contains('off')){ day = new Date(view.getFullYear(), view.getMonth(), +t.getAttribute('data-lwday')); var dd = w.querySelector('[data-lwdate]'); dd.classList.remove('open', 'bad'); mark(); } return; }
+      if (e.target.closest('[data-lwdate] > button')){ w.querySelector('[data-lwdate]').classList.toggle('open'); return; }
+      if (e.target.closest('[data-lw2home]')){ w.classList.remove('on'); go(window.yAddr && window.yAddr.guest ? 's-newcust' : 's-home'); return; }
+      if (e.target.closest('[data-lw2go]')){
+        var ok = true, first = null;
+        Array.prototype.forEach.call(w.querySelectorAll('.lwvfld'), function(f){
+          var k = f.getAttribute('data-lwk'), v = f.querySelector('input').value.trim(), raw = k === 'tel' ? v.replace(/\D/g, '') : v;
+          var msg = !raw ? 'A mező töltése kötelező' : !LW2[k].test(raw) ? 'Helytelen formátum' : '';
+          f.classList.toggle('bad', !!msg); f.nextElementSibling.textContent = msg;
+          if (msg){ ok = false; first = first || f; }
+        });
+        var sl = w.querySelector('[data-lwsel]'); sl.classList.toggle('bad', tech < 0); if (tech < 0){ ok = false; first = first || sl; }
+        var dd = w.querySelector('[data-lwdate]'); if (dd){ dd.classList.toggle('bad', !day); if (!day){ ok = false; first = first || dd; } }
+        if (!ok){ w.querySelector('.lwvbody').scrollTop = Math.max(0, first.offsetTop - 80); return; }
+        /* demo: an e-mail address containing "hiba" shows the failed submission */
+        if (/hiba/i.test(w.querySelector('[data-lwk="mail"] input').value)){ w.classList.add('fail'); w.querySelector('.lwvbody').scrollTop = 0; return; }
+        var data = {technology:TECH[tech], tv:w.querySelector('[data-lwtv]').checked}; if (cfg.date) data.date = dfmt(day); else data.time = TIMES[time];
+        track('lead', data); track('consent');
+        w.classList.add('sent'); w.querySelector('.lwvbody').scrollTop = 0;
+      }
+    });
+    w.addEventListener('input', function(e){ var f = e.target.closest('.lwvfld'); if (f) f.classList.remove('bad'); });
+    return function open(){ reset(); w.classList.add('on'); track('page_visit'); };
+  }
+  var openLeadA = leadForm({cls:'lwa', src:'erica_lead_keress_hamar', title:'Elérhetőségi értesítés', intro:'Add meg a kért információkat, és értesítünk, amint elérhető lesz a preferált internetszolgáltatás címeden.'});
+  var openLeadB = leadForm({cls:'lwb', src:'erica_lead_keress_amikor', date:true, title:'Emlékeztető beállítása', intro:'Nem most szeretnéd megvásárolni a terméket? Rögzítsd adataid és az időpontot, amikor az otthoni internet megvásárlását tervezed, mi szólni fogunk, hogy ne felejtsd el.'});
   document.addEventListener('click', function(e){
-    if (!e.target.closest || !e.target.closest('[data-lw2open]')) return;
-    lw2Reset(); lw2.classList.add('on'); track('page_visit');
+    if (!e.target.closest) return;
+    if (e.target.closest('[data-lw2open]')) openLeadA();
+    else if (e.target.closest('[data-lwbopen]')) openLeadB();
   });
   /* "Másik címet adok meg" goes back to the address search the journey came from */
   document.addEventListener('change', function(e){
