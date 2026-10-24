@@ -2463,6 +2463,29 @@
   .bhtags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px !important; }
   .bhtags em{ padding:1px 8px; border-radius:999px; background:#EEF1F4; font-style:normal; font-size:10.5px; color:var(--navy); }
   .bhtags em.bhname{ background:#E6F7B8; font-weight:700; }
+  /* Non-telco SAP: "Egyéb számlák" tab on Számlatörténet */
+  .bhtabs{ display:none; grid-template-columns:1fr 1fr; gap:4px; margin:16px 0 0; padding:4px; border-radius:999px; background:#E3E8EE; }
+  .app:not(.foff-nontelco) .bhtabs{ display:grid; }
+  .bhtabs button{ padding:9px; border:none; border-radius:999px; background:none; font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .bhtabs button.on{ background:#09223D; color:#fff; }
+  .bhoth{ display:none; }
+  .bhscreen.oth .bhoth{ display:block; }
+  .bhscreen.oth > .bhfilt, .bhscreen.oth > .bhlist{ display:none; }
+  .othh{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 0 10px; border-bottom:1px solid #EEF1F4; font-size:12.5px; color:var(--navy); }
+  .othtip{ display:none; margin:10px 0 4px; padding:12px 14px; border-radius:8px; background:var(--navy); font-size:12px; line-height:1.45; color:#fff; }
+  .othtip b{ display:block; margin-bottom:4px; }
+  .othtip.on{ display:block; }
+  .othlnk{ font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; white-space:nowrap; cursor:pointer; }
+  .othshop{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--navy); white-space:nowrap; cursor:pointer; }
+  .othshop i{ font-size:16px; color:var(--mid); }
+  .othsk .bhrow > *{ visibility:hidden; }
+  .othsk .bhrow{ position:relative; cursor:default; }
+  .othsk .bhrow::before{ content:''; position:absolute; left:0; top:50%; width:22px; height:22px; margin-top:-11px; border-radius:50%; background:#E6EAF0; }
+  .othsk .bhrow::after{ content:''; position:absolute; left:36px; top:16px; width:46%; height:40px; border-radius:6px; background:linear-gradient(#E6EAF0 0 10px, transparent 10px 15px, #E6EAF0 15px 25px, transparent 25px 30px, #E6EAF0 30px 40px); }
+  .othmore{ display:flex; justify-content:center; padding:14px 0; }
+  .othmore[hidden]{ display:none; }
+  .othmore span{ width:20px; height:20px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
+  .bfov[data-mode="oth"] .bfm-bill, .bfov[data-mode="oth"] .bfm-doc, .bfov[data-mode="oth"] .bfm-doc + hr{ display:none; }
   /* ===== Számla részletei ===== */
   .bdtop{ margin-top:18px; padding:16px; border-radius:16px; background:#FFFFFF; }
   .bdtr{ display:flex; align-items:center; justify-content:space-between; }
@@ -7606,8 +7629,19 @@
       <div style="width:42px"></div>
     </div>
     <div class="bhsel" data-bhsel><i class="ti ti-layout-grid" data-bhselic></i><span class="bhselt"><small data-bhsels></small><b data-bhselb>Összes előfizetés</b></span><i class="ti ti-chevron-down"></i></div>
+    <div class="bhtabs" data-bhtabs><button type="button" class="on" data-bhtab="havi">Havi számlák</button><button type="button" data-bhtab="oth">Egyéb számlák</button></div>
     <div class="bhfilt"><span class="bhfbtn" data-bhfilt>Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
     <div class="bhlist" data-bhlist></div>
+    <!-- Non-telco SAP (Digital backlog): bills independent of the monthly one -->
+    <div class="bhoth">
+      <div class="bhfilt"><span class="bhfbtn" data-othfilt>Szűrés és rendezés <i class="ti ti-adjustments-horizontal"></i></span></div>
+      <div class="bhlist othlist">
+        <div class="othh"><span>A havi számládtól független számláid</span><span class="relinfo" data-othtip aria-label="Információ"><i class="ti ti-info-circle"></i></span></div>
+        <div class="othtip" data-othtipt><b>Milyen számlákat találsz itt?</b>A havi számládtól független számláid látod itt. Például készülékvásárlás, javítás, előlegbefizetés, ügyintézési díjak és egyéb díjakat tartalmazó számlák</div>
+        <div data-othrows></div>
+        <div class="othmore" data-othmore><span></span></div>
+      </div>
+    </div>
   </div>
 
   <!-- ============= SZÁMLA RÉSZLETEI ============= -->
@@ -8646,7 +8680,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback],[data-relinfo],#relpop,[data-szopen],[data-szedit],[data-szback],.szscreen,[data-szbirth],.szinfo,[data-hropen],.hrscreen,.hrpdf,.hrinfo';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback],[data-relinfo],#relpop,[data-szopen],[data-szedit],[data-szback],.szscreen,[data-szbirth],.szinfo,[data-hropen],.hrscreen,.hrpdf,.hrinfo,[data-bhtab],[data-othtip],[data-othshop],[data-othopen],[data-othfilt]';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9314,7 +9348,7 @@
 
   /* ---------- filter overlay ---------- */
   var ov = $('#bfov'), work = null, active = null, fmode = 'bill';
-  function src(){ return fmode === 'doc' ? window.yDocs.filter : api; }
+  function src(){ return fmode === 'doc' ? window.yDocs.filter : fmode === 'oth' ? window.yOther.filter : api; }
   var pick = $('[data-bfpick]'), err = $('[data-bferr]'), go = $('[data-bfgo]');
   var cols = {m:$('[data-col="m"]', pick), d:$('[data-col="d"]', pick), y:$('[data-col="y"]', pick)};
   var Y0 = api.today.getFullYear() - 10, Y1 = api.today.getFullYear();
@@ -9341,6 +9375,15 @@
   }
   function validate(){
     var f = work, msg = '';
+    if (fmode === 'oth'){
+      /* Egyéb számlák: start after end blocks Szűrés, older than 8 years only warns */
+      var m8 = new Date(api.today), bad = f.from && f.to && f.from > f.to; m8.setFullYear(m8.getFullYear() - 8);
+      msg = bad ? 'A kezdődátum nem lehet később mint a végdátum' : f.from && f.from < m8 ? 'A számlák legfeljebb 8 évre visszamenőleg érhetők el. Kérjük, módosítsd a kiválasztott időszakot.' : '';
+      err.textContent = msg;
+      $$('.bfdin').forEach(function(b){ b.classList.toggle('bad', bad && b.getAttribute('data-bfd') === 'from'); });
+      go.classList.toggle('off', !!bad);
+      return;
+    }
     if (fmode === 'doc'){
       if (f.from && f.to && f.from > f.to) msg = 'A kezdődátum nem lehet később mint a végdátum';
       err.textContent = msg;
@@ -9416,6 +9459,7 @@
     if (!e.target.closest) return;
     if (e.target.closest('[data-bhfilt]')){ openOv('bill'); return; }
     if (e.target.closest('[data-dcfilt]')){ openOv('doc'); return; }
+    if (e.target.closest('[data-othfilt]')){ openOv('oth'); return; }
     if (e.target.closest('[data-bhsel]')){ openSheet('bill'); return; }
     if (e.target.closest('[data-dcsel]')){ openSheet('doc'); return; }
     if (e.target.closest('[data-bhclose]')){ sheet.classList.remove('on'); return; }
@@ -10611,7 +10655,7 @@
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
   /* already built in the demo: marked with a "Kész" tag */
-  var DONE = {leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, fullafter:1, fulldash:1, fullcsom:1, fullmegt:1};
+  var DONE = {leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, fullafter:1, fulldash:1, fullcsom:1, fullmegt:1};
   /* features on the same page move together */
   var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom', netpajzs:'gyermek', gyermek:'netpajzs'};
   var app = document.querySelector('.app'), pop = document.getElementById('devlist');
@@ -11222,6 +11266,74 @@
     if (ld) ld.classList.add('on');
     setTimeout(function(){ pdf.classList.add('on'); if (ld) ld.classList.remove('on'); if (t) t.textContent = old; }, 1600);
   });
+})();
+</script>
+<script>
+/* Non-telco SAP (Digital backlog): Számlatörténet "Egyéb számlák" tab — skeleton while loading, more rows on scroll,
+   own filter (sort + period), paper bills can only be got in a shop, electronic ones open as a PDF */
+(function(){
+  var sc = document.querySelector('[data-screen="bill-hist"]'); if (!sc) return;
+  var rowsEl = sc.querySelector('[data-othrows]'), more = sc.querySelector('[data-othmore]');
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  function f2(n){ return ('0'+n).slice(-2); }
+  function fmtD(d){ return d.getFullYear()+'.'+f2(d.getMonth()+1)+'.'+f2(d.getDate()); }
+  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' Ft'; }
+  var AMT = [18765, 4990, 129990, 2500, 7990, 35000, 1990, 64990, 3500, 12490, 990, 24990, 5990, 89990, 1500, 15990, 2990, 45990];
+  var ALL = AMT.map(function(a, i){ var d = new Date(today); d.setDate(d.getDate() - 9 - i * 26);
+    return {amt:a, due:d, no:'1234'+f2(56 + i)+'76-876543'+f2(23 + i), paper:i === 0 || i === 7}; });
+  function def(){ var fr = new Date(today); fr.setFullYear(fr.getFullYear() - 1); return {sort:'new', from:fr, to:new Date(today)}; }
+  var F = def(), list = [], shown = 0, timer = null;
+  window.yOther = {filter:{get:function(){ return F; }, set:function(f){ F = {sort:f.sort, from:f.from, to:f.to}; load(); }, def:def}};
+  function row(b, i){
+    return '<div class="bhrow othrow"><i class="ti ti-circle-check bhok"></i><div class="bhtx"><b>'+fmt(b.amt)+'</b><span>Határidő: '+fmtD(b.due)+'</span><small>'+b.no+'</small><span class="bhtags"><em>'+(b.paper ? 'Papíralapú' : 'Elektronikus')+'</em></span></div>'
+      + (b.paper ? '<span class="othshop" data-othshop>Csak üzletben <i class="ti ti-info-circle"></i></span>' : '<span class="othlnk" data-othopen="'+i+'">Megnyitás</span>') + '</div>';
+  }
+  function paint(){ rowsEl.innerHTML = list.slice(0, shown).map(row).join('') || '<p class="xmempty" style="padding:14px 0">Ebben az időszakban nincs egyéb számlád.</p>'; more.hidden = shown >= list.length; }
+  function load(){
+    clearTimeout(timer);
+    list = ALL.filter(function(b){ return (!F.from || b.due >= F.from) && (!F.to || b.due <= F.to); });
+    list.sort(function(a, b){ return F.sort === 'old' ? a.due - b.due : b.due - a.due; });
+    shown = 0; rowsEl.classList.add('othsk'); rowsEl.innerHTML = new Array(8).join('<div class="bhrow"><span>.</span></div>'); more.hidden = false;
+    timer = setTimeout(function(){ rowsEl.classList.remove('othsk'); shown = Math.min(8, list.length); paint(); }, 1100);
+  }
+  sc.addEventListener('scroll', function(){
+    if (!sc.classList.contains('oth') || more.hidden || timer && rowsEl.classList.contains('othsk')) return;
+    if (sc.scrollTop + sc.clientHeight < sc.scrollHeight - 40 || sc._othBusy) return;
+    sc._othBusy = true;
+    setTimeout(function(){ sc._othBusy = false; shown = Math.min(list.length, shown + 5); paint(); }, 800);
+  }, {passive:true});
+  function tab(t){
+    sc.classList.toggle('oth', t === 'oth');
+    Array.prototype.forEach.call(sc.querySelectorAll('[data-bhtab]'), function(b){ b.classList.toggle('on', b.getAttribute('data-bhtab') === t); });
+    if (t === 'oth') load();
+  }
+  sc.addEventListener('click', function(e){
+    var t = e.target.closest('[data-bhtab]'); if (t){ tab(t.getAttribute('data-bhtab')); return; }
+    if (e.target.closest('[data-othtip]')){ sc.querySelector('[data-othtipt]').classList.toggle('on'); return; }
+    if (e.target.closest('[data-othshop]')){ paper.classList.add('on'); return; }
+    var o = e.target.closest('[data-othopen]'); if (o) openPdf(list[+o.getAttribute('data-othopen')]);
+  });
+  /* every visit starts on Havi számlák; switching the backlog item off goes back there too */
+  document.addEventListener('change', function(e){ if (e.target.id === 's-billhist' && e.target.checked) tab('havi'); });
+  document.addEventListener('yfeat', function(){ if (window.yFeat && !window.yFeat('nontelco')) tab('havi'); });
+  var paper = document.createElement('div'); paper.className = 'xsheet hrinfo';
+  paper.innerHTML = '<div class="xsbg" data-ppx></div><div class="xspanel"><span class="xsgrab"></span><div class="xshead"><p>Ez a számla csak papíralapon érhető el</p><button type="button" class="xsx" data-ppx aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<p style="margin-top:14px">A számla papíralapú, ezért az appban sajnos nem tudod megnyitni. Ha szeretnél másolatot kérni, hívd a 1220-at, és postán elküldjük neked. A számla másolatát személyesen is kérheted bármelyik üzletünkben.</p>'
+    + '<button type="button" class="xsgo" data-ppx>Értem</button></div>';
+  paper.addEventListener('click', function(e){ if (e.target.closest('[data-ppx]')) paper.classList.remove('on'); });
+  document.querySelector('.app').appendChild(paper);
+  var pdf = document.createElement('div'); pdf.className = 'hrpdf';
+  pdf.innerHTML = '<p class="hrpdfh">Számla</p><div class="hrdoc"><span class="hrbig">PDF</span><p class="hrmeta" data-opm1></p><p class="hrmeta" data-opm2></p><p class="hrmeta" data-opm3></p></div><button type="button" class="fsbtn" data-opx>Bezár</button>';
+  pdf.querySelector('[data-opx]').addEventListener('click', function(){ pdf.classList.remove('on'); });
+  document.querySelector('.app').appendChild(pdf);
+  function openPdf(b){
+    if (!b) return;
+    pdf.querySelector('[data-opm1]').textContent = 'Számlaszám: ' + b.no;
+    pdf.querySelector('[data-opm2]').textContent = 'Határidő: ' + fmtD(b.due);
+    pdf.querySelector('[data-opm3]').textContent = 'Végösszeg: ' + fmt(b.amt);
+    var ld = document.querySelector('.adload'); if (ld) ld.classList.add('on');
+    setTimeout(function(){ pdf.classList.add('on'); if (ld) ld.classList.remove('on'); }, 1200);
+  }
 })();
 </script>
 </body>
