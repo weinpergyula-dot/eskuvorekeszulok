@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Phone, Mail, Globe, MessageCircle, FileText } from "lucide-react";
+import { useState, useSyncExternalStore } from "react";
+import { Phone, Mail, Globe, MessageCircle, FileText, Send } from "lucide-react";
 import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
-import { ChatLink, MaskedContact } from "@/components/providers/masked-contact";
+import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
+import { quoteHrefFor } from "@/lib/quote-href";
+import { WebsiteLink } from "@/components/providers/website-link";
 import type { Provider } from "@/lib/types";
 
 type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
@@ -16,17 +18,23 @@ function ContactItem({
   href,
   external = false,
   fullyHidden = false,
+  website = false,
 }: {
   icon: React.ReactNode;
   value: string;
   href: string;
   external?: boolean;
   fullyHidden?: boolean;
+  /** Weboldal: egy sorban, a vége kipontozva; Instagram/Facebook névvel. */
+  website?: boolean;
 }) {
   return (
-    <div className="flex gap-3 items-center">
+    <div className="flex gap-3 items-center min-w-0">
       <span className="shrink-0">{icon}</span>
       <MaskedContact value={value} fullyHidden={fullyHidden}>
+        {website ? (
+          <WebsiteLink value={value} className="min-w-0 truncate text-base text-gray-900 hover:text-[#84AAA6] cursor-pointer" />
+        ) : (
         <a
           href={href}
           target={external ? "_blank" : undefined}
@@ -35,6 +43,7 @@ function ContactItem({
         >
           {value}
         </a>
+        )}
       </MaskedContact>
     </div>
   );
@@ -50,18 +59,21 @@ const HASH_TO_TAB: Record<string, Tab> = {
   arak: "pricing",
 };
 
+const subscribeHash = (onChange: () => void) => {
+  window.addEventListener("hashchange", onChange);
+  return () => window.removeEventListener("hashchange", onChange);
+};
+const hashTabSnapshot = () => HASH_TO_TAB[window.location.hash.replace("#", "")] ?? null;
+
 export function ProviderTabs({ provider }: { provider: Provider }) {
-  const [active, setActive] = useState<Tab>("about");
+  // The URL hash (#reviews, #arak…) picks the opening tab; once the user
+  // clicks a tab, that choice wins. On the server there is no hash.
+  const hashTab = useSyncExternalStore(subscribeHash, hashTabSnapshot, () => null);
+  const [chosen, setActive] = useState<Tab | null>(null);
+  const active: Tab = chosen ?? hashTab ?? "about";
 
   const reviewCount = provider.review_count ?? 0;
   const hasGallery = (provider.gallery_urls ?? []).length > 0;
-
-  // Switch to tab based on URL hash on mount
-  useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    const tab = HASH_TO_TAB[hash];
-    if (tab) setActive(tab);
-  }, []);
 
   const hasPricing = !!(provider.pricing_pdf_url || provider.pricing_text);
 
@@ -128,6 +140,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                     icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
                     value={provider.phone}
                     href={`tel:${provider.phone}`}
+                    fullyHidden
                   />
                 )}
                 {provider.email && (
@@ -145,16 +158,26 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                     href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
                     external
                     fullyHidden
+                    website
                   />
                 )}
               </div>
               <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="w-full flex items-center justify-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
               </ChatLink>
+              {/* Ajánlatkérés – ugyanúgy előtöltve, mint a szolgáltatói kártyáról */}
+              <LoginGateLink
+                href={quoteHrefFor(provider)}
+                message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+              >
+                <Send className="h-4 w-4" strokeWidth={1.5} />
+                Ajánlatkérés
+              </LoginGateLink>
             </div>
           </div>
         </div>

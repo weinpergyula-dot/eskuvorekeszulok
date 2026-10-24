@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 // Standalone paths get NO site chrome (navbar/footer/announcement/cookie) —
 // they render bare. The wedding site keeps its full layout everywhere else.
-const BARE_PREFIXES = ["/trade", "/yettel_web", "/zso-es-szili", "/meghivo-silver", "/meghivo-premium"];
+const BARE_PREFIXES = ["/trade", "/yettel_web", "/zso-es-szili", "/meghivo-silver", "/meghivo-gold"];
 
 export function ConditionalChrome({
   announcement,

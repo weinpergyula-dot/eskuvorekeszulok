@@ -97,7 +97,7 @@ export default function PrivacyPage() {
             <li>Látogatás időpontja</li>
             <li>Megnyitott oldalak</li>
           </LegalUl>
-          <LegalP>A főoldal látogatottságának méréséhez az IP-címet <strong>nem tároljuk</strong>: abból csak egy visszafejthetetlen lenyomat (hash) készül, amelyből naponta egyetlen bejegyzés keletkezik. Ez kizárólag az egyedi látogatók megszámolására szolgál, a látogató személyének azonosítására nem alkalmas.</LegalP>
+          <LegalP>A főoldal látogatottságának méréséhez az IP-címet <strong>nem tároljuk</strong>: abból csak egy visszafejthetetlen lenyomat (hash) készül, amelyből naponta egyetlen bejegyzés keletkezik. Ez az egyedi látogatók megszámolására szolgál. A bejegyzés mellett rögzítjük az eszköz típusát (asztali gép, iOS vagy Android), és ha a látogató be van jelentkezve, a felhasználói fiókját is.</LegalP>
           <LegalP>A Weboldal jelenleg <strong>csak a működéshez feltétlenül szükséges (essential) cookie-kat</strong> használja. A részleteket a{" "}
             <Link href="/cookies" className="text-[#84AAA6] underline">Cookie szabályzat</Link> tartalmazza.
           </LegalP>

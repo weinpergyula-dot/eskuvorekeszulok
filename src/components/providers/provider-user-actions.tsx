@@ -21,7 +21,12 @@ export function ProviderUserActions({ providerId, providerUserId, variant }: Pro
 
   useEffect(() => {
     const supabase = createClient();
-    if (!supabase) { setState("guest"); return; }
+    if (!supabase) {
+      // Without a client nobody is logged in; set it asynchronously like
+      // the auth check below so the effect body stays side-effect only.
+      queueMicrotask(() => setState("guest"));
+      return;
+    }
 
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) { setState("guest"); return; }

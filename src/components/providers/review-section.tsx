@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Star, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -144,20 +144,21 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const router = useRouter();
 
-  const loadReviews = async () => {
+  const loadReviews = useCallback(async () => {
     const res = await fetch(`/api/providers/${providerId}/reviews`);
     const data = await res.json();
     setReviews(Array.isArray(data) ? data : []);
     setLoading(false);
-  };
+  }, [providerId]);
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => {
       setLoggedIn(!!data.user);
       setUserId(data.user?.id ?? null);
     });
-    loadReviews();
-  }, []);
+    // The fetch resolves later, so the state updates happen asynchronously.
+    void Promise.resolve().then(loadReviews);
+  }, [loadReviews]);
 
   const myReview = reviews.find((r) => r.visitor_id === userId) ?? null;
   const otherReviews = reviews.filter((r) => r.visitor_id !== userId);

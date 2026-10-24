@@ -69,10 +69,20 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
+    /* Programozott görgetés (pl. a főoldali banner gombja) idejére a fejléc
+       összehúzva marad, hogy a cél pontosan beálljon: egy javító, felfelé
+       irányuló lépés különben kinyitná, és elcsúsztatná a tartalmat. */
+    let lockUntil = 0;
+    const onLock = (e: Event) => {
+      lockUntil = Date.now() + ((e as CustomEvent<number>).detail ?? 2500);
+      if (window.innerWidth < 768) setShrink(true);
+    };
+    window.addEventListener("eskuvo:nav-hold-shrink", onLock);
     const onScroll = () => {
       const y = window.scrollY;
       // Shrink only on mobile (<md). On desktop the navbar keeps its full size.
       if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
+      if (Date.now() < lockUntil) { lastScrollY.current = y; return; }
       // Only shrink while scrolling DOWN; expand again on scroll up or near top.
       if (y < 80) setShrink(false);
       else if (y > lastScrollY.current + 4) setShrink(true);
@@ -83,6 +93,7 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     return () => {
+      window.removeEventListener("eskuvo:nav-hold-shrink", onLock);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
@@ -466,7 +477,7 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/auth/register">
-                  <Button className="text-base bg-transparent text-[#C65EA5] border border-[#C65EA5] hover:bg-[#C65EA5]/10 hover:text-[#C65EA5]">Regisztráció</Button>
+                  <Button className="text-base border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80 hover:text-[#B8925A]">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
                   <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
@@ -530,7 +541,7 @@ export function Navbar() {
           <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
-              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-[#C65EA5] border border-[#C65EA5] rounded-lg py-2 hover:bg-[#C65EA5]/10 transition-colors">
+              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium rounded-lg py-2 transition-colors border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80">
                 Regisztráció
               </Link>
               <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white bg-[#84AAA6] rounded-lg py-2 hover:bg-[#6B8E8A] transition-colors">

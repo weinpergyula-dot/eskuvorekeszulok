@@ -10,16 +10,18 @@ export function GalleryLightbox({ urls, alt }: { urls: string[]; alt: string }) 
   const prev = () => setOpen((i) => (i === null ? null : (i - 1 + urls.length) % urls.length));
   const next = () => setOpen((i) => (i === null ? null : (i + 1) % urls.length));
 
+  const isOpen = open !== null;
   useEffect(() => {
-    if (open === null) return;
+    if (!isOpen) return;
+    const step = (d: number) => setOpen((i) => (i === null ? null : (i + d + urls.length) % urls.length));
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") prev();
-      else if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") step(-1);
+      else if (e.key === "ArrowRight") step(1);
       else if (e.key === "Escape") setOpen(null);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [isOpen, urls.length]);
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;

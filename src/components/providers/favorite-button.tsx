@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Heart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,11 @@ export function FavoriteButton({
   const [loading, setLoading] = useState(false);
 
   // Sync when parent loads favorites asynchronously after initial render
-  useEffect(() => { setLiked(initialLiked); }, [initialLiked]);
+  const [prevInitialLiked, setPrevInitialLiked] = useState(initialLiked);
+  if (initialLiked !== prevInitialLiked) {
+    setPrevInitialLiked(initialLiked);
+    setLiked(initialLiked);
+  }
   const [tooltipRect, setTooltipRect] = useState<DOMRect | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -61,8 +65,8 @@ export function FavoriteButton({
         className={cn(
           "flex items-center justify-center transition-colors cursor-pointer disabled:cursor-default",
           iconOnly
-            ? "w-8 h-8 rounded-full border border-gray-200 bg-white/80 hover:bg-[#FAF0F7]"
-            : "gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#FAF0F7]"
+            ? "w-8 h-8 rounded-full border border-gray-200 bg-white/80 hover:bg-[#F8F2E8]"
+            : "gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#F8F2E8]"
         )}
       >
         {loading ? (

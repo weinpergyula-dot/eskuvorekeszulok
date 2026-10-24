@@ -1,0 +1,91 @@
+import { NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/admin-guard";
+import { DEFAULT_TRACKED_PATH, TRACKED_PATHS } from "@/lib/tracked-paths";
+
+export const dynamic = "force-dynamic";
+
+interface VisitRow {
+  id: string;
+  first_seen_at: string;
+  last_seen_at: string;
+  hit_count: number;
+  device: string | null;
+  client?: string | null;
+  user_id: string | null;
+}
+
+/** A mai nap az Europe/Budapest zónában (YYYY-MM-DD), mint a visit_date. */
+function todayInBudapest(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Budapest" }).format(new Date());
+}
+
+/**
+ * A mai látogatók listája a kért oldalra: eszköz, időpont, és ha be
+ * volt lépve, a felhasználó neve. A 20261018_page_visits_device_user.sql
+ * migráció előtt az eszköz és a felhasználó üres.
+ */
+export async function GET(req: Request) {
+  const { error: forbidden } = await requireAdmin();
+  if (forbidden) return forbidden;
+
+  const requested = new URL(req.url).searchParams.get("path");
+  const path = requested && TRACKED_PATHS.includes(requested) ? requested : DEFAULT_TRACKED_PATH;
+  const admin = createAdminClient();
+  const today = todayInBudapest();
+
+  // A régebbi migrációk után egyes oszlopok még hiányoznak – ilyenkor
+  // a kevesebb oszlopos lekérdezéssel próbálkozunk.
+  const query = (columns: string) =>
+    admin
+      .from("page_visits")
+      .select(columns)
+      .eq("path", path)
+      .eq("visit_date", today)
+      .order("last_seen_at", { ascending: false });
+  let res = await query("id, first_seen_at, last_seen_at, hit_count, device, client, user_id");
+  if (res.error) res = await query("id, first_seen_at, last_seen_at, hit_count, device, user_id");
+  if (res.error) res = await query("id, first_seen_at, last_seen_at, hit_count");
+  if (res.error) return NextResponse.json({ error: res.error.message }, { status: 500 });
+
+  /* Egy belépett felhasználó egyszer szerepel, akkor is, ha napközben
+     IP-t váltott (pl. wifiről mobilnetre) és így több sora lett. A sorok
+     a legutóbbi látogatás szerint jönnek, így az összevont sor eszköze a
+     legutóbbi. */
+  const rows: VisitRow[] = [];
+  const byUser = new Map<string, VisitRow>();
+  for (const r of (res.data ?? []) as unknown as VisitRow[]) {
+    const merged = r.user_id ? byUser.get(r.user_id) : undefined;
+    if (!merged) {
+      const copy = { ...r };
+      rows.push(copy);
+      if (r.user_id) byUser.set(r.user_id, copy);
+      continue;
+    }
+    if (r.first_seen_at < merged.first_seen_at) merged.first_seen_at = r.first_seen_at;
+    merged.hit_count = Number(merged.hit_count ?? 1) + Number(r.hit_count ?? 1);
+    merged.device ??= r.device;
+    merged.client ??= r.client;
+  }
+  const userIds = [...new Set(rows.map((r) => r.user_id).filter((id): id is string => !!id))];
+  const profiles = new Map<string, { full_name: string | null; email: string | null; role: string | null }>();
+  if (userIds.length > 0) {
+    const { data } = await admin.from("profiles").select("user_id, full_name, email, role").in("user_id", userIds);
+    for (const p of data ?? []) profiles.set(p.user_id, p);
+  }
+
+  return NextResponse.json({
+    visits: rows.map((r) => {
+      const p = r.user_id ? profiles.get(r.user_id) : undefined;
+      return {
+        id: r.id,
+        firstSeenAt: r.first_seen_at,
+        lastSeenAt: r.last_seen_at,
+        hits: Number(r.hit_count ?? 1),
+        device: r.device ?? null,
+        client: r.client ?? null,
+        user: r.user_id ? { id: r.user_id, name: p?.full_name || p?.email || "Ismeretlen fiók", role: p?.role ?? null } : null,
+      };
+    }),
+  });
+}

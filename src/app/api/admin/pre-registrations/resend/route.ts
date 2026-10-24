@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Nem sikerült a megerősítő link generálása." }, { status: 500 });
     }
 
-    const confirmLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=magiclink`;
+    const confirmLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=magiclink&email=${encodeURIComponent(email)}`;
 
     const result = await sendEmail({
       to: email,

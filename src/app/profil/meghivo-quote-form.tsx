@@ -26,7 +26,7 @@ type Package = { id: string; label: string; note?: string; subject: string };
 const PACKAGES: readonly Package[] = [
   { id: "BASIC", label: "BASIC", note: "14 900 Ft", subject: "BASIC" },
   { id: "SILVER", label: "SILVER", note: "24 900 Ft", subject: "SILVER" },
-  { id: "PREMIUM", label: "PREMIUM", note: "39 900 Ft", subject: "PREMIUM" },
+  { id: "GOLD", label: "GOLD", note: "39 900 Ft", subject: "GOLD" },
   /* Egyedi igény: itt nincs előre kötött extra-lista, a részleteket a
      megjegyzésben írja le a látogató. */
   { id: "EGYEDI", label: "Egyedi ajánlatot kérek", subject: "egyedi ajánlat" },
@@ -52,7 +52,7 @@ const EXTRAS_BY_PACKAGE: Record<string, readonly Extra[]> = {
     { label: "Saját háttérzene feltöltése", price: EXTRA_PRICE },
     { label: "Vendéglista exportálása", price: EXTRA_PRICE },
   ],
-  PREMIUM: [
+  GOLD: [
     { label: "Egyedi illusztráció és monogram", price: EXTRA_PRICE },
     { label: "Videós köszöntő beágyazása", price: EXTRA_PRICE },
     { label: "Személyes konzultáció, saját designer", price: "+10 000 Ft / óra" },

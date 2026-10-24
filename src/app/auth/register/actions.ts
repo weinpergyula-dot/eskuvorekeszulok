@@ -127,7 +127,7 @@ export async function sendConfirmationEmailAction(
       return { error: "Nem sikerült a megerősítő email generálása." };
     }
 
-    const confirmLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=magiclink`;
+    const confirmLink = `${origin}/auth/callback?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=magiclink&email=${encodeURIComponent(email)}`;
 
     const result = await sendEmail({
       to: email,

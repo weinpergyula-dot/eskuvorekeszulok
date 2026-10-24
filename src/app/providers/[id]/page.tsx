@@ -5,6 +5,7 @@ import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
 import { MapPin, Star, Eye, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { featuredStyle } from "@/lib/featured-style";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
 import { PageHeader } from "@/components/layout/page-header";
@@ -12,6 +13,7 @@ import { ProviderTabs } from "@/components/providers/provider-tabs";
 import { ProviderUserActions } from "@/components/providers/provider-user-actions";
 import { ShareButton } from "@/components/providers/share-button";
 import { AvatarLightbox } from "@/components/providers/avatar-lightbox";
+import { MarqueeText } from "@/components/ui/marquee-text";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -76,6 +78,8 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   const reviewCount = provider.review_count ?? 0;
   const viewCount = provider.view_count ?? 0;
   const firstCategory = (provider.categories ?? [])[0] as ServiceCategory | undefined;
+  const tc = featuredStyle(provider.featured);
+  const catBadgeClass = tc.badgeClass || "border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]";
 
   return (
     <div>
@@ -89,9 +93,20 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <ViewTracker providerId={provider.id} />
 
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      {/* A kiemelt szolgáltató címkéje a kártyákhoz hasonlóan a doboz felső
+          szélén ül. */}
+      <div className={cn("relative", provider.featured && "pt-3.5")}>
+      {provider.featured && (
+        <span className={cn(
+          "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
+          tc.featuredBadgeClass
+        )}>
+          Kiemelt szolgáltató
+        </span>
+      )}
+      <div className={cn("bg-white rounded-2xl border shadow-sm overflow-hidden", provider.featured ? tc.borderBase : "border-gray-200")}>
         {/* Hero section */}
-        <div className="relative" style={{ backgroundColor: "#F0F6F5" }}>
+        <div className="relative" style={{ backgroundColor: tc.headerBg }}>
           {/* Action buttons — desktop */}
           <div className="absolute top-3 right-3 hidden sm:flex items-center gap-2">
             <ShareButton title={provider.full_name} />
@@ -112,12 +127,13 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-24 h-24" />
               </div>
               <div className="flex-1 min-w-0 pr-10">
-                <h1 className="font-bold text-gray-900 text-[18px] leading-snug truncate">
-                  {provider.full_name}
+                {/* A ki nem férő név lassan végigcsúszik, hogy olvasható legyen. */}
+                <h1 className="font-bold text-gray-900 text-[18px] leading-snug">
+                  <MarqueeText>{provider.full_name}</MarqueeText>
                 </h1>
                 {(provider.counties ?? []).length > 0 && (
                   <div className="flex items-center gap-1 mt-0.5">
-                    <MapPin className="h-3.5 w-3.5 text-[#84AAA6] shrink-0" />
+                    <MapPin className={cn("h-3.5 w-3.5 shrink-0", tc.text)} />
                     <span className="text-sm text-gray-900 leading-snug">
                       {(provider.counties ?? []).join(", ")}
                     </span>
@@ -125,7 +141,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 )}
                 <div className="flex items-center gap-1 mt-0.5">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} className={cn("h-3.5 w-3.5", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200")} />
+                    <Star key={star} className={cn("h-3.5 w-3.5", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : tc.emptyStar)} />
                   ))}
                   <span className="text-sm font-semibold text-gray-900 ml-0.5">
                     {rating > 0 ? rating.toFixed(1) : "–"}
@@ -141,7 +157,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 {(provider.categories ?? []).length > 0 && (
                   <div className="-mr-10 flex flex-wrap gap-1.5 mt-2">
                     {(provider.categories as ServiceCategory[]).map((cat) => (
-                      <span key={cat} className="text-xs font-medium px-2.5 py-1 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]">
+                      <span key={cat} className={cn("text-xs font-medium px-2.5 py-1 rounded-full border", catBadgeClass)}>
                         {CATEGORY_LABELS[cat] ?? cat}
                       </span>
                     ))}
@@ -169,7 +185,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-0.5">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} className={cn("h-5 w-5", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200")} />
+                    <Star key={star} className={cn("h-5 w-5", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : tc.emptyStar)} />
                   ))}
                 </div>
                 <span className="font-semibold text-gray-900">
@@ -189,7 +205,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
               {(provider.categories ?? []).length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mt-3">
                   {(provider.categories as ServiceCategory[]).map((cat) => (
-                    <span key={cat} className="text-xs font-medium px-2.5 py-1 rounded-full border border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]">
+                    <span key={cat} className={cn("text-xs font-medium px-2.5 py-1 rounded-full border", catBadgeClass)}>
                       {CATEGORY_LABELS[cat] ?? cat}
                     </span>
                   ))}
@@ -200,6 +216,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
         </div>
 
         <ProviderTabs provider={provider} />
+      </div>
       </div>
       </div>
     </div>

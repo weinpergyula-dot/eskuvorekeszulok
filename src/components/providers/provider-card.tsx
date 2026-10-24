@@ -2,13 +2,18 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { Eye, Phone, Mail, Globe, MessageCircle, Star, MapPin, Pencil, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { featuredStyle } from "@/lib/featured-style";
+import { quoteHrefFor } from "@/lib/quote-href";
+import { socialLabel, WebsiteLink } from "@/components/providers/website-link";
 import type { Provider } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
-import { ChatLink, MaskedContact } from "@/components/providers/masked-contact";
+import { MarqueeText } from "@/components/ui/marquee-text";
+import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
 
 /* Galéria-csík: fix pixelméretek, hogy a Safari ne az aspect-ratio / lusta
    betöltés alapján számolja utólag a sáv szélességét (az iOS 27 óta ettől
@@ -44,6 +49,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   const detailHref = backHref
     ? `/providers/${provider.id}?from=${encodeURIComponent(backHref)}`
     : `/providers/${provider.id}`;
+  const quoteHref = quoteHrefFor(provider);
   const [expanded, setExpanded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
@@ -139,18 +145,26 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     return () => window.removeEventListener("keydown", handleKey);
   }, [galleryOpen, galleryUrls.length]);
 
-  const tc = provider.featured === "gold"
-    ? { text: "text-amber-600", textHover: "hover:text-amber-700", groupHover: "group-hover:text-amber-600", border50: "border-amber-300", bg10: "bg-amber-50", hoverBg20: "hover:bg-amber-100", bgFill: "bg-amber-400", hoverBgFill: "hover:bg-amber-500", buttonText: "text-amber-950", borderBase: "border-amber-200", borderHover: "hover:border-amber-400", badgeClass: "border-amber-300 text-amber-700 bg-amber-50", featuredBadgeClass: "bg-amber-50 text-amber-700 border-amber-300" }
-    : provider.featured === "silver"
-    ? { text: "text-slate-500", textHover: "hover:text-slate-600", groupHover: "group-hover:text-slate-500", border50: "border-slate-300", bg10: "bg-slate-50", hoverBg20: "hover:bg-slate-100", bgFill: "bg-slate-500", hoverBgFill: "hover:bg-slate-600", buttonText: "text-white", borderBase: "border-slate-200", borderHover: "hover:border-slate-400", badgeClass: "border-slate-300 text-slate-500 bg-slate-50", featuredBadgeClass: "bg-slate-100 text-slate-600 border-slate-300" }
-    : provider.featured === "teal"
-    ? { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", buttonText: "text-white", borderBase: "border-[#84AAA6]/40", borderHover: "hover:border-[#84AAA6]", badgeClass: "border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]", featuredBadgeClass: "bg-[#EDF4F3] text-[#5C8480] border-[#84AAA6]/40" }
-    : { text: "text-[#84AAA6]", textHover: "hover:text-[#6B8E8A]", groupHover: "group-hover:text-[#84AAA6]", border50: "border-[#84AAA6]/50", bg10: "bg-[#84AAA6]/10", hoverBg20: "hover:bg-[#84AAA6]/20", bgFill: "bg-[#84AAA6]", hoverBgFill: "hover:bg-[#6B8E8A]", buttonText: "text-white", borderBase: "border-gray-200", borderHover: "hover:border-[#84AAA6]", badgeClass: "", featuredBadgeClass: "" };
+  const tc = featuredStyle(provider.featured);
 
   // ── List row mode ──────────────────────────────────────────────────────────
   if (listView && !disableLink) {
     return (
-      <div id={anchorId} className={cn("flex items-center gap-3 scroll-mt-24 bg-[#FCFCFC] rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", tc.borderBase, tc.borderHover)}>
+      /* Kiemelt szolgáltató a lista nézetben is: a kártyáéval egyező
+         címke a sor felső szélén, és a kártya fejlécének színe háttérként. */
+      <div id={anchorId} className={cn("relative scroll-mt-24", provider.featured && "pt-3.5")}>
+      {provider.featured && (
+        <span className={cn(
+          "absolute top-3.5 left-6 z-20 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
+          tc.featuredBadgeClass
+        )}>
+          Kiemelt szolgáltató
+        </span>
+      )}
+      <div
+        className={cn("flex items-center gap-3 rounded-xl border shadow-sm hover:shadow-md transition-all px-4 py-3", !provider.featured && "bg-[#FCFCFC]", provider.featured && "pt-4", tc.borderBase, tc.borderHover)}
+        style={provider.featured ? { backgroundColor: tc.headerBg } : undefined}
+      >
         {/* Avatar */}
         <button
           type="button"
@@ -180,9 +194,9 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
         )}
 
         <div className="flex-1 min-w-0">
-          <div className="font-bold text-gray-900 truncate" style={{ fontSize: "16px" }}>{provider.full_name}</div>
+          <MarqueeText className="font-bold text-gray-900" style={{ fontSize: "16px" }}>{provider.full_name}</MarqueeText>
           <div className="flex items-start gap-1 mt-0.5">
-            <MapPin className={`h-3 w-3 ${tc.text} shrink-0 mt-[2px]`} />
+            <MapPin className={`h-3 w-3 ${tc.text} shrink-0 mt-[3.5px]`} />
             <span className="text-sm text-gray-500 leading-snug">
               {countyExpanded
                 ? (provider.counties ?? []).join(", ")
@@ -196,7 +210,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </div>
           <div className="flex items-center gap-1 mt-0.5">
             {[1, 2, 3, 4, 5].map((star) => (
-              <Star key={star} className={cn("h-3 w-3", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200")} />
+              <Star key={star} className={cn("h-3 w-3", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : tc.emptyStar)} />
             ))}
             <span className="text-sm font-semibold text-gray-900 ml-0.5">{rating > 0 ? rating.toFixed(1) : "–"}</span>
             {reviewCount > 0 && <span className="text-sm text-gray-500">({reviewCount})</span>}
@@ -226,6 +240,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           </a>
         </div>
       </div>
+      </div>
     );
   }
 
@@ -237,7 +252,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           key={star}
           className={cn(
             inCarousel ? "h-4 w-4 sm:h-5 sm:w-5" : "h-4 w-4",
-            star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200"
+            star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : tc.emptyStar
           )}
         />
       ))}
@@ -247,7 +262,6 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
   );
 
   const showFeaturedBadge = !!provider.featured;
-  const headerBg = provider.featured === "gold" ? "#FFFBEB" : provider.featured === "silver" ? "#F8FAFC" : provider.featured === "teal" ? "#EDF4F3" : "#F0F6F5";
 
   return (
     <div id={anchorId} className={cn("relative h-full scroll-mt-24", (!inCarousel || showFeaturedBadge) && "pt-3.5")}>
@@ -268,7 +282,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
     >
       {/* ── CAROUSEL mode: stacked centered header ─────────────────────── */}
       {inCarousel && (
-        <div className="relative flex flex-col items-center pt-8 px-7 pb-6" style={{ backgroundColor: headerBg }}>
+        <div className="relative flex flex-col items-center pt-8 px-7 pb-6" style={{ backgroundColor: tc.headerBg }}>
           {/* Avatar */}
           <div
             className={cn(
@@ -324,7 +338,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
       {/* ── REGULAR card: compact horizontal header ──────────────────────── */}
       {!inCarousel && (
-        <div className="relative flex items-center gap-3 px-4 pt-12 pb-5" style={{ backgroundColor: headerBg }}>
+        <div className="relative flex items-center gap-3 px-4 pt-12 pb-5" style={{ backgroundColor: tc.headerBg }}>
           {/* Absolute action buttons */}
           {!disableLink && (
             <div className="absolute top-2 left-2 z-10" onClick={(e) => e.stopPropagation()}>
@@ -344,10 +358,11 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             </span>
           </div>
 
-          {/* Avatar */}
+          {/* Avatar: ugyanakkora és ugyanolyan, mint a részletes profiloldal
+              fejlécében (AvatarLightbox, w-24 h-24) */}
           <div
             className={cn(
-              "w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex items-center justify-center shrink-0 ml-1",
+              "relative w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center shrink-0 ml-1",
               provider.avatar_url && "cursor-zoom-in"
             )}
             onClick={(e) => {
@@ -357,9 +372,9 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           >
             {provider.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="w-full h-full object-cover" />
+              <img src={provider.avatar_url ?? ""} alt={provider.full_name} className="absolute inset-0 w-full h-full object-cover" />
             ) : (
-              <span className="text-xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
+              <span className="text-3xl font-bold text-gray-900">{provider.full_name.charAt(0)}</span>
             )}
           </div>
 
@@ -367,17 +382,17 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           <div className="flex-1 min-w-0 pr-14">
             {!disableLink ? (
               <a href={detailHref} onClick={(e) => e.stopPropagation()} className="block">
-                <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
-                  {provider.full_name}
+                <h3 className={`font-bold text-gray-900 text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
+                  <MarqueeText>{provider.full_name}</MarqueeText>
                 </h3>
               </a>
             ) : (
-              <h3 className={`font-bold text-gray-900 truncate text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
-                {provider.full_name}
+              <h3 className={`font-bold text-gray-900 text-[18px] leading-snug transition-colors ${tc.groupHover}`}>
+                <MarqueeText>{provider.full_name}</MarqueeText>
               </h3>
             )}
             <div className="flex items-start gap-1 mt-0.5">
-              <MapPin className={`h-3.5 w-3.5 shrink-0 mt-[2px] ${tc.text}`} />
+              <MapPin className={`h-3.5 w-3.5 shrink-0 mt-[2.5px] ${tc.text}`} />
               <span className="text-sm text-gray-900 leading-snug">
                 {countyExpanded
                   ? (provider.counties ?? []).join(", ")
@@ -440,8 +455,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
               className="w-full h-full overflow-hidden focus:outline-none"
               onClick={() => { setGalleryIndex(0); setGalleryOpen(true); }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={galleryUrls[0]} alt="Galéria" className="w-full h-full object-cover" draggable={false} loading="lazy" />
+              <Image src={galleryUrls[0]} alt="Galéria" width={640} height={168} sizes="(min-width: 640px) 480px, 100vw" className="w-full h-full object-cover" draggable={false} />
             </button>
           ) : (
             <div
@@ -460,8 +474,20 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
                   style={{ width: `${GALLERY_THUMB_W}px` }}
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex(i % galleryUrls.length); setGalleryOpen(true); }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="block w-full h-full object-cover" draggable={false} decoding="async" />
+                  {/* Kicsinyített kiskép (next/image), nem az eredeti fotó: a
+                      Chromium alapú böngészők (Edge, Chrome) a sok nagy,
+                      kitömörített képet nem tartják egyszerre a memóriában,
+                      és egy részük fehér maradt a csíkban. */}
+                  <Image
+                    src={url}
+                    alt=""
+                    width={GALLERY_THUMB_W}
+                    height={84}
+                    sizes={`${GALLERY_THUMB_W}px`}
+                    loading="eager"
+                    className="block w-full h-full object-cover"
+                    draggable={false}
+                  />
                 </button>
               ))}
             </div>
@@ -486,14 +512,14 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Contact info */}
       {!inCarousel && (
         <div className={cn("px-5 py-4 space-y-2 flex-1", expanded ? "block" : "hidden sm:block")}>
-          <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} linkColor={tc.text} />
+          <ContactRow icon={<Phone className={`h-4 w-4 ${tc.text}`} />} value={provider.phone} linkColor={tc.text} fullyHidden />
           <ContactRow icon={<Mail className={`h-4 w-4 ${tc.text}`} />} value={provider.email} linkColor={tc.text} fullyHidden />
           {provider.website && (
-            <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} fullyHidden />
+            <ContactRow icon={<Globe className={`h-4 w-4 ${tc.text}`} />} value={provider.website} isLink={!disableLink} linkColor={tc.text} fullyHidden website />
           )}
           {provider.description && (
             <div className="flex gap-2.5">
-              <MessageCircle className={`h-4 w-4 ${tc.text} shrink-0 mt-0.5`} />
+              <span className="flex h-[1.625rem] shrink-0 items-center"><MessageCircle className={`h-4 w-4 ${tc.text}`} /></span>
               <p className="text-base text-gray-900 leading-relaxed">
                 {!descExpanded && provider.description.length > 200
                   ? provider.description.slice(0, 200) + "…"
@@ -512,11 +538,21 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
       {/* Footer */}
       {!inCarousel && !disableLink && (
         <div className={cn("border-t border-gray-100 px-4 py-3 items-center gap-2", expanded ? "flex" : "hidden sm:flex")}>
-          {/* Chat + Részletek grouped — always pushed to right */}
-          <div className="flex items-center gap-2 ml-auto">
+          {/* Ajánlatkérés + Chat + Részletek grouped — always pushed to right */}
+          <div className="flex flex-wrap items-center justify-end gap-2 ml-auto">
+            <LoginGateLink
+              href={quoteHref}
+              message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+              onClick={(e) => e.stopPropagation()}
+              className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}
+            >
+              <Send className="h-3.5 w-3.5" />
+              Ajánlatkérés
+            </LoginGateLink>
             <ChatLink href={`/profil?tab=chat&with=${provider.user_id}`} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.text} border ${tc.border50} ${tc.bg10} ${tc.hoverBg20} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               <MessageCircle className="h-3.5 w-3.5" />
-              Chat indítása
+              {/* Három gomb mellett a rövid felirat fér ki a kártya alján. */}
+              Chat
             </ChatLink>
             <a href={detailHref} onClick={(e) => e.stopPropagation()} className={`flex items-center gap-1.5 text-sm font-medium ${tc.buttonText} ${tc.bgFill} ${tc.hoverBgFill} transition-colors px-3 py-1.5 rounded-full whitespace-nowrap`}>
               Részletek
@@ -612,18 +648,27 @@ function ContactRow({
   isLink = false,
   linkColor = "text-[#84AAA6]",
   fullyHidden = false,
+  website = false,
 }: {
   icon: React.ReactNode;
   value: string;
   isLink?: boolean;
   linkColor?: string;
   fullyHidden?: boolean;
+  /** Weboldal: egy sorban, a vége kipontozva; Instagram/Facebook névvel. */
+  website?: boolean;
 }) {
   return (
-    <div className="flex items-start gap-2.5">
-      <span className="shrink-0 mt-0.5">{icon}</span>
+    <div className="flex items-start gap-2.5 min-w-0">
+      <span className="flex h-6 shrink-0 items-center">{icon}</span>
       <MaskedContact value={value} linkColor={linkColor} fullyHidden={fullyHidden}>
-      {isLink ? (
+      {website ? (
+        isLink ? (
+          <WebsiteLink value={value} className={`min-w-0 truncate text-base ${linkColor} hover:underline`} />
+        ) : (
+          <span className="min-w-0 truncate text-base text-gray-900">{socialLabel(value) ?? value}</span>
+        )
+      ) : isLink ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noopener noreferrer" className={`text-base ${linkColor} hover:underline break-all`}>
           {value}
         </a>

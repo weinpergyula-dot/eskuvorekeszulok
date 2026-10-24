@@ -74,7 +74,7 @@ export function AccessibilityWidget() {
   if (!mounted) return null;
 
   return (
-    <div ref={ref} className="fixed bottom-5 right-5 z-40">
+    <div ref={ref} className="floating-corner fixed bottom-5 right-5 z-40">
       {open && (
         <div className="absolute bottom-full right-0 mb-3 w-64 rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-md shadow-xl p-4">
           <div className="flex items-center justify-between mb-3">
