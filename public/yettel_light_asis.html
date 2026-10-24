@@ -8954,6 +8954,8 @@
   });
 
   var lastA = null;
+  /* a Fejlesztések switch changed: draw the offers again (Full prices may come or go) */
+  document.addEventListener('yfeat', function(){ lastA = null; });
   function render(){
     var a = window.yAddr || {scenario:'both', address:'8200 Veszprém, Tölgyfa u. 4'};
     /* coming back from the TV step keeps the chosen package */
@@ -9303,7 +9305,8 @@
   var EXIST = [['ti-phone-call','+36 20 290 7566','Prime Plus 2025','m'],['ti-phone-call','+36 20 290 7430','Prime Plus 2024','m'],
     ['ti-home-signal','HiperNet L','8200 Veszprém, Tölgyfa u. 4','n'],['ti-device-tv','Yettel TV Basic','','t']];
   function fullPct(guest){
-    if (guest) return 0;
+    /* STEP4 FULL áras termékek after sales switched off: no Full prices anywhere in the sales flow */
+    if (guest || (window.yFeat && !window.yFeat('fullafter'))) return 0;
     var cnt = EXIST.filter(function(e){ return e[3] !== 't'; }).length + 1;
     return cnt >= 4 ? 30 : cnt === 3 ? 20 : cnt === 2 ? 15 : 0;
   }
