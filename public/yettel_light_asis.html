@@ -1995,6 +1995,32 @@
   .nsdinfo b{ display:block; margin-bottom:8px; font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
   .nsdinfo p{ margin:0; font-size:12px; line-height:1.5; color:var(--navy); }
   .nsdcard [hidden]{ display:none !important; }
+  /* Internetvédelem: cancel confirmation and the order / cancel result page */
+  .nscf, .nsres{ position:absolute; inset:0; z-index:126; display:none; flex-direction:column; padding:calc(30px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); background:#fff; animation:xsup .28s cubic-bezier(.4,0,.2,1); }
+  .nscf.on, .nsres.on{ display:flex; }
+  .nscfh{ display:flex; align-items:flex-start; gap:12px; margin:0 0 20px; }
+  .nscfh b{ flex:1; font-family:'Yettel'; font-size:18px; font-weight:800; line-height:1.3; color:var(--navy); }
+  .nscfh button{ border:none; background:none; padding:2px; cursor:pointer; color:var(--mid); }
+  .nscfh button i{ font-size:24px; }
+  .nscfbox{ padding:14px; border:1.5px solid #E3E8EE; border-radius:10px; }
+  .nscfbox b{ display:block; font-size:13px; font-weight:700; color:var(--navy); }
+  .nscfbox .ofpromo{ display:inline-block; margin:8px 0 0; }
+  .nscfbox .ofpromo[hidden]{ display:none; }
+  .nscfa{ margin:12px 0 0; font-size:11.5px; line-height:1.5; color:var(--mid); }
+  .nscfa u{ color:var(--navy); }
+  .nscff{ margin-top:auto; }
+  .nsresin{ text-align:center; padding-top:40px; }
+  .nsresic{ display:inline-flex; width:70px; height:70px; border-radius:50%; background:#DFF5E6; align-items:center; justify-content:center; }
+  .nsresic i{ font-size:38px; color:#2E9E4F; }
+  .nsres.bad .nsresic{ background:#FDE4D6; } .nsres.bad .nsresic i{ color:#F0603C; }
+  .nsresin h2{ margin:26px 10px 14px; font-family:'Yettel'; font-size:22px; font-weight:800; line-height:1.25; color:var(--navy); }
+  .nsresin > p{ margin:0 10px; font-size:12.5px; line-height:1.5; color:var(--navy); }
+  .nsresin > p:empty{ display:none; }
+  .nsresbox{ margin:10px 0 0; padding:14px; border:1.5px solid #E3E8EE; border-radius:12px; text-align:left; }
+  .nsres.bad .nsresbox{ display:none; }
+  .nsresbox > b{ display:block; margin:0 0 10px; font-size:13px; font-weight:700; color:var(--navy); }
+  .nsresbox p{ display:flex; gap:10px; margin:8px 0 0; font-size:12px; line-height:1.45; color:var(--navy); }
+  .nsresbox p i{ font-size:17px; color:var(--mid); }
   .nsdtag.act{ background:#DFF5E6; color:#1F7A3D; }
   .nsdset{ margin-top:16px; }
   .nsdset > .ti-settings{ font-size:24px; color:var(--navy); }
@@ -8261,7 +8287,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop]';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -8544,6 +8570,59 @@
   /* details: Aktív (trial until a date, Lemondom, NetPajzs also Szűrési beállítások) or Rendelhető (Aktiválom; the info box says
      the other one gets cancelled when that one is active) */
   var nsCur = 'np', nsUntil = null;
+  /* the internet protection orders are kept between sessions (per browser) */
+  try { var nsSaved = JSON.parse(localStorage.getItem('yl-ns') || 'null'); if (nsSaved){ nsActive.np = !!nsSaved.np; nsActive.kid = !!nsSaved.kid; nsUntil = nsSaved.until || null; } } catch(e){}
+  function nsSave(){ try { localStorage.setItem('yl-ns', JSON.stringify({np:nsActive.np, kid:nsActive.kid, until:nsUntil})); } catch(e){} }
+  /* order / cancel: confirmation sheet (cancel only), loader, then the result page */
+  var nscf = document.createElement('div'); nscf.className = 'nscf';
+  nscf.innerHTML = '<div class="nscfh"><b>Biztosan lemondod az alábbi szolgáltatást?</b><button type="button" data-nscfx aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<div class="nscfbox"><b data-nscfn></b><span class="ofpromo" data-nscfp></span></div>'
+    + '<p class="nscfa">A „Lemondom” gombra kattintva elfogadod az <u>Általános Szerződési Feltételeket</u> (ÁSZF).</p>'
+    + '<div class="nscff"><button type="button" class="fsbtn" data-nscfgo>Lemondom</button><button type="button" class="nsdstop" data-nscfx>Mégsem</button></div>';
+  var nsres = document.createElement('div'); nsres.className = 'nsres';
+  nsres.innerHTML = '<div class="nsresin"><span class="nsresic"><i class="ti"></i></span><h2 data-nsrest></h2><p data-nsress></p>'
+    + '<div class="nsresbox"><b>Amit tudnod érdemes</b><p><i class="ti ti-info-circle"></i><span>Rendelésed száma: <b data-nsresno></b></span></p><p><i class="ti ti-info-circle"></i><span>A dokumentumaidat a Yettel alkalmazásban, a Dokumentumok menüpont alatt találod majd meg.</span></p></div></div>'
+    + '<div class="nscff"><button type="button" class="fsbtn" data-nsreshome>Vissza a főoldalra</button></div>';
+  document.querySelector('.app').appendChild(nscf); document.querySelector('.app').appendChild(nsres);
+  function nsResult(ok, act){
+    nsres.classList.toggle('bad', !ok);
+    nsres.querySelector('.nsresic i').className = 'ti ' + (ok ? 'ti-check' : 'ti-x');
+    nsres.querySelector('[data-nsrest]').textContent = !ok ? 'Sikertelen lemondás' : act ? 'Szolgáltatásod aktiválását megkezdtük' : 'Szolgáltatásod lemondását megkezdtük';
+    nsres.querySelector('[data-nsress]').textContent = ok ? '' : 'Sajnos nem sikerült a lemondást elindítani. Kérlek, próbáld meg később újra.';
+    nsres.querySelector('[data-nsresno]').textContent = String(2000000 + Math.floor(Math.random() * 999999));
+    nsres.classList.add('on');
+  }
+  function nsRun(act, fail){
+    var ld = document.querySelector('.adload'); nscf.classList.remove('on');
+    if (ld) ld.classList.add('on');
+    setTimeout(function(){
+      if (!fail){
+        if (act){ nsActive.np = nsActive.kid = false; var u = new Date(); u.setDate(u.getDate() + 30); nsUntil = u.getFullYear()+'.'+('0'+(u.getMonth()+1)).slice(-2)+'.'+('0'+u.getDate()).slice(-2)+'.'; }
+        nsActive[nsCur] = act; nsSave(); apply(); nsDet();
+      }
+      nsResult(!fail, act);
+      if (ld) ld.classList.remove('on');
+    }, 1600);
+  }
+  function nsAsk(){
+    var x = NS[nsCur], pr = nscf.querySelector('[data-nscfp]');
+    nscf.querySelector('[data-nscfn]').textContent = x.name;
+    /* try & buy still running: the free period is shown on the card */
+    pr.hidden = !(x.promo && nsUntil); pr.textContent = '100% havidíj kedvezmény ' + (nsUntil || '') + '-ig';
+    nscf.classList.add('on');
+  }
+  /* demo: holding Lemondom (0,7 s) shows the failed cancellation */
+  var nsHold = null, nsHeld = false;
+  nscf.addEventListener('pointerdown', function(e){ if (!e.target.closest('[data-nscfgo]')) return; nsHeld = false; nsHold = setTimeout(function(){ nsHeld = true; nsRun(false, true); }, 700); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function(t){ nscf.addEventListener(t, function(){ clearTimeout(nsHold); }); });
+  nscf.addEventListener('click', function(e){
+    if (e.target.closest('[data-nscfx]')){ nscf.classList.remove('on'); return; }
+    if (e.target.closest('[data-nscfgo]') && !nsHeld) nsRun(false);
+  });
+  nsres.addEventListener('click', function(e){
+    if (!e.target.closest('[data-nsreshome]')) return;
+    nsres.classList.remove('on'); var r = document.getElementById('s-home'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
+  });
   function nsDet(k){
     k = k || nsCur; nsCur = k;
     var x = NS[k], d = document.querySelector('[data-screen="ns-det"]'), on = nsActive[k], other = nsActive[k === 'np' ? 'kid' : 'np'];
@@ -8594,18 +8673,8 @@
     var to = e.target.closest('[data-xsto]');
     if (to){ SUBS.forEach(function(x){ if (x.id === to.getAttribute('data-xsto')) cur = x; }); apply(); return; }
     var nk = e.target.closest('[data-nsk]'); if (nk){ nsDet(nk.getAttribute('data-nsk')); return; }
-    var ng = e.target.closest('[data-nsdgo], [data-nsdstop]');
-    if (ng){
-      var act = ng.hasAttribute('data-nsdgo'), ld = document.querySelector('.adload');
-      if (ld) ld.classList.add('on');
-      setTimeout(function(){
-        if (act){ nsActive.np = nsActive.kid = false; var u = new Date(); u.setDate(u.getDate() + 30); nsUntil = u.getFullYear()+'.'+('0'+(u.getMonth()+1)).slice(-2)+'.'+('0'+u.getDate()).slice(-2)+'.'; }
-        nsActive[nsCur] = act; apply(); nsDet();
-        if (ld) ld.classList.remove('on');
-        if (window.ySnack) window.ySnack(true, act ? NS[nsCur].name + ' aktiválva.' : NS[nsCur].name + ' lemondva.');
-      }, 1200);
-      return;
-    }
+    if (e.target.closest('[data-nsdgo]')){ nsRun(true); return; }
+    if (e.target.closest('[data-nsdstop]')){ nsAsk(); return; }
     var nm = e.target.closest('[data-screen="ns-det"] [data-nsdmore]'); if (nm){ if (window.yNsInfo) window.yNsInfo(nm.getAttribute('data-nsdmore')); return; }
     if (e.target.closest('[data-xsheet]')){ open(); return; }
     if (e.target.closest('[data-xsclose]')){ sheet.classList.remove('on'); return; }
