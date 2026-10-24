@@ -344,6 +344,7 @@
   #s-npappt:checked ~ [data-screen="np-appt"],
   #s-szview:checked ~ [data-screen="sz-view"],
   #s-szedit:checked ~ [data-screen="sz-edit"],
+  #s-hrset:checked ~ [data-screen="hr-set"],
   #s-billhist:checked ~ [data-screen="bill-hist"],
   #s-billdet:checked ~ [data-screen="bill-det"],
   #s-billdata:checked ~ [data-screen="bill-data"],
@@ -2029,6 +2030,37 @@
   .ncfail b{ display:block; margin:16px 0 8px; font-family:'Yettel'; font-size:16px; line-height:1.3; color:var(--navy); }
   .ncfail p{ margin:0; font-size:12px; line-height:1.5; color:var(--navy); }
   .ncscreen [data-ncre]{ display:none; }
+  /* Hívásrészletező: row on postpaid bill details, settings page, info sheets, PDF view */
+  .bdhr{ display:flex; align-items:center; gap:12px; margin-top:16px; padding-top:14px; border-top:1px solid #E3E8EE; cursor:pointer; }
+  .bdhric{ width:40px; height:40px; flex-shrink:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#C9DDE8; }
+  .bdhric i{ font-size:20px; color:var(--navy); }
+  .bdhrt{ flex:1; } .bdhrt b{ display:block; font-size:13px; font-weight:700; color:var(--navy); } .bdhrt small{ font-size:11.5px; color:var(--navy); }
+  .bdhr .chev{ font-size:18px; color:var(--navy); }
+  .hrscreen{ background:#fff; padding-bottom:0 !important; }
+  .hrh{ margin:16px 0 14px; font-size:13.5px; font-weight:700; line-height:1.35; color:var(--navy); }
+  .hrsech{ display:flex; align-items:center; justify-content:space-between; margin:22px 0 10px; }
+  .hrsech b{ font-size:13px; font-weight:700; color:var(--navy); }
+  .hrseg{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .hrseg button{ padding:12px 6px; border:1.5px solid #D5DCE3; border-radius:8px; background:#fff; font-family:inherit; color:var(--navy); cursor:pointer; text-align:center; }
+  .hrseg button b{ display:block; font-size:12.5px; font-weight:600; }
+  .hrseg button small{ display:block; margin-top:2px; font-size:10.5px; color:var(--mid); }
+  .hrseg button.on{ border:2px solid #09223D; background:#F1F9FD; }
+  .hrfoot{ position:sticky; bottom:0; margin:22px -16px 0; padding:14px 16px calc(16px + env(safe-area-inset-bottom)); background:#fff; border-top:1px solid #E3E8EE; }
+  .hrfoot p{ margin:10px 0 0; font-size:10.5px; line-height:1.45; text-align:center; color:var(--navy); }
+  .hrinfo .xspanel b.hrt{ display:block; margin:16px 0 6px; font-size:13px; color:var(--navy); }
+  .hrinfo .xspanel p{ margin:0 0 6px; font-size:12px; line-height:1.5; color:var(--navy); }
+  .hrinfo .xsgo{ margin-top:18px; }
+  .hrinfo .xspanel .xshead p{ margin:0; font-family:'Yettel'; font-size:17px; font-weight:700; }
+  .hrpdf{ position:absolute; inset:0; z-index:126; display:none; flex-direction:column; padding:calc(24px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom)); background:#EEF1F5; animation:xsup .28s cubic-bezier(.4,0,.2,1); }
+  .hrpdf.on{ display:flex; }
+  .hrpdfh{ margin:0 0 14px; font-family:'Yettel'; font-size:17px; font-weight:800; color:var(--navy); }
+  .hrdoc{ flex:1; overflow-y:auto; padding:22px 18px; border-radius:6px; background:#fff; box-shadow:0 6px 20px -10px rgba(9,34,61,.35); }
+  .hrdoc .hrbig{ display:inline-block; margin-bottom:14px; padding:6px 12px; border-radius:6px; background:#D6453F; font-family:'Yettel'; font-size:20px; font-weight:800; color:#fff; letter-spacing:.04em; }
+  .hrdoc .hrmeta{ margin:0 0 4px; font-size:11px; color:var(--mid); }
+  .hrdoc table{ width:100%; margin-top:14px; border-collapse:collapse; font-size:10.5px; color:var(--navy); }
+  .hrdoc th, .hrdoc td{ padding:6px 4px; border-bottom:1px solid #EEF1F5; text-align:left; }
+  .hrdoc th{ font-weight:700; }
+  .hrpdf .fsbtn{ margin-top:16px; }
   /* Személyes és lakcím adatok (backlog item) */
   .app.foff-szemadat .szrow{ display:none; }
   #s-szedit:checked ~ .ncscreen[data-screen="sz-edit"]{ display:flex !important; }
@@ -3657,6 +3689,7 @@
   <input class="rt" type="radio" name="nav" id="s-npappt">
   <input class="rt" type="radio" name="nav" id="s-szview">
   <input class="rt" type="radio" name="nav" id="s-szedit">
+  <input class="rt" type="radio" name="nav" id="s-hrset">
   <input class="rt" type="radio" name="nav" id="s-billhist">
   <input class="rt" type="radio" name="nav" id="s-billdet">
   <input class="rt" type="radio" name="nav" id="s-billdata">
@@ -7546,6 +7579,25 @@
     <div class="ncfoot"><button type="button" class="fsbtn" data-ncgo data-szgo>Mentés</button><button type="button" class="nsdstop" data-chatpop>Chat indítása</button></div>
   </div>
 
+  <!-- ============= HÍVÁSRÉSZLETEZŐ beállításai (backlog) ============= -->
+  <div class="screen hrscreen" data-screen="hr-set" style="display:none;">
+    <div class="dhead">
+      <label class="icon-btn" for="s-billdet"><i class="ti ti-arrow-left"></i></label>
+      <span class="title">Hívásrészletező beállításai</span>
+      <div style="width:42px"></div>
+    </div>
+    <p class="hrh">Válaszd ki melyik előfizetéshez szeretnél hívásrészletezőt kérni</p>
+    <div class="xsopts" data-hrsubs></div>
+    <div class="hrsech"><b>Hívott telefonszámok</b><span class="relinfo" data-hrinfo="num" aria-label="Információ"><i class="ti ti-info-circle"></i></span></div>
+    <div class="hrseg" data-hrseg="num"><button type="button" data-v="0"><b>Kitakart</b><small>PL. +36 20 123 ***</small></button><button type="button" data-v="1"><b>Teljes</b><small>Teljes hívott szám látszik</small></button></div>
+    <div class="hrsech"><b>Emelt díjas számok megjelenítése</b><span class="relinfo" data-hrinfo="prem" aria-label="Információ"><i class="ti ti-info-circle"></i></span></div>
+    <div class="hrseg" data-hrseg="prem"><button type="button" data-v="0"><b>Teljes</b></button><button type="button" data-v="1"><b>Nem teljes</b></button></div>
+    <div class="hrfoot">
+      <button type="button" class="fsbtn" data-hrgo>Megtekintés</button>
+      <p>Ha előfizetésedet más személy (is) használhatja, akkor teljes hívásrészletezőt csak az ő hozzájárulásával igényelhetsz. A Megtekintés gombra kattintva elfogadom ezt és megrendelem a díjmentes elektronikus részletezőt a megjelölt telefonszám(ok)ra és számlázási időszakra.</p>
+    </div>
+  </div>
+
   <!-- ============= SZÁMLATÖRTÉNET ============= -->
   <div class="screen bhscreen" data-screen="bill-hist" style="display:none;">
     <div class="dhead">
@@ -8594,7 +8646,7 @@
                + '.funcard,.ahelp,.morefilter,.go,.cancel,.acont,.nbtn,.wbtn,'
                + '.wboxbtn,.lforgot,.icon-btn,.edit,.plus,.link,.dvcard,.fhb,'
                + '.cbtn,.hbtn,.amt,.xdopt,.addsvc,.nitem,.tab,.promo,.bban,.ntile,.krow .v';
-  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback],[data-relinfo],#relpop,[data-szopen],[data-szedit],[data-szback],.szscreen,[data-szbirth],.szinfo';
+  var OWN_BEHAVIOUR = '[data-quicklogin],.nolink,[data-gmjoin],[data-gmrules],[data-fullpop],.pbgo,.flov,.rdots,input,a[href],.adfld,.asov,.adnext,[data-lgbtn],[data-otpre],[data-logout],[data-pwgo],[data-smsgo],[data-csi],[data-cssave],[data-docopen],[data-docbtn],#docerr,[data-dcfilt],[data-chatpop],#chatpop,[data-dcsel],.brov,[data-bhsel],[data-bhfilt],.bfov,.bhsheet,[data-billopen],[data-fbpay],[data-bdpay],.fbchk,[data-lgeye],[data-xsheet],.xsheet,[data-primedit],[data-hnclose],.ddsum,.ddlist,[data-acc],.wip,.paysel,.codelink,.codepop,[data-cancel],[data-xdbuy],[data-tubuy],[data-buygen],[data-devlist],.adhelp,[data-lw2open],[data-lwbopen],.lwv,[data-nsdet],[data-nsdmore],[data-nsdgo],[data-nsdstop],.nscf,.nsres,[data-nssback],[data-nssgo],.xsheet,[data-ncopen],[data-ncback],.ncscreen,[data-naopen],[data-naback],[data-relinfo],#relpop,[data-szopen],[data-szedit],[data-szback],.szscreen,[data-szbirth],.szinfo,[data-hropen],.hrscreen,.hrpdf,.hrinfo';
 
   function show(){ modal.classList.add('on'); }
   function hide(){ modal.classList.remove('on'); }
@@ -9107,6 +9159,8 @@
   ];
   var LBL = {open:'Nyitott', overdue:'Lejárt', paid:'Fizetve', writeoff:'Nem befizethető'};
   var sel = {}, curBill = null;
+  document.addEventListener('yfeat', function(){ if (curBill) renderDet(curBill); });
+  window.yBillGet = function(id){ return find(id); };
   function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' Ft'; }
   function payable(b){ return b.st === 'open' || b.st === 'overdue'; }
   function q(s){ return document.querySelector(s); }
@@ -9177,6 +9231,9 @@
       rows.push('<div class="bdpay"><div class="bdph"><span>Fizetés</span><span class="fblink">Mással fizetek</span></div><div class="fbcardrow">'+CARD
         + '<span class="bktx'+(exp?' exp':'')+'"><b>Mentett bankkártya</b><small>**** 2345 | Lejárat: '+(exp?'09/26':'10/32')+'</small></span>'+(exp?'<i class="ti ti-alert-circle bdexp"></i>':'')+'</div></div>');
     }
+    /* Hívásrészletező (Digital backlog): postpaid bills only */
+    if (b.tag === 'Előfizetéses' && window.yFeat && window.yFeat('hivresz'))
+      rows.push('<div class="bdhr" data-hropen="'+b.id+'"><span class="bdhric"><i class="ti ti-file-phone"></i></span><span class="bdhrt"><b>Hívásrészletező</b><small>Részletes PDF hívásaidról</small></span><i class="ti ti-chevron-right chev"></i></div>');
     q('[data-bdinfo]').innerHTML = rows.join('');
     var btns = [];
     if (payable(b)){
@@ -11108,6 +11165,63 @@
     else if (e.target.closest('[data-szleave]')){ ask.classList.remove('on'); leave(); }
   });
   view();
+})();
+</script>
+<script>
+/* Hívásrészletező (Digital backlog): postpaid bill → pick the subscription(s) and display options → "Beállítás folyamatban" → PDF */
+(function(){
+  var sc = document.querySelector('[data-screen="hr-set"]'); if (!sc) return;
+  var NUMS = {'7566':['+36 20 290 7566','+36 20 290 7430'], '7430':['+36 20 290 7430']};
+  var bill = null, pick = 0, opt = {num:0, prem:0};
+  function go(id){ var r = document.getElementById(id); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } }
+  function list(){ var n = NUMS[bill && bill.sk] || ['+36 20 290 7566']; return n.length > 1 ? ['Összes előfizetés'].concat(n) : n; }
+  function paint(){
+    sc.querySelector('[data-hrsubs]').innerHTML = list().map(function(t, i){
+      var all = t === 'Összes előfizetés';
+      return '<label class="xsopt"><input type="radio" name="hrsub" value="'+i+'"'+(i === pick ? ' checked' : '')+'><span class="xsoic"><i class="ti '+(all ? 'ti-layout-grid' : 'ti-phone-call')+'"></i></span><span class="xsotx"><b>'+t+'</b></span><span class="xschk"><i class="ti ti-check"></i></span></label>';
+    }).join('');
+    Array.prototype.forEach.call(sc.querySelectorAll('[data-hrseg]'), function(g){ var k = g.getAttribute('data-hrseg');
+      Array.prototype.forEach.call(g.children, function(b){ b.classList.toggle('on', +b.getAttribute('data-v') === opt[k]); }); });
+  }
+  document.addEventListener('click', function(e){
+    var o = e.target.closest && e.target.closest('[data-hropen]'); if (!o) return;
+    bill = window.yBillGet ? window.yBillGet(o.getAttribute('data-hropen')) : null; pick = 0; opt = {num:0, prem:0}; paint(); sc.scrollTop = 0; go('s-hrset');
+  });
+  sc.addEventListener('change', function(e){ if (e.target.name === 'hrsub') pick = +e.target.value; });
+  sc.addEventListener('click', function(e){
+    var b = e.target.closest('[data-hrseg] button'); if (b){ opt[b.parentNode.getAttribute('data-hrseg')] = +b.getAttribute('data-v'); paint(); return; }
+    var i = e.target.closest('[data-hrinfo]'); if (i){ (i.getAttribute('data-hrinfo') === 'num' ? infoNum : infoPrem).classList.add('on'); }
+  });
+  function sheet(title, body){
+    var x = document.createElement('div'); x.className = 'xsheet hrinfo';
+    x.innerHTML = '<div class="xsbg" data-hrx></div><div class="xspanel"><span class="xsgrab"></span><div class="xshead"><p>'+title+'</p><button type="button" class="xsx" data-hrx aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+      + body + '<button type="button" class="xsgo" data-hrx>Értem</button></div>';
+    x.addEventListener('click', function(e){ if (e.target.closest('[data-hrx]')) x.classList.remove('on'); });
+    document.querySelector('.app').appendChild(x); return x;
+  }
+  var infoNum = sheet('Hívott telefonszámok', '<p style="margin-top:14px">A hívásrészletező nem tartalmazza az áfá-t és a havidíjakat.</p>'
+    + '<b class="hrt">Kitakart</b><p>A Kitakart opcióval a hívott telefonszámok utolsó számjegyei kitakarva jelennek meg a hívásrészletezőn, így a díjszámításhoz szükséges adatok sem lesznek teljeskörűek, ha a díj számításhoz a hívott szám pontos ismerete szükséges.</p>'
+    + '<b class="hrt">Teljes</b><p>A Teljes opciót választva minden számjegy látható lesz, amelyhez ha más (is) használja az előfizetésedet, akkor szükséges az ő hozzájárulását is kérned előzetesen. Ezt a Yettel nem ellenőrzi, az ezzel kapcsolatos minden felelősség az Előfizetőé.</p>');
+  var infoPrem = sheet('Emelt díjas számok megjelenítése', '<b class="hrt">Teljes</b><p>Ezt akkor válaszd ha minden adatot látni szeretnél. Teljes opció esetén a telefonszám mellett megjelenik az emelt díjas szolgáltatás neve, a szolgáltató és a hívás hossza vagy az adatforgalom is.</p>'
+    + '<b class="hrt">Nem teljes</b><p>Ezt akkor válaszd, ha a többi felhasználó nem járult hozzá az emelt díjas számok megjelenítéséhez. Nem teljes opció esetén ezek az adatok nem jelennek meg és a hívott emelt díjas számok számjegyei kitakarva láthatóak, így a díjszámításhoz szükséges adatok sem lesznek teljeskörűek, ha ahhoz a használt emelt díjas szolgáltatás adatainak pontos ismerete szükséges.</p>');
+  var pdf = document.createElement('div'); pdf.className = 'hrpdf';
+  pdf.innerHTML = '<p class="hrpdfh">Hívásrészletező</p><div class="hrdoc"><span class="hrbig">PDF</span><p class="hrmeta" data-hrm1></p><p class="hrmeta" data-hrm2></p><p class="hrmeta" data-hrm3></p>'
+    + '<table><thead><tr><th>Dátum</th><th>Hívott szám</th><th>Időtartam</th><th>Díj</th></tr></thead><tbody data-hrrows></tbody></table></div>'
+    + '<button type="button" class="fsbtn" data-hrclose>Bezár</button>';
+  document.querySelector('.app').appendChild(pdf);
+  pdf.querySelector('[data-hrclose]').addEventListener('click', function(){ pdf.classList.remove('on'); if (window.yBack) window.yBack('s-billdet'); else go('s-billdet'); });
+  sc.querySelector('[data-hrgo]').addEventListener('click', function(){
+    var ld = document.querySelector('.adload'), t = ld && ld.querySelector('.adldt'), old = t ? t.textContent : '';
+    var who = list()[pick], full = opt.num === 1;
+    pdf.querySelector('[data-hrm1]').textContent = 'Előfizetés: ' + who;
+    pdf.querySelector('[data-hrm2]').textContent = 'Számlázási időszak: ' + (bill ? bill.per : '');
+    pdf.querySelector('[data-hrm3]').textContent = 'Hívott számok: ' + (full ? 'teljes' : 'kitakart') + ' · Emelt díjas számok: ' + (opt.prem ? 'nem teljes' : 'teljes');
+    var R = [['10.14.','20 345 6789','3:12','0 Ft'],['10.16.','30 912 4410','0:45','0 Ft'],['10.19.','1 456 7700','12:03','0 Ft'],['10.23.','70 221 8835','1:58','0 Ft'],['11.02.','20 777 1203','6:30','0 Ft']];
+    pdf.querySelector('[data-hrrows]').innerHTML = R.map(function(r){ return '<tr><td>'+r[0]+'</td><td>+36 '+(full ? r[1] : r[1].replace(/\d{3}$/, '***'))+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>'; }).join('');
+    if (t) t.textContent = 'Beállítás folyamatban';
+    if (ld) ld.classList.add('on');
+    setTimeout(function(){ pdf.classList.add('on'); if (ld) ld.classList.remove('on'); if (t) t.textContent = old; }, 1600);
+  });
 })();
 </script>
 </body>
