@@ -8703,8 +8703,8 @@
     Array.prototype.slice.call(sc.querySelectorAll('[data-xslist]')).forEach(function(l){ l.hidden = l.getAttribute('data-xslist') !== kind; });
     sc.querySelector('[data-xslab]').hidden = kind === 'none';
     nsList();
-    /* HiperNet details: the active internet protection under its own card */
-    var na = document.querySelector('[data-nsact]'), al = Object.keys(NS).filter(function(k){ return nsActive[k]; });
+    /* HiperNet details: an active NetPajzs under its own card (Gyermekvédelem is not shown here) */
+    var na = document.querySelector('[data-nsact]'), al = nsActive.np ? ['np'] : [];
     if (na){ na.hidden = !al.length; na.querySelector('[data-nsactl]').innerHTML = al.map(function(k){ return '<label class="dtrow" for="s-nsdet" data-nsk="'+k+'"><i class="ti ti-shield dtic"></i><span class="n">'+NS[k].name+'</span><i class="ti ti-chevron-right chev"></i></label>'; }).join(''); }
   }
   document.addEventListener('click', function(e){
