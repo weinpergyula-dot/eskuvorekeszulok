@@ -1998,7 +1998,6 @@
   .nsdinfo p{ margin:0; font-size:12px; line-height:1.5; color:var(--navy); }
   .nsdcard [hidden]{ display:none !important; }
   /* NetPajzs filter settings: one save for all switches */
-  .nssscreen{ padding-bottom:100px !important; }
   .nssid{ cursor:default; }
   .nsscard{ margin-top:14px; padding:16px; border-radius:16px; background:#fff; }
   .nsscard > b, .nssh b{ font-size:13px; font-weight:700; line-height:1.35; color:var(--navy); }
@@ -2014,7 +2013,8 @@
   .nssscreen.ld .nsslist .nssrow > span:first-child::before{ content:''; display:block; width:58%; height:10px; border-radius:5px; background:#E6EAF0; }
   .nssscreen.ld .nsslist small{ visibility:hidden; }
   .nssscreen.ld .nsslist .ofsw{ opacity:.35; pointer-events:none; }
-  .nssfoot{ position:absolute; left:16px; right:16px; bottom:calc(20px + env(safe-area-inset-bottom)); }
+  .nssscreen{ padding-bottom:0 !important; }   /* sticky Mentés sits on the very bottom */
+  .nssfoot{ position:sticky; bottom:0; z-index:3; margin:16px -16px 0; padding:12px 16px calc(16px + env(safe-area-inset-bottom)); background:linear-gradient(rgba(239,243,246,0), #EFF3F6 30%); }
   .nssfoot .fsbtn.off{ background:#CDD4DC; color:#8592A6; pointer-events:none; }
   .nssscreen.busy .fsbtn{ background:#3E5670; pointer-events:none; }
   .nssscreen.busy .ofsw{ pointer-events:none; }
