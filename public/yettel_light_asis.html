@@ -1828,6 +1828,45 @@
   /* address search: "can't find your address" hint above the link */
   .adhelp{ position:relative; }
   .adtip{ position:absolute; left:50%; bottom:calc(100% + 6px); z-index:3; transform:translateX(-50%); padding:11px 14px; border-radius:10px; background:var(--navy); color:#fff; font-size:12px; font-weight:500; white-space:nowrap; pointer-events:none; animation:brfade .2s ease-out; }
+  /* Lead - Nem található cím: yettel.hu form opened in a webview */
+  .lwv{ position:absolute; inset:0; z-index:126; display:none; flex-direction:column; background:#fff; animation:xsup .28s cubic-bezier(.4,0,.2,1); }
+  .lwv.on{ display:flex; }
+  .lwvbar{ display:grid; grid-template-columns:40px 1fr 40px; align-items:center; padding:calc(14px + env(safe-area-inset-top)) 8px 8px; background:#F4F5F7; border-bottom:1px solid #E3E8EE; }
+  .lwvbar button{ display:flex; align-items:center; justify-content:center; width:36px; height:36px; border:none; background:none; color:var(--navy); cursor:pointer; }
+  .lwvbar button i{ font-size:22px; }
+  .lwvurl{ text-align:center; line-height:1.25; }
+  .lwvurl b{ display:block; font-size:10px; font-weight:800; letter-spacing:.08em; color:var(--navy); }
+  .lwvurl span{ font-size:11px; color:#2E9E4F; }
+  .lwvurl span i{ font-size:11px; vertical-align:-1px; }
+  .lwvbody{ flex:1; overflow-y:auto; scrollbar-width:none; }
+  .lwvbody::-webkit-scrollbar{ display:none; }
+  .lwvlogo{ padding:22px 20px 20px; border-radius:0 0 18px 18px; background:var(--lime); font-family:'Yettel'; font-size:34px; font-weight:800; letter-spacing:-.03em; color:var(--navy); }
+  .lwvin{ padding:0 18px 26px; }
+  .lwvh{ margin:22px 0 14px; text-align:center; font-family:'Yettel'; font-size:23px; font-weight:800; line-height:1.2; color:var(--navy); }
+  .lwvp{ margin:0 0 30px; text-align:center; font-size:13.5px; line-height:1.55; color:var(--navy); }
+  .lwvsec{ margin:0 0 16px; font-size:14px; font-weight:800; color:var(--navy); }
+  .lwvlbl{ display:flex; align-items:center; gap:5px; margin:0 0 8px; font-size:12px; font-weight:700; color:var(--navy); }
+  .lwvlbl i{ font-size:14px; font-weight:400; color:var(--mid); }
+  .lwvfld{ display:flex; align-items:center; margin:0 0 18px; border:1.5px solid #E3E8EE; border-radius:8px; background:#fff; }
+  .lwvfld input{ flex:1; min-width:0; padding:13px 14px; border:none; outline:none; background:none; font-family:inherit; font-size:14px; color:var(--navy); }
+  .lwvfld input::placeholder{ color:#9AA3BC; }
+  .lwvfld:focus-within{ border-color:var(--navy); }
+  .lwvfld.bad{ border-color:var(--red); }
+  .lwvpre{ padding:0 10px 0 14px; border-right:1px solid #E3E8EE; font-size:14px; color:var(--navy); }
+  .lwvhint{ margin:-10px 0 34px; font-size:12px; line-height:1.5; color:var(--mid); }
+  .lwvcons{ margin:16px 0 26px; font-size:12px; line-height:1.6; color:var(--navy); }
+  .lwvcons u{ font-weight:700; cursor:pointer; }
+  .lwvgo{ width:100%; padding:14px; border:none; border-radius:999px; background:var(--navy); color:#fff; font-family:'Yettel'; font-size:14px; font-weight:700; cursor:pointer; }
+  .lwvok{ display:none; margin:30px 0 10px; text-align:center; }
+  .lwvok i{ font-size:44px; color:var(--limed); }
+  .lwvok b{ display:block; margin:10px 0 6px; font-family:'Yettel'; font-size:18px; color:var(--navy); }
+  .lwvok p{ margin:0 0 22px; font-size:13px; line-height:1.5; color:var(--navy); }
+  .lwv.sent .lwvform{ display:none; }
+  .lwv.sent .lwvok{ display:block; }
+  .lwvfoot{ padding:34px 22px 40px; background:var(--navy); }
+  .lwvfoot .lwvflogo{ padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,.2); font-family:'Yettel'; font-size:34px; font-weight:800; letter-spacing:-.03em; color:var(--lime); }
+  .lwvfoot p{ margin:22px 0 4px; font-size:16px; font-weight:800; color:#fff; }
+  .lwvfoot span{ display:block; padding:9px 0; font-size:13px; color:rgba(255,255,255,.88); }
   .xsgo{ width:100%; padding:14px; border:none; border-radius:999px; background:#09223D; color:#fff; font-family:'Yettel'; font-weight:700; font-size:14px; cursor:pointer; }
   /* ===== Extra szolgáltatások: list screen ===== */
   .xsid{ display:flex; align-items:center; gap:16px; margin:-28px -16px 18px; padding:40px 26px 16px; background:#FFFFFF; border-radius:0 0 26px 26px; cursor:pointer;
@@ -9787,7 +9826,7 @@
    a "foff-<key>" class on .app and window.yFeat(key) tells whether one is on. */
 (function(){
   var STEPS = [
-    {k:'step3', t:'STEP3', f:[['tvaddon','TV addon manipuláció'],['isp','ISP váltás'],['hivresz','Hívásrészletező'],['nontelco','Non-telco SAP'],['netpajzs','Netpajzs'],['gyermek','Gyermekvédelem'],['idopont','Időpontmódosítás'],['szemadat','Személyes adatok mód.'],['lead','Lead management'],['arindex','Árindexálás'],['collszun','Collection (szüneteltetés)']]},
+    {k:'step3', t:'STEP3', f:[['tvaddon','TV addon manipuláció'],['isp','ISP váltás'],['hivresz','Hívásrészletező'],['nontelco','Non-telco SAP'],['netpajzs','Netpajzs'],['gyermek','Gyermekvédelem'],['idopont','Időpontmódosítás'],['szemadat','Személyes adatok mód.'],['leadcim','Lead - Nem található cím'],['leadhamar','Lead - Keress hamar'],['leadamikor','Lead - Keress amikor'],['arindex','Árindexálás'],['collszun','Collection (szüneteltetés)']]},
     {k:'step4', t:'STEP4', f:[['hfc','HFC portfólió'],['fullafter','FULL áras termékek after sales'],['collkorl','Collection (korlátozás)'],['trybuy','Try&Buy időtartam'],['statusz','Státuszfüggetlen (Cancelled CA)']]},
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
@@ -9884,9 +9923,47 @@
     }
     else if (e.target.closest('[data-ckrestart]')){ cart.classList.remove('on'); left = null; go(entry); }
   });
-  /* address search: "Nem találod a címed?" shows where to get help */
+  /* Lead - Nem található cím (Digital backlog): the yettel.hu form in a webview */
+  var lwv = document.createElement('div'); lwv.className = 'lwv';
+  function fld(lbl, ph, k, pre, info){ return '<p class="lwvlbl">'+lbl+' *'+(info ? ' <i class="ti ti-info-circle"></i>' : '')+'</p><div class="lwvfld" data-lwk="'+k+'">'+(pre ? '<span class="lwvpre">'+pre+'</span>' : '')+'<input type="'+(k === 'mail' ? 'email' : k === 'tel' || k === 'zip' ? 'tel' : 'text')+'" placeholder="'+ph+'"></div>'; }
+  lwv.innerHTML = '<div class="lwvbar"><button type="button" data-lwx aria-label="Bezárás"><i class="ti ti-x"></i></button>'
+    + '<div class="lwvurl"><b>(WEBVIEW)</b><span><i class="ti ti-lock"></i> www.yettel.hu</span></div>'
+    + '<button type="button" data-lwre aria-label="Újratöltés"><i class="ti ti-refresh"></i></button></div>'
+    + '<div class="lwvbody"><div class="lwvlogo">Yettel.</div><div class="lwvin">'
+    + '<h2 class="lwvh">Hiányzó cím bejelentése</h2>'
+    + '<p class="lwvp">Ha nem találod a címedet a listában, itt jelezheted nekünk. Add meg a címedet és az elérhetőségedet, és értesítünk, amint elérhető lesz nálad az otthoni internet.</p>'
+    + '<div class="lwvform"><p class="lwvsec">Címed</p>'
+    + fld('Irányítószám', '1234', 'zip') + fld('Település', 'Budapest', 'city') + fld('Cím', 'Alkotás utca 12. B ép. 2. em. 4.', 'addr')
+    + '<p class="lwvhint">Add meg a teljes címet: nem elég csak az utca vagy csak a házszám. Helyrajzi szám (hrsz.) is megadható.</p>'
+    + '<p class="lwvsec">Kapcsolattartási adatok</p>'
+    + fld('E-mail címed', 'pelda@email.com', 'mail', '', true) + fld('Telefonszámod', '20 345 6789', 'tel', '+36', true)
+    + '<p class="lwvcons">Szeretnék értesülni az otthoni internet szolgáltatásokkal kapcsolatos ajánlatokról és újdonságokról. A Értesítést kérek gombra kattintva elfogadom az <u>Adatkezelési tájékoztató</u>ban foglaltakat.</p>'
+    + '<button type="button" class="lwvgo" data-lwgo>Értesítést kérek</button></div>'
+    + '<div class="lwvok"><i class="ti ti-circle-check"></i><b>Köszönjük a bejelentést!</b><p>Értesítünk, amint elérhető lesz nálad az otthoni internet.</p><button type="button" class="lwvgo" data-lwx>Bezárás</button></div>'
+    + '</div><div class="lwvfoot"><div class="lwvflogo">Yettel.</div><p>Yettel</p><span>Rólunk</span><span>Céginformációk</span><span>Sajtóközlemények</span><span>Prosuli</span></div></div>';
+  document.querySelector('.app').appendChild(lwv);
+  var LWOK = {zip:/^\d{4}$/, city:/\S{2}/, addr:/\S+\s+\S+/, mail:/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, tel:/^\d{9}$/};
+  function lwReset(){
+    lwv.classList.remove('sent'); lwv.querySelector('.lwvbody').scrollTop = 0;
+    Array.prototype.forEach.call(lwv.querySelectorAll('.lwvfld'), function(f){ f.classList.remove('bad'); f.querySelector('input').value = ''; });
+  }
+  lwv.addEventListener('click', function(e){
+    if (e.target.closest('[data-lwx]')){ lwv.classList.remove('on'); return; }
+    if (e.target.closest('[data-lwre]')){ lwReset(); return; }
+    if (e.target.closest('[data-lwgo]')){
+      var ok = true;
+      Array.prototype.forEach.call(lwv.querySelectorAll('.lwvfld'), function(f){
+        var v = f.querySelector('input').value.trim(), k = f.getAttribute('data-lwk'), good = LWOK[k].test(k === 'tel' ? v.replace(/\D/g, '') : v);
+        f.classList.toggle('bad', !good); if (!good) ok = false;
+      });
+      if (ok){ lwv.classList.add('sent'); lwv.querySelector('.lwvbody').scrollTop = 0; }
+    }
+  });
+  lwv.addEventListener('input', function(e){ var f = e.target.closest('.lwvfld'); if (f) f.classList.remove('bad'); });
+  /* address search: "Nem találod a címed?" opens the lead form when that backlog item is on, otherwise shows where to get help */
   document.addEventListener('click', function(e){
     var h = e.target.closest && e.target.closest('.adhelp'); if (!h) return;
+    if (window.yFeat && window.yFeat('leadcim')){ lwReset(); lwv.classList.add('on'); return; }
     var t = h.querySelector('.adtip');
     if (!t){ t = document.createElement('span'); t.className = 'adtip'; t.textContent = 'Hívd a 1220-at, segítünk megoldani!'; h.appendChild(t); }
     clearTimeout(h._tt); h._tt = setTimeout(function(){ t.remove(); }, 3000);
