@@ -9863,6 +9863,15 @@
     if (!e.target.closest) return;
     var x = e.target.closest('.adx');
     if (x && FLOW[cur()]){ e.preventDefault(); exitTo = x.getAttribute('for'); leave.classList.add('on'); return; }
+    /* back arrows inside the journey: from the internet offers it is leaving the purchase,
+       further on it is always the previous journey step (also after coming back to the cart) */
+    var bk = e.target.closest('.dhead label.icon-btn');
+    if (bk && FLOW[cur()] && bk.querySelector('.ti-arrow-left')){
+      e.preventDefault();
+      if (cur() === 's-offsvc'){ var ax = document.querySelector('[data-screen="offers-svc"] .adx'); exitTo = ax ? ax.getAttribute('for') : 's-tshop'; leave.classList.add('on'); }
+      else go(bk.getAttribute('for'));
+      return;
+    }
     var l = e.target.closest('label[for="s-addrsvc"], label[for="s-ctvaddr"]');
     if (l && left && !l.hasAttribute('data-ofnew') && !l.hasAttribute('data-ofback') && !l.hasAttribute('data-adback')){
       e.preventDefault(); entry = l.getAttribute('for'); cart.classList.add('on');
