@@ -2403,6 +2403,12 @@
   .docbtn.busy span{ display:none; } .docbtn.busy .docspin{ display:block; }
   .dexic{ display:inline-flex; width:52px; height:52px; margin-bottom:18px; border-radius:50%; background:#FDE4D6; align-items:center; justify-content:center; }
   .dexic i{ font-size:28px; color:#F0603C; }
+  /* sales journey: leave confirmation and the "something is left in your cart" notice */
+  .ckcard{ min-height:440px; display:flex; flex-direction:column; justify-content:center; }
+  .ckcard .cpgo{ margin-top:auto; }
+  .ckbody{ margin:auto 0; padding:24px 0 30px; }
+  .ckwarn{ display:inline-flex; width:58px; height:58px; margin-bottom:16px; border-radius:50%; background:#FFF4CC; align-items:center; justify-content:center; font-family:'Yettel'; font-size:30px; font-weight:800; color:#F5B700; }
+  .ckcart{ display:block; width:52px; height:52px; margin:0 auto 26px; }
 
   /* ===== active filter count + no results ===== */
   .bhfbtn{ position:relative; }
@@ -7570,6 +7576,28 @@
       <button class="cpgo" type="button" data-docerrx>Bezár</button>
     </div>
   </div>
+  <div class="wip" id="ckleave">
+    <div class="wipcard cpcard ckcard">
+      <div class="ckbody">
+        <span class="ckwarn">!</span>
+        <p class="cpt">Biztosan kilépsz?</p>
+        <p class="cps">Ha most kilépsz, azzal megszakítod a vásárlást. A megadott adatok nem kerülnek mentésre, és elölről kell kezdened a vásárlást.</p>
+      </div>
+      <button class="cpgo" type="button" data-ckstay>Folytatom a vásárlást</button>
+      <button class="cpx" type="button" data-ckleave>Kilépek</button>
+    </div>
+  </div>
+  <div class="wip" id="ckcart">
+    <div class="wipcard cpcard ckcard">
+      <div class="ckbody">
+        <svg class="ckcart" viewBox="0 0 52 52" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h7l3 10" stroke="#9AE000" stroke-width="5"/><path d="M14 16h32l-5 14" stroke="#9AE000" stroke-width="5"/><path d="M41 30l-3 7H19l-5-21" stroke="#09223D" stroke-width="5"/><circle cx="21" cy="46" r="3" fill="#09223D"/><circle cx="35" cy="46" r="3" fill="#09223D"/></svg>
+        <p class="cpt">Hoppá, valami a kosaradban maradt</p>
+        <p class="cps">Fejezd be a vásárlást, vagy kattints az Újrakezdem gombra, azzal törlődik a meglévő kosarad, és új vásárlási folyamatot indíthatsz.</p>
+      </div>
+      <button class="cpgo" type="button" data-ckresume>Folytatom a vásárlást</button>
+      <button class="cpx" type="button" data-ckrestart>Újrakezdem</button>
+    </div>
+  </div>
   <div class="lisplash" id="lisplash"><i class="ti ti-settings ligear"></i><p class="lit">Belépés folyamatban...</p><p class="lis">Megkezdtük az inicializálást</p></div>
   <div class="losplash" id="losplash"><span class="lologo">Yettel<i></i></span></div>
   <div class="wip" id="devlist">
@@ -9794,6 +9822,38 @@
   pop.addEventListener('click', function(e){ if (e.target === pop || e.target.closest('[data-dlclose]')) close(); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
   paint();
+})();
+</script>
+<script>
+/* sales journey: closing it (X) asks first; what was left behind stays in the cart for the rest
+   of the session and starting a new address search offers to carry on from there */
+(function(){
+  var FLOW = {'s-offsvc':1,'s-tvoff':1,'s-tvext':1,'s-bconsent':1,'s-bappt':1,'s-bsum':1};
+  var leave = document.getElementById('ckleave'), cart = document.getElementById('ckcart');
+  if (!leave || !cart) return;
+  var left = null, exitTo = null, entry = null;
+  function go(id){ var r = document.getElementById(id); if (r){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); } }
+  function cur(){ var r = document.querySelector('input[name="nav"]:checked'); return r ? r.id : ''; }
+  document.addEventListener('click', function(e){
+    if (!e.target.closest) return;
+    var x = e.target.closest('.adx');
+    if (x && FLOW[cur()]){ e.preventDefault(); exitTo = x.getAttribute('for'); leave.classList.add('on'); return; }
+    var l = e.target.closest('label[for="s-addrsvc"], label[for="s-ctvaddr"]');
+    if (l && left && !l.hasAttribute('data-ofnew') && !l.hasAttribute('data-ofback') && !l.hasAttribute('data-adback')){
+      e.preventDefault(); entry = l.getAttribute('for'); cart.classList.add('on');
+    }
+  }, true);
+  leave.addEventListener('click', function(e){
+    if (e.target === leave || e.target.closest('[data-ckstay]')) leave.classList.remove('on');
+    else if (e.target.closest('[data-ckleave]')){ left = cur(); leave.classList.remove('on'); go(exitTo); }
+  });
+  cart.addEventListener('click', function(e){
+    if (e.target === cart) cart.classList.remove('on');
+    else if (e.target.closest('[data-ckresume]')){ cart.classList.remove('on'); go(left); left = null; }
+    else if (e.target.closest('[data-ckrestart]')){ cart.classList.remove('on'); left = null; go(entry); }
+  });
+  /* an order placed or a logout ends what was in the cart */
+  document.addEventListener('change', function(e){ if (e.target.id === 's-bok' || e.target.id === 's-welcome') left = null; });
 })();
 </script>
 </body>
