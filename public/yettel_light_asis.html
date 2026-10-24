@@ -2736,7 +2736,7 @@
   .tvbic{ font-size:24px; color:var(--navy); }
   .tvblnk{ display:inline-block; margin-top:12px; font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; cursor:pointer; }
   #wip{ z-index:128; }   /* also above the full-screen sheets */
-  /* Fejlesztések: dev feature switches behind the search icon, typed in line by line */
+  /* Digital backlog: dev feature switches behind the search icon, typed in line by line */
   #devlist{ z-index:127; }
   .dlcard{width:100%; max-width:320px; max-height:100%; display:flex; flex-direction:column; text-align:left; border-radius:26px; padding:20px 18px 16px; background:#FFFFFF; border:1px solid var(--line); box-shadow:0 30px 60px -28px rgba(20,36,94,.45);}
   .dlhead{display:flex; align-items:center; justify-content:space-between; margin:0 0 10px;}
@@ -7574,7 +7574,7 @@
   <div class="losplash" id="losplash"><span class="lologo">Yettel<i></i></span></div>
   <div class="wip" id="devlist">
     <div class="dlcard">
-      <div class="dlhead"><p>Fejlesztések</p><button type="button" class="dlx" data-dlclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
+      <div class="dlhead"><p>Digital backlog</p><button type="button" class="dlx" data-dlclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
       <div class="dlbody"></div>
     </div>
   </div>
@@ -8954,7 +8954,7 @@
   });
 
   var lastA = null;
-  /* a Fejlesztések switch changed: draw the offers again (Full prices may come or go) */
+  /* a Digital backlog switch changed: draw the offers again (Full prices may come or go) */
   document.addEventListener('yfeat', function(){ lastA = null; });
   function render(){
     var a = window.yAddr || {scenario:'both', address:'8200 Veszprém, Tölgyfa u. 4'};
@@ -9731,7 +9731,7 @@
 })();
 </script>
 <script>
-/* Fejlesztések popup (search icon): features grouped by step, each with an on/off switch,
+/* Digital backlog popup (search icon): features grouped by step, each with an on/off switch,
    a step switch flips its whole group. Every page load starts with all of them off; off features get
    a "foff-<key>" class on .app and window.yFeat(key) tells whether one is on. */
 (function(){
