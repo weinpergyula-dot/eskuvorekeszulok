@@ -2006,6 +2006,15 @@
   .nscfbox b{ display:block; font-size:13px; font-weight:700; color:var(--navy); }
   .nscfbox .ofpromo{ display:inline-block; margin:8px 0 0; }
   .nscfbox .ofpromo[hidden]{ display:none; }
+  .nscfrow{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .nscf:not(.act) .nscfrow .nsdtag, .nscf:not(.act) .nscfpr{ display:none; }
+  .nscfpr{ margin:12px 0 0; font-size:13px; color:var(--navy); }
+  .nscfpr b{ display:inline; font-family:'Yettel'; font-size:22px; font-weight:800; }
+  .nscfoff{ margin:20px 0 0; }
+  .nscfoff[hidden]{ display:none; }
+  .nscfoff b{ display:block; font-size:12.5px; font-weight:700; color:var(--navy); }
+  .nscfoff p{ display:flex; align-items:center; gap:10px; margin:10px 0 0; font-size:13px; color:var(--navy); }
+  .nscfoff p i{ font-size:20px; color:#F0603C; }
   .nscfa{ margin:12px 0 0; font-size:11.5px; line-height:1.5; color:var(--mid); }
   .nscfa u{ color:var(--navy); }
   .nscff{ margin-top:auto; }
@@ -8575,10 +8584,12 @@
   function nsSave(){ try { localStorage.setItem('yl-ns', JSON.stringify({np:nsActive.np, kid:nsActive.kid, until:nsUntil})); } catch(e){} }
   /* order / cancel: confirmation sheet (cancel only), loader, then the result page */
   var nscf = document.createElement('div'); nscf.className = 'nscf';
-  nscf.innerHTML = '<div class="nscfh"><b>Biztosan lemondod az alábbi szolgáltatást?</b><button type="button" data-nscfx aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
-    + '<div class="nscfbox"><b data-nscfn></b><span class="ofpromo" data-nscfp></span></div>'
-    + '<p class="nscfa">A „Lemondom” gombra kattintva elfogadod az <u>Általános Szerződési Feltételeket</u> (ÁSZF).</p>'
-    + '<div class="nscff"><button type="button" class="fsbtn" data-nscfgo>Lemondom</button><button type="button" class="nsdstop" data-nscfx>Mégsem</button></div>';
+  nscf.innerHTML = '<div class="nscfh"><b data-nscft></b><button type="button" data-nscfx aria-label="Bezárás"><i class="ti ti-x"></i></button></div>'
+    + '<div class="nscfbox"><div class="nscfrow"><b data-nscfn></b><span class="nsdtag" data-nscfren>Megújuló</span></div><p class="nscfpr" data-nscfpr></p><span class="ofpromo" data-nscfp></span></div>'
+    + '<div class="nscfoff" data-nscfoff><b>Az alábbi szolgáltatások lemondásra kerülnek:</b><p><i class="ti ti-shield-x"></i><span data-nscfoffn></span></p></div>'
+    + '<p class="nscfa" data-nscfa></p>'
+    + '<div class="nscff"><button type="button" class="fsbtn" data-nscfgo></button><button type="button" class="nsdstop" data-nscfx>Mégsem</button></div>';
+  var nsMode = 'stop';
   var nsres = document.createElement('div'); nsres.className = 'nsres';
   nsres.innerHTML = '<div class="nsresin"><span class="nsresic"><i class="ti"></i></span><h2 data-nsrest></h2><p data-nsress></p>'
     + '<div class="nsresbox"><b>Amit tudnod érdemes</b><p><i class="ti ti-info-circle"></i><span>Rendelésed száma: <b data-nsresno></b></span></p><p><i class="ti ti-info-circle"></i><span>A dokumentumaidat a Yettel alkalmazásban, a Dokumentumok menüpont alatt találod majd meg.</span></p></div></div>'
@@ -8609,15 +8620,34 @@
     nscf.querySelector('[data-nscfn]').textContent = x.name;
     /* try & buy still running: the free period is shown on the card */
     pr.hidden = !(x.promo && nsUntil); pr.textContent = '100% havidíj kedvezmény ' + (nsUntil || '') + '-ig';
+    nsSheet('stop');
+  }
+  /* activation: after the loader a confirmation, listing the other protection that gets cancelled */
+  function nsAskAct(){
+    var x = NS[nsCur], o = nsCur === 'np' ? 'kid' : 'np', pr = nscf.querySelector('[data-nscfp]');
+    nscf.querySelector('[data-nscfn]').textContent = x.name;
+    nscf.querySelector('[data-nscfpr]').innerHTML = '<b>'+x.price+' Ft</b> / hó';
+    pr.hidden = !x.promo; pr.textContent = '100% havidíj kedvezmény 30 napig';
+    nscf.querySelector('[data-nscfoff]').hidden = !nsActive[o]; nscf.querySelector('[data-nscfoffn]').textContent = NS[o].name;
+    var ld = document.querySelector('.adload'); if (ld) ld.classList.add('on');
+    setTimeout(function(){ nsSheet('act'); if (ld) ld.classList.remove('on'); }, 1600);
+  }
+  function nsSheet(m){
+    nsMode = m; var act = m === 'act';
+    nscf.classList.toggle('act', act);
+    if (!act) nscf.querySelector('[data-nscfoff]').hidden = true;
+    nscf.querySelector('[data-nscft]').textContent = act ? 'Aktiválod az alábbi szolgáltatást?' : 'Biztosan lemondod az alábbi szolgáltatást?';
+    nscf.querySelector('[data-nscfgo]').textContent = act ? 'Megerősítem' : 'Lemondom';
+    nscf.querySelector('[data-nscfa]').innerHTML = 'A „'+(act ? 'Megerősítem' : 'Lemondom')+'” gombra kattintva elfogadod az <u>Általános Szerződési Feltételeket</u> (ÁSZF).';
     nscf.classList.add('on');
   }
   /* demo: holding Lemondom (0,7 s) shows the failed cancellation */
   var nsHold = null, nsHeld = false;
-  nscf.addEventListener('pointerdown', function(e){ if (!e.target.closest('[data-nscfgo]')) return; nsHeld = false; nsHold = setTimeout(function(){ nsHeld = true; nsRun(false, true); }, 700); });
+  nscf.addEventListener('pointerdown', function(e){ if (nsMode !== 'stop' || !e.target.closest('[data-nscfgo]')) return; nsHeld = false; nsHold = setTimeout(function(){ nsHeld = true; nsRun(false, true); }, 700); });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(function(t){ nscf.addEventListener(t, function(){ clearTimeout(nsHold); }); });
   nscf.addEventListener('click', function(e){
     if (e.target.closest('[data-nscfx]')){ nscf.classList.remove('on'); return; }
-    if (e.target.closest('[data-nscfgo]') && !nsHeld) nsRun(false);
+    if (e.target.closest('[data-nscfgo]') && !nsHeld) nsRun(nsMode === 'act');
   });
   nsres.addEventListener('click', function(e){
     if (!e.target.closest('[data-nsreshome]')) return;
@@ -8673,7 +8703,7 @@
     var to = e.target.closest('[data-xsto]');
     if (to){ SUBS.forEach(function(x){ if (x.id === to.getAttribute('data-xsto')) cur = x; }); apply(); return; }
     var nk = e.target.closest('[data-nsk]'); if (nk){ nsDet(nk.getAttribute('data-nsk')); return; }
-    if (e.target.closest('[data-nsdgo]')){ nsRun(true); return; }
+    if (e.target.closest('[data-nsdgo]')){ nsAskAct(); return; }
     if (e.target.closest('[data-nsdstop]')){ nsAsk(); return; }
     var nm = e.target.closest('[data-screen="ns-det"] [data-nsdmore]'); if (nm){ if (window.yNsInfo) window.yNsInfo(nm.getAttribute('data-nsdmore')); return; }
     if (e.target.closest('[data-xsheet]')){ open(); return; }
