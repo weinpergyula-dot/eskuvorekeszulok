@@ -3461,8 +3461,20 @@
   .exfb{ display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; background:var(--lime); font-size:9px; font-weight:700; color:var(--navy); vertical-align:1px; }
   .expr s{ display:block; font-size:10px; color:#8592A6; text-align:right; }
 
-  .ofpromos{ display:flex; flex-wrap:wrap; gap:6px; margin:auto 12px 8px; }
+  .ofpromos{ display:flex; flex-direction:column; align-items:flex-start; gap:6px; margin:auto 12px 8px; }
   .ofpromos .ofpromo{ margin:0; }
+  /* add-ons with Full: the rate pill, the struck list price and the new price in the price column */
+  .expr .exfp{ display:inline-block; margin-bottom:3px; padding:2px 8px; border-radius:999px; background:var(--lime); font-size:11px; font-weight:700; color:var(--navy); }
+  .expr.fl{ text-align:right; } .expr.fl s{ font-size:11px; } .expr.fl b{ display:block; font-weight:400; }
+  /* "Jár neked a Full kedvezmény!" popup over the offers, right after the address search */
+  .fpcard{ max-width:320px; padding:18px 18px 16px; display:flex; flex-direction:column; max-height:calc(100% - 20px); }
+  .fpbody{ flex:1; min-height:0; max-height:400px; overflow-y:auto; padding:0 4px; margin-bottom:16px; }
+  .fpimg{ display:block; width:170px; height:auto; margin:0 auto 10px; }
+  .fptag{ display:inline-block; margin-bottom:10px; padding:2px 10px; border-radius:999px; background:var(--lime); font-size:10px; font-weight:700; letter-spacing:.03em; color:var(--navy); }
+  .fpcard .cpt{ font-size:19px; line-height:1.3; margin-bottom:12px; }
+  .fpcard .cps{ margin:0 0 14px; font-size:13px; line-height:1.5; }
+  .fpcard .cps b{ font-weight:700; }
+  .fpmore{ display:inline-block; margin:4px 0 6px; font-size:13px; font-weight:700; color:var(--navy); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
   .ofpromo.offp{ background:var(--lime); color:var(--navy); font-weight:700; }
 
   /* banner carousel with a pager: dots, swipe, autoplay */
@@ -9871,7 +9883,9 @@
   function num(x){ return typeof x === 'number' ? x : +String(x).replace(/\D/g, ''); }
   function netNow(p){ var f = fPct(), v = num(p.price); return f ? Math.round(v * (100 - f) / 100) : v; }
   function tvNow(v){ return fPct() ? Math.round(num(v) * 0.85) : num(v); }
-  function fullBits(full, now, pct){ return {old: pct ? '<s>'+fmt(full)+' Ft</s>' : ''}; }
+  /* with Full: the list price line on top, the promo period price is discounted too */
+  function fullHead(full, pct){ return pct ? '<p>'+fmt(full)+' Ft helyett Full kedvezménnyel</p>' : ''; }
+  function fullFirst(first, pct){ return pct ? first.replace(/<b>([\d ]+) Ft/, function(m, v){ return '<b>'+fmt(Math.round(num(v) * (100 - pct) / 100))+' Ft'; }) : first; }
   /* "why Full" row for the detail sheets */
   function fullWhy(kind){
     var pc = fPct(); if (!pc) return '';
@@ -9889,8 +9903,8 @@
       + (p.t === 'fbb' ? FBB : FWA).map(function(f){ return '<div class="offt"><i class="ti '+f[0]+'"></i><span><b>'+f[1]+'</b>'+(f[2] ? '<small>'+f[2]+'</small>' : '')+'</span></div>'; }).join('')
       + '<span class="ofdet" data-ofdet>Részletek</span>'
       + '<div class="ofpromos"><span class="ofpromo">'+p.promo+'</span>'+(fPct() ? '<span class="ofpromo offp">'+fPct()+'% Full kedvezmény</span>' : '')+'</div>'
-      + (function(){ var pc = fPct(), fb = fullBits(num(p.price), netNow(p), pc, 'net');
-          return '<div class="ofprice"><p>'+p.first+'</p><div class="ofbig">'+fb.old+'<b>'+fmt(netNow(p))+'</b><span>Ft<small>/hó</small></span></div><p>e-Komfort csomaggal, 12 hónap hűséggel</p>'; })()
+      + (function(){ var pc = fPct();
+          return '<div class="ofprice">'+fullHead(num(p.price), pc)+'<p>'+fullFirst(p.first, pc)+'</p><div class="ofbig"><b>'+fmt(netNow(p))+'</b><span>Ft<small>/hó</small></span></div><p>e-Komfort csomaggal, 12 hónap hűséggel</p>'; })()
       + (canSel ? '<button type="button" class="ofbtn" data-ofsel></button>' : '<button type="button" class="ofbtn" data-ofcb>Visszahívást kérek</button>')
       + '</div></div>';
   }
@@ -9946,7 +9960,7 @@
   });
 
   var lastA = null;
-  /* a Digital backlog switch changed: draw the offers again (Full prices may come or go) */
+  /* a Digital backlog switch changed: draw the offers again */
   document.addEventListener('yfeat', function(){ lastA = null; });
   function render(){
     var a = window.yAddr || {scenario:'both', address:'8200 Veszprém, Tölgyfa u. 4'};
@@ -9973,6 +9987,27 @@
   /* the footer only sticks once the page has been scrolled to its end */
   sc.addEventListener('scroll', function(){ if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) sc.classList.add('stk'); });
   document.addEventListener('change', function(e){ if (e.target && e.target.id === 's-offsvc') render(); });
+  /* Full eligible (by the Full rules): once the offers have loaded after the address search, a popup over the tariffs */
+  var fp = document.createElement('div'); fp.className = 'wip'; fp.id = 'fullpop';
+  fp.innerHTML = '<div class="wipcard cpcard fpcard"><div class="fpbody"><img class="fpimg" src="yettel/full-congrats.webp" alt=""><span class="fptag">GRATULÁLUNK</span>'
+    + '<p class="cpt">Jár neked a Full kedvezmény!</p>'
+    + '<p class="cps">Az otthoni internet vásárlásod után <b data-fppct></b> kaphatsz meglévő mobil és internet szolgáltatásaidra.</p>'
+    + '<p class="cps">További információkért görgess lejjebb!</p>'
+    + '<p class="cps">A Yettel Full egy csomagajánlat. Minél több mobil és otthoni szolgáltatásod van, annál nagyobb kedvezményt kaphatsz. Így 15, 20 vagy akár 30% havidíjkedvezményt is elérhetsz. Ráadásul csomagon belül díjmentesen hívhatjátok egymást, és 15% kedvezmény jár minden Yettel TV vagy streaming előfizetéshez is.<br>A kedvezmények Yettel Full aktiválással járnak neked. Ezt ezzel a vásárlásoddal be is aktiváljuk, amennyiben korábban még nem aktiváltuk.</p>'
+    + '<span class="fpmore" data-fpmore>További részletek</span></div>'
+    + '<button class="cpgo" type="button" data-fpgo>Tovább az ajánlatokhoz</button></div>';
+  app.appendChild(fp);
+  fp.addEventListener('click', function(e){
+    if (e.target === fp || e.target.closest('[data-fpgo]')) fp.classList.remove('on');
+    else if (e.target.closest('[data-fpmore]')){ var p = list[selI]; fullSheet(fPct(), p ? [['ti-home-signal', p.name, fPct()]] : []); }
+  });
+  document.addEventListener('change', function(e){
+    if (!e.target || e.target.id !== 's-offsvc' || !e.target.checked || lastA === fp._a) return;
+    fp._a = lastA; if (!fPct()) return;
+    fp.querySelector('[data-fppct]').textContent = fPct() + '% kedvezményt';
+    fp.querySelector('.fpbody').scrollTop = 0;
+    setTimeout(function(){ fp.classList.add('on'); }, 350);
+  });
 
   /* Részletek sheet */
   var od = document.createElement('div'); od.className = 'fsov odov';
@@ -10034,8 +10069,8 @@
       + (t.strm ? '<div class="offt"><i class="ti ti-cast"></i><span><b>Díjmentes RTL+ Active, TV2 Play Prémium</b></span></div>' : '')
       + '<span class="ofdet" data-tvdet>Csatornák és részletek</span>'
       + '<div class="ofpromos"><span class="ofpromo">100% havidíj kedvezmény 30 napig</span>'+(fPct() ? '<span class="ofpromo offp">15% Full kedvezmény</span>' : '')+'</div>'
-      + (function(){ var pc = fPct() ? 15 : 0, fb = fullBits(t.price, tvNow(t.price), pc, 'tv');
-          return '<div class="ofprice"><p>az első 30 napban <b>0 Ft/hó</b> utána</p><div class="ofbig">'+fb.old+'<b>'+fmt(tvNow(t.price))+'</b><span>Ft<small>/hó</small></span></div>'; })()
+      + (function(){ var pc = fPct() ? 15 : 0;
+          return '<div class="ofprice">'+fullHead(num(t.price), pc)+'<p>az első 30 napban <b>0 Ft/hó</b> utána</p><div class="ofbig"><b>'+fmt(tvNow(t.price))+'</b><span>Ft<small>/hó</small></span></div>'; })()
       + '<button type="button" class="ofbtn" data-tvsel></button></div></div>';
   }
   function tvMark(i){
@@ -10221,11 +10256,10 @@
     var ld = document.querySelector('.adload'), t = tlist[tSel];
     hbo = 0;
     Array.prototype.forEach.call(esc.querySelectorAll('[data-xp]'), function(x){
-      var c = x.closest('.excard'), v = +x.getAttribute('data-xp'), nw = tvNow(v), b = c.querySelector('.exmid b');
+      var c = x.closest('.excard'), v = +x.getAttribute('data-xp'), nw = tvNow(v);
       x.checked = false; c.classList.remove('on'); x.setAttribute('data-xpe', nw);
-      c.querySelector('.expr').innerHTML = (nw !== v ? '<s>'+fmt(v)+' Ft/hó</s>' : '') + fmt(nw) + ' Ft/hó';
-      var tag = b.querySelector('.exfb'); if (tag) tag.remove();
-      if (nw !== v) b.insertAdjacentHTML('beforeend', '<span class="exfb">-15% Full</span>');
+      var pr = c.querySelector('.expr'); pr.classList.toggle('fl', nw !== v);
+      pr.innerHTML = nw !== v ? '<span class="exfp">-15%</span><s>'+fmt(v)+' Ft / hó</s><b>'+fmt(nw)+' Ft/hó</b>' : fmt(nw) + ' Ft/hó';
     });
     /* TV Plus / Basic: HBO Max + HBO Pak, TV2 and RTL+ included; no TV or TV Mini: HBO Max and TV2 Play Prémium to buy */
     esc.classList.toggle('lite', !t.strm);
@@ -10379,8 +10413,8 @@
   var EXIST = [['ti-phone-call','+36 20 290 7566','Prime Plus 2025','m'],['ti-phone-call','+36 20 290 7430','Prime Plus 2024','m'],
     ['ti-home-signal','HiperNet L','8200 Veszprém, Tölgyfa u. 4','n'],['ti-device-tv','Yettel TV Basic','','t']];
   function fullPct(guest){
-    /* STEP4 FULL áras termékek after sales switched off: no Full prices anywhere in the sales flow */
-    if (guest || (window.yFeat && !window.yFeat('fullafter'))) return 0;
+    /* standard sales flow: every logged-in customer is checked against the Full rules */
+    if (guest) return 0;
     var cnt = EXIST.filter(function(e){ return e[3] !== 't'; }).length + 1;
     return cnt >= 4 ? 30 : cnt === 3 ? 20 : cnt === 2 ? 15 : 0;
   }
@@ -10427,16 +10461,18 @@
   function fullRow(e, pc, nw){
     return '<div class="fullit"><span class="fullic'+(nw ? ' nw' : '')+'"><i class="ti '+e[0]+'"></i></span><div>'+e[1]+(e[2] && !nw ? '<small>'+e[2]+'</small>' : '')+'</div><span class="fullpc">-'+pc+'%</span></div>';
   }
-  sm.querySelector('[data-smfull]').addEventListener('click', function(){
+  /* Full details sheet: existing services with the rate, the new ones of this order */
+  function fullSheet(pct, nw){
     sheet('Jár neked a Full kedvezmény!', '<div class="fullimg">Full</div>'
       + '<p class="gsp">Minél több mobil- és otthoni internet szolgáltatásod van, annál több kedvezmény jár!</p>'
       + '<p class="gsh">Elérhető kedvezményeid</p><p class="gsp">Az <b>otthoni internet vásárlásod után</b> az alábbi Full havidíjkedvezményeket kapod az előfizetési díjaidból.</p>'
-      + '<p class="fullsub">Meglévő szolgáltatásaidra:</p><div class="fulllist">' + EXIST.map(function(e){ return fullRow(e, e[3] === 't' ? 15 : smPct); }).join('') + '</div>'
-      + '<p class="fullsub">Új szolgáltatásaidra:</p><div class="fulllist">' + smNew.map(function(e){ return fullRow(e, e[2], true); }).join('') + '</div>'
+      + '<p class="fullsub">Meglévő szolgáltatásaidra:</p><div class="fulllist">' + EXIST.map(function(e){ return fullRow(e, e[3] === 't' ? 15 : pct); }).join('') + '</div>'
+      + '<p class="fullsub">Új szolgáltatásaidra:</p><div class="fulllist">' + nw.map(function(e){ return fullRow(e, e[2], true); }).join('') + '</div>'
       + '<div class="gsacc card"><button type="button" class="gsaccb"><span>Miért jár neked a Full kedvezmény?</span><i class="ti ti-chevron-down"></i></button>'
       + '<div class="gsaccp"><p>Több szolgáltatás több kedvezmény!</p><p>A Yettel Full egy csomagajánlat. Minél több mobil és otthoni internet szolgáltatásod van, annál nagyobb kedvezményt kaphatsz. Így 15, 20 vagy akár 30% havidíjkedvezményt is elérhetsz. Ráadásul csomagon belül díjmentesen hívhatjátok egymást és 15% kedvezmény jár minden Yettel TV vagy streaming előfizetéshez is.</p><p>A kedvezmények Yettel Full aktiválással járnak neked. Ezt ezzel a vásárlásoddal be is aktiváljuk neked (ha korábban még nem aktiváltuk).</p></div></div>',
       '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
-  });
+  }
+  sm.querySelector('[data-smfull]').addEventListener('click', function(){ fullSheet(smPct, smNew); });
   function smIdx(){
     sm.querySelector('[data-smisp]').hidden = !((window.yAddr || {}).taken && ispOn());
     sm.querySelector('[data-smidx]').hidden = !(window.yFeat && window.yFeat('arindex'));
@@ -10835,7 +10871,7 @@
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
   /* already built in the demo: marked with a "Kész" tag */
-  var DONE = {isp:1, leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, fullafter:1, arindex:1, fulldash:1, fullcsom:1, fullmegt:1};
+  var DONE = {isp:1, leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, arindex:1, fulldash:1, fullcsom:1, fullmegt:1};
   /* features on the same page move together */
   var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom', netpajzs:'gyermek', gyermek:'netpajzs'};
   var app = document.querySelector('.app'), pop = document.getElementById('devlist');
