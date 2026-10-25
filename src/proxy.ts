@@ -1,55 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-/**
- * Basic-Auth gate for the Yettel mockup previews: the standalone static pages
- * (/yettel_dark, /yettel_light and their _eng and _cz pairs — served as static
- * HTML from /public) and the /yettel_web Next route (including its subpaths).
- *
- * Any username is accepted; only the shared preview password is checked.
- * Handled at the very top of `proxy` so the Supabase session logic below is
- * never reached for these paths.
- */
-const PREVIEW_PASSWORD = "Teszt1234!";
-const PREVIEW_REALM = "Yettel preview";
-const PREVIEW_PATHS = new Set([
-  "/yettel_dark",
-  "/yettel_light",
-  "/yettel_dark_eng",
-  "/yettel_light_eng",
-  "/yettel_dark_cz",
-  "/yettel_light_cz",
-  "/yettel_light_asis",
-  "/yettel_dark.html",
-  "/yettel_light.html",
-  "/yettel_dark_eng.html",
-  "/yettel_light_eng.html",
-  "/yettel_dark_cz.html",
-  "/yettel_light_cz.html",
-  "/yettel_light_asis.html",
-]);
-
-function previewUnauthorized(): NextResponse {
-  return new NextResponse("Hitelesítés szükséges.", {
-    status: 401,
-    headers: {
-      "WWW-Authenticate": `Basic realm="${PREVIEW_REALM}", charset="UTF-8"`,
-      "X-Robots-Tag": "noindex, nofollow",
-    },
-  });
-}
-
-function previewPasswordFromHeader(header: string | null): string | null {
-  if (!header || !header.startsWith("Basic ")) return null;
-  try {
-    const decoded = atob(header.slice(6));
-    const sep = decoded.indexOf(":");
-    return sep === -1 ? decoded : decoded.slice(sep + 1);
-  } catch {
-    return null;
-  }
-}
-
 export async function proxy(request: NextRequest) {
   const { pathname, searchParams, origin } = request.nextUrl;
 
@@ -64,33 +15,6 @@ export async function proxy(request: NextRequest) {
 
   // --- Personal trade dashboard (public, but kept out of search indexes) ---
   if (pathname === "/trade" || pathname.startsWith("/api/trade")) {
-    const res = NextResponse.next();
-    res.headers.set("X-Robots-Tag", "noindex, nofollow");
-    return res;
-  }
-
-  // --- Password-gated Yettel mockup previews ---
-  const isStaticPreview = PREVIEW_PATHS.has(pathname);
-  // The /yettel_web mockup is a Next route (not static HTML), so it is gated
-  // with the same password but served as-is instead of being rewritten.
-  const isWebPreview =
-    pathname === "/yettel_web" || pathname.startsWith("/yettel_web/");
-  if (isStaticPreview || isWebPreview) {
-    if (
-      previewPasswordFromHeader(request.headers.get("authorization")) !==
-      PREVIEW_PASSWORD
-    ) {
-      return previewUnauthorized();
-    }
-    // Rewrite the clean URLs to the static HTML files in /public.
-    if (isStaticPreview && !pathname.endsWith(".html")) {
-      const url = request.nextUrl.clone();
-      url.pathname = `${pathname}.html`;
-      const res = NextResponse.rewrite(url);
-      res.headers.set("X-Robots-Tag", "noindex, nofollow");
-      return res;
-    }
-    // Direct .html access and the /yettel_web route (already authenticated).
     const res = NextResponse.next();
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
     return res;
