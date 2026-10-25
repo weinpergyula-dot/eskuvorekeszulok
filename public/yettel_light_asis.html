@@ -3296,7 +3296,44 @@
   .nvscr .bcsteps i{ width:36px; }
   .nvst{ display:none; }
   .nvscr[data-step="email"] [data-nv="email"], .nvscr[data-step="ecode"] [data-nv="ecode"], .nvscr[data-step="phone"] [data-nv="phone"],
-  .nvscr[data-step="scode"] [data-nv="scode"], .nvscr[data-step="block"] [data-nv="block"]{ display:block; }
+  .nvscr[data-step="scode"] [data-nv="scode"], .nvscr[data-step="block"] [data-nv="block"],
+  .nvscr[data-step="pers"] [data-nv="pers"], .nvscr[data-step="addr"] [data-nv="addr"]{ display:block; }
+  .nvscr [data-nv="pers"], .nvscr [data-nv="addr"]{ padding-bottom:20px; }
+  .nvf{ margin-bottom:16px; } .nvf .nverr{ margin-top:6px; }
+  .nvl small{ font-weight:400; color:#8592A6; }
+  .nvsel{ position:relative; padding-right:10px; }
+  .nvsel select{ flex:1; height:100%; border:none; outline:none; background:none; font-family:'Yettel'; font-size:14px; color:var(--navy); -webkit-appearance:none; appearance:none; }
+  .nvsel select.ph{ color:#A9B3BF; }
+  .nvsel i, .nvdate i{ font-size:20px; color:#8592A6; pointer-events:none; }
+  .nvdate i{ display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; flex-shrink:0; pointer-events:auto; cursor:pointer; }
+  .nvhint{ margin:6px 0 0; font-size:10px; color:#8592A6; }
+  .nvscr.busy .nvsel select{ color:#8592A6; } .nvscr.busy .nvf, .nvscr.busy .nvcs{ pointer-events:none; }
+  /* birth date calendar */
+  .nvcal{ margin-top:6px; padding:12px 12px 8px; border-radius:12px; background:#fff; box-shadow:0 10px 30px -10px rgba(9,34,61,.3); }
+  .nvcal[hidden]{ display:none; }
+  .nvcalh{ display:flex; align-items:center; gap:6px; margin-bottom:8px; }
+  .nvcalh select{ border:none; background:none; font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); }
+  .nvcalh button{ margin-left:auto; width:28px; height:28px; border:none; background:none; font-size:18px; color:var(--navy); cursor:pointer; }
+  .nvcalh button + button{ margin-left:0; }
+  .nvcalg{ display:grid; grid-template-columns:repeat(7,1fr); row-gap:2px; text-align:center; }
+  .nvcalg b{ padding:6px 0; font-size:11px; font-weight:700; color:var(--navy); }
+  .nvcalg span{ display:flex; align-items:center; justify-content:center; height:34px; font-size:12px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .nvcalg span.off{ color:#C3CAD3; font-weight:400; pointer-events:none; }
+  .nvcalg span.sel em{ background:#09223D; color:#fff; }
+  .nvcalg span.now em{ border:1px solid #A9B3BF; }
+  .nvcalg em{ display:flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; font-style:normal; }
+  /* consent card in the address step */
+  .nvcs{ margin-top:8px; padding:18px 14px 14px; border:1.5px solid #E3E8EE; border-radius:14px; }
+  .nvcs .bch{ font-size:16px; }
+  .nvcs .bcopt input:checked + .bcr{ border:5px solid #09223D; }
+  .nvcs.err .bcr{ border-color:#F0603C; }
+  .nvcs .bcerr{ display:none; } .nvcs.err .bcerr{ display:block; }
+  .nvcs [data-nvcsown], .nvcs.own .bcopt, .nvcs.own [data-nvcsedit]{ display:none; }
+  .nvcs.own [data-nvcsown]{ display:flex; } .nvcs.own .bclink[data-nvcsmod]{ display:flex; }
+  .nvcs .bclink[data-nvcsmod]{ display:none; }
+  .nvcsck{ display:flex; align-items:center; gap:10px; padding:7px 0; font-size:13px; color:var(--navy); }
+  .nvcsck i{ display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:3px; background:#CDD4DC; font-size:13px; color:#fff; }
+  .nvscr.busy .nvcs .bcr{ background:#CDD4DC; border-color:#CDD4DC; } .nvscr.busy .nvcs .bclink{ color:#A9B3BF; }
   .nvscr[data-step="block"] .bchead, .nvscr[data-step="block"] .nvfoot, .nvscr[data-step="ecode"] .nvfoot, .nvscr[data-step="scode"] .nvfoot{ display:none; }
   .nvscr[data-step="block"] [data-nv="block"]{ display:flex; flex:1; flex-direction:column; }
   .nvp{ margin:0 0 18px; font-size:12px; line-height:1.5; color:var(--navy); }
@@ -8187,6 +8224,26 @@
       <span class="nvspin"></span>
       <button type="button" class="otpre" data-nvre>Újraküldés<small></small></button>
     </div>
+    <div class="nvst" data-nv="pers">
+      <h2 class="aph">Személyes adatok</h2>
+      <p class="nvp">A szerződéskötéshez add meg adataidat pontosan úgy, ahogy okmányaidban szerepelnek, mert az adatok hitelessége a hatósági nyilvántartásban ellenőrzésre kerül.</p>
+      <div data-nvfields="pers"></div>
+    </div>
+    <div class="nvst" data-nv="addr">
+      <h2 class="aph">Kérjük, add meg állandó lakcímed, ahogy lakcímkártyádon szerepel</h2>
+      <p class="nvp">A szerződéskötéshez add meg adataidat pontosan úgy, ahogy okmányaidban szerepelnek, mert az adatok hitelessége a hatósági nyilvántartásban ellenőrzésre kerül.</p>
+      <div data-nvfields="addr"></div>
+      <div class="nvcs">
+        <h2 class="bch">Hozzájárulási beállítások</h2>
+        <p class="bcp">Szeretnél általános és személyre szóló ajánlatokat, kedvezményeket kapni e-mailben, postai úton, telefonon, yettel.hu honlapon, a Yettel appban, automatizált hívórendszer (SMS, MMS, SMS push) útján, melyhez a megadott, a szolgáltatás igénybevétele során keletkezett adataidat automatizált módon elemezzük és melyeket piac - és közvélemény kutatás céljából kezelünk?</p>
+        <label class="bcopt"><input type="radio" name="nv-cs" value="y"><span class="bcr"></span>Összes elfogadása</label>
+        <label class="bcopt"><input type="radio" name="nv-cs" value="n"><span class="bcr"></span>Összes elutasítása</label>
+        <span class="nvcsck" data-nvcsown><i class="ti ti-check"></i>Egyedi beállítások</span>
+        <p class="bcerr">Hozzájárulási beállítások megadása kötelező!</p>
+        <label class="bclink" for="s-consent2" data-csfrom data-csret="s-nvver" data-nvcsedit><span>Egyedi beállítások</span><i class="ti ti-chevron-right"></i></label>
+        <label class="bclink" for="s-consent2" data-csfrom data-csret="s-nvver" data-nvcsmod><span>Beállítások módosítása</span><i class="ti ti-chevron-right"></i></label>
+      </div>
+    </div>
     <div class="nvst" data-nv="block">
       <div class="nvblk"><span class="nvbic"><i class="ti ti-x"></i></span><h2>Túl sokszor<br>próbálkoztál</h2><p>Biztonságod érdekében megszakítottuk a folyamatot. Kérjük, próbáld meg újra később.</p></div>
       <div class="nvblkf"><label class="bcnext" for="s-newcust" data-gohome><span>Vissza a főoldalra</span></label></div>
@@ -9866,7 +9923,8 @@
         save.classList.remove('busy'); form.classList.remove('busy'); ok.classList.add('on');
         var ret = sc.getAttribute('data-ret');
         if (ret) setTimeout(function(){
-          if (window.yConsentSaved) window.yConsentSaved();
+          if (ret === 's-nvver'){ if (window.yNvConsent) window.yNvConsent(); }
+          else if (window.yConsentSaved) window.yConsentSaved();
           var r = document.getElementById(ret); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
           sc.scrollTop = 0;
           var to = document.querySelector('[data-screen="bconsent"]'); if (to) to.scrollTop = 0;
@@ -9882,7 +9940,7 @@
   var back = sc.querySelector('.dhead label[for]');
   document.addEventListener('click', function(e){
     var l = e.target.closest && e.target.closest('label[for="s-consent2"]'); if (!l) return;
-    if (l.hasAttribute('data-csfrom')){ sc.setAttribute('data-ret', 's-bconsent'); back.setAttribute('for', 's-bconsent'); }
+    if (l.hasAttribute('data-csfrom')){ var ret = l.getAttribute('data-csret') || 's-bconsent'; sc.setAttribute('data-ret', ret); back.setAttribute('for', ret); }
     else { sc.removeAttribute('data-ret'); back.setAttribute('for', 's-tprof'); }
   }, true);
   /* preset: newsletter on with every channel, the other two unanswered */
@@ -10466,7 +10524,14 @@
     ap.querySelector('[data-apm="-1"]').disabled = y === today.getFullYear() && m === today.getMonth();
     ap.querySelector('[data-apm="1"]').disabled = y === last.getFullYear() && m === last.getMonth();
   }
+  window.yOpenAppt = function(){ openAppt(); };
+  /* new customer: the 5-step progress bar of the e-mail / phone / personal data steps goes on here */
+  var apContact = [ap.querySelector('[data-apv="name"]').textContent, ap.querySelector('[data-apv="tel"]').textContent];
+  function bar(el, n, of){ var h = ''; for (var i = 0; i < of; i++) h += '<i' + (i < n ? ' class="on"' : '') + '></i>'; el.querySelector('.bcsteps').innerHTML = h; }
   function openAppt(){
+    var g = window.yAddr && window.yAddr.guest, nw = window.yNew || {};
+    if (g){ bar(ap, 4, 5); ap.querySelector('[data-apv="name"]').textContent = nw.name || apContact[0]; ap.querySelector('[data-apv="tel"]').textContent = nw.tel || apContact[1]; }
+    else { bar(ap, 2, 3); ap.querySelector('[data-apv="name"]').textContent = apContact[0]; ap.querySelector('[data-apv="tel"]').textContent = apContact[1]; }
     apSel = avail[0]; view = new Date(apSel); view.setDate(1); apRender();
     Array.prototype.forEach.call(ap.querySelectorAll('.apslot'), function(b, i){ b.classList.toggle('sel', !i); });
     ap.querySelector('[data-apnote]').checked = false; ap.querySelector('.aptext').hidden = true; ap.querySelector('.aptext').value = '';
@@ -10556,6 +10621,12 @@
     sm.querySelector('[data-smfl]').hidden = !pct; sm.querySelector('[data-smfull]').hidden = !pct;
     sm.querySelector('[data-smnew]').textContent = fmt(now) + ' Ft / hó';
     smIdx();
+    var g = a.guest, nw = window.yNew || {}, blk = sm.querySelectorAll('.smdata .smblk p');
+    bar(sm, g ? 5 : 3, g ? 5 : 3);
+    if (!sm._own) sm._own = [blk[0].innerHTML, blk[1].innerHTML, blk[2].innerHTML, blk[blk.length - 1].innerHTML];
+    var v = g && nw.name ? [nw.tel + '<br>' + nw.mail, nw.name + '<br>' + nw.bplace + ', ' + nw.bdate + '.<br>Anyja neve: ' + nw.mother + '<br>' + nw.doc + ': ' + nw.docno, nw.addr,
+      'Elektronikus számla<br>' + nw.mail + '<br>' + nw.tel] : sm._own;
+    blk[0].innerHTML = v[0]; blk[1].innerHTML = v[1]; blk[2].innerHTML = v[2]; blk[blk.length - 1].innerHTML = v[3];
     sm.querySelector('[data-smaddr]').textContent = a.address || '';
     var d = new Date(apSel), p2 = function(x){ return (x < 10 ? '0' : '') + x; };
     sm.querySelector('[data-smappt]').innerHTML = d.getFullYear() + '.' + p2(d.getMonth() + 1) + '.' + p2(d.getDate()) + '.<br>' + ap.querySelector('.apslot.sel').textContent;
@@ -11730,7 +11801,7 @@
 <script>
 /* new customer sales flow: after the add-ons (and the loader) the e-mail and the phone number are verified with a
    6-digit code each, then the consent step. Demo: an e-mail starting with foglalt / tiltolistas / torolt gives the
-   general error; code 111111 is wrong, 000000 has expired; 3 failed codes or more than 3 resends end on "Túl sokszor próbálkoztál" */
+   general error; only code 222222 is accepted (000000 has expired, anything else is wrong); 3 failed codes or more than 3 resends end on "Túl sokszor próbálkoztál" */
 (function(){
   var sc = document.querySelector('[data-screen="nv-ver"]'); if (!sc) return;
   var mail = sc.querySelector('[data-nvmail]'), tel = sc.querySelector('[data-nvtel]'), next = sc.querySelector('[data-nvnext]');
@@ -11745,14 +11816,136 @@
   function err(k, on){ sc.querySelector('[data-nverr="'+k+'"]').classList.toggle('on', on); }
   function okMail(){ return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(mail.value.trim()); }
   function okTel(){ return /^(20|30|31|50|70)\d{7}$/.test(tel.value.replace(/\D/g, '')); }
+  /* personal data and permanent address: fields, format checks ("Helytelen formátum"), 18+ birth date */
+  var NM = "A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüűÄäß.'\\- ";
+  var FLD = {
+    pers:[['doc','Azonosító okmány típusa','sel',['Személyi igazolvány','Útlevél','Vezetői engedély'],'Okmánytípus kiválasztása'],
+      ['docno','Azonosító okmány száma','up','123456XY'], ['title','Titulus','sel',['Nincs','dr.','Prof.','ifj.','id.']],
+      ['last','Vezetéknév','txt','Kovács'], ['first','Keresztnév','txt','Péter'], ['bname','Születési név','txt','Kovács Péter'],
+      ['mother','Anyja születési neve','txt','Nagy Anna'], ['bplace','Születési hely','txt','Budapest'], ['bdate','Születési idő','date','1987.01.25']],
+    addr:[['card','Lakcímkártya száma','up','123456AB'], ['zip','Irányítószám','num','1234'], ['city','Település','txt','Budapest'],
+      ['street','Közterület neve','txt','Arany János'], ['stype','Közterület jellege','txt','utca'], ['hno','Házszám','txt','30'], ['more','További címadatok','opt','-']]
+  };
+  var RX = {
+    name:new RegExp('^(?=.*[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]{2})['+NM+']+$'), two:new RegExp('^['+NM+']*[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]\\s+[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]['+NM+']*$'),
+    doc:{'Személyi igazolvány':/^(\d{6}[A-Z]{2}|[A-Z]{2}\d{7})$/, 'Útlevél':/^[A-Z]{2}\d{6,7}$/, 'Vezetői engedély':/^[A-Z]{2}\d{6}$/},
+    card:/^\d{6}[A-Z]{2}$/, zip:/^[1-9]\d{3}$/, street:/^(?=.*[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű0-9]{2})[0-9A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű.\- ]+$/,
+    stype:/^[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]{2,}( [A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+)?$/, hno:/^\d{1,4}([\/\-]?[A-Za-z]|[\/\-]\d{1,4})?\.?$/
+  };
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  function pd(v){
+    var m = /^(\d{4})\.(\d{2})\.(\d{2})$/.exec(v); if (!m) return null;
+    var d = new Date(+m[1], +m[2] - 1, +m[3]);
+    return d.getMonth() === +m[2] - 1 && d.getDate() === +m[3] && +m[1] >= 1900 && d <= today ? d : null;
+  }
+  function f(k){ return sc.querySelector('[data-nvf="'+k+'"]'); }
+  /* '' = fine, otherwise the error to show */
+  function bad(k){
+    var el = f(k), v = el.value.trim();
+    if (k === 'more') return v.length > 60 ? 'Helytelen formátum' : '';
+    if (!v) return k === 'title' ? '' : 'Kötelező mező';
+    switch (k){
+      case 'doc': case 'title': return '';
+      case 'docno': var r = RX.doc[f('doc').value]; return (r ? r.test(v) : RX.doc['Személyi igazolvány'].test(v) || RX.doc['Útlevél'].test(v)) ? '' : 'Helytelen formátum';
+      case 'bname': case 'mother': return RX.two.test(v) ? '' : 'Helytelen formátum';
+      case 'last': case 'first': case 'bplace': case 'city': return RX.name.test(v) ? '' : 'Helytelen formátum';
+      case 'bdate':
+        var d = pd(v); if (!d) return 'Helytelen formátum';
+        var a = new Date(d); a.setFullYear(a.getFullYear() + 18);
+        return a > today ? 'Sajnáljuk, de a vásárláshoz 18 év feletti életkor szükséges.' : '';
+      default: return RX[k].test(v) ? '' : 'Helytelen formátum';
+    }
+  }
+  function show(k, msg){
+    var w = f(k).closest('.nvf'); w.querySelector('.nvfld').classList.toggle('bad', !!msg);
+    var e = w.querySelector('.nverr'); e.textContent = msg || ''; e.classList.toggle('on', !!msg);
+  }
+  Object.keys(FLD).forEach(function(g){
+    sc.querySelector('[data-nvfields="'+g+'"]').innerHTML = FLD[g].map(function(x){
+      var k = x[0], req = x[2] !== 'opt', inp;
+      if (x[2] === 'sel') inp = '<div class="nvfld nvsel"><select data-nvf="'+k+'"'+(x[4] ? ' class="ph"' : '')+'>'+(x[4] ? '<option value="" selected disabled>'+x[4]+'</option>' : '')
+        + x[3].map(function(o){ return '<option>'+o+'</option>'; }).join('')+'</select><i class="ti ti-chevron-down"></i></div>';
+      else inp = '<div class="nvfld'+(x[2] === 'date' ? ' nvdate' : '')+'"><input data-nvf="'+k+'" placeholder="'+x[3]+'"'
+        + (x[2] === 'num' || x[2] === 'date' ? ' inputmode="numeric"' : '') + (x[2] === 'up' ? ' autocapitalize="characters"' : '') + '>'
+        + (x[2] === 'date' ? '<i class="ti ti-calendar" data-nvcal></i>' : '') + '</div>' + (x[2] === 'date' ? '<p class="nvhint">ÉÉÉÉ.HH.NN</p>' : '');
+      return '<div class="nvf"><label class="nvl">'+x[1]+(req ? ' *' : ' <small>(opcionális)</small>')+'</label>'+inp+'<p class="nverr"></p>'
+        + (x[2] === 'date' ? '<div class="nvcal" hidden></div>' : '') + '</div>';
+    }).join('');
+  });
+  Array.prototype.forEach.call(sc.querySelectorAll('[data-nvf]'), function(el){
+    var k = el.getAttribute('data-nvf');
+    el.addEventListener('input', function(){
+      if (k === 'docno' || k === 'card') el.value = el.value.toUpperCase().replace(/\s/g, '');
+      if (k === 'zip') el.value = el.value.replace(/\D/g, '').slice(0, 4);
+      if (k === 'bdate'){ var d = el.value.replace(/\D/g, '').slice(0, 8); el.value = d.replace(/^(\d{4})(\d{1,2})?(\d{1,2})?$/, function(m, y, mo, da){ return y + (mo ? '.' + mo : '') + (da ? '.' + da : ''); }); }
+      if (!bad(k)) show(k, ''); paint();
+    });
+    el.addEventListener('change', function(){
+      if (el.tagName === 'SELECT'){ el.classList.remove('ph'); show(k, ''); if (k === 'doc' && f('docno').value) show('docno', bad('docno')); }
+      paint();
+    });
+    el.addEventListener('blur', function(){ if (el.tagName !== 'SELECT' && el.value.trim()) show(k, bad(k)); });
+  });
+  /* birth date: the calendar under the field (year and month pickers, the arrows step a month) */
+  var cal = sc.querySelector('.nvcal'), cv = null;
+  var MON = ['Január','Február','Március','Április','Május','Június','Július','Augusztus','Szeptember','Október','November','December'];
+  function calDraw(){
+    var y = cv.getFullYear(), m = cv.getMonth(), sel = pd(f('bdate').value), first = (new Date(y, m, 1).getDay() + 6) % 7, n = new Date(y, m + 1, 0).getDate(), h = '';
+    var ys = ''; for (var i = today.getFullYear(); i >= 1920; i--) ys += '<option'+(i === y ? ' selected' : '')+'>'+i+'</option>';
+    h += '<div class="nvcalh"><select data-cy>'+ys+'</select><select data-cm>'+MON.map(function(x, i){ return '<option value="'+i+'"'+(i === m ? ' selected' : '')+'>'+x+'</option>'; }).join('')+'</select>'
+      + '<button type="button" data-cs="-1" aria-label="Előző hónap"><i class="ti ti-chevron-left"></i></button><button type="button" data-cs="1" aria-label="Következő hónap"><i class="ti ti-chevron-right"></i></button></div>';
+    h += '<div class="nvcalg">' + ['H','K','Sz','Cs','P','Sz','V'].map(function(x){ return '<b>'+x+'</b>'; }).join('');
+    for (i = 0; i < first; i++) h += '<span class="off"></span>';
+    for (i = 1; i <= n; i++){
+      var d = new Date(y, m, i), c = d > today ? 'off' : sel && +d === +sel ? 'sel' : +d === +today ? 'now' : '';
+      h += '<span class="'+c+'" data-cd="'+i+'"><em>'+i+'</em></span>';
+    }
+    cal.innerHTML = h + '</div>';
+  }
+  sc.addEventListener('click', function(e){
+    if (e.target.closest('[data-nvcal]')){
+      if (!cal.hidden){ cal.hidden = true; return; }
+      cv = pd(f('bdate').value) || new Date(1990, 0, 1); cv = new Date(cv.getFullYear(), cv.getMonth(), 1); calDraw(); cal.hidden = false; return;
+    }
+    var st2 = e.target.closest('[data-cs]'); if (st2){ cv.setMonth(cv.getMonth() + +st2.getAttribute('data-cs')); calDraw(); return; }
+    var cd2 = e.target.closest('[data-cd]');
+    if (cd2){
+      var p2 = function(x){ return (x < 10 ? '0' : '') + x; };
+      f('bdate').value = cv.getFullYear() + '.' + p2(cv.getMonth() + 1) + '.' + p2(+cd2.getAttribute('data-cd'));
+      cal.hidden = true; show('bdate', bad('bdate')); paint();
+    }
+  });
+  cal.addEventListener('change', function(e){
+    if (e.target.matches('[data-cy]')) cv.setFullYear(+e.target.value);
+    if (e.target.matches('[data-cm]')) cv.setMonth(+e.target.value);
+    calDraw();
+  });
+  /* consent in the address step: all / none, or the custom settings page */
+  var cs = sc.querySelector('.nvcs');
+  cs.addEventListener('change', function(){ cs.classList.remove('err', 'own'); });
+  window.yNvConsent = function(){
+    Array.prototype.forEach.call(cs.querySelectorAll('input[name="nv-cs"]'), function(x){ x.checked = false; });
+    cs.classList.remove('err'); cs.classList.add('own');
+  };
+  function csOk(){ return cs.classList.contains('own') || !!cs.querySelector('input[name="nv-cs"]:checked'); }
+  function filled(g){ return FLD[g].every(function(x){ return x[2] === 'opt' || x[0] === 'title' || !!f(x[0]).value.trim(); }); }
+  function checkForm(g){
+    var first = null;
+    FLD[g].forEach(function(x){ var m = bad(x[0]); show(x[0], m); if (m && !first) first = f(x[0]); });
+    if (g === 'addr' && !csOk()){ cs.classList.add('err'); if (!first) first = cs; }
+    if (first) first.scrollIntoView({block:'center', behavior:'smooth'});
+    return !first;
+  }
   function paint(){
     var step = sc.getAttribute('data-step');
-    next.classList.toggle('off', step === 'email' ? !okMail() : !okTel());
+    next.classList.toggle('off', step === 'email' ? !okMail() : step === 'phone' ? !okTel() : step === 'addr' ? !filled('addr') : false);
     sc.querySelector('.nvfld:has([data-nvmail])').classList.toggle('bad', sc.querySelector('[data-nverr="fmt"].on, [data-nverr="gen"].on') !== null);
     sc.querySelector('.nvfld:has([data-nvtel])').classList.toggle('bad', sc.querySelector('[data-nverr="tel"].on') !== null);
   }
   function step(k){
-    sc.setAttribute('data-step', k); sc.classList.remove('busy'); toastEl.classList.remove('on'); sheet.classList.remove('on');
+    sc.setAttribute('data-step', k);
+    var on = k === 'pers' ? 2 : k === 'addr' ? 3 : 1;
+    Array.prototype.forEach.call(sc.querySelectorAll('.bcsteps i'), function(x, i){ x.classList.toggle('on', i < on); }); sc.classList.remove('busy'); toastEl.classList.remove('on'); sheet.classList.remove('on');
     sc.scrollTop = 0; clearInterval(cd);
     if (k === 'ecode' || k === 'scode') codeReset(sc.querySelector('[data-nv="'+k+'"]'));
     paint();
@@ -11776,7 +11969,7 @@
     bs.forEach(function(b){ b.classList.remove('bad'); b.classList.add('ok'); b.blur(); }); w.querySelector('.otperr').classList.remove('on'); w.classList.add('chk');
     setTimeout(function(){
       w.classList.remove('chk');
-      if (code !== '111111' && code !== '000000'){ st[k] = null; if (k === 'ecode') step('phone'); else done(); return; }
+      if (code === '222222'){ st[k] = null; step(k === 'ecode' ? 'phone' : 'pers'); return; }
       if (++st[k].fail >= 3){ step('block'); return; }
       bs.forEach(function(b){ b.classList.remove('ok'); b.classList.add('bad'); });
       var e = w.querySelector('.otperr'); e.textContent = code === '000000' ? 'A kód érvényessége lejárt, kérj újat!' : 'A kód nem megfelelő!'; e.classList.add('on');
@@ -11822,13 +12015,16 @@
   next.addEventListener('click', function(){
     var k = sc.getAttribute('data-step');
     if (next.classList.contains('off')) return;
-    sc.classList.add('busy'); mail.blur(); tel.blur();
+    if ((k === 'pers' || k === 'addr') && !checkForm(k)) return;
+    sc.classList.add('busy'); if (document.activeElement) document.activeElement.blur(); cal.hidden = true;
     setTimeout(function(){
+      if (k === 'addr'){ done(); setTimeout(function(){ sc.classList.remove('busy'); }, 300); return; }
       sc.classList.remove('busy');
       if (k === 'email'){
         if (/^(foglalt|tiltolistas|torolt)/i.test(mail.value.trim())){ err('gen', true); paint(); return; }
         step('ecode');
-      } else step('scode');
+      } else if (k === 'phone') step('scode');
+      else step('addr');
     }, 1400);
   });
   sc.addEventListener('click', function(e){
@@ -11841,13 +12037,18 @@
       if (m && m.getAttribute('data-nvmapp') === 'outlook') toast(false, 'Nincs levelező app az eszközön. A kódot megtalálod a postafiókodban.');
     }
   });
+  /* the data goes on to the installation date and the summary */
   function done(){
-    if (window.yBcReset) window.yBcReset();
-    go('s-bconsent');
+    var v = function(k){ return f(k).value.trim(); }, t = v('title') === 'Nincs' ? '' : v('title') + ' ';
+    window.yNew = {mail:mail.value.trim(), tel:'+36 ' + tel.value.trim(), name:t + v('last') + ' ' + v('first'), bplace:v('bplace'), bdate:v('bdate'),
+      mother:v('mother'), doc:v('doc'), docno:v('docno'), addr:v('zip') + ' ' + v('city') + ', ' + v('street') + ' ' + v('stype') + ' ' + v('hno') + (v('more') ? ' ' + v('more') : '')};
+    if (window.yOpenAppt) window.yOpenAppt();
   }
   /* every new purchase starts from an empty e-mail field */
   window.yNvStart = function(){
     st = {}; mail.value = ''; tel.value = ''; ['fmt', 'gen', 'tel'].forEach(function(k){ err(k, false); });
+    Object.keys(FLD).forEach(function(g){ FLD[g].forEach(function(x){ var el = f(x[0]); el.value = x[2] === 'sel' && !x[4] ? x[3][0] : ''; if (x[4]) el.classList.add('ph'); show(x[0], ''); }); });
+    cs.classList.remove('err', 'own'); Array.prototype.forEach.call(cs.querySelectorAll('input'), function(x){ x.checked = false; }); cal.hidden = true;
     step('email'); go('s-nvver');
   };
   document.addEventListener('change', function(e){ if (e.target.id !== 's-nvver' && e.target.name === 'nav' && e.target.checked) clearInterval(cd); });
