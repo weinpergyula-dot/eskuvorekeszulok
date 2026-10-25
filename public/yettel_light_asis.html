@@ -302,6 +302,7 @@
   #s-tvext:checked ~ [data-screen="tv-extras"],
   #s-netadd:checked ~ [data-screen="net-addon"],
   #s-addrtaken:checked ~ [data-screen="addr-taken"],
+  #s-ispsw:checked ~ [data-screen="isp-sw"],
   #s-bconsent:checked ~ [data-screen="bconsent"],
   #s-bappt:checked ~ [data-screen="bappt"],
   #s-bsum:checked ~ [data-screen="bsum"],
@@ -3212,7 +3213,7 @@
   .excard.ld .exrow::after{ content:''; position:absolute; right:126px; top:50%; width:16px; height:16px; margin-top:-8px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
   /* every skeleton bar loads with the same moving shimmer (bill lists, NetPajzs settings, TV box) */
   .bhskf, .bhskr > i, .bhskr > span i, .bhskr > b,
-  .nssscreen.ld .nsslist .nssrow > span:first-child::before, .tvbx.ld .tvbt::before{ background:linear-gradient(90deg,#DCE2E8 25%,#F5F7F9 50%,#DCE2E8 75%); background-size:200% 100%; animation:skel 1.1s linear infinite; }
+  .nssscreen.ld .nsslist .nssrow > span:first-child::before, .tvbx.ld .tvbt::before, .subuse.ld .uv b::before{ background:linear-gradient(90deg,#DCE2E8 25%,#F5F7F9 50%,#DCE2E8 75%); background-size:200% 100%; animation:skel 1.1s linear infinite; }
   .gsul{ margin:0 0 18px; padding-left:18px; font-size:12px; line-height:1.5; color:var(--navy); }
   .gsh2{ margin:0 0 10px; font-size:14px; font-weight:700; line-height:1.35; color:var(--navy); }
   .gslogo{ display:flex; align-items:center; justify-content:center; width:150px; height:96px; margin:4px auto 22px; border-radius:6px; font-family:'Yettel'; }
@@ -3227,6 +3228,63 @@
   .gslogo.rtl i:nth-child(1){ background:#3D57F2; } .gslogo.rtl i:nth-child(2){ background:#3F8BF0; } .gslogo.rtl i:nth-child(3){ background:#8A3FE0; }
   .gslogo.rtl b{ font-size:30px; color:#1A1A1A; }
 
+
+  /* ISP váltás (Digital backlog): the searched address already has wired internet → provider switch page */
+  #s-ispsw:checked ~ .ispscr[data-screen="isp-sw"]{ display:flex !important; flex-direction:column; }
+  .ispscr{ background:#fff; padding-bottom:0 !important; }
+  .ispscr > *{ flex-shrink:0; }
+  .isphead{ display:flex; justify-content:flex-end; align-items:center; gap:18px; padding:calc(22px + env(safe-area-inset-top)) 0 10px; }
+  .isphead > i{ font-size:24px; color:var(--navy); }
+  .ispic{ display:flex; width:66px; height:66px; margin:14px auto 0; border-radius:50%; background:#09223D; align-items:center; justify-content:center; }
+  .ispic i{ font-size:34px; color:#B4FF00; }
+  .isph{ margin:22px 10px 12px; font-size:22px; font-weight:700; line-height:1.25; text-align:center; color:var(--navy); }
+  .ispp{ margin:0 4px 16px; font-size:12px; line-height:1.5; text-align:center; color:var(--navy); }
+  .ispcard{ padding:16px 14px; border:1.5px solid #E3E8EE; border-radius:12px; }
+  .ispcard > b{ display:block; margin-bottom:6px; font-size:13px; font-weight:700; color:var(--navy); }
+  .ispcard p{ margin:0; font-size:11.5px; line-height:1.45; color:var(--navy); }
+  .ispcard ul{ margin:12px 0 0; padding-left:20px; font-size:11.5px; line-height:1.45; color:var(--navy); }
+  .ispcard li{ margin-bottom:7px; }
+  .ispcard li b{ font-weight:700; }
+  .ispchk{ display:flex; align-items:center; gap:12px; margin-top:12px; padding-top:14px; border-top:1px solid #E3E8EE; font-size:12px; color:var(--navy); cursor:pointer; }
+  .ispchk input{ position:absolute; opacity:0; pointer-events:none; }
+  .ispchk > span{ position:relative; width:18px; height:18px; flex-shrink:0; border:1.5px solid #CDD4DC; border-radius:4px; box-sizing:border-box; background:#fff; }
+  .ispchk input:checked + span{ border-color:#09223D; background:#09223D; }
+  .ispchk input:checked + span::after{ content:''; position:absolute; left:5px; top:1px; width:4px; height:9px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg); }
+  .ispcard .isperr{ display:none; margin:8px 0 0; font-size:12px; color:#F0603C; }
+  .ispscr.err .ispcard .isperr{ display:block; }
+  .ispscr.err .ispchk > span{ border:2px solid #F0603C; }
+  .ispcard .ispnote{ margin-top:14px; }
+  .ispinfo{ margin-top:16px; }
+  .ispfaq{ margin-top:18px; }
+  .ispfaq .gsacc{ margin:0; border-top:none; border-bottom:1px solid #E3E8EE; }
+  .ispfaq .gsacc:last-child{ border-bottom:none; }
+  .ispfaq .gsaccb{ padding:18px 0; font-size:13px; }
+  .ispfaq .gsaccp{ margin:-4px 0 18px; font-size:12px; }
+  .ispfaq .gsaccp p{ margin:0 0 12px; } .ispfaq .gsaccp p:last-child{ margin:0; }
+  .ispfoot{ position:sticky; bottom:0; z-index:2; margin:auto -16px 0; padding:22px 16px calc(16px + env(safe-area-inset-bottom)); background:linear-gradient(180deg,rgba(255,255,255,0) 0,#fff 22px); }
+  .ispfoot .bcnext i{ margin-left:8px; font-size:18px; }
+  .ispback{ display:block; margin-top:16px; text-align:center; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .ispscr.busy .bcnext{ background:#3E5670; pointer-events:none; }
+  .ispscr.busy .bcnext span{ visibility:hidden; }
+  .ispscr.busy .bcnext::after{ content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
+  .ispscr.busy .ispback{ color:#C3CAD3; pointer-events:none; }
+  .ispscr.busy .ispchk{ pointer-events:none; }
+  .ispscr.busy .ispchk > span, .ispscr.busy .ispchk input:checked + span{ border-color:#CDD4DC; background:#CDD4DC; }
+  /* summary: provider switch starts with the order (ISP váltás) + "Mit jelent ez?" sheet */
+  .smisp{ margin:0 0 20px; } .smisp[hidden]{ display:none; }
+  .smisp .smlnk{ display:inline-block; margin-top:8px; font-size:12px; font-weight:700; color:var(--navy); }
+  .ispsh .xsq{ margin:14px 0 14px; font-size:12px; line-height:1.45; }
+  .ispsh ul{ margin:0 0 16px; padding:0; list-style:none; }
+  .ispsh li{ display:flex; gap:10px; margin-bottom:12px; font-size:12px; line-height:1.45; color:var(--navy); }
+  .ispsh li i{ font-size:18px; color:var(--navy); }
+  .ispsh li b{ font-weight:700; }
+  .ispsh .ispshn{ margin:0 0 22px; padding:14px 16px; border-radius:10px; background:#DCEFFC; font-size:12px; line-height:1.45; color:var(--navy); }
+  /* dashboard: the usable data / minutes load with the shimmering skeleton */
+  .subuse.ld .uv b{ position:relative; color:transparent; }
+  .subuse.ld .uv b + b{ border-left-color:transparent; }
+  .subuse.ld .uv b::before{ content:''; position:absolute; left:0; right:0; top:50%; height:12px; margin-top:-6px; border-radius:6px; }
+  .subuse.ld .uv b + b::before{ left:16px; }
+  .subuse.subpre.ld .uv b + b::before{ left:12px; }
   /* taken address + purchase consent */
   .antk i{ color:#8592A6; } .antk{ background:#E3E8EE; }
   .anp b{ font-weight:700; }
@@ -3663,6 +3721,7 @@
   <input class="rt" type="radio" name="nav" id="s-netadd">
   <input class="rt" type="radio" name="nav" id="s-tvext">
   <input class="rt" type="radio" name="nav" id="s-addrtaken">
+  <input class="rt" type="radio" name="nav" id="s-ispsw">
   <input class="rt" type="radio" name="nav" id="s-bconsent">
   <input class="rt" type="radio" name="nav" id="s-bappt">
   <input class="rt" type="radio" name="nav" id="s-bsum">
@@ -7977,6 +8036,40 @@
     </div>
   </div>
 
+  <!-- ============= ISP VÁLTÁS (Digital backlog): isp-sw — the address already has wired internet ============= -->
+  <div class="screen ispscr" data-screen="isp-sw" style="display:none;">
+    <div class="isphead"><i class="ti ti-message-question"></i><label class="bcx adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <span class="ispic"><i class="ti ti-refresh"></i></span>
+    <h2 class="isph">A címeden már van egy másik vezetékes internet</h2>
+    <p class="ispp">A rendeléssel együtt elindul a szolgáltatóváltásod is. Ebben segítünk: a jelenlegi interneted lemondását és az új bekötését is mi intézzük. Te csak dőlj hátra, és élvezd a hipergyors internetünket.</p>
+    <div class="ispcard">
+      <b>Mire figyelj?</b>
+      <p>A jelenlegi interneted kapcsán ezeknek kell teljesülni:</p>
+      <ul>
+        <li>A <b>te neveden</b> van az előfizetés, és a jelenlegi (átadó) szolgáltatód a <b>One</b> Magyarország Zrt.</li>
+        <li>Nincs rajta <b>hűségidő</b></li>
+        <li>Nincs <b>lejárt tartozásod</b></li>
+        <li><b>Ugyanazokat a személyes adatokat adod meg</b> nálunk, mint a jelenlegi szolgáltatódnál</li>
+      </ul>
+      <label class="ispchk"><input type="checkbox" data-ispchk><span></span>Ellenőriztem, hogy a feltételek teljesülnek.</label>
+      <p class="isperr">Erősítsd meg, hogy megfelelsz a feltételeknek.</p>
+      <p class="ispnote">A megrendeléssel automatikusan elindítjuk a szolgáltatóváltást is, amelynek részletes feltételeit a megrendelés véglegesítésekor elérhetővé váló megállapodás tartalmazza.</p>
+    </div>
+    <div class="nsdinfo ispinfo"><i class="ti ti-bulb"></i><div><b>Összehangoljuk a szolgáltatóváltást</b><p>Ugyanabban az időpontban lesz kikötve a régi interneted és bekötve a Yettel Hiperneted.</p></div></div>
+    <div class="ispfaq">
+      <div class="gsacc"><button type="button" class="gsaccb"><span>Mi történik, ha valamelyik feltétel nem teljesül?</span><i class="ti ti-chevron-down"></i></button>
+        <div class="gsaccp"><p>Ilyenkor elutasíthatja a szolgáltatóváltást a jelenlegi szolgáltatód. Erről e-mailben értesítünk, és miután elintézted, amit kellett, újraindíthatod a folyamatot.</p><p>A hűségidő nem akadálya a váltásnak, de ilyenkor a jelenlegi szolgáltatód az idő előtti megszűntetés miatt díjat kérhet be tőled.</p></div></div>
+      <div class="gsacc"><button type="button" class="gsaccb"><span>Mi lesz a TV, streaming, és vezetékes telefon szolgáltatásommal?</span><i class="ti ti-chevron-down"></i></button>
+        <div class="gsaccp"><p>A jelenlegi internetedhez kapcsolódó egyéb szolgáltatásaid is megszűnnek a szolgáltatóváltással. TV és streaming szolgáltatásokra nálunk is előfizethetsz. Egyszerűen lépj vissza az ajánlatokhoz, és beteheted ezeket is a csomagodba.</p></div></div>
+      <div class="gsacc"><button type="button" class="gsaccb"><span>Mennyi ideig tart a váltás?</span><i class="ti ti-chevron-down"></i></button>
+        <div class="gsaccp"><p>A következő lépésekben kiválaszthatod a számodra legmegfelelőbb időpontot. Törekszünk arra, hogy új interneted aktiválása és a meglévő szolgáltatás lezárása minél inkább egy időben történjen, hogy az átállás a lehető legzökkenőmentesebb legyen.</p></div></div>
+      <div class="gsacc"><button type="button" class="gsaccb"><span>Milyen személyes adatokat szükséges ellenőrizned?</span><i class="ti ti-chevron-down"></i></button>
+        <div class="gsaccp"><p>A jelenlegi szerződésedben szereplő adatokkal rendelj: teljes név, születési hely és idő, édesanyád születési neve. Ha bármelyik eltér, a váltás nem tud elindulni.</p></div></div>
+    </div>
+    <div class="ispfoot"><button type="button" class="bcnext" data-ispnext><span>Tovább a megrendelésre<i class="ti ti-arrow-right"></i></span></button>
+      <span class="ispback" data-ispback>Vissza az ajánlatokhoz</span></div>
+  </div>
+
   <!-- ============= HOZZÁJÁRULÁS A VÁSÁRLÁSBAN: bconsent ============= -->
   <div class="screen bcscreen" data-screen="bconsent" style="display:none;">
     <div class="bchead"><span></span><div class="bcsteps"><i class="on"></i><i></i><i></i></div><label class="bcx adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
@@ -8026,6 +8119,7 @@
         <p class="smnote" data-smidx><i class="ti ti-info-circle"></i><span><span data-smidxt></span><br><span class="smlnk" data-smidxl>Részletek a díjváltozásról</span></span></p>
       </div>
     </div>
+    <div class="nsdinfo smisp" data-smisp><i class="ti ti-bulb"></i><div><b>Indul a szolgáltatóváltás</b><p>A jelenlegi interneted lemondását is elindítjuk, így nincs külön teendőd vele.</p><span class="smlnk" data-smispl>Mit jelent ez?</span></div></div>
     <div class="smdocs"><span class="smdoc"><i class="ti ti-file-text"></i>Szerződés összefoglaló</span><span class="smdoc"><i class="ti ti-file-text"></i>Egyedi előfizetői szerződés</span><span class="smdoc"><i class="ti ti-file-text"></i>Általános Szerződési Feltételek</span></div>
     <div class="smdata">
       <h3 class="aph2">Szerződéses adataid</h3>
@@ -8238,6 +8332,22 @@
       <p class="xsq">Melyik előfizetés számláit szeretnéd megnézni?</p>
       <div class="xsopts" data-bhopts></div>
       <button type="button" class="xsgo" data-bhgo>Tovább</button>
+    </div>
+  </div>
+  <div class="xsheet ispsh" id="ispsheet">
+    <div class="xsbg" data-xsclose></div>
+    <div class="xspanel">
+      <span class="xsgrab"></span>
+      <div class="xshead"><p>Mit jelent a szolgáltatóváltás?</p><button type="button" class="xsx" data-xsclose aria-label="Bezárás"><i class="ti ti-x"></i></button></div>
+      <p class="xsq">Már van internet a címeden, ezért a rendeléssel együtt elindítjuk ennek a lemondását is:</p>
+      <ul>
+        <li><i class="ti ti-check"></i><span><b>Mi intézzük helyetted a lemondást.</b> Nem kell külön ügyet intézned a jelenlegi szolgáltatódnál.</span></li>
+        <li><i class="ti ti-check"></i><span><b>Nem fizetsz két helyre.</b> Az új internet telepítése napján szűnik meg a régi szerződésed.</span></li>
+        <li><i class="ti ti-check"></i><span><b>Nem maradsz internet nélkül.</b> Egy napon belül kötik ki a régi, és be az új internetedet.</span></li>
+        <li><i class="ti ti-check"></i><span><b>A váltás díjmentes.</b></span></li>
+      </ul>
+      <p class="ispshn">E-mailben értesítünk a folyamat haladásáról. Neked általában nincs teendőd, mi intézzük a háttérben a részleteket.</p>
+      <button type="button" class="xsgo" data-xsclose>Bezár</button>
     </div>
   </div>
   <div class="xsheet" id="xsheet">
@@ -10143,14 +10253,37 @@
     var ld = document.querySelector('.adload'), a = window.yAddr || {};
     ld.classList.add('on');
     setTimeout(function(){
-      if (!a.taken){
-        Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; });
-        bc.classList.remove('err', 'busy'); bc.querySelector('.adx').setAttribute('for', a.guest ? 's-newcust' : 's-tshop');
-      }
-      var r = document.getElementById(a.taken ? 's-addrtaken' : 's-bconsent'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
+      var to = !a.taken ? 's-bconsent' : ispOn() ? 's-ispsw' : 's-addrtaken';
+      if (to === 's-bconsent') bcReset();
+      if (to === 's-ispsw') ispReset();
+      var r = document.getElementById(to); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
     }, 2600);
     setTimeout(function(){ ld.classList.remove('on'); }, 2800);
   });
+  function bcReset(){
+    var a = window.yAddr || {};
+    Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; });
+    bc.classList.remove('err', 'busy'); bc.querySelector('.adx').setAttribute('for', a.guest ? 's-newcust' : 's-tshop');
+  }
+  /* ISP váltás (Digital backlog): a taken address gets the provider switch page; the conditions must be confirmed,
+     then a short save and the consent step; the summary tells that the switch starts with the order */
+  var isp = document.querySelector('[data-screen="isp-sw"]'), ispChk = isp.querySelector('[data-ispchk]');
+  function ispOn(){ return !!(window.yFeat && window.yFeat('isp')); }
+  function ispReset(){
+    ispChk.checked = false; isp.classList.remove('err', 'busy'); isp.scrollTop = 0;
+    Array.prototype.forEach.call(isp.querySelectorAll('.gsacc'), function(x){ x.classList.remove('open'); });
+    isp.querySelector('.adx').setAttribute('for', (window.yAddr || {}).guest ? 's-newcust' : 's-tshop');
+  }
+  isp.addEventListener('click', function(e){ var b = e.target.closest('.gsaccb'); if (b) b.parentNode.classList.toggle('open'); });
+  ispChk.addEventListener('change', function(){ isp.classList.remove('err'); });
+  isp.querySelector('[data-ispnext]').addEventListener('click', function(){
+    if (!ispChk.checked){ isp.classList.add('err'); return; }
+    isp.classList.add('busy');
+    setTimeout(function(){ bcReset(); var r = document.getElementById('s-bconsent'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); isp.classList.remove('busy'); }, 1600);
+  });
+  isp.querySelector('[data-ispback]').addEventListener('click', function(){ var r = document.getElementById('s-offsvc'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); });
+  var ispSh = document.getElementById('ispsheet');
+  ispSh.addEventListener('click', function(e){ if (e.target.closest('[data-xsclose]')) ispSh.classList.remove('on'); });
   document.querySelector('[data-takencb]').addEventListener('click', openCb);
   /* consent: an answer (or saved custom settings) is needed, then a short save */
   var bcCustom = false;
@@ -10299,10 +10432,12 @@
       '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
   });
   function smIdx(){
+    sm.querySelector('[data-smisp]').hidden = !((window.yAddr || {}).taken && ispOn());
     sm.querySelector('[data-smidx]').hidden = !(window.yFeat && window.yFeat('arindex'));
     sm.querySelector('[data-smidxt]').textContent = 'A havidíj ' + IDX_FROM + ' emelkedik.';
   }
   document.addEventListener('yfeat', smIdx);
+  sm.querySelector('[data-smispl]').addEventListener('click', function(){ ispSh.classList.add('on'); });
   sm.querySelector('[data-smidxl]').addEventListener('click', function(){
     var n = list[selI], base = +n.price.replace(/\D/g, ''), up = Math.round(base * (1 + parseFloat(IDX_CPI.replace(',', '.')) / 100) / 5) * 5;
     sheet('Részletek a díjváltozásról', '<p class="gsh">A havidíj ' + IDX_FROM + ' emelkedik</p>'
@@ -10694,7 +10829,7 @@
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
   /* already built in the demo: marked with a "Kész" tag */
-  var DONE = {leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, fullafter:1, arindex:1, fulldash:1, fullcsom:1, fullmegt:1};
+  var DONE = {isp:1, leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, fullafter:1, arindex:1, fulldash:1, fullcsom:1, fullmegt:1};
   /* features on the same page move together */
   var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom', netpajzs:'gyermek', gyermek:'netpajzs'};
   var app = document.querySelector('.app'), pop = document.getElementById('devlist');
@@ -10756,7 +10891,7 @@
 /* sales journey: closing it (X) asks first; what was left behind stays in the cart for the rest
    of the session and starting a new address search offers to carry on from there */
 (function(){
-  var FLOW = {'s-offsvc':1,'s-netadd':1,'s-tvoff':1,'s-tvext':1,'s-bconsent':1,'s-bappt':1,'s-bsum':1};
+  var FLOW = {'s-offsvc':1,'s-netadd':1,'s-tvoff':1,'s-tvext':1,'s-ispsw':1,'s-bconsent':1,'s-bappt':1,'s-bsum':1};
   var leave = document.getElementById('ckleave'), cart = document.getElementById('ckcart');
   if (!leave || !cart) return;
   var left = null, exitTo = null, entry = null;
@@ -11377,6 +11512,26 @@
     var ld = document.querySelector('.adload'); if (ld) ld.classList.add('on');
     setTimeout(function(){ pdf.classList.add('on'); if (ld) ld.classList.remove('on'); }, 1200);
   }
+})();
+</script>
+<script>
+/* dashboard: the usable data and minutes load with the shimmering skeleton each time the dashboard opens
+   (not when only the menu over it closes) */
+(function(){
+  var home = document.querySelector('[data-screen="home"]'); if (!home) return;
+  var t = null, prev = (document.querySelector('input.rt[name="nav"]:checked') || {}).id;
+  function load(){
+    var us = home.querySelectorAll('.subuse');
+    Array.prototype.forEach.call(us, function(u){ u.classList.add('ld'); });
+    clearTimeout(t); t = setTimeout(function(){ Array.prototype.forEach.call(us, function(u){ u.classList.remove('ld'); }); }, 1100);
+  }
+  document.addEventListener('change', function(e){
+    if (!e.target || e.target.name !== 'nav' || !e.target.checked) return;
+    var id = e.target.id;
+    if (id === 's-home' && prev !== 's-menu') load();
+    prev = id;
+  });
+  if (prev === 's-home') load();
 })();
 </script>
 </body>
