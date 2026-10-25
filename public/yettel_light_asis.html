@@ -3291,6 +3291,60 @@
   .dtscreen.ld .dtp-a .dtval b::before, .dtscreen.ld .dtp-a .dtbig::before{ content:''; position:absolute; right:0; top:50%; width:100%; min-width:48px; height:12px; margin-top:-6px; border-radius:6px;
         background:linear-gradient(90deg,#DCE2E8 25%,#F5F7F9 50%,#DCE2E8 75%); background-size:200% 100%; animation:skel 1.1s linear infinite; }
   .dtscreen.ld .dtp-a .dtbig{ display:inline-block; }
+  /* new customer: e-mail + phone verification (e-mail, e-mail code, phone, SMS code, too many attempts) */
+  #s-nvver:checked ~ .nvscr[data-screen="nv-ver"]{ display:flex !important; flex-direction:column; }
+  .nvscr .bcsteps i{ width:36px; }
+  .nvst{ display:none; }
+  .nvscr[data-step="email"] [data-nv="email"], .nvscr[data-step="ecode"] [data-nv="ecode"], .nvscr[data-step="phone"] [data-nv="phone"],
+  .nvscr[data-step="scode"] [data-nv="scode"], .nvscr[data-step="block"] [data-nv="block"]{ display:block; }
+  .nvscr[data-step="block"] .bchead, .nvscr[data-step="block"] .nvfoot, .nvscr[data-step="ecode"] .nvfoot, .nvscr[data-step="scode"] .nvfoot{ display:none; }
+  .nvscr[data-step="block"] [data-nv="block"]{ display:flex; flex:1; flex-direction:column; }
+  .nvp{ margin:0 0 18px; font-size:12px; line-height:1.5; color:var(--navy); }
+  .nvlnk{ display:inline-block; margin:-10px 0 0; font-size:12px; font-weight:700; color:var(--navy); text-decoration:underline; text-underline-offset:2px; cursor:pointer; }
+  .nvl{ display:block; margin:0 0 8px; font-size:12px; font-weight:700; color:var(--navy); }
+  .nvfld{ display:flex; align-items:center; gap:10px; height:46px; padding:0 14px; border:1.5px solid #E3E8EE; border-radius:8px; background:#fff; }
+  .nvfld:focus-within{ border-color:var(--navy); }
+  .nvfld input{ flex:1; min-width:0; height:100%; border:none; outline:none; background:none; font-family:'Yettel'; font-size:14px; color:var(--navy); }
+  .nvfld input::placeholder{ color:#A9B3BF; }
+  .nvpre{ font-size:14px; color:#8592A6; }
+  .nvfld.bad{ border-color:#F0603C; }
+  .nverr{ display:none; margin:8px 0 0; font-size:12px; line-height:1.45; color:#F0603C; }
+  .nverr.on{ display:block; }
+  .nverr span{ font-weight:700; text-decoration:underline; cursor:pointer; }
+  .nvscr.busy .nvfld{ background:#CDD4DC; border-color:#CDD4DC; } .nvscr.busy .nvfld input, .nvscr.busy .nvpre{ color:#8592A6; }
+  .nvscr.busy .bcnext{ background:#3E5670; pointer-events:none; }
+  .nvscr.busy .bcnext span{ visibility:hidden; }
+  .nvscr.busy .bcnext::after{ content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
+  .nvscr .bcnext.off{ background:#CDD4DC; color:#8592A6; pointer-events:none; }
+  .nvscr .otp{ justify-content:space-between; gap:6px; margin:22px 0 0; }
+  .nvscr .otp input{ width:46px; height:50px; border-width:1.5px; font-size:18px; }
+  .nvscr .otperr{ display:none; margin:10px 0 0; text-align:left; font-size:12px; color:#F0603C; }
+  .nvscr .otperr.on{ display:block; }
+  .nvspin{ display:none; width:20px; height:20px; margin:18px auto 0; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
+  .nvck.chk .nvspin{ display:block; } .nvck.chk .nvapp, .nvck.chk .otpre{ display:none; }
+  .nvck.chk .otp input{ pointer-events:none; }
+  .nvapp{ display:block; width:100%; margin:26px 0 0; padding:12px; border:1.5px solid #09223D; border-radius:999px; background:#fff; font-family:'Yettel'; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+  .nvck .otpre{ margin-top:22px; font-size:13px; text-decoration:none; }
+  .nvck .otpre:disabled{ color:#A9B3BF; }
+  .nvck .otpre small{ display:block; margin-top:6px; font-size:11px; font-weight:400; color:#8592A6; }
+  .nvtoast{ position:absolute; left:16px; right:16px; bottom:calc(22px + env(safe-area-inset-bottom)); z-index:5; display:none; align-items:center; gap:8px; padding:12px 14px; border-radius:8px; background:#DDF5E0; font-size:12px; line-height:1.4; color:var(--navy); }
+  .nvtoast.on{ display:flex; animation:brfade .2s ease-out; }
+  .nvtoast i{ font-size:18px; color:#2E9A4B; } .nvtoast.bad{ background:#FDE7D8; } .nvtoast.bad i{ color:#F0603C; }
+  .nvblk{ margin:auto 0; text-align:center; }
+  .nvbic{ display:inline-flex; width:64px; height:64px; margin-bottom:20px; border-radius:50%; background:#FDE1D3; align-items:center; justify-content:center; }
+  .nvbic i{ font-size:34px; color:#F0603C; }
+  .nvblk h2{ margin:0 0 12px; font-size:22px; font-weight:700; line-height:1.3; color:var(--navy); }
+  .nvblk p{ margin:0 20px; font-size:12px; line-height:1.5; color:var(--navy); }
+  .nvblkf{ margin-top:auto; padding:0 0 calc(16px + env(safe-area-inset-bottom)); }
+  /* "Levelező app megnyitása" action sheet */
+  .nvsheet{ position:absolute; inset:0; z-index:126; display:none; flex-direction:column; justify-content:flex-end; gap:8px; padding:10px 10px calc(14px + env(safe-area-inset-bottom)); background:rgba(9,34,61,.35); }
+  .nvsheet.on{ display:flex; animation:brfade .2s ease-out; }
+  .nvsg{ border-radius:14px; background:rgba(242,242,247,.97); overflow:hidden; text-align:center; }
+  .nvsg p{ margin:0; padding:12px 16px; border-bottom:1px solid #D1D1D6; font-size:12px; line-height:1.4; color:#8E8E93; }
+  .nvsg p b{ display:block; font-weight:600; }
+  .nvsg button, .nvsx{ display:block; width:100%; padding:15px; border:none; border-bottom:1px solid #D1D1D6; background:none; font-family:-apple-system,'Yettel',sans-serif; font-size:17px; color:#0A7AFF; cursor:pointer; }
+  .nvsg button:last-child{ border-bottom:none; }
+  .nvsx{ border:none; border-radius:14px; background:#fff; font-weight:600; }
   /* taken address + purchase consent */
   .antk i{ color:#8592A6; } .antk{ background:#E3E8EE; }
   .anp b{ font-weight:700; }
@@ -3743,6 +3797,7 @@
   <input class="rt" type="radio" name="nav" id="s-tvext">
   <input class="rt" type="radio" name="nav" id="s-addrtaken">
   <input class="rt" type="radio" name="nav" id="s-ispsw">
+  <input class="rt" type="radio" name="nav" id="s-nvver">
   <input class="rt" type="radio" name="nav" id="s-bconsent">
   <input class="rt" type="radio" name="nav" id="s-bappt">
   <input class="rt" type="radio" name="nav" id="s-bsum">
@@ -8095,6 +8150,51 @@
   </div>
 
   <!-- ============= HOZZÁJÁRULÁS A VÁSÁRLÁSBAN: bconsent ============= -->
+  <!-- ============= ÚJ ÜGYFÉL: E-MAIL ÉS TELEFONSZÁM HITELESÍTÉS ============= -->
+  <div class="screen bcscreen nvscr" data-screen="nv-ver" data-step="email" style="display:none;">
+    <div class="bchead"><span></span><div class="bcsteps"><i class="on"></i><i></i><i></i><i></i><i></i></div><label class="bcx adx" for="s-newcust" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
+    <div class="nvst" data-nv="email">
+      <h2 class="aph">E-mail cím hitelesítés</h2>
+      <p class="nvp">Add meg az e-mail címet, amit a jövőben kapcsolattartásra használhatunk, és ahova a hitelesítő kódot küldhetjük.</p>
+      <label class="nvl" for="nv-mail">E-mail cím *</label>
+      <div class="nvfld"><input type="email" id="nv-mail" autocomplete="email" placeholder="pelda@email.com" data-nvmail></div>
+      <p class="nverr" data-nverr="fmt">Az e-mail cím formátuma nem megfelelő.</p>
+      <p class="nverr" data-nverr="gen">A megadott e-mail cím hibás vagy már egy fiókhoz tartozik. Ha már ügyfelünk vagy, kérjük <span data-nvlogin>lépj be fiókodba e-mail címeddel</span>, vagy adj meg itt egy másikat.</p>
+    </div>
+    <div class="nvst nvck" data-nv="ecode">
+      <h2 class="aph">Nézd meg a leveleidet!</h2>
+      <p class="nvp">A hitelesítő kódot megadott e-mail címedre elküldtük, néhány percbe telhet, mire megérkezik. Ellenőrizd a beérkező leveleket, a spam mappát is, majd írd be az alábbi mezőbe a kódot:</p>
+      <span class="nvlnk" data-nvgo="email">Másik e-mail címet adok meg</span>
+      <div class="otp"><input type="tel" inputmode="numeric" maxlength="1" autocomplete="one-time-code"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"></div>
+      <p class="otperr"></p>
+      <span class="nvspin"></span>
+      <button type="button" class="nvapp" data-nvapp>Levelező app megnyitása</button>
+      <button type="button" class="otpre" data-nvre>Újraküldés<small></small></button>
+    </div>
+    <div class="nvst" data-nv="phone">
+      <h2 class="aph">Telefonszám-hitelesítés</h2>
+      <p class="nvp">Add meg a telefonszámod, amit a jövőben kapcsolattartásra használhatunk, és ahová a hitelesítő kódot küldhetjük.</p>
+      <label class="nvl" for="nv-tel">Telefonszám *</label>
+      <div class="nvfld"><span class="nvpre">+36</span><input type="tel" id="nv-tel" inputmode="numeric" autocomplete="tel-national" placeholder="20 345 6789" data-nvtel></div>
+      <p class="nverr" data-nverr="tel">A telefonszám formátuma nem megfelelő.</p>
+    </div>
+    <div class="nvst nvck" data-nv="scode">
+      <h2 class="aph">Nézd meg SMS üzeneteidet</h2>
+      <p class="nvp">SMS-ben elküldtük a hitelesítő kódot a megadott telefonszámra. Írd be a kódot az alábbi mezőbe.</p>
+      <span class="nvlnk" data-nvgo="phone">Másik telefonszámot adok meg</span>
+      <div class="otp"><input type="tel" inputmode="numeric" maxlength="1" autocomplete="one-time-code"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"></div>
+      <p class="otperr"></p>
+      <span class="nvspin"></span>
+      <button type="button" class="otpre" data-nvre>Újraküldés<small></small></button>
+    </div>
+    <div class="nvst" data-nv="block">
+      <div class="nvblk"><span class="nvbic"><i class="ti ti-x"></i></span><h2>Túl sokszor<br>próbálkoztál</h2><p>Biztonságod érdekében megszakítottuk a folyamatot. Kérjük, próbáld meg újra később.</p></div>
+      <div class="nvblkf"><label class="bcnext" for="s-newcust" data-gohome><span>Vissza a főoldalra</span></label></div>
+    </div>
+    <div class="bcfoot nvfoot"><button type="button" class="bcnext off" data-nvnext><span>Tovább</span></button></div>
+    <div class="nvtoast"><i class="ti"></i><span></span></div>
+    <div class="nvsheet" data-nvsheet><div class="nvsg"><p><b>Levelező app megnyitása</b>Melyik appot szeretnéd megnyitni?</p><button type="button" data-nvmapp="mail">Mail</button><button type="button" data-nvmapp="gmail">Gmail</button><button type="button" data-nvmapp="outlook">Outlook</button></div><button type="button" class="nvsx" data-nvmapp="">Mégsem</button></div>
+  </div>
   <div class="screen bcscreen" data-screen="bconsent" style="display:none;">
     <div class="bchead"><span></span><div class="bcsteps"><i class="on"></i><i></i><i></i></div><label class="bcx adx" for="s-tshop" aria-label="Bezárás"><i class="ti ti-x"></i></label></div>
     <div class="bccard">
@@ -10300,12 +10400,15 @@
     ld.classList.add('on');
     setTimeout(function(){
       var to = !a.taken ? 's-bconsent' : ispOn() ? 's-ispsw' : 's-addrtaken';
+      /* new customer: e-mail and phone verification before the consent step */
+      if (to === 's-bconsent' && a.guest && window.yNvStart){ window.yNvStart(); return; }
       if (to === 's-bconsent') bcReset();
       if (to === 's-ispsw') ispReset();
       var r = document.getElementById(to); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
     }, 2600);
     setTimeout(function(){ ld.classList.remove('on'); }, 2800);
   });
+  window.yBcReset = function(){ bcReset(); };
   function bcReset(){
     var a = window.yAddr || {};
     Array.prototype.forEach.call(bc.querySelectorAll('input[name="bc-all"]'), function(x){ x.checked = false; });
@@ -10325,7 +10428,11 @@
   isp.querySelector('[data-ispnext]').addEventListener('click', function(){
     if (!ispChk.checked){ isp.classList.add('err'); return; }
     isp.classList.add('busy');
-    setTimeout(function(){ bcReset(); var r = document.getElementById('s-bconsent'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); isp.classList.remove('busy'); }, 1600);
+    setTimeout(function(){
+      isp.classList.remove('busy');
+      if ((window.yAddr || {}).guest && window.yNvStart){ window.yNvStart(); return; }
+      bcReset(); var r = document.getElementById('s-bconsent'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true}));
+    }, 1600);
   });
   isp.querySelector('[data-ispback]').addEventListener('click', function(){ var r = document.getElementById('s-offsvc'); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); });
   var ispSh = document.getElementById('ispsheet');
@@ -10955,7 +11062,7 @@
 /* sales journey: closing it (X) asks first; what was left behind stays in the cart for the rest
    of the session and starting a new address search offers to carry on from there */
 (function(){
-  var FLOW = {'s-offsvc':1,'s-netadd':1,'s-tvoff':1,'s-tvext':1,'s-ispsw':1,'s-bconsent':1,'s-bappt':1,'s-bsum':1};
+  var FLOW = {'s-nvver':1,'s-offsvc':1,'s-netadd':1,'s-tvoff':1,'s-tvext':1,'s-ispsw':1,'s-bconsent':1,'s-bappt':1,'s-bsum':1};
   var leave = document.getElementById('ckleave'), cart = document.getElementById('ckcart');
   if (!leave || !cart) return;
   var left = null, exitTo = null, entry = null;
@@ -11618,6 +11725,132 @@
     prev = id;
   });
   if (prev === 's-home') load(home.querySelectorAll('.subuse'));
+})();
+</script>
+<script>
+/* new customer sales flow: after the add-ons (and the loader) the e-mail and the phone number are verified with a
+   6-digit code each, then the consent step. Demo: an e-mail starting with foglalt / tiltolistas / torolt gives the
+   general error; code 111111 is wrong, 000000 has expired; 3 failed codes or more than 3 resends end on "Túl sokszor próbálkoztál" */
+(function(){
+  var sc = document.querySelector('[data-screen="nv-ver"]'); if (!sc) return;
+  var mail = sc.querySelector('[data-nvmail]'), tel = sc.querySelector('[data-nvtel]'), next = sc.querySelector('[data-nvnext]');
+  var toastEl = sc.querySelector('.nvtoast'), sheet = sc.querySelector('[data-nvsheet]'), tT = null, cd = null;
+  var st = {};
+  function go(id){ var r = document.getElementById(id); r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); }
+  function toast(ok, text){
+    toastEl.classList.toggle('bad', !ok); toastEl.querySelector('i').className = 'ti ' + (ok ? 'ti-check' : 'ti-alert-circle');
+    toastEl.querySelector('span').textContent = text; toastEl.classList.add('on');
+    clearTimeout(tT); tT = setTimeout(function(){ toastEl.classList.remove('on'); }, 3000);
+  }
+  function err(k, on){ sc.querySelector('[data-nverr="'+k+'"]').classList.toggle('on', on); }
+  function okMail(){ return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(mail.value.trim()); }
+  function okTel(){ return /^(20|30|31|50|70)\d{7}$/.test(tel.value.replace(/\D/g, '')); }
+  function paint(){
+    var step = sc.getAttribute('data-step');
+    next.classList.toggle('off', step === 'email' ? !okMail() : !okTel());
+    sc.querySelector('.nvfld:has([data-nvmail])').classList.toggle('bad', sc.querySelector('[data-nverr="fmt"].on, [data-nverr="gen"].on') !== null);
+    sc.querySelector('.nvfld:has([data-nvtel])').classList.toggle('bad', sc.querySelector('[data-nverr="tel"].on') !== null);
+  }
+  function step(k){
+    sc.setAttribute('data-step', k); sc.classList.remove('busy'); toastEl.classList.remove('on'); sheet.classList.remove('on');
+    sc.scrollTop = 0; clearInterval(cd);
+    if (k === 'ecode' || k === 'scode') codeReset(sc.querySelector('[data-nv="'+k+'"]'));
+    paint();
+  }
+  /* code boxes: one digit each, moves on by itself, paste fills them all; checked when the 6th digit is in */
+  function boxes(w){ return Array.prototype.slice.call(w.querySelectorAll('.otp input')); }
+  function codeReset(w){
+    boxes(w).forEach(function(b){ b.value = ''; b.classList.remove('bad', 'ok'); });
+    w.querySelector('.otperr').classList.remove('on'); w.classList.remove('chk');
+    st[w.getAttribute('data-nv')] = st[w.getAttribute('data-nv')] || {fail:0, re:0};
+    timer(w, 30);
+  }
+  function timer(w, sec){
+    var b = w.querySelector('[data-nvre]'), sm = b.querySelector('small'); clearInterval(cd);
+    function t(){ b.disabled = sec > 0; sm.textContent = sec > 0 ? '(' + sec + ' másodperc)' : ''; sec--; if (sec < 0) clearInterval(cd); }
+    t(); cd = setInterval(t, 1000);
+  }
+  function check(w){
+    var bs = boxes(w), code = bs.map(function(b){ return b.value; }).join(''), k = w.getAttribute('data-nv');
+    if (code.length < 6) return;
+    bs.forEach(function(b){ b.classList.remove('bad'); b.classList.add('ok'); b.blur(); }); w.querySelector('.otperr').classList.remove('on'); w.classList.add('chk');
+    setTimeout(function(){
+      w.classList.remove('chk');
+      if (code !== '111111' && code !== '000000'){ st[k] = null; if (k === 'ecode') step('phone'); else done(); return; }
+      if (++st[k].fail >= 3){ step('block'); return; }
+      bs.forEach(function(b){ b.classList.remove('ok'); b.classList.add('bad'); });
+      var e = w.querySelector('.otperr'); e.textContent = code === '000000' ? 'A kód érvényessége lejárt, kérj újat!' : 'A kód nem megfelelő!'; e.classList.add('on');
+    }, 1200);
+  }
+  Array.prototype.forEach.call(sc.querySelectorAll('.nvck'), function(w){
+    var bs = boxes(w);
+    bs.forEach(function(b, i){
+      /* after a wrong code, tapping a box clears the boxes for a new try */
+      b.addEventListener('focus', function(){
+        if (!b.classList.contains('bad')) return;
+        bs.forEach(function(x){ x.value = ''; x.classList.remove('bad'); });
+        w.querySelector('.otperr').classList.remove('on'); bs[0].focus();
+      });
+      b.addEventListener('input', function(){
+        var d = b.value.replace(/\D/g, '');
+        if (d.length > 1){ d.split('').slice(0, 6 - i).forEach(function(c, j){ bs[i + j].value = c; }); }
+        else b.value = d;
+        var n = bs.filter(function(x){ return !x.value; })[0];
+        if (n) { if (b.value) n.focus(); } else check(w);
+      });
+      b.addEventListener('keydown', function(e){ if (e.key === 'Backspace' && !b.value && i) { bs[i - 1].value = ''; bs[i - 1].focus(); e.preventDefault(); } });
+    });
+    w.querySelector('[data-nvre]').addEventListener('click', function(){
+      var k = w.getAttribute('data-nv');
+      if (++st[k].re > 3){ step('block'); return; }
+      bs.forEach(function(x){ x.value = ''; x.classList.remove('bad', 'ok'); }); w.querySelector('.otperr').classList.remove('on');
+      /* the 2nd resend shows the unexpected-error message */
+      if (st[k].re === 2) toast(false, 'Hoppá! Váratlan hiba történt, próbáld újra!');
+      else toast(true, 'Új kódot küldtünk');
+      timer(w, 30);
+    });
+  });
+  /* e-mail and phone: Tovább only for a well-formed value, the format error once the field is left */
+  mail.addEventListener('input', function(){ err('gen', false); if (okMail()) err('fmt', false); paint(); });
+  mail.addEventListener('blur', function(){ err('fmt', !!mail.value.trim() && !okMail()); paint(); });
+  tel.addEventListener('input', function(){
+    var d = tel.value.replace(/\D/g, '').replace(/^36/, '').slice(0, 9);
+    tel.value = d.replace(/^(\d{2})(\d{0,3})(\d{0,4}).*/, function(m, a, b, c){ return a + (b ? ' ' + b : '') + (c ? ' ' + c : ''); });
+    if (okTel()) err('tel', false); paint();
+  });
+  tel.addEventListener('blur', function(){ err('tel', !!tel.value.trim() && !okTel()); paint(); });
+  next.addEventListener('click', function(){
+    var k = sc.getAttribute('data-step');
+    if (next.classList.contains('off')) return;
+    sc.classList.add('busy'); mail.blur(); tel.blur();
+    setTimeout(function(){
+      sc.classList.remove('busy');
+      if (k === 'email'){
+        if (/^(foglalt|tiltolistas|torolt)/i.test(mail.value.trim())){ err('gen', true); paint(); return; }
+        step('ecode');
+      } else step('scode');
+    }, 1400);
+  });
+  sc.addEventListener('click', function(e){
+    var g = e.target.closest('[data-nvgo]'); if (g){ step(g.getAttribute('data-nvgo')); return; }
+    if (e.target.closest('[data-nvlogin]')){ go('s-login'); return; }
+    if (e.target.closest('[data-nvapp]')){ sheet.classList.add('on'); return; }
+    var m = e.target.closest('[data-nvmapp]');
+    if (m || e.target === sheet){
+      sheet.classList.remove('on');
+      if (m && m.getAttribute('data-nvmapp') === 'outlook') toast(false, 'Nincs levelező app az eszközön. A kódot megtalálod a postafiókodban.');
+    }
+  });
+  function done(){
+    if (window.yBcReset) window.yBcReset();
+    go('s-bconsent');
+  }
+  /* every new purchase starts from an empty e-mail field */
+  window.yNvStart = function(){
+    st = {}; mail.value = ''; tel.value = ''; ['fmt', 'gen', 'tel'].forEach(function(k){ err(k, false); });
+    step('email'); go('s-nvver');
+  };
+  document.addEventListener('change', function(e){ if (e.target.id !== 's-nvver' && e.target.name === 'nav' && e.target.checked) clearInterval(cd); });
 })();
 </script>
 </body>
