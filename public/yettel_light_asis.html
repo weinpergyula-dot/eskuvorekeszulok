@@ -3144,6 +3144,7 @@
   .dlok{display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; background:var(--lime); font-size:9px; font-weight:700; line-height:1.4; color:var(--navy); vertical-align:1px;}
   .dlrow:not(.shown) .dlok{display:none;}
   .dlok.own{background:#FF8A00; color:#fff;}
+  .dlok.todo{background:#E3E8EE; color:#5B6B80;}
   .dlsh .dltx{font-family:'Yettel'; font-size:13px; font-weight:800; letter-spacing:.02em;}
   .dlrow.typing .dltx::after{content:''; display:inline-block; width:1.5px; height:1em; margin-left:1px; vertical-align:-2px; background:var(--navy); animation:dlcar .7s steps(1) infinite;}
   @keyframes dlcar{50%{opacity:0;}}
@@ -11081,8 +11082,9 @@
     {k:'step4', t:'STEP4', f:[['hfc','HFC portfólió'],['fullafter','FULL áras termékek after sales'],['collkorl','Collection (korlátozás)'],['trybuy','Try&Buy időtartam'],['statusz','Státuszfüggetlen (Cancelled CA)']]},
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
-  /* already built in the demo: marked with a "Kész" tag */
-  var DONE = {isp:1, leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, arindex:1, fulldash:1, fullcsom:1, fullmegt:1};
+  /* tags: "Done" = built in the demo, "My" = our own item that already has code and can be switched, "To Do" = no code yet */
+  var DONE = {isp:1, leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, arindex:1};
+  var MY = {fulldash:1, fullcsom:1, fullmegt:1};
   /* features on the same page move together */
   var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom', netpajzs:'gyermek', gyermek:'netpajzs'};
   var app = document.querySelector('.app'), pop = document.getElementById('devlist');
@@ -11097,9 +11099,8 @@
   function sw(attr, label){ return '<span class="ofsw"><input type="checkbox" '+attr+' aria-label="'+label+'"><span></span></span>'; }
   body.innerHTML = STEPS.map(function(st){
     return '<div class="dlstep" data-dlstep="'+st.k+'"><div class="dlrow dlsh"><span class="dltx" data-txt="'+st.t+'"></span>'+sw('data-dlall', st.t)+'</div>'
-      /* STEP4 and STEP5 items are our own: an orange "Saját" tag instead of "Kész" */
-      + st.f.map(function(x){ var own = st.k === 'step4' || st.k === 'step5';
-          return '<div class="dlrow"><span class="dltx" data-txt="'+x[1]+'"></span>'+(own ? '<span class="dlok own">Saját</span>' : DONE[x[0]] ? '<span class="dlok">Kész</span>' : '')+sw('data-dlf="'+x[0]+'"', x[1])+'</div>'; }).join('') + '</div>';
+      + st.f.map(function(x){ var tag = DONE[x[0]] ? '<span class="dlok">Done</span>' : MY[x[0]] ? '<span class="dlok own">My</span>' : '<span class="dlok todo">To Do</span>';
+          return '<div class="dlrow"><span class="dltx" data-txt="'+x[1]+'"></span>'+tag+sw('data-dlf="'+x[0]+'"', x[1])+'</div>'; }).join('') + '</div>';
   }).join('');
   function sync(){
     Array.prototype.forEach.call(body.querySelectorAll('[data-dlstep]'), function(g){
