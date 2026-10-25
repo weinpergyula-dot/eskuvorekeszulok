@@ -3154,8 +3154,7 @@
   .tvscr .ofh, .exscr .ofh{ margin-bottom:18px; }
   @keyframes skel{ to{ background-position:-200% 0; } }
   .tvbx.ld .tvbt{ position:relative; color:transparent; }
-  .tvbx.ld .tvbt::before{ content:''; position:absolute; left:0; top:50%; width:78%; height:14px; margin-top:-7px; border-radius:7px;
-        background:linear-gradient(90deg,#E6EAEE 25%,#F4F6F8 50%,#E6EAEE 75%); background-size:200% 100%; animation:skel 1.2s linear infinite; }
+  .tvbx.ld .tvbt::before{ content:''; position:absolute; left:0; top:50%; width:78%; height:14px; margin-top:-7px; border-radius:7px; }
   .tvbx.ld .tvbic{ visibility:hidden; }
   .tvbx.ld::after{ content:''; position:absolute; right:16px; top:50%; width:20px; height:20px; margin-top:-10px; border-radius:50%; border:2.5px solid #D5DCE3; border-top-color:#09223D; animation:spin .7s linear infinite; }
   .tvscr.busy .tvbx.ld{ opacity:1; }
@@ -3211,6 +3210,9 @@
   .excard.ld .exlogo, .excard.ld .exmid, .excard.ld .expr{ opacity:.35; }
   .excard.ld .exrow{ position:relative; }
   .excard.ld .exrow::after{ content:''; position:absolute; right:126px; top:50%; width:16px; height:16px; margin-top:-8px; border-radius:50%; border:2px solid #CDD4DC; border-top-color:#09223D; animation:spin .7s linear infinite; }
+  /* every skeleton bar loads with the same moving shimmer (bill lists, NetPajzs settings, TV box) */
+  .bhskf, .bhskr > i, .bhskr > span i, .bhskr > b,
+  .nssscreen.ld .nsslist .nssrow > span:first-child::before, .tvbx.ld .tvbt::before{ background:linear-gradient(90deg,#DCE2E8 25%,#F5F7F9 50%,#DCE2E8 75%); background-size:200% 100%; animation:skel 1.1s linear infinite; }
   .gsul{ margin:0 0 18px; padding-left:18px; font-size:12px; line-height:1.5; color:var(--navy); }
   .gsh2{ margin:0 0 10px; font-size:14px; font-weight:700; line-height:1.35; color:var(--navy); }
   .gslogo{ display:flex; align-items:center; justify-content:center; width:150px; height:96px; margin:4px auto 22px; border-radius:6px; font-family:'Yettel'; }
@@ -3344,7 +3346,13 @@
   .smfull{ display:flex; align-items:center; gap:10px; padding:14px; border-radius:10px; background:var(--lime); font-size:12px; font-weight:700; line-height:1.35; color:var(--navy); cursor:pointer; }
   .smfull i:first-child{ font-size:22px; } .smfull span{ flex:1; }
   .smfull[hidden]{ display:none; }
-  .smnote{ margin:12px 0 0; font-size:10px; line-height:1.4; color:#C9D2DC; }
+  .smfull{ margin-bottom:16px; } .smfull i:first-child{ font-size:24px; } .smfull i:last-child{ font-size:18px; opacity:.6; }
+  .smnotes{ padding-top:14px; border-top:1px solid #8DA2B8; }
+  .smnote{ display:flex; align-items:flex-start; gap:8px; margin:0; font-size:11px; line-height:1.4; color:#fff; }
+  .smnote + .smnote{ margin-top:12px; }
+  .smnote > i{ flex-shrink:0; font-size:15px; }
+  .smnote[hidden]{ display:none; }
+  .smlnk{ text-decoration:underline; text-underline-offset:2px; cursor:pointer; }
   .smdocs{ display:flex; flex-direction:column; gap:12px; margin:4px 0 20px; }
   .smdoc{ display:flex; align-items:center; gap:10px; font-size:12px; color:var(--navy); text-decoration:underline; cursor:pointer; }
   .smdoc i{ font-size:20px; text-decoration:none; }
@@ -8012,8 +8020,11 @@
     <div class="smtot">
       <div class="smtr"><span>Vásárláskor fizetendő</span><b>0 Ft</b></div>
       <div class="smtr"><span>Havonta fizetendő<span data-smfl><br>Full kedvezménnyel</span></span><div><s data-smold></s><b data-smnew></b></div></div>
-      <div class="smfull" data-smfull><i class="ti ti-percentage"></i><span>Jár neked a Full kedvezmény! Nézd meg, melyik szolgáltatásodra jár</span><i class="ti ti-chevron-right"></i></div>
-      <p class="smnote">A havidíjak a promóciós kedvezmények lejárta után a csomag teljes havidíjával számlázódnak.</p>
+      <div class="smfull" data-smfull><i class="ti ti-percentage"></i><span>Nézd meg, mekkora Full kedvezményt kapsz a meglévő előfizetéseidre!</span><i class="ti ti-chevron-right"></i></div>
+      <div class="smnotes">
+        <p class="smnote"><i class="ti ti-percentage"></i><span>A havidíjat csökkenthetik még a promóciós kedvezmények.</span></p>
+        <p class="smnote" data-smidx><i class="ti ti-info-circle"></i><span><span data-smidxt></span><br><span class="smlnk" data-smidxl>Részletek a díjváltozásról</span></span></p>
+      </div>
     </div>
     <div class="smdocs"><span class="smdoc"><i class="ti ti-file-text"></i>Szerződés összefoglaló</span><span class="smdoc"><i class="ti ti-file-text"></i>Egyedi előfizetői szerződés</span><span class="smdoc"><i class="ti ti-file-text"></i>Általános Szerződési Feltételek</span></div>
     <div class="smdata">
@@ -10235,6 +10246,8 @@
     return cnt >= 4 ? 30 : cnt === 3 ? 20 : cnt === 2 ? 15 : 0;
   }
   var smNew = [], smPct = 0;
+  /* Árindexálás (Digital backlog): the summary tells from which fixed (CMS-set) date the monthly fee rises by the KSH CPI */
+  var IDX_DATE = '2027. március 1.', IDX_FROM = '2027. március 1-jétől', IDX_CPI = '4,1';
   function openSum(){
     var a = window.yAddr || {}, n = list[selI], t = tlist[tSel], it = [], pct = fullPct(a.guest), tvp = pct ? 15 : 0;
     smPct = pct; smNew = [['ti-home-signal', n.name, pct]];
@@ -10256,6 +10269,7 @@
     sm.querySelector('[data-smold]').textContent = full !== now ? fmt(full) + ' Ft / hó' : '';
     sm.querySelector('[data-smfl]').hidden = !pct; sm.querySelector('[data-smfull]').hidden = !pct;
     sm.querySelector('[data-smnew]').textContent = fmt(now) + ' Ft / hó';
+    smIdx();
     sm.querySelector('[data-smaddr]').textContent = a.address || '';
     var d = new Date(apSel), p2 = function(x){ return (x < 10 ? '0' : '') + x; };
     sm.querySelector('[data-smappt]').innerHTML = d.getFullYear() + '.' + p2(d.getMonth() + 1) + '.' + p2(d.getDate()) + '.<br>' + ap.querySelector('.apslot.sel').textContent;
@@ -10282,6 +10296,20 @@
       + '<p class="fullsub">Új szolgáltatásaidra:</p><div class="fulllist">' + smNew.map(function(e){ return fullRow(e, e[2], true); }).join('') + '</div>'
       + '<div class="gsacc card"><button type="button" class="gsaccb"><span>Miért jár neked a Full kedvezmény?</span><i class="ti ti-chevron-down"></i></button>'
       + '<div class="gsaccp"><p>Több szolgáltatás több kedvezmény!</p><p>A Yettel Full egy csomagajánlat. Minél több mobil és otthoni internet szolgáltatásod van, annál nagyobb kedvezményt kaphatsz. Így 15, 20 vagy akár 30% havidíjkedvezményt is elérhetsz. Ráadásul csomagon belül díjmentesen hívhatjátok egymást és 15% kedvezmény jár minden Yettel TV vagy streaming előfizetéshez is.</p><p>A kedvezmények Yettel Full aktiválással járnak neked. Ezt ezzel a vásárlásoddal be is aktiváljuk neked (ha korábban még nem aktiváltuk).</p></div></div>',
+      '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
+  });
+  function smIdx(){
+    sm.querySelector('[data-smidx]').hidden = !(window.yFeat && window.yFeat('arindex'));
+    sm.querySelector('[data-smidxt]').textContent = 'A havidíj ' + IDX_FROM + ' emelkedik.';
+  }
+  document.addEventListener('yfeat', smIdx);
+  sm.querySelector('[data-smidxl]').addEventListener('click', function(){
+    var n = list[selI], base = +n.price.replace(/\D/g, ''), up = Math.round(base * (1 + parseFloat(IDX_CPI.replace(',', '.')) / 100) / 5) * 5;
+    sheet('Részletek a díjváltozásról', '<p class="gsh">A havidíj ' + IDX_FROM + ' emelkedik</p>'
+      + '<p class="gsp">A tarifacsomagok havidíja évente egyszer a Központi Statisztikai Hivatal által közzétett előző évi átlagos fogyasztói árindex mértékével változik, a közlemény közzétételét követő 60 napon belül.</p>'
+      + '<p class="gsp">A KSH által közzétett 2026. évi átlagos fogyasztói árindex <b>' + IDX_CPI + '%</b>, így a(z) ' + n.name + ' csomag kedvezmények nélküli havidíja <b>' + IDX_DATE + '</b> napjától <b>' + fmt(base) + ' Ft/hó</b> helyett <b>' + fmt(up) + ' Ft/hó</b> lesz.</p>'
+      + '<p class="gsp">A promóciós és a Full kedvezmények mértéke nem változik, azokat az emelt havidíjból számítjuk. Az érintett havidíjat a díjváltozást követő első számládon látod.</p>'
+      + '<p class="gsnote">Az árindexálásról az Általános Szerződési Feltételekben olvashatsz bővebben.</p>',
       '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
   });
   sm.querySelector('[data-smbill]').addEventListener('click', function(){
@@ -10666,7 +10694,7 @@
     {k:'step5', t:'STEP5', f:[['fulldash','FULL dashboard'],['fullcsom','FULL csomagom'],['fullmegt','FULL státuszból adodó megtakarítás'],['fullopc','FULL opció bekapcsolása'],['hrsz','HRSZ támogatás']]}
   ];
   /* already built in the demo: marked with a "Kész" tag */
-  var DONE = {leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, fullafter:1, fulldash:1, fullcsom:1, fullmegt:1};
+  var DONE = {leadcim:1, leadhamar:1, leadamikor:1, netpajzs:1, gyermek:1, idopont:1, collszun:1, szemadat:1, hivresz:1, nontelco:1, fullafter:1, arindex:1, fulldash:1, fullcsom:1, fullmegt:1};
   /* features on the same page move together */
   var LINK = {fullcsom:'fullmegt', fullmegt:'fullcsom', netpajzs:'gyermek', gyermek:'netpajzs'};
   var app = document.querySelector('.app'), pop = document.getElementById('devlist');
