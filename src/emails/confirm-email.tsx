@@ -19,7 +19,7 @@ export function ConfirmEmail({ confirmLink, name }: ConfirmEmailProps) {
 
       <p style={s.text}>
         Köszönjük, hogy regisztráltál az <strong>Esküvőre Készülök</strong> oldalon!
-        Kattints az alábbi gombra az e-mail címed megerősítéséhez és a fiókok aktiválásához:
+        Kattints az alábbi gombra az e-mail címed megerősítéséhez és a fiókod aktiválásához:
       </p>
 
       {/* CTA gomb */}

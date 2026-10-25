@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Heart, MessageCircle, Send, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText, SlidersHorizontal } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText, SlidersHorizontal } from "lucide-react";
 import { QuoteChat, ProviderChatLoader, type VisitorChat, type ProviderRequest } from "./quote-requests-section";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ChatComposer, COMPOSER_SCROLL_PAD } from "@/components/chat/chat-composer";
+import { lockPageScroll } from "@/lib/scroll-lock";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -494,18 +496,19 @@ function ChatView({
 
   // Scroll to bottom on new messages — on desktop scroll only the inner container
   useEffect(() => {
-    if (window.innerWidth >= 640) {
-      const el = scrollAreaRef.current;
-      if (el) el.scrollTop = el.scrollHeight;
-    } else {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    /* Mobilon is csak az üzenetlista görög: a scrollIntoView az egész
+       oldalt is mozgatná, és a chat mögött kilátszana a lábléc. */
+    const el = scrollAreaRef.current;
+    if (!el) return;
+    if (window.innerWidth >= 640) el.scrollTop = el.scrollHeight;
+    else el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   // Lock body scroll on mobile via chat-mode class; desktop is fixed-height so no page scroll needed
   useEffect(() => {
     document.body.classList.add("chat-mode");
-    return () => { document.body.classList.remove("chat-mode"); };
+    const unlock = lockPageScroll();
+    return () => { document.body.classList.remove("chat-mode"); unlock(); };
   }, []);
 
   // Mobile: resize container to match visual viewport so keyboard doesn't hide input
@@ -763,7 +766,7 @@ function ChatView({
       )}
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 bg-gray-50">
+      <div ref={scrollAreaRef} className={`flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pt-5 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
             <MessageCircle className="h-12 w-12 mb-3 text-gray-200" strokeWidth={1} />
@@ -829,29 +832,15 @@ function ChatView({
 
       {/* Reply */}
       {!hasSystemMessage && (
-        <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
-          <form onSubmit={handleSend} className="flex gap-2 items-end">
-            <textarea
-              ref={textareaRef}
-              value={replyBody}
-              onChange={(e) => {
-                setReplyBody(e.target.value);
-                e.target.style.height = "auto";
-                e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder="Írj üzenetet… (Shift+Enter = új sor)"
-              rows={1}
-              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors overflow-hidden"
-              style={{ maxHeight: "120px" }}
-            />
-            <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
-              <Send className="h-3.5 w-3.5 mr-1" />
-              {sending ? "..." : "Küldés"}
-            </Button>
-          </form>
-          {sendError && <p className="text-xs text-[#F06C6C] mt-1.5">{sendError}</p>}
-        </div>
+        <ChatComposer
+          textareaRef={textareaRef}
+          value={replyBody}
+          onChange={setReplyBody}
+          onKeyDown={handleKeyDown}
+          onSubmit={handleSend}
+          sending={sending}
+          error={sendError}
+        />
       )}
     </div>
   );
@@ -870,6 +859,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterCounty, setFilterCounty]     = useState("");
   const [currentPage, setCurrentPage]       = useState(0);
+  const listTopRef = useRef<HTMLDivElement>(null);
   const [selectedView, setSelectedView]     = useState<SelectedView | null>(null);
   const [convSearchQuery, setConvSearchQuery]       = useState("");
   const [convFilterCategory, setConvFilterCategory] = useState("");
@@ -1091,6 +1081,12 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   );
 
   const resetPage = () => setCurrentPage(0);
+  /* Lapváltáskor a lista tetejére ugrunk (a lapozó a lista alján van). */
+  const goToPage = (n: number) => {
+    setCurrentPage(n);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    listTopRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  };
 
   return (
     <div className="space-y-3">
@@ -1149,7 +1145,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
 
       {/* ── Providers tab ── */}
       {tab === "providers" && (
-        <div className="space-y-3">
+        <div ref={listTopRef} className="space-y-3 scroll-mt-24">
           {/* Search + dropdowns — only when filtersOpen */}
           {filtersOpen && (
             <div className="flex flex-col sm:flex-row gap-2">
@@ -1206,7 +1202,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between gap-2 pt-1">
                   <button
-                    onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                    onClick={() => goToPage(Math.max(0, currentPage - 1))}
                     disabled={currentPage === 0}
                     className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
@@ -1217,7 +1213,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                     <span className="text-gray-400 ml-1">({filteredProviders.length} szolgáltató)</span>
                   </span>
                   <button
-                    onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+                    onClick={() => goToPage(Math.min(totalPages - 1, currentPage + 1))}
                     disabled={currentPage >= totalPages - 1}
                     className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >

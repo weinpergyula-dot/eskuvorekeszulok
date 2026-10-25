@@ -29,9 +29,9 @@ import { SketchDate } from "./_components/sketch-date";
 import { Timeline } from "./_components/timeline";
 
 export const metadata: Metadata = {
-  title: "PREMIUM minta – Digitális esküvői meghívó",
+  title: "GOLD minta – Digitális esküvői meghívó",
   description:
-    "A PREMIUM csomag bemutató mintája: animált boríték-felnyitás, satírozott dátum, élő galéria és teljesen egyedi design.",
+    "A GOLD csomag bemutató mintája: animált boríték-felnyitás, satírozott dátum, élő galéria és teljesen egyedi design.",
   robots: { index: false, follow: false },
 };
 
@@ -125,10 +125,10 @@ const INFOS = [
   { icon: PenLine, title: "Vendégkönyv", text: "Nem tudsz eljönni? Írj pár sort a vendégkönyvbe – minden üzenetet kinyomtatunk az albumunkba." },
 ];
 
-export default function MeghivoPremiumPage() {
+export default function MeghivoGoldPage() {
   return (
     <div className="prm-root min-h-screen">
-      {/* PREMIUM extra: a meghívó egy lezárt borítékkal indul */}
+      {/* GOLD extra: a meghívó egy lezárt borítékkal indul */}
       <EnvelopeIntro
         monogram={COUPLE.monogram}
         names={COUPLE.names}
@@ -139,7 +139,7 @@ export default function MeghivoPremiumPage() {
       {/* ── Hero ────────────────────────────────────────── */}
       <header className="prm-hero relative overflow-hidden px-4 pb-20 pt-24 text-center sm:pb-28 sm:pt-32">
         <div className="relative mx-auto max-w-3xl">
-          <p className="prm-caps text-[10px] sm:text-xs">Premium minta · digitális esküvői meghívó</p>
+          <p className="prm-caps text-[10px] sm:text-xs">Gold minta · digitális esküvői meghívó</p>
 
           <div className="prm-monogram mx-auto mt-8">
             <span className="prm-script">L</span>
@@ -155,7 +155,7 @@ export default function MeghivoPremiumPage() {
             Márkus Dániel
           </h1>
 
-          {/* PREMIUM extra: satírozott, megrajzolódó dátum */}
+          {/* GOLD extra: satírozott, megrajzolódó dátum */}
           <div className="mt-10">
             <SketchDate text={COUPLE.date} sub="Szombat · 16:00 · Tihany" />
           </div>
@@ -171,7 +171,7 @@ export default function MeghivoPremiumPage() {
 
           <a
             href="#visszajelzes"
-            className="mt-12 inline-flex items-center gap-2 rounded-full border border-[var(--prm-line)] bg-[rgba(232,180,212,0.08)] px-7 py-3 text-sm tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(232,180,212,0.18)]"
+            className="mt-12 inline-flex items-center gap-2 rounded-full border border-[var(--prm-line)] bg-[rgba(211, 197, 173,0.08)] px-7 py-3 text-sm tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(211, 197, 173,0.18)]"
           >
             Visszajelzek
           </a>
@@ -194,11 +194,11 @@ export default function MeghivoPremiumPage() {
         </Reveal>
       </section>
 
-      {/* ── Történetünk (PREMIUM extra) ─────────────────── */}
+      {/* ── Történetünk (GOLD extra) ─────────────────── */}
       <section className="px-4 py-20">
         <div className="mx-auto max-w-3xl">
           <Reveal className="text-center">
-            <p className="prm-caps text-[10px]">Premium extra</p>
+            <p className="prm-caps text-[10px]">Gold extra</p>
             <h2 className="prm-serif mt-2 text-3xl sm:text-4xl">A történetünk</h2>
             <div className="prm-rule mx-auto mt-6" />
           </Reveal>
@@ -244,11 +244,11 @@ export default function MeghivoPremiumPage() {
         </div>
       </section>
 
-      {/* ── Élő galéria (PREMIUM extra) ─────────────────── */}
+      {/* ── Élő galéria (GOLD extra) ─────────────────── */}
       <section className="px-4 py-20">
         <div className="mx-auto max-w-4xl">
           <Reveal className="text-center">
-            <p className="prm-caps text-[10px]">Premium extra</p>
+            <p className="prm-caps text-[10px]">Gold extra</p>
             <h2 className="prm-serif mt-2 text-3xl sm:text-4xl">Élő galéria</h2>
             <p className="prm-muted mt-4 text-[15px]">
               A nagy nap fotói még aznap este megjelennek itt. Kattints bármelyik képre a
@@ -287,7 +287,7 @@ export default function MeghivoPremiumPage() {
                         href={maps}
                         target="_blank"
                         rel="noopener"
-                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--prm-line)] px-4 py-2 text-xs tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(232,180,212,0.12)]"
+                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--prm-line)] px-4 py-2 text-xs tracking-wide text-[var(--prm-rose)] transition-colors hover:bg-[rgba(211, 197, 173,0.12)]"
                       >
                         <MapPin className="h-3.5 w-3.5" />
                         Megnyitom a térképen
@@ -329,7 +329,7 @@ export default function MeghivoPremiumPage() {
       {/* ── Vendégkönyv ─────────────────────────────────── */}
       <section className="prm-alt px-4 py-20">
         <Reveal className="mx-auto max-w-3xl text-center">
-          <p className="prm-caps text-[10px]">Premium extra</p>
+          <p className="prm-caps text-[10px]">Gold extra</p>
           <h2 className="prm-serif mt-2 text-3xl sm:text-4xl">Vendégkönyv</h2>
           <div className="prm-rule mx-auto mt-6" />
         </Reveal>
@@ -361,7 +361,7 @@ export default function MeghivoPremiumPage() {
         <p className="prm-caps mt-3 text-[10px]">2027. augusztus 21. · Tihany</p>
         <div className="prm-rule mx-auto mt-6" />
         <p className="prm-muted mt-6 text-xs">
-          Ez a PREMIUM csomag bemutató mintája – a szereplők és az adatok kitaláltak.
+          Ez a GOLD csomag bemutató mintája – a szereplők és az adatok kitaláltak.
         </p>
         <a
           href="/meghivo"
@@ -371,7 +371,7 @@ export default function MeghivoPremiumPage() {
         </a>
       </footer>
 
-      {/* PREMIUM extra: háttérzene – csak kattintásra indul */}
+      {/* GOLD extra: háttérzene – csak kattintásra indul */}
       <MusicToggle src="/perfect.mp3" title="A dalunk" />
     </div>
   );

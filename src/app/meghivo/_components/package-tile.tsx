@@ -4,7 +4,7 @@ import { MeghivoQuoteCta } from "./quote-cta";
 
 /**
  * Egy csomag a kollázsban. Két elrendezés van: a "square" a két négyzetes
- * csempéhez (BASIC, SILVER), a "wide" a széles PREMIUM blokkhoz. Mindkettő
+ * csempéhez (BASIC, SILVER), a "wide" a széles GOLD blokkhoz. Mindkettő
  * teljesen a csomag színébe öltözik – a telefon-előnézet, a jellemzők és a
  * választható extrák ugyanazon a színes felületen ülnek.
  */

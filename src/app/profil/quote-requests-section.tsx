@@ -17,6 +17,8 @@ import {
 } from "@/lib/image-utils";
 import { RecipientPicker } from "./quote-recipient-picker";
 import { MeghivoQuoteForm } from "./meghivo-quote-form";
+import { ChatComposer, COMPOSER_SCROLL_PAD } from "@/components/chat/chat-composer";
+import { lockPageScroll } from "@/lib/scroll-lock";
 
 const SYSTEM_PREFIX = "__SYSTEM__:";
 const isSystemMsg = (body: string) => body.startsWith(SYSTEM_PREFIX);
@@ -96,10 +98,21 @@ function formatShort(iso: string) {
 
 // ── SendForm ──────────────────────────────────────────────────────────────────
 
-function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?: () => void; userId?: string }) {
+/** Egy szolgáltató kártyájáról indított ajánlatkérés előtöltése. */
+interface SendFormPrefill {
+  providerId: string;
+  category?: string;
+  counties?: string[];
+}
+
+function SendForm({ onSent, onCancel, userId, prefill }: { onSent: () => void; onCancel?: () => void; userId?: string; prefill?: SendFormPrefill }) {
   const [subject, setSubject] = useState("");
-  const [category, setCategory] = useState("");
-  const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
+  const [category, setCategory] = useState(
+    prefill?.category && prefill.category in CATEGORY_LABELS ? prefill.category : ""
+  );
+  const [selectedCounties, setSelectedCounties] = useState<string[]>(
+    () => (prefill?.counties ?? []).filter((c) => (COUNTIES as readonly string[]).includes(c) && c !== "Országosan")
+  );
   const [message, setMessage] = useState("");
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
@@ -316,6 +329,7 @@ function SendForm({ onSent, onCancel, userId }: { onSent: () => void; onCancel?:
         userId={userId}
         checkedIds={checkedIds}
         setCheckedIds={setCheckedIds}
+        initialCheckedId={prefill?.providerId}
       />
       {error && <div className="bg-[#F06C6C]/10 text-[#F06C6C] text-xs px-4 py-3 rounded-xl border border-[#F06C6C]/30">{error}</div>}
       <div className="flex gap-3">
@@ -381,7 +395,8 @@ export function QuoteChat({
   // Lock body scroll on mobile
   useEffect(() => {
     document.body.classList.add("chat-mode");
-    return () => { document.body.classList.remove("chat-mode"); };
+    const unlock = lockPageScroll();
+    return () => { document.body.classList.remove("chat-mode"); unlock(); };
   }, []);
 
   // Nagyított kép: Escape zárja
@@ -412,14 +427,13 @@ export function QuoteChat({
     };
   }, []);
 
-  // Scroll to bottom — desktop scrolls the inner container, mobile uses scrollIntoView
   useEffect(() => {
-    if (window.innerWidth >= 640) {
-      const el = scrollAreaRef.current;
-      if (el) el.scrollTop = el.scrollHeight;
-    } else {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    /* Mobilon is csak az üzenetlista görög: a scrollIntoView az egész
+       oldalt is mozgatná, és a chat mögött kilátszana a lábléc. */
+    const el = scrollAreaRef.current;
+    if (!el) return;
+    if (window.innerWidth >= 640) el.scrollTop = el.scrollHeight;
+    else el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   // Mark unread as read — runs on messages change to avoid race condition with initialMessages
@@ -593,7 +607,7 @@ export function QuoteChat({
       </div>
 
       {/* Messages */}
-      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 bg-gray-50">
+      <div ref={scrollAreaRef} className={`flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pt-5 bg-gray-50 ${COMPOSER_SCROLL_PAD}`}>
         {/* Original request message shown as first chat bubble (standalone block) */}
         {(requestContext?.message || requestContext?.imageUrl) && (
           <div className={`flex ${requestMsgIsOwn ? "justify-end" : "justify-start"}`}>
@@ -693,29 +707,15 @@ export function QuoteChat({
 
       {/* Reply */}
       {!hasSystemMessage && (
-        <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
-          <form onSubmit={handleReply} className="flex gap-2 items-end">
-            <textarea
-              ref={textareaRef}
-              value={replyBody}
-              onChange={(e) => {
-                setReplyBody(e.target.value);
-                e.target.style.height = "auto";
-                e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder="Írj üzenetet… (Shift+Enter = új sor)"
-              rows={1}
-              className="flex-1 resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors overflow-hidden"
-              style={{ maxHeight: "120px" }}
-            />
-            <Button type="submit" size="sm" disabled={sending || !replyBody.trim()} className="shrink-0">
-              <Send className="h-3.5 w-3.5 mr-1" />
-              {sending ? "..." : "Küldés"}
-            </Button>
-          </form>
-          {sendError && <p className="text-xs text-[#F06C6C] mt-1.5">{sendError}</p>}
-        </div>
+        <ChatComposer
+          textareaRef={textareaRef}
+          value={replyBody}
+          onChange={setReplyBody}
+          onKeyDown={handleKeyDown}
+          onSubmit={handleReply}
+          sending={sending}
+          error={sendError}
+        />
       )}
 
       {/* Nagyított kép */}
@@ -792,6 +792,17 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
     searchParams.get("form") === "meghivo" ? "meghivo" : "general"
   );
 
+  /* Szolgáltatói kártyáról érkezve (?szolgaltato=…) az űrlap az ő
+     kategóriájával, megyéivel és őt bejelölve nyílik. */
+  const prefillProviderId = searchParams.get("szolgaltato");
+  const prefill: SendFormPrefill | undefined = prefillProviderId
+    ? {
+        providerId: prefillProviderId,
+        category: searchParams.get("kategoria") ?? undefined,
+        counties: searchParams.get("megye")?.split(",").filter(Boolean),
+      }
+    : undefined;
+
   useEffect(() => {
     onUnreadChange(0);
     window.dispatchEvent(new CustomEvent("quotes-unread-count", { detail: 0 }));
@@ -849,7 +860,7 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
           <p className="text-base text-gray-700">
             Kategória és megyeválasztás után egyenként ki tudod választani, hogy melyik szolgáltató kapja meg az ajánlatkérést.
           </p>
-          <SendForm onSent={() => setSent(true)} userId={userId} />
+          <SendForm onSent={() => setSent(true)} userId={userId} prefill={prefill} />
         </>
       )}
     </div>

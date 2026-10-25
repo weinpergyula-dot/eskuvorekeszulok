@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle, Send, Check, ChartColumn, ChartPie } from "lucide-react";
+import { Users, Clock as ClockIcon, Mail, Trash2, UserX, AlertTriangle, Send, Check, ChartColumn } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ApproveButton } from "./approve-button";
 import { UsersSection } from "./users-section";
@@ -66,9 +66,18 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   const [pendingProvidersState, setPendingProvidersState] = useState<Provider[]>(initialPendingProviders);
   const [pendingChangesState, setPendingChangesState] = useState<Provider[]>(initialPendingChanges);
 
-  // Sync from server props when router.refresh() updates them
-  useEffect(() => { setPendingProvidersState(initialPendingProviders); }, [initialPendingProviders]);
-  useEffect(() => { setPendingChangesState(initialPendingChanges); }, [initialPendingChanges]);
+  // Sync from server props when router.refresh() updates them – during
+  // render, so the new data shows without an extra effect pass.
+  const [prevPendingProviders, setPrevPendingProviders] = useState(initialPendingProviders);
+  if (initialPendingProviders !== prevPendingProviders) {
+    setPrevPendingProviders(initialPendingProviders);
+    setPendingProvidersState(initialPendingProviders);
+  }
+  const [prevPendingChanges, setPrevPendingChanges] = useState(initialPendingChanges);
+  if (initialPendingChanges !== prevPendingChanges) {
+    setPrevPendingChanges(initialPendingChanges);
+    setPendingChangesState(initialPendingChanges);
+  }
 
   // Poll /api/admin/pending every 10s for live updates
   useEffect(() => {
@@ -101,9 +110,18 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   const [resendingIds, setResendingIds] = useState<Record<string, "loading" | "done" | "error">>({});
 
   // Sync preRegistrations when server props update (router.refresh)
-  useEffect(() => {
+  const [prevPreRegistrations, setPrevPreRegistrations] = useState(initialPreRegistrations);
+  if (initialPreRegistrations !== prevPreRegistrations) {
+    setPrevPreRegistrations(initialPreRegistrations);
     setPreRegistrations(initialPreRegistrations);
-  }, [initialPreRegistrations]);
+  }
+
+  // Current time for the pre-registration countdowns, refreshed every minute
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Poll pre-registrations every 5 min (auth.users has no real-time support)
   useEffect(() => {
@@ -248,39 +266,6 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
             <div className="text-base text-gray-900 mt-0.5">{s.label}</div>
           </button>
         ))}
-
-        {/* Summary tile — mobilon teljes szélességben, két hasábban */}
-        <div className="col-span-2 md:col-span-1 rounded-lg border border-[#84AAA6]/30 bg-gradient-to-br from-[#84AAA6]/12 via-[#84AAA6]/5 to-white p-4 shadow-sm">
-          <div className="mb-2 flex items-center gap-1.5 text-[#5C8480]">
-            <ChartPie className="h-4 w-4 shrink-0" strokeWidth={1.75} />
-            <span className="text-sm font-semibold uppercase tracking-wide">Összesítő</span>
-          </div>
-          <dl className="grid grid-cols-2 gap-x-5 md:grid-cols-1">
-            {[
-              { label: "Összes felhasználó",        value: liveStats.totalUsers },
-              { label: "Jóváhagyott szolgáltató",   value: liveStats.totalApproved },
-              { label: "Jóváhagyásra vár",           value: totalPending },
-              { label: "Előregisztráció",            value: preRegistrations.length },
-              { label: "Látogató",                   value: liveStats.totalVisitors },
-              { label: "Kapcsolati üzenetek",        value: contactMessages.length },
-            ].map(({ label, value }, i, rows) => {
-              /* Az elválasztó vonal az utolsó sorok alól elmarad: mobilon két
-                 hasáb van, ezért az utolsó kettő alól, md-től egy hasáb, ott
-                 csak a legutolsó alól. */
-              const border =
-                i < rows.length - 2 ? "border-b" : i === rows.length - 1 ? "" : "md:border-b";
-              return (
-                <div
-                  key={label}
-                  className={`flex items-center justify-between gap-2 border-[#84AAA6]/15 py-1 ${border}`}
-                >
-                  <dt className="text-sm text-[#5C8480] leading-tight">{label}</dt>
-                  <dd className="text-sm font-bold text-gray-900 shrink-0">{value}</dd>
-                </div>
-              );
-            })}
-          </dl>
-        </div>
       </div>
 
       <div ref={contentRef} className="scroll-mt-20">
@@ -333,7 +318,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
             <div className="space-y-3">
               {preRegistrations.map((pr) => {
                 const createdAt = new Date(pr.created_at);
-                const elapsedMs = Date.now() - createdAt.getTime();
+                const elapsedMs = now - createdAt.getTime();
                 const elapsedH = Math.floor(elapsedMs / (1000 * 60 * 60));
                 const elapsedM = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
                 const remainingH = 24 - elapsedH;
@@ -343,7 +328,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
                           <span className="font-semibold text-gray-900">{pr.full_name || "–"}</span>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${pr.role === "provider" ? "bg-[#D07AB5]/15 text-[#D07AB5]" : "bg-[#84AAA6]/15 text-[#84AAA6]"}`}>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${pr.role === "provider" ? "bg-[#C9A675]/15 text-[#C9A675]" : "bg-[#84AAA6]/15 text-[#84AAA6]"}`}>
                             {pr.role === "provider" ? "Szolgáltató" : "Látogató"}
                           </span>
                         </div>

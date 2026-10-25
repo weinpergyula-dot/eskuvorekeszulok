@@ -151,10 +151,6 @@ export function LoginRequiredDialog({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const next = typeof window !== "undefined"
-    ? encodeURIComponent(window.location.pathname + window.location.search)
-    : "";
-
   return createPortal(
     <div
       className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4"
@@ -176,33 +172,50 @@ export function LoginRequiredDialog({
         >
           <X className="h-5 w-5" />
         </button>
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#84AAA6]/15">
-          <Lock className="h-6 w-6 text-[#84AAA6]" />
-        </div>
-        <h2 id="login-required-title" className="text-lg font-semibold text-gray-900 mb-2">
-          Csak regisztrált felhasználóknak
-        </h2>
-        <p className="text-sm text-gray-600 mb-6">
-          {message} Ha már regisztráltál, lépj be, ha még nem, regisztrálj látogatóként –
-          1 perc alatt megvan.
-        </p>
-        <div className="flex flex-col gap-2">
-          <a
-            href={`/auth/login${next ? `?next=${next}` : ""}`}
-            className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors"
-          >
-            Belépés
-          </a>
-          <a
-            href="/auth/register?type=visitor"
-            className="w-full border border-[#C65EA5] text-[#C65EA5] hover:bg-[#C65EA5]/10 font-semibold py-2.5 rounded-lg transition-colors"
-          >
-            Regisztrálok látogatóként
-          </a>
-        </div>
+        <LoginRequiredContent message={message} />
         {footer}
       </div>
     </div>,
     document.body,
+  );
+}
+
+/**
+ * A „csak regisztrált felhasználóknak" tájékoztató tartalma (ikon, cím,
+ * szöveg, Belépés / Regisztráció gomb) – a LoginRequiredDialog és a
+ * csoportos ajánlatkérés felugró ablaka is ezt mutatja.
+ */
+export function LoginRequiredContent({ message }: { message: string }) {
+  const next = typeof window !== "undefined"
+    ? encodeURIComponent(window.location.pathname + window.location.search)
+    : "";
+
+  return (
+    <>
+      <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#84AAA6]/15">
+        <Lock className="h-6 w-6 text-[#84AAA6]" />
+      </div>
+      <h2 id="login-required-title" className="text-lg font-semibold text-gray-900 mb-2">
+        Csak regisztrált felhasználóknak
+      </h2>
+      <p className="text-sm text-gray-600 mb-6">
+        {message} Ha már regisztráltál, lépj be, ha még nem, regisztrálj látogatóként –
+        1 perc alatt megvan.
+      </p>
+      <div className="flex flex-col gap-2">
+        <a
+          href={`/auth/login${next ? `?next=${next}` : ""}`}
+          className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors"
+        >
+          Belépés
+        </a>
+        <a
+          href="/auth/register?type=visitor"
+          className="w-full border border-[#B8925A] text-[#B8925A] hover:bg-[#B8925A]/10 font-semibold py-2.5 rounded-lg transition-colors"
+        >
+          Regisztrálok látogatóként
+        </a>
+      </div>
+    </>
   );
 }

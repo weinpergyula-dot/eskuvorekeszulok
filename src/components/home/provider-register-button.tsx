@@ -44,7 +44,7 @@ export function ProviderRegisterButton({ className }: { className?: string }) {
         Regisztrálok szolgáltatónak
       </Button>
       {message && (
-        <p className={`text-sm rounded-lg px-3 py-2 max-w-xs ${className ? "text-gray-700 bg-[#FAF0F7]" : "text-white/90 bg-white/15"}`}>
+        <p className={`text-sm rounded-lg px-3 py-2 max-w-xs ${className ? "text-gray-700 bg-[#F8F2E8]" : "text-white/90 bg-white/15"}`}>
           {message}{" "}
           <button
             onClick={() => router.push("/profil?tab=provider")}

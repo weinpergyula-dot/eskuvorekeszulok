@@ -18,7 +18,7 @@ import {
  * (desktopon vízszintes, mobilon függőleges idővonal).
  */
 
-const ACCENT = { why: "#84AAA6", how: "#C65EA5" } as const;
+const ACCENT = { why: "#84AAA6", how: "#B8925A" } as const;
 
 const WHY: { icon: LucideIcon; title: string; text: string }[] = [
   {

@@ -9,14 +9,14 @@ import { MeghivoQuoteCta } from "./_components/quote-cta";
 export const metadata: Metadata = {
   title: "Digitális meghívók",
   description:
-    "Rendelj egyedi, digitális esküvői meghívót! Mobilra szabott, interaktív meghívó visszaszámlálóval, programmal és RSVP visszajelzéssel – BASIC, SILVER és PREMIUM csomagban.",
+    "Rendelj egyedi, digitális esküvői meghívót! Mobilra szabott, interaktív meghívó visszaszámlálóval, programmal és RSVP visszajelzéssel – BASIC, SILVER és GOLD csomagban.",
 };
 
 /* ── Csomagok ────────────────────────────────────────────
    Kollázs-elrendezés: két négyzetes csempe (BASIC, SILVER)
-   és alattuk a széles PREMIUM blokk. Mindhárom csomaghoz
+   és alattuk a széles GOLD blokk. Mindhárom csomaghoz
    élő minta tartozik: /zso-es-szili, /meghivo-silver és
-   /meghivo-premium. */
+   /meghivo-gold. */
 
 /** Minden extra egységesen +3 000 Ft, a személyes konzultáció óradíjas. */
 const EXTRA_PRICE = "+3 000 Ft";
@@ -72,17 +72,17 @@ const PACKAGES: Package[] = [
     ],
   },
   {
-    id: "premium",
-    name: "PREMIUM",
+    id: "gold",
+    name: "GOLD",
     tagline: "Teljesen egyedi, prémium élmény – animációkkal",
     price: "39 900 Ft",
     oldPrice: "49 900 Ft",
     priceNote: "Az ár a választott extráktól függ",
-    from: "#CE7CB0",
-    accent: "#A8437F",
-    to: "#6B2455",
-    ink: "#8F3671",
-    sampleHref: "/meghivo-premium",
+    from: "#BBA57F",
+    accent: "#997E4E",
+    to: "#614E2D",
+    ink: "#7E6842",
+    sampleHref: "/meghivo-gold",
     features: [
       "Minden a SILVER csomagból",
       "Választható arculati szín",
@@ -99,7 +99,7 @@ const PACKAGES: Package[] = [
 ];
 
 export default function MeghivoPage() {
-  const [basic, silver, premium] = PACKAGES;
+  const [basic, silver, gold] = PACKAGES;
 
   return (
     <>
@@ -127,7 +127,7 @@ export default function MeghivoPage() {
           <div className="mt-10 grid gap-6 sm:mt-14 lg:grid-cols-2">
             <PackageTile pkg={basic} variant="square" />
             <PackageTile pkg={silver} variant="square" />
-            <PackageTile pkg={premium} variant="wide" />
+            <PackageTile pkg={gold} variant="wide" />
           </div>
         </div>
 

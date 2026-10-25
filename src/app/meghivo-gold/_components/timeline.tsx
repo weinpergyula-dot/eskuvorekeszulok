@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 
 /**
- * PREMIUM extra: a nap programja időegyenesen. Középen fut az időtengely,
+ * GOLD extra: a nap programja időegyenesen. Középen fut az időtengely,
  * balra az időpontok, jobbra maguk az események.
  *
  * Nem tölt be előre: minden esemény akkor úszik be (és akkor világít ki
