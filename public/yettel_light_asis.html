@@ -3467,6 +3467,9 @@
   .expr .exfp{ display:inline-block; margin-bottom:3px; padding:2px 8px; border-radius:999px; background:var(--lime); font-size:11px; font-weight:700; color:var(--navy); }
   .expr.fl{ text-align:right; } .expr.fl s{ font-size:11px; } .expr.fl b{ display:block; font-weight:400; }
   /* "Jár neked a Full kedvezmény!" popup over the offers, right after the address search */
+  /* Full card on the offers, TV and Extrák steps: white, opens the same details as the summary */
+  .smfull.ofullc{ margin:18px 0 0; padding:16px; border:1.5px solid #E3E8EE; border-radius:14px; background:#fff; font-size:13px; }
+  .smfull.ofullc i:first-child{ font-size:26px; } .smfull.ofullc i:last-child{ color:#8592A6; opacity:1; }
   .fpcard{ max-width:320px; padding:18px 18px 16px; display:flex; flex-direction:column; max-height:calc(100% - 20px); }
   .fpbody{ flex:1; min-height:0; max-height:400px; overflow-y:auto; padding:0 4px; margin-bottom:16px; }
   .fpimg{ display:block; width:170px; height:auto; margin:0 auto 10px; }
@@ -4841,6 +4844,7 @@
         <b class="tvbt">TV box hozzáadása</b><i class="ti ti-circle-plus tvbic"></i></button>
       <span class="tvblnk">Szükségem van TV box-ra?</span>
     </div>
+    <div class="smfull ofullc" data-offull hidden><i class="ti ti-percentage"></i><span>Nézd meg, mekkora Full kedvezményt kapsz a meglévő előfizetéseidre!</span><i class="ti ti-chevron-right"></i></div>
     <div class="ofhelp">
       <small>Segíthetünk?</small>
       <b>Chatelj kollégánkkal, ha elakadtál</b>
@@ -4905,6 +4909,7 @@
     <h3 class="tvbh exh exfull">RTL+ Active</h3>
     <div class="excard inc exfull" data-ex="RTL+ Active">
       <div class="exrow"><span class="exlogo exrtl"><i>R</i><i>T</i><i>L</i>+</span><div class="exmid"><b>RTL+ Active</b><span class="exdet" data-exdet="rtl">Részletek</span></div><span class="expr">0 Ft/hó</span><span class="ofsw"><input type="checkbox" checked disabled data-lock aria-label="RTL+ Active"><span></span></span></div><p class="exinc">TV csomag része</p></div>
+    <div class="smfull ofullc" data-offull hidden><i class="ti ti-percentage"></i><span>Nézd meg, mekkora Full kedvezményt kapsz a meglévő előfizetéseidre!</span><i class="ti ti-chevron-right"></i></div>
     <div class="ofhelp">
       <small>Segíthetünk?</small>
       <b>Chatelj kollégánkkal, ha elakadtál</b>
@@ -5458,6 +5463,7 @@
       <p>A kiskorú internetezők védelmében blokkolja a hatósági lista szerinti, felnőtt tartalmakat kínáló weboldalakat.</p>
       <p>A szolgáltatás díjmentes, később is igényelheted és bármikor lemondhatod.</p>
     </div>
+    <div class="smfull ofullc" data-offull hidden><i class="ti ti-percentage"></i><span>Nézd meg, mekkora Full kedvezményt kapsz a meglévő előfizetéseidre!</span><i class="ti ti-chevron-right"></i></div>
     <div class="ofhelp">
       <small>Segíthetünk?</small>
       <b>Chatelj kollégánkkal, ha elakadtál</b>
@@ -10473,6 +10479,22 @@
       '<button type="button" class="fsbtn" data-fsclose>Bezár</button>');
   }
   sm.querySelector('[data-smfull]').addEventListener('click', function(){ fullSheet(smPct, smNew); });
+  /* the same card in the standard flow before the summary: the new services chosen so far */
+  function fullNew(){
+    var n = list[selI], t = tlist[tSel], pct = fPct(), out = n ? [['ti-home-signal', n.name, pct]] : [];
+    if (t && !t.none && (document.getElementById('s-tvoff').checked || document.getElementById('s-tvext').checked)){
+      out.push(['ti-device-tv', t.name, 15]);
+      if (document.getElementById('s-tvext').checked) Array.prototype.forEach.call(esc.querySelectorAll('[data-xp]:checked'), function(x){
+        var nm = x.closest('.excard').getAttribute('data-ex'); out.push([/HBO/.test(nm) ? 'ti-movie' : 'ti-cast', nm, 15]);
+      });
+    }
+    return out;
+  }
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('[data-offull]')) fullSheet(fPct(), fullNew()); });
+  document.addEventListener('change', function(e){
+    var id = e.target && e.target.id; if (id !== 's-offsvc' && id !== 's-tvoff' && id !== 's-tvext') return;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-offull]'), function(c){ c.hidden = !fPct(); });
+  });
   function smIdx(){
     sm.querySelector('[data-smisp]').hidden = !((window.yAddr || {}).taken && ispOn());
     sm.querySelector('[data-smidx]').hidden = !(window.yFeat && window.yFeat('arindex'));
