@@ -1,15 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Search, ArrowRight, MapPin, Sparkles, LayoutGrid } from "lucide-react";
+import { Search, ArrowRight, Sparkles, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CATEGORY_LABELS, type Provider, type ServiceCategory } from "@/lib/types";
+import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { CATEGORY_LUCIDE_ICONS } from "@/lib/category-icons";
 import { displayCount, orderedCategories } from "@/lib/categories";
 
 /* ── Főoldali hero az új (alkonyati, üveghatású) dizájnban ──────────────
-   kereső → ikonos kategória-chipek → „Fedezd fel” vízszintes sáv.
+   kereső → ikonos kategória-chipek.
    A kereső és a chipek a lenti listát szűrik (ugyanazokkal az
    eseményekkel, amiket a ProvidersContent figyel). */
 
@@ -35,10 +34,6 @@ const SHORT_LABELS: Partial<Record<ServiceCategory, string>> = {
   virag: "Virág",
 };
 
-function coverOf(p: Provider): string | undefined {
-  return p.gallery_urls?.[0] ?? p.avatar_url ?? undefined;
-}
-
 function scrollToList() {
   const el = document.getElementById("szolgaltatok");
   if (!el) return;
@@ -47,14 +42,10 @@ function scrollToList() {
 }
 
 export function HomeHero({
-  providers,
   categoryCounts,
 }: {
-  providers: Provider[];
   categoryCounts: Record<string, number>;
 }) {
-  const discover = useMemo(() => providers.filter(coverOf).slice(0, 10), [providers]);
-
   const categories = useMemo(
     () => orderedCategories(categoryCounts).filter((c) => displayCount(c, categoryCounts) > 0),
     [categoryCounts]
@@ -134,43 +125,6 @@ export function HomeHero({
           </div>
         </div>
 
-        {/* ── Fedezd fel ── */}
-        {discover.length > 0 && (
-          <div className="mt-5 sm:mt-8">
-            <div className="flex items-center justify-between">
-              <h2 className="font-heading font-bold text-[20px] sm:text-2xl text-[#1F1A2E]">Fedezd fel <span aria-hidden>✨</span></h2>
-              <button onClick={() => pickCategory("")} className="glass inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[13px] font-semibold text-[#1F1A2E]">
-                Mind <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-            <div className="-mx-4 mt-3 overflow-x-auto px-4 pb-3 scrollbar-none">
-              <div className="flex gap-3 sm:gap-4">
-                {discover.map((p) => (
-                  <Link
-                    key={p.id}
-                    href={`/providers/${p.id}`}
-                    className="group relative h-[150px] w-[140px] sm:h-[220px] sm:w-[200px] shrink-0 overflow-hidden rounded-[22px] ring-1 ring-white/70 shadow-[0_14px_30px_-18px_rgba(90,20,60,0.6)]"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={coverOf(p)} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-1 p-2.5 text-white">
-                      <div className="min-w-0">
-                        <p className="truncate text-[13px] font-semibold leading-tight">{p.full_name}</p>
-                        <p className="mt-0.5 flex items-center gap-1 truncate text-[11px] text-white/85">
-                          <MapPin className="h-3 w-3 shrink-0" />{(p.counties ?? [])[0]}
-                        </p>
-                      </div>
-                      <span className="glass-dark flex h-7 w-7 shrink-0 items-center justify-center rounded-full">
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

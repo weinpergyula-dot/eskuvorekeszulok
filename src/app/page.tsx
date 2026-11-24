@@ -52,8 +52,8 @@ export default async function HomePage() {
       {/* Látogatás rögzítése (napi/heti egyedi IP statisztika az adminban) */}
       <VisitTracker path="/" />
 
-      {/* Új hero: kereső, kategória-chipek, kiemelt kártya, Fedezd fel */}
-      <HomeHero providers={providers} categoryCounts={categoryCounts} />
+      {/* Új hero: kereső, kategória-chipek */}
+      <HomeHero categoryCounts={categoryCounts} />
 
       {/* Teljes szolgáltatói lista – üveg panelen, az alkonyati háttér előtt */}
       <section id="szolgaltatok" className="scroll-mt-20 pt-6 pb-10 sm:pb-16">

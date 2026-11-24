@@ -34,8 +34,7 @@ export function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
-  const [shrink, setShrink] = useState(false);
-  const lastScrollY = useRef(0);
+  const shrink = false;
   const [navAvatarUrl, setNavAvatarUrl] = useState<string | null>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
@@ -68,41 +67,21 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  useEffect(() => {
-    /* Programozott görgetés (pl. a főoldali banner gombja) idejére a fejléc
-       összehúzva marad, hogy a cél pontosan beálljon: egy javító, felfelé
-       irányuló lépés különben kinyitná, és elcsúsztatná a tartalmat. */
-    let lockUntil = 0;
-    const onLock = (e: Event) => {
-      lockUntil = Date.now() + ((e as CustomEvent<number>).detail ?? 2500);
-      if (window.innerWidth < 768) setShrink(true);
-    };
-    window.addEventListener("eskuvo:nav-hold-shrink", onLock);
-    const onScroll = () => {
-      const y = window.scrollY;
-      // Shrink only on mobile (<md). On desktop the navbar keeps its full size.
-      if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
-      if (Date.now() < lockUntil) { lastScrollY.current = y; return; }
-      // Only shrink while scrolling DOWN; expand again on scroll up or near top.
-      if (y < 80) setShrink(false);
-      else if (y > lastScrollY.current + 4) setShrink(true);
-      else if (y < lastScrollY.current - 4) setShrink(false);
-      lastScrollY.current = y;
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("eskuvo:nav-hold-shrink", onLock);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
+  /* A fejléc már nem zsugorodik görgetéskor: mobilon nem tapad (a tartalommal
+     együtt elgörgetődik), desktopon pedig eddig is teljes méretű maradt. */
 
   // Publish the current navbar height so sticky elements (e.g. the category CTA)
   // can pin flush beneath it whether it's full-size or shrunk.
   useEffect(() => {
-    document.documentElement.style.setProperty("--nav-h", shrink ? "2.75rem" : "4rem");
+    /* Mobilon a fejléc nem tapad (elgörgetődik), így a ragadós elemek a
+       képernyő tetejéhez igazodnak. */
+    const set = () => document.documentElement.style.setProperty(
+      "--nav-h",
+      window.innerWidth < 768 ? "0px" : shrink ? "2.75rem" : "4rem"
+    );
+    set();
+    window.addEventListener("resize", set);
+    return () => window.removeEventListener("resize", set);
   }, [shrink]);
 
   const supabase = createClient();
@@ -420,7 +399,7 @@ export function Navbar() {
 
   return (
   <>
-    <nav className="sticky top-0 z-50 px-3 pt-2 sm:px-5 sm:pt-3 transition-all duration-300 relative">
+    <nav className="relative z-50 px-3 pt-2 sm:px-5 sm:pt-3 transition-all duration-300 md:sticky md:top-0">
       <div className="glass max-w-7xl mx-auto px-3 sm:px-5 rounded-[26px]">
         <div className={`flex items-center justify-between transition-all duration-300 ${shrink ? "h-11" : "h-14"}`}>
           {/* Logo + Desktop nav */}

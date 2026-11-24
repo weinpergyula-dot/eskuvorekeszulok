@@ -172,19 +172,24 @@
 :root {
   --background: #F3E6FF;
   --foreground: #1F1A2E;
-  /* Alkonyati égbolt – a teljes oldal mögött, fixen. */
-  --sky: radial-gradient(120% 70% at 85% -10%, #FFD9C7 0%, rgba(255,217,199,0) 55%),
-         radial-gradient(90% 60% at -10% 10%, #E6D4FF 0%, rgba(230,212,255,0) 60%),
-         radial-gradient(80% 50% at 50% 100%, #FFD3E2 0%, rgba(255,211,226,0) 70%),
-         linear-gradient(180deg, #F3E6FF 0%, #FBE7F0 45%, #FDF1F4 100%);
+  --sky-end: #FDF1F4;
+  /* Alkonyati égbolt az oldal tetején (1600px magas, utána egyszínű).
+     A legteteje (a fejléc magasságáig) egyszínű #F3E6FF – ugyanaz, mint a
+     html háttere, amiből a mobil böngésző a fejléc feletti sávot
+     (állapotsor, címsor) színezi –, a színátmenet csak onnan indul. */
+  --sky: radial-gradient(70% 520px at 92% 520px, rgba(255,213,196,0.85) 0%, rgba(255,213,196,0) 70%),
+         radial-gradient(60% 480px at 0% 760px, rgba(226,208,255,0.9) 0%, rgba(226,208,255,0) 70%),
+         radial-gradient(80% 420px at 50% 1250px, rgba(255,211,226,0.9) 0%, rgba(255,211,226,0) 70%),
+         linear-gradient(180deg, #F3E6FF 0px, #F3E6FF 170px, #F7E5F7 420px, #FBE7F0 800px, #FDF1F4 1600px);
 }
 
 html { background-color: var(--background); }
 
 body {
-  background: var(--background);
+  background-color: var(--sky-end);
   background-image: var(--sky);
-  background-attachment: fixed;
+  background-size: 100% 1600px;
+  background-repeat: no-repeat;
   color: var(--foreground);
   font-family: "BloomSpeakBody", Arial, sans-serif;
   font-size: 17px;

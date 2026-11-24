@@ -3,8 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ProviderCard } from "./provider-card";
-import { ProviderTile } from "./provider-tile";
+import { ProviderRow, ProviderTile } from "./provider-tile";
 import { MeghivoPromoCard } from "./meghivo-promo-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -565,7 +564,7 @@ export function ProvidersContent({
               {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
               {pageItems.map((p) => (
                 viewMode === "list" ? (
-                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView backTo={listUrl} />
+                  <ProviderRow key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} backTo={listUrl} />
                 ) : (
                   <ProviderTile key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} backTo={listUrl} />
                 )
