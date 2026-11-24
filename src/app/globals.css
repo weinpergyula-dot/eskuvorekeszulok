@@ -2189,3 +2189,10 @@ html.a11y-underline a { text-decoration: underline !important; }
    a régi színes sáv lekerekített „sapkája” miatt kellett a nagy térköz. */
 .page-header + * { padding-top: 0.5rem !important; }
 @media (min-width: 640px) { .page-header + * { padding-top: 1rem !important; } }
+
+/* Kártya-slideshow státuszcsíkja: a megjelenítés ideje alatt töltődik fel. */
+@keyframes slide-progress {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+.slide-progress { width: 0; animation: slide-progress linear forwards; }
