@@ -170,7 +170,7 @@
 }
 
 :root {
-  --background: #FBF1F5;
+  --background: #F3E6FF;
   --foreground: #1F1A2E;
   /* Alkonyati égbolt – a teljes oldal mögött, fixen. */
   --sky: radial-gradient(120% 70% at 85% -10%, #FFD9C7 0%, rgba(255,217,199,0) 55%),
@@ -178,6 +178,8 @@
          radial-gradient(80% 50% at 50% 100%, #FFD3E2 0%, rgba(255,211,226,0) 70%),
          linear-gradient(180deg, #F3E6FF 0%, #FBE7F0 45%, #FDF1F4 100%);
 }
+
+html { background-color: var(--background); }
 
 body {
   background: var(--background);
@@ -2173,13 +2175,12 @@ html.a11y-underline a { text-decoration: underline !important; }
   .blur-in, .sheet-up { animation: none; }
 }
 
-/* Mobilon a lebegő alsó navigációs sáv ne takarja a tartalom végét. */
+/* A lebegő sarokgomb (zene / akadálymentesítés) mobilon az alsó ajánlatkérő sáv fölé kerül. */
 @media (max-width: 767px) {
-  body.has-tabbar { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
-}
-
-/* A lebegő sarokgomb (zene / akadálymentesítés) mobilon a tab bar fölé kerül. */
-@media (max-width: 767px) {
-  body.has-tabbar .floating-corner,
   body:has(.mobile-bottom-bar) .floating-corner { bottom: calc(96px + env(safe-area-inset-bottom)); right: 14px; }
 }
+
+/* Az oldalfejléc (PageHeader) alatti első blokk felső belső margója kicsi:
+   a régi színes sáv lekerekített „sapkája” miatt kellett a nagy térköz. */
+.page-header + * { padding-top: 0.5rem !important; }
+@media (min-width: 640px) { .page-header + * { padding-top: 1rem !important; } }

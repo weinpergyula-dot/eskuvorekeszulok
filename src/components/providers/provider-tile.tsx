@@ -1,17 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { MapPin, Star, MessageCircle, ArrowRight, Flame, Eye } from "lucide-react";
+import { MapPin, Star, MessageCircle, ArrowRight, Flame, Eye, ChevronDown, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORY_LABELS, type Provider } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
-import { ChatLink } from "@/components/providers/masked-contact";
+import { ChatLink, LoginGateLink } from "@/components/providers/masked-contact";
+import { quoteHrefFor } from "@/lib/quote-href";
 
-/* ── Képközpontú szolgáltatói kártya (új dizájn) ─────────────────────────
-   Nagy, ujjal lapozható galéria lekerekített sarkokkal, rajta üveg
-   címkék (Kiemelt, kedvenc), alatta név, hely, értékelés és a két
-   művelet. A rácsnézet ezt használja; a listanézet és a profil-előnézet
-   továbbra is a ProviderCard-ot. */
+/* ── Szolgáltatói kártya (új dizájn) ─────────────────────────────────────
+   Nagy, ujjal lapozható fotó, rajta üveg címkék és a név / hely /
+   értékelés, jobbra lent a Megnézem gomb. A rövid bemutatkozás rejtve
+   van: a „Bemutatkozás” gombra a kép alatt fehér panelen nyílik le. */
 
 const FEATURED_LABEL: Record<string, string> = {
   gold: "Arany partner",
@@ -22,21 +22,33 @@ const FEATURED_LABEL: Record<string, string> = {
 export function ProviderTile({
   provider,
   isOwner = false,
+  initialLiked = false,
+  onUnlike,
   backTo,
+  disableLink = false,
 }: {
   provider: Provider;
   isOwner?: boolean;
+  initialLiked?: boolean;
+  onUnlike?: (id: string) => void;
   backTo?: string;
+  /** Előnézet (pl. a saját profil): a kártya nem visz a részletes oldalra. */
+  disableLink?: boolean;
 }) {
   const anchorId = backTo ? `provider-${provider.id}` : undefined;
   const backHref = backTo ? `${backTo.replace(/#.*$/, "")}#${anchorId}` : undefined;
-  const detailHref = backHref ? `/providers/${provider.id}?from=${encodeURIComponent(backHref)}` : `/providers/${provider.id}`;
+  const detailHref = disableLink
+    ? undefined
+    : backHref
+    ? `/providers/${provider.id}?from=${encodeURIComponent(backHref)}`
+    : `/providers/${provider.id}`;
 
   const images = [...(provider.gallery_urls ?? [])];
-  if (images.length === 0 && provider.avatar_url) images.push(provider.avatar_url);
+  if (provider.avatar_url && !images.includes(provider.avatar_url)) images.push(provider.avatar_url);
   const shown = images.slice(0, 6);
 
   const [idx, setIdx] = useState(0);
+  const [open, setOpen] = useState(false);
   const stripRef = useRef<HTMLDivElement>(null);
   const onScroll = () => {
     const el = stripRef.current;
@@ -48,108 +60,133 @@ export function ProviderTile({
   const reviews = provider.review_count ?? 0;
   const counties = provider.counties ?? [];
   const cats = provider.categories ?? [];
+  const intro = provider.description?.trim();
 
   return (
-    <article id={anchorId} className="group scroll-mt-24 flex h-full flex-col rounded-[28px] bg-white/80 p-2 ring-1 ring-white shadow-[0_18px_40px_-24px_rgba(90,20,60,0.45)] transition-shadow hover:shadow-[0_24px_50px_-22px_rgba(90,20,60,0.55)]">
-      {/* Galéria */}
-      <div className="relative overflow-hidden rounded-[22px] bg-[#F6E4EC] aspect-[4/3]">
+    <article id={anchorId} className="group scroll-mt-24 flex flex-col">
+      {/* Fotó + ráírt adatok */}
+      <div className="relative z-10 overflow-hidden rounded-[30px] bg-[#F6E4EC] aspect-[4/4.4] sm:aspect-[4/4] ring-1 ring-white/70 shadow-[0_30px_50px_-28px_rgba(90,20,60,0.6)]">
         {shown.length > 0 ? (
-          <div
-            ref={stripRef}
-            onScroll={onScroll}
-            className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scrollbar-none"
-          >
+          <div ref={stripRef} onScroll={onScroll} className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scrollbar-none">
             {shown.map((src, i) => (
               <a key={src + i} href={detailHref} className="relative h-full w-full shrink-0 snap-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt={i === 0 ? provider.full_name : ""} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                <img src={src} alt={i === 0 ? provider.full_name : ""} loading="lazy" className="h-full w-full object-cover" />
               </a>
             ))}
           </div>
         ) : (
-          <a href={detailHref} className="flex h-full items-center justify-center font-heading text-5xl font-bold text-[#E8336A]/50">
+          <a href={detailHref} className="flex h-full items-center justify-center font-heading text-6xl font-bold text-[#E8336A]/40">
             {provider.full_name.charAt(0)}
           </a>
         )}
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/10" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1a0b1e]/90 via-[#1a0b1e]/15 to-black/10" />
 
-        <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-2">
+        {/* Felső sor: címke, galéria-pöttyök, kedvenc */}
+        <div className="pointer-events-none absolute inset-x-3.5 top-3.5 flex items-start justify-between gap-2">
           {provider.featured ? (
-            <span className="glass-strong inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold text-[#1F1A2E]">
-              <Flame className="h-3.5 w-3.5 fill-[#E8336A] text-[#E8336A]" />
+            <span className="glass-strong inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold text-[#1F1A2E]">
+              <Flame className="h-4 w-4 fill-[#E8336A] text-[#E8336A]" />
               {FEATURED_LABEL[provider.featured] ?? "Kiemelt"}
             </span>
-          ) : <span />}
+          ) : (
+            <span className="glass-dark inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[12px] font-semibold text-white">
+              <Eye className="h-3.5 w-3.5" /> {provider.view_count ?? 0}
+            </span>
+          )}
           {!isOwner && (
-            <div className="glass-strong rounded-full">
-              <FavoriteButton providerId={provider.id} initialLiked={false} iconOnly />
+            <div className="pointer-events-auto glass-strong rounded-full">
+              <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} iconOnly />
             </div>
           )}
         </div>
 
-        <div className="pointer-events-none absolute inset-x-3 bottom-3 flex items-end justify-between">
-          <span className="glass-dark inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold text-white">
-            <Eye className="h-3.5 w-3.5" /> {provider.view_count ?? 0}
-          </span>
+        {/* Alsó sáv: név, hely, értékelés, gombok */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 text-white">
           {shown.length > 1 && (
-            <span className="flex gap-1">
+            <div className="mb-2.5 flex justify-center gap-1">
               {shown.map((_, i) => (
-                <span key={i} className={cn("h-1.5 rounded-full bg-white transition-all", i === idx ? "w-4" : "w-1.5 opacity-60")} />
+                <span key={i} className={cn("h-1.5 rounded-full bg-white transition-all", i === idx ? "w-5" : "w-1.5 opacity-50")} />
               ))}
-            </span>
+            </div>
           )}
+          {cats.length > 0 && (
+            <p className="truncate text-[11px] uppercase tracking-[0.14em] text-white/75">
+              {cats.slice(0, 2).map((c) => CATEGORY_LABELS[c] ?? c).join(" · ")}
+            </p>
+          )}
+          <h3 className="mt-0.5 font-heading text-[23px] font-bold leading-tight line-clamp-2">{provider.full_name}</h3>
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-white/90">
+            {counties.length > 0 && (
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="h-4 w-4" />{counties[0]}{counties.length > 1 && ` +${counties.length - 1}`}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1">
+              <Star className="h-4 w-4 fill-white" />
+              {rating > 0 ? rating.toFixed(1) : "Új"}{reviews > 0 && ` (${reviews})`}
+            </span>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between gap-2">
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              className="pointer-events-auto glass-dark inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-semibold"
+            >
+              Bemutatkozás
+              <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
+            </button>
+            {detailHref && (
+              <a href={detailHref} className="pointer-events-auto glass-dark flex shrink-0 items-center gap-2 rounded-full py-1.5 pl-4 pr-1.5 text-[14px] font-semibold">
+                Megnézem
+                <span className="rose-cta flex h-8 w-8 items-center justify-center rounded-full">
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Szöveg */}
-      <div className="flex flex-1 flex-col px-2.5 pb-1.5 pt-3">
-        <div className="flex items-start justify-between gap-2">
-          <a href={detailHref} className="min-w-0">
-            <h3 className="font-heading text-[18px] font-bold leading-snug text-[#1F1A2E] line-clamp-1 group-hover:text-[#E8336A] transition-colors">
-              {provider.full_name}
-            </h3>
-          </a>
-          <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 text-[14px] font-semibold text-[#1F1A2E]">
-            <Star className="h-4 w-4 fill-[#1F1A2E]" />
-            {rating > 0 ? rating.toFixed(2).replace(/0$/, "") : "Új"}
-            {reviews > 0 && <span className="font-normal text-[#6B6480]">({reviews})</span>}
-          </span>
-        </div>
-
-        {counties.length > 0 && (
-          <p className="mt-0.5 flex items-center gap-1 text-[14px] text-[#6B6480]">
-            <MapPin className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">{counties[0]}{counties.length > 1 && ` +${counties.length - 1}`}</span>
-          </p>
-        )}
-
-        {cats.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {cats.slice(0, 2).map((c) => (
-              <span key={c} className="rounded-full bg-[#FDEEF3] px-2.5 py-0.5 text-[12px] font-medium text-[#B3264F]">
-                {CATEGORY_LABELS[c] ?? c}
-              </span>
-            ))}
-            {cats.length > 2 && <span className="text-[12px] font-medium text-[#B3264F]">+{cats.length - 2}</span>}
+      {/* Lenyíló fehér bemutatkozó panel – a kép alá csúszik */}
+      <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "-mt-8 grid-rows-[1fr]" : "grid-rows-[0fr]")}>
+        <div className="overflow-hidden">
+          <div className={cn("rounded-b-[30px] bg-white px-5 pb-5 pt-12 shadow-[0_18px_40px_-24px_rgba(90,20,60,0.45)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
+            {intro ? (
+              <p className="text-[15px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
+            ) : (
+              <p className="text-[15px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
+            )}
+            {cats.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {cats.map((c) => (
+                  <span key={c} className="rounded-full bg-[#FDEEF3] px-2.5 py-0.5 text-[12px] font-medium text-[#B3264F]">
+                    {CATEGORY_LABELS[c] ?? c}
+                  </span>
+                ))}
+              </div>
+            )}
+            {!isOwner && (
+              <div className="mt-4 flex items-center gap-2">
+                <ChatLink
+                  href={`/profil?tab=chat&with=${provider.user_id}`}
+                  className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#FDEEF3] text-[14px] font-semibold text-[#B3264F] hover:bg-[#FBD9E5]"
+                >
+                  <MessageCircle className="h-4 w-4" /> Chat
+                </ChatLink>
+                <LoginGateLink
+                  href={quoteHrefFor(provider)}
+                  message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+                  className="rose-cta flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
+                >
+                  <Send className="h-4 w-4" /> Ajánlatkérés
+                </LoginGateLink>
+              </div>
+            )}
           </div>
-        )}
-
-        {provider.description && (
-          <p className="mt-2 text-[14px] leading-snug text-[#4A4360] line-clamp-2">{provider.description}</p>
-        )}
-
-        <div className="mt-auto flex items-center gap-2 pt-3">
-          <ChatLink
-            href={`/profil?tab=chat&with=${provider.user_id}`}
-            aria-label="Chat indítása"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FDEEF3] text-[#E8336A] transition-colors hover:bg-[#FBD9E5]"
-          >
-            <MessageCircle className="h-5 w-5" />
-          </ChatLink>
-          <a href={detailHref} className="rose-cta flex h-11 flex-1 items-center justify-center gap-2 rounded-full text-[15px] font-semibold">
-            Részletek <ArrowRight className="h-4 w-4" />
-          </a>
         </div>
       </div>
     </article>

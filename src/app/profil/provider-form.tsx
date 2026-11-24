@@ -10,7 +10,7 @@ import { PhoneInput } from "@/components/ui/phone-input";
 import { Clock, Pencil, X, XCircle, ImagePlus, FileText, ExternalLink } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
-import { ProviderCard } from "@/components/providers/provider-card";
+import { ProviderTile } from "@/components/providers/provider-tile";
 import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils";
 
 interface Props {
@@ -141,7 +141,7 @@ function ProfileView({
           </div>
           <div className="relative">
             {!isProviderActive && <InactiveBadge />}
-            <ProviderCard provider={provider} disableLink />
+            <ProviderTile provider={provider} isOwner disableLink />
           </div>
         </div>
       ) : hasPendingUpdate ? (
@@ -153,14 +153,14 @@ function ProfileView({
             </div>
             <div className="relative">
               {!isProviderActive && <InactiveBadge />}
-              <ProviderCard provider={provider} disableLink={!isProviderActive} />
+              <ProviderTile provider={provider} isOwner disableLink={!isProviderActive} />
             </div>
           </div>
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" /> Módosítás – jóváhagyásra vár
             </p>
-            <ProviderCard provider={pendingProvider} disableLink />
+            <ProviderTile provider={pendingProvider} isOwner disableLink />
           </div>
         </div>
       ) : (
@@ -171,7 +171,7 @@ function ProfileView({
           </div>
           <div className="relative">
             {!isProviderActive && <InactiveBadge />}
-            <ProviderCard provider={provider} disableLink={!isProviderActive} />
+            <ProviderTile provider={provider} isOwner disableLink={!isProviderActive} />
           </div>
         </div>
       )}

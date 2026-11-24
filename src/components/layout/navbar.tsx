@@ -10,7 +10,6 @@ import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { OnboardingTour } from "@/components/onboarding-tour";
 import { BrandLogo } from "@/components/layout/brand-logo";
-import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 
 function NavBadge({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -554,12 +553,6 @@ export function Navbar() {
         </div>
       )}
     </nav>
-    <MobileTabBar
-      signedIn={!!user}
-      isProvider={hasProvider}
-      unread={unreadMessages + unreadQuotes}
-      avatarUrl={navAvatarUrl}
-    />
     {user && profile && profile.role !== "admin" && (
       <OnboardingTour userId={user.id} role={profile.role} />
     )}

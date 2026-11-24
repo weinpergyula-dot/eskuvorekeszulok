@@ -27,8 +27,8 @@ export function PageHeader({ title, description, backHref, backFallbackHref, ico
      ül, mellette rózsaszín ikon-kapszula; a Vissza gomb üveg kapszula. */
   return (
     <>
-      <div className="w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-4 sm:pt-10 sm:pb-6">
+      <div className="page-header w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-1 sm:pt-8 sm:pb-2">
           {(backHref || backFallbackHref) && (
             <div className="mb-4">
               {backFallbackHref ? (
