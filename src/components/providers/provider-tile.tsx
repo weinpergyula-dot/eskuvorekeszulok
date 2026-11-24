@@ -16,13 +16,77 @@ import { quoteHrefFor } from "@/lib/quote-href";
 /* Ennyi ideig látszik egy kép a kártya slideshow-jában. */
 const SLIDE_MS = 4000;
 
-const FEATURED_COLOR: Record<string, string> = {
+/* ── Közös slideshow: automatikus lapozás, amíg a fotó legalább félig a
+   képernyőn van és a látogató nem fogja; kézi húzással is lapozható. */
+export function useSlideshow(count: number) {
+  const [idx, setIdx] = useState(0);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  const [holding, setHolding] = useState(false);
+  const playing = visible && !holding && count > 1;
+
+  const onScroll = () => {
+    const el = stripRef.current;
+    if (!el) return;
+    setIdx(Math.round(el.scrollLeft / el.clientWidth));
+  };
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || count < 2) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting && e.intersectionRatio > 0.5), { threshold: [0, 0.5, 1] });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [count]);
+
+  useEffect(() => {
+    if (!playing) return;
+    const t = setTimeout(() => {
+      const el = stripRef.current;
+      if (!el) return;
+      const next = (idx + 1) % count;
+      const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      el.scrollTo({ left: next * el.clientWidth, behavior: smooth ? "smooth" : "auto" });
+    }, SLIDE_MS);
+    return () => clearTimeout(t);
+  }, [playing, idx, count]);
+
+  const holdHandlers = {
+    onPointerDown: () => setHolding(true),
+    onPointerUp: () => setHolding(false),
+    onPointerCancel: () => setHolding(false),
+    onPointerLeave: () => setHolding(false),
+  };
+
+  return { stripRef, cardRef, idx, onScroll, playing, holdHandlers };
+}
+
+/* A slideshow kis, töltődő státuszcsíkjai. */
+export function SlideBars({ count, idx, playing, className }: { count: number; idx: number; playing: boolean; className?: string }) {
+  if (count < 2) return null;
+  return (
+    <div className={cn("flex justify-center gap-1", className)} aria-hidden>
+      {Array.from({ length: count }, (_, i) => (
+        <span key={i} className="h-[3px] w-4 overflow-hidden rounded-full bg-white/35">
+          <span
+            key={i === idx ? `run-${idx}` : "still"}
+            className={cn("block h-full rounded-full bg-white", i < idx ? "w-full" : i === idx ? "slide-progress" : "w-0")}
+            style={i === idx ? { animationDuration: `${SLIDE_MS}ms`, animationPlayState: playing ? "running" : "paused" } : undefined}
+          />
+        </span>
+      ))}
+    </div>
+  );
+}
+
+export const FEATURED_COLOR: Record<string, string> = {
   gold: "fill-[#B8925A] text-[#B8925A]",
   silver: "fill-slate-500 text-slate-500",
   teal: "fill-[#84AAA6] text-[#84AAA6]",
 };
 
-const FEATURED_LABEL: Record<string, string> = {
+export const FEATURED_LABEL: Record<string, string> = {
   gold: "Arany partner",
   silver: "Ezüst partner",
   teal: "Kiemelt",
@@ -56,42 +120,8 @@ export function ProviderTile({
   if (images.length === 0 && provider.avatar_url) images.push(provider.avatar_url);
   const shown = images.slice(0, 6);
 
-  const [idx, setIdx] = useState(0);
   const [open, setOpen] = useState(false);
-  const stripRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const onScroll = () => {
-    const el = stripRef.current;
-    if (!el) return;
-    setIdx(Math.round(el.scrollLeft / el.clientWidth));
-  };
-
-  /* Automatikus lapozás – csak amíg a kártya a képernyőn van, és nem
-     érinti/fogja épp a látogató. A státuszcsíkok ugyanennyi idő alatt
-     töltődnek fel, így látszik, mikor jön a következő kép. */
-  const [visible, setVisible] = useState(false);
-  const [holding, setHolding] = useState(false);
-  const playing = visible && !holding && shown.length > 1;
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el || shown.length < 2) return;
-    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting && e.intersectionRatio > 0.5), { threshold: [0, 0.5, 1] });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [shown.length]);
-
-  useEffect(() => {
-    if (!playing) return;
-    const t = setTimeout(() => {
-      const el = stripRef.current;
-      if (!el) return;
-      const next = (idx + 1) % shown.length;
-      const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      el.scrollTo({ left: next * el.clientWidth, behavior: smooth ? "smooth" : "auto" });
-    }, SLIDE_MS);
-    return () => clearTimeout(t);
-  }, [playing, idx, shown.length]);
+  const { stripRef, cardRef, idx, onScroll, playing, holdHandlers } = useSlideshow(shown.length);
 
   const rating = provider.average_rating ?? 0;
   const reviews = provider.review_count ?? 0;
@@ -104,10 +134,7 @@ export function ProviderTile({
       {/* Fotó + ráírt adatok */}
       <div
         ref={cardRef}
-        onPointerDown={() => setHolding(true)}
-        onPointerUp={() => setHolding(false)}
-        onPointerCancel={() => setHolding(false)}
-        onPointerLeave={() => setHolding(false)}
+        {...holdHandlers}
         className="relative z-10 overflow-hidden rounded-[30px] bg-[#EEF3F2] aspect-[4/4.4] sm:aspect-[4/4] ring-1 ring-white/70 shadow-[0_30px_50px_-28px_rgba(20,45,42,0.6)]">
         {shown.length > 0 ? (
           <div ref={stripRef} onScroll={onScroll} className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scrollbar-none">
@@ -147,19 +174,7 @@ export function ProviderTile({
 
         {/* Alsó sáv: név, hely, értékelés, gombok */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 text-white">
-          {shown.length > 1 && (
-            <div className="mb-3 flex justify-center gap-1" aria-hidden>
-              {shown.map((_, i) => (
-                <span key={i} className="h-[3px] w-4 overflow-hidden rounded-full bg-white/35">
-                  <span
-                    key={i === idx ? `run-${idx}` : "still"}
-                    className={cn("block h-full rounded-full bg-white", i < idx ? "w-full" : i === idx ? "slide-progress" : "w-0")}
-                    style={i === idx ? { animationDuration: `${SLIDE_MS}ms`, animationPlayState: playing ? "running" : "paused" } : undefined}
-                  />
-                </span>
-              ))}
-            </div>
-          )}
+          <SlideBars count={shown.length} idx={idx} playing={playing} className="mb-3" />
           <div className="flex items-center gap-3">
             <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/20 ring-2 ring-white/90 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.6)]">
               {provider.avatar_url ? (

@@ -86,19 +86,19 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   ];
 
   return (
-    <div className="px-8 pb-8 pt-2">
-      {/* Tab bar */}
-      <div className="flex border-b border-gray-200 mb-8 -mx-8 px-0 sm:px-8 overflow-x-auto scrollbar-none">
+    <div>
+      {/* Tab bar – szegmentált kapszula */}
+      <div className="mb-6 flex gap-1 overflow-x-auto rounded-full bg-[#F0F6F5] p-1 scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
             className={cn(
-              "flex-1 sm:flex-none px-2 sm:px-4 py-3 text-sm sm:text-base font-extrabold border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap [font-family:'BloomSpeakBody']",
+              "flex-1 rounded-full px-3 sm:px-4 py-2 text-[13px] sm:text-[15px] font-semibold transition-all cursor-pointer whitespace-nowrap",
               tab.desktopOnly ? "hidden sm:block" : "",
               active === tab.id
-                ? "border-[#84AAA6] text-[#84AAA6]"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
+                : "text-gray-500 hover:text-gray-800"
             )}
           >
             {tab.label}
@@ -108,8 +108,8 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
 
       {/* Bemutatkozás */}
       {active === "about" && (
-        <div className="grid md:grid-cols-5 gap-8">
-          <div className="md:col-span-3 space-y-6">
+        <div className="grid lg:grid-cols-5 gap-6">
+          <div className="lg:col-span-3 space-y-6">
             {(provider.detailed_description || provider.description) ? (
               <section>
                 {/* A cím a tabon van, itt nem ismételjük. Mobilon 2px-el kisebb betű. */}
@@ -131,8 +131,8 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
           </div>
 
           {/* Kapcsolat kártya */}
-          <div className="md:col-span-2">
-            <div className="bg-gray-50 rounded-xl border border-gray-200 p-5 space-y-4 sticky top-24">
+          <div className="lg:col-span-2">
+            <div className="bg-[#F7FAF9] rounded-[22px] ring-1 ring-black/5 p-5 space-y-4">
               <h2 className="text-base font-semibold text-gray-900">Elérhetőségek</h2>
               <div className="space-y-3">
                 {provider.phone && (
@@ -164,7 +164,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               </div>
               <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
@@ -173,7 +173,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               <LoginGateLink
                 href={quoteHrefFor(provider)}
                 message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
+                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2"
               >
                 <Send className="h-4 w-4" strokeWidth={1.5} />
                 Ajánlatkérés
@@ -198,7 +198,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
           </div>
           <ChatLink
             href={`/profil?tab=chat&with=${provider.user_id}`}
-            className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
+            className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
           >
             <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
             Chat indítása
@@ -241,7 +241,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                   href={provider.pricing_pdf_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
+                  className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
                 >
                   <FileText className="h-4 w-4" strokeWidth={1.5} />
                   PDF megnyitása

@@ -106,7 +106,7 @@ function TodayList({ path }: { path: string }) {
   if (visits.length === 0) return <p className="text-sm text-gray-500">Ma még nem volt látogató.</p>;
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white divide-y divide-gray-100 overflow-hidden">
+    <div className="rounded-[22px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] bg-white divide-y divide-gray-100 overflow-hidden">
       {visits.map((v) => {
         const first = formatTime(v.firstSeenAt);
         const last = formatTime(v.lastSeenAt);
@@ -149,7 +149,7 @@ function Bars({ points }: { points: { key: string; label: string; value: number;
   const max = Math.max(1, ...points.map((p) => p.value));
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4">
+    <div className="rounded-[22px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] bg-white p-4">
       {/* A hasáb tetején mindig ott a nap értéke; a hasáb maga a keret 88%-át
           használhatja, hogy a szám elférjen fölötte. */}
       <div className="flex items-end gap-1 h-44">
@@ -253,7 +253,7 @@ export function VisitsSection() {
   if (stats && !stats.available) return (
     <div className="space-y-6">
       {tabs}
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+      <div className="rounded-[22px] ring-1 ring-amber-200 bg-amber-50 p-4">
         <p className="text-sm text-gray-900 font-medium mb-1">A látogatottság-statisztika még nincs bekapcsolva.</p>
         <p className="text-sm text-gray-600">
           Futtasd le a <code className="bg-white px-1.5 py-0.5 rounded font-mono text-xs">supabase/migrations/20260831_page_visits_path.sql</code> fájlt
@@ -339,7 +339,7 @@ export function VisitsSection() {
             <button
               key={t.label}
               onClick={() => setShowToday((v) => !v)}
-              className={`rounded-lg border bg-white p-3 text-left transition-colors cursor-pointer hover:border-[#84AAA6] ${showToday ? "border-[#84AAA6]" : "border-gray-200"}`}
+              className={`rounded-[18px] border bg-white p-3 text-left shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] transition-colors cursor-pointer hover:border-[#84AAA6] ${showToday ? "border-[#84AAA6]" : "border-gray-200"}`}
             >
               <div className="text-2xl font-bold text-gray-900">{t.value}</div>
               <div className="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
@@ -348,7 +348,7 @@ export function VisitsSection() {
               </div>
             </button>
           ) : (
-            <div key={t.label} className="rounded-lg border border-gray-200 bg-white p-3">
+            <div key={t.label} className="rounded-[18px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] bg-white p-3">
               <div className="text-2xl font-bold text-gray-900">{t.value}</div>
               <div className="text-sm text-gray-500 mt-0.5">{t.label}</div>
             </div>
@@ -388,7 +388,7 @@ export function VisitsSection() {
         </button>
 
         {showDailyTable && (
-          <div className="mt-3 rounded-xl border border-gray-200 overflow-hidden">
+          <div className="mt-3 rounded-[22px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] bg-white overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
@@ -427,7 +427,7 @@ export function VisitsSection() {
           }))}
         />
 
-        <div className="mt-3 rounded-xl border border-gray-200 overflow-hidden">
+        <div className="mt-3 rounded-[22px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] bg-white overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>

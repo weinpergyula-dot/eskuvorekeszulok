@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Heart, MessageCircle, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText, SlidersHorizontal } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Trash2, Info, Star, Search, ChevronDown, MapPin, X, Loader2, FileText, SlidersHorizontal, Flame } from "lucide-react";
 import { QuoteChat, ProviderChatLoader, type VisitorChat, type ProviderRequest } from "./quote-requests-section";
-import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -272,10 +271,10 @@ function ProviderRow({
     .join(", ");
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/60 transition-colors${provider.featured === "gold" ? " border-l-2 border-l-amber-400" : provider.featured === "silver" ? " border-l-2 border-l-slate-400" : provider.featured === "teal" ? " border-l-2 border-l-[#84AAA6]" : ""}`}>
+    <div className="flex items-center gap-3 p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] transition-shadow hover:shadow-[0_18px_36px_-22px_rgba(20,45,42,0.6)]">
       {/* Avatar */}
       <a href={`/providers/${provider.id}`} className="shrink-0">
-        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600">
+        <div className="relative w-14 h-14 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(20,45,42,0.6)] flex items-center justify-center text-sm font-semibold text-[#5C8480]">
           <span className="absolute inset-0 flex items-center justify-center select-none">{initials}</span>
           {provider.avatar_url && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -292,15 +291,16 @@ function ProviderRow({
       {/* Name + category (+ rating on mobile) */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 truncate hover:text-[#84AAA6] transition-colors">{provider.full_name}</a>
+          <a href={`/providers/${provider.id}`} className="text-[15px] font-semibold text-gray-900 truncate hover:text-[#84AAA6] transition-colors">{provider.full_name}</a>
           {provider.featured && (
-            <span className={`text-[10px] font-medium rounded-full px-1.5 py-0.5 shrink-0 border${provider.featured === "silver" ? " text-slate-600 bg-slate-50 border-slate-200" : provider.featured === "teal" ? " text-[#5C8480] bg-[#84AAA6]/10 border-[#84AAA6]/40" : " text-amber-600 bg-amber-50 border-amber-200"}`}>
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#F0F6F5] px-2 py-0.5 text-[10px] font-semibold text-gray-700 shrink-0">
+              <Flame className={`h-3 w-3 ${provider.featured === "silver" ? "fill-slate-500 text-slate-500" : provider.featured === "teal" ? "fill-[#84AAA6] text-[#84AAA6]" : "fill-[#B8925A] text-[#B8925A]"}`} />
               Kiemelt
             </span>
           )}
         </div>
         {categoryLabel && (
-          <p className="text-xs text-[#84AAA6] truncate mt-0.5">{categoryLabel}</p>
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#5C8480]/80 truncate mt-0.5">{categoryLabel}</p>
         )}
         {provider.counties.length > 0 && (
           <p className="text-xs text-gray-400 flex items-center gap-0.5 mt-0.5">
@@ -326,7 +326,7 @@ function ProviderRow({
         <button
           onClick={handleFavorite}
           disabled={toggling}
-          className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer disabled:cursor-default"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F0F6F5] hover:bg-[#E3EFED] transition-colors cursor-pointer disabled:cursor-default"
           title={provider.is_favorite ? "Eltávolítás a kedvencekből" : "Hozzáadás a kedvencekhez"}
         >
           {toggling ? (
@@ -340,10 +340,10 @@ function ProviderRow({
             />
           )}
         </button>
-        <Button size="sm" onClick={onChat} className="text-xs whitespace-nowrap">
-          <MessageCircle className="h-3.5 w-3.5 mr-1 shrink-0" />
+        <button type="button" onClick={onChat} className="tile-cta flex h-9 items-center gap-1.5 rounded-full px-4 text-[13px] font-semibold whitespace-nowrap cursor-pointer">
+          <MessageCircle className="h-3.5 w-3.5 shrink-0" />
           Chat
-        </Button>
+        </button>
       </div>
     </div>
   );
@@ -364,10 +364,10 @@ function ConversationRow({
   return (
     <button
       onClick={onSelect}
-      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+      className="w-full text-left p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] transition-shadow hover:shadow-[0_18px_36px_-22px_rgba(20,45,42,0.6)] cursor-pointer"
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
+        <div className="w-12 h-12 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(20,45,42,0.6)] flex items-center justify-center text-sm font-semibold text-[#5C8480] shrink-0">
           {thread.otherAvatarUrl
             ? <img src={thread.otherAvatarUrl} alt={thread.otherName} className="w-full h-full object-cover" />
             : initials}
@@ -386,7 +386,7 @@ function ConversationRow({
           )}
         </div>
         {thread.hasUnread && (
-          <span className="w-2.5 h-2.5 rounded-full bg-[#F06C6C] shrink-0" />
+          <span className="w-3 h-3 rounded-full bg-[#F06C6C] ring-2 ring-white shrink-0" />
         )}
       </div>
     </button>
@@ -422,10 +422,10 @@ function QuoteConvRow({
   return (
     <button
       onClick={onSelect}
-      className="w-full text-left px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+      className="w-full text-left p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] transition-shadow hover:shadow-[0_18px_36px_-22px_rgba(20,45,42,0.6)] cursor-pointer"
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 shrink-0">
+        <div className="w-12 h-12 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(20,45,42,0.6)] flex items-center justify-center text-sm font-semibold text-[#5C8480] shrink-0">
           {avatarUrl
             ? <img src={avatarUrl ?? ""} alt={name} className="w-full h-full object-cover" />
             : initials}
@@ -436,7 +436,7 @@ function QuoteConvRow({
             <span className="text-xs text-gray-400 shrink-0">{formatShort(lastAt)}</span>
           </div>
           <div className="flex items-center gap-1.5 mb-0.5">
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-[#84AAA6] bg-[#84AAA6]/10 rounded px-1.5 py-0.5 shrink-0">
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-[#5C8480] bg-[#F0F6F5] rounded-full px-2 py-0.5 shrink-0">
               <FileText className="h-2.5 w-2.5" />
               Ajánlatkérés
             </span>
@@ -1091,23 +1091,23 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   return (
     <div className="space-y-3">
       {/* Tabs + filter toggle */}
-      <div className="flex items-center border-b border-gray-200">
+      <div className="flex items-center gap-1 rounded-full bg-[#F0F6F5] p-1">
         <button
           onClick={() => setTab("providers")}
-          className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+          className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
             tab === "providers"
-              ? "border-[#84AAA6] text-[#84AAA6]"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
+              : "text-gray-500 hover:text-gray-800"
           }`}
         >
           Új chat indítása
         </button>
         <button
           onClick={() => setTab("conversations")}
-          className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+          className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
             tab === "conversations"
-              ? "border-[#84AAA6] text-[#84AAA6]"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
+              : "text-gray-500 hover:text-gray-800"
           }`}
         >
           Aktív chatek
@@ -1118,7 +1118,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
           )}
         </button>
         {/* Filter toggle — jobb oldal */}
-        <div className="ml-auto pr-1 pb-px relative">
+        <div className="ml-auto relative">
           {(() => {
             const hasActiveFilters = tab === "providers"
               ? !!(searchQuery || filterCategory || filterCounty)
@@ -1127,10 +1127,10 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
               <button
                 onClick={() => setFiltersOpen((v) => !v)}
                 title={filtersOpen ? "Szűrők elrejtése" : "Szűrők megjelenítése"}
-                className={`relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                className={`relative flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition-colors cursor-pointer ${
                   filtersOpen
-                    ? "bg-[#84AAA6]/15 text-[#84AAA6]"
-                    : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                    ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
+                    : "text-gray-500 hover:text-gray-700 hover:bg-white/70"
                 }`}
               >
                 <SlidersHorizontal className="h-4 w-4" />
@@ -1189,7 +1189,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
             </div>
           ) : (
             <>
-              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+              <div className="space-y-2.5">
                 {pagedProviders.map((p) => (
                   <ProviderRow
                     key={p.id}
@@ -1204,7 +1204,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                   <button
                     onClick={() => goToPage(Math.max(0, currentPage - 1))}
                     disabled={currentPage === 0}
-                    className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-600 bg-white ring-1 ring-black/5 rounded-full hover:bg-[#F0F6F5] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     ← Előző
                   </button>
@@ -1215,7 +1215,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                   <button
                     onClick={() => goToPage(Math.min(totalPages - 1, currentPage + 1))}
                     disabled={currentPage >= totalPages - 1}
-                    className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-600 bg-white ring-1 ring-black/5 rounded-full hover:bg-[#F0F6F5] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     Következő →
                   </button>
@@ -1300,7 +1300,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 )}
               </div>
             )}
-          <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+          <div className="space-y-2.5">
             {allItems.map((item) => {
               if (item.kind === "thread") {
                 return (

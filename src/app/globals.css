@@ -2142,3 +2142,8 @@ html.a11y-underline a { text-decoration: underline !important; }
   to   { width: 100%; }
 }
 .slide-progress { width: 0; animation: slide-progress linear forwards; }
+
+/* A szolgáltatói profil alsó ajánlatkérő sávja fölé kerül a lebegő sarokgomb. */
+@media (max-width: 767px) {
+  body:has(.mobile-bottom-bar) .floating-corner { bottom: calc(96px + env(safe-area-inset-bottom)); }
+}
