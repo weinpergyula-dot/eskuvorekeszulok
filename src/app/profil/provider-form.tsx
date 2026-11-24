@@ -49,7 +49,7 @@ function PillSelect<T extends string>({
       <div className="flex items-baseline justify-between">
         <Label>{label}{required && <span className="text-[1.2em] font-bold align-middle ml-0.5">*</span>}</Label>
         {selected.length > 0 && (
-          <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
+          <span className="text-sm text-[#E8336A]">{selected.length} kiválasztva</span>
         )}
       </div>
       <div className="flex flex-wrap gap-2">
@@ -65,8 +65,8 @@ function PillSelect<T extends string>({
                 isDisabled
                   ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
                   : isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
-                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
+                    ? "bg-[#E8336A] text-white border-[#E8336A] cursor-pointer"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A] cursor-pointer"
               }`}
             >
               {opt.label}
@@ -448,7 +448,7 @@ export function ProviderForm({
             onClick={handleToggle}
             disabled={toggling}
             className={`relative inline-flex h-7 w-13 min-w-[3.25rem] items-center rounded-full transition-colors focus:outline-none ${
-              isProviderActive ? "bg-[#84AAA6]" : "bg-gray-300"
+              isProviderActive ? "bg-[#E8336A]" : "bg-gray-300"
             } ${toggling ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
             aria-checked={isProviderActive}
             role="switch"
@@ -496,7 +496,7 @@ export function ProviderForm({
                 <Label>Profilkép</Label>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
+                    className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#E8336A] overflow-hidden bg-gray-50"
                     onClick={() => avatarInputRef.current?.click()}
                   >
                     {avatarPreview ? (
@@ -545,7 +545,7 @@ export function ProviderForm({
                       value="own"
                       checked={displayNameChoice === "own"}
                       onChange={() => setDisplayNameChoice("own")}
-                      className="h-4 w-4 accent-[#84AAA6]"
+                      className="h-4 w-4 accent-[#E8336A]"
                     />
                     <span className="text-base text-gray-700">
                       Saját nevem{registrationName ? <span className="ml-1 text-gray-500">({registrationName})</span> : null}
@@ -558,7 +558,7 @@ export function ProviderForm({
                       value="business"
                       checked={displayNameChoice === "business"}
                       onChange={() => setDisplayNameChoice("business")}
-                      className="h-4 w-4 accent-[#84AAA6]"
+                      className="h-4 w-4 accent-[#E8336A]"
                     />
                     <span className="text-base text-gray-700">Vállalkozásom neve</span>
                   </label>
@@ -656,7 +656,7 @@ export function ProviderForm({
                     {galleryPreviews.map((url, i) => (
                       <div key={`new-${i}`} className="relative group">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg border-2 border-dashed border-[#84AAA6]" />
+                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg border-2 border-dashed border-[#E8336A]" />
                         <button
                           type="button"
                           onClick={() => removeGalleryFile(i)}
@@ -710,7 +710,7 @@ export function ProviderForm({
                       {pricingPdfFile ? "PDF módosítása" : pricingPdfUrl ? "PDF csere" : "PDF feltöltése"}
                     </Button>
                     {pricingPdfFile && (
-                      <span className="text-sm text-[#84AAA6] flex items-center gap-1">
+                      <span className="text-sm text-[#E8336A] flex items-center gap-1">
                         <FileText className="h-3.5 w-3.5" />
                         {pricingPdfFile.name}
                         <button type="button" onClick={() => setPricingPdfFile(null)} className="text-gray-400 hover:text-[#F06C6C] ml-1">✕</button>
@@ -718,7 +718,7 @@ export function ProviderForm({
                     )}
                     {!pricingPdfFile && pricingPdfUrl && (
                       <span className="flex items-center gap-2 text-sm text-gray-600">
-                        <a href={pricingPdfUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[#84AAA6] hover:underline">
+                        <a href={pricingPdfUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[#E8336A] hover:underline">
                           <ExternalLink className="h-3.5 w-3.5" /> Meglévő PDF megtekintése
                         </a>
                         <button type="button" onClick={() => setPricingPdfUrl(null)} className="text-gray-400 hover:text-[#F06C6C]">✕</button>

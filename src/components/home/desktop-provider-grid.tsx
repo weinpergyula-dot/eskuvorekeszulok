@@ -91,7 +91,7 @@ export function DesktopProviderGrid({ providers }: DesktopProviderGridProps) {
             type="button"
             onClick={handlePausePlay}
             aria-label={paused ? "Lejátszás" : "Megállítás"}
-            className="p-2.5 rounded-full bg-[#84AAA6]/10 text-[#84AAA6] hover:bg-[#84AAA6]/20 transition-colors"
+            className="p-2.5 rounded-full bg-[#E8336A]/10 text-[#E8336A] hover:bg-[#E8336A]/20 transition-colors"
           >
             {paused
               ? <Play className="h-5 w-5" strokeWidth={1.75} />
@@ -101,7 +101,7 @@ export function DesktopProviderGrid({ providers }: DesktopProviderGridProps) {
           <button
             type="button"
             onClick={advance}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#84AAA6]/10 text-[#84AAA6] hover:bg-[#84AAA6]/20 transition-colors text-sm font-medium"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#E8336A]/10 text-[#E8336A] hover:bg-[#E8336A]/20 transition-colors text-sm font-medium"
           >
             Következő
             <ChevronRight className="h-4 w-4" strokeWidth={1.75} />

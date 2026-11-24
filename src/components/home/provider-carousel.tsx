@@ -182,7 +182,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
           onClick={() => durationIdx > 0 && changeSpeed(durationIdx - 1)}
           disabled={durationIdx <= 0}
           aria-label="Gyorsítás"
-          className="p-2 rounded-full text-[#84AAA6] disabled:opacity-25 active:bg-[#84AAA6]/10 transition-colors"
+          className="p-2 rounded-full text-[#E8336A] disabled:opacity-25 active:bg-[#E8336A]/10 transition-colors"
         >
           <Rewind className="h-5 w-5" strokeWidth={1.75} />
         </button>
@@ -191,7 +191,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
           type="button"
           onClick={handlePlayPause}
           aria-label={paused ? "Lejátszás" : "Megállítás"}
-          className="p-2.5 rounded-full bg-[#84AAA6]/10 text-[#84AAA6] active:bg-[#84AAA6]/20 transition-colors"
+          className="p-2.5 rounded-full bg-[#E8336A]/10 text-[#E8336A] active:bg-[#E8336A]/20 transition-colors"
         >
           {paused
             ? <Play className="h-5 w-5" strokeWidth={1.75} />
@@ -203,7 +203,7 @@ export function ProviderCarousel({ providers }: ProviderCarouselProps) {
           onClick={() => durationIdx < DURATIONS.length - 1 && changeSpeed(durationIdx + 1)}
           disabled={durationIdx >= DURATIONS.length - 1}
           aria-label="Lassítás"
-          className="p-2 rounded-full text-[#84AAA6] disabled:opacity-25 active:bg-[#84AAA6]/10 transition-colors"
+          className="p-2 rounded-full text-[#E8336A] disabled:opacity-25 active:bg-[#E8336A]/10 transition-colors"
         >
           <FastForward className="h-5 w-5" strokeWidth={1.75} />
         </button>

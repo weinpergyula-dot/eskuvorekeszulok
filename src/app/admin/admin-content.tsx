@@ -237,12 +237,12 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   };
 
   const stats: { label: string; value: number; icon: React.ReactNode; target: Filter; highlight: boolean }[] = [
-    { label: "Összes felhasználó",   value: liveStats.totalUsers,    icon: <Users className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,        target: "users",   highlight: false },
-    { label: "Jóváhagyásra vár",     value: totalPending,             icon: <ClockIcon className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,    target: "pending", highlight: totalPending > 0 },
-    { label: "Előregisztráció",      value: preRegistrations.length,  icon: <UserX className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,         target: "prereg",  highlight: preRegistrations.length > 0 },
-    { label: "Kapcsolati üzenetek",  value: contactMessages.length,   icon: <Mail className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,          target: "contact", highlight: unreadContact > 0 },
-    { label: "Hibanapló",            value: logCount,                  icon: <AlertTriangle className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />, target: "logs",    highlight: logCount > 0 },
-    { label: "Látogatottság",        value: uniqueIpsToday,           icon: <ChartColumn className="h-6 w-6 text-[#84AAA6]" strokeWidth={1.5} />,   target: "visits",  highlight: false },
+    { label: "Összes felhasználó",   value: liveStats.totalUsers,    icon: <Users className="h-6 w-6 text-[#E8336A]" strokeWidth={1.5} />,        target: "users",   highlight: false },
+    { label: "Jóváhagyásra vár",     value: totalPending,             icon: <ClockIcon className="h-6 w-6 text-[#E8336A]" strokeWidth={1.5} />,    target: "pending", highlight: totalPending > 0 },
+    { label: "Előregisztráció",      value: preRegistrations.length,  icon: <UserX className="h-6 w-6 text-[#E8336A]" strokeWidth={1.5} />,         target: "prereg",  highlight: preRegistrations.length > 0 },
+    { label: "Kapcsolati üzenetek",  value: contactMessages.length,   icon: <Mail className="h-6 w-6 text-[#E8336A]" strokeWidth={1.5} />,          target: "contact", highlight: unreadContact > 0 },
+    { label: "Hibanapló",            value: logCount,                  icon: <AlertTriangle className="h-6 w-6 text-[#E8336A]" strokeWidth={1.5} />, target: "logs",    highlight: logCount > 0 },
+    { label: "Látogatottság",        value: uniqueIpsToday,           icon: <ChartColumn className="h-6 w-6 text-[#E8336A]" strokeWidth={1.5} />,   target: "visits",  highlight: false },
   ];
 
   return (
@@ -255,10 +255,10 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
             onClick={() => selectFilter(s.target)}
             className={`text-left rounded-lg p-4 border transition-all cursor-pointer ${
               filter === s.target
-                ? "border-[#84AAA6] bg-[#84AAA6]/5 ring-1 ring-[#84AAA6]"
+                ? "border-[#E8336A] bg-[#E8336A]/5 ring-1 ring-[#E8336A]"
                 : s.highlight
-                ? "border-yellow-300 bg-yellow-50 hover:border-[#84AAA6]"
-                : "border-gray-200 bg-white hover:border-[#84AAA6]"
+                ? "border-yellow-300 bg-yellow-50 hover:border-[#E8336A]"
+                : "border-gray-200 bg-white hover:border-[#E8336A]"
             }`}
           >
             <div className="mb-2">{s.icon}</div>
@@ -328,7 +328,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
                           <span className="font-semibold text-gray-900">{pr.full_name || "–"}</span>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${pr.role === "provider" ? "bg-[#C9A675]/15 text-[#C9A675]" : "bg-[#84AAA6]/15 text-[#84AAA6]"}`}>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${pr.role === "provider" ? "bg-[#C9A675]/15 text-[#C9A675]" : "bg-[#E8336A]/15 text-[#E8336A]"}`}>
                             {pr.role === "provider" ? "Szolgáltató" : "Látogató"}
                           </span>
                         </div>
@@ -362,7 +362,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                           className={`text-sm flex items-center gap-1 transition-colors ${
                             resendingIds[pr.id] === "done" ? "text-green-600" :
                             resendingIds[pr.id] === "error" ? "text-[#F06C6C]" :
-                            "text-[#84AAA6] hover:text-[#6B8E8A]"
+                            "text-[#E8336A] hover:text-[#CC2257]"
                           }`}
                         >
                           {resendingIds[pr.id] === "done" ? <Check className="h-4 w-4" strokeWidth={2} /> :
@@ -424,7 +424,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
             {unreadContact > 0 && (
               <button
                 onClick={markAllRead}
-                className="text-sm text-[#84AAA6] hover:underline"
+                className="text-sm text-[#E8336A] hover:underline"
               >
                 Összes olvasottnak jelöl
               </button>
@@ -437,7 +437,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
               {contactMessages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`bg-white border rounded-lg p-5 transition-colors ${!msg.read ? "border-[#84AAA6] bg-[#84AAA6]/5" : "border-gray-200"}`}
+                  className={`bg-white border rounded-lg p-5 transition-colors ${!msg.read ? "border-[#E8336A] bg-[#E8336A]/5" : "border-gray-200"}`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -451,7 +451,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                         </span>
                       </div>
                       <p className="text-base text-gray-600 mb-0.5">
-                        <a href={`mailto:${msg.email}`} className="text-[#84AAA6] hover:underline">{msg.email}</a>
+                        <a href={`mailto:${msg.email}`} className="text-[#E8336A] hover:underline">{msg.email}</a>
                       </p>
                       {msg.phone && (
                         <p className="text-base text-gray-600 mb-0.5">{msg.phone}</p>
@@ -462,7 +462,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                       {!msg.read && (
                         <button
                           onClick={() => markRead(msg.id)}
-                          className="text-sm text-[#84AAA6] hover:underline"
+                          className="text-sm text-[#E8336A] hover:underline"
                         >
                           Olvasottnak jelöl
                         </button>
@@ -514,7 +514,7 @@ function DiffValue({ value, field }: { value: unknown; field?: string }) {
   const str = String(value);
   if (field === "pricing_pdf_url" && str.startsWith("http")) {
     return (
-      <a href={str} target="_blank" rel="noopener noreferrer" className="text-sm text-[#84AAA6] underline hover:text-[#6B8E8A]">
+      <a href={str} target="_blank" rel="noopener noreferrer" className="text-sm text-[#E8336A] underline hover:text-[#CC2257]">
         PDF megtekintése
       </a>
     );
@@ -630,7 +630,7 @@ function ProviderRow({ provider, type }: { provider: Provider; type: "registrati
             {type === "registration" && header.website ? (
               <div className="mt-2">
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-0.5">Weboldal</p>
-                <a href={String(header.website)} target="_blank" rel="noopener noreferrer" className="text-base text-[#84AAA6] hover:underline break-all">
+                <a href={String(header.website)} target="_blank" rel="noopener noreferrer" className="text-base text-[#E8336A] hover:underline break-all">
                   {String(header.website)}
                 </a>
               </div>

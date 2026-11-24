@@ -81,25 +81,25 @@ function Choice({
       aria-pressed={selected}
       className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2.5 text-left transition-colors cursor-pointer ${
         selected
-          ? "border-[#84AAA6] bg-[#84AAA6]/10"
-          : "border-gray-200 bg-white hover:border-[#84AAA6]"
+          ? "border-[#E8336A] bg-[#E8336A]/10"
+          : "border-gray-200 bg-white hover:border-[#E8336A]"
       }`}
     >
       <span
         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-          selected ? "border-[#84AAA6] bg-[#84AAA6]" : "border-gray-300 bg-white"
+          selected ? "border-[#E8336A] bg-[#E8336A]" : "border-gray-300 bg-white"
         }`}
       >
         {selected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
       </span>
       <span className="min-w-0 flex-1">
-        <span className={`block text-sm font-semibold ${selected ? "text-[#5C8480]" : "text-gray-900"}`}>
+        <span className={`block text-sm font-semibold ${selected ? "text-[#B3264F]" : "text-gray-900"}`}>
           {label}
         </span>
         {note && <span className="block text-xs text-gray-500">{note}</span>}
       </span>
       {price && (
-        <span className={`shrink-0 whitespace-nowrap text-sm font-bold ${selected ? "text-[#5C8480]" : "text-gray-500"}`}>
+        <span className={`shrink-0 whitespace-nowrap text-sm font-bold ${selected ? "text-[#B3264F]" : "text-gray-500"}`}>
           {price}
         </span>
       )}
@@ -193,19 +193,19 @@ export function MeghivoQuoteForm({
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5 space-y-5">
       <h3 className="flex items-center gap-2 text-base font-semibold text-gray-900">
-        <MailOpen className="h-4 w-4 text-[#84AAA6]" strokeWidth={1.75} />
+        <MailOpen className="h-4 w-4 text-[#E8336A]" strokeWidth={1.75} />
         Digitális meghívó – ajánlatkérés
       </h3>
 
       {/* Gyorsabb út: telefon */}
-      <div className="flex items-start gap-3 rounded-xl border border-[#84AAA6]/40 bg-[#F0F6F5] px-4 py-3">
-        <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#84AAA6]" strokeWidth={1.75} />
+      <div className="flex items-start gap-3 rounded-xl border border-[#E8336A]/40 bg-[#FDEEF3] px-4 py-3">
+        <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#E8336A]" strokeWidth={1.75} />
         {/* Mobilon a vessző után törik a sor, nagyobb kijelzőn egyben fut. */}
         <p className="text-sm leading-relaxed text-gray-700">
           <span className="block sm:inline">Ha gyorsabb ajánlatkérést szeretnél,</span>{" "}
           <span>
             azt a{" "}
-            <a href={PHONE_HREF} className="font-bold text-[#84AAA6] hover:underline">
+            <a href={PHONE_HREF} className="font-bold text-[#E8336A] hover:underline">
               {PHONE_DISPLAY}
             </a>{" "}
             telefonszámon teheted meg.
@@ -273,7 +273,7 @@ export function MeghivoQuoteForm({
             type="date"
             value={weddingDate}
             onChange={e => setWeddingDate(e.target.value)}
-            className="h-12 w-full min-w-0 max-w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 outline-none transition-colors focus:border-[#84AAA6] focus:ring-1 focus:ring-[#84AAA6] sm:text-sm"
+            className="h-12 w-full min-w-0 max-w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 outline-none transition-colors focus:border-[#E8336A] focus:ring-1 focus:ring-[#E8336A] sm:text-sm"
           />
         </div>
         <div className="min-w-0">
@@ -285,7 +285,7 @@ export function MeghivoQuoteForm({
             value={names}
             onChange={e => setNames(e.target.value)}
             placeholder="pl. Eszter és Bálint"
-            className="h-12 w-full min-w-0 rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 placeholder:text-gray-400 outline-none transition-colors focus:border-[#84AAA6] focus:ring-1 focus:ring-[#84AAA6] sm:text-sm"
+            className="h-12 w-full min-w-0 rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 placeholder:text-gray-400 outline-none transition-colors focus:border-[#E8336A] focus:ring-1 focus:ring-[#E8336A] sm:text-sm"
           />
         </div>
       </div>

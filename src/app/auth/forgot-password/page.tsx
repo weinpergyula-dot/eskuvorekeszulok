@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
               <hr className="border-gray-200" />
-              <Link href="/auth/login" className="block text-lg text-[#84AAA6] hover:underline">
+              <Link href="/auth/login" className="block text-lg text-[#E8336A] hover:underline">
                 Vissza a bejelentkezéshez
               </Link>
             </div>
@@ -98,7 +98,7 @@ export default function ForgotPasswordPage() {
                 </Button>
               </form>
               <p className="text-center text-lg text-gray-900 mt-4">
-                <Link href="/auth/login" className="text-[#84AAA6] hover:underline">
+                <Link href="/auth/login" className="text-[#E8336A] hover:underline">
                   Vissza a bejelentkezéshez
                 </Link>
               </p>

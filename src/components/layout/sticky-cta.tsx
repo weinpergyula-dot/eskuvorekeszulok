@@ -41,13 +41,14 @@ export function StickyCta({
 
   return (
     <div
-      className="sticky z-40 w-full border-b border-white/20 transition-all duration-300 backdrop-blur-xl"
-      style={{ top: "var(--nav-h, 4rem)", backgroundColor: `${bgColor}CC` }}
+      className="sticky z-40 w-full transition-all duration-300"
+      style={{ top: "calc(var(--nav-h, 4rem) + 12px)" }}
+      data-color={bgColor}
     >
       <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center transition-all duration-300 ${shrink ? "py-1.5" : "py-3"}`}>
         <a
           href={href}
-          className={`inline-flex items-center rounded-full border border-white/70 text-white font-medium hover:bg-white/15 transition-all duration-300 ${shrink ? "px-4 py-1 text-xs" : "px-5 py-2 text-sm"}`}
+          className={`inline-flex items-center rounded-full rose-cta font-semibold transition-all duration-300 ${shrink ? "px-4 py-1 text-xs" : "px-5 py-2 text-sm"}`}
         >
           {label}
         </a>

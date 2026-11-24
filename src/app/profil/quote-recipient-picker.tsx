@@ -111,7 +111,7 @@ export function RecipientPicker({
         <button
           type="button"
           onClick={() => setCheckedIds(allSelected ? new Set() : new Set(providers.map(p => p.id)))}
-          className="text-xs font-medium px-3 py-1.5 rounded-full border border-[#84AAA6] text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer"
+          className="text-xs font-medium px-3 py-1.5 rounded-full border border-[#E8336A] text-[#E8336A] hover:bg-[#E8336A]/10 transition-colors cursor-pointer"
         >
           {allSelected ? "Kijelölés törlése" : "Összes kijelölése"}
         </button>
@@ -136,7 +136,7 @@ export function RecipientPicker({
                 key={p.id}
                 type="button"
                 onClick={() => toggle(p.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors cursor-pointer ${selected ? "bg-[#84AAA6]/10" : "hover:bg-gray-50"}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors cursor-pointer ${selected ? "bg-[#E8336A]/10" : "hover:bg-gray-50"}`}
               >
                 <div className="relative shrink-0">
                   <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
@@ -152,10 +152,10 @@ export function RecipientPicker({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-xs font-semibold truncate ${selected ? "text-[#5C8480]" : "text-gray-900"}`}>{p.full_name}</p>
+                  <p className={`text-xs font-semibold truncate ${selected ? "text-[#B3264F]" : "text-gray-900"}`}>{p.full_name}</p>
                   <StarRating rating={p.average_rating} />
                 </div>
-                <span className={`flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors ${selected ? "bg-[#84AAA6] border-[#84AAA6]" : "border-gray-300 bg-white"}`}>
+                <span className={`flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors ${selected ? "bg-[#E8336A] border-[#E8336A]" : "border-gray-300 bg-white"}`}>
                   {selected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
                 </span>
               </button>

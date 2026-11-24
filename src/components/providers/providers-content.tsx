@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ProviderCard } from "./provider-card";
+import { ProviderTile } from "./provider-tile";
 import { MeghivoPromoCard } from "./meghivo-promo-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -42,7 +43,7 @@ function FilterSelect({
           fullWidthMobile && "w-full justify-between",
         )}
       >
-        <span className={cn("truncate", selected ? "text-[#84AAA6]" : "")}>{selected?.label ?? placeholder}</span>
+        <span className={cn("truncate", selected ? "text-[#E8336A]" : "")}>{selected?.label ?? placeholder}</span>
         <ChevronDown className={cn("h-4 w-4 text-gray-400 shrink-0 transition-transform", open && "rotate-180")} />
       </button>
       {open && (
@@ -52,7 +53,7 @@ function FilterSelect({
         )}>
           <button
             onClick={() => { onChange(""); setOpen(false); }}
-            className={cn("w-full text-left px-4 py-2.5 text-base transition-colors", !value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
+            className={cn("w-full text-left px-4 py-2.5 text-base transition-colors", !value ? "text-[#E8336A] bg-[#E8336A]/10 font-medium" : "text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]")}
           >
             {placeholder}
           </button>
@@ -60,7 +61,7 @@ function FilterSelect({
             <button
               key={opt.value}
               onClick={() => { onChange(opt.value); setOpen(false); }}
-              className={cn("w-full text-left px-4 py-2.5 text-base transition-colors", value === opt.value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
+              className={cn("w-full text-left px-4 py-2.5 text-base transition-colors", value === opt.value ? "text-[#E8336A] bg-[#E8336A]/10 font-medium" : "text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]")}
             >
               {opt.label}
             </button>
@@ -98,7 +99,7 @@ function SortDropdown({ sortBy, setSortBy, fill = false }: { sortBy: SortOption;
             <button
               key={opt.value}
               onClick={() => { setSortBy(opt.value); setOpen(false); }}
-              className={`w-full text-left px-4 py-2.5 text-base transition-colors ${sortBy === opt.value ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
+              className={`w-full text-left px-4 py-2.5 text-base transition-colors ${sortBy === opt.value ? "text-[#E8336A] bg-[#E8336A]/10 font-medium" : "text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]"}`}
             >
               {opt.label}
             </button>
@@ -129,7 +130,7 @@ function PageSizeSelect({ pageSize, setPageSize }: { pageSize: number; setPageSi
             <button
               key={n}
               onClick={() => { setPageSize(n); setOpen(false); }}
-              className={`w-full text-left px-4 py-2.5 text-base transition-colors ${pageSize === n ? "text-[#84AAA6] bg-[#84AAA6]/10 font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]"}`}
+              className={`w-full text-left px-4 py-2.5 text-base transition-colors ${pageSize === n ? "text-[#E8336A] bg-[#E8336A]/10 font-medium" : "text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]"}`}
             >
               {n} / oldal
             </button>
@@ -144,10 +145,10 @@ function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setV
   // items-stretch on the parent makes these buttons match the sort button's height.
   return (
     <div className="flex items-stretch rounded-xl border border-gray-200 overflow-hidden">
-      <button onClick={() => setViewMode("grid")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "grid" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Csempés nézet">
+      <button onClick={() => setViewMode("grid")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "grid" ? "bg-[#E8336A] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Csempés nézet">
         <LayoutGrid className="h-4 w-4" />
       </button>
-      <button onClick={() => setViewMode("list")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "list" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Listás nézet">
+      <button onClick={() => setViewMode("list")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "list" ? "bg-[#E8336A] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Listás nézet">
         <List className="h-4 w-4" />
       </button>
     </div>
@@ -384,7 +385,7 @@ export function ProvidersContent({
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("eskuvo:count", { detail: resultCount }));
   }, [resultCount]);
-  const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-5";
+  const gridCls = viewMode === "list" ? "flex flex-col gap-3" : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5";
 
   // Pagination counts featured + normal together; featured stay at the front.
   const combined = [...featured, ...sortedNormal];
@@ -421,7 +422,7 @@ export function ProvidersContent({
           <button
             key={n}
             onClick={() => goToPage(n)}
-            className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#84AAA6] border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
+            className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#E8336A] border-[#E8336A] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
           >
             {n}
           </button>
@@ -441,7 +442,7 @@ export function ProvidersContent({
   const pillCls = (active: boolean) =>
     cn(
       "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
-      active ? "bg-[#84AAA6] text-white border-[#84AAA6]" : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]",
+      active ? "bg-[#E8336A] text-white border-[#E8336A]" : "bg-white text-gray-700 border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A]",
     );
 
   return (
@@ -462,13 +463,13 @@ export function ProvidersContent({
               value={countyQuery}
               onChange={(e) => setCountyQuery(e.target.value)}
               placeholder="Megye keresése..."
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#84AAA6] focus:border-transparent"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-base text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#E8336A] focus:border-transparent"
             />
           </div>
           <div className="space-y-0.5">
             <button
               onClick={() => setCounty("")}
-              className={cn("w-full flex items-center justify-between text-left px-3 py-1.5 rounded-lg text-base transition-colors", !county ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
+              className={cn("w-full flex items-center justify-between text-left px-3 py-1.5 rounded-lg text-base transition-colors", !county ? "bg-[#E8336A] text-white font-medium" : "text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]")}
             >
               Összes megye
             </button>
@@ -476,7 +477,7 @@ export function ProvidersContent({
               <button
                 key={c}
                 onClick={() => setCounty(county === c ? "" : c)}
-                className={cn("w-full flex items-center justify-between text-left px-3 py-1.5 rounded-lg text-base transition-colors", county === c ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]")}
+                className={cn("w-full flex items-center justify-between text-left px-3 py-1.5 rounded-lg text-base transition-colors", county === c ? "bg-[#E8336A] text-white font-medium" : "text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]")}
               >
                 <span className="truncate">{c}</span>
                 <span className={cn("text-sm shrink-0 ml-2", county === c ? "text-white/80" : "text-gray-400")}>({countyCounts[c] ?? 0})</span>
@@ -546,7 +547,7 @@ export function ProvidersContent({
 
         {resultCount === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <SearchX className="h-12 w-12 text-[#84AAA6] mb-4" strokeWidth={1.5} />
+            <SearchX className="h-12 w-12 text-[#E8336A] mb-4" strokeWidth={1.5} />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nincs találat</h3>
             <p className="text-gray-900 text-lg">
               {query ? <>A(z) „{query}” keresésre nincs szolgáltató a kiválasztott szűrőkkel.</> : "A kiválasztott szűrőkre egyelőre nincs szolgáltató."}
@@ -563,7 +564,11 @@ export function ProvidersContent({
             <div className={gridCls}>
               {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
               {pageItems.map((p) => (
-                <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
+                viewMode === "list" ? (
+                  <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView backTo={listUrl} />
+                ) : (
+                  <ProviderTile key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} backTo={listUrl} />
+                )
               ))}
             </div>
 

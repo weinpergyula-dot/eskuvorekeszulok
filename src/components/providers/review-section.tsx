@@ -167,7 +167,7 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
   return (
     <section className="mt-8">
       <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-        <Star className="h-5 w-5 text-[#84AAA6]" />
+        <Star className="h-5 w-5 text-[#E8336A]" />
         Értékelések
         {reviews.length > 0 && (
           <span className="text-base font-normal text-gray-500">({reviews.length})</span>
@@ -184,7 +184,7 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
         </div>
       ) : !loggedIn ? (
         <p className="text-base text-gray-700 mb-6">
-          <Link href="/auth/login" className="text-[#84AAA6] hover:underline font-medium">
+          <Link href="/auth/login" className="text-[#E8336A] hover:underline font-medium">
             Jelentkezz be
           </Link>{" "}
           az értékelés leadásához.
@@ -204,7 +204,7 @@ export function ReviewSection({ providerId, providerUserId }: { providerId: stri
           {[...(myReview ? [myReview] : []), ...otherReviews].map((review) => (
             <div
               key={review.id}
-              className={`border rounded-xl p-4 ${review.visitor_id === userId ? "border-[#84AAA6]/40 bg-[#84AAA6]/5" : "border-gray-200 bg-white"}`}
+              className={`border rounded-xl p-4 ${review.visitor_id === userId ? "border-[#E8336A]/40 bg-[#E8336A]/5" : "border-gray-200 bg-white"}`}
             >
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div>

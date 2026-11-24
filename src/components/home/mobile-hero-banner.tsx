@@ -76,7 +76,7 @@ const SLIDES: MobileSlide[] = [
     blurb: "Böngészd az elérhető szolgáltatókat, vagy ha szolgáltató vagy, regisztrálj!",
     cta: "Megnézem",
     color: "#A9CFCB",
-    colorHover: "#84AAA6",
+    colorHover: "#E8336A",
     overlay: "bottom-dark",
   },
   {
@@ -113,7 +113,7 @@ const SLIDES: MobileSlide[] = [
     cta: "Fotósok",
     category: "fotosok-videosok",
     color: "#A9CFCB",
-    colorHover: "#84AAA6",
+    colorHover: "#E8336A",
     overlay: "viewfinder",
   },
   {
@@ -130,7 +130,7 @@ const SLIDES: MobileSlide[] = [
     blurb: "Menyasszonyi frizura próbával – találd meg a fodrászodat a közeledben.",
     cta: "Fodrászok",
     category: "fodrasz-borbely",
-    color: "#6B8E8A",
+    color: "#CC2257",
     colorHover: "#557672",
     overlay: "corner-top-light",
   },
@@ -176,7 +176,7 @@ const SLIDES: MobileSlide[] = [
     cta: "Sminkesek",
     category: "smink",
     color: "#A9CFCB",
-    colorHover: "#84AAA6",
+    colorHover: "#E8336A",
     overlay: "bottom-dark",
   },
   {

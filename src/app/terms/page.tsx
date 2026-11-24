@@ -12,7 +12,7 @@ export default function TermsPage() {
       <LegalSection title="1. Bevezető rendelkezések">
         <LegalSubSection title="1.1 A jelen ÁSZF tárgya">
           <LegalP>A jelen Általános Szerződési Feltételek (a továbbiakban: „ÁSZF&rdquo;) a{" "}
-            <a href="https://eskuvorekeszulok.hu" className="text-[#84AAA6] underline">https://eskuvorekeszulok.hu</a>{" "}
+            <a href="https://eskuvorekeszulok.hu" className="text-[#E8336A] underline">https://eskuvorekeszulok.hu</a>{" "}
             weboldalon elérhető szolgáltatás igénybevételének feltételeit szabályozza.
           </LegalP>
         </LegalSubSection>
@@ -38,7 +38,7 @@ export default function TermsPage() {
 
         <LegalSubSection title="1.4 Az ÁSZF elfogadása">
           <LegalP>A Weboldalon történő regisztrációval a Felhasználó kifejezetten kijelenti, hogy a jelen ÁSZF tartalmát megismerte, megértette és magára nézve kötelezőnek elfogadja, valamint elfogadja az{" "}
-            <Link href="/privacy" className="text-[#84AAA6] underline">Adatvédelmi tájékoztatót</Link> is.
+            <Link href="/privacy" className="text-[#E8336A] underline">Adatvédelmi tájékoztatót</Link> is.
           </LegalP>
         </LegalSubSection>
       </LegalSection>
@@ -118,7 +118,7 @@ export default function TermsPage() {
         </LegalSubSection>
 
         <LegalSubSection title="5.4 Notice-and-takedown eljárás">
-          <LegalP>Amennyiben bárki bejelenti az <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] underline">info@eskuvorekeszulok.hu</a> címen, hogy egy feltöltött kép sérti a jogait, az Üzemeltető 5 munkanapon belül felülvizsgálja, és indokolt esetben leveszi a kifogásolt tartalmat.</LegalP>
+          <LegalP>Amennyiben bárki bejelenti az <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#E8336A] underline">info@eskuvorekeszulok.hu</a> címen, hogy egy feltöltött kép sérti a jogait, az Üzemeltető 5 munkanapon belül felülvizsgálja, és indokolt esetben leveszi a kifogásolt tartalmat.</LegalP>
         </LegalSubSection>
 
         <LegalSubSection title="5.5 Hirdetés jóváhagyása">
@@ -149,7 +149,7 @@ export default function TermsPage() {
       </LegalSection>
 
       <LegalSection title="10. Felmondás, fiók megszüntetése">
-        <LegalP>A Felhasználó bármikor megszüntetheti a fiókját a profil beállításaiban vagy az <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] underline">info@eskuvorekeszulok.hu</a> emailen. A fiók törlését követő 30 napon belül minden személyes adatot véglegesen törlünk.</LegalP>
+        <LegalP>A Felhasználó bármikor megszüntetheti a fiókját a profil beállításaiban vagy az <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#E8336A] underline">info@eskuvorekeszulok.hu</a> emailen. A fiók törlését követő 30 napon belül minden személyes adatot véglegesen törlünk.</LegalP>
         <LegalP>Az Üzemeltető a fiókot azonnali hatállyal felfüggesztheti, amennyiben a Felhasználó az ÁSZF-et megsérti, jogszabálysértő magatartást tanúsít, vagy más Felhasználók biztonságát veszélyezteti.</LegalP>
       </LegalSection>
 
@@ -158,12 +158,12 @@ export default function TermsPage() {
       </LegalSection>
 
       <LegalSection title="12. Vitarendezés">
-        <LegalP>Vitás esetekben elsősorban a békés megegyezésre törekszünk. Kérjük, írj az <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] underline">info@eskuvorekeszulok.hu</a> címre. Adatvédelmi panasz esetén a NAIH-hoz fordulhatsz. Egyéb vitás kérdésekben a magyar bíróságok joghatósága az irányadó. A jelen ÁSZF-re a <strong>magyar jog</strong> vonatkozik.</LegalP>
+        <LegalP>Vitás esetekben elsősorban a békés megegyezésre törekszünk. Kérjük, írj az <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#E8336A] underline">info@eskuvorekeszulok.hu</a> címre. Adatvédelmi panasz esetén a NAIH-hoz fordulhatsz. Egyéb vitás kérdésekben a magyar bíróságok joghatósága az irányadó. A jelen ÁSZF-re a <strong>magyar jog</strong> vonatkozik.</LegalP>
       </LegalSection>
 
       <LegalSection title="13. Az ÁSZF módosítása">
         <LegalP>Az Üzemeltető fenntartja a jogot, hogy a jelen ÁSZF-et egyoldalúan módosítsa. A módosításról legalább <strong>15 nappal</strong> a hatálybalépés előtt tájékoztatja a Felhasználókat.</LegalP>
-        <LegalP>Az ÁSZF és az <Link href="/privacy" className="text-[#84AAA6] underline">Adatvédelmi tájékoztató</Link> együttesen szabályozza a Weboldal használatát.</LegalP>
+        <LegalP>Az ÁSZF és az <Link href="/privacy" className="text-[#E8336A] underline">Adatvédelmi tájékoztató</Link> együttesen szabályozza a Weboldal használatát.</LegalP>
       </LegalSection>
 
     </LegalPageLayout>

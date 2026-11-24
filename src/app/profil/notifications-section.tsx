@@ -32,7 +32,7 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none mt-0.5 ${
-          checked ? "bg-[#84AAA6]" : "bg-gray-200"
+          checked ? "bg-[#E8336A]" : "bg-gray-200"
         }`}
       >
         <span
@@ -175,7 +175,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
         <Button
           onClick={handleSave}
           disabled={!isDirty || saving}
-          className="bg-[#84AAA6] hover:bg-[#6B8E8A] min-w-[160px]"
+          className="bg-[#E8336A] hover:bg-[#CC2257] min-w-[160px]"
         >
           {saving ? (
             <span className="flex items-center gap-2">
@@ -188,7 +188,7 @@ export function NotificationsSection({ role }: { role: UserRole }) {
           ) : "Beállítások mentése"}
         </Button>
         {saved && (
-          <span className="text-sm text-[#84AAA6] font-medium">✓ Beállítások mentve.</span>
+          <span className="text-sm text-[#E8336A] font-medium">✓ Beállítások mentve.</span>
         )}
         {saveError && (
           <span className="text-sm text-[#F06C6C]">{saveError}</span>

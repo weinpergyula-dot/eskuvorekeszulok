@@ -247,8 +247,8 @@ function SendForm({ onSent, onCancel, userId, prefill }: { onSent: () => void; o
                 onClick={() => setCategory(isSelected ? "" : key)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
                   isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
-                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                    ? "bg-[#E8336A] text-white border-[#E8336A]"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A]"
                 }`}
               >
                 {label}
@@ -274,8 +274,8 @@ function SendForm({ onSent, onCancel, userId, prefill }: { onSent: () => void; o
                 onClick={() => toggleCounty(county)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
                   isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
-                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+                    ? "bg-[#E8336A] text-white border-[#E8336A]"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A]"
                 }`}
               >
                 {county}{count != null && <span className="ml-1 opacity-70 font-normal">({count})</span>}
@@ -306,7 +306,7 @@ function SendForm({ onSent, onCancel, userId, prefill }: { onSent: () => void; o
           <button
             type="button"
             onClick={() => imageInputRef.current?.click()}
-            className="flex items-center gap-2 rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-600 hover:border-[#84AAA6] hover:text-[#84AAA6] transition-colors cursor-pointer"
+            className="flex items-center gap-2 rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-600 hover:border-[#E8336A] hover:text-[#E8336A] transition-colors cursor-pointer"
           >
             <ImagePlus className="h-4 w-4" strokeWidth={1.75} />
             Kép kiválasztása
@@ -549,7 +549,7 @@ export function QuoteChat({
   return (
     <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white h-[100dvh] sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
       {/* Mobil: teal page header */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
+      <div className="flex items-center gap-3 px-4 py-3 bg-[#E8336A] text-white shrink-0 sm:hidden">
         <button onClick={onBack} className="text-white cursor-pointer shrink-0">
           <ArrowLeft className="h-5 w-5" />
         </button>
@@ -696,7 +696,7 @@ export function QuoteChat({
                   <span className={`text-[10px] text-gray-400 px-1 ${!isOwn ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
                 )}
                 {msg.id === lastReadOwnId && msg.read_at && (
-                  <span className={`text-[10px] text-[#84AAA6] px-1 ${!isOwn ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
+                  <span className={`text-[10px] text-[#E8336A] px-1 ${!isOwn ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
                 )}
               </div>
             </div>
@@ -815,8 +815,8 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
   if (sent) {
     return (
       <div className="space-y-4">
-        <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-5 py-4">
-          <p className="text-base font-medium text-[#84AAA6]">Az ajánlatkérésed elküldve.</p>
+        <div className="bg-[#E8336A]/10 border border-[#E8336A]/30 rounded-xl px-5 py-4">
+          <p className="text-base font-medium text-[#E8336A]">Az ajánlatkérésed elküldve.</p>
           <p className="text-sm text-gray-600 mt-1">A válaszokat a Chat menüpontban találod.</p>
         </div>
         <Button variant="outline" onClick={() => setSent(false)}>+ Újabb ajánlatkérés</Button>
@@ -827,8 +827,8 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
   const tabCls = (on: boolean) =>
     `flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors cursor-pointer ${
       on
-        ? "border-[#84AAA6] bg-[#84AAA6] text-white"
-        : "border-gray-300 bg-white text-gray-700 hover:border-[#84AAA6] hover:text-[#84AAA6]"
+        ? "border-[#E8336A] bg-[#E8336A] text-white"
+        : "border-gray-300 bg-white text-gray-700 hover:border-[#E8336A] hover:text-[#E8336A]"
     }`;
 
   return (

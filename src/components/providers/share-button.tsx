@@ -27,10 +27,10 @@ export function ShareButton({ title, iconOnly = false }: { title: string; iconOn
     <button
       onClick={handleShare}
       aria-label="Megosztás"
-      className={`flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#84AAA6]/10 transition-colors cursor-pointer ${iconOnly ? "p-1.5" : "px-3 py-1.5"}`}
+      className={`flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#E8336A]/10 transition-colors cursor-pointer ${iconOnly ? "p-1.5" : "px-3 py-1.5"}`}
     >
       {copied ? (
-        <Check className="h-4 w-4 text-[#84AAA6]" />
+        <Check className="h-4 w-4 text-[#E8336A]" />
       ) : (
         <Share2 className="h-4 w-4 text-gray-400" />
       )}

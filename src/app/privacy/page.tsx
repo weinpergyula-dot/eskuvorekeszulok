@@ -12,7 +12,7 @@ export default function PrivacyPage() {
       <LegalSection title="1. Bevezetés">
         <LegalP>
           Üdvözlünk az <strong>Esküvőre Készülök</strong> weboldalon (a továbbiakban: „Weboldal&rdquo;, „Szolgáltatás&rdquo;), amely a{" "}
-          <a href="https://eskuvorekeszulok.hu" className="text-[#84AAA6] underline">https://eskuvorekeszulok.hu</a> címen érhető el.
+          <a href="https://eskuvorekeszulok.hu" className="text-[#E8336A] underline">https://eskuvorekeszulok.hu</a> címen érhető el.
         </LegalP>
         <LegalP>
           Az adatvédelem és személyes adataid biztonsága fontos számunkra. Ez a tájékoztató részletesen ismerteti, hogyan kezeljük a Weboldal használata során a tudomásunkra jutó személyes adatokat, az Európai Unió Általános Adatvédelmi Rendelete (GDPR – 2016/679/EU rendelet) és a magyar Infotörvény (2011. évi CXII. törvény) rendelkezéseinek megfelelően.
@@ -84,7 +84,7 @@ export default function PrivacyPage() {
         </LegalSubSection>
 
         <LegalSubSection title="3.4 Email kommunikáció">
-          <LegalP>A regisztrációhoz, jelszó visszaállításhoz, email cím megerősítéshez és értesítésekhez emaileket küldünk a felhasználói email címre. Ehhez a <a href="https://resend.com" className="text-[#84AAA6] underline">Resend</a> szolgáltatást használjuk.</LegalP>
+          <LegalP>A regisztrációhoz, jelszó visszaállításhoz, email cím megerősítéshez és értesítésekhez emaileket küldünk a felhasználói email címre. Ehhez a <a href="https://resend.com" className="text-[#E8336A] underline">Resend</a> szolgáltatást használjuk.</LegalP>
           <LegalP><strong>Jogalap:</strong> szerződés teljesítése.</LegalP>
         </LegalSubSection>
 
@@ -99,7 +99,7 @@ export default function PrivacyPage() {
           </LegalUl>
           <LegalP>A főoldal látogatottságának méréséhez az IP-címet <strong>nem tároljuk</strong>: abból csak egy visszafejthetetlen lenyomat (hash) készül, amelyből naponta egyetlen bejegyzés keletkezik. Ez az egyedi látogatók megszámolására szolgál. A bejegyzés mellett rögzítjük az eszköz típusát (asztali gép, iOS vagy Android), és ha a látogató be van jelentkezve, a felhasználói fiókját is.</LegalP>
           <LegalP>A Weboldal jelenleg <strong>csak a működéshez feltétlenül szükséges (essential) cookie-kat</strong> használja. A részleteket a{" "}
-            <Link href="/cookies" className="text-[#84AAA6] underline">Cookie szabályzat</Link> tartalmazza.
+            <Link href="/cookies" className="text-[#E8336A] underline">Cookie szabályzat</Link> tartalmazza.
           </LegalP>
           <LegalP><strong>Jogalap:</strong> GDPR 6. cikk (1) f) pont – jogos érdek. <strong>Megőrzési idő:</strong> legfeljebb 12 hónap.</LegalP>
         </LegalSubSection>
@@ -144,7 +144,7 @@ export default function PrivacyPage() {
         </LegalUl>
         <LegalP><strong>Saját kezűleg a Weboldalon:</strong> a profil beállításaidban a „Fiók törlése&rdquo; gombbal teljes adattörlést kezdeményezhetsz.</LegalP>
         <LegalP><strong>Email útján:</strong> küldd el a kérésedet az{" "}
-          <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] underline">info@eskuvorekeszulok.hu</a> címre.
+          <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#E8336A] underline">info@eskuvorekeszulok.hu</a> címre.
           A GDPR előírásainak megfelelően 30 napon belül válaszolunk.
         </LegalP>
       </LegalSection>
@@ -155,14 +155,14 @@ export default function PrivacyPage() {
           <li>Cím: 1055 Budapest, Falk Miksa utca 9-11.</li>
           <li>Telefon: +36 (1) 391-1400</li>
           <li>Email: ugyfelszolgalat@naih.hu</li>
-          <li>Weboldal: <a href="https://www.naih.hu" className="text-[#84AAA6] underline">naih.hu</a></li>
+          <li>Weboldal: <a href="https://www.naih.hu" className="text-[#E8336A] underline">naih.hu</a></li>
         </LegalUl>
       </LegalSection>
 
       <LegalSection title="9. A tájékoztató módosítása">
         <LegalP>Fenntartjuk a jogot, hogy a jelen tájékoztatót egyoldalúan módosítsuk jogszabályváltozás, új funkciók bevezetése vagy új adatfeldolgozók igénybevétele esetén. A módosításról a Weboldalon és/vagy email értesítésben tájékoztatjuk a Felhasználókat.</LegalP>
         <LegalP>Ha bármilyen kérdésed van, írj az{" "}
-          <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] underline">info@eskuvorekeszulok.hu</a> címre.
+          <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#E8336A] underline">info@eskuvorekeszulok.hu</a> címre.
         </LegalP>
       </LegalSection>
 

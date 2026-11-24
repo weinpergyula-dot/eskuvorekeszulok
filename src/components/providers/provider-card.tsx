@@ -219,7 +219,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
           {!hideCategories && (provider.categories ?? []).length > 0 && (
             <div className="flex flex-wrap items-center gap-1 mt-1">
               {(provider.categories ?? []).slice(0, 2).map((cat) => (
-                <span key={cat} className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-full border", tc.badgeClass || "border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10")}>
+                <span key={cat} className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-full border", tc.badgeClass || "border-[#E8336A]/40 text-[#B3264F] bg-[#E8336A]/10")}>
                   {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
                 </span>
               ))}
@@ -301,7 +301,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
 
           {/* Name */}
           <h3
-            className="font-bold text-gray-900 text-center mb-2 line-clamp-2 leading-snug w-full group-hover:text-[#84AAA6] transition-colors text-[18px] sm:text-[20px]"
+            className="font-bold text-gray-900 text-center mb-2 line-clamp-2 leading-snug w-full group-hover:text-[#E8336A] transition-colors text-[18px] sm:text-[20px]"
             style={{ height: "calc(2 * 1.35 * 20px)", overflow: "hidden" }}
           >
             {provider.full_name}
@@ -415,7 +415,7 @@ export function ProviderCard({ provider, showStatus = false, initialLiked = fals
             {!hideCategories && (provider.categories ?? []).length > 0 && (
               <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                 {(provider.categories ?? []).slice(0, 2).map((cat) => (
-                  <span key={cat} className={cn("text-[11px] font-medium px-2 py-0.5 rounded-full border", tc.badgeClass || "border-[#84AAA6]/40 text-[#5C8480] bg-[#84AAA6]/10")}>
+                  <span key={cat} className={cn("text-[11px] font-medium px-2 py-0.5 rounded-full border", tc.badgeClass || "border-[#E8336A]/40 text-[#B3264F] bg-[#E8336A]/10")}>
                     {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
                   </span>
                 ))}
@@ -646,7 +646,7 @@ function ContactRow({
   icon,
   value,
   isLink = false,
-  linkColor = "text-[#84AAA6]",
+  linkColor = "text-[#E8336A]",
   fullyHidden = false,
   website = false,
 }: {

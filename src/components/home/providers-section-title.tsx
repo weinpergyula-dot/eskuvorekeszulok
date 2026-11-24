@@ -66,7 +66,7 @@ export function ProvidersSectionTitle() {
   const label = CATEGORY_LABELS[category as ServiceCategory];
   const iconBtn = (on: boolean) =>
     `relative grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-xl border transition-colors ${
-      on ? "border-[#84AAA6] bg-[#84AAA6]/10 text-[#5C8480]" : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+      on ? "border-[#E8336A] bg-[#E8336A]/10 text-[#B3264F]" : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
     }`;
 
   return (
@@ -119,7 +119,7 @@ export function ProvidersSectionTitle() {
             placeholder="Szolgáltató, kategória, megye…"
             aria-label="Keresés a szolgáltatók között"
             /* 16px, hogy iOS-en fókuszáláskor ne nagyítson rá az oldal */
-            className="w-full rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-10 text-base text-gray-900 placeholder:text-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#84AAA6] [&::-webkit-search-cancel-button]:hidden"
+            className="w-full rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-10 text-base text-gray-900 placeholder:text-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#E8336A] [&::-webkit-search-cancel-button]:hidden"
           />
           <button
             type="button"

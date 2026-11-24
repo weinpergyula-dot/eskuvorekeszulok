@@ -58,30 +58,30 @@ function RoleCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center gap-4 rounded-2xl border-2 border-[#84AAA6]/40 bg-[#F0F6F5] p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#84AAA6] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
+      className="group flex w-full items-center gap-4 rounded-2xl border-2 border-[#E8336A]/40 bg-[#FDEEF3] p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#E8336A] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
     >
-      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#84AAA6] shadow-sm sm:mb-4 sm:h-14 sm:w-14">
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#E8336A] shadow-sm sm:mb-4 sm:h-14 sm:w-14">
         <Icon className="h-6 w-6 text-white sm:h-7 sm:w-7" strokeWidth={1.75} />
       </span>
       <span className="min-w-0 flex-1 sm:flex sm:w-full sm:flex-col">
         <span className="flex flex-wrap items-center gap-2 sm:mb-1">
           <span className="text-lg font-bold text-gray-900 sm:text-2xl">{title}</span>
-          <span className="rounded-full border border-[#84AAA6]/40 bg-white px-2 py-0.5 text-xs font-medium text-[#5C8480]">{subtitle}</span>
+          <span className="rounded-full border border-[#E8336A]/40 bg-white px-2 py-0.5 text-xs font-medium text-[#B3264F]">{subtitle}</span>
         </span>
         <span className="mt-0.5 block text-sm text-gray-700 sm:hidden">{summary}</span>
         <span className="hidden sm:mb-5 sm:block">
           {benefits.map((b) => (
             <span key={b} className="mt-2 flex items-start gap-2 text-sm text-gray-700">
-              <span className="shrink-0 font-bold text-[#84AAA6]">✓</span> {b}
+              <span className="shrink-0 font-bold text-[#E8336A]">✓</span> {b}
             </span>
           ))}
         </span>
-        <span className="mt-auto hidden w-full items-center justify-center gap-1.5 rounded-full bg-[#84AAA6] px-4 py-2.5 text-base font-medium text-white transition-colors group-hover:bg-[#6B8E8A] sm:flex">
+        <span className="mt-auto hidden w-full items-center justify-center gap-1.5 rounded-full bg-[#E8336A] px-4 py-2.5 text-base font-medium text-white transition-colors group-hover:bg-[#CC2257] sm:flex">
           {cta}
           <ChevronRight className="h-4 w-4" strokeWidth={2.25} />
         </span>
       </span>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#84AAA6] transition-colors group-hover:bg-[#6B8E8A] sm:hidden">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E8336A] transition-colors group-hover:bg-[#CC2257] sm:hidden">
         <ChevronRight className="h-5 w-5 text-white" strokeWidth={2.25} />
       </span>
     </button>
@@ -140,12 +140,12 @@ function PillSelect<T extends string>({
               : label}
           </Label>
           {selected.length > 0 && (
-            <span className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</span>
+            <span className="text-sm text-[#E8336A]">{selected.length} kiválasztva</span>
           )}
         </div>
       )}
       {!label && selected.length > 0 && (
-        <p className="text-sm text-[#84AAA6] text-right">{selected.length} kiválasztva</p>
+        <p className="text-sm text-[#E8336A] text-right">{selected.length} kiválasztva</p>
       )}
       {hint && (
         <p className="text-base text-gray-800">
@@ -165,8 +165,8 @@ function PillSelect<T extends string>({
                 isDisabled
                   ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
                   : isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
-                    : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
+                    ? "bg-[#E8336A] text-white border-[#E8336A] cursor-pointer"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A] cursor-pointer"
               }`}
             >
               {opt.label}
@@ -735,7 +735,7 @@ function RegisterContent() {
   if (prefillRoleSelect) {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="Google fiókod össze van kötve. Válaszd ki, milyen fiókot szeretnél létrehozni." bgColor="#84AAA6" />
+        <PageHeader icon={UserRound} title="Regisztráció" description="Google fiókod össze van kötve. Válaszd ki, milyen fiókot szeretnél létrehozni." bgColor="#E8336A" />
         <div className="flex items-center justify-center px-4 py-6 sm:py-12">
           <div className="w-full max-w-2xl">
             <div className="flex items-center gap-3 px-4 py-3 bg-green-50 border border-green-200 rounded-xl mb-6">
@@ -776,7 +776,7 @@ function RegisterContent() {
   if (step === "role") {
     return (
       <div>
-        <PageHeader icon={UserRound} title="Regisztráció" description="Csatlakozz az Esküvőre Készülök közösséghez – látogatóként vagy szolgáltatóként, ingyenesen." bgColor="#84AAA6" />
+        <PageHeader icon={UserRound} title="Regisztráció" description="Csatlakozz az Esküvőre Készülök közösséghez – látogatóként vagy szolgáltatóként, ingyenesen." bgColor="#E8336A" />
         <div className="flex items-center justify-center px-4 py-6 sm:py-12">
         <div className="w-full max-w-2xl">
           <p className="mb-5 text-center text-lg text-gray-900 sm:mb-8 sm:text-[22px]">Melyik típusú fiókot szeretnéd létrehozni?</p>
@@ -804,7 +804,7 @@ function RegisterContent() {
 
           <p className="text-center text-lg text-gray-900 mt-4">
             Már van fiókod?{" "}
-            <Link href="/auth/login" className="text-[#84AAA6] hover:underline">
+            <Link href="/auth/login" className="text-[#E8336A] hover:underline">
               Jelentkezz be
             </Link>
           </p>
@@ -826,7 +826,7 @@ function RegisterContent() {
               ? "Értékeld a szolgáltatókat, ments kedvenceket, és küldj ajánlatkérést egyszerre több szakembernek – ingyenesen, egy helyen."
               : "Add meg a bejelentkezési adataidat. A következő lépésben töltheted ki a nyilvános profilodat."
           }
-          bgColor="#84AAA6"
+          bgColor="#E8336A"
           backHref="/auth/register"
         />
         <div className="flex items-center justify-center py-12 px-4">
@@ -838,7 +838,7 @@ function RegisterContent() {
             <div className="flex gap-2 mb-6">
               <div className="flex-1">
                 <p className="text-gray-900 text-lg mb-2 text-center">Alapadatok</p>
-                <div className="h-1 bg-[#84AAA6] rounded-full" />
+                <div className="h-1 bg-[#E8336A] rounded-full" />
               </div>
               <div className="flex-1">
                 <p className="text-gray-400 text-lg mb-2 text-center">Szolgáltatói adatok</p>
@@ -848,7 +848,7 @@ function RegisterContent() {
           ) : (
             <div className="mb-6">
               <p className="text-gray-900 text-lg mb-2 text-center">Alapadatok megadása</p>
-              <div className="h-1 bg-[#84AAA6] rounded-full" />
+              <div className="h-1 bg-[#E8336A] rounded-full" />
             </div>
           )}
 
@@ -898,7 +898,7 @@ function RegisterContent() {
             )}
 
             <FloatingInput
-              accentColor="#84AAA6"
+              accentColor="#E8336A"
               id="fullName"
               label="Teljes név *"
               value={fullName}
@@ -908,7 +908,7 @@ function RegisterContent() {
             {!prefillMode && (
               <div>
                 <FloatingInput
-                  accentColor="#84AAA6"
+                  accentColor="#E8336A"
                   id="email"
                   label="Email cím *"
                   type="email"
@@ -927,7 +927,7 @@ function RegisterContent() {
 
             {!prefillMode && (
               <FloatingInput
-                accentColor="#84AAA6"
+                accentColor="#E8336A"
                 id="password"
                 label="Jelszó *"
                 type="password"
@@ -939,7 +939,7 @@ function RegisterContent() {
             {!prefillMode && (
               <div>
                 <FloatingInput
-                  accentColor="#84AAA6"
+                  accentColor="#E8336A"
                   id="confirmPassword"
                   label="Jelszó megerősítése *"
                   type="password"
@@ -964,7 +964,7 @@ function RegisterContent() {
                 <p className="text-base text-gray-800">Profilkép (opcionális)</p>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-14 h-14 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50 shrink-0"
+                    className="w-14 h-14 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#E8336A] overflow-hidden bg-gray-50 shrink-0"
                     onClick={() => visitorAvatarInputRef.current?.click()}
                   >
                     {visitorAvatarPreview
@@ -974,7 +974,7 @@ function RegisterContent() {
                   </div>
                   <div className="flex flex-col gap-1.5 min-w-0">
                     <button type="button" onClick={() => visitorAvatarInputRef.current?.click()}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A] text-gray-600 text-sm font-medium transition-colors w-fit"
                     >
                       <ImagePlus className="h-4 w-4" />
                       {visitorAvatarFile ? "Csere" : "Kép feltöltése"}
@@ -999,15 +999,15 @@ function RegisterContent() {
                 type="checkbox"
                 checked={consentsAccepted}
                 onChange={(e) => setConsentsAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 accent-[#84AAA6] cursor-pointer shrink-0"
+                className="mt-1 h-4 w-4 rounded border-gray-300 accent-[#E8336A] cursor-pointer shrink-0"
               />
               <span className="text-base text-gray-700">
                 Elolvastam és elfogadom az{" "}
-                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline">
+                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#E8336A] underline">
                   Általános Szerződési Feltételeket
                 </a>{" "}
                 és az{" "}
-                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline">
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#E8336A] underline">
                   Adatvédelmi tájékoztatóban
                 </a>{" "}
                 foglaltakat.{" "}
@@ -1026,7 +1026,7 @@ function RegisterContent() {
               </div>
             )}
 
-            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading || !basicValid}>
+            <Button type="submit" className="w-full bg-[#E8336A] hover:bg-[#CC2257]" disabled={loading || !basicValid}>
               {loading
                 ? "Regisztráció..."
                 : role === "provider"
@@ -1040,7 +1040,7 @@ function RegisterContent() {
 
           <p className="text-center text-lg text-gray-900 mt-4">
             Már van fiókod?{" "}
-            <Link href="/auth/login" className="text-[#84AAA6] hover:underline">
+            <Link href="/auth/login" className="text-[#E8336A] hover:underline">
               Jelentkezz be
             </Link>
           </p>
@@ -1054,14 +1054,14 @@ function RegisterContent() {
   // Step 3 – Provider details
   return (
     <div>
-      <PageHeader icon={UserRound} title="Regisztráció - Szolgáltató" description="Töltsd ki a nyilvános profilodat – ez jelenik majd meg az oldalon az érdeklődő pároknak." bgColor="#84AAA6" />
+      <PageHeader icon={UserRound} title="Regisztráció - Szolgáltató" description="Töltsd ki a nyilvános profilodat – ez jelenik majd meg az oldalon az érdeklődő pároknak." bgColor="#E8336A" />
       {!isUpgrade && (
         <div className="w-full bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <button
               onClick={() => setStep("basic")}
               className="inline-flex items-center gap-1.5 text-[15px] font-medium transition-colors"
-              style={{ color: "#84AAA6" }}
+              style={{ color: "#E8336A" }}
             >
               <ArrowLeft className="h-4 w-4" />
               Vissza
@@ -1073,7 +1073,7 @@ function RegisterContent() {
       <div className="w-full max-w-5xl">
         <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
         {isUpgrade && (
-          <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-6">
+          <div className="bg-[#E8336A]/10 border border-[#E8336A]/30 rounded-xl px-4 py-3 mb-6">
             <p className="text-base text-gray-900">
               Bejelentkezve mint <strong>{email}</strong>. Add meg a szolgáltatói adataidat, és jóváhagyás után megjelensz a kínálatban.
             </p>
@@ -1084,11 +1084,11 @@ function RegisterContent() {
         <div className="flex gap-2 mb-8">
           <div className="flex-1">
             <p className="text-gray-400 text-lg mb-2 text-center">Alapadatok</p>
-            <div className="h-1 bg-[#84AAA6] rounded-full" />
+            <div className="h-1 bg-[#E8336A] rounded-full" />
           </div>
           <div className="flex-1">
             <p className="text-gray-900 text-lg mb-2 text-center">Szolgáltatói adatok</p>
-            <div className="h-1 bg-[#84AAA6] rounded-full" />
+            <div className="h-1 bg-[#E8336A] rounded-full" />
           </div>
         </div>
 
@@ -1101,7 +1101,7 @@ function RegisterContent() {
                 <p className="text-base text-gray-800">Tölts fel egy profilképet, hogy a látogatók felismerhessenek.</p>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50 shrink-0"
+                    className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#E8336A] overflow-hidden bg-gray-50 shrink-0"
                     onClick={() => avatarInputRef.current?.click()}
                   >
                     {avatarPreview ? (
@@ -1115,7 +1115,7 @@ function RegisterContent() {
                     <button
                       type="button"
                       onClick={() => avatarInputRef.current?.click()}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A] text-gray-600 text-sm font-medium transition-colors w-fit"
                     >
                       <ImagePlus className="h-4 w-4" />
                       {avatarFile ? "Csere" : "Kép feltöltése"}
@@ -1157,7 +1157,7 @@ function RegisterContent() {
                       value="own"
                       checked={displayNameChoice === "own"}
                       onChange={() => setDisplayNameChoice("own")}
-                      className="h-4 w-4 accent-[#84AAA6]"
+                      className="h-4 w-4 accent-[#E8336A]"
                     />
                     <span className="text-base text-gray-700">
                       Saját nevem{fullName ? <span className="ml-1 text-gray-500">({fullName})</span> : null}
@@ -1170,14 +1170,14 @@ function RegisterContent() {
                       value="business"
                       checked={displayNameChoice === "business"}
                       onChange={() => setDisplayNameChoice("business")}
-                      className="h-4 w-4 accent-[#84AAA6]"
+                      className="h-4 w-4 accent-[#E8336A]"
                     />
                     <span className="text-base text-gray-700">Vállalkozásom neve</span>
                   </label>
                 </div>
                 {displayNameChoice === "business" && (
                   <FloatingInput
-                    accentColor="#84AAA6"
+                    accentColor="#E8336A"
                     id="businessName"
                     label="Vállalkozás neve *"
                     value={businessName}
@@ -1191,7 +1191,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Megjelenik a profilkártyádon – max. 200 karakter.</p>
                 <FloatingTextarea
-                  accentColor="#84AAA6"
+                  accentColor="#E8336A"
                   id="description"
                   label="Rövid bemutatkozás"
                   value={description}
@@ -1205,7 +1205,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Bővebb leírás, csak a profiloldalon látható.</p>
                 <FloatingTextarea
-                  accentColor="#84AAA6"
+                  accentColor="#E8336A"
                   id="detailed-description"
                   label="Részletes bemutatkozás"
                   value={detailedDescription}
@@ -1224,7 +1224,7 @@ function RegisterContent() {
               <div className="space-y-2">
                 <p className="text-base text-gray-800">Ha van saját weboldalad a szolgáltatásodról, add meg itt.</p>
                 <FloatingInput
-                  accentColor="#84AAA6"
+                  accentColor="#E8336A"
                   id="website"
                   label="Weboldal (opcionális)"
                   type="url"
@@ -1274,7 +1274,7 @@ function RegisterContent() {
                     type="button"
                     onClick={() => galleryInputRef.current?.click()}
                     disabled={galleryFiles.length >= 10}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ImagePlus className="h-4 w-4" />
                     Képek hozzáadása
@@ -1317,7 +1317,7 @@ function RegisterContent() {
                   <p className="text-sm text-gray-500 mt-0.5">Tájékoztasd a leendő párokat a várható költségekről.</p>
                 </div>
                 <FloatingTextarea
-                  accentColor="#84AAA6"
+                  accentColor="#E8336A"
                   id="reg-pricing-text"
                   label="Szöveges árinformáció (opcionális)"
                   value={pricingText}
@@ -1330,13 +1330,13 @@ function RegisterContent() {
                     <button
                       type="button"
                       onClick={() => pricingPdfInputRef.current?.click()}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A] text-gray-600 text-sm font-medium transition-colors"
                     >
                       <FileText className="h-4 w-4" />
                       {pricingPdfFile ? "PDF módosítása" : "PDF feltöltése"}
                     </button>
                     {pricingPdfFile && (
-                      <span className="text-sm text-[#84AAA6] flex items-center gap-1">
+                      <span className="text-sm text-[#E8336A] flex items-center gap-1">
                         <FileText className="h-3.5 w-3.5" />
                         {pricingPdfFile.name}
                         <button type="button" onClick={() => setPricingPdfFile(null)} className="text-gray-400 hover:text-red-500 ml-1">
@@ -1368,7 +1368,7 @@ function RegisterContent() {
                 {error}
               </div>
             )}
-            <Button type="submit" className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]" disabled={loading || !providerValid}>
+            <Button type="submit" className="w-full bg-[#E8336A] hover:bg-[#CC2257]" disabled={loading || !providerValid}>
               {loading ? "Regisztráció folyamatban..." : "Regisztráció elküldése"}
             </Button>
             <p className="text-sm text-gray-500 text-center">

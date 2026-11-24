@@ -55,11 +55,11 @@ export function MeghivoQuoteCta({
           message="Az írásbeli ajánlatkérés csak regisztrált felhasználók számára érhető el."
           onClose={() => setOpen(false)}
           footer={
-            <div className="mt-5 flex items-start gap-3 rounded-xl border border-[#84AAA6]/40 bg-[#F0F6F5] px-4 py-3 text-left">
-              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#84AAA6]" strokeWidth={1.75} />
+            <div className="mt-5 flex items-start gap-3 rounded-xl border border-[#E8336A]/40 bg-[#FDEEF3] px-4 py-3 text-left">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#E8336A]" strokeWidth={1.75} />
               <p className="text-sm leading-relaxed text-gray-700">
                 Ha gyorsabb ajánlatkérést szeretnél, azt regisztráció nélkül, a{" "}
-                <a href={PHONE_HREF} className="font-bold text-[#84AAA6] hover:underline">
+                <a href={PHONE_HREF} className="font-bold text-[#E8336A] hover:underline">
                   {PHONE_DISPLAY}
                 </a>{" "}
                 telefonszámon teheted meg.

@@ -15,7 +15,7 @@ export function HeroProvidersButton({ className }: { className?: string }) {
     <Button
       onClick={scrollToProviders}
       size="lg"
-      className={className ?? "text-[15px] sm:text-[18px] px-5 bg-transparent text-[#84AAA6] border border-[#84AAA6] hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] cursor-pointer"}
+      className={className ?? "text-[15px] sm:text-[18px] px-5 bg-transparent text-[#E8336A] border border-[#E8336A] hover:bg-[#E8336A]/10 hover:text-[#E8336A] cursor-pointer"}
     >
       Mutasd az elérhető szolgáltatókat
     </Button>

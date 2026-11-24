@@ -84,8 +84,8 @@ export function ChatComposer({
             aria-label={sending ? "Küldés folyamatban" : "Küldés"}
             className={`grid h-9 w-9 place-items-center rounded-full text-white transition-colors ${
               canSend
-                ? "cursor-pointer bg-[#84AAA6] hover:bg-[#6B8E8A]"
-                : "cursor-default bg-[#84AAA6]/40"
+                ? "cursor-pointer bg-[#E8336A] hover:bg-[#CC2257]"
+                : "cursor-default bg-[#E8336A]/40"
             }`}
           >
             <ArrowUp className="h-[18px] w-[18px]" strokeWidth={2.25} />

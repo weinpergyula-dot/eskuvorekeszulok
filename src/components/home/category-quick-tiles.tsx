@@ -87,14 +87,14 @@ function Tile({
            csempe világos teal; hoverre világosodik és a kerete erősödik. */
         "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 text-center transition-all duration-200 cursor-pointer sm:p-3.5",
         active
-          ? "border-white bg-white text-[#2D5854] shadow-lg"
+          ? "border-white bg-white text-[#9C1846] shadow-lg"
           : "border-white/25 bg-white/10 text-white hover:border-white/80 hover:bg-white/20"
       )}
     >
       <Icon className="h-6 w-6" strokeWidth={1.75} />
       <span className="text-[15px] font-bold leading-tight sm:text-base">{label}</span>
       {typeof count === "number" && (
-        <span className={cn("text-xs leading-none", active ? "text-[#2D5854]/60" : "text-white/70")}>
+        <span className={cn("text-xs leading-none", active ? "text-[#9C1846]/60" : "text-white/70")}>
           {count} szolgáltató
         </span>
       )}

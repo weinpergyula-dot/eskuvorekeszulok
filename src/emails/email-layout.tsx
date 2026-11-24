@@ -117,7 +117,7 @@ const s = {
     borderBottom: "1px solid #eeeeee",
   },
   tealCell: {
-    backgroundColor: "#84AAA6",
+    backgroundColor: "#E8336A",
     padding: "32px 40px 28px 40px",
     textAlign: "center" as const,
   },
@@ -161,7 +161,7 @@ const s = {
     lineHeight: "1.5",
   },
   footerLink: {
-    color: "#84AAA6",
+    color: "#E8336A",
     textDecoration: "none",
   },
 } as const;

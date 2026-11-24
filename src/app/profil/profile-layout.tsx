@@ -276,8 +276,8 @@ function MobileMenuDropdown({
           <button
             onClick={() => { onQuotesCta(); setOpen(false); }}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-3 text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer border-b border-gray-100",
-              active === "quotes" && "bg-[#84AAA6]/10"
+              "w-full flex items-center gap-3 px-4 py-3 text-base font-semibold text-[#E8336A] hover:bg-[#E8336A]/10 transition-colors cursor-pointer border-b border-gray-100",
+              active === "quotes" && "bg-[#E8336A]/10"
             )}
           >
             <FileText className="h-4 w-4 shrink-0" />
@@ -290,7 +290,7 @@ function MobileMenuDropdown({
               onClick={() => { onSelect("admin"); setOpen(false); }}
               className={cn(
                 "w-full flex items-center justify-between gap-3 px-4 py-3 text-base font-medium transition-colors cursor-pointer",
-                active === "admin" ? "bg-[#84AAA6]/10 text-[#84AAA6] font-semibold" : "text-gray-900 hover:bg-gray-50"
+                active === "admin" ? "bg-[#E8336A]/10 text-[#E8336A] font-semibold" : "text-gray-900 hover:bg-gray-50"
               )}
             >
               <span className="flex items-center gap-2.5">
@@ -310,7 +310,7 @@ function MobileMenuDropdown({
             onClick={onToggleAccountSettings}
             className={cn(
               "w-full flex items-center justify-between gap-3 px-4 py-3 text-base font-medium transition-colors cursor-pointer",
-              isAccountSettings && !accountSettingsOpen ? "bg-[#84AAA6]/10 text-[#84AAA6] font-semibold" : "text-gray-900 hover:bg-gray-50"
+              isAccountSettings && !accountSettingsOpen ? "bg-[#E8336A]/10 text-[#E8336A] font-semibold" : "text-gray-900 hover:bg-gray-50"
             )}
           >
             <span className="flex items-center gap-2.5">
@@ -320,7 +320,7 @@ function MobileMenuDropdown({
             <ChevronDown className={cn("h-4 w-4 text-gray-400 transition-transform", accountSettingsOpen && "rotate-180")} />
           </button>
           {accountSettingsOpen && (
-            <div className="border-l-2 border-[#84AAA6]/30 ml-6 mb-1">
+            <div className="border-l-2 border-[#E8336A]/30 ml-6 mb-1">
               {ACCOUNT_SETTINGS_ITEMS.map((item) => (
                 <button
                   key={item.id}
@@ -328,7 +328,7 @@ function MobileMenuDropdown({
                   className={cn(
                     "w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer",
                     active === item.id
-                      ? "bg-[#84AAA6]/10 text-[#84AAA6] font-semibold"
+                      ? "bg-[#E8336A]/10 text-[#E8336A] font-semibold"
                       : "text-gray-700 hover:bg-gray-50"
                   )}
                 >
@@ -347,7 +347,7 @@ function MobileMenuDropdown({
               className={cn(
                 "w-full flex items-center justify-between gap-3 px-4 py-3 text-base font-medium transition-colors cursor-pointer",
                 item.id === active
-                  ? "bg-[#84AAA6]/10 text-[#84AAA6] font-semibold"
+                  ? "bg-[#E8336A]/10 text-[#E8336A] font-semibold"
                   : "text-gray-900 hover:bg-gray-50"
               )}
             >
@@ -523,7 +523,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
   // Shared nav item class helper
   const navItemClass = (id: Section) => cn(
     "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-medium transition-colors text-left whitespace-nowrap cursor-pointer w-full",
-    active === id ? "bg-[#84AAA6] text-white" : "text-gray-900 hover:bg-gray-100"
+    active === id ? "bg-[#E8336A] text-white" : "text-gray-900 hover:bg-gray-100"
   );
 
   return (
@@ -555,7 +555,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
               <button
                 data-tour="sidebar-quotes"
                 onClick={() => switchTo("quotes")}
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer w-full text-left"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-base font-semibold text-[#E8336A] hover:bg-[#E8336A]/10 transition-colors cursor-pointer w-full text-left"
               >
                 <FileText className="h-4 w-4 shrink-0" />
                 <span>Ajánlatkérés</span>
@@ -595,7 +595,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 <ChevronDown className={cn("h-4 w-4 text-gray-400 shrink-0 transition-transform", accountSettingsOpen && "rotate-180")} />
               </button>
               {accountSettingsOpen && (
-                <div className="ml-3 pl-3 border-l-2 border-[#84AAA6]/30 mt-0.5 mb-0.5 space-y-0.5">
+                <div className="ml-3 pl-3 border-l-2 border-[#E8336A]/30 mt-0.5 mb-0.5 space-y-0.5">
                   {ACCOUNT_SETTINGS_ITEMS.map((item) => (
                     <a
                       key={item.id}
@@ -604,7 +604,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                       className={cn(
                         "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer",
                         active === item.id
-                          ? "bg-[#84AAA6] text-white"
+                          ? "bg-[#E8336A] text-white"
                           : "text-gray-700 hover:bg-gray-100"
                       )}
                     >
@@ -696,7 +696,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
                 <button
                   onClick={handleRefresh}
                   title="Frissítés"
-                  className="text-gray-400 hover:text-[#84AAA6] transition-colors cursor-pointer"
+                  className="text-gray-400 hover:text-[#E8336A] transition-colors cursor-pointer"
                 >
                   <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
                 </button>
@@ -836,7 +836,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
 function DashStatCard({ label, value, icon: Icon }: { label: string; value: string | number; icon: LucideIcon }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4">
-      <Icon className="h-6 w-6 mb-1 text-[#84AAA6]" strokeWidth={1.5} />
+      <Icon className="h-6 w-6 mb-1 text-[#E8336A]" strokeWidth={1.5} />
       <div className="text-xl font-bold text-gray-900">{value}</div>
       <div className="text-base text-gray-900 mt-0.5">{label}</div>
     </div>

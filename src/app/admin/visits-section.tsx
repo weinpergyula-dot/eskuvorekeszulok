@@ -100,7 +100,7 @@ function TodayList({ path }: { path: string }) {
   if (failed) return <p className="text-sm text-gray-500">A mai látogatók listája nem tölthető be.</p>;
   if (!visits) return (
     <div className="flex justify-center py-6">
-      <div className="w-6 h-6 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
+      <div className="w-6 h-6 border-4 border-gray-200 border-t-[#E8336A] rounded-full animate-spin" />
     </div>
   );
   if (visits.length === 0) return <p className="text-sm text-gray-500">Ma még nem volt látogató.</p>;
@@ -129,7 +129,7 @@ function TodayList({ path }: { path: string }) {
             <span className="flex min-w-0 items-center gap-1.5">
               {v.user ? (
                 <>
-                  <UserRound className="h-4 w-4 shrink-0 text-[#84AAA6]" />
+                  <UserRound className="h-4 w-4 shrink-0 text-[#E8336A]" />
                   <span className="truncate font-medium text-gray-900">{v.user.name}</span>
                   {v.user.role && <span className="shrink-0 text-xs text-gray-400">({ROLE_LABELS[v.user.role] ?? v.user.role})</span>}
                 </>
@@ -160,8 +160,8 @@ function Bars({ points }: { points: { key: string; label: string; value: number;
             </span>
             <div
               className={`w-full rounded-t transition-colors ${
-                p.current ? "bg-[#C9A675]" : p.muted ? "bg-[#84AAA6]/40" : "bg-[#84AAA6]"
-              } group-hover:bg-[#6B8E8A]`}
+                p.current ? "bg-[#C9A675]" : p.muted ? "bg-[#E8336A]/40" : "bg-[#E8336A]"
+              } group-hover:bg-[#CC2257]`}
               style={{ height: `${Math.max((p.value / max) * 88, p.value > 0 ? 3 : 1)}%` }}
             />
           </div>
@@ -230,8 +230,8 @@ export function VisitsSection() {
           onClick={() => selectPath(page.path)}
           className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
             path === page.path
-              ? "bg-[#84AAA6] text-white"
-              : "text-gray-600 hover:bg-[#84AAA6]/10 hover:text-[#5C8480]"
+              ? "bg-[#E8336A] text-white"
+              : "text-gray-600 hover:bg-[#E8336A]/10 hover:text-[#B3264F]"
           }`}
         >
           {page.label}
@@ -245,7 +245,7 @@ export function VisitsSection() {
     <div className="space-y-6">
       {tabs}
       <div className="flex items-center justify-center py-12">
-        <div className="w-8 h-8 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-gray-200 border-t-[#E8336A] rounded-full animate-spin" />
       </div>
     </div>
   );
@@ -316,7 +316,7 @@ export function VisitsSection() {
               key={m.value}
               onClick={() => setMode(m.value)}
               className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
-                mode === m.value ? "bg-[#84AAA6] text-white" : "text-gray-600 hover:bg-[#84AAA6]/10 hover:text-[#5C8480]"
+                mode === m.value ? "bg-[#E8336A] text-white" : "text-gray-600 hover:bg-[#E8336A]/10 hover:text-[#B3264F]"
               }`}
             >
               {m.label}
@@ -339,12 +339,12 @@ export function VisitsSection() {
             <button
               key={t.label}
               onClick={() => setShowToday((v) => !v)}
-              className={`rounded-lg border bg-white p-3 text-left transition-colors cursor-pointer hover:border-[#84AAA6] ${showToday ? "border-[#84AAA6]" : "border-gray-200"}`}
+              className={`rounded-lg border bg-white p-3 text-left transition-colors cursor-pointer hover:border-[#E8336A] ${showToday ? "border-[#E8336A]" : "border-gray-200"}`}
             >
               <div className="text-2xl font-bold text-gray-900">{t.value}</div>
               <div className="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
                 {t.label}
-                {showToday ? <ChevronUp className="h-3.5 w-3.5 text-[#84AAA6]" /> : <ChevronDown className="h-3.5 w-3.5 text-[#84AAA6]" />}
+                {showToday ? <ChevronUp className="h-3.5 w-3.5 text-[#E8336A]" /> : <ChevronDown className="h-3.5 w-3.5 text-[#E8336A]" />}
               </div>
             </button>
           ) : (
@@ -381,7 +381,7 @@ export function VisitsSection() {
 
         <button
           onClick={() => setShowDailyTable((v) => !v)}
-          className="mt-3 text-sm text-[#84AAA6] hover:text-[#6B8E8A] flex items-center gap-1 cursor-pointer"
+          className="mt-3 text-sm text-[#E8336A] hover:text-[#CC2257] flex items-center gap-1 cursor-pointer"
         >
           {showDailyTable ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           {showDailyTable ? "Napi táblázat elrejtése" : "Napi táblázat megjelenítése"}

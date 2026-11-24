@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -10,6 +9,8 @@ import { Menu, X, ChevronDown, User as UserIcon, Lock, Briefcase, LayoutDashboar
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { OnboardingTour } from "@/components/onboarding-tour";
+import { BrandLogo } from "@/components/layout/brand-logo";
+import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 
 function NavBadge({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -327,13 +328,13 @@ export function Navbar() {
 
   // ── Shared dropdown panel renderer ──────────────────────────────────────────
   const DropdownPanel = ({ closeAll }: { closeAll: () => void }) => (
-    <div data-tour="dropdown-panel" className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+    <div data-tour="dropdown-panel" className="absolute right-0 top-full mt-2 w-56 glass-strong rounded-2xl py-1.5 z-50">
       {/* Ajánlatkérés – highlighted at top */}
       <div className="border-b border-gray-100 mb-1 pb-1">
         <button
           data-tour="dropdown-quotes"
           onClick={() => navTo("quotes", closeAll)}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#84AAA6] font-semibold hover:bg-[#84AAA6]/10 text-left"
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-[#E8336A] font-semibold hover:bg-[#E8336A]/10 text-left"
         >
           <FileText className="h-4 w-4 shrink-0" strokeWidth={1.5} />
           <span className="flex-1">Ajánlatkérés</span>
@@ -344,7 +345,7 @@ export function Navbar() {
       {profile?.role === "admin" && (
         <button
           onClick={() => navTo("admin", closeAll)}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A] text-left"
         >
           <ShieldCheck className="h-4 w-4 shrink-0" strokeWidth={1.5} />
           <span className="flex-1">Admin</span>
@@ -359,19 +360,19 @@ export function Navbar() {
       {/* Fiók beállítások group */}
       <button
         onClick={() => setAccountSettingsOpen((v) => !v)}
-        className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
+        className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A] text-left"
       >
         <Settings className="h-4 w-4 shrink-0" strokeWidth={1.5} />
         <span className="flex-1">Fiók beállítások</span>
         <ChevronDown className={`h-3.5 w-3.5 text-gray-400 transition-transform ${accountSettingsOpen ? "rotate-180" : ""}`} />
       </button>
       {accountSettingsOpen && (
-        <div className="border-l-2 border-[#84AAA6]/30 ml-5 mb-1">
+        <div className="border-l-2 border-[#E8336A]/30 ml-5 mb-1">
           {ACCOUNT_SETTINGS_ITEMS.map(({ id, label, Icon }) => (
             <button
               key={id}
               onClick={() => navTo(id, closeAll)}
-              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-[#E8336A]/10 hover:text-[#E8336A] text-left"
             >
               <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
               <span>{label}</span>
@@ -386,7 +387,7 @@ export function Navbar() {
           key={id}
           data-tour={`dropdown-${id}`}
           onClick={() => navTo(id, closeAll)}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6] text-left"
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A] text-left"
         >
           <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
           <span className="flex-1">{label}</span>
@@ -420,19 +421,19 @@ export function Navbar() {
 
   return (
   <>
-    <nav className="sticky top-0 z-50 rounded-b-3xl border-b border-gray-200 transition-all duration-300 relative bg-white/80 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex items-center justify-between transition-all duration-300 ${shrink ? "h-11" : "h-16"}`}>
+    <nav className="sticky top-0 z-50 px-3 pt-2 sm:px-5 sm:pt-3 transition-all duration-300 relative">
+      <div className="glass max-w-7xl mx-auto px-3 sm:px-5 rounded-[26px]">
+        <div className={`flex items-center justify-between transition-all duration-300 ${shrink ? "h-11" : "h-14"}`}>
           {/* Logo + Desktop nav */}
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center shrink-0">
-              <Image src="/logo.png" alt="Esküvőre Készülök" width={320} height={80} quality={100} className={`w-auto transition-all duration-300 ${shrink ? "h-7" : "h-10"}`} />
+              <BrandLogo compact={shrink} />
             </Link>
 
-            <div className="hidden md:flex items-center gap-6">
-              <Link href="/" data-tour="nav-categories" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kezdőlap</Link>
-              <Link href="/informaciok" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Információk</Link>
-              <Link href="/kapcsolat" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#F0F6F5] transition-colors">Kapcsolat</Link>
+            <div className="hidden md:flex items-center gap-1">
+              <Link href="/" data-tour="nav-categories" className="text-[15px] text-[#1F1A2E] px-3.5 py-1.5 rounded-full hover:bg-white/80 transition-colors">Kezdőlap</Link>
+              <Link href="/informaciok" className="text-[15px] text-[#1F1A2E] px-3.5 py-1.5 rounded-full hover:bg-white/80 transition-colors">Információk</Link>
+              <Link href="/kapcsolat" className="text-[15px] text-[#1F1A2E] px-3.5 py-1.5 rounded-full hover:bg-white/80 transition-colors">Kapcsolat</Link>
             </div>
           </div>
 
@@ -452,13 +453,13 @@ export function Navbar() {
                   }, 1000);
                 }}
               >
-                <button className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+                <button className="relative p-2 rounded-xl text-[#E8336A] hover:text-[#CC2257]">
                   {navAvatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={navAvatarUrl} alt="" className="w-6 h-6 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
+                    <img src={navAvatarUrl} alt="" className="w-6 h-6 rounded-full object-cover ring-2 ring-[#E8336A]/40" />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
-                      <Check className="h-3 w-3 text-[#84AAA6]" strokeWidth={2.5} />
+                    <div className="w-6 h-6 rounded-full bg-[#E8336A]/15 border-2 border-[#E8336A] flex items-center justify-center">
+                      <Check className="h-3 w-3 text-[#E8336A]" strokeWidth={2.5} />
                     </div>
                   )}
                   {badgeCount > 0 && (
@@ -477,10 +478,10 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/auth/register">
-                  <Button className="text-base border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80 hover:text-[#B8925A]">Regisztráció</Button>
+                  <Button className="text-[15px] rounded-full border border-white/80 bg-white/70 text-[#1F1A2E] shadow-sm hover:bg-white">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
+                  <Button className="text-[15px] rounded-full rose-cta">Bejelentkezés</Button>
                 </Link>
               </>
             )}
@@ -489,7 +490,7 @@ export function Navbar() {
           {/* Mobile: user icon + categories icon + hamburger */}
           <div className={`md:hidden flex items-center gap-1 transition-transform duration-300 origin-right ${shrink ? "scale-90" : ""}`}>
             {!user && (
-              <a href="/auth/login" className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]">
+              <a href="/auth/login" className="relative p-2 rounded-xl text-[#E8336A] hover:text-[#CC2257]">
                 <CircleUser className="h-7 w-7" strokeWidth={1.75} />
               </a>
             )}
@@ -498,14 +499,14 @@ export function Navbar() {
               <div ref={userDropdownRef} className="relative">
                 <button
                   onClick={() => { setUserDropdownOpen(!userDropdownOpen); setMobileOpen(false); }}
-                  className="relative p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
+                  className="relative p-2 rounded-xl text-[#E8336A] hover:text-[#CC2257]"
                 >
                   {navAvatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={navAvatarUrl ?? ""} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
+                    <img src={navAvatarUrl ?? ""} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#E8336A]/40" />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
-                      <Check className="h-3.5 w-3.5 text-[#84AAA6]" strokeWidth={2.5} />
+                    <div className="w-7 h-7 rounded-full bg-[#E8336A]/15 border-2 border-[#E8336A] flex items-center justify-center">
+                      <Check className="h-3.5 w-3.5 text-[#E8336A]" strokeWidth={2.5} />
                     </div>
                   )}
                   {badgeCount > 0 && (
@@ -524,10 +525,11 @@ export function Navbar() {
             )}
 
             <button
-              className="p-2 rounded-xl text-[#84AAA6] hover:text-[#6B8E8A]"
+              aria-label="Menü"
+              className="ml-1 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-[#1F1A2E] shadow-sm"
               onClick={() => { setMobileOpen(!mobileOpen); setUserDropdownOpen(false); }}
             >
-              {mobileOpen ? <X className="h-7 w-7" strokeWidth={2.5} /> : <Menu className="h-7 w-7" strokeWidth={2.5} />}
+              {mobileOpen ? <X className="h-5 w-5" strokeWidth={2.25} /> : <Menu className="h-5 w-5" strokeWidth={2.25} />}
             </button>
           </div>
         </div>
@@ -535,16 +537,16 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden absolute right-4 top-[calc(100%+4px)] w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
-          <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kezdőlap</Link>
-          <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Információk</Link>
-          <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
+        <div className="md:hidden absolute right-4 top-[calc(100%+6px)] w-52 glass-strong rounded-2xl py-1.5 z-50">
+          <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]" onClick={() => setMobileOpen(false)}>Kezdőlap</Link>
+          <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]" onClick={() => setMobileOpen(false)}>Információk</Link>
+          <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
               <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium rounded-lg py-2 transition-colors border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80">
                 Regisztráció
               </Link>
-              <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white bg-[#84AAA6] rounded-lg py-2 hover:bg-[#6B8E8A] transition-colors">
+              <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white bg-[#E8336A] rounded-lg py-2 hover:bg-[#CC2257] transition-colors">
                 Bejelentkezés
               </Link>
             </div>
@@ -552,6 +554,12 @@ export function Navbar() {
         </div>
       )}
     </nav>
+    <MobileTabBar
+      signedIn={!!user}
+      isProvider={hasProvider}
+      unread={unreadMessages + unreadQuotes}
+      avatarUrl={navAvatarUrl}
+    />
     {user && profile && profile.role !== "admin" && (
       <OnboardingTour userId={user.id} role={profile.role} />
     )}

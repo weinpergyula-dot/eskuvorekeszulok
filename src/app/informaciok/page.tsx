@@ -12,7 +12,7 @@ function Section({ icon: Icon, title, children }: { icon: React.ElementType; tit
   return (
     <div className="mb-10">
       <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2.5">
-        <Icon className="h-6 w-6 text-[#84AAA6] shrink-0" strokeWidth={1.5} />
+        <Icon className="h-6 w-6 text-[#E8336A] shrink-0" strokeWidth={1.5} />
         {title}
       </h2>
       {children}
@@ -23,8 +23,8 @@ function Section({ icon: Icon, title, children }: { icon: React.ElementType; tit
 function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5 flex gap-4 items-start">
-      <div className="w-10 h-10 rounded-lg bg-[#84AAA6]/10 flex items-center justify-center shrink-0">
-        <Icon className="h-5 w-5 text-[#84AAA6]" strokeWidth={1.5} />
+      <div className="w-10 h-10 rounded-lg bg-[#E8336A]/10 flex items-center justify-center shrink-0">
+        <Icon className="h-5 w-5 text-[#E8336A]" strokeWidth={1.5} />
       </div>
       <div>
         <h3 className="font-semibold text-gray-900 mb-1">{title}</h3>
@@ -42,7 +42,7 @@ export default function InformaciokPage() {
 
         {/* Miért jött létre */}
         <Section icon={Heart} title="Miért jött létre ez az oldal?">
-          <div className="bg-[#F0F6F5] border border-[#84AAA6]/20 rounded-2xl p-6 mb-4">
+          <div className="bg-[#FDEEF3] border border-[#E8336A]/20 rounded-2xl p-6 mb-4">
             <p className="text-gray-900 text-base leading-relaxed mb-3">
               Az esküvő szervezése életünk egyik legizgalmasabb, ugyanakkor legbonyolultabb feladatai közé tartozik. Rengeteg szakemberre van szükség – fotóstól, zenészen és vőfélyen át a virágkötőig, tortakészítőig és helyszínig –, akiket általában szájhagyomány útján, ismerősök ajánlásával, vagy hosszas internetes keresgéléssel szoktak megtalálni.
             </p>

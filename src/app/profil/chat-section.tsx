@@ -161,11 +161,11 @@ function ChatSelect({
       <button
         type="button"
         onClick={() => { setOpen((v) => !v); setQuery(""); }}
-        className="h-10 w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-900 cursor-pointer hover:border-[#84AAA6] transition-colors"
+        className="h-10 w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-900 cursor-pointer hover:border-[#E8336A] transition-colors"
       >
         <span className="flex items-center gap-1.5 truncate">
           <span className="text-gray-500 shrink-0">Szűrés:</span>
-          <span className={cn("truncate", selectedLabel ? "text-[#84AAA6]" : "text-gray-500")}>
+          <span className={cn("truncate", selectedLabel ? "text-[#E8336A]" : "text-gray-500")}>
             {selectedLabel ?? placeholder}
           </span>
         </span>
@@ -183,7 +183,7 @@ function ChatSelect({
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Keresés..."
                   autoFocus
-                  className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#84AAA6]"
+                  className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#E8336A]"
                 />
               </div>
             </div>
@@ -194,7 +194,7 @@ function ChatSelect({
               onClick={() => { onChange(""); setOpen(false); setQuery(""); }}
               className={cn(
                 "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
-                !value ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
+                !value ? "bg-[#E8336A] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
               )}
             >
               {placeholder}
@@ -206,7 +206,7 @@ function ChatSelect({
                 onClick={() => { onChange(o.value); setOpen(false); setQuery(""); }}
                 className={cn(
                   "w-full text-left px-3 py-2 rounded-xl text-sm transition-colors cursor-pointer",
-                  value === o.value ? "bg-[#84AAA6] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
+                  value === o.value ? "bg-[#E8336A] text-white font-medium" : "text-gray-900 hover:bg-gray-100"
                 )}
               >
                 {o.label}
@@ -272,7 +272,7 @@ function ProviderRow({
     .join(", ");
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/60 transition-colors${provider.featured === "gold" ? " border-l-2 border-l-amber-400" : provider.featured === "silver" ? " border-l-2 border-l-slate-400" : provider.featured === "teal" ? " border-l-2 border-l-[#84AAA6]" : ""}`}>
+    <div className={`flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/60 transition-colors${provider.featured === "gold" ? " border-l-2 border-l-amber-400" : provider.featured === "silver" ? " border-l-2 border-l-slate-400" : provider.featured === "teal" ? " border-l-2 border-l-[#E8336A]" : ""}`}>
       {/* Avatar */}
       <a href={`/providers/${provider.id}`} className="shrink-0">
         <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600">
@@ -292,15 +292,15 @@ function ProviderRow({
       {/* Name + category (+ rating on mobile) */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 truncate hover:text-[#84AAA6] transition-colors">{provider.full_name}</a>
+          <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 truncate hover:text-[#E8336A] transition-colors">{provider.full_name}</a>
           {provider.featured && (
-            <span className={`text-[10px] font-medium rounded-full px-1.5 py-0.5 shrink-0 border${provider.featured === "silver" ? " text-slate-600 bg-slate-50 border-slate-200" : provider.featured === "teal" ? " text-[#5C8480] bg-[#84AAA6]/10 border-[#84AAA6]/40" : " text-amber-600 bg-amber-50 border-amber-200"}`}>
+            <span className={`text-[10px] font-medium rounded-full px-1.5 py-0.5 shrink-0 border${provider.featured === "silver" ? " text-slate-600 bg-slate-50 border-slate-200" : provider.featured === "teal" ? " text-[#B3264F] bg-[#E8336A]/10 border-[#E8336A]/40" : " text-amber-600 bg-amber-50 border-amber-200"}`}>
               Kiemelt
             </span>
           )}
         </div>
         {categoryLabel && (
-          <p className="text-xs text-[#84AAA6] truncate mt-0.5">{categoryLabel}</p>
+          <p className="text-xs text-[#E8336A] truncate mt-0.5">{categoryLabel}</p>
         )}
         {provider.counties.length > 0 && (
           <p className="text-xs text-gray-400 flex items-center gap-0.5 mt-0.5">
@@ -436,7 +436,7 @@ function QuoteConvRow({
             <span className="text-xs text-gray-400 shrink-0">{formatShort(lastAt)}</span>
           </div>
           <div className="flex items-center gap-1.5 mb-0.5">
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-[#84AAA6] bg-[#84AAA6]/10 rounded px-1.5 py-0.5 shrink-0">
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-[#E8336A] bg-[#E8336A]/10 rounded px-1.5 py-0.5 shrink-0">
               <FileText className="h-2.5 w-2.5" />
               Ajánlatkérés
             </span>
@@ -669,7 +669,7 @@ function ChatView({
     <div ref={containerRef} className="fixed inset-x-0 top-0 z-[100] flex flex-col bg-white h-[100dvh] sm:relative sm:inset-auto sm:z-auto sm:h-[680px]">
 
       {/* Mobile header */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
+      <div className="flex items-center gap-3 px-4 py-3 bg-[#E8336A] text-white shrink-0 sm:hidden">
         <button onClick={onBack} className="text-white cursor-pointer shrink-0">
           <ArrowLeft className="h-5 w-5" />
         </button>
@@ -710,7 +710,7 @@ function ChatView({
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-gray-900 truncate">{provider.full_name}</p>
           {provider.categories.length > 0 && (
-            <p className="text-xs text-[#84AAA6] truncate">
+            <p className="text-xs text-[#E8336A] truncate">
               {provider.categories.map((c) => CATEGORY_LABELS[c as keyof typeof CATEGORY_LABELS] ?? c).join(", ")}
             </p>
           )}
@@ -737,14 +737,14 @@ function ChatView({
         <div className="shrink-0 border-b border-yellow-200 bg-yellow-50 px-4 py-2.5 flex items-start gap-3">
           <div className="flex-1 min-w-0 space-y-0.5">
             {provider.id ? (
-              <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 hover:text-[#84AAA6] transition-colors">
+              <a href={`/providers/${provider.id}`} className="text-sm font-semibold text-gray-900 hover:text-[#E8336A] transition-colors">
                 {provider.full_name}
               </a>
             ) : (
               <p className="text-sm font-semibold text-gray-900">{provider.full_name}</p>
             )}
             {provider.categories.length > 0 && (
-              <p className="text-xs text-[#84AAA6]">
+              <p className="text-xs text-[#E8336A]">
                 {provider.categories.map((c) => CATEGORY_LABELS[c as keyof typeof CATEGORY_LABELS] ?? c).join(", ")}
               </p>
             )}
@@ -821,7 +821,7 @@ function ChatView({
                   <span className={`text-[10px] text-gray-400 px-1 ${!msg.is_own ? "ml-9" : ""}`}>{formatDate(msg.created_at)}</span>
                 )}
                 {msg.id === lastReadOwnId && msg.read_at && (
-                  <span className={`text-[10px] text-[#84AAA6] px-1 ${!msg.is_own ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
+                  <span className={`text-[10px] text-[#E8336A] px-1 ${!msg.is_own ? "ml-9" : ""}`}>Elolvasva: {formatDate(msg.read_at)}</span>
                 )}
               </div>
             </div>
@@ -1061,7 +1061,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
 
   if (loading) return (
     <div className="flex items-center justify-center py-12">
-      <div className="w-8 h-8 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-gray-200 border-t-[#E8336A] rounded-full animate-spin" />
     </div>
   );
 
@@ -1096,7 +1096,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
           onClick={() => setTab("providers")}
           className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
             tab === "providers"
-              ? "border-[#84AAA6] text-[#84AAA6]"
+              ? "border-[#E8336A] text-[#E8336A]"
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -1106,7 +1106,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
           onClick={() => setTab("conversations")}
           className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
             tab === "conversations"
-              ? "border-[#84AAA6] text-[#84AAA6]"
+              ? "border-[#E8336A] text-[#E8336A]"
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -1129,7 +1129,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 title={filtersOpen ? "Szűrők elrejtése" : "Szűrők megjelenítése"}
                 className={`relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                   filtersOpen
-                    ? "bg-[#84AAA6]/15 text-[#84AAA6]"
+                    ? "bg-[#E8336A]/15 text-[#E8336A]"
                     : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                 }`}
               >
@@ -1156,7 +1156,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); resetPage(); }}
                   placeholder="Keresés neve alapján…"
-                  className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
+                  className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#E8336A] focus:border-[#E8336A] transition-colors bg-white"
                 />
               </div>
               <div className="sm:w-64">
@@ -1282,7 +1282,7 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                     value={convSearchQuery}
                     onChange={(e) => setConvSearchQuery(e.target.value)}
                     placeholder="Keresés neve alapján…"
-                    className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#84AAA6] focus:border-[#84AAA6] transition-colors bg-white"
+                    className="w-full h-10 pl-9 pr-4 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#E8336A] focus:border-[#E8336A] transition-colors bg-white"
                   />
                 </div>
                 {convAllCategories.length > 0 && (

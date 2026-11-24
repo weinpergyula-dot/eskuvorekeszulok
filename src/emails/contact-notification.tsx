@@ -94,7 +94,7 @@ const s = {
     color: "#404040",
     lineHeight: "1.5",
   } as React.CSSProperties,
-  btnCell: { backgroundColor: "#84AAA6", borderRadius: "8px" },
+  btnCell: { backgroundColor: "#E8336A", borderRadius: "8px" },
   btn: {
     display: "inline-block",
     padding: "14px 32px",

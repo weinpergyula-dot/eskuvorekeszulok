@@ -65,8 +65,8 @@ export function FavoriteButton({
         className={cn(
           "flex items-center justify-center transition-colors cursor-pointer disabled:cursor-default",
           iconOnly
-            ? "w-8 h-8 rounded-full border border-gray-200 bg-white/80 hover:bg-[#F8F2E8]"
-            : "gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#F8F2E8]"
+            ? "w-9 h-9 rounded-full bg-transparent hover:bg-white/60"
+            : "gap-1.5 px-3 py-1.5 rounded-full border border-white bg-white/80 hover:bg-[#FDEEF3]"
         )}
       >
         {loading ? (
@@ -75,7 +75,7 @@ export function FavoriteButton({
           <Heart
             className={cn(
               "h-4 w-4 transition-colors",
-              liked ? "fill-[#F06C6C] text-[#F06C6C]" : "text-gray-400"
+              liked ? "fill-[#E8336A] text-[#E8336A]" : "text-[#1F1A2E]"
             )}
           />
         )}
