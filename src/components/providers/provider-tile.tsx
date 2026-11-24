@@ -155,19 +155,11 @@ export function ProviderTile({
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "-mt-8 grid-rows-[1fr]" : "grid-rows-[0fr]")}>
         <div className="overflow-hidden">
           <div className={cn("rounded-b-[30px] bg-white px-5 pb-5 pt-12 shadow-[0_18px_40px_-24px_rgba(90,20,60,0.45)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
+            <IntroHeader provider={provider} />
             {intro ? (
-              <p className="text-[15px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
+              <p className="mt-3 text-[15px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
             ) : (
-              <p className="text-[15px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
-            )}
-            {cats.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {cats.map((c) => (
-                  <span key={c} className="rounded-full bg-[#FDEEF3] px-2.5 py-0.5 text-[12px] font-medium text-[#B3264F]">
-                    {CATEGORY_LABELS[c] ?? c}
-                  </span>
-                ))}
-              </div>
+              <p className="mt-3 text-[15px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
             )}
             {!isOwner && (
               <div className="mt-4 flex items-center gap-2">
@@ -291,10 +283,11 @@ export function ProviderRow({
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
         <div className="overflow-hidden">
           <div className={cn("mt-2 rounded-[20px] bg-white px-4 py-3.5 transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
+            <IntroHeader provider={provider} />
             {intro ? (
-              <p className="text-[14.5px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
+              <p className="mt-3 text-[14.5px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
             ) : (
-              <p className="text-[14.5px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
+              <p className="mt-3 text-[14.5px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
             )}
             {!isOwner && (
               <div className="mt-3 flex items-center gap-2">
@@ -317,5 +310,30 @@ export function ProviderRow({
         </div>
       </div>
     </article>
+  );
+}
+
+/* A lenyíló bemutatkozás fejléce: a szolgáltató avatarja és neve. */
+function IntroHeader({ provider }: { provider: Provider }) {
+  const counties = provider.counties ?? [];
+  return (
+    <div className="flex items-center gap-3">
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FDEEF3] ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(90,20,60,0.5)]">
+        {provider.avatar_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={provider.avatar_url} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <span className="font-heading text-lg font-bold text-[#E8336A]">{provider.full_name.charAt(0)}</span>
+        )}
+      </span>
+      <div className="min-w-0">
+        <p className="truncate text-[15px] font-semibold text-[#1F1A2E]">{provider.full_name}</p>
+        {counties.length > 0 && (
+          <p className="flex items-center gap-1 truncate text-[13px] text-[#6B6480]">
+            <MapPin className="h-3.5 w-3.5 shrink-0" />{counties.join(", ")}
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
