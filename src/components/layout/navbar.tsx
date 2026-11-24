@@ -34,7 +34,8 @@ export function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
-  const shrink = false;
+  const [shrink, setShrink] = useState(false);
+  const lastScrollY = useRef(0);
   const [navAvatarUrl, setNavAvatarUrl] = useState<string | null>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
@@ -67,21 +68,41 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  /* A fejléc már nem zsugorodik görgetéskor: mobilon nem tapad (a tartalommal
-     együtt elgörgetődik), desktopon pedig eddig is teljes méretű maradt. */
+  useEffect(() => {
+    /* Programozott görgetés (pl. a főoldali banner gombja) idejére a fejléc
+       összehúzva marad, hogy a cél pontosan beálljon: egy javító, felfelé
+       irányuló lépés különben kinyitná, és elcsúsztatná a tartalmat. */
+    let lockUntil = 0;
+    const onLock = (e: Event) => {
+      lockUntil = Date.now() + ((e as CustomEvent<number>).detail ?? 2500);
+      if (window.innerWidth < 768) setShrink(true);
+    };
+    window.addEventListener("eskuvo:nav-hold-shrink", onLock);
+    const onScroll = () => {
+      const y = window.scrollY;
+      // Shrink only on mobile (<md). On desktop the navbar keeps its full size.
+      if (window.innerWidth >= 768) { setShrink(false); lastScrollY.current = y; return; }
+      if (Date.now() < lockUntil) { lastScrollY.current = y; return; }
+      // Only shrink while scrolling DOWN; expand again on scroll up or near top.
+      if (y < 80) setShrink(false);
+      else if (y > lastScrollY.current + 4) setShrink(true);
+      else if (y < lastScrollY.current - 4) setShrink(false);
+      lastScrollY.current = y;
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("eskuvo:nav-hold-shrink", onLock);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
   // Publish the current navbar height so sticky elements (e.g. the category CTA)
   // can pin flush beneath it whether it's full-size or shrunk.
   useEffect(() => {
-    /* Mobilon a fejléc nem tapad (elgörgetődik), így a ragadós elemek a
-       képernyő tetejéhez igazodnak. */
-    const set = () => document.documentElement.style.setProperty(
-      "--nav-h",
-      window.innerWidth < 768 ? "0px" : shrink ? "2.75rem" : "4rem"
-    );
-    set();
-    window.addEventListener("resize", set);
-    return () => window.removeEventListener("resize", set);
+    document.documentElement.style.setProperty("--nav-h", shrink ? "2.75rem" : "4rem");
   }, [shrink]);
 
   const supabase = createClient();
@@ -306,7 +327,7 @@ export function Navbar() {
 
   // ── Shared dropdown panel renderer ──────────────────────────────────────────
   const DropdownPanel = ({ closeAll }: { closeAll: () => void }) => (
-    <div data-tour="dropdown-panel" className="absolute right-0 top-full mt-2 w-56 glass-strong rounded-2xl py-1.5 z-50">
+    <div data-tour="dropdown-panel" className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
       {/* Ajánlatkérés – highlighted at top */}
       <div className="border-b border-gray-100 mb-1 pb-1">
         <button
@@ -399,19 +420,19 @@ export function Navbar() {
 
   return (
   <>
-    <nav className="relative z-50 px-3 pt-2 sm:px-5 sm:pt-3 transition-all duration-300 md:sticky md:top-0">
-      <div className="glass max-w-7xl mx-auto px-3 sm:px-5 rounded-[26px]">
-        <div className={`flex items-center justify-between transition-all duration-300 ${shrink ? "h-11" : "h-14"}`}>
+    <nav className="sticky top-0 z-50 rounded-b-3xl border-b border-gray-200 transition-all duration-300 relative bg-white shadow-[0_10px_30px_-22px_rgba(90,20,60,0.35)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`flex items-center justify-between transition-all duration-300 ${shrink ? "h-11" : "h-16"}`}>
           {/* Logo + Desktop nav */}
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center shrink-0">
               <BrandLogo compact={shrink} />
             </Link>
 
-            <div className="hidden md:flex items-center gap-1">
-              <Link href="/" data-tour="nav-categories" className="text-[15px] text-[#1F1A2E] px-3.5 py-1.5 rounded-full hover:bg-white/80 transition-colors">Kezdőlap</Link>
-              <Link href="/informaciok" className="text-[15px] text-[#1F1A2E] px-3.5 py-1.5 rounded-full hover:bg-white/80 transition-colors">Információk</Link>
-              <Link href="/kapcsolat" className="text-[15px] text-[#1F1A2E] px-3.5 py-1.5 rounded-full hover:bg-white/80 transition-colors">Kapcsolat</Link>
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="/" data-tour="nav-categories" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#FDEEF3] transition-colors">Kezdőlap</Link>
+              <Link href="/informaciok" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#FDEEF3] transition-colors">Információk</Link>
+              <Link href="/kapcsolat" className="text-base text-gray-900 px-2 py-1 rounded-md hover:bg-[#FDEEF3] transition-colors">Kapcsolat</Link>
             </div>
           </div>
 
@@ -456,10 +477,10 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/auth/register">
-                  <Button className="text-[15px] rounded-full border border-white/80 bg-white/70 text-[#1F1A2E] shadow-sm hover:bg-white">Regisztráció</Button>
+                  <Button className="text-base rounded-full border border-gray-200 bg-white text-[#1F1A2E] hover:bg-[#FDEEF3]">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button className="text-[15px] rounded-full rose-cta">Bejelentkezés</Button>
+                  <Button className="text-base rounded-full rose-cta">Bejelentkezés</Button>
                 </Link>
               </>
             )}
@@ -503,11 +524,10 @@ export function Navbar() {
             )}
 
             <button
-              aria-label="Menü"
-              className="ml-1 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-[#1F1A2E] shadow-sm"
+              className="p-2 rounded-xl text-[#E8336A] hover:text-[#CC2257]"
               onClick={() => { setMobileOpen(!mobileOpen); setUserDropdownOpen(false); }}
             >
-              {mobileOpen ? <X className="h-5 w-5" strokeWidth={2.25} /> : <Menu className="h-5 w-5" strokeWidth={2.25} />}
+              {mobileOpen ? <X className="h-7 w-7" strokeWidth={2.5} /> : <Menu className="h-7 w-7" strokeWidth={2.5} />}
             </button>
           </div>
         </div>
@@ -515,13 +535,13 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden absolute right-4 top-[calc(100%+6px)] w-52 glass-strong rounded-2xl py-1.5 z-50">
+        <div className="md:hidden absolute right-4 top-[calc(100%+4px)] w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
           <Link href="/" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]" onClick={() => setMobileOpen(false)}>Kezdőlap</Link>
           <Link href="/informaciok" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]" onClick={() => setMobileOpen(false)}>Információk</Link>
           <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#E8336A]/10 hover:text-[#E8336A]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
-              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium rounded-lg py-2 transition-colors border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80">
+              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium rounded-lg py-2 transition-colors border border-gray-200 bg-white text-[#1F1A2E] hover:bg-[#FDEEF3]">
                 Regisztráció
               </Link>
               <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white bg-[#E8336A] rounded-lg py-2 hover:bg-[#CC2257] transition-colors">

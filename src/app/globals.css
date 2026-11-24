@@ -170,17 +170,17 @@
 }
 
 :root {
-  --background: #F3E6FF;
+  --background: #FFFFFF;
   --foreground: #1F1A2E;
   --sky-end: #FDF1F4;
   /* Alkonyati égbolt az oldal tetején (1600px magas, utána egyszínű).
-     A legteteje (a fejléc magasságáig) egyszínű #F3E6FF – ugyanaz, mint a
-     html háttere, amiből a mobil böngésző a fejléc feletti sávot
-     (állapotsor, címsor) színezi –, a színátmenet csak onnan indul. */
+     A legteteje fehér – mint a fehér, tapadó fejléc és a html háttere,
+     amiből a mobil böngésző a fejléc feletti sávot színezi –, a lila
+     színátmenet a fejléc alól indul. */
   --sky: radial-gradient(70% 520px at 92% 520px, rgba(255,213,196,0.85) 0%, rgba(255,213,196,0) 70%),
          radial-gradient(60% 480px at 0% 760px, rgba(226,208,255,0.9) 0%, rgba(226,208,255,0) 70%),
          radial-gradient(80% 420px at 50% 1250px, rgba(255,211,226,0.9) 0%, rgba(255,211,226,0) 70%),
-         linear-gradient(180deg, #F3E6FF 0px, #F3E6FF 170px, #F7E5F7 420px, #FBE7F0 800px, #FDF1F4 1600px);
+         linear-gradient(180deg, #FFFFFF 0px, #FFFFFF 40px, #F3E6FF 220px, #F7E5F7 460px, #FBE7F0 800px, #FDF1F4 1600px);
 }
 
 html { background-color: var(--background); }

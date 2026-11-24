@@ -56,7 +56,7 @@ export default async function HomePage() {
       <HomeHero categoryCounts={categoryCounts} />
 
       {/* Teljes szolgáltatói lista – üveg panelen, az alkonyati háttér előtt */}
-      <section id="szolgaltatok" className="scroll-mt-20 pt-6 pb-10 sm:pb-16">
+      <section id="szolgaltatok" className="scroll-mt-20 pt-8 sm:pt-10 pb-10 sm:pb-16">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="glass rounded-[30px] px-3 pt-5 pb-6 sm:px-6 sm:pt-7">
             <ProvidersSectionTitle />

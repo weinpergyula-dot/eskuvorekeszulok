@@ -47,7 +47,7 @@ export function ProviderTile({
     : `/providers/${provider.id}`;
 
   const images = [...(provider.gallery_urls ?? [])];
-  if (provider.avatar_url && !images.includes(provider.avatar_url)) images.push(provider.avatar_url);
+  if (images.length === 0 && provider.avatar_url) images.push(provider.avatar_url);
   const shown = images.slice(0, 6);
 
   const [idx, setIdx] = useState(0);
@@ -142,9 +142,9 @@ export function ProviderTile({
         {/* Alsó sáv: név, hely, értékelés, gombok */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 text-white">
           {shown.length > 1 && (
-            <div className="mb-3 flex gap-1" aria-hidden>
+            <div className="mb-3 flex justify-center gap-1" aria-hidden>
               {shown.map((_, i) => (
-                <span key={i} className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/35">
+                <span key={i} className="h-[3px] w-4 overflow-hidden rounded-full bg-white/35">
                   <span
                     key={i === idx ? `run-${idx}` : "still"}
                     className={cn("block h-full rounded-full bg-white", i < idx ? "w-full" : i === idx ? "slide-progress" : "w-0")}
@@ -154,22 +154,34 @@ export function ProviderTile({
               ))}
             </div>
           )}
-          {cats.length > 0 && (
-            <p className="truncate text-[11px] uppercase tracking-[0.14em] text-white/75">
-              {cats.slice(0, 2).map((c) => CATEGORY_LABELS[c] ?? c).join(" · ")}
-            </p>
-          )}
-          <h3 className="mt-0.5 font-heading text-[23px] font-bold leading-tight line-clamp-2">{provider.full_name}</h3>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-white/90">
-            {counties.length > 0 && (
-              <span className="inline-flex items-center gap-1">
-                <MapPin className="h-4 w-4" />{counties[0]}{counties.length > 1 && ` +${counties.length - 1}`}
-              </span>
-            )}
-            <span className="inline-flex items-center gap-1">
-              <Star className="h-4 w-4 fill-white" />
-              {rating > 0 ? rating.toFixed(1) : "Új"}{reviews > 0 && ` (${reviews})`}
+          <div className="flex items-center gap-3">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/20 ring-2 ring-white/90 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.6)]">
+              {provider.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={provider.avatar_url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <span className="font-heading text-xl font-bold">{provider.full_name.charAt(0)}</span>
+              )}
             </span>
+            <div className="min-w-0">
+              {cats.length > 0 && (
+                <p className="truncate text-[11px] uppercase tracking-[0.14em] text-white/75">
+                  {cats.slice(0, 2).map((c) => CATEGORY_LABELS[c] ?? c).join(" · ")}
+                </p>
+              )}
+              <h3 className="mt-0.5 font-heading text-[21px] font-bold leading-tight line-clamp-2">{provider.full_name}</h3>
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-white/90">
+                {counties.length > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />{counties[0]}{counties.length > 1 && ` +${counties.length - 1}`}
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-1">
+                  <Star className="h-4 w-4 fill-white" />
+                  {rating > 0 ? rating.toFixed(1) : "Új"}{reviews > 0 && ` (${reviews})`}
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="mt-3 flex items-center justify-between gap-2">
@@ -198,11 +210,10 @@ export function ProviderTile({
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "-mt-8 grid-rows-[1fr]" : "grid-rows-[0fr]")}>
         <div className="overflow-hidden">
           <div className={cn("rounded-b-[30px] bg-white px-5 pb-5 pt-12 shadow-[0_18px_40px_-24px_rgba(90,20,60,0.45)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
-            <IntroHeader provider={provider} />
             {intro ? (
-              <p className="mt-3 text-[15px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
+              <p className="text-[15px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
             ) : (
-              <p className="mt-3 text-[15px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
+              <p className="text-[15px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
             )}
             {!isOwner && (
               <div className="mt-4 flex items-center gap-2">
@@ -326,11 +337,10 @@ export function ProviderRow({
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
         <div className="overflow-hidden">
           <div className={cn("mt-2 rounded-[20px] bg-white px-4 py-3.5 transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
-            <IntroHeader provider={provider} />
             {intro ? (
-              <p className="mt-3 text-[14.5px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
+              <p className="text-[14.5px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
             ) : (
-              <p className="mt-3 text-[14.5px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
+              <p className="text-[14.5px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
             )}
             {!isOwner && (
               <div className="mt-3 flex items-center gap-2">
@@ -356,27 +366,3 @@ export function ProviderRow({
   );
 }
 
-/* A lenyíló bemutatkozás fejléce: a szolgáltató avatarja és neve. */
-function IntroHeader({ provider }: { provider: Provider }) {
-  const counties = provider.counties ?? [];
-  return (
-    <div className="flex items-center gap-3">
-      <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FDEEF3] ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(90,20,60,0.5)]">
-        {provider.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={provider.avatar_url} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <span className="font-heading text-lg font-bold text-[#E8336A]">{provider.full_name.charAt(0)}</span>
-        )}
-      </span>
-      <div className="min-w-0">
-        <p className="truncate text-[15px] font-semibold text-[#1F1A2E]">{provider.full_name}</p>
-        {counties.length > 0 && (
-          <p className="flex items-center gap-1 truncate text-[13px] text-[#6B6480]">
-            <MapPin className="h-3.5 w-3.5 shrink-0" />{counties.join(", ")}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}

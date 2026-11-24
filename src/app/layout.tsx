@@ -16,10 +16,10 @@ const SITE_DESCRIPTION =
 
 const GA_ID = "G-F3ZQFXKGET";
 
-/* A böngésző felső sávja (iOS Safari állapotsor / címsor) az alkonyati
-   égbolt tetejének színét veszi fel. */
+/* A böngésző felső sávja (iOS Safari állapotsor / címsor) a fehér
+   fejléchez illik. */
 export const viewport: Viewport = {
-  themeColor: "#F3E6FF",
+  themeColor: "#FFFFFF",
 };
 
 export const metadata: Metadata = {

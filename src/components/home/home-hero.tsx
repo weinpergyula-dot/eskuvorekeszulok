@@ -76,7 +76,7 @@ export function HomeHero({
 
   return (
     <section className="relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 sm:pt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 sm:pt-10">
         <div className="max-w-3xl">
           <p className="hidden sm:inline-flex items-center gap-1.5 rounded-full glass px-3 py-1 text-sm text-[#9C1846]">
             <Sparkles className="h-4 w-4" /> Minden esküvői szolgáltató egy helyen
@@ -89,7 +89,7 @@ export function HomeHero({
           </p>
 
           {/* Kereső – a mező 16px-es, hogy iOS-en fókuszáláskor ne nagyítson rá az oldal */}
-          <form onSubmit={submitSearch} className="glass-strong mt-4 sm:mt-7 flex items-center gap-3 rounded-full py-2 pl-5 pr-2">
+          <form onSubmit={submitSearch} className="glass-strong mt-6 sm:mt-8 flex items-center gap-3 rounded-full py-2 pl-5 pr-2">
             <Search className="h-5 w-5 shrink-0 text-[#1F1A2E]" strokeWidth={2.2} />
             <label className="flex-1 min-w-0">
               <span className="block text-[15px] font-semibold text-[#1F1A2E] leading-tight">Mit keresel?</span>
@@ -109,7 +109,7 @@ export function HomeHero({
         </div>
 
         {/* Kategória-chipek */}
-        <div className="-mx-4 mt-4 overflow-x-auto px-4 pb-2 scrollbar-none lg:mx-0 lg:px-0 lg:overflow-visible">
+        <div className="-mx-4 mt-6 overflow-x-auto px-4 pb-2 scrollbar-none lg:mx-0 lg:px-0 lg:overflow-visible">
           <div className="flex gap-2.5 lg:flex-wrap">
             <CategoryChip label="Mind" Icon={LayoutGrid} active={category === ""} onClick={() => pickCategory("")} />
             {categories.map((c) => (

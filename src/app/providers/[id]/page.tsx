@@ -98,8 +98,8 @@ export default async function ProviderProfilePage({ params }: PageProps) {
     <div className="pb-32 md:pb-16">
       <ViewTracker providerId={provider.id} />
 
-      {/* Borítókép – mobilon a lebegő fejléc mögé is befut */}
-      <div className="relative -mt-[68px] md:mt-0 md:max-w-7xl md:mx-auto md:px-6 lg:px-8 md:pt-6">
+      {/* Borítókép – mobilon a fejléc lekerekített alja mögé fut be */}
+      <div className="relative -mt-6 md:mt-0 md:max-w-7xl md:mx-auto md:px-6 lg:px-8 md:pt-6">
         <div className="relative h-[54vh] min-h-[340px] max-h-[560px] overflow-hidden bg-[#F6E4EC] md:h-[480px] md:rounded-[32px] md:ring-1 md:ring-white/70 md:shadow-[0_30px_60px_-30px_rgba(90,20,60,0.5)]">
           {cover ? (
             <div className="absolute inset-0 md:grid md:grid-cols-[2fr_1fr] md:gap-2">
@@ -121,7 +121,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/30" />
 
-          <div className="absolute inset-x-4 top-[84px] md:top-5 md:inset-x-5 flex items-center justify-between">
+          <div className="absolute inset-x-4 top-10 md:top-5 md:inset-x-5 flex items-center justify-between">
             <BackLink fallbackHref={backFallback} round />
             <div className="flex items-center gap-2">
               <div className="glass-strong rounded-full p-0.5">
