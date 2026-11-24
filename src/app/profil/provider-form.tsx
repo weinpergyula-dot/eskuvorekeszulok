@@ -65,7 +65,7 @@ function PillSelect<T extends string>({
                 isDisabled
                   ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
                   : isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
+                    ? "tile-cta text-white border-[#84AAA6] cursor-pointer"
                     : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
               }`}
             >

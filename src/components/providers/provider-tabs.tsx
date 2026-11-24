@@ -164,7 +164,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               </div>
               <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2"
+                className="w-full flex items-center justify-center gap-2 text-[#5C8480] font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2 bg-[#F0F6F5] hover:bg-[#E3EFED]"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
@@ -173,7 +173,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               <LoginGateLink
                 href={quoteHrefFor(provider)}
                 message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2"
+                className="w-full flex items-center justify-center gap-2 text-[#5C8480] font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2 bg-[#F0F6F5] hover:bg-[#E3EFED]"
               >
                 <Send className="h-4 w-4" strokeWidth={1.5} />
                 Ajánlatkérés
@@ -198,7 +198,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
           </div>
           <ChatLink
             href={`/profil?tab=chat&with=${provider.user_id}`}
-            className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
+            className="flex items-center gap-2 tile-cta text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
           >
             <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
             Chat indítása
@@ -241,7 +241,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                   href={provider.pricing_pdf_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
+                  className="flex items-center gap-2 tile-cta text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
                 >
                   <FileText className="h-4 w-4" strokeWidth={1.5} />
                   PDF megnyitása

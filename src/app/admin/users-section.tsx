@@ -294,7 +294,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
               onClick={() => handleFilter(f)}
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
                 approvalFilter === f
-                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  ? "tile-cta text-white border-[#84AAA6]"
                   : "bg-white text-gray-700 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
@@ -307,7 +307,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
               title="Kategória szűrő"
               className={`h-8 w-8 flex items-center justify-center rounded-full border transition-colors cursor-pointer ${
                 showCategory || categoryFilter
-                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  ? "tile-cta text-white border-[#84AAA6]"
                   : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
@@ -319,7 +319,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
             title="Keresés"
             className={`h-8 w-8 flex items-center justify-center rounded-full border transition-colors cursor-pointer ${
               showSearch || search
-                ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                ? "tile-cta text-white border-[#84AAA6]"
                 : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
             }`}
           >
@@ -367,7 +367,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   title={v === "compact" ? "Egysoros nézet" : "Teljes nézet"}
                   className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer ${
                     viewMode === v
-                      ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                      ? "tile-cta text-white border-[#84AAA6]"
                       : "bg-white text-gray-500 border-gray-200 hover:border-[#84AAA6]"
                   }`}
                 >
@@ -385,7 +385,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   onClick={() => { setPageSize(n); setPage(1); }}
                   className={`px-2.5 py-1 rounded text-sm font-medium border transition-colors cursor-pointer ${
                     pageSize === n
-                      ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                      ? "tile-cta text-white border-[#84AAA6]"
                       : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
                   }`}
                 >
@@ -536,7 +536,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                             title={u.providerFeatured === "teal" ? "Türkiz – kattints az eltávolításhoz" : "Türkiz kiemelés"}
                             className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
                               u.providerFeatured === "teal"
-                                ? "bg-[#84AAA6] border-[#84AAA6] text-white hover:bg-[#6B8E8A]"
+                                ? "tile-cta border-[#84AAA6] text-white"
                                 : "bg-white border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6]"
                             }`}
                           >
@@ -663,7 +663,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                       title={u.providerFeatured === "teal" ? "Türkiz – kattints az eltávolításhoz" : "Türkiz kiemelés"}
                       className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
                         u.providerFeatured === "teal"
-                          ? "bg-[#84AAA6] border-[#84AAA6] text-white"
+                          ? "tile-cta border-[#84AAA6] text-white"
                           : "bg-white border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6]"
                       }`}
                     >

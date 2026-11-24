@@ -230,7 +230,7 @@ export function VisitsSection() {
           onClick={() => selectPath(page.path)}
           className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
             path === page.path
-              ? "bg-[#84AAA6] text-white"
+              ? "tile-cta text-white"
               : "text-gray-600 hover:bg-[#84AAA6]/10 hover:text-[#5C8480]"
           }`}
         >
@@ -316,7 +316,7 @@ export function VisitsSection() {
               key={m.value}
               onClick={() => setMode(m.value)}
               className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
-                mode === m.value ? "bg-[#84AAA6] text-white" : "text-gray-600 hover:bg-[#84AAA6]/10 hover:text-[#5C8480]"
+                mode === m.value ? "tile-cta text-white" : "text-gray-600 hover:bg-[#84AAA6]/10 hover:text-[#5C8480]"
               }`}
             >
               {m.label}

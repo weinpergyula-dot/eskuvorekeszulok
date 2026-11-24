@@ -111,7 +111,7 @@ export function RecipientPicker({
         <button
           type="button"
           onClick={() => setCheckedIds(allSelected ? new Set() : new Set(providers.map(p => p.id)))}
-          className="text-xs font-medium px-3 py-1.5 rounded-full border border-[#84AAA6] text-[#84AAA6] hover:bg-[#84AAA6]/10 transition-colors cursor-pointer"
+          className="text-xs font-medium px-3 py-1.5 rounded-full text-[#5C8480] transition-colors cursor-pointer bg-[#F0F6F5] hover:bg-[#E3EFED]"
         >
           {allSelected ? "Kijelölés törlése" : "Összes kijelölése"}
         </button>

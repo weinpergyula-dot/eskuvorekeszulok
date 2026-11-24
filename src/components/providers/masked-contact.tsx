@@ -205,7 +205,7 @@ export function LoginRequiredContent({ message }: { message: string }) {
       <div className="flex flex-col gap-2">
         <a
           href={`/auth/login${next ? `?next=${next}` : ""}`}
-          className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors"
+          className="w-full tile-cta text-white font-semibold py-2.5 rounded-full transition-colors"
         >
           Belépés
         </a>

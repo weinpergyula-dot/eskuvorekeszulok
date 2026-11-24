@@ -593,8 +593,8 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
                 key={t}
                 onClick={() => { setTab(t); setFilterCategory(null); }}
                 className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-                  tab === t ? "border-[#84AAA6] text-[#84AAA6]" : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
+                  tab === t ? " text-[#5C8480]" : "border-transparent text-gray-500 hover:text-gray-700"
+                } bg-[#F0F6F5] hover:bg-[#E3EFED]`}
               >
                 {t === "bejovo" ? "Beérkező" : "Elküldött"}
                 {count > 0 && (
@@ -621,7 +621,7 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilterCategory(null)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "tile-cta text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
               >
                 Összes
               </button>
@@ -629,7 +629,7 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
                 <button
                   key={cat}
                   onClick={() => setFilterCategory(c => c === cat ? null : cat)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "tile-cta text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
                 >
                   {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
                 </button>

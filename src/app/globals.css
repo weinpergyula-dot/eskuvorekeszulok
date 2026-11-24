@@ -2147,3 +2147,9 @@ html.a11y-underline a { text-decoration: underline !important; }
 @media (max-width: 767px) {
   body:has(.mobile-bottom-bar) .floating-corner { bottom: calc(96px + env(safe-area-inset-bottom)); }
 }
+.tile-cta-gold {
+  background: linear-gradient(135deg, #CBA772 0%, #B8925A 55%, #9E7A45 100%);
+  box-shadow: 0 10px 24px -10px rgba(158, 122, 69, 0.65), inset 0 1px 0 rgba(255,255,255,0.3);
+  color: #fff;
+}
+.tile-cta-gold:hover { filter: brightness(1.05); }
