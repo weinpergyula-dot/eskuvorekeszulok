@@ -22,40 +22,74 @@ interface PageHeaderProps {
   breadcrumb?: { label: string; href: string }[];
 }
 
-export function PageHeader({ title, description, backHref, backFallbackHref, icon: Icon, ctaLabel, ctaHref }: PageHeaderProps) {
-  /* Új dizájn: nincs színes sáv – a cím közvetlenül az alkonyati háttéren
-     ül, mellette rózsaszín ikon-kapszula; a Vissza gomb üveg kapszula. */
+export function PageHeader({ title, description, backHref, backFallbackHref, icon: Icon, bgColor = "#84AAA6", ctaLabel, ctaHref, roundedBottom = true, bottomBg = "#ffffff" }: PageHeaderProps) {
   return (
     <>
-      <div className="page-header w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-1 sm:pt-8 sm:pb-2">
-          {(backHref || backFallbackHref) && (
-            <div className="mb-4">
-              {backFallbackHref ? (
-                <BackLink fallbackHref={backFallbackHref} />
-              ) : (
-                <a href={backHref} className="glass inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[14px] font-semibold text-[#1F1A2E]">
-                  <ArrowLeft className="h-4 w-4" />
-                  Vissza
-                </a>
-              )}
-            </div>
-          )}
-          <h1 className="font-heading font-extrabold tracking-tight text-[#1F1A2E] text-[28px] md:text-[40px] leading-tight flex items-center gap-3">
-            {Icon && (
-              <span className="rose-cta flex h-11 w-11 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-2xl">
-                <Icon className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.8} />
-              </span>
-            )}
+      <div
+        className={`w-full -mt-6 ${bgColor === "#84AAA6" ? "teal-shift-bg" : ""}`}
+        style={bgColor === "#84AAA6" ? undefined : { backgroundColor: bgColor }}
+      >
+        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${ctaLabel && ctaHref ? "pt-14 pb-6" : "pt-14 pb-8"}`}>
+          <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
+            {Icon && <Icon className="h-7 w-7 text-white/80 shrink-0" strokeWidth={1.5} />}
             {title}
           </h1>
           {description && (
-            <p className="mt-3 max-w-3xl text-[16px] md:text-[17px] text-[#6B6480] leading-relaxed">{description}</p>
+            <>
+              <hr className="border-white/30 mt-5 mb-4" />
+              <p className="text-base text-white leading-relaxed">{description}</p>
+            </>
           )}
         </div>
+        {/* CTA nélkül a sáv alja: fehér, felül lekerekített sapka – a teal
+            így a sarkoknál lefelé kerekedik */}
+        {roundedBottom && !(ctaLabel && ctaHref) && (
+          <div className="h-6 rounded-t-3xl" style={{ backgroundColor: bottomBg }} aria-hidden />
+        )}
       </div>
 
-      {ctaLabel && ctaHref && <StickyCta label={ctaLabel} href={ctaHref} bgColor="#E8336A" />}
+      {/* CTA sora — a navbar alá tapad scrollozáskor (sticky); a gomb feletti és
+          alatti hely közel azonos, a fölötte lévő elválasztó nélkül. Scrollozáskor
+          a háttere minimálisan áttetszővé válik, mint a header. */}
+      {ctaLabel && ctaHref && (
+        <>
+          <StickyCta label={ctaLabel} href={ctaHref} bgColor={bgColor} />
+          {/* A CTA-sor alatti, lefelé kerekedő átmenet (nem sticky) */}
+          {roundedBottom && (
+            <div
+              className={bgColor === "#84AAA6" ? "teal-shift-bg" : ""}
+              style={bgColor === "#84AAA6" ? undefined : { backgroundColor: bgColor }}
+              aria-hidden
+            >
+              <div className="h-6 rounded-t-3xl" style={{ backgroundColor: bottomBg }} />
+            </div>
+          )}
+        </>
+      )}
+
+      {(backHref || backFallbackHref) && (
+        /* A Vissza-sáv a fejléc alatti szekció színét veszi fel, alatta halvány,
+           teal árnyalatú elválasztóval (fehér és színes háttéren is látszik). */
+        <div
+          className="w-full border-b"
+          style={{ backgroundColor: bottomBg, borderColor: "rgba(45, 88, 84, 0.16)" }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            {backFallbackHref ? (
+              <BackLink fallbackHref={backFallbackHref} />
+            ) : (
+              <a
+                href={backHref}
+                className="inline-flex items-center gap-1.5 text-[15px] font-medium transition-colors"
+                style={{ color: "#84AAA6" }}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Vissza
+              </a>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }

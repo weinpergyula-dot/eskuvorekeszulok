@@ -86,13 +86,13 @@ export default function ContactPage() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <Send className="h-5 w-5 text-[#E8336A]" strokeWidth={1.5} />
+            <Send className="h-5 w-5 text-[#84AAA6]" strokeWidth={1.5} />
             Írj nekünk
           </h2>
 
           {sent ? (
             <div className="flex flex-col items-center text-center py-10 gap-4">
-              <CheckCircle className="h-14 w-14 text-[#E8336A]" strokeWidth={1.5} />
+              <CheckCircle className="h-14 w-14 text-[#84AAA6]" strokeWidth={1.5} />
               <p className="text-xl font-semibold text-gray-900">Üzeneted megkaptuk!</p>
               <p className="text-base text-gray-600">Hamarosan felvesszük veled a kapcsolatot.</p>
             </div>

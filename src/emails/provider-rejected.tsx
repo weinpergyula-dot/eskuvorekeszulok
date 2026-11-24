@@ -63,7 +63,7 @@ const s = {
     lineHeight: "1.6",
   } as React.CSSProperties,
   reasonBox: {
-    backgroundColor: "#FDEEF3",
+    backgroundColor: "#f0f6f5",
     border: "1px solid #b8d4d1",
     borderRadius: "8px",
     padding: "16px 20px",
@@ -73,7 +73,7 @@ const s = {
     fontFamily: "Arial, Helvetica, sans-serif",
     fontSize: "13px",
     fontWeight: 700,
-    color: "#E8336A",
+    color: "#84AAA6",
     textTransform: "uppercase" as const,
     letterSpacing: "0.5px",
   } as React.CSSProperties,
@@ -85,7 +85,7 @@ const s = {
     lineHeight: "1.6",
   } as React.CSSProperties,
   link: {
-    color: "#E8336A",
+    color: "#84AAA6",
     textDecoration: "underline",
   },
 } as const;

@@ -82,7 +82,7 @@ function TopLoaderInner() {
   return (
     <div className="fixed top-0 left-0 right-0 z-[9999] h-[3px] pointer-events-none">
       <div
-        className="h-full bg-[#E8336A] shadow-[0_0_8px_rgba(232,51,106,0.7)] transition-[width] duration-300 ease-out"
+        className="h-full bg-[#84AAA6] shadow-[0_0_8px_rgba(132,170,166,0.7)] transition-[width] duration-300 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>

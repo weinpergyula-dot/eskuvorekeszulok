@@ -43,7 +43,7 @@ export function useIsLoggedIn(): boolean | null {
 export function MaskedContact({
   value,
   className = "text-base text-gray-900 break-all",
-  linkColor = "text-[#E8336A]",
+  linkColor = "text-[#84AAA6]",
   fullyHidden = false,
   children,
 }: {
@@ -192,8 +192,8 @@ export function LoginRequiredContent({ message }: { message: string }) {
 
   return (
     <>
-      <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#E8336A]/15">
-        <Lock className="h-6 w-6 text-[#E8336A]" />
+      <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#84AAA6]/15">
+        <Lock className="h-6 w-6 text-[#84AAA6]" />
       </div>
       <h2 id="login-required-title" className="text-lg font-semibold text-gray-900 mb-2">
         Csak regisztrált felhasználóknak
@@ -205,7 +205,7 @@ export function LoginRequiredContent({ message }: { message: string }) {
       <div className="flex flex-col gap-2">
         <a
           href={`/auth/login${next ? `?next=${next}` : ""}`}
-          className="w-full bg-[#E8336A] hover:bg-[#CC2257] text-white font-semibold py-2.5 rounded-lg transition-colors"
+          className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold py-2.5 rounded-lg transition-colors"
         >
           Belépés
         </a>

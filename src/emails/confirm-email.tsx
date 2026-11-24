@@ -72,7 +72,7 @@ const s = {
     wordBreak: "break-all" as const,
   },
   btnCell: {
-    backgroundColor: "#E8336A",
+    backgroundColor: "#84AAA6",
     borderRadius: "8px",
   },
   btn: {
@@ -86,7 +86,7 @@ const s = {
     borderRadius: "8px",
   } as React.CSSProperties,
   link: {
-    color: "#E8336A",
+    color: "#84AAA6",
     textDecoration: "underline",
     fontFamily: "Arial, Helvetica, sans-serif",
     fontSize: "13px",

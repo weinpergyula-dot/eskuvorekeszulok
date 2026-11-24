@@ -79,7 +79,7 @@ export function AccessibilityWidget() {
         <div className="absolute bottom-full right-0 mb-3 w-64 rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-md shadow-xl p-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-1.5">
-              <PersonStanding className="h-4 w-4 text-[#E8336A]" />
+              <PersonStanding className="h-4 w-4 text-[#84AAA6]" />
               Akadálymentesítés
             </h2>
             <button onClick={() => setOpen(false)} aria-label="Bezárás" className="text-gray-400 hover:text-gray-600 cursor-pointer">
@@ -142,7 +142,7 @@ export function AccessibilityWidget() {
         aria-label="Akadálymentesítési beállítások"
         title="Akadálymentesítési beállítások"
         aria-expanded={open}
-        className="flex items-center justify-center w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm text-[#E8336A] opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+        className="flex items-center justify-center w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-md shadow-sm text-[#84AAA6] opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
       >
         <PersonStanding className="h-6 w-6" strokeWidth={2} />
       </button>
@@ -160,7 +160,7 @@ function ToggleRow({ icon, label, on, onClick }: { icon: React.ReactNode; label:
     >
       <span className="text-gray-500 shrink-0">{icon}</span>
       <span className="flex-1 text-sm text-gray-800">{label}</span>
-      <span className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${on ? "bg-[#E8336A]" : "bg-gray-200"}`}>
+      <span className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${on ? "bg-[#84AAA6]" : "bg-gray-200"}`}>
         <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${on ? "translate-x-[18px]" : "translate-x-[3px]"}`} />
       </span>
     </button>

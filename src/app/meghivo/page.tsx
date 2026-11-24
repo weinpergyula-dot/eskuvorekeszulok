@@ -31,7 +31,7 @@ const PACKAGES: Package[] = [
     from: "#9CC0BC",
     accent: "#6E9995",
     to: "#3F6C68",
-    ink: "#9C1846",
+    ink: "#2D5854",
     sampleHref: "/zso-es-szili",
     features: [
       "Mobilra szabott meghívó",
@@ -160,7 +160,7 @@ export default function MeghivoPage() {
           <div className="mt-7 flex justify-center">
             <MeghivoQuoteCta
               href="/profil?tab=quotes&form=meghivo"
-              className="inline-flex h-11 items-center justify-center rounded-md bg-white px-8 text-[15px] font-bold text-[#9C1846] shadow transition-colors hover:bg-white/90"
+              className="inline-flex h-11 items-center justify-center rounded-md bg-white px-8 text-[15px] font-bold text-[#2D5854] shadow transition-colors hover:bg-white/90"
             >
               Ajánlatot kérek
             </MeghivoQuoteCta>

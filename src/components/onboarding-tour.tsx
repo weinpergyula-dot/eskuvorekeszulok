@@ -302,7 +302,7 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
           </button>
         </div>
         <hr className="border-gray-200 mb-3" />
-        <span className="text-[11px] font-semibold uppercase tracking-wider block mb-3" style={{ color: "#E8336A" }}>
+        <span className="text-[11px] font-semibold uppercase tracking-wider block mb-3" style={{ color: "#84AAA6" }}>
           {stepIdx + 1} / {steps.length}
         </span>
         <h3 className="text-base font-bold text-gray-900 mb-2">{current.title}</h3>
@@ -311,7 +311,7 @@ export function OnboardingTour({ userId, role }: { userId: string; role: UserRol
           onClick={next}
           onTouchEnd={(e) => { e.preventDefault(); next(); }}
           className="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-colors cursor-pointer"
-          style={{ backgroundColor: "#E8336A", touchAction: "manipulation" }}
+          style={{ backgroundColor: "#84AAA6", touchAction: "manipulation" }}
         >
           {isLast ? "Kezdjük el! 🎉" : "Tovább →"}
         </button>

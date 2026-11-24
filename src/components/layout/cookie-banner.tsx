@@ -42,15 +42,15 @@ export function CookieBanner() {
   return (
     <>
       {/* Backdrop — elsötétíti az oldalt és blokkolja az interakciókat */}
-      <div className="fixed inset-0 z-[9997] bg-[#2a1030]/30 backdrop-blur-[2px]" />
+      <div className="fixed inset-0 z-[9997] bg-black/50" />
 
       {/* Cookie popup — a backdrop fölött */}
       <div className="fixed bottom-0 left-0 right-0 z-[9998] px-4 pb-4 sm:px-6">
-      <div className="max-w-3xl mx-auto glass-strong rounded-[26px] p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+      <div className="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1 min-w-0">
           <p className="text-sm text-gray-700 leading-relaxed">
             Az oldal alapvető cookie-kat használ a bejelentkezési munkamenethez, és – hozzájárulás esetén – Google Analytics sütiket a névtelen forgalomméréshez. A beállítás bármikor módosítható. Részletek a{" "}
-            <Link href="/cookies" className="text-[#E8336A] underline hover:text-[#CC2257]">
+            <Link href="/cookies" className="text-[#84AAA6] underline hover:text-[#6B8E8A]">
               Cookie szabályzatban
             </Link>
             .
@@ -59,13 +59,13 @@ export function CookieBanner() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={decline}
-            className="px-4 py-2 rounded-full text-sm font-medium bg-white/80 text-[#4A4360] ring-1 ring-black/5 hover:bg-white transition-colors"
+            className="px-4 py-2 rounded-full text-sm font-medium border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors"
           >
             Elutasítom
           </button>
           <button
             onClick={accept}
-            className="px-4 py-2 rounded-full text-sm font-medium rose-cta transition"
+            className="px-4 py-2 rounded-full text-sm font-medium bg-[#84AAA6] text-white hover:bg-[#6B8E8A] transition-colors"
           >
             Elfogadom
           </button>

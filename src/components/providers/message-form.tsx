@@ -52,7 +52,7 @@ export function MessageForm({ recipientId, providerId }: Props) {
   return (
     <section className="mt-8">
       <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-        <MessageSquare className="h-5 w-5 text-[#E8336A]" />
+        <MessageSquare className="h-5 w-5 text-[#84AAA6]" />
         Üzenet küldése
       </h2>
 
@@ -95,7 +95,7 @@ export function MessageForm({ recipientId, providerId }: Props) {
         )
       ) : (
         <p className="text-base text-gray-700">
-          <Link href="/auth/login" className="text-[#E8336A] hover:underline font-medium">
+          <Link href="/auth/login" className="text-[#84AAA6] hover:underline font-medium">
             Jelentkezz be
           </Link>{" "}
           az üzenet küldéséhez.

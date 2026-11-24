@@ -102,12 +102,12 @@ export function HomeLoader() {
         <div className="relative w-[240px]" style={{ aspectRatio: `${VB_W} / ${VB_H}` }}>
           <svg viewBox={`0 0 ${VB_W} ${VB_H}`} className="absolute inset-0 h-full w-full overflow-visible" fill="none">
             {/* Halvány alapvonal, rajta a betöltés állását mutató keret */}
-            <path d={FRAME_PATH} stroke="#E8336A" strokeOpacity="0.18" strokeWidth="36" />
+            <path d={FRAME_PATH} stroke="#84AAA6" strokeOpacity="0.18" strokeWidth="36" />
             <path
               className="home-loader-frame"
               d={FRAME_PATH}
               pathLength={1}
-              stroke="#E8336A"
+              stroke="#84AAA6"
               strokeWidth="36"
               strokeLinecap="round"
               strokeDasharray="1 1"

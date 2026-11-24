@@ -20,8 +20,8 @@ const TABS = [
     icon: Users,
     title: "Regisztrálj látogatónak",
     chip: "Ingyenes fiók",
-    accent: "#E8336A",
-    gradient: "linear-gradient(150deg, #8FB3AF 0%, #CC2257 60%, #55736F 100%)",
+    accent: "#84AAA6",
+    gradient: "linear-gradient(150deg, #8FB3AF 0%, #6B8E8A 60%, #55736F 100%)",
     shadow: "0 22px 44px -20px rgba(85, 115, 111, 0.65)",
     features: [
       "Kedvencnek jelölni szolgáltatókat",
@@ -55,7 +55,7 @@ export function WhyRegister() {
 
   return (
     <section className="mx-auto max-w-2xl px-5 pb-2 pt-2 sm:px-0">
-      <p className="text-center text-[11px] font-bold uppercase tracking-[0.28em] text-[#E8336A]">
+      <p className="text-center text-[11px] font-bold uppercase tracking-[0.28em] text-[#84AAA6]">
         Csatlakozz hozzánk
       </p>
       <h2 className="mt-1.5 text-center text-[26px] font-bold text-gray-900 md:text-3xl">
@@ -145,7 +145,7 @@ export function WhyRegister() {
             {tab.id === "visitor" ? (
               <>
                 <Link href="/#szolgaltatok" className="block">
-                  <Button size="lg" className="w-full bg-white text-[#9C1846] hover:bg-white/90">
+                  <Button size="lg" className="w-full bg-white text-[#2D5854] hover:bg-white/90">
                     Megnézem a kínálatot
                   </Button>
                 </Link>

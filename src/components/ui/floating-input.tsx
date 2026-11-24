@@ -19,7 +19,7 @@ interface FloatingInputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
-  ({ label, id, value, className, onFocus, onBlur, type, accentColor = "#E8336A", compact = false, ...props }, ref) => {
+  ({ label, id, value, className, onFocus, onBlur, type, accentColor = "#84AAA6", compact = false, ...props }, ref) => {
     const [focused, setFocused] = useState(false);
     const [autofilled, setAutofilled] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -69,8 +69,8 @@ const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           className={cn(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white -translate-y-1/2",
             compact
-              ? floated ? `top-0 text-xs px-1 ${focused ? "" : "text-[#E8336A]"}` : "top-1/2 text-sm text-gray-400"
-              : floated ? `top-0 text-sm px-1 ${focused ? "" : "text-[#E8336A]"}` : "top-1/2 text-base text-gray-400"
+              ? floated ? `top-0 text-xs px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 text-sm text-gray-400"
+              : floated ? `top-0 text-sm px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-1/2 text-base text-gray-400"
           )}
           style={{ color: focused ? accentColor : undefined }}
         >
@@ -105,7 +105,7 @@ interface FloatingTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaEleme
 }
 
 const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
-  ({ label, id, value, className, onFocus, onBlur, accentColor = "#E8336A", compact = false, ...props }, ref) => {
+  ({ label, id, value, className, onFocus, onBlur, accentColor = "#84AAA6", compact = false, ...props }, ref) => {
     const [focused, setFocused] = useState(false);
     const floated = focused || String(value).length > 0;
 
@@ -132,8 +132,8 @@ const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
           className={cn(
             "absolute left-4 pointer-events-none transition-all duration-150 bg-white",
             compact
-              ? floated ? `-top-2 text-[10px] px-1 ${focused ? "" : "text-[#E8336A]"}` : "top-3.5 text-sm text-gray-400"
-              : floated ? `-top-2.5 text-xs px-1 ${focused ? "" : "text-[#E8336A]"}` : "top-4 text-base text-gray-400"
+              ? floated ? `-top-2 text-[10px] px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-3.5 text-sm text-gray-400"
+              : floated ? `-top-2.5 text-xs px-1 ${focused ? "" : "text-[#84AAA6]"}` : "top-4 text-base text-gray-400"
           )}
           style={{ color: focused ? accentColor : undefined }}
         >

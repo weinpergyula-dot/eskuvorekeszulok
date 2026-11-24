@@ -185,7 +185,7 @@ function ConnectedAccountsContent() {
           <button
             onClick={handleLinkGoogle}
             disabled={actionLoading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 border-[#E8336A] text-sm text-[#E8336A] font-medium hover:bg-[#E8336A]/5 transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 border-[#84AAA6] text-sm text-[#84AAA6] font-medium hover:bg-[#84AAA6]/5 transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
           >
             <Link2 className="h-3.5 w-3.5" />
             Összekapcsolás

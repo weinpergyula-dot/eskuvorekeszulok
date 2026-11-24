@@ -79,7 +79,7 @@ const s = {
     margin: "0 0 8px 0",
     fontFamily: "Arial, Helvetica, sans-serif",
     fontSize: "22px",
-    color: "#E8336A",
+    color: "#84AAA6",
     letterSpacing: "2px",
   } as React.CSSProperties,
   comment: {
@@ -97,7 +97,7 @@ const s = {
     color: "#888888",
     lineHeight: "1.6",
   } as React.CSSProperties,
-  btnCell: { backgroundColor: "#E8336A", borderRadius: "8px" },
+  btnCell: { backgroundColor: "#84AAA6", borderRadius: "8px" },
   btn: {
     display: "inline-block",
     padding: "14px 32px",
@@ -108,5 +108,5 @@ const s = {
     textDecoration: "none",
     borderRadius: "8px",
   } as React.CSSProperties,
-  link: { color: "#E8336A", textDecoration: "underline" },
+  link: { color: "#84AAA6", textDecoration: "underline" },
 } as const;

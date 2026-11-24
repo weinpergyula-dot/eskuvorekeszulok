@@ -133,7 +133,7 @@ function InboxListItem({ thread, onSelect }: { thread: Thread; onSelect: () => v
             </p>
             <span className="text-xs text-gray-400 shrink-0">{formatShort(thread.lastAt)}</span>
           </div>
-          {categoryLabel && <p className="text-xs text-[#E8336A] truncate mb-0.5">{categoryLabel}</p>}
+          {categoryLabel && <p className="text-xs text-[#84AAA6] truncate mb-0.5">{categoryLabel}</p>}
           <p className={`text-xs truncate ${thread.hasUnread ? "font-semibold text-gray-700" : "text-gray-500"}`}>{thread.subject}</p>
         </div>
         {thread.hasUnread && <span className="w-2 h-2 rounded-full bg-[#F06C6C] shrink-0" />}
@@ -354,7 +354,7 @@ function ThreadChat({
     <div className="flex flex-col flex-1 min-h-0">
 
       {/* Mobile: teal header */}
-      <div className="flex items-center px-4 py-3 bg-[#E8336A] text-white shrink-0 sm:hidden">
+      <div className="flex items-center px-4 py-3 bg-[#84AAA6] text-white shrink-0 sm:hidden">
         <button onClick={onBack} className="text-white cursor-pointer shrink-0">
           <ArrowLeft className="h-5 w-5" />
         </button>
@@ -593,7 +593,7 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
                 key={t}
                 onClick={() => { setTab(t); setFilterCategory(null); }}
                 className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-                  tab === t ? "border-[#E8336A] text-[#E8336A]" : "border-transparent text-gray-500 hover:text-gray-700"
+                  tab === t ? "border-[#84AAA6] text-[#84AAA6]" : "border-transparent text-gray-500 hover:text-gray-700"
                 }`}
               >
                 {t === "bejovo" ? "Beérkező" : "Elküldött"}
@@ -621,7 +621,7 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilterCategory(null)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#E8336A] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === null ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
               >
                 Összes
               </button>
@@ -629,7 +629,7 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
                 <button
                   key={cat}
                   onClick={() => setFilterCategory(c => c === cat ? null : cat)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#E8336A] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filterCategory === cat ? "bg-[#84AAA6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
                 >
                   {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? cat}
                 </button>

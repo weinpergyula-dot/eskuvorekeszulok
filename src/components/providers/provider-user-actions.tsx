@@ -51,14 +51,14 @@ export function ProviderUserActions({ providerId, providerUserId, variant }: Pro
     return variant === "mobile" ? (
       <a
         href="/profil?tab=provider"
-        className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#E8336A] hover:text-[#CC2257]"
+        className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 border border-gray-200 text-[#84AAA6] hover:text-[#6B8E8A]"
       >
         <Pencil className="h-4 w-4" />
       </a>
     ) : (
       <a
         href="/profil?tab=provider"
-        className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#E8336A]/10 transition-colors px-3 py-1.5"
+        className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 hover:bg-[#84AAA6]/10 transition-colors px-3 py-1.5"
       >
         <Pencil className="h-4 w-4 text-gray-400" />
         <span className="text-sm text-gray-700">Profil szerkesztés</span>

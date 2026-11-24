@@ -136,7 +136,7 @@ function AvatarCropModal({
             step={0.01}
             value={scale}
             onChange={(e) => setScale(parseFloat(e.target.value))}
-            className="flex-1 accent-[#E8336A]"
+            className="flex-1 accent-[#84AAA6]"
           />
           <svg className="h-5 w-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/>
@@ -146,7 +146,7 @@ function AvatarCropModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="outline" onClick={onCancel}>Mégse</Button>
-          <Button onClick={handleConfirm} className="bg-[#E8336A] hover:bg-[#CC2257]">Alkalmaz</Button>
+          <Button onClick={handleConfirm} className="bg-[#84AAA6] hover:bg-[#6B8E8A]">Alkalmaz</Button>
         </div>
       </div>
       <canvas ref={canvasRef} className="hidden" />
@@ -281,7 +281,7 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
           <button
             type="button"
             onClick={() => avatarInputRef.current?.click()}
-            className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-[#E8336A] transition-colors cursor-pointer shrink-0 group"
+            className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-[#84AAA6] transition-colors cursor-pointer shrink-0 group"
           >
             {avatarPreview ? (
               <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
@@ -298,7 +298,7 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
             </span>
             {avatarUploading && (
               <span className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                <span className="w-5 h-5 border-2 border-gray-200 border-t-[#E8336A] rounded-full animate-spin" />
+                <span className="w-5 h-5 border-2 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
               </span>
             )}
           </button>
@@ -307,7 +307,7 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
             <button
               type="button"
               onClick={() => avatarInputRef.current?.click()}
-              className="text-sm text-[#E8336A] hover:text-[#CC2257] cursor-pointer"
+              className="text-sm text-[#84AAA6] hover:text-[#6B8E8A] cursor-pointer"
             >
               Módosítás
             </button>
@@ -512,7 +512,7 @@ export function LinkedAccountsSection() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="w-6 h-6 border-4 border-gray-200 border-t-[#E8336A] rounded-full animate-spin" />
+        <div className="w-6 h-6 border-4 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
       </div>
     );
   }
@@ -534,7 +534,7 @@ export function LinkedAccountsSection() {
           variant={googleIdentity ? "outline" : "default"}
           onClick={googleIdentity ? handleUnlink : handleLink}
           disabled={linking || unlinking}
-          className={!googleIdentity ? "bg-[#E8336A] hover:bg-[#CC2257]" : ""}
+          className={!googleIdentity ? "bg-[#84AAA6] hover:bg-[#6B8E8A]" : ""}
         >
           {googleIdentity
             ? (unlinking ? "Leválasztás..." : "Leválasztás")

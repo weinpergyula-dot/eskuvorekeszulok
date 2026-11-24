@@ -112,11 +112,11 @@ const s = {
     verticalAlign: "top" as const,
   } as React.CSSProperties,
   link: {
-    color: "#E8336A",
+    color: "#84AAA6",
     textDecoration: "underline",
   },
   btnCell: {
-    backgroundColor: "#E8336A",
+    backgroundColor: "#84AAA6",
     borderRadius: "8px",
   },
   btn: {

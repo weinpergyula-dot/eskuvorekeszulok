@@ -65,7 +65,7 @@ export function MobileHeroSlideshow() {
               style={{
                 width: i === current ? 20 : 8,
                 height: 8,
-                backgroundColor: i === current ? "#E8336A" : "rgba(255,255,255,0.7)",
+                backgroundColor: i === current ? "#84AAA6" : "rgba(255,255,255,0.7)",
               }}
             />
           </button>

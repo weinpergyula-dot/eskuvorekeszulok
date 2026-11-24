@@ -132,10 +132,10 @@
 
 @theme {
   /* ── Teal ──────────────────────────────────────────── */
-  --color-teal:        #E8336A;  /* primary (rózsa) */
-  --color-teal-hover:  #CC2257;  /* button hover / darker */
-  --color-teal-deep:   #9C1846;  /* text on teal backgrounds (contrast-safe) */
-  --color-teal-bg:     #FDEEF3;  /* panel background / light hover */
+  --color-teal:        #84AAA6;  /* primary */
+  --color-teal-hover:  #6B8E8A;  /* button hover / darker */
+  --color-teal-deep:   #2D5854;  /* text on teal backgrounds (contrast-safe) */
+  --color-teal-bg:     #F0F6F5;  /* panel background / light hover */
 
   /* ── Pink ──────────────────────────────────────────── */
   --color-pink:        #B8925A;  /* accent / CTA */
@@ -151,16 +151,8 @@
   --color-dark-bg:     #F9F9F9;  /* light hover for dark elements */
 
   /* ── Aliases (backward compat) ─────────────────────── */
-  --color-primary:       #E8336A;
-  --color-primary-dark:  #CC2257;
-
-  /* ── Rózsa / alkonyat (új dizájn) ──────────────────── */
-  --color-rose:        #E8336A;
-  --color-rose-hover:  #CC2257;
-  --color-rose-deep:   #9C1846;
-  --color-rose-tint:   #FDEEF3;
-  --color-ink:         #1F1A2E;  /* címek, sötét szöveg */
-  --color-ink-soft:    #6B6480;  /* másodlagos szöveg */
+  --color-primary:       #84AAA6;
+  --color-primary-dark:  #6B8E8A;
 
   /* ── Other ─────────────────────────────────────────── */
   --color-star: #f59e0b;
@@ -170,26 +162,12 @@
 }
 
 :root {
-  --background: #FFFFFF;
-  --foreground: #1F1A2E;
-  --sky-end: #FDF1F4;
-  /* Alkonyati égbolt az oldal tetején (1600px magas, utána egyszínű).
-     A legteteje fehér – mint a fehér, tapadó fejléc és a html háttere,
-     amiből a mobil böngésző a fejléc feletti sávot színezi –, a lila
-     színátmenet a fejléc alól indul. */
-  --sky: radial-gradient(70% 520px at 92% 520px, rgba(255,213,196,0.85) 0%, rgba(255,213,196,0) 70%),
-         radial-gradient(60% 480px at 0% 760px, rgba(226,208,255,0.9) 0%, rgba(226,208,255,0) 70%),
-         radial-gradient(80% 420px at 50% 1250px, rgba(255,211,226,0.9) 0%, rgba(255,211,226,0) 70%),
-         linear-gradient(180deg, #FFFFFF 0px, #FFFFFF 40px, #F3E6FF 220px, #F7E5F7 460px, #FBE7F0 800px, #FDF1F4 1600px);
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-html { background-color: var(--background); }
-
 body {
-  background-color: var(--sky-end);
-  background-image: var(--sky);
-  background-size: 100% 1600px;
-  background-repeat: no-repeat;
+  background: var(--background);
   color: var(--foreground);
   font-family: "BloomSpeakBody", Arial, sans-serif;
   font-size: 17px;
@@ -497,7 +475,7 @@ html.a11y-underline a { text-decoration: underline !important; }
   --zs-muted: #6d7d7a;      /* halvány szöveg */
   --zs-gold: #4f7d78;       /* teal akcentus (kontraszt-biztos a szövegre) */
   --zs-gold-soft: #b6d0cc;  /* halvány teal (vonalak, keretek) */
-  --zs-sage: #E8336A;       /* az oldal alap tealje, másodlagos akcentus */
+  --zs-sage: #84AAA6;       /* az oldal alap tealje, másodlagos akcentus */
 
   background: var(--zs-ivory);
   color: var(--zs-ink);
@@ -733,13 +711,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 .teal-shift-bg {
   background: linear-gradient(
     130deg,
-    #B3264F 0%,
-    #D63A6E 20%,
-    #E8336A 38%,
-    #F08AA8 50%,
-    #E8336A 62%,
-    #A855C9 80%,
-    #7C4DC4 100%
+    #5C8480 0%,
+    #6B8E8A 20%,
+    #84AAA6 38%,
+    #95BAB5 50%,
+    #84AAA6 62%,
+    #6B8E8A 80%,
+    #5C8480 100%
   );
   background-size: 260% 260%;
   animation: teal-gshift 18s ease-in-out infinite;
@@ -754,13 +732,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 .teal-shift-bg-deep {
   background: linear-gradient(
     130deg,
-    #9C1846 0%,
-    #C42A5E 20%,
-    #D9477A 38%,
-    #B05BC4 50%,
-    #D9477A 62%,
-    #C42A5E 80%,
-    #8A3FB0 100%
+    #456965 0%,
+    #52736F 20%,
+    #688F8B 38%,
+    #789F9A 50%,
+    #688F8B 62%,
+    #52736F 80%,
+    #456965 100%
   );
   background-size: 260% 260%;
   animation: teal-gshift 18s ease-in-out infinite;
@@ -770,13 +748,13 @@ html.a11y-underline a { text-decoration: underline !important; }
 .teal-shift-bg-light {
   background: linear-gradient(
     130deg,
-    #F7A8C0 0%,
-    #F4B6C9 20%,
-    #E7B8E6 38%,
-    #D7C3F2 50%,
-    #E7B8E6 62%,
-    #F4B6C9 80%,
-    #F7A8C0 100%
+    #6A928E 0%,
+    #789C98 20%,
+    #90B6B1 38%,
+    #A2C6C1 50%,
+    #90B6B1 62%,
+    #789C98 80%,
+    #6A928E 100%
   );
   background-size: 260% 260%;
   animation: teal-gshift 18s ease-in-out infinite;
@@ -2132,65 +2110,33 @@ html.a11y-underline a { text-decoration: underline !important; }
   .home-loader-frame { transition: none; }
 }
 
-
-/* ══ Új dizájn: üveg (glassmorphism) felületek ═══════════════════════
-   A videós referencia (alkonyati égbolt + homályos, áttetsző panelek)
-   alapelemei. Minden új komponens ezekből építkezik. */
+/* ══ Szolgáltatói kártya (ProviderTile / ProviderRow) ══════════════════
+   Üveg címkék a fotón, teal CTA-gradiens és a slideshow státuszcsíkja. */
 .glass {
   background: rgba(255, 255, 255, 0.55);
   -webkit-backdrop-filter: blur(22px) saturate(160%);
   backdrop-filter: blur(22px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 10px 40px -12px rgba(120, 40, 90, 0.18), inset 0 1px 0 rgba(255,255,255,0.8);
 }
 .glass-strong {
-  background: rgba(255, 255, 255, 0.78);
-  -webkit-backdrop-filter: blur(28px) saturate(170%);
-  backdrop-filter: blur(28px) saturate(170%);
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 18px 50px -16px rgba(120, 40, 90, 0.25);
 }
 .glass-dark {
-  background: rgba(20, 12, 28, 0.35);
+  background: rgba(10, 18, 17, 0.35);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
-.rose-cta {
-  background: linear-gradient(135deg, #F2507F 0%, #E8336A 55%, #D61F5A 100%);
-  box-shadow: 0 10px 24px -8px rgba(232, 51, 106, 0.65), inset 0 1px 0 rgba(255,255,255,0.35);
+.tile-cta {
+  background: linear-gradient(135deg, #95BAB5 0%, #84AAA6 55%, #6B8E8A 100%);
+  box-shadow: 0 10px 24px -10px rgba(45, 88, 84, 0.65), inset 0 1px 0 rgba(255,255,255,0.3);
   color: #fff;
 }
-.rose-cta:hover { filter: brightness(1.06); }
+.tile-cta:hover { filter: brightness(1.05); }
 
-/* Kiemelt kártya váltásakor a kép homályból élesedik (mint a videóban). */
-@keyframes blur-in {
-  from { filter: blur(18px) saturate(120%); opacity: 0.4; transform: scale(1.04); }
-  to   { filter: blur(0) saturate(100%); opacity: 1; transform: none; }
-}
-.blur-in { animation: blur-in 0.6s cubic-bezier(.2,.7,.2,1) both; }
-
-@keyframes sheet-up {
-  from { transform: translateY(40px); opacity: 0; }
-  to   { transform: none; opacity: 1; }
-}
-.sheet-up { animation: sheet-up 0.55s cubic-bezier(.2,.7,.2,1) both; }
-
-@media (prefers-reduced-motion: reduce) {
-  .blur-in, .sheet-up { animation: none; }
-}
-
-/* A lebegő sarokgomb (zene / akadálymentesítés) mobilon az alsó ajánlatkérő sáv fölé kerül. */
-@media (max-width: 767px) {
-  body:has(.mobile-bottom-bar) .floating-corner { bottom: calc(96px + env(safe-area-inset-bottom)); right: 14px; }
-}
-
-/* Az oldalfejléc (PageHeader) alatti első blokk felső belső margója kicsi:
-   a régi színes sáv lekerekített „sapkája” miatt kellett a nagy térköz. */
-.page-header + * { padding-top: 0.5rem !important; }
-@media (min-width: 640px) { .page-header + * { padding-top: 1rem !important; } }
-
-/* Kártya-slideshow státuszcsíkja: a megjelenítés ideje alatt töltődik fel. */
 @keyframes slide-progress {
   from { width: 0; }
   to   { width: 100%; }

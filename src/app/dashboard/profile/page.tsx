@@ -53,7 +53,7 @@ function PillSelect<T extends string>({
                 type="checkbox"
                 checked={selected.includes(opt.value)}
                 onChange={() => toggle(opt.value)}
-                className="accent-[#E8336A] h-4 w-4 shrink-0"
+                className="accent-[#84AAA6] h-4 w-4 shrink-0"
               />
               <span className="text-base text-gray-900">{opt.label}</span>
             </label>
@@ -61,7 +61,7 @@ function PillSelect<T extends string>({
         </div>
       </div>
       {selected.length > 0 && (
-        <p className="text-sm text-[#E8336A]">{selected.length} kiválasztva</p>
+        <p className="text-sm text-[#84AAA6]">{selected.length} kiválasztva</p>
       )}
     </div>
   );
@@ -261,7 +261,7 @@ export default function EditProfilePage() {
           </div>
           <div className="flex items-center gap-4">
             <div
-              className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#E8336A] overflow-hidden bg-gray-50"
+              className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
               onClick={() => avatarInputRef.current?.click()}
             >
               {avatarPreview ? (
@@ -387,7 +387,7 @@ export default function EditProfilePage() {
               type="button"
               onClick={() => galleryInputRef.current?.click()}
               disabled={(existingGalleryUrls.length + galleryFiles.length) >= 10}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#E8336A] hover:text-[#E8336A] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ImagePlus className="h-4 w-4" />
               Képek hozzáadása

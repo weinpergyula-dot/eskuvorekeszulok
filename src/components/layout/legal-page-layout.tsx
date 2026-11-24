@@ -15,9 +15,9 @@ export function LegalPageLayout({
       <p className="text-base text-gray-500 mb-10">Utolsó frissítés: {lastUpdated}</p>
       <div className="prose-legal">{children}</div>
       <div className="mt-12 pt-6 border-t border-gray-200 flex flex-wrap gap-4 text-base text-gray-500">
-        <Link href="/privacy" className="hover:text-[#E8336A]">Adatvédelmi tájékoztató</Link>
-        <Link href="/terms" className="hover:text-[#E8336A]">ÁSZF</Link>
-        <Link href="/cookies" className="hover:text-[#E8336A]">Cookie szabályzat</Link>
+        <Link href="/privacy" className="hover:text-[#84AAA6]">Adatvédelmi tájékoztató</Link>
+        <Link href="/terms" className="hover:text-[#84AAA6]">ÁSZF</Link>
+        <Link href="/cookies" className="hover:text-[#84AAA6]">Cookie szabályzat</Link>
       </div>
     </div>
   );
@@ -76,7 +76,7 @@ export function LegalTable({ headers, rows }: { headers: string[]; rows: string[
 
 export function LegalNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-[#E8336A]/10 border border-[#E8336A]/30 rounded-xl px-4 py-3 mb-4 text-base text-gray-700">
+    <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-4 text-base text-gray-700">
       {children}
     </div>
   );

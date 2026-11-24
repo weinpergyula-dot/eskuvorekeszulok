@@ -39,7 +39,7 @@ export default function CookiesPage() {
           <LegalP><strong>Jogalap:</strong> GDPR 6. cikk (1) a) – érintett hozzájárulása.</LegalP>
           <LegalP>
             A Google adatkezelési elveiről bővebben:{" "}
-            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#E8336A] underline hover:text-[#CC2257]">
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline hover:text-[#6B8E8A]">
               https://policies.google.com/privacy
             </a>
           </LegalP>
@@ -58,7 +58,7 @@ export default function CookiesPage() {
       <LegalSection title="4. Hogyan tudod kezelni a cookie-kat?">
         <LegalSubSection title="4.1 Cookie-hozzájárulás módosítása">
           <LegalP>Az analitikai cookie-khoz adott hozzájárulásod bármikor visszavonhatod: töröld a böngésző <strong>helyi tárhelyéből</strong> (localStorage) a <code>cookieConsent</code> kulcsot, majd frissítsd az oldalt – a cookie banner újra megjelenik.</LegalP>
-          <LegalP>Google Analytics opt-out böngésző bővítménnyel is elérhető: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-[#E8336A] underline hover:text-[#CC2257]">tools.google.com/dlpage/gaoptout</a></LegalP>
+          <LegalP>Google Analytics opt-out böngésző bővítménnyel is elérhető: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline hover:text-[#6B8E8A]">tools.google.com/dlpage/gaoptout</a></LegalP>
         </LegalSubSection>
 
         <LegalSubSection title="4.2 Böngésző beállítások">
@@ -76,18 +76,18 @@ export default function CookiesPage() {
       </LegalSection>
 
       <LegalSection title="5. Harmadik fél cookie-k">
-        <LegalP>A Weboldal hozzájárulás esetén a <strong>Google Analytics 4</strong> (Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) szolgáltatást veszi igénybe anonimizált forgalomelemzéshez. A Google adatkezelési elvei elérhetők: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#E8336A] underline hover:text-[#CC2257]">policies.google.com/privacy</a>.</LegalP>
+        <LegalP>A Weboldal hozzájárulás esetén a <strong>Google Analytics 4</strong> (Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) szolgáltatást veszi igénybe anonimizált forgalomelemzéshez. A Google adatkezelési elvei elérhetők: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline hover:text-[#6B8E8A]">policies.google.com/privacy</a>.</LegalP>
         <LegalP>Egyéb harmadik fél tartalmak (YouTube, Facebook, Google Maps) jelenleg <strong>nem kerülnek beágyazásra</strong>. Amennyiben ez változik, a jelen tájékoztatót frissítjük.</LegalP>
       </LegalSection>
 
       <LegalSection title="6. A jelen tájékoztató módosítása">
         <LegalP>Az Üzemeltető fenntartja a jogot, hogy a jelen Cookie szabályzatot egyoldalúan módosítsa, különösen új cookie-k bevezetésekor vagy jogszabályváltozás esetén.</LegalP>
-        <LegalP>Ha kérdésed van, írj az <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#E8336A] underline">info@eskuvorekeszulok.hu</a> címre.</LegalP>
+        <LegalP>Ha kérdésed van, írj az <a href="mailto:info@eskuvorekeszulok.hu" className="text-[#84AAA6] underline">info@eskuvorekeszulok.hu</a> címre.</LegalP>
         <LegalP>
           További információk:{" "}
-          <Link href="/privacy" className="text-[#E8336A] underline">Adatvédelmi tájékoztató</Link>
+          <Link href="/privacy" className="text-[#84AAA6] underline">Adatvédelmi tájékoztató</Link>
           {" · "}
-          <Link href="/terms" className="text-[#E8336A] underline">Általános Szerződési Feltételek</Link>
+          <Link href="/terms" className="text-[#84AAA6] underline">Általános Szerződési Feltételek</Link>
         </LegalP>
       </LegalSection>
 

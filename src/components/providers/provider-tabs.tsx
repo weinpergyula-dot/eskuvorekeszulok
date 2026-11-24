@@ -33,13 +33,13 @@ function ContactItem({
       <span className="shrink-0">{icon}</span>
       <MaskedContact value={value} fullyHidden={fullyHidden}>
         {website ? (
-          <WebsiteLink value={value} className="min-w-0 truncate text-base text-gray-900 hover:text-[#E8336A] cursor-pointer" />
+          <WebsiteLink value={value} className="min-w-0 truncate text-base text-gray-900 hover:text-[#84AAA6] cursor-pointer" />
         ) : (
         <a
           href={href}
           target={external ? "_blank" : undefined}
           rel={external ? "noopener noreferrer" : undefined}
-          className="text-base text-gray-900 hover:text-[#E8336A] break-all cursor-pointer"
+          className="text-base text-gray-900 hover:text-[#84AAA6] break-all cursor-pointer"
         >
           {value}
         </a>
@@ -86,19 +86,19 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   ];
 
   return (
-    <div>
-      {/* Tab bar – szegmentált üveg kapszula */}
-      <div className="mb-6 flex gap-1 overflow-x-auto rounded-full bg-[#1F1A2E]/[0.05] p-1 scrollbar-none">
+    <div className="px-8 pb-8 pt-2">
+      {/* Tab bar */}
+      <div className="flex border-b border-gray-200 mb-8 -mx-8 px-0 sm:px-8 overflow-x-auto scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
             className={cn(
-              "flex-1 rounded-full px-3 sm:px-4 py-2 text-[13px] sm:text-[15px] font-semibold transition-all cursor-pointer whitespace-nowrap",
+              "flex-1 sm:flex-none px-2 sm:px-4 py-3 text-sm sm:text-base font-extrabold border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap [font-family:'BloomSpeakBody']",
               tab.desktopOnly ? "hidden sm:block" : "",
               active === tab.id
-                ? "bg-white text-[#E8336A] shadow-[0_4px_14px_-6px_rgba(90,20,60,0.35)]"
-                : "text-[#6B6480] hover:text-[#1F1A2E]"
+                ? "border-[#84AAA6] text-[#84AAA6]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
             )}
           >
             {tab.label}
@@ -108,8 +108,8 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
 
       {/* Bemutatkozás */}
       {active === "about" && (
-        <div className="grid lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-3 space-y-6">
+        <div className="grid md:grid-cols-5 gap-8">
+          <div className="md:col-span-3 space-y-6">
             {(provider.detailed_description || provider.description) ? (
               <section>
                 {/* A cím a tabon van, itt nem ismételjük. Mobilon 2px-el kisebb betű. */}
@@ -131,13 +131,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
           </div>
 
           {/* Kapcsolat kártya */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-3xl ring-1 ring-[#1F1A2E]/5 p-5 space-y-4">
+          <div className="md:col-span-2">
+            <div className="bg-gray-50 rounded-xl border border-gray-200 p-5 space-y-4 sticky top-24">
               <h2 className="text-base font-semibold text-gray-900">Elérhetőségek</h2>
               <div className="space-y-3">
                 {provider.phone && (
                   <ContactItem
-                    icon={<Phone className="h-4 w-4 text-[#E8336A]" />}
+                    icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
                     value={provider.phone}
                     href={`tel:${provider.phone}`}
                     fullyHidden
@@ -145,7 +145,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                 )}
                 {provider.email && (
                   <ContactItem
-                    icon={<Mail className="h-4 w-4 text-[#E8336A]" />}
+                    icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
                     value={provider.email}
                     href={`mailto:${provider.email}`}
                     fullyHidden
@@ -153,7 +153,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                 )}
                 {provider.website && (
                   <ContactItem
-                    icon={<Globe className="h-4 w-4 text-[#E8336A]" />}
+                    icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
                     value={provider.website}
                     href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
                     external
@@ -164,7 +164,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               </div>
               <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="w-full flex items-center justify-center gap-2 border border-[#E8336A] text-[#B3264F] bg-white hover:bg-[#E8336A]/10 font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2"
+                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
@@ -173,7 +173,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               <LoginGateLink
                 href={quoteHrefFor(provider)}
                 message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                className="w-full flex items-center justify-center gap-2 border border-[#E8336A] text-[#B3264F] bg-white hover:bg-[#E8336A]/10 font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2"
+                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
               >
                 <Send className="h-4 w-4" strokeWidth={1.5} />
                 Ajánlatkérés
@@ -191,14 +191,14 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
       {/* Chat tab */}
       {active === "message" && (
         <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
-          <MessageCircle className="h-14 w-14 text-[#E8336A]" strokeWidth={1} />
+          <MessageCircle className="h-14 w-14 text-[#84AAA6]" strokeWidth={1} />
           <div>
             <p className="text-base font-semibold text-gray-900 mb-1">Chat {provider.full_name} nevű szolgáltatóval</p>
             <p className="text-sm text-gray-500">A chat a profilodon belüli Chat menüpontban folytatódik.</p>
           </div>
           <ChatLink
             href={`/profil?tab=chat&with=${provider.user_id}`}
-            className="flex items-center gap-2 bg-[#E8336A] hover:bg-[#CC2257] text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
+            className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
           >
             <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
             Chat indítása
@@ -232,7 +232,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               </div>
               {/* Mobile: download link fallback */}
               <div className="sm:hidden flex flex-col items-center justify-center py-12 gap-4 text-center">
-                <FileText className="h-12 w-12 text-[#E8336A]" strokeWidth={1} />
+                <FileText className="h-12 w-12 text-[#84AAA6]" strokeWidth={1} />
                 <div>
                   <p className="text-base font-semibold text-gray-900 mb-1">Árlista PDF</p>
                   <p className="text-sm text-gray-500">Nyisd meg a PDF-et az árlistáért.</p>
@@ -241,7 +241,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                   href={provider.pricing_pdf_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-[#E8336A] hover:bg-[#CC2257] text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
+                  className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
                 >
                   <FileText className="h-4 w-4" strokeWidth={1.5} />
                   PDF megnyitása

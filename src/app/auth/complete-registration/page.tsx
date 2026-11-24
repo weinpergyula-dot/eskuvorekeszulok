@@ -79,7 +79,7 @@ function CompleteRegistrationContent() {
         icon={UserRound}
         title="Regisztráció befejezése"
         description="Még egy lépés, és kész is vagy! Add meg a nevedet, válaszd ki a fiók típusát, és fogadd el a feltételeket."
-        bgColor="#E8336A"
+        bgColor="#84AAA6"
       />
       <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-lg bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
@@ -101,7 +101,7 @@ function CompleteRegistrationContent() {
 
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <FloatingInput
-              accentColor="#E8336A"
+              accentColor="#84AAA6"
               id="fullName"
               label="Teljes név *"
               value={fullName}
@@ -116,12 +116,12 @@ function CompleteRegistrationContent() {
                   onClick={() => setRole("visitor")}
                   className={`flex flex-col items-start gap-1 p-4 rounded-xl border-2 transition-colors text-left ${
                     role === "visitor"
-                      ? "border-[#E8336A] bg-[#E8336A]/5"
+                      ? "border-[#84AAA6] bg-[#84AAA6]/5"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <UserRound className={`h-5 w-5 ${role === "visitor" ? "text-[#E8336A]" : "text-gray-400"}`} strokeWidth={1.5} />
-                  <span className={`font-semibold text-sm ${role === "visitor" ? "text-[#E8336A]" : "text-gray-700"}`}>Látogató</span>
+                  <UserRound className={`h-5 w-5 ${role === "visitor" ? "text-[#84AAA6]" : "text-gray-400"}`} strokeWidth={1.5} />
+                  <span className={`font-semibold text-sm ${role === "visitor" ? "text-[#84AAA6]" : "text-gray-700"}`}>Látogató</span>
                   <span className="text-xs text-gray-400">Értékelés, kedvencek, ajánlatkérés</span>
                 </button>
                 <button
@@ -129,12 +129,12 @@ function CompleteRegistrationContent() {
                   onClick={() => setRole("provider")}
                   className={`flex flex-col items-start gap-1 p-4 rounded-xl border-2 transition-colors text-left ${
                     role === "provider"
-                      ? "border-[#E8336A] bg-[#E8336A]/5"
+                      ? "border-[#84AAA6] bg-[#84AAA6]/5"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <Briefcase className={`h-5 w-5 ${role === "provider" ? "text-[#E8336A]" : "text-gray-400"}`} strokeWidth={1.5} />
-                  <span className={`font-semibold text-sm ${role === "provider" ? "text-[#E8336A]" : "text-gray-700"}`}>Szolgáltató</span>
+                  <Briefcase className={`h-5 w-5 ${role === "provider" ? "text-[#84AAA6]" : "text-gray-400"}`} strokeWidth={1.5} />
+                  <span className={`font-semibold text-sm ${role === "provider" ? "text-[#84AAA6]" : "text-gray-700"}`}>Szolgáltató</span>
                   <span className="text-xs text-gray-400">Profil, ajánlatkérések fogadása</span>
                 </button>
               </div>
@@ -145,15 +145,15 @@ function CompleteRegistrationContent() {
                 type="checkbox"
                 checked={consentsAccepted}
                 onChange={(e) => setConsentsAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 accent-[#E8336A] cursor-pointer shrink-0"
+                className="mt-1 h-4 w-4 rounded border-gray-300 accent-[#84AAA6] cursor-pointer shrink-0"
               />
               <span className="text-base text-gray-700">
                 Elolvastam és elfogadom az{" "}
-                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#E8336A] underline">
+                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline">
                   Általános Szerződési Feltételeket
                 </a>{" "}
                 és az{" "}
-                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#E8336A] underline">
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#84AAA6] underline">
                   Adatvédelmi tájékoztatóban
                 </a>{" "}
                 foglaltakat.{" "}
@@ -169,7 +169,7 @@ function CompleteRegistrationContent() {
 
             <Button
               type="submit"
-              className="w-full bg-[#E8336A] hover:bg-[#CC2257]"
+              className="w-full bg-[#84AAA6] hover:bg-[#6B8E8A]"
               disabled={loading || !consentsAccepted || !fullName.trim()}
             >
               {loading
@@ -182,7 +182,7 @@ function CompleteRegistrationContent() {
 
           <p className="text-center text-sm text-gray-400 mt-4">
             Nem a te fiókod?{" "}
-            <Link href="/auth/signout?next=/auth/login" className="text-[#E8336A] hover:underline">
+            <Link href="/auth/signout?next=/auth/login" className="text-[#84AAA6] hover:underline">
               Kijelentkezés
             </Link>
           </p>

@@ -16,6 +16,12 @@ import { quoteHrefFor } from "@/lib/quote-href";
 /* Ennyi ideig látszik egy kép a kártya slideshow-jában. */
 const SLIDE_MS = 4000;
 
+const FEATURED_COLOR: Record<string, string> = {
+  gold: "fill-[#B8925A] text-[#B8925A]",
+  silver: "fill-slate-500 text-slate-500",
+  teal: "fill-[#84AAA6] text-[#84AAA6]",
+};
+
 const FEATURED_LABEL: Record<string, string> = {
   gold: "Arany partner",
   silver: "Ezüst partner",
@@ -102,7 +108,7 @@ export function ProviderTile({
         onPointerUp={() => setHolding(false)}
         onPointerCancel={() => setHolding(false)}
         onPointerLeave={() => setHolding(false)}
-        className="relative z-10 overflow-hidden rounded-[30px] bg-[#F6E4EC] aspect-[4/4.4] sm:aspect-[4/4] ring-1 ring-white/70 shadow-[0_30px_50px_-28px_rgba(90,20,60,0.6)]">
+        className="relative z-10 overflow-hidden rounded-[30px] bg-[#EEF3F2] aspect-[4/4.4] sm:aspect-[4/4] ring-1 ring-white/70 shadow-[0_30px_50px_-28px_rgba(20,45,42,0.6)]">
         {shown.length > 0 ? (
           <div ref={stripRef} onScroll={onScroll} className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scrollbar-none">
             {shown.map((src, i) => (
@@ -113,18 +119,18 @@ export function ProviderTile({
             ))}
           </div>
         ) : (
-          <a href={detailHref} className="flex h-full items-center justify-center font-heading text-6xl font-bold text-[#E8336A]/40">
+          <a href={detailHref} className="flex h-full items-center justify-center font-heading text-6xl font-bold text-[#84AAA6]/40">
             {provider.full_name.charAt(0)}
           </a>
         )}
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1a0b1e]/90 via-[#1a0b1e]/15 to-black/10" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0f1a19]/90 via-[#0f1a19]/15 to-black/10" />
 
         {/* Felső sor: címke, galéria-pöttyök, kedvenc */}
         <div className="pointer-events-none absolute inset-x-3.5 top-3.5 flex items-start justify-between gap-2">
           {provider.featured ? (
-            <span className="glass-strong inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold text-[#1F1A2E]">
-              <Flame className="h-4 w-4 fill-[#E8336A] text-[#E8336A]" />
+            <span className="glass-strong inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold text-[#262626]">
+              <Flame className={cn("h-4 w-4", FEATURED_COLOR[provider.featured])} />
               {FEATURED_LABEL[provider.featured] ?? "Kiemelt"}
             </span>
           ) : (
@@ -197,7 +203,7 @@ export function ProviderTile({
             {detailHref && (
               <a href={detailHref} className="pointer-events-auto glass-dark flex shrink-0 items-center gap-2 rounded-full py-1.5 pl-4 pr-1.5 text-[14px] font-semibold">
                 Megnézem
-                <span className="rose-cta flex h-8 w-8 items-center justify-center rounded-full">
+                <span className="tile-cta flex h-8 w-8 items-center justify-center rounded-full">
                   <ArrowRight className="h-4 w-4" />
                 </span>
               </a>
@@ -209,24 +215,24 @@ export function ProviderTile({
       {/* Lenyíló fehér bemutatkozó panel – a kép alá csúszik */}
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "-mt-8 grid-rows-[1fr]" : "grid-rows-[0fr]")}>
         <div className="overflow-hidden">
-          <div className={cn("rounded-b-[30px] bg-white px-5 pb-5 pt-12 shadow-[0_18px_40px_-24px_rgba(90,20,60,0.45)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
+          <div className={cn("rounded-b-[30px] bg-white px-5 pb-5 pt-12 shadow-[0_18px_40px_-24px_rgba(20,45,42,0.45)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
             {intro ? (
-              <p className="text-[15px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
+              <p className="text-[15px] leading-relaxed text-[#404040] whitespace-pre-line">{intro}</p>
             ) : (
-              <p className="text-[15px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
+              <p className="text-[15px] italic text-[#9ca3af]">Nincs még bemutatkozó szöveg.</p>
             )}
             {!isOwner && (
               <div className="mt-4 flex items-center gap-2">
                 <ChatLink
                   href={`/profil?tab=chat&with=${provider.user_id}`}
-                  className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#FDEEF3] text-[14px] font-semibold text-[#B3264F] hover:bg-[#FBD9E5]"
+                  className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] hover:bg-[#E3EFED]"
                 >
                   <MessageCircle className="h-4 w-4" /> Chat
                 </ChatLink>
                 <LoginGateLink
                   href={quoteHrefFor(provider)}
                   message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                  className="rose-cta flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
+                  className="tile-cta flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
                 >
                   <Send className="h-4 w-4" /> Ajánlatkérés
                 </LoginGateLink>
@@ -269,53 +275,53 @@ export function ProviderRow({
   return (
     <article
       id={anchorId}
-      className="scroll-mt-24 rounded-[26px] bg-white/85 p-2 ring-1 ring-white shadow-[0_16px_34px_-24px_rgba(90,20,60,0.5)]"
+      className="scroll-mt-24 rounded-[26px] bg-white/85 p-2 ring-1 ring-white shadow-[0_16px_34px_-24px_rgba(20,45,42,0.5)]"
     >
       <div className="flex items-center gap-3">
-        <a href={detailHref} className="relative h-[92px] w-[92px] sm:h-[104px] sm:w-[104px] shrink-0 overflow-hidden rounded-[20px] bg-[#F6E4EC]">
+        <a href={detailHref} className="relative h-[92px] w-[92px] sm:h-[104px] sm:w-[104px] shrink-0 overflow-hidden rounded-[20px] bg-[#EEF3F2]">
           {cover ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={cover} alt={provider.full_name} loading="lazy" className="h-full w-full object-cover" />
           ) : (
-            <span className="flex h-full items-center justify-center font-heading text-3xl font-bold text-[#E8336A]/50">
+            <span className="flex h-full items-center justify-center font-heading text-3xl font-bold text-[#84AAA6]/50">
               {provider.full_name.charAt(0)}
             </span>
           )}
           {provider.featured && (
             <span className="glass-strong absolute left-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full" title={FEATURED_LABEL[provider.featured]}>
-              <Flame className="h-3.5 w-3.5 fill-[#E8336A] text-[#E8336A]" />
+              <Flame className={cn("h-3.5 w-3.5", FEATURED_COLOR[provider.featured])} />
             </span>
           )}
         </a>
 
         <div className="min-w-0 flex-1 py-1">
           {cats.length > 0 && (
-            <p className="truncate text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#B3264F]/80">
+            <p className="truncate text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#5C8480]/80">
               {cats.slice(0, 2).map((c) => CATEGORY_LABELS[c] ?? c).join(" · ")}
             </p>
           )}
           <a href={detailHref}>
-            <h3 className="mt-0.5 font-heading text-[17px] sm:text-[19px] font-bold leading-tight text-[#1F1A2E] line-clamp-1">
+            <h3 className="mt-0.5 font-heading text-[17px] sm:text-[19px] font-bold leading-tight text-[#262626] line-clamp-1">
               {provider.full_name}
             </h3>
           </a>
-          <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[13px] text-[#6B6480]">
+          <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[13px] text-[#6b7280]">
             {counties.length > 0 && (
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />{counties[0]}{counties.length > 1 && ` +${counties.length - 1}`}
               </span>
             )}
-            <span className="inline-flex items-center gap-1 font-semibold text-[#1F1A2E]">
-              <Star className="h-3.5 w-3.5 fill-[#1F1A2E]" />
+            <span className="inline-flex items-center gap-1 font-semibold text-[#262626]">
+              <Star className="h-3.5 w-3.5 fill-[#262626]" />
               {rating > 0 ? rating.toFixed(1) : "Új"}
-              {reviews > 0 && <span className="font-normal text-[#6B6480]">({reviews})</span>}
+              {reviews > 0 && <span className="font-normal text-[#6b7280]">({reviews})</span>}
             </span>
           </div>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold text-[#E8336A]"
+            className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold text-[#84AAA6]"
           >
             Bemutatkozás
             <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-180")} />
@@ -324,11 +330,11 @@ export function ProviderRow({
 
         <div className="flex shrink-0 flex-col items-center gap-2 self-stretch justify-between py-1 pr-1">
           {!isOwner ? (
-            <div className="rounded-full bg-[#FDEEF3]">
+            <div className="rounded-full bg-[#F0F6F5]">
               <FavoriteButton providerId={provider.id} initialLiked={false} iconOnly />
             </div>
           ) : <span />}
-          <a href={detailHref} aria-label="Megnézem" className="rose-cta flex h-10 w-10 items-center justify-center rounded-full">
+          <a href={detailHref} aria-label="Megnézem" className="tile-cta flex h-10 w-10 items-center justify-center rounded-full">
             <ArrowRight className="h-4 w-4" />
           </a>
         </div>
@@ -338,22 +344,22 @@ export function ProviderRow({
         <div className="overflow-hidden">
           <div className={cn("mt-2 rounded-[20px] bg-white px-4 py-3.5 transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
             {intro ? (
-              <p className="text-[14.5px] leading-relaxed text-[#4A4360] whitespace-pre-line">{intro}</p>
+              <p className="text-[14.5px] leading-relaxed text-[#404040] whitespace-pre-line">{intro}</p>
             ) : (
-              <p className="text-[14.5px] italic text-[#8F87A3]">Nincs még bemutatkozó szöveg.</p>
+              <p className="text-[14.5px] italic text-[#9ca3af]">Nincs még bemutatkozó szöveg.</p>
             )}
             {!isOwner && (
               <div className="mt-3 flex items-center gap-2">
                 <ChatLink
                   href={`/profil?tab=chat&with=${provider.user_id}`}
-                  className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#FDEEF3] text-[14px] font-semibold text-[#B3264F] hover:bg-[#FBD9E5]"
+                  className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] hover:bg-[#E3EFED]"
                 >
                   <MessageCircle className="h-4 w-4" /> Chat
                 </ChatLink>
                 <LoginGateLink
                   href={quoteHrefFor(provider)}
                   message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                  className="rose-cta flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
+                  className="tile-cta flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
                 >
                   <Send className="h-4 w-4" /> Ajánlatkérés
                 </LoginGateLink>

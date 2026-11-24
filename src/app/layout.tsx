@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
@@ -15,12 +15,6 @@ const SITE_DESCRIPTION =
   "Találj meg mindent egy helyen a nagy napodra! Fotósok, zenészek, vőfélyek és egyéb esküvői szolgáltatók.";
 
 const GA_ID = "G-F3ZQFXKGET";
-
-/* A böngésző felső sávja (iOS Safari állapotsor / címsor) a fehér
-   fejléchez illik. */
-export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
-};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
