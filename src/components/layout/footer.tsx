@@ -22,16 +22,16 @@ export async function Footer() {
     .map((key) => ({ href: `/?category=${key}#szolgaltatok`, key, label: CATEGORY_LABELS[key] }));
   return (
     <footer className="bg-gray-50 border-t border-gray-200 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 footer-inner">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 footer-inner">
 
         {/* Felső rész középre zárva: logó, szlogen, desktopon a kategóriák egy
             sorban — mobil chat módban rejtett */}
-        <div className="footer-full-content mb-5 flex flex-col items-center gap-2 text-center">
-          <Image src="/logo.png" alt="Esküvőre Készülök" width={290} height={72} quality={100} className="h-9 w-auto" />
-          <p className="text-base leading-snug text-gray-900">
+        <div className="footer-full-content mb-3 flex flex-col items-center gap-1.5 text-center">
+          <Image src="/logo.png" alt="Esküvőre Készülök" width={290} height={72} quality={100} className="h-7 w-auto" />
+          <p className="text-[15px] leading-snug text-gray-900">
             Találj meg mindent egy helyen a nagy napodra!
           </p>
-          <ul className="mt-1 hidden md:flex flex-wrap justify-center gap-x-1 gap-y-0.5">
+          <ul className="hidden md:flex flex-wrap justify-center gap-x-1 gap-y-0.5">
             {footerCategories.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="text-[15px] leading-snug text-gray-900 px-2 py-0.5 rounded-md hover:bg-[#F0F6F5] transition-colors">
@@ -50,12 +50,12 @@ export async function Footer() {
         </div>
 
         {/* Chat mode: compact logo (centered) — hidden normally, shown in mobile chat mode */}
-        <div className="footer-chat-logo hidden mb-4 justify-center">
+        <div className="footer-chat-logo hidden mb-3 justify-center">
           <Image src="/logo.png" alt="Esküvőre Készülök" width={290} height={72} quality={100} className="h-8 w-auto" />
         </div>
 
         {/* Copyright — always visible, középre zárva, szűk sortávval */}
-        <div className="border-t border-gray-200 pt-4 flex flex-col items-center gap-1 text-center">
+        <div className="border-t border-gray-200 pt-3 flex flex-col sm:flex-row sm:justify-center items-center gap-x-4 gap-y-0.5 text-center">
           <p className="text-sm leading-snug text-gray-900">
             © {new Date().getFullYear()} Esküvőre Készülök. Minden jog fenntartva.
           </p>
