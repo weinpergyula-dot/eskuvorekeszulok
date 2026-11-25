@@ -824,22 +824,16 @@ export function QuoteRequestsSection({ onUnreadChange, userId }: Pick<Props, "on
     );
   }
 
-  const tabCls = (on: boolean) =>
-    `flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors cursor-pointer ${
-      on
-        ? "border-[#84AAA6] bg-[#84AAA6] text-white"
-        : "border-gray-300 bg-white text-gray-700 hover:border-[#84AAA6] hover:text-[#84AAA6]"
-    }`;
-
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => setMode("general")} className={tabCls(mode === "general")}>
-          <Users className="h-4 w-4" strokeWidth={1.75} />
+      {/* Fülváltó – a többi fülsávval egyező stílusban */}
+      <div role="tablist" aria-label="Ajánlatkérés típusa" className="seg-tabs w-full sm:w-fit">
+        <button type="button" role="tab" aria-selected={mode === "general"} data-active={mode === "general"} onClick={() => setMode("general")} className="seg-tab flex-1 px-4 py-2 text-sm sm:flex-none">
+          <Users className="h-4 w-4 shrink-0" strokeWidth={2} />
           Szolgáltatók
         </button>
-        <button type="button" onClick={() => setMode("meghivo")} className={tabCls(mode === "meghivo")}>
-          <MailOpen className="h-4 w-4" strokeWidth={1.75} />
+        <button type="button" role="tab" aria-selected={mode === "meghivo"} data-active={mode === "meghivo"} onClick={() => setMode("meghivo")} className="seg-tab flex-1 px-4 py-2 text-sm sm:flex-none">
+          <MailOpen className="h-4 w-4 shrink-0" strokeWidth={2} />
           Digitális meghívó
         </button>
       </div>
