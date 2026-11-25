@@ -271,10 +271,10 @@ function ProviderRow({
     .join(", ");
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] transition-shadow hover:shadow-[0_18px_36px_-22px_rgba(20,45,42,0.6)]">
+    <div className="flex items-center gap-3 p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_3px_10px_-6px_rgba(20,45,42,0.18)] transition-shadow hover:shadow-[0_6px_16px_-10px_rgba(20,45,42,0.25)]">
       {/* Avatar */}
       <a href={`/providers/${provider.id}`} className="shrink-0">
-        <div className="relative w-14 h-14 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(20,45,42,0.6)] flex items-center justify-center text-sm font-semibold text-[#5C8480]">
+        <div className="relative w-14 h-14 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_2px_6px_-3px_rgba(20,45,42,0.25)] flex items-center justify-center text-sm font-semibold text-[#5C8480]">
           <span className="absolute inset-0 flex items-center justify-center select-none">{initials}</span>
           {provider.avatar_url && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -364,10 +364,10 @@ function ConversationRow({
   return (
     <button
       onClick={onSelect}
-      className="w-full text-left p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] transition-shadow hover:shadow-[0_18px_36px_-22px_rgba(20,45,42,0.6)] cursor-pointer"
+      className="w-full text-left p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_3px_10px_-6px_rgba(20,45,42,0.18)] transition-shadow hover:shadow-[0_6px_16px_-10px_rgba(20,45,42,0.25)] cursor-pointer"
     >
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(20,45,42,0.6)] flex items-center justify-center text-sm font-semibold text-[#5C8480] shrink-0">
+        <div className="w-12 h-12 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_2px_6px_-3px_rgba(20,45,42,0.25)] flex items-center justify-center text-sm font-semibold text-[#5C8480] shrink-0">
           {thread.otherAvatarUrl
             ? <img src={thread.otherAvatarUrl} alt={thread.otherName} className="w-full h-full object-cover" />
             : initials}
@@ -422,10 +422,10 @@ function QuoteConvRow({
   return (
     <button
       onClick={onSelect}
-      className="w-full text-left p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] transition-shadow hover:shadow-[0_18px_36px_-22px_rgba(20,45,42,0.6)] cursor-pointer"
+      className="w-full text-left p-3 rounded-[22px] bg-white ring-1 ring-black/5 shadow-[0_3px_10px_-6px_rgba(20,45,42,0.18)] transition-shadow hover:shadow-[0_6px_16px_-10px_rgba(20,45,42,0.25)] cursor-pointer"
     >
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(20,45,42,0.6)] flex items-center justify-center text-sm font-semibold text-[#5C8480] shrink-0">
+        <div className="w-12 h-12 rounded-full overflow-hidden bg-[#F0F6F5] ring-2 ring-white shadow-[0_2px_6px_-3px_rgba(20,45,42,0.25)] flex items-center justify-center text-sm font-semibold text-[#5C8480] shrink-0">
           {avatarUrl
             ? <img src={avatarUrl ?? ""} alt={name} className="w-full h-full object-cover" />
             : initials}
