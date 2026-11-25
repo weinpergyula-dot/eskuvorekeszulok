@@ -477,7 +477,7 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/auth/register">
-                  <Button className="text-base border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80 hover:text-[#B8925A]">Regisztráció</Button>
+                  <Button variant="secondary" className="text-base border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80 hover:text-[#B8925A]">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
                   <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>

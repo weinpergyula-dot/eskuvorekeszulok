@@ -25,7 +25,7 @@ export async function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 footer-inner">
 
         {/* Full 3-column grid — hidden in mobile chat mode */}
-        <div className="footer-full-content grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="footer-full-content grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Image src="/logo.png" alt="Esküvőre Készülök" width={290} height={72} quality={100} className="h-9 w-auto" />
@@ -55,24 +55,6 @@ export async function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-base font-semibold text-gray-900 mb-3">Hasznos linkek</h3>
-            <ul className="space-y-2">
-              {[
-                { href: "/auth/login", label: "Bejelentkezés" },
-                { href: "/auth/register", label: "Regisztráció" },
-                { href: "/informaciok", label: "Információk" },
-                { href: "/#szolgaltatok", label: "Szolgáltatók" },
-                { href: "/kapcsolat", label: "Kapcsolat" },
-              ].map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="text-base text-gray-900 px-2 py-0.5 rounded-md hover:bg-[#F0F6F5] transition-colors">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         {/* Chat mode: compact logo (centered) — hidden normally, shown in mobile chat mode */}

@@ -22,6 +22,7 @@ export function VisitorRegisterButton() {
   return (
     <div className="flex flex-col items-start gap-2">
       <Button
+        variant="ghost"
         size="lg"
         onClick={handleClick}
         className="bg-transparent text-white border border-white hover:bg-white/10 hover:text-white px-6"
