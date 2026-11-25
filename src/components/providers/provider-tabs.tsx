@@ -2,7 +2,6 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { Phone, Mail, Globe, MessageCircle, FileText, Send } from "lucide-react";
-import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
 import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
@@ -10,7 +9,7 @@ import { quoteHrefFor } from "@/lib/quote-href";
 import { WebsiteLink } from "@/components/providers/website-link";
 import type { Provider } from "@/lib/types";
 
-type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
+type Tab = "about" | "message" | "reviews" | "pricing";
 
 function ContactItem({
   icon,
@@ -50,8 +49,10 @@ function ContactItem({
 }
 
 const HASH_TO_TAB: Record<string, Tab> = {
-  gallery: "gallery",
+  gallery: "about",
   message: "message",
+  elerhetosegek: "message",
+  contact: "message",
   messages: "message",
   reviews: "reviews",
   about: "about",
@@ -73,15 +74,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   const active: Tab = chosen ?? hashTab ?? "about";
 
   const reviewCount = provider.review_count ?? 0;
-  const hasGallery = (provider.gallery_urls ?? []).length > 0;
 
   const hasPricing = !!(provider.pricing_pdf_url || provider.pricing_text);
 
-  const tabs: { id: Tab; label: string; desktopOnly?: boolean }[] = [
+  const tabs: { id: Tab; label: string }[] = [
     { id: "about",   label: "Bemutatkozás" },
-    ...(hasGallery ? [{ id: "gallery" as Tab, label: "Galéria", desktopOnly: true }] : []),
     ...(hasPricing ? [{ id: "pricing" as Tab, label: "Árak" }] : []),
-    { id: "message", label: "Chat" },
+    { id: "message", label: "Elérhetőségek" },
     { id: "reviews", label: reviewCount > 0 ? `Értékelések (${reviewCount})` : "Értékelések" },
   ];
 
@@ -95,7 +94,6 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
             onClick={() => setActive(tab.id)}
             className={cn(
               "flex-1 rounded-full px-3 sm:px-4 py-2 text-[13px] sm:text-[15px] font-semibold transition-all cursor-pointer whitespace-nowrap",
-              tab.desktopOnly ? "hidden sm:block" : "",
               active === tab.id
                 ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
                 : "text-gray-500 hover:text-gray-800"
@@ -108,103 +106,65 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
 
       {/* Bemutatkozás */}
       {active === "about" && (
-        <div className="grid lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-3 space-y-6">
-            {(provider.detailed_description || provider.description) ? (
-              <section>
-                {/* A cím a tabon van, itt nem ismételjük. Mobilon 2px-el kisebb betű. */}
-                <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[15px] sm:text-[17px]">
-                  {provider.detailed_description || provider.description}
-                </p>
-              </section>
-            ) : (
-              <p className="text-gray-400 text-base italic">Nincs bemutatkozó szöveg.</p>
-            )}
-
-            {/* Gallery: mobile only — desktop has its own tab */}
-            {provider.gallery_urls && provider.gallery_urls.length > 0 && (
-              <section className="sm:hidden">
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">Galéria</h2>
-                <GalleryLightbox urls={provider.gallery_urls} alt="Galéria" />
-              </section>
-            )}
-          </div>
-
-          {/* Kapcsolat kártya */}
-          <div className="lg:col-span-2">
-            <div className="bg-[#EAF1EF] rounded-[22px] ring-1 ring-black/5 p-5 space-y-4">
-              <h2 className="text-base font-semibold text-gray-900">Elérhetőségek</h2>
-              <div className="space-y-3">
-                {provider.phone && (
-                  <ContactItem
-                    icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
-                    value={provider.phone}
-                    href={`tel:${provider.phone}`}
-                    fullyHidden
-                  />
-                )}
-                {provider.email && (
-                  <ContactItem
-                    icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
-                    value={provider.email}
-                    href={`mailto:${provider.email}`}
-                    fullyHidden
-                  />
-                )}
-                {provider.website && (
-                  <ContactItem
-                    icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
-                    value={provider.website}
-                    href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
-                    external
-                    fullyHidden
-                    website
-                  />
-                )}
-              </div>
-              <div className="flex gap-2 pt-2">
-                <ChatLink
-                  href={`/profil?tab=chat&with=${provider.user_id}`}
-                  className="btn-chat flex-1 min-w-0 flex h-11 items-center justify-center gap-1.5 text-[14px] font-semibold px-3 rounded-full transition-colors cursor-pointer whitespace-nowrap"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  Chat
-                </ChatLink>
-                {/* Ajánlatkérés – ugyanúgy előtöltve, mint a szolgáltatói kártyáról */}
-                <LoginGateLink
-                  href={quoteHrefFor(provider)}
-                  message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                  className="tile-cta flex-1 min-w-0 flex h-11 items-center justify-center gap-1.5 text-[14px] font-semibold px-3 rounded-full transition-colors cursor-pointer whitespace-nowrap"
-                >
-                  <Send className="h-4 w-4" />
-                  Ajánlatkérés
-                </LoginGateLink>
-              </div>
-            </div>
-          </div>
-        </div>
+        (provider.detailed_description || provider.description) ? (
+          /* A cím a tabon van, itt nem ismételjük. Mobilon 2px-el kisebb betű. */
+          <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[15px] sm:text-[17px]">
+            {provider.detailed_description || provider.description}
+          </p>
+        ) : (
+          <p className="text-gray-400 text-base italic">Nincs bemutatkozó szöveg.</p>
+        )
       )}
 
-      {/* Galéria tab – desktop only */}
-      {active === "gallery" && (
-        <GalleryLightbox urls={provider.gallery_urls ?? []} alt="Galéria" />
-      )}
-
-      {/* Chat tab */}
+      {/* Elérhetőségek tab: telefon, e-mail, weboldal + Chat és Ajánlatkérés */}
       {active === "message" && (
-        <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
-          <MessageCircle className="h-14 w-14 text-[#84AAA6]" strokeWidth={1} />
-          <div>
-            <p className="text-base font-semibold text-gray-900 mb-1">Chat {provider.full_name} nevű szolgáltatóval</p>
-            <p className="text-sm text-gray-500">A chat a profilodon belüli Chat menüpontban folytatódik.</p>
+        <div className="max-w-xl bg-white rounded-[22px] ring-1 ring-black/10 shadow-[0_10px_24px_-18px_rgba(20,45,42,0.45)] p-5 space-y-4">
+          <div className="space-y-3">
+            {provider.phone && (
+              <ContactItem
+                icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
+                value={provider.phone}
+                href={`tel:${provider.phone}`}
+                fullyHidden
+              />
+            )}
+            {provider.email && (
+              <ContactItem
+                icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
+                value={provider.email}
+                href={`mailto:${provider.email}`}
+                fullyHidden
+              />
+            )}
+            {provider.website && (
+              <ContactItem
+                icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
+                value={provider.website}
+                href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
+                external
+                fullyHidden
+                website
+              />
+            )}
           </div>
-          <ChatLink
-            href={`/profil?tab=chat&with=${provider.user_id}`}
-            className="btn-chat flex h-11 items-center gap-1.5 text-[14px] font-semibold px-6 rounded-full transition-colors"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Chat
-          </ChatLink>
+          <div className="flex gap-2 pt-2">
+            <ChatLink
+              href={`/profil?tab=chat&with=${provider.user_id}`}
+              className="btn-chat flex-1 min-w-0 flex h-11 items-center justify-center gap-1.5 text-[14px] font-semibold px-3 rounded-full transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <MessageCircle className="h-4 w-4" />
+              Chat
+            </ChatLink>
+            {/* Ajánlatkérés – ugyanúgy előtöltve, mint a szolgáltatói kártyáról */}
+            <LoginGateLink
+              href={quoteHrefFor(provider)}
+              message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+              className="tile-cta flex-1 min-w-0 flex h-11 items-center justify-center gap-1.5 text-[14px] font-semibold px-3 rounded-full transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <Send className="h-4 w-4" />
+              Ajánlatkérés
+            </LoginGateLink>
+          </div>
         </div>
       )}
 

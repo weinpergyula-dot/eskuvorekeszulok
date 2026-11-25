@@ -428,7 +428,7 @@ export function ProviderRow({
    A kártya képére koppintva teljes képernyőn, egymás alatt, görgethetően
    mutatja a szolgáltató összes képét; a megérintett kép látszik elsőként.
    A részletes profilra csak a Megnézem gomb visz. */
-function GalleryViewer({
+export function GalleryViewer({
   provider,
   images,
   startAt,

@@ -3,7 +3,8 @@
 import { MapPin, Star, Eye, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORY_LABELS, type Provider } from "@/lib/types";
-import { FEATURED_COLOR, FEATURED_LABEL, SlideBars, useSlideshow } from "@/components/providers/provider-tile";
+import { useState } from "react";
+import { FEATURED_COLOR, FEATURED_LABEL, GalleryViewer, SlideBars, useSlideshow } from "@/components/providers/provider-tile";
 
 /* ── A szolgáltatói profil nagy fotós kártyája ──────────────────────────
    Ugyanaz a megjelenés, mint a listák kártyáján (ProviderTile), csak
@@ -28,6 +29,8 @@ export function ProviderHero({
   if (images.length === 0 && provider.avatar_url) images.push(provider.avatar_url);
   const shown = images.slice(0, 10);
   const { stripRef, cardRef, idx, onScroll, playing, holdHandlers } = useSlideshow(shown.length);
+  /* A fotóra koppintva a görgethető képnézegető nyílik (mint a kártyán). */
+  const [viewerAt, setViewerAt] = useState<number | null>(null);
 
   const rating = provider.average_rating ?? 0;
   const reviews = provider.review_count ?? 0;
@@ -48,8 +51,16 @@ export function ProviderHero({
       {shown.length > 0 ? (
         <div ref={stripRef} onScroll={onScroll} className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scrollbar-none">
           {shown.map((src, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={src + i} src={src} alt={i === 0 ? provider.full_name : ""} className="h-full w-full shrink-0 snap-center object-cover" />
+            <button
+              key={src + i}
+              type="button"
+              onClick={() => setViewerAt(i)}
+              aria-label="Képek megtekintése"
+              className="h-full w-full shrink-0 snap-center cursor-zoom-in"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt={i === 0 ? provider.full_name : ""} className="h-full w-full object-cover" />
+            </button>
           ))}
         </div>
       ) : (
@@ -108,6 +119,9 @@ export function ProviderHero({
           </div>
         </div>
       </div>
+      {viewerAt !== null && (
+        <GalleryViewer provider={provider} images={images} startAt={viewerAt} onClose={() => setViewerAt(null)} />
+      )}
     </div>
   );
 }
