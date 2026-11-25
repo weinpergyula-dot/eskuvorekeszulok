@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MailOpen, Send, Sparkles, ArrowLeft, ArrowDown, Timer, CalendarHeart, MessageSquareHeart, Link2 } from "lucide-react";
+import { MailOpen, Send, Sparkles, ArrowLeft } from "lucide-react";
 import { MiniPhone } from "@/components/providers/meghivo-promo-card";
 import { IntroTabs } from "./_components/intro-tabs";
 import { PackageTile, type Package } from "./_components/package-tile";
@@ -99,13 +99,6 @@ const PACKAGES: Package[] = [
   },
 ];
 
-const HERO_FEATURES = [
-  { Icon: Timer, label: "Visszaszámláló" },
-  { Icon: CalendarHeart, label: "Program óráról órára" },
-  { Icon: MessageSquareHeart, label: "Online visszajelzés" },
-  { Icon: Link2, label: "Saját link a neveitekkel" },
-];
-
 const GOLD = "#C9A46A";
 const DARK_BG = "radial-gradient(120% 90% at 70% 30%, #3A2F20 0%, #1E1912 55%, #120F0B 100%)";
 
@@ -137,34 +130,6 @@ export default function MeghivoPage() {
               Felejtsd el a papírt! Mobilra szabott, interaktív meghívó, amit egyetlen linkkel
               elküldhetsz minden vendégednek.
             </p>
-
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {HERO_FEATURES.map(({ Icon, label }) => (
-                <li key={label} className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.07] px-3 py-1.5 text-[13px] text-white/90 ring-1 ring-white/15">
-                  <Icon className="h-4 w-4" style={{ color: GOLD }} />
-                  {label}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 flex flex-wrap items-end gap-x-6 gap-y-4">
-              <p className="text-[13px] leading-tight text-white/65">
-                már
-                <span className="block font-heading text-[34px] font-bold leading-none text-white">14&nbsp;900&nbsp;Ft</span>
-              </p>
-              <div className="flex flex-wrap gap-2.5">
-                <a href="#csomagok" className="tile-cta-gold inline-flex h-12 items-center gap-2 rounded-full px-6 text-[15px] font-semibold">
-                  Csomagok <ArrowDown className="h-4 w-4" />
-                </a>
-                <MeghivoQuoteCta
-                  href="/profil?tab=quotes&form=meghivo"
-                  className="tile-cta inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-semibold"
-                >
-                  <Send className="h-4 w-4" />
-                  Ajánlatkérés
-                </MeghivoQuoteCta>
-              </div>
-            </div>
           </div>
 
           {/* A három csomag mintája legyezőszerűen */}
