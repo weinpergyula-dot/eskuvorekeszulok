@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MailOpen, Send, Sparkles, ArrowLeft } from "lucide-react";
+import { Send, Sparkles, ArrowLeft } from "lucide-react";
 import { MiniPhone } from "@/components/providers/meghivo-promo-card";
 import { IntroTabs } from "./_components/intro-tabs";
 import { PackageTile, type Package } from "./_components/package-tile";
@@ -179,30 +179,24 @@ export default function MeghivoPage() {
         </div>
       </section>
 
-      {/* ── Záró CTA: sötét–arany kártya ─────────────────── */}
-      <section className="bg-white px-3 pb-12 sm:px-6 sm:pb-16">
-        <div
-          className="relative mx-auto max-w-5xl overflow-hidden rounded-[32px] px-6 py-12 text-center text-white ring-1 ring-[#B8925A]/45 shadow-[0_30px_60px_-30px_rgba(40,28,10,0.7)] sm:py-16"
-          style={{ background: DARK_BG }}
-        >
-          <span aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-56 w-56 -translate-x-1/2 rounded-full bg-[#C9A46A]/25 blur-3xl transform-gpu" />
-          <span aria-hidden className="pointer-events-none absolute inset-2 rounded-[26px] ring-1 ring-[#C9A46A]/20" />
-          <div className="relative">
-            <MailOpen className="mx-auto h-9 w-9" style={{ color: GOLD }} strokeWidth={1.5} />
-            <h2 className="mt-3 font-heading text-2xl font-bold md:text-3xl">Egyedi meghívót szeretnél?</h2>
-            <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-white/75">
-              Írjatok nekünk pár sort az esküvőtökről, és 48 órán belül jelentkezünk
-              egy személyre szabott ajánlattal.
-            </p>
-            <div className="mt-7 flex justify-center">
-              <MeghivoQuoteCta
-                href="/profil?tab=quotes&form=meghivo"
-                className="tile-cta inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-[15px] font-semibold"
-              >
-                <Send className="h-4 w-4" />
-                Ajánlatkérés
-              </MeghivoQuoteCta>
-            </div>
+      {/* ── Záró CTA ─────────────────────────────────────── */}
+      <section className="teal-shift-bg relative overflow-hidden">
+        <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-20">
+          <h2 className="text-2xl font-bold text-white md:text-3xl">
+            Egyedi meghívót szeretnél?
+          </h2>
+          <p className="mt-3 text-base leading-relaxed text-white/90">
+            Írjatok nekünk pár sort az esküvőtökről, és 48 órán belül jelentkezünk
+            egy személyre szabott ajánlattal.
+          </p>
+          <div className="mt-7 flex justify-center">
+            <MeghivoQuoteCta
+              href="/profil?tab=quotes&form=meghivo"
+              className="tile-cta inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-[15px] font-semibold"
+            >
+              <Send className="h-4 w-4" />
+              Ajánlatkérés
+            </MeghivoQuoteCta>
           </div>
         </div>
       </section>
