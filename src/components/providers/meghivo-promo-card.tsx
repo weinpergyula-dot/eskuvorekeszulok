@@ -111,7 +111,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
             <div className="mt-3 flex items-center justify-between gap-2">
               <p className="text-[13px] text-white/70 leading-tight">
                 már
-                <span className="block font-heading text-[22px] font-bold text-white leading-none">14&nbsp;900&nbsp;Ft</span>
+                <span className="block font-heading text-[22px] font-bold text-white leading-none">14&nbsp;900&nbsp;Ft<span className="text-[15px] font-semibold text-white/80">-tól</span></span>
               </p>
               <span className="glass-dark flex shrink-0 items-center gap-2 rounded-full py-1.5 pl-4 pr-1.5 text-[14px] font-semibold">
                 Megnézem
