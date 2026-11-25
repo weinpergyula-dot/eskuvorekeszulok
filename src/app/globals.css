@@ -2161,3 +2161,6 @@ html.a11y-underline a { text-decoration: underline !important; }
 }
 .sheet-up { animation: sheet-up 0.55s cubic-bezier(.2,.7,.2,1) both; }
 @media (prefers-reduced-motion: reduce) { .sheet-up { animation: none; } }
+
+/* Visszatéréskor (profilról vissza) a főoldali töltőképernyő nem jelenik meg. */
+.skip-home-loader .home-loader { display: none !important; }

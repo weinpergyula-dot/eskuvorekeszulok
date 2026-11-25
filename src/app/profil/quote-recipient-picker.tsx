@@ -155,7 +155,7 @@ export function RecipientPicker({
                   <p className={`text-xs font-semibold truncate ${selected ? "text-[#5C8480]" : "text-gray-900"}`}>{p.full_name}</p>
                   <StarRating rating={p.average_rating} />
                 </div>
-                <span className={`flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors ${selected ? "bg-[#84AAA6] border-[#84AAA6]" : "border-gray-300 bg-white"}`}>
+                <span className={`flex items-center justify-center w-5 h-5 rounded-full border shrink-0 transition-colors ${selected ? "bg-[#84AAA6] border-[#84AAA6]" : "border-gray-300 bg-white"}`}>
                   {selected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
                 </span>
               </button>

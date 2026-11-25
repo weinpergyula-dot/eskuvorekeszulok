@@ -148,7 +148,7 @@ function ConnectedAccountsContent() {
       )}
 
       {/* Google */}
-      <div className="flex items-center justify-between gap-4 px-4 py-4 bg-white border-2 border-gray-200 rounded-xl">
+      <div className="flex items-center justify-between gap-4 px-4 py-4 bg-white border border-gray-200 rounded-xl">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
             <GoogleIcon size={20} />
@@ -185,7 +185,7 @@ function ConnectedAccountsContent() {
           <button
             onClick={handleLinkGoogle}
             disabled={actionLoading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 text-sm text-[#5C8480] font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0 bg-[#F0F6F5] hover:bg-[#E3EFED]"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm text-[#5C8480] font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0 bg-[#F0F6F5] hover:bg-[#E3EFED]"
           >
             <Link2 className="h-3.5 w-3.5" />
             Összekapcsolás
@@ -194,7 +194,7 @@ function ConnectedAccountsContent() {
       </div>
 
       {/* Facebook – előkészítve */}
-      <div className="flex items-center justify-between gap-4 px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl opacity-60">
+      <div className="flex items-center justify-between gap-4 px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl opacity-60">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
             <FacebookIcon size={20} />

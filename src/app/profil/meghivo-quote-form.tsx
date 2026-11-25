@@ -86,7 +86,7 @@ function Choice({
       }`}
     >
       <span
-        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors ${
           selected ? "border-[#84AAA6] bg-[#84AAA6]" : "border-gray-300 bg-white"
         }`}
       >
@@ -198,7 +198,7 @@ export function MeghivoQuoteForm({
       </h3>
 
       {/* Gyorsabb út: telefon */}
-      <div className="flex items-start gap-3 rounded-xl border border-[#84AAA6]/40 bg-[#F0F6F5] px-4 py-3">
+      <div className="flex items-start gap-3 rounded-xl border border-[#84AAA6]/30 bg-[#F0F6F5] px-4 py-3">
         <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#84AAA6]" strokeWidth={1.75} />
         {/* Mobilon a vessző után törik a sor, nagyobb kijelzőn egyben fut. */}
         <p className="text-sm leading-relaxed text-gray-700">

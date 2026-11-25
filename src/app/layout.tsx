@@ -47,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="hu" className="h-full">
+    <html lang="hu" className="h-full" suppressHydrationWarning>
       <head>
         {/* Google Consent Mode v2 – minden más script elé, szinkron inicializálás */}
         <script

@@ -74,7 +74,7 @@ export default function ResetPasswordPage() {
     <div>
       <PageHeader title="Új jelszó" icon={Lock} />
       <div className="flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-lg bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+        <div className="w-full max-w-lg bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
           <p className="text-gray-900 text-center mb-8" style={{ fontSize: "22px" }}>Új jelszó megadása</p>
           <Suspense>
             <ResetPasswordForm />

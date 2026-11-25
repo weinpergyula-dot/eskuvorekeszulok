@@ -281,7 +281,7 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
           <button
             type="button"
             onClick={() => avatarInputRef.current?.click()}
-            className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-[#84AAA6] transition-colors cursor-pointer shrink-0 group"
+            className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 border border-gray-200 hover:border-[#84AAA6] transition-colors cursor-pointer shrink-0 group"
           >
             {avatarPreview ? (
               <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
@@ -298,7 +298,7 @@ export function AccountInfoForm({ userId, initialName, email, role }: AccountInf
             </span>
             {avatarUploading && (
               <span className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                <span className="w-5 h-5 border-2 border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
+                <span className="w-5 h-5 border border-gray-200 border-t-[#84AAA6] rounded-full animate-spin" />
               </span>
             )}
           </button>

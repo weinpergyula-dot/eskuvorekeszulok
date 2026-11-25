@@ -496,7 +496,7 @@ export function ProviderForm({
                 <Label>Profilkép</Label>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
+                    className="w-20 h-20 rounded-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
                     onClick={() => avatarInputRef.current?.click()}
                   >
                     {avatarPreview ? (
@@ -656,7 +656,7 @@ export function ProviderForm({
                     {galleryPreviews.map((url, i) => (
                       <div key={`new-${i}`} className="relative group">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg border-2 border-dashed border-[#84AAA6]" />
+                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg border border-dashed border-[#84AAA6]" />
                         <button
                           type="button"
                           onClick={() => removeGalleryFile(i)}

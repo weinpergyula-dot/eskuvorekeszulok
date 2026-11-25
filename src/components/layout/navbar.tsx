@@ -457,7 +457,7 @@ export function Navbar() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={navAvatarUrl} alt="" className="w-6 h-6 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-[#84AAA6]/15 border border-[#84AAA6] flex items-center justify-center">
                       <Check className="h-3 w-3 text-[#84AAA6]" strokeWidth={2.5} />
                     </div>
                   )}
@@ -504,7 +504,7 @@ export function Navbar() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={navAvatarUrl ?? ""} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border border-[#84AAA6] flex items-center justify-center">
                       <Check className="h-3.5 w-3.5 text-[#84AAA6]" strokeWidth={2.5} />
                     </div>
                   )}

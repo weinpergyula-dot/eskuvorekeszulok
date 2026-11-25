@@ -88,7 +88,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   return (
     <div>
       {/* Tab bar – szegmentált kapszula */}
-      <div className="mb-6 flex gap-1 overflow-x-auto rounded-full bg-[#F0F6F5] p-1 scrollbar-none">
+      <div className="mb-6 flex gap-1 overflow-x-auto rounded-full bg-[#E2ECEA] p-1 scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -132,7 +132,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
 
           {/* Kapcsolat kártya */}
           <div className="lg:col-span-2">
-            <div className="bg-[#F7FAF9] rounded-[22px] ring-1 ring-black/5 p-5 space-y-4">
+            <div className="bg-[#EAF1EF] rounded-[22px] ring-1 ring-black/5 p-5 space-y-4">
               <h2 className="text-base font-semibold text-gray-900">Elérhetőségek</h2>
               <div className="space-y-3">
                 {provider.phone && (
@@ -164,7 +164,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               </div>
               <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="w-full flex items-center justify-center gap-2 text-[#5C8480] font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2 bg-[#F0F6F5] hover:bg-[#E3EFED]"
+                className="w-full flex items-center justify-center gap-2 text-[#5C8480] font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2 bg-white ring-1 ring-black/5 hover:bg-[#F7FAF9]"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
                 Chat indítása
@@ -173,7 +173,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               <LoginGateLink
                 href={quoteHrefFor(provider)}
                 message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                className="w-full flex items-center justify-center gap-2 text-[#5C8480] font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2 bg-[#F0F6F5] hover:bg-[#E3EFED]"
+                className="w-full flex items-center justify-center gap-2 text-[#5C8480] font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2 bg-white ring-1 ring-black/5 hover:bg-[#F7FAF9]"
               >
                 <Send className="h-4 w-4" strokeWidth={1.5} />
                 Ajánlatkérés

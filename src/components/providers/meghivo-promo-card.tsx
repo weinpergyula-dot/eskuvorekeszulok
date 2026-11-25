@@ -18,7 +18,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
       >
         <div className="flex min-w-0 flex-1 items-center gap-3">
           {/* Kör alakú jel a szolgáltatói arckép helyén */}
-          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white bg-[#B8925A] shadow-sm">
+          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-white bg-[#B8925A] shadow-sm">
             <MailOpen className="h-7 w-7 text-white" strokeWidth={1.5} />
           </span>
 

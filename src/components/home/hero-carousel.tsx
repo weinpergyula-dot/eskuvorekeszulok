@@ -239,7 +239,7 @@ const HERO_PHONE_IMAGES = [
 const GLASS_CTA =
   "border border-[#B8925A]/30 bg-white/75 text-[#9E7A45] shadow-[0_12px_30px_-10px_rgba(110, 80, 40,0.35)] backdrop-blur-xl hover:bg-white/95";
 const CTA_SIZE =
-  "inline-flex h-12 w-[170px] items-center justify-center gap-1.5 rounded-xl text-[15px] font-bold transition-colors md:h-11 md:w-[200px] md:text-base";
+  "inline-flex h-12 w-[170px] items-center justify-center gap-1.5 rounded-full text-[15px] font-bold transition-colors md:h-11 md:w-[200px] md:text-base";
 
 /**
  * Egy készülék a banneren. A ház térbeli: a megdöntött telefonnak a

@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
     <div>
       <PageHeader title="Elfelejtett jelszó" icon={Lock} />
       <div className="flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-xl bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+        <div className="w-full max-w-xl bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
           {sent ? (
             <div className="text-center space-y-6">
               <div className="bg-green-50 text-green-700 px-4 py-4 rounded-xl border border-green-200 space-y-3">
