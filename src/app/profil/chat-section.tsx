@@ -1091,24 +1091,18 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
   return (
     <div className="space-y-3">
       {/* Tabs + filter toggle */}
-      <div className="flex items-center gap-1 rounded-full bg-[#F0F6F5] p-1">
+      <div className="seg-tabs">
         <button
           onClick={() => setTab("providers")}
-          className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
-            tab === "providers"
-              ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
-              : "text-gray-500 hover:text-gray-800"
-          }`}
+          data-active={tab === "providers"}
+          className="seg-tab gap-1.5 px-4 py-2 text-sm"
         >
           Új chat indítása
         </button>
         <button
           onClick={() => setTab("conversations")}
-          className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
-            tab === "conversations"
-              ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
-              : "text-gray-500 hover:text-gray-800"
-          }`}
+          data-active={tab === "conversations"}
+          className="seg-tab gap-1.5 px-4 py-2 text-sm"
         >
           Aktív chatek
           {unreadConversations > 0 && (
@@ -1129,8 +1123,8 @@ export function ChatSection({ userId, withProviderUserId }: Props) {
                 title={filtersOpen ? "Szűrők elrejtése" : "Szűrők megjelenítése"}
                 className={`relative flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition-colors cursor-pointer ${
                   filtersOpen
-                    ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-white/70"
+                    ? "bg-[#F0F6F5] text-[#5C8480]"
+                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 <SlidersHorizontal className="h-4 w-4" />

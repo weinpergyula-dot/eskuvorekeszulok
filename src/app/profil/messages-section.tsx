@@ -583,7 +583,7 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
     <div className="space-y-3">
       {/* Tabs – only shown when there are incoming messages (providers) */}
       {hasTabs && (
-        <div className="flex border-b border-gray-200">
+        <div className="seg-tabs w-fit">
           {(["bejovo", "kimenő"] as MessageTab[]).map((t) => {
             const count = t === "bejovo"
               ? incomingThreads.filter(th => th.hasUnread).length
@@ -592,9 +592,8 @@ export function MessagesSection({ userId, role, onUnreadChange }: Props) {
               <button
                 key={t}
                 onClick={() => { setTab(t); setFilterCategory(null); }}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-                  tab === t ? " text-[#5C8480]" : "border-transparent text-gray-500 hover:text-gray-700"
-                } bg-[#F0F6F5] hover:bg-[#E3EFED]`}
+                data-active={tab === t}
+                className="seg-tab gap-1.5 px-4 py-2 text-sm"
               >
                 {t === "bejovo" ? "Beérkező" : "Elküldött"}
                 {count > 0 && (

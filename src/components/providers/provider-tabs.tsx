@@ -2,7 +2,6 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { Phone, Mail, Globe, MessageCircle, FileText, Send, UserRound, Contact, Banknote } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
 import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
 import { quoteHrefFor } from "@/lib/quote-href";
@@ -87,17 +86,13 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   return (
     <div>
       {/* Tab bar – szegmentált kapszula */}
-      <div className="mb-6 flex gap-1 overflow-x-auto rounded-full bg-[#E2ECEA] p-1 scrollbar-none">
+      <div className="seg-tabs mb-6 overflow-x-auto scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
-            className={cn(
-              "flex-1 rounded-full px-3 sm:px-4 py-2 text-[13px] sm:text-[15px] font-semibold transition-all cursor-pointer whitespace-nowrap",
-              active === tab.id
-                ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
-                : "text-gray-500 hover:text-gray-800"
-            )}
+            data-active={active === tab.id}
+            className="seg-tab flex-1 px-3 sm:px-5 py-2 text-[13px] sm:text-[15px]"
           >
             {tab.label}
           </button>

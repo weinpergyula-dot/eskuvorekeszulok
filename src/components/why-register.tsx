@@ -75,7 +75,7 @@ export function WhyRegister() {
       <div
         role="tablist"
         aria-label="Regisztráció típusa"
-        className="mx-auto mt-6 flex max-w-sm rounded-full bg-gray-100 p-1"
+        className="seg-tabs mx-auto mt-6 max-w-sm"
       >
         {TABS.map((t) => {
           const selected = t.id === active;
@@ -85,10 +85,10 @@ export function WhyRegister() {
               role="tab"
               aria-selected={selected}
               onClick={() => setActive(t.id)}
-              className={`flex-1 rounded-full py-2.5 text-[15px] font-semibold transition-all duration-200 ${
-                selected ? "bg-white shadow-md" : "text-gray-500"
-              }`}
-              style={selected ? { color: t.accent } : undefined}
+              data-active={selected}
+              className="seg-tab flex-1 py-2.5 text-[15px]"
+              /* Az aktív fül a saját színét kapja (mint a /meghivo füleinél). */
+              style={selected ? { backgroundColor: t.accent } : undefined}
             >
               {t.label}
             </button>
