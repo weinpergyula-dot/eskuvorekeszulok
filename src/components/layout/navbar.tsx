@@ -541,7 +541,7 @@ export function Navbar() {
           <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
-              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium rounded-lg py-2 transition-colors border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80">
+              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium rounded-full py-2 transition-colors border border-gray-200 bg-white text-gray-900 hover:bg-[#F0F6F5]">
                 Regisztráció
               </Link>
               <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white tile-cta rounded-full py-2 transition-colors">

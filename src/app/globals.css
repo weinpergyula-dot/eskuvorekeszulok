@@ -2164,3 +2164,9 @@ html.a11y-underline a { text-decoration: underline !important; }
 
 /* Visszatéréskor (profilról vissza) a főoldali töltőképernyő nem jelenik meg. */
 .skip-home-loader .home-loader { display: none !important; }
+
+/* A profil alsó ajánlatkérő sávja a lábléc végét ne takarja: a hely csak
+   ott kell, nem a tartalom és a lábléc között. */
+@media (max-width: 767px) {
+  body:has(.mobile-bottom-bar) footer { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+}

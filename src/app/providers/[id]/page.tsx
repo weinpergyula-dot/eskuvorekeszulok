@@ -85,7 +85,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
      az aljára felcsúszik a tartalom fehér lapja; mobilon alul rögzített
      ajánlatkérő sáv, desktopon ragadós ajánlatkérő kártya. */
   return (
-    <div className="pb-32 md:pb-16">
+    <div className="pb-6 md:pb-16">
       <ViewTracker providerId={provider.id} />
 
       {/* Borítókép – mobilon teljes szélességben, a fejléc lekerekített alja mögé fut */}

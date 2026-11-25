@@ -58,7 +58,7 @@ function RoleCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center gap-4 rounded-2xl border border-[#84AAA6]/30 bg-[#F0F6F5] p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#84AAA6] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
+      className="group flex w-full items-center gap-4 rounded-full border border-[#84AAA6]/30 bg-[#F0F6F5] p-3 pr-4 text-left sm:rounded-[28px] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#84AAA6] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
     >
       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#84AAA6] shadow-sm sm:mb-4 sm:h-14 sm:w-14">
         <Icon className="h-6 w-6 text-white sm:h-7 sm:w-7" strokeWidth={1.75} />
@@ -881,7 +881,7 @@ function RegisterContent() {
                   type="button"
                   onClick={handleGooglePrefill}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors font-medium text-base disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-200 rounded-full text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors font-medium text-base disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <GoogleIcon />
                   {loading ? "Átirányítás..." : "Regisztráció Google-lal"}
@@ -974,7 +974,7 @@ function RegisterContent() {
                   </div>
                   <div className="flex flex-col gap-1.5 min-w-0">
                     <button type="button" onClick={() => visitorAvatarInputRef.current?.click()}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
                     >
                       <ImagePlus className="h-4 w-4" />
                       {visitorAvatarFile ? "Csere" : "Kép feltöltése"}
@@ -1115,7 +1115,7 @@ function RegisterContent() {
                     <button
                       type="button"
                       onClick={() => avatarInputRef.current?.click()}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
+                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
                     >
                       <ImagePlus className="h-4 w-4" />
                       {avatarFile ? "Csere" : "Kép feltöltése"}
@@ -1274,7 +1274,7 @@ function RegisterContent() {
                     type="button"
                     onClick={() => galleryInputRef.current?.click()}
                     disabled={galleryFiles.length >= 10}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ImagePlus className="h-4 w-4" />
                     Képek hozzáadása
@@ -1330,7 +1330,7 @@ function RegisterContent() {
                     <button
                       type="button"
                       onClick={() => pricingPdfInputRef.current?.click()}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors"
                     >
                       <FileText className="h-4 w-4" />
                       {pricingPdfFile ? "PDF módosítása" : "PDF feltöltése"}

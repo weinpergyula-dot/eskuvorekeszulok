@@ -114,7 +114,7 @@ function CompleteRegistrationContent() {
                 <button
                   type="button"
                   onClick={() => setRole("visitor")}
-                  className={`flex flex-col items-start gap-1 p-4 rounded-xl border transition-colors text-left ${
+                  className={`flex flex-col items-start gap-1 p-4 rounded-[26px] border transition-colors text-left ${
                     role === "visitor"
                       ? "border-[#84AAA6] bg-[#84AAA6]/5"
                       : "border-gray-200 hover:border-gray-300"
@@ -127,7 +127,7 @@ function CompleteRegistrationContent() {
                 <button
                   type="button"
                   onClick={() => setRole("provider")}
-                  className={`flex flex-col items-start gap-1 p-4 rounded-xl border transition-colors text-left ${
+                  className={`flex flex-col items-start gap-1 p-4 rounded-[26px] border transition-colors text-left ${
                     role === "provider"
                       ? "border-[#84AAA6] bg-[#84AAA6]/5"
                       : "border-gray-200 hover:border-gray-300"

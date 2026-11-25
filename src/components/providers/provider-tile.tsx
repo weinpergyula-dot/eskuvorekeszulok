@@ -237,30 +237,32 @@ export function ProviderTile({
 
       {/* Lenyíló fehér bemutatkozó panel – a kép alá csúszik */}
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "-mt-8 grid-rows-[1fr]" : "grid-rows-[0fr]")}>
-        <div className="overflow-hidden">
-          <div className={cn("rounded-b-[30px] bg-white/85 backdrop-blur-xl px-5 pb-5 pt-12 ring-1 ring-black/[0.06] shadow-[inset_0_-3px_12px_rgba(20,45,42,0.10),inset_3px_0_10px_rgba(20,45,42,0.06),inset_-3px_0_10px_rgba(20,45,42,0.06)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
-            {intro ? (
-              <p className="text-[15px] leading-relaxed text-[#404040] whitespace-pre-line">{intro}</p>
-            ) : (
-              <p className="text-[15px] italic text-[#9ca3af]">Nincs még bemutatkozó szöveg.</p>
-            )}
-            {!isOwner && (
-              <div className="mt-4 flex items-center gap-2">
-                <ChatLink
-                  href={`/profil?tab=chat&with=${provider.user_id}`}
-                  className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] ring-1 ring-[#84AAA6]/25 hover:bg-[#E3EFED]"
-                >
-                  <MessageCircle className="h-4 w-4" /> Chat
-                </ChatLink>
-                <LoginGateLink
-                  href={quoteHrefFor(provider)}
-                  message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                  className="tile-cta flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
-                >
-                  <Send className="h-4 w-4" /> Ajánlatkérés
-                </LoginGateLink>
-              </div>
-            )}
+        <div className="-mx-2 overflow-hidden">
+          <div className="px-2 pb-3">
+            <div className={cn("rounded-b-[30px] bg-white/85 backdrop-blur-xl px-5 pb-5 pt-12 ring-1 ring-black/[0.06] shadow-[0_8px_18px_-12px_rgba(20,45,42,0.35)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
+              {intro ? (
+                <p className="text-[15px] leading-relaxed text-[#404040] whitespace-pre-line">{intro}</p>
+              ) : (
+                <p className="text-[15px] italic text-[#9ca3af]">Nincs még bemutatkozó szöveg.</p>
+              )}
+              {!isOwner && (
+                <div className="mt-4 flex items-center gap-2">
+                  <ChatLink
+                    href={`/profil?tab=chat&with=${provider.user_id}`}
+                    className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] ring-1 ring-[#84AAA6]/25 hover:bg-[#E3EFED]"
+                  >
+                    <MessageCircle className="h-4 w-4" /> Chat
+                  </ChatLink>
+                  <LoginGateLink
+                    href={quoteHrefFor(provider)}
+                    message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+                    className="tile-cta flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
+                  >
+                    <Send className="h-4 w-4" /> Ajánlatkérés
+                  </LoginGateLink>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -379,30 +381,32 @@ export function ProviderRow({
       </div>
 
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
-        <div className="overflow-hidden">
-          <div className={cn("mt-2 rounded-[20px] bg-white/85 backdrop-blur-xl px-4 py-3.5 ring-1 ring-black/[0.06] shadow-[inset_0_-3px_12px_rgba(20,45,42,0.10),inset_3px_0_10px_rgba(20,45,42,0.06),inset_-3px_0_10px_rgba(20,45,42,0.06)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
-            {intro ? (
-              <p className="text-[14.5px] leading-relaxed text-[#404040] whitespace-pre-line">{intro}</p>
-            ) : (
-              <p className="text-[14.5px] italic text-[#9ca3af]">Nincs még bemutatkozó szöveg.</p>
-            )}
-            {!isOwner && (
-              <div className="mt-3 flex items-center gap-2">
-                <ChatLink
-                  href={`/profil?tab=chat&with=${provider.user_id}`}
-                  className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] ring-1 ring-[#84AAA6]/25 hover:bg-[#E3EFED]"
-                >
-                  <MessageCircle className="h-4 w-4" /> Chat
-                </ChatLink>
-                <LoginGateLink
-                  href={quoteHrefFor(provider)}
-                  message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                  className="tile-cta flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
-                >
-                  <Send className="h-4 w-4" /> Ajánlatkérés
-                </LoginGateLink>
-              </div>
-            )}
+        <div className="-mx-2 overflow-hidden">
+          <div className="px-2 pb-3">
+            <div className={cn("mt-2 rounded-[20px] bg-white/85 backdrop-blur-xl px-4 py-3.5 ring-1 ring-black/[0.06] shadow-[0_8px_18px_-12px_rgba(20,45,42,0.35)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
+              {intro ? (
+                <p className="text-[14.5px] leading-relaxed text-[#404040] whitespace-pre-line">{intro}</p>
+              ) : (
+                <p className="text-[14.5px] italic text-[#9ca3af]">Nincs még bemutatkozó szöveg.</p>
+              )}
+              {!isOwner && (
+                <div className="mt-3 flex items-center gap-2">
+                  <ChatLink
+                    href={`/profil?tab=chat&with=${provider.user_id}`}
+                    className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] ring-1 ring-[#84AAA6]/25 hover:bg-[#E3EFED]"
+                  >
+                    <MessageCircle className="h-4 w-4" /> Chat
+                  </ChatLink>
+                  <LoginGateLink
+                    href={quoteHrefFor(provider)}
+                    message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+                    className="tile-cta flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold"
+                  >
+                    <Send className="h-4 w-4" /> Ajánlatkérés
+                  </LoginGateLink>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
