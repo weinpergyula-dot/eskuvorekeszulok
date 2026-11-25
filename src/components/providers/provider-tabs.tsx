@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { Phone, Mail, Globe, MessageCircle, FileText, Send } from "lucide-react";
+import { Phone, Mail, Globe, MessageCircle, FileText, Send, UserRound, Contact, Banknote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
 import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
@@ -106,19 +106,23 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
 
       {/* Bemutatkozás */}
       {active === "about" && (
-        (provider.detailed_description || provider.description) ? (
-          /* A cím a tabon van, itt nem ismételjük. Mobilon 2px-el kisebb betű. */
-          <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[15px] sm:text-[17px]">
-            {provider.detailed_description || provider.description}
-          </p>
-        ) : (
-          <p className="text-gray-400 text-base italic">Nincs bemutatkozó szöveg.</p>
-        )
+        <section>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><UserRound className="h-5 w-5 text-[#84AAA6]" />Bemutatkozás</h2>
+          {(provider.detailed_description || provider.description) ? (
+            /* Mobilon 2px-el kisebb betű. */
+            <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[15px] sm:text-[17px]">
+              {provider.detailed_description || provider.description}
+            </p>
+          ) : (
+            <p className="text-gray-400 text-base italic">Nincs bemutatkozó szöveg.</p>
+          )}
+        </section>
       )}
 
       {/* Elérhetőségek tab: telefon, e-mail, weboldal + Chat és Ajánlatkérés */}
       {active === "message" && (
-        <div className="max-w-xl bg-white rounded-[22px] ring-1 ring-black/10 shadow-[0_10px_24px_-18px_rgba(20,45,42,0.45)] p-5 space-y-4">
+        <section className="max-w-xl space-y-4">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2"><Contact className="h-5 w-5 text-[#84AAA6]" />Elérhetőségek</h2>
           <div className="space-y-3">
             {provider.phone && (
               <ContactItem
@@ -165,17 +169,21 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
               Ajánlatkérés
             </LoginGateLink>
           </div>
-        </div>
+        </section>
       )}
 
       {/* Értékelések tab */}
       {active === "reviews" && (
-        <ReviewSection providerId={provider.id} providerUserId={provider.user_id} />
+        /* A fülön belül nem kell a szekció saját felső térköze. */
+        <div className="[&>section]:mt-0">
+          <ReviewSection providerId={provider.id} providerUserId={provider.user_id} />
+        </div>
       )}
 
       {/* Árak tab */}
       {active === "pricing" && (
         <div className="space-y-6">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2"><Banknote className="h-5 w-5 text-[#84AAA6]" />Árak</h2>
           {provider.pricing_text && (
             <div className="prose prose-gray max-w-none">
               {/* mobilon 4px-el kisebb betűméret (17px -> 13px), desktopon változatlan */}
