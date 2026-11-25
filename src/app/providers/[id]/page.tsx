@@ -3,13 +3,13 @@ export const revalidate = 60;
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { Star, User, Send, MessageCircle } from "lucide-react";
+import { Star, Send, MessageCircle } from "lucide-react";
 import { quoteHrefFor } from "@/lib/quote-href";
 import { ChatLink, LoginGateLink } from "@/components/providers/masked-contact";
 import { ProviderHero } from "@/components/providers/provider-hero";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
-import { PageHeader } from "@/components/layout/page-header";
+import { BackLink } from "@/components/layout/back-link";
 import { ProviderTabs } from "@/components/providers/provider-tabs";
 import { ProviderUserActions } from "@/components/providers/provider-user-actions";
 import { ShareButton } from "@/components/providers/share-button";
@@ -79,39 +79,40 @@ export default async function ProviderProfilePage({ params }: PageProps) {
   const quoteHref = quoteHrefFor(provider);
 
 
-  /* A lista kártyáinak megjelenése: nagy, lapozó fotós kártya, alatta
-     fehér, lekerekített blokkok; mobilon alul rögzített ajánlatkérő sáv,
-     desktopon ragadós ajánlatkérő kártya. */
+  const backFallback = firstCategory ? `/?category=${firstCategory}#szolgaltatok` : "/#szolgaltatok";
+
+  /* Teljes szélességű, lapozó fotó (rajta a szolgáltató adataival), aminek
+     az aljára felcsúszik a tartalom fehér lapja; mobilon alul rögzített
+     ajánlatkérő sáv, desktopon ragadós ajánlatkérő kártya. */
   return (
-    <div className="pb-28 md:pb-12">
-      <PageHeader
-        icon={User}
-        title="Szolgáltatói profil"
-        /* A Vissza gomb a listázás `from` paraméterét követi (a szűrőkkel
-           együtt); ha nincs, a szolgáltató kategóriájára nyitott főoldalra visz. */
-        backFallbackHref={firstCategory ? `/?category=${firstCategory}#szolgaltatok` : "/#szolgaltatok"}
-      />
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8">
-        <ViewTracker providerId={provider.id} />
+    <div className="pb-32 md:pb-16">
+      <ViewTracker providerId={provider.id} />
 
+      {/* Borítókép – mobilon teljes szélességben, a fejléc lekerekített alja mögé fut */}
+      <div className="relative -mt-6 md:mt-0 md:max-w-7xl md:mx-auto md:px-6 lg:px-8 md:pt-6">
+        <ProviderHero
+          provider={provider}
+          bleed
+          /* A Vissza gomb a listázás `from` paraméterét követi (a szűrőkkel
+             együtt); ha nincs, a szolgáltató kategóriájára nyitott főoldalra visz. */
+          back={<BackLink fallbackHref={backFallback} round />}
+          actions={
+            <>
+              <span className="glass-strong rounded-full p-0.5"><ShareButton title={provider.full_name} iconOnly /></span>
+              <span className="glass-strong rounded-full p-0.5">
+                <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="mobile" />
+              </span>
+            </>
+          }
+        />
+      </div>
+
+      <div className="relative -mt-8 md:mt-8 max-w-7xl mx-auto md:px-6 lg:px-8">
         <div className="md:grid md:grid-cols-[minmax(0,1fr)_340px] md:gap-8 md:items-start">
-          <div className="space-y-4">
-            <ProviderHero
-              provider={provider}
-              actions={
-                <>
-                  <span className="glass-strong rounded-full p-0.5"><ShareButton title={provider.full_name} iconOnly /></span>
-                  <span className="glass-strong rounded-full p-0.5">
-                    <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="mobile" />
-                  </span>
-                </>
-              }
-            />
-
-            {/* Bemutatkozás, galéria, árak, chat, értékelések */}
-            <div className="rounded-[26px] bg-white p-4 sm:p-6 ring-1 ring-black/5 shadow-[0_14px_30px_-22px_rgba(20,45,42,0.5)]">
-              <ProviderTabs provider={provider} />
-            </div>
+          {/* Felcsúszó lap: bemutatkozás, galéria, árak, chat, értékelések */}
+          <div className="sheet-up relative rounded-t-[32px] md:rounded-[32px] bg-white px-4 pt-3 pb-6 sm:px-8 sm:pt-8 ring-1 ring-black/5 shadow-[0_-12px_40px_-24px_rgba(20,45,42,0.45)] md:shadow-[0_24px_50px_-30px_rgba(20,45,42,0.5)]">
+            <div className="mx-auto mb-4 h-1.5 w-11 rounded-full bg-gray-900/15 md:hidden" aria-hidden />
+            <ProviderTabs provider={provider} />
           </div>
 
           {/* Desktop: ragadós ajánlatkérő kártya */}

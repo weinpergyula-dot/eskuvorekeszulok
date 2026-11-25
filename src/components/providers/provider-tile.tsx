@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MapPin, Star, MessageCircle, ArrowRight, Flame, Eye, ChevronDown, Send } from "lucide-react";
+import { createPortal } from "react-dom";
+import { MapPin, Star, MessageCircle, ArrowRight, Flame, Eye, ChevronDown, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORY_LABELS, type Provider } from "@/lib/types";
 import { FavoriteButton } from "@/components/providers/favorite-button";
@@ -121,6 +122,7 @@ export function ProviderTile({
   const shown = images.slice(0, 6);
 
   const [open, setOpen] = useState(false);
+  const [viewerAt, setViewerAt] = useState<number | null>(null);
   const { stripRef, cardRef, idx, onScroll, playing, holdHandlers } = useSlideshow(shown.length);
 
   const rating = provider.average_rating ?? 0;
@@ -139,16 +141,22 @@ export function ProviderTile({
         {shown.length > 0 ? (
           <div ref={stripRef} onScroll={onScroll} className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scrollbar-none">
             {shown.map((src, i) => (
-              <a key={src + i} href={detailHref} className="relative h-full w-full shrink-0 snap-center">
+              <button
+                key={src + i}
+                type="button"
+                onClick={() => setViewerAt(i)}
+                aria-label="Képek megtekintése"
+                className="relative h-full w-full shrink-0 snap-center cursor-zoom-in"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src} alt={i === 0 ? provider.full_name : ""} loading="lazy" className="h-full w-full object-cover" />
-              </a>
+              </button>
             ))}
           </div>
         ) : (
-          <a href={detailHref} className="flex h-full items-center justify-center font-heading text-6xl font-bold text-[#84AAA6]/40">
+          <div className="flex h-full items-center justify-center font-heading text-6xl font-bold text-[#84AAA6]/40">
             {provider.full_name.charAt(0)}
-          </a>
+          </div>
         )}
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0f1a19]/90 via-[#0f1a19]/15 to-black/10" />
@@ -230,7 +238,7 @@ export function ProviderTile({
       {/* Lenyíló fehér bemutatkozó panel – a kép alá csúszik */}
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "-mt-8 grid-rows-[1fr]" : "grid-rows-[0fr]")}>
         <div className="overflow-hidden">
-          <div className={cn("rounded-b-[30px] bg-white px-5 pb-5 pt-12 shadow-[0_18px_40px_-24px_rgba(20,45,42,0.45)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
+          <div className={cn("rounded-b-[30px] bg-[#E6F0EE] px-5 pb-5 pt-12 ring-1 ring-[#84AAA6]/45 shadow-[0_20px_40px_-20px_rgba(20,45,42,0.5)] transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
             {intro ? (
               <p className="text-[15px] leading-relaxed text-[#404040] whitespace-pre-line">{intro}</p>
             ) : (
@@ -240,7 +248,7 @@ export function ProviderTile({
               <div className="mt-4 flex items-center gap-2">
                 <ChatLink
                   href={`/profil?tab=chat&with=${provider.user_id}`}
-                  className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] hover:bg-[#E3EFED]"
+                  className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white text-[14px] font-semibold text-[#5C8480] ring-1 ring-[#84AAA6]/30 hover:bg-[#F7FAF9]"
                 >
                   <MessageCircle className="h-4 w-4" /> Chat
                 </ChatLink>
@@ -256,6 +264,16 @@ export function ProviderTile({
           </div>
         </div>
       </div>
+
+      {viewerAt !== null && (
+        <GalleryViewer
+          provider={provider}
+          images={images}
+          startAt={viewerAt}
+          detailHref={detailHref}
+          onClose={() => setViewerAt(null)}
+        />
+      )}
     </article>
   );
 }
@@ -279,8 +297,10 @@ export function ProviderRow({
     ? `/providers/${provider.id}?from=${encodeURIComponent(backHref)}`
     : `/providers/${provider.id}`;
   const [open, setOpen] = useState(false);
+  const [viewerAt, setViewerAt] = useState<number | null>(null);
 
   const cover = provider.gallery_urls?.[0] ?? provider.avatar_url;
+  const rowImages = provider.gallery_urls?.length ? provider.gallery_urls : provider.avatar_url ? [provider.avatar_url] : [];
   const rating = provider.average_rating ?? 0;
   const reviews = provider.review_count ?? 0;
   const counties = provider.counties ?? [];
@@ -293,7 +313,12 @@ export function ProviderRow({
       className="scroll-mt-24 rounded-[26px] bg-white/85 p-2 ring-1 ring-white shadow-[0_16px_34px_-24px_rgba(20,45,42,0.5)]"
     >
       <div className="flex items-center gap-3">
-        <a href={detailHref} className="relative h-[92px] w-[92px] sm:h-[104px] sm:w-[104px] shrink-0 overflow-hidden rounded-[20px] bg-[#EEF3F2]">
+        <button
+          type="button"
+          onClick={() => rowImages.length > 0 && setViewerAt(0)}
+          aria-label="Képek megtekintése"
+          className={cn("relative h-[92px] w-[92px] sm:h-[104px] sm:w-[104px] shrink-0 overflow-hidden rounded-[20px] bg-[#EEF3F2]", rowImages.length > 0 && "cursor-zoom-in")}
+        >
           {cover ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={cover} alt={provider.full_name} loading="lazy" className="h-full w-full object-cover" />
@@ -307,7 +332,7 @@ export function ProviderRow({
               <Flame className={cn("h-3.5 w-3.5", FEATURED_COLOR[provider.featured])} />
             </span>
           )}
-        </a>
+        </button>
 
         <div className="min-w-0 flex-1 py-1">
           {cats.length > 0 && (
@@ -315,11 +340,9 @@ export function ProviderRow({
               {cats.slice(0, 2).map((c) => CATEGORY_LABELS[c] ?? c).join(" · ")}
             </p>
           )}
-          <a href={detailHref}>
-            <h3 className="mt-0.5 font-heading text-[17px] sm:text-[19px] font-bold leading-tight text-[#262626] line-clamp-1">
-              {provider.full_name}
-            </h3>
-          </a>
+          <h3 className="mt-0.5 font-heading text-[17px] sm:text-[19px] font-bold leading-tight text-[#262626] line-clamp-1">
+            {provider.full_name}
+          </h3>
           <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[13px] text-[#6b7280]">
             {counties.length > 0 && (
               <span className="inline-flex items-center gap-1">
@@ -357,7 +380,7 @@ export function ProviderRow({
 
       <div className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
         <div className="overflow-hidden">
-          <div className={cn("mt-2 rounded-[20px] bg-white px-4 py-3.5 transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
+          <div className={cn("mt-2 rounded-[20px] bg-[#E6F0EE] px-4 py-3.5 ring-1 ring-[#84AAA6]/45 transition-opacity duration-300", open ? "opacity-100" : "opacity-0")}>
             {intro ? (
               <p className="text-[14.5px] leading-relaxed text-[#404040] whitespace-pre-line">{intro}</p>
             ) : (
@@ -367,7 +390,7 @@ export function ProviderRow({
               <div className="mt-3 flex items-center gap-2">
                 <ChatLink
                   href={`/profil?tab=chat&with=${provider.user_id}`}
-                  className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] hover:bg-[#E3EFED]"
+                  className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-white text-[14px] font-semibold text-[#5C8480] ring-1 ring-[#84AAA6]/30 hover:bg-[#F7FAF9]"
                 >
                   <MessageCircle className="h-4 w-4" /> Chat
                 </ChatLink>
@@ -383,7 +406,98 @@ export function ProviderRow({
           </div>
         </div>
       </div>
+      {viewerAt !== null && (
+        <GalleryViewer
+          provider={provider}
+          images={rowImages}
+          startAt={viewerAt}
+          detailHref={detailHref}
+          onClose={() => setViewerAt(null)}
+        />
+      )}
     </article>
   );
 }
 
+
+/* ── Képnézegető ─────────────────────────────────────────────────────────
+   A kártya képére koppintva teljes képernyőn, egymás alatt, görgethetően
+   mutatja a szolgáltató összes képét; a megérintett kép látszik elsőként.
+   A részletes profilra csak a Megnézem gomb visz. */
+function GalleryViewer({
+  provider,
+  images,
+  startAt,
+  detailHref,
+  onClose,
+}: {
+  provider: Provider;
+  images: string[];
+  startAt: number;
+  detailHref?: string;
+  onClose: () => void;
+}) {
+  const listRef = useRef<HTMLDivElement>(null);
+  /* A szülő (lapozó slideshow) újrarajzolásai ne indítsák újra a hatást:
+     a bezáró függvényt ref-ből olvassuk. */
+  const closeRef = useRef(onClose);
+  useEffect(() => { closeRef.current = onClose; }, [onClose]);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeRef.current(); };
+    window.addEventListener("keydown", onKey);
+    /* A megérintett kép legyen elöl. */
+    const target = listRef.current?.querySelector<HTMLElement>(`[data-idx="${startAt}"]`);
+    target?.scrollIntoView({ block: "start" });
+    return () => {
+      html.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [startAt]);
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-[#0b1110]/95 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${provider.full_name} képei`}>
+      <div className="flex items-center gap-3 px-4 pb-3 pt-[max(14px,env(safe-area-inset-top))] text-white">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/15 ring-2 ring-white/80">
+          {provider.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={provider.avatar_url} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <span className="font-heading font-bold">{provider.full_name.charAt(0)}</span>
+          )}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[15px] font-semibold leading-tight">{provider.full_name}</p>
+          <p className="text-[12px] text-white/65">{images.length} kép</p>
+        </div>
+        <button type="button" onClick={onClose} aria-label="Bezárás" className="glass-dark flex h-10 w-10 items-center justify-center rounded-full">
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+
+      <div ref={listRef} className="flex-1 overflow-y-auto overscroll-contain px-3 pb-28">
+        <div className="mx-auto flex max-w-2xl flex-col gap-3">
+          {images.map((src, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={src + i} data-idx={i} src={src} alt="" className="w-full scroll-mt-2 rounded-[22px] object-cover" />
+          ))}
+        </div>
+      </div>
+
+      {detailHref && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-10 bg-gradient-to-t from-[#0b1110] to-transparent">
+          <a href={detailHref} className="pointer-events-auto tile-cta flex h-12 items-center gap-2 rounded-full pl-6 pr-2 text-[16px] font-semibold">
+            Megnézem
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/25">
+              <ArrowRight className="h-4 w-4" />
+            </span>
+          </a>
+        </div>
+      )}
+    </div>,
+    document.body
+  );
+}

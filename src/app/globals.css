@@ -2153,3 +2153,11 @@ html.a11y-underline a { text-decoration: underline !important; }
   color: #fff;
 }
 .tile-cta-gold:hover { filter: brightness(1.05); }
+
+/* A szolgáltatói profil tartalmának lapja felcsúszik a fotó aljára. */
+@keyframes sheet-up {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+.sheet-up { animation: sheet-up 0.55s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .sheet-up { animation: none; } }
