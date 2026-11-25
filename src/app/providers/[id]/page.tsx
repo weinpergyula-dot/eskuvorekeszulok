@@ -110,7 +110,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       <div className="relative -mt-8 md:mt-8 max-w-7xl mx-auto md:px-6 lg:px-8">
         <div className="md:grid md:grid-cols-[minmax(0,1fr)_340px] md:gap-8 md:items-start">
           {/* Felcsúszó lap: bemutatkozás, galéria, árak, chat, értékelések */}
-          <div className="sheet-up relative rounded-t-[32px] md:rounded-[32px] bg-white px-4 pt-3 pb-6 sm:px-8 sm:pt-8 ring-1 ring-black/5 shadow-[0_-12px_40px_-24px_rgba(20,45,42,0.45)] md:shadow-[0_24px_50px_-30px_rgba(20,45,42,0.5)]">
+          <div className="sheet-up relative rounded-t-[32px] md:rounded-[32px] bg-white px-4 pt-3 pb-6 sm:px-8 sm:pt-8 md:ring-1 md:ring-black/5 shadow-[0_-12px_40px_-24px_rgba(20,45,42,0.45)] md:shadow-[0_24px_50px_-30px_rgba(20,45,42,0.5)]">
             <div className="mx-auto mb-4 h-1.5 w-11 rounded-full bg-gray-900/15 md:hidden" aria-hidden />
             <ProviderTabs provider={provider} />
           </div>
