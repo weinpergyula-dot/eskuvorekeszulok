@@ -7,6 +7,7 @@ import { Star, Send, MessageCircle } from "lucide-react";
 import { quoteHrefFor } from "@/lib/quote-href";
 import { ChatLink, LoginGateLink } from "@/components/providers/masked-contact";
 import { ProviderHero } from "@/components/providers/provider-hero";
+import { RevealOnScrollDown } from "@/components/providers/reveal-on-scroll-down";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
 import { BackLink } from "@/components/layout/back-link";
@@ -110,7 +111,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       <div className="relative -mt-8 md:mt-8 max-w-7xl mx-auto md:px-6 lg:px-8">
         <div className="md:grid md:grid-cols-[minmax(0,1fr)_340px] md:gap-8 md:items-start">
           {/* Felcsúszó lap: bemutatkozás, galéria, árak, chat, értékelések */}
-          <div className="sheet-up relative rounded-t-[32px] md:rounded-[32px] bg-white px-4 pt-3 pb-6 sm:px-8 sm:pt-8 md:ring-1 md:ring-black/5 shadow-[0_-12px_40px_-24px_rgba(20,45,42,0.45)] md:shadow-[0_24px_50px_-30px_rgba(20,45,42,0.5)]">
+          <div className="sheet-up relative rounded-t-[32px] md:rounded-[32px] bg-white px-4 pt-3 pb-6 sm:px-8 sm:pt-8 md:ring-1 md:ring-black/5 md:shadow-[0_24px_50px_-30px_rgba(20,45,42,0.5)]">
             <div className="mx-auto mb-4 h-1.5 w-11 rounded-full bg-gray-900/15 md:hidden" aria-hidden />
             <ProviderTabs provider={provider} />
           </div>
@@ -144,7 +145,8 @@ export default async function ProviderProfilePage({ params }: PageProps) {
       </div>
 
       {/* Mobil: rögzített alsó ajánlatkérő sáv */}
-      <div className="mobile-bottom-bar md:hidden fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(12px,env(safe-area-inset-bottom))]">
+      {/* Csak az első lefelé görgetéskor csúszik be, onnantól végig látszik. */}
+      <RevealOnScrollDown className="mobile-bottom-bar md:hidden fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(12px,env(safe-area-inset-bottom))]">
         <div className="glass-strong flex items-center justify-between gap-3 rounded-[26px] py-2.5 pl-5 pr-2.5 shadow-[0_18px_40px_-18px_rgba(20,45,42,0.45)]">
           <div className="min-w-0">
             <p className="flex items-center gap-1 text-[16px] font-bold text-gray-900">
@@ -164,7 +166,7 @@ export default async function ProviderProfilePage({ params }: PageProps) {
             <Send className="h-4 w-4" /> Ajánlatkérés
           </LoginGateLink>
         </div>
-      </div>
+      </RevealOnScrollDown>
     </div>
   );
 }

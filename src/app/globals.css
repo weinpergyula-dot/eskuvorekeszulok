@@ -2145,7 +2145,7 @@ html.a11y-underline a { text-decoration: underline !important; }
 
 /* A szolgáltatói profil alsó ajánlatkérő sávja fölé kerül a lebegő sarokgomb. */
 @media (max-width: 767px) {
-  body:has(.mobile-bottom-bar) .floating-corner { bottom: calc(96px + env(safe-area-inset-bottom)); }
+  body:has(.mobile-bottom-bar:not([aria-hidden="true"])) .floating-corner { bottom: calc(96px + env(safe-area-inset-bottom)); }
 }
 .tile-cta-gold {
   background: linear-gradient(135deg, #CBA772 0%, #B8925A 55%, #9E7A45 100%);
