@@ -24,7 +24,7 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
         className="group relative flex items-center gap-3 overflow-hidden rounded-[26px] p-2 ring-1 ring-[#B8925A]/40 shadow-[0_16px_34px_-24px_rgba(40,28,10,0.7)]"
         style={{ background: "linear-gradient(140deg, #2B2319 0%, #17130E 100%)" }}
       >
-        <span aria-hidden className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-[#C9A46A]/25 blur-3xl" />
+        <span aria-hidden className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-[#C9A46A]/25 blur-3xl transform-gpu" />
         <span className="relative flex h-[92px] w-[92px] sm:h-[104px] sm:w-[104px] shrink-0 items-center justify-center overflow-hidden rounded-[20px] bg-black/30 ring-1 ring-white/10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/meghivo/slide-gold.webp" alt="" loading="lazy" className="h-full w-full object-cover object-top opacity-90" />
@@ -55,18 +55,20 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
         style={{ background: "radial-gradient(120% 80% at 50% 38%, #3A2F20 0%, #1E1912 55%, #120F0B 100%)" }}
       >
         {/* Arany fények a háttérben */}
-        <span aria-hidden className="pointer-events-none absolute left-1/2 top-[38%] h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C9A46A]/25 blur-3xl" />
-        <span aria-hidden className="pointer-events-none absolute -left-16 -bottom-16 h-40 w-40 rounded-full bg-[#C9A46A]/10 blur-3xl" />
+        <span aria-hidden className="pointer-events-none absolute left-1/2 top-[38%] h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C9A46A]/25 blur-3xl transform-gpu" />
+        <span aria-hidden className="pointer-events-none absolute -left-16 -bottom-16 h-40 w-40 rounded-full bg-[#C9A46A]/10 blur-3xl transform-gpu" />
         {/* Vékony belső arany keret */}
         <span aria-hidden className="pointer-events-none absolute inset-2 rounded-[24px] ring-1 ring-[#C9A46A]/20" />
 
         {/* Felső sor: címke */}
         <div className="absolute inset-x-3.5 top-3.5 z-20 flex items-start justify-between">
-          <span className="glass-strong inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold text-[#262626]">
+          {/* Homályosítás (backdrop-filter) nélkül: a mögötte lévő megdöntött
+              telefonok mellett az iOS Safari villogva rajzolná újra. */}
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[13px] font-semibold text-[#262626] ring-1 ring-white">
             <Sparkles className="h-4 w-4" style={{ color: "#B8925A" }} />
             Saját szolgáltatás
           </span>
-          <span className="glass-dark flex h-9 w-9 items-center justify-center rounded-full text-white">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white ring-1 ring-white/25">
             <MailOpen className="h-4 w-4" />
           </span>
         </div>
@@ -128,8 +130,8 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
 /** Kicsinyített telefonkeret egy meghívó-minta képernyőképével. */
 function MiniPhone({ src, label, className = "" }: { src: string; label: string; className?: string }) {
   return (
-    <div className={`relative flex h-full max-h-[230px] flex-col items-center transition-transform duration-500 ease-out ${className}`}>
-      <div className="aspect-[390/844] h-full rounded-[0.95rem] bg-[#0b0b0b] p-[3px] shadow-[0_22px_34px_-14px_rgba(0,0,0,0.85)] ring-1 ring-[#C9A46A]/35">
+    <div className={`mini-phone relative flex h-full max-h-[230px] flex-col items-center transition-transform duration-500 ease-out ${className}`}>
+      <div className="aspect-[390/844] h-full rounded-[0.95rem] bg-[#0b0b0b] p-[3px] shadow-[0_22px_34px_-14px_rgba(0,0,0,0.85)] border border-[#C9A46A]/35">
         <div className="relative h-full overflow-hidden rounded-[0.75rem] bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt="" loading="lazy" className="block h-full w-full object-cover object-top" />
