@@ -163,16 +163,18 @@ export function ProviderTile({
 
         {/* Felső sor: címke, galéria-pöttyök, kedvenc */}
         <div className="pointer-events-none absolute inset-x-3.5 top-3.5 flex items-start justify-between gap-2">
-          {provider.featured ? (
-            <span className="glass-strong inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold text-[#262626]">
-              <Flame className={cn("h-4 w-4", FEATURED_COLOR[provider.featured])} />
-              {FEATURED_LABEL[provider.featured] ?? "Kiemelt"}
-            </span>
-          ) : (
-            <span className="glass-dark inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[12px] font-semibold text-white">
+          {/* Kiemelt címke (ha van) és mellette mindig a megtekintések száma */}
+          <div className="flex items-center gap-1.5">
+            {provider.featured && (
+              <span className="glass-strong inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold text-[#262626]">
+                <Flame className={cn("h-4 w-4", FEATURED_COLOR[provider.featured])} />
+                {FEATURED_LABEL[provider.featured] ?? "Kiemelt"}
+              </span>
+            )}
+            <span className="glass-dark inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[12px] font-semibold text-white" title="Megtekintések">
               <Eye className="h-3.5 w-3.5" /> {provider.view_count ?? 0}
             </span>
-          )}
+          </div>
           {!isOwner && (
             <div className="pointer-events-auto glass-strong rounded-full">
               <FavoriteButton providerId={provider.id} initialLiked={initialLiked} onUnlike={onUnlike} iconOnly />

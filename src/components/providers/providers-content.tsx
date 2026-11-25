@@ -523,8 +523,8 @@ export function ProvidersContent({
           </div>
 
           {/* Mobile: category + county (full), then view + sort + page size
-              filling one row. A főoldalon a két szűrő csak a Szűrő gombra
-              nyílik ki. */}
+              filling one row. A főoldalon a kategória-legördülő csak a Szűrő
+              gombra nyílik ki, a megyeszűrő mindig látszik. */}
           <div className="lg:hidden space-y-2">
             {/* A főoldalon a kategória-legördülő (darabszámokkal) is a Szűrő
                 gombra jelenik meg, a megyeszűrő fölött; a választás a
@@ -533,9 +533,9 @@ export function ProvidersContent({
             {(!hideCategoryPills || filterOpen) && (
               <FilterSelect value={category} onChange={setCategory} options={categoryOptions} placeholder="Összes kategória" fullWidthMobile />
             )}
-            {(!hideCategoryPills || filterOpen) && (
-              <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
-            )}
+            {/* A megyeszűrő mindig látszik; a Szűrő gomb a kategória-
+                legördülőt nyitja. */}
+            <FilterSelect value={county} onChange={setCounty} options={countyOptions} placeholder="Összes megye" fullWidthMobile />
             <div className="grid grid-cols-[auto_1fr_auto] items-stretch gap-2">
               <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
               <SortDropdown sortBy={sortBy} setSortBy={setSortBy} fill />
