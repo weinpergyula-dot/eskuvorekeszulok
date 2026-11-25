@@ -18,7 +18,15 @@ function isInternal(path: string | null): path is string {
   return !!path && path.startsWith("/") && !path.startsWith("//");
 }
 
-function Anchor({ href }: { href: string }) {
+/* `round`: csak ikon, kerek üveg gomb (a szolgáltatói profil fotóján). */
+function Anchor({ href, round }: { href: string; round?: boolean }) {
+  if (round) {
+    return (
+      <a href={href} aria-label="Vissza" className="glass-strong flex h-10 w-10 items-center justify-center rounded-full text-gray-900">
+        <ArrowLeft className="h-5 w-5" />
+      </a>
+    );
+  }
   return (
     <a href={href} className={CLASS} style={{ color: "#84AAA6" }}>
       <ArrowLeft className="h-4 w-4" />
@@ -27,15 +35,15 @@ function Anchor({ href }: { href: string }) {
   );
 }
 
-function FromAwareAnchor({ fallbackHref }: { fallbackHref: string }) {
+function FromAwareAnchor({ fallbackHref, round }: { fallbackHref: string; round?: boolean }) {
   const from = useSearchParams().get("from");
-  return <Anchor href={isInternal(from) ? from : fallbackHref} />;
+  return <Anchor href={isInternal(from) ? from : fallbackHref} round={round} />;
 }
 
-export function BackLink({ fallbackHref }: { fallbackHref: string }) {
+export function BackLink({ fallbackHref, round = false }: { fallbackHref: string; round?: boolean }) {
   return (
-    <Suspense fallback={<Anchor href={fallbackHref} />}>
-      <FromAwareAnchor fallbackHref={fallbackHref} />
+    <Suspense fallback={<Anchor href={fallbackHref} round={round} />}>
+      <FromAwareAnchor fallbackHref={fallbackHref} round={round} />
     </Suspense>
   );
 }

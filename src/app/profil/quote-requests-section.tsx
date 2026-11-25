@@ -247,7 +247,7 @@ function SendForm({ onSent, onCancel, userId, prefill }: { onSent: () => void; o
                 onClick={() => setCategory(isSelected ? "" : key)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
                   isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                    ? "tile-cta text-white border-[#84AAA6]"
                     : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
                 }`}
               >
@@ -274,7 +274,7 @@ function SendForm({ onSent, onCancel, userId, prefill }: { onSent: () => void; o
                 onClick={() => toggleCounty(county)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
                   isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                    ? "tile-cta text-white border-[#84AAA6]"
                     : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6]"
                 }`}
               >

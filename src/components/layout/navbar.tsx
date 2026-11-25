@@ -457,7 +457,7 @@ export function Navbar() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={navAvatarUrl} alt="" className="w-6 h-6 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-[#84AAA6]/15 border border-[#84AAA6] flex items-center justify-center">
                       <Check className="h-3 w-3 text-[#84AAA6]" strokeWidth={2.5} />
                     </div>
                   )}
@@ -477,7 +477,7 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/auth/register">
-                  <Button className="text-base border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80 hover:text-[#B8925A]">Regisztráció</Button>
+                  <Button variant="secondary" className="text-base border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80 hover:text-[#B8925A]">Regisztráció</Button>
                 </Link>
                 <Link href="/auth/login">
                   <Button className="text-base bg-[#84AAA6] hover:bg-[#6B8E8A]">Bejelentkezés</Button>
@@ -504,7 +504,7 @@ export function Navbar() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={navAvatarUrl ?? ""} alt="" className="w-7 h-7 rounded-full object-cover ring-2 ring-[#84AAA6]/40" />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border-2 border-[#84AAA6] flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-full bg-[#84AAA6]/15 border border-[#84AAA6] flex items-center justify-center">
                       <Check className="h-3.5 w-3.5 text-[#84AAA6]" strokeWidth={2.5} />
                     </div>
                   )}
@@ -541,10 +541,10 @@ export function Navbar() {
           <Link href="/kapcsolat" className="block px-4 py-2.5 text-base text-gray-900 hover:bg-[#84AAA6]/10 hover:text-[#84AAA6]" onClick={() => setMobileOpen(false)}>Kapcsolat</Link>
           {!user && (
             <div className="border-t border-gray-100 mt-1 pt-1 px-2 pb-2 flex flex-col gap-1.5">
-              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium rounded-lg py-2 transition-colors border border-white/70 bg-white/60 text-[#B8925A] shadow-[0_18px_50px_rgba(20,45,42,0.18)] backdrop-blur-xl hover:bg-white/80">
+              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium rounded-full py-2 transition-colors border border-gray-200 bg-white text-gray-900 hover:bg-[#F0F6F5]">
                 Regisztráció
               </Link>
-              <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white bg-[#84AAA6] rounded-lg py-2 hover:bg-[#6B8E8A] transition-colors">
+              <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="block w-full text-center text-base font-medium text-white tile-cta rounded-full py-2 transition-colors">
                 Bejelentkezés
               </Link>
             </div>

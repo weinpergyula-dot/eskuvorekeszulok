@@ -82,7 +82,7 @@ function CompleteRegistrationContent() {
         bgColor="#84AAA6"
       />
       <div className="flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-lg bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+        <div className="w-full max-w-lg bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
 
           {googleEmail && (
             <div className="flex items-center gap-3 mb-6 px-4 py-3 bg-gray-50 rounded-xl border border-gray-200">
@@ -114,7 +114,7 @@ function CompleteRegistrationContent() {
                 <button
                   type="button"
                   onClick={() => setRole("visitor")}
-                  className={`flex flex-col items-start gap-1 p-4 rounded-xl border-2 transition-colors text-left ${
+                  className={`flex flex-col items-start gap-1 p-4 rounded-xl border transition-colors text-left ${
                     role === "visitor"
                       ? "border-[#84AAA6] bg-[#84AAA6]/5"
                       : "border-gray-200 hover:border-gray-300"
@@ -127,7 +127,7 @@ function CompleteRegistrationContent() {
                 <button
                   type="button"
                   onClick={() => setRole("provider")}
-                  className={`flex flex-col items-start gap-1 p-4 rounded-xl border-2 transition-colors text-left ${
+                  className={`flex flex-col items-start gap-1 p-4 rounded-xl border transition-colors text-left ${
                     role === "provider"
                       ? "border-[#84AAA6] bg-[#84AAA6]/5"
                       : "border-gray-200 hover:border-gray-300"

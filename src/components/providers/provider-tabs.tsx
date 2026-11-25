@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { Phone, Mail, Globe, MessageCircle, FileText, Send } from "lucide-react";
-import { GalleryLightbox } from "@/components/providers/gallery-lightbox";
+import { Phone, Mail, Globe, MessageCircle, FileText, Send, UserRound, Contact, Banknote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ReviewSection } from "@/components/providers/review-section";
 import { ChatLink, LoginGateLink, MaskedContact } from "@/components/providers/masked-contact";
@@ -10,7 +9,7 @@ import { quoteHrefFor } from "@/lib/quote-href";
 import { WebsiteLink } from "@/components/providers/website-link";
 import type { Provider } from "@/lib/types";
 
-type Tab = "about" | "gallery" | "message" | "reviews" | "pricing";
+type Tab = "about" | "message" | "reviews" | "pricing";
 
 function ContactItem({
   icon,
@@ -50,8 +49,10 @@ function ContactItem({
 }
 
 const HASH_TO_TAB: Record<string, Tab> = {
-  gallery: "gallery",
+  gallery: "about",
   message: "message",
+  elerhetosegek: "message",
+  contact: "message",
   messages: "message",
   reviews: "reviews",
   about: "about",
@@ -73,32 +74,29 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
   const active: Tab = chosen ?? hashTab ?? "about";
 
   const reviewCount = provider.review_count ?? 0;
-  const hasGallery = (provider.gallery_urls ?? []).length > 0;
 
   const hasPricing = !!(provider.pricing_pdf_url || provider.pricing_text);
 
-  const tabs: { id: Tab; label: string; desktopOnly?: boolean }[] = [
+  const tabs: { id: Tab; label: string }[] = [
     { id: "about",   label: "Bemutatkozás" },
-    ...(hasGallery ? [{ id: "gallery" as Tab, label: "Galéria", desktopOnly: true }] : []),
     ...(hasPricing ? [{ id: "pricing" as Tab, label: "Árak" }] : []),
-    { id: "message", label: "Chat" },
+    { id: "message", label: "Elérhetőségek" },
     { id: "reviews", label: reviewCount > 0 ? `Értékelések (${reviewCount})` : "Értékelések" },
   ];
 
   return (
-    <div className="px-8 pb-8 pt-2">
-      {/* Tab bar */}
-      <div className="flex border-b border-gray-200 mb-8 -mx-8 px-0 sm:px-8 overflow-x-auto scrollbar-none">
+    <div>
+      {/* Tab bar – szegmentált kapszula */}
+      <div className="mb-6 flex gap-1 overflow-x-auto rounded-full bg-[#E2ECEA] p-1 scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
             className={cn(
-              "flex-1 sm:flex-none px-2 sm:px-4 py-3 text-sm sm:text-base font-extrabold border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap [font-family:'BloomSpeakBody']",
-              tab.desktopOnly ? "hidden sm:block" : "",
+              "flex-1 rounded-full px-3 sm:px-4 py-2 text-[13px] sm:text-[15px] font-semibold transition-all cursor-pointer whitespace-nowrap",
               active === tab.id
-                ? "border-[#84AAA6] text-[#84AAA6]"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "bg-white text-[#5C8480] shadow-[0_4px_14px_-6px_rgba(20,45,42,0.35)]"
+                : "text-gray-500 hover:text-gray-800"
             )}
           >
             {tab.label}
@@ -108,112 +106,84 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
 
       {/* Bemutatkozás */}
       {active === "about" && (
-        <div className="grid md:grid-cols-5 gap-8">
-          <div className="md:col-span-3 space-y-6">
-            {(provider.detailed_description || provider.description) ? (
-              <section>
-                {/* A cím a tabon van, itt nem ismételjük. Mobilon 2px-el kisebb betű. */}
-                <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[15px] sm:text-[17px]">
-                  {provider.detailed_description || provider.description}
-                </p>
-              </section>
-            ) : (
-              <p className="text-gray-400 text-base italic">Nincs bemutatkozó szöveg.</p>
-            )}
-
-            {/* Gallery: mobile only — desktop has its own tab */}
-            {provider.gallery_urls && provider.gallery_urls.length > 0 && (
-              <section className="sm:hidden">
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">Galéria</h2>
-                <GalleryLightbox urls={provider.gallery_urls} alt="Galéria" />
-              </section>
-            )}
-          </div>
-
-          {/* Kapcsolat kártya */}
-          <div className="md:col-span-2">
-            <div className="bg-gray-50 rounded-xl border border-gray-200 p-5 space-y-4 sticky top-24">
-              <h2 className="text-base font-semibold text-gray-900">Elérhetőségek</h2>
-              <div className="space-y-3">
-                {provider.phone && (
-                  <ContactItem
-                    icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
-                    value={provider.phone}
-                    href={`tel:${provider.phone}`}
-                    fullyHidden
-                  />
-                )}
-                {provider.email && (
-                  <ContactItem
-                    icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
-                    value={provider.email}
-                    href={`mailto:${provider.email}`}
-                    fullyHidden
-                  />
-                )}
-                {provider.website && (
-                  <ContactItem
-                    icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
-                    value={provider.website}
-                    href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
-                    external
-                    fullyHidden
-                    website
-                  />
-                )}
-              </div>
-              <ChatLink
-                href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
-              >
-                <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
-                Chat indítása
-              </ChatLink>
-              {/* Ajánlatkérés – ugyanúgy előtöltve, mint a szolgáltatói kártyáról */}
-              <LoginGateLink
-                href={quoteHrefFor(provider)}
-                message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                className="w-full flex items-center justify-center gap-2 border border-[#84AAA6] text-[#5C8480] bg-white hover:bg-[#84AAA6]/10 font-semibold py-2.5 rounded-lg transition-colors cursor-pointer mt-2"
-              >
-                <Send className="h-4 w-4" strokeWidth={1.5} />
-                Ajánlatkérés
-              </LoginGateLink>
-            </div>
-          </div>
-        </div>
+        <section>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><UserRound className="h-5 w-5 text-[#84AAA6]" />Bemutatkozás</h2>
+          {(provider.detailed_description || provider.description) ? (
+            /* Mobilon 2px-el kisebb betű. */
+            <p className="text-gray-900 leading-relaxed whitespace-pre-line text-[15px] sm:text-[17px]">
+              {provider.detailed_description || provider.description}
+            </p>
+          ) : (
+            <p className="text-gray-400 text-base italic">Nincs bemutatkozó szöveg.</p>
+          )}
+        </section>
       )}
 
-      {/* Galéria tab – desktop only */}
-      {active === "gallery" && (
-        <GalleryLightbox urls={provider.gallery_urls ?? []} alt="Galéria" />
-      )}
-
-      {/* Chat tab */}
+      {/* Elérhetőségek tab: telefon, e-mail, weboldal + Chat és Ajánlatkérés */}
       {active === "message" && (
-        <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
-          <MessageCircle className="h-14 w-14 text-[#84AAA6]" strokeWidth={1} />
-          <div>
-            <p className="text-base font-semibold text-gray-900 mb-1">Chat {provider.full_name} nevű szolgáltatóval</p>
-            <p className="text-sm text-gray-500">A chat a profilodon belüli Chat menüpontban folytatódik.</p>
+        <section className="max-w-xl space-y-4">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2"><Contact className="h-5 w-5 text-[#84AAA6]" />Elérhetőségek</h2>
+          <div className="space-y-3">
+            {provider.phone && (
+              <ContactItem
+                icon={<Phone className="h-4 w-4 text-[#84AAA6]" />}
+                value={provider.phone}
+                href={`tel:${provider.phone}`}
+                fullyHidden
+              />
+            )}
+            {provider.email && (
+              <ContactItem
+                icon={<Mail className="h-4 w-4 text-[#84AAA6]" />}
+                value={provider.email}
+                href={`mailto:${provider.email}`}
+                fullyHidden
+              />
+            )}
+            {provider.website && (
+              <ContactItem
+                icon={<Globe className="h-4 w-4 text-[#84AAA6]" />}
+                value={provider.website}
+                href={provider.website.startsWith("http") ? provider.website : `https://${provider.website}`}
+                external
+                fullyHidden
+                website
+              />
+            )}
           </div>
-          <ChatLink
-            href={`/profil?tab=chat&with=${provider.user_id}`}
-            className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
-          >
-            <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
-            Chat indítása
-          </ChatLink>
-        </div>
+          <div className="flex gap-2 pt-2">
+            <ChatLink
+              href={`/profil?tab=chat&with=${provider.user_id}`}
+              className="btn-chat flex-1 min-w-0 flex h-11 items-center justify-center gap-1.5 text-[14px] font-semibold px-3 rounded-full transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <MessageCircle className="h-4 w-4" />
+              Chat
+            </ChatLink>
+            {/* Ajánlatkérés – ugyanúgy előtöltve, mint a szolgáltatói kártyáról */}
+            <LoginGateLink
+              href={quoteHrefFor(provider)}
+              message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+              className="tile-cta flex-1 min-w-0 flex h-11 items-center justify-center gap-1.5 text-[14px] font-semibold px-3 rounded-full transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <Send className="h-4 w-4" />
+              Ajánlatkérés
+            </LoginGateLink>
+          </div>
+        </section>
       )}
 
       {/* Értékelések tab */}
       {active === "reviews" && (
-        <ReviewSection providerId={provider.id} providerUserId={provider.user_id} />
+        /* A fülön belül nem kell a szekció saját felső térköze. */
+        <div className="[&>section]:mt-0">
+          <ReviewSection providerId={provider.id} providerUserId={provider.user_id} />
+        </div>
       )}
 
       {/* Árak tab */}
       {active === "pricing" && (
         <div className="space-y-6">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2"><Banknote className="h-5 w-5 text-[#84AAA6]" />Árak</h2>
           {provider.pricing_text && (
             <div className="prose prose-gray max-w-none">
               {/* mobilon 4px-el kisebb betűméret (17px -> 13px), desktopon változatlan */}
@@ -241,7 +211,7 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                   href={provider.pricing_pdf_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-[#84AAA6] hover:bg-[#6B8E8A] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
+                  className="flex items-center gap-2 tile-cta text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
                 >
                   <FileText className="h-4 w-4" strokeWidth={1.5} />
                   PDF megnyitása

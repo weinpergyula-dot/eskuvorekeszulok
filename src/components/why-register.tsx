@@ -145,7 +145,7 @@ export function WhyRegister() {
             {tab.id === "visitor" ? (
               <>
                 <Link href="/#szolgaltatok" className="block">
-                  <Button size="lg" className="w-full bg-white text-[#2D5854] hover:bg-white/90">
+                  <Button size="lg" variant="secondary" className="w-full bg-white text-[#2D5854] hover:bg-white/90">
                     Megnézem a kínálatot
                   </Button>
                 </Link>

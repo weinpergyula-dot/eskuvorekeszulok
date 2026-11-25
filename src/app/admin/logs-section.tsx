@@ -82,7 +82,7 @@ export function LogsSection() {
         <p className="text-gray-500 text-sm">Nincs rögzített hiba.</p>
       )}
 
-      <div className="rounded-xl border border-gray-200 overflow-hidden">
+      <div className="rounded-[22px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] bg-white overflow-hidden">
         <table className="w-full text-sm">
           {logs.length > 0 && (
             <thead className="bg-gray-50 border-b border-gray-200">

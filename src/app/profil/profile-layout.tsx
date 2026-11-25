@@ -6,7 +6,7 @@ import { User, Lock, Briefcase, LayoutDashboard, Clock, AlertCircle, Eye, Star, 
 import { createClient } from "@/lib/supabase/client";
 import { AccountInfoForm, PasswordForm, LinkedAccountsSection } from "./account-form";
 import { ProviderForm } from "./provider-form";
-import { ProviderCard } from "@/components/providers/provider-card";
+import { ProviderTile } from "@/components/providers/provider-tile";
 import { MessagesSection } from "./messages-section";
 import { QuoteRequestsSection } from "./quote-requests-section";
 import { ChatSection } from "./chat-section";
@@ -749,7 +749,7 @@ export function ProfileLayout({ userId, initialName, email, role, provider, init
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {favoriteProviders.map((p) => (
-                    <ProviderCard
+                    <ProviderTile
                       key={p.id}
                       provider={p}
                       initialLiked

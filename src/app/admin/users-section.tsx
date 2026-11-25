@@ -292,9 +292,9 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
             <button
               key={f}
               onClick={() => handleFilter(f)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer ${
                 approvalFilter === f
-                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  ? "tile-cta text-white border-[#84AAA6]"
                   : "bg-white text-gray-700 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
@@ -305,9 +305,9 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
             <button
               onClick={() => setShowCategory((v) => !v)}
               title="Kategória szűrő"
-              className={`h-8 w-8 flex items-center justify-center rounded-md border transition-colors cursor-pointer ${
+              className={`h-8 w-8 flex items-center justify-center rounded-full border transition-colors cursor-pointer ${
                 showCategory || categoryFilter
-                  ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                  ? "tile-cta text-white border-[#84AAA6]"
                   : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
               }`}
             >
@@ -317,9 +317,9 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
           <button
             onClick={() => setShowSearch((v) => !v)}
             title="Keresés"
-            className={`h-8 w-8 flex items-center justify-center rounded-md border transition-colors cursor-pointer ${
+            className={`h-8 w-8 flex items-center justify-center rounded-full border transition-colors cursor-pointer ${
               showSearch || search
-                ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                ? "tile-cta text-white border-[#84AAA6]"
                 : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
             }`}
           >
@@ -367,7 +367,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   title={v === "compact" ? "Egysoros nézet" : "Teljes nézet"}
                   className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer ${
                     viewMode === v
-                      ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                      ? "tile-cta text-white border-[#84AAA6]"
                       : "bg-white text-gray-500 border-gray-200 hover:border-[#84AAA6]"
                   }`}
                 >
@@ -385,7 +385,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                   onClick={() => { setPageSize(n); setPage(1); }}
                   className={`px-2.5 py-1 rounded text-sm font-medium border transition-colors cursor-pointer ${
                     pageSize === n
-                      ? "bg-[#84AAA6] text-white border-[#84AAA6]"
+                      ? "tile-cta text-white border-[#84AAA6]"
                       : "bg-white text-gray-600 border-gray-200 hover:border-[#84AAA6]"
                   }`}
                 >
@@ -408,7 +408,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
 
         {/* Egysoros nézet: kép, név, regisztráció ideje, reset és törlés */}
         {viewMode === "compact" && paginated.length > 0 && (
-          <div className="rounded-xl border border-gray-200 bg-white divide-y divide-gray-100 overflow-hidden">
+          <div className="rounded-[22px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] bg-white divide-y divide-gray-100 overflow-hidden">
             {paginated.map((u) => (
               <div key={u.id} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors">
                 <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
@@ -446,7 +446,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
         )}
 
         {/* Desktop table – teljes nézet */}
-        {viewMode === "full" && <div className="hidden sm:block rounded-xl border border-gray-200 overflow-hidden">
+        {viewMode === "full" && <div className="hidden sm:block rounded-[22px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] bg-white overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -536,7 +536,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                             title={u.providerFeatured === "teal" ? "Türkiz – kattints az eltávolításhoz" : "Türkiz kiemelés"}
                             className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
                               u.providerFeatured === "teal"
-                                ? "bg-[#84AAA6] border-[#84AAA6] text-white hover:bg-[#6B8E8A]"
+                                ? "tile-cta border-[#84AAA6] text-white"
                                 : "bg-white border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6]"
                             }`}
                           >
@@ -589,7 +589,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
         {/* Mobile cards – teljes nézet */}
         {viewMode === "full" && <div className="sm:hidden space-y-3">
           {paginated.map((u) => (
-            <div key={u.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div key={u.id} className="bg-white rounded-[22px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] overflow-hidden">
               <div className="px-4 pt-3 pb-2 flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div className="w-9 h-9 rounded-full shrink-0 overflow-hidden bg-[#84AAA6]/20 flex items-center justify-center">
@@ -663,7 +663,7 @@ export function UsersSection({ providerStatuses }: { providerStatuses: ProviderS
                       title={u.providerFeatured === "teal" ? "Türkiz – kattints az eltávolításhoz" : "Türkiz kiemelés"}
                       className={`h-7 w-7 flex items-center justify-center rounded border transition-colors cursor-pointer disabled:opacity-50 ${
                         u.providerFeatured === "teal"
-                          ? "bg-[#84AAA6] border-[#84AAA6] text-white"
+                          ? "tile-cta border-[#84AAA6] text-white"
                           : "bg-white border-gray-200 text-gray-400 hover:border-[#84AAA6] hover:text-[#84AAA6]"
                       }`}
                     >

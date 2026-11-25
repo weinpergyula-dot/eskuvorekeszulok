@@ -248,22 +248,22 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
   return (
     <>
       {/* Stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-10">
         {stats.map((s) => (
           <button
             key={s.label}
             onClick={() => selectFilter(s.target)}
-            className={`text-left rounded-lg p-4 border transition-all cursor-pointer ${
+            className={`group text-left rounded-[22px] p-4 transition-all cursor-pointer ${
               filter === s.target
-                ? "border-[#84AAA6] bg-[#84AAA6]/5 ring-1 ring-[#84AAA6]"
+                ? "tile-cta"
                 : s.highlight
-                ? "border-yellow-300 bg-yellow-50 hover:border-[#84AAA6]"
-                : "border-gray-200 bg-white hover:border-[#84AAA6]"
+                ? "bg-amber-50 ring-1 ring-amber-200 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] hover:ring-[#84AAA6]"
+                : "bg-white ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] hover:ring-[#84AAA6]/60"
             }`}
           >
-            <div className="mb-2">{s.icon}</div>
-            <div className="text-2xl font-bold text-gray-900">{s.value}</div>
-            <div className="text-base text-gray-900 mt-0.5">{s.label}</div>
+            <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-full ${filter === s.target ? "bg-white/25 [&_svg]:text-white" : "bg-[#F0F6F5]"}`}>{s.icon}</div>
+            <div className={`text-2xl font-bold ${filter === s.target ? "text-white" : "text-gray-900"}`}>{s.value}</div>
+            <div className={`text-[15px] mt-0.5 leading-snug ${filter === s.target ? "text-white/90" : "text-gray-600"}`}>{s.label}</div>
           </button>
         ))}
       </div>
@@ -323,7 +323,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
                 const elapsedM = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
                 const remainingH = 24 - elapsedH;
                 return (
-                  <div key={pr.id} className="bg-white border border-amber-200 rounded-lg p-4">
+                  <div key={pr.id} className="bg-white rounded-[22px] ring-1 ring-amber-200 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] p-4">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -437,7 +437,7 @@ export function AdminContent({ totalUsers, totalApproved, totalVisitors, pending
               {contactMessages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`bg-white border rounded-lg p-5 transition-colors ${!msg.read ? "border-[#84AAA6] bg-[#84AAA6]/5" : "border-gray-200"}`}
+                  className={`rounded-[22px] p-5 transition-colors shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] ${!msg.read ? "bg-[#F0F6F5] ring-1 ring-[#84AAA6]/50" : "bg-white ring-1 ring-black/5"}`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -565,7 +565,7 @@ function EditDiff({ current, proposed }: { current: Provider; proposed: Record<s
           <div className="flex flex-wrap gap-1.5 mt-1.5">
             {newGallery.map((url, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={url} alt="" className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+              <img key={i} src={url} alt="" className="w-16 h-16 object-cover rounded-xl" />
             ))}
           </div>
         </div>
@@ -583,11 +583,11 @@ function ProviderRow({ provider, type }: { provider: Provider; type: "registrati
   const categoryLabels = cats.map((c) => CATEGORY_LABELS[c] ?? String(c)).join(", ");
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-5">
+    <div className="bg-white rounded-[26px] ring-1 ring-black/5 shadow-[0_14px_30px_-24px_rgba(20,45,42,0.55)] p-5">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div className="flex gap-4 min-w-0 flex-1">
           {/* Avatar – show proposed if available */}
-          <div className="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center shrink-0">
+          <div className="w-16 h-16 rounded-full overflow-hidden ring-2 ring-white shadow-[0_6px_16px_-8px_rgba(20,45,42,0.6)] bg-[#F0F6F5] flex items-center justify-center shrink-0">
             {(changes?.avatar_url ?? header.avatar_url) ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={String(changes?.avatar_url ?? header.avatar_url ?? "")} alt="" className="w-full h-full object-cover" />
@@ -642,7 +642,7 @@ function ProviderRow({ provider, type }: { provider: Provider; type: "registrati
                 <div className="flex flex-wrap gap-2">
                   {(header.gallery_urls as string[]).map((url, i) => (
                     <a key={i} href={url} target="_blank" rel="noopener noreferrer">
-                      <img src={url} alt={`Galéria ${i + 1}`} className="w-16 h-16 object-cover rounded border border-gray-200 hover:opacity-80 transition-opacity" />
+                      <img src={url} alt={`Galéria ${i + 1}`} className="w-16 h-16 object-cover rounded-xl hover:opacity-80 transition-opacity" />
                     </a>
                   ))}
                 </div>

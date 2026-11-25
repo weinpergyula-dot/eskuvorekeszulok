@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MailOpen } from "lucide-react";
+import { MailOpen, Send } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { IntroTabs } from "./_components/intro-tabs";
 import { PackageTile, type Package } from "./_components/package-tile";
@@ -160,9 +160,10 @@ export default function MeghivoPage() {
           <div className="mt-7 flex justify-center">
             <MeghivoQuoteCta
               href="/profil?tab=quotes&form=meghivo"
-              className="inline-flex h-11 items-center justify-center rounded-md bg-white px-8 text-[15px] font-bold text-[#2D5854] shadow transition-colors hover:bg-white/90"
+              className="tile-cta inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-[15px] font-semibold"
             >
-              Ajánlatot kérek
+              <Send className="h-4 w-4" />
+              Ajánlatkérés
             </MeghivoQuoteCta>
           </div>
         </div>

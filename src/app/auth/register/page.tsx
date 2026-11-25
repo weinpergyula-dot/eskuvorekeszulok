@@ -58,7 +58,7 @@ function RoleCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center gap-4 rounded-2xl border-2 border-[#84AAA6]/40 bg-[#F0F6F5] p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#84AAA6] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
+      className="group flex w-full items-center gap-4 rounded-2xl border border-[#84AAA6]/30 bg-[#F0F6F5] p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#84AAA6] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
     >
       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#84AAA6] shadow-sm sm:mb-4 sm:h-14 sm:w-14">
         <Icon className="h-6 w-6 text-white sm:h-7 sm:w-7" strokeWidth={1.75} />
@@ -165,7 +165,7 @@ function PillSelect<T extends string>({
                 isDisabled
                   ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
                   : isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
+                    ? "tile-cta text-white border-[#84AAA6] cursor-pointer"
                     : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
               }`}
             >
@@ -831,7 +831,7 @@ function RegisterContent() {
         />
         <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-lg">
-          <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
           {/* Progress – látogatónál egy lépés, szolgáltatónál kettő, a
               csíkok fölött a lépés nevével */}
           {role === "provider" ? (
@@ -881,7 +881,7 @@ function RegisterContent() {
                   type="button"
                   onClick={handleGooglePrefill}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border-2 border-gray-200 rounded-xl text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors font-medium text-base disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-200 rounded-full text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors font-medium text-base disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <GoogleIcon />
                   {loading ? "Átirányítás..." : "Regisztráció Google-lal"}
@@ -964,7 +964,7 @@ function RegisterContent() {
                 <p className="text-base text-gray-800">Profilkép (opcionális)</p>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-14 h-14 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50 shrink-0"
+                    className="w-14 h-14 rounded-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50 shrink-0"
                     onClick={() => visitorAvatarInputRef.current?.click()}
                   >
                     {visitorAvatarPreview
@@ -974,7 +974,7 @@ function RegisterContent() {
                   </div>
                   <div className="flex flex-col gap-1.5 min-w-0">
                     <button type="button" onClick={() => visitorAvatarInputRef.current?.click()}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
                     >
                       <ImagePlus className="h-4 w-4" />
                       {visitorAvatarFile ? "Csere" : "Kép feltöltése"}
@@ -1071,7 +1071,7 @@ function RegisterContent() {
       )}
       <div className="flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-5xl">
-        <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-8">
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
         {isUpgrade && (
           <div className="bg-[#84AAA6]/10 border border-[#84AAA6]/30 rounded-xl px-4 py-3 mb-6">
             <p className="text-base text-gray-900">
@@ -1101,7 +1101,7 @@ function RegisterContent() {
                 <p className="text-base text-gray-800">Tölts fel egy profilképet, hogy a látogatók felismerhessenek.</p>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50 shrink-0"
+                    className="w-16 h-16 rounded-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50 shrink-0"
                     onClick={() => avatarInputRef.current?.click()}
                   >
                     {avatarPreview ? (
@@ -1115,7 +1115,7 @@ function RegisterContent() {
                     <button
                       type="button"
                       onClick={() => avatarInputRef.current?.click()}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
+                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors w-fit"
                     >
                       <ImagePlus className="h-4 w-4" />
                       {avatarFile ? "Csere" : "Kép feltöltése"}
@@ -1274,7 +1274,7 @@ function RegisterContent() {
                     type="button"
                     onClick={() => galleryInputRef.current?.click()}
                     disabled={galleryFiles.length >= 10}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ImagePlus className="h-4 w-4" />
                     Képek hozzáadása
@@ -1330,7 +1330,7 @@ function RegisterContent() {
                     <button
                       type="button"
                       onClick={() => pricingPdfInputRef.current?.click()}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-dashed border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] text-gray-600 text-sm font-medium transition-colors"
                     >
                       <FileText className="h-4 w-4" />
                       {pricingPdfFile ? "PDF módosítása" : "PDF feltöltése"}

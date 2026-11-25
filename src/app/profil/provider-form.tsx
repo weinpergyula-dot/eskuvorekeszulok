@@ -10,7 +10,7 @@ import { PhoneInput } from "@/components/ui/phone-input";
 import { Clock, Pencil, X, XCircle, ImagePlus, FileText, ExternalLink } from "lucide-react";
 import { COUNTIES, CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import type { Provider, UserRole } from "@/lib/types";
-import { ProviderCard } from "@/components/providers/provider-card";
+import { ProviderTile } from "@/components/providers/provider-tile";
 import { compressImage, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, ALLOWED_IMAGE_TYPES, ALLOWED_IMAGE_ACCEPT } from "@/lib/image-utils";
 
 interface Props {
@@ -65,7 +65,7 @@ function PillSelect<T extends string>({
                 isDisabled
                   ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
                   : isSelected
-                    ? "bg-[#84AAA6] text-white border-[#84AAA6] cursor-pointer"
+                    ? "tile-cta text-white border-[#84AAA6] cursor-pointer"
                     : "bg-white text-gray-700 border-gray-300 hover:border-[#84AAA6] hover:text-[#84AAA6] cursor-pointer"
               }`}
             >
@@ -141,7 +141,7 @@ function ProfileView({
           </div>
           <div className="relative">
             {!isProviderActive && <InactiveBadge />}
-            <ProviderCard provider={provider} disableLink />
+            <ProviderTile provider={provider} isOwner disableLink />
           </div>
         </div>
       ) : hasPendingUpdate ? (
@@ -153,14 +153,14 @@ function ProfileView({
             </div>
             <div className="relative">
               {!isProviderActive && <InactiveBadge />}
-              <ProviderCard provider={provider} disableLink={!isProviderActive} />
+              <ProviderTile provider={provider} isOwner disableLink={!isProviderActive} />
             </div>
           </div>
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" /> Módosítás – jóváhagyásra vár
             </p>
-            <ProviderCard provider={pendingProvider} disableLink />
+            <ProviderTile provider={pendingProvider} isOwner disableLink />
           </div>
         </div>
       ) : (
@@ -171,7 +171,7 @@ function ProfileView({
           </div>
           <div className="relative">
             {!isProviderActive && <InactiveBadge />}
-            <ProviderCard provider={provider} disableLink={!isProviderActive} />
+            <ProviderTile provider={provider} isOwner disableLink={!isProviderActive} />
           </div>
         </div>
       )}
@@ -496,7 +496,7 @@ export function ProviderForm({
                 <Label>Profilkép</Label>
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
+                    className="w-20 h-20 rounded-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-[#84AAA6] overflow-hidden bg-gray-50"
                     onClick={() => avatarInputRef.current?.click()}
                   >
                     {avatarPreview ? (
@@ -656,7 +656,7 @@ export function ProviderForm({
                     {galleryPreviews.map((url, i) => (
                       <div key={`new-${i}`} className="relative group">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg border-2 border-dashed border-[#84AAA6]" />
+                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg border border-dashed border-[#84AAA6]" />
                         <button
                           type="button"
                           onClick={() => removeGalleryFile(i)}

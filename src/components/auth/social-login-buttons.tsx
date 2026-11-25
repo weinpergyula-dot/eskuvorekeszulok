@@ -50,7 +50,7 @@ export function SocialLoginButtons({ mode }: Props) {
         type="button"
         onClick={handleGoogle}
         disabled={googleLoading}
-        className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border-2 border-gray-200 rounded-xl text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors font-medium text-base disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-full bg-white ring-1 ring-black/10 shadow-[0_10px_24px_-18px_rgba(20,45,42,0.5)] text-gray-700 hover:bg-[#F0F6F5] transition-colors font-medium text-base disabled:opacity-60 disabled:cursor-not-allowed"
       >
         <GoogleIcon />
         {googleLoading
@@ -64,7 +64,7 @@ export function SocialLoginButtons({ mode }: Props) {
       <button
         type="button"
         disabled
-        className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border-2 border-gray-200 rounded-xl text-gray-400 font-medium text-base cursor-not-allowed opacity-50"
+        className="w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-full bg-white ring-1 ring-black/10 text-gray-400 font-medium text-base cursor-not-allowed opacity-50"
         title="Hamarosan elérhető"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

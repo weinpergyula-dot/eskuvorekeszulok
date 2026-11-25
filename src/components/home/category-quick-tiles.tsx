@@ -17,10 +17,8 @@ import {
   Mail,
   MapPin,
   Mic,
-  Minus,
   Music,
   PartyPopper,
-  Plus,
   Scissors,
   Shirt,
   Sparkles,
@@ -85,7 +83,7 @@ function Tile({
       className={cn(
         /* Egyenletes, áttetsző fehér fátyol a teal sávon – ettől lesz a
            csempe világos teal; hoverre világosodik és a kerete erősödik. */
-        "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 text-center transition-all duration-200 cursor-pointer sm:p-3.5",
+        "flex w-[116px] shrink-0 flex-col items-center justify-center gap-1.5 rounded-[22px] border p-3 text-center transition-all duration-200 cursor-pointer sm:w-[128px] sm:p-3.5",
         active
           ? "border-white bg-white text-[#2D5854] shadow-lg"
           : "border-white/25 bg-white/10 text-white hover:border-white/80 hover:bg-white/20"
@@ -104,7 +102,6 @@ function Tile({
 
 export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<string, number> }) {
   const [active, setActive] = useState("");
-  const [expanded, setExpanded] = useState(false);
 
   // A lista felőli szűrőváltás (pl. mobil legördülő) is átszínezi a csempéket.
   useEffect(() => {
@@ -114,8 +111,6 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
   }, []);
 
   const sorted = useMemo(() => orderedCategories(categoryCounts), [categoryCounts]);
-  const top = sorted.slice(0, 6);
-  const rest = sorted.slice(6);
 
   const select = (c: string) => {
     setActive(c);
@@ -124,40 +119,22 @@ export function CategoryQuickTiles({ categoryCounts }: { categoryCounts: Record<
   };
 
   return (
-    /* Desktopon (lg+) a 8 alapcsempe egyetlen sorban fér el; kisebb
-       kijelzőn 2, majd 4 oszlopba törik. Kibontáskor a további kategóriák
-       lefelé, újabb sorokban jelennek meg. */
-    <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
-      <Tile icon={LayoutGrid} label="Összes" active={!active} onClick={() => select("")} />
-      {top.map((c) => (
-        <Tile
-          key={c}
-          icon={TILE_ICONS[c]}
-          label={CATEGORY_LABELS[c]}
-          count={displayCount(c, categoryCounts)}
-          active={active === c}
-          onClick={() => select(c)}
-        />
-      ))}
-      {expanded ? (
-        <>
-          {/* Kibontva a "Még több" helyét is kategória foglalja el, hogy ne
-              maradjon lyuk a rácsban – a bezárás a legutolsó csempe. */}
-          {rest.map((c) => (
-            <Tile
-              key={c}
-              icon={TILE_ICONS[c]}
-              label={CATEGORY_LABELS[c]}
-              count={displayCount(c, categoryCounts)}
-              active={active === c}
-              onClick={() => select(c)}
-            />
-          ))}
-          <Tile icon={Minus} label="Kevesebb" onClick={() => setExpanded(false)} />
-        </>
-      ) : (
-        <Tile icon={Plus} label="Még több" onClick={() => setExpanded(true)} />
-      )}
+    /* Minden kategória egyetlen, vízszintesen görgethető sorban (a sáv
+       széléig kifut, a görgetősáv rejtett). */
+    <div className="-mx-5 mt-6 overflow-x-auto px-5 pb-1 scrollbar-none sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <div className="flex gap-2.5 sm:gap-3">
+        <Tile icon={LayoutGrid} label="Összes" active={!active} onClick={() => select("")} />
+        {sorted.map((c) => (
+          <Tile
+            key={c}
+            icon={TILE_ICONS[c]}
+            label={CATEGORY_LABELS[c]}
+            count={displayCount(c, categoryCounts)}
+            active={active === c}
+            onClick={() => select(c)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

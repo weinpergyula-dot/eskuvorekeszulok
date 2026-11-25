@@ -84,7 +84,7 @@ export function ChatComposer({
             aria-label={sending ? "Küldés folyamatban" : "Küldés"}
             className={`grid h-9 w-9 place-items-center rounded-full text-white transition-colors ${
               canSend
-                ? "cursor-pointer bg-[#84AAA6] hover:bg-[#6B8E8A]"
+                ? "cursor-pointer tile-cta"
                 : "cursor-default bg-[#84AAA6]/40"
             }`}
           >

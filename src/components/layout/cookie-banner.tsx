@@ -65,7 +65,7 @@ export function CookieBanner() {
           </button>
           <button
             onClick={accept}
-            className="px-4 py-2 rounded-full text-sm font-medium bg-[#84AAA6] text-white hover:bg-[#6B8E8A] transition-colors"
+            className="px-4 py-2 rounded-full text-sm font-medium tile-cta text-white transition-colors"
           >
             Elfogadom
           </button>

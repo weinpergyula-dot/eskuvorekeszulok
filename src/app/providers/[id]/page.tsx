@@ -3,17 +3,16 @@ export const revalidate = 60;
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { MapPin, Star, Eye, User } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { featuredStyle } from "@/lib/featured-style";
+import { Star, Send, MessageCircle } from "lucide-react";
+import { quoteHrefFor } from "@/lib/quote-href";
+import { ChatLink, LoginGateLink } from "@/components/providers/masked-contact";
+import { ProviderHero } from "@/components/providers/provider-hero";
 import type { Provider } from "@/lib/types";
 import { ViewTracker } from "@/components/providers/view-tracker";
-import { PageHeader } from "@/components/layout/page-header";
+import { BackLink } from "@/components/layout/back-link";
 import { ProviderTabs } from "@/components/providers/provider-tabs";
 import { ProviderUserActions } from "@/components/providers/provider-user-actions";
 import { ShareButton } from "@/components/providers/share-button";
-import { AvatarLightbox } from "@/components/providers/avatar-lightbox";
-import { MarqueeText } from "@/components/ui/marquee-text";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -76,148 +75,95 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
-  const viewCount = provider.view_count ?? 0;
   const firstCategory = (provider.categories ?? [])[0] as ServiceCategory | undefined;
-  const tc = featuredStyle(provider.featured);
-  const catBadgeClass = tc.badgeClass || "border-[#84AAA6]/40 text-[#5C8480] bg-[#EDF4F3]";
+  const quoteHref = quoteHrefFor(provider);
 
+
+  const backFallback = firstCategory ? `/?category=${firstCategory}#szolgaltatok` : "/#szolgaltatok";
+
+  /* Teljes szélességű, lapozó fotó (rajta a szolgáltató adataival), aminek
+     az aljára felcsúszik a tartalom fehér lapja; mobilon alul rögzített
+     ajánlatkérő sáv, desktopon ragadós ajánlatkérő kártya. */
   return (
-    <div>
-      <PageHeader
-        icon={User}
-        title="Szolgáltatói profil"
-        /* A Vissza gomb a listázás `from` paraméterét követi (a szűrőkkel
-           együtt); ha nincs, a szolgáltató kategóriájára nyitott főoldalra visz. */
-        backFallbackHref={firstCategory ? `/?category=${firstCategory}#szolgaltatok` : "/#szolgaltatok"}
-      />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="pb-6 md:pb-16">
       <ViewTracker providerId={provider.id} />
 
-      {/* A kiemelt szolgáltató címkéje a kártyákhoz hasonlóan a doboz felső
-          szélén ül. */}
-      <div className={cn("relative", provider.featured && "pt-3.5")}>
-      {provider.featured && (
-        <span className={cn(
-          "absolute top-3.5 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap border",
-          tc.featuredBadgeClass
-        )}>
-          Kiemelt szolgáltató
-        </span>
-      )}
-      <div className={cn("bg-white rounded-2xl border shadow-sm overflow-hidden", provider.featured ? tc.borderBase : "border-gray-200")}>
-        {/* Hero section */}
-        <div className="relative" style={{ backgroundColor: tc.headerBg }}>
-          {/* Action buttons — desktop */}
-          <div className="absolute top-3 right-3 hidden sm:flex items-center gap-2">
-            <ShareButton title={provider.full_name} />
-            <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="desktop" />
+      {/* Borítókép – mobilon teljes szélességben, a fejléc lekerekített alja mögé fut */}
+      <div className="relative -mt-6 md:mt-0 md:max-w-7xl md:mx-auto md:px-6 lg:px-8 md:pt-6">
+        <ProviderHero
+          provider={provider}
+          bleed
+          /* A Vissza gomb a listázás `from` paraméterét követi (a szűrőkkel
+             együtt); ha nincs, a szolgáltató kategóriájára nyitott főoldalra visz. */
+          back={<BackLink fallbackHref={backFallback} round />}
+          actions={
+            <>
+              <span className="glass-strong rounded-full p-0.5"><ShareButton title={provider.full_name} iconOnly /></span>
+              <span className="glass-strong rounded-full p-0.5">
+                <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="mobile" />
+              </span>
+            </>
+          }
+        />
+      </div>
+
+      <div className="relative -mt-8 md:mt-8 max-w-7xl mx-auto md:px-6 lg:px-8">
+        <div className="md:grid md:grid-cols-[minmax(0,1fr)_340px] md:gap-8 md:items-start">
+          {/* Felcsúszó lap: bemutatkozás, galéria, árak, chat, értékelések */}
+          <div className="sheet-up relative rounded-t-[32px] md:rounded-[32px] bg-white px-4 pt-3 pb-6 sm:px-8 sm:pt-8 ring-1 ring-black/5 shadow-[0_-12px_40px_-24px_rgba(20,45,42,0.45)] md:shadow-[0_24px_50px_-30px_rgba(20,45,42,0.5)]">
+            <div className="mx-auto mb-4 h-1.5 w-11 rounded-full bg-gray-900/15 md:hidden" aria-hidden />
+            <ProviderTabs provider={provider} />
           </div>
 
-          {/* ── Mobile: kompakt vízszintes fejléc ── */}
-          <div className="sm:hidden relative px-4 pt-10 pb-4">
-            {/* Gombok belül, ugyanúgy mint a csempe nézetben */}
-            <div className="absolute top-2 left-2 z-10">
-              <ProviderUserActions providerId={provider.id} providerUserId={provider.user_id} variant="mobile" />
-            </div>
-            <div className="absolute top-2 right-2 z-10">
-              <ShareButton title={provider.full_name} iconOnly />
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="ml-1">
-                <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-24 h-24" />
-              </div>
-              <div className="flex-1 min-w-0 pr-10">
-                {/* A ki nem férő név lassan végigcsúszik, hogy olvasható legyen. */}
-                <h1 className="font-bold text-gray-900 text-[18px] leading-snug">
-                  <MarqueeText>{provider.full_name}</MarqueeText>
-                </h1>
-                {(provider.counties ?? []).length > 0 && (
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <MapPin className={cn("h-3.5 w-3.5 shrink-0", tc.text)} />
-                    <span className="text-sm text-gray-900 leading-snug">
-                      {(provider.counties ?? []).join(", ")}
-                    </span>
-                  </div>
-                )}
-                <div className="flex items-center gap-1 mt-0.5">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} className={cn("h-3.5 w-3.5", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : tc.emptyStar)} />
-                  ))}
-                  <span className="text-sm font-semibold text-gray-900 ml-0.5">
-                    {rating > 0 ? rating.toFixed(1) : "–"}
-                  </span>
-                  {reviewCount > 0 && (
-                    <span className="text-sm text-gray-500">({reviewCount})</span>
-                  )}
-                </div>
-                {/* Kategóriák az értékelés alatt, a névvel egy vonalban. A
-                    -mr-10 visszaveszi a jobb oldali bélést: az csak a felső
-                    sarokban ülő megosztás gombnak kell, itt lejjebb üres a
-                    hely, így a címkék egy sorban maradnak. */}
-                {(provider.categories ?? []).length > 0 && (
-                  <div className="-mr-10 flex flex-wrap gap-1.5 mt-2">
-                    {(provider.categories as ServiceCategory[]).map((cat) => (
-                      <span key={cat} className={cn("text-xs font-medium px-2.5 py-1 rounded-full border", catBadgeClass)}>
-                        {CATEGORY_LABELS[cat] ?? cat}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* ── Desktop: eredeti elrendezés ── */}
-          <div className="hidden sm:flex px-8 py-10 flex-row gap-6 items-start">
-            <AvatarLightbox src={provider.avatar_url} name={provider.full_name} size="w-36 h-36" />
-            <div className="flex-1 text-left">
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                {provider.full_name}
-              </h1>
-              {(provider.counties ?? []).length > 0 && (
-                <div className="flex items-center gap-1 mb-3">
-                  <MapPin className="h-4 w-4 text-gray-500" />
-                  <span className="text-base text-gray-900">
-                    {(provider.counties ?? []).join(", ")}
-                  </span>
-                </div>
+          {/* Desktop: ragadós ajánlatkérő kártya */}
+          <aside className="hidden md:block sticky top-24">
+            <div className="rounded-[28px] bg-white p-6 ring-1 ring-black/5 shadow-[0_24px_50px_-30px_rgba(20,45,42,0.55)]">
+              <p className="text-[22px] font-bold text-gray-900 leading-tight [font-family:var(--font-heading)]">Kérj ajánlatot</p>
+              <p className="mt-1 text-[15px] text-gray-500">
+                Írd meg a dátumot és az elképzeléseidet – {provider.full_name} közvetlenül neked válaszol.
+              </p>
+              {provider.pricing_text && (
+                <p className="mt-4 rounded-2xl bg-[#F0F6F5] p-3 text-[14px] text-gray-900 line-clamp-3 whitespace-pre-line">{provider.pricing_text}</p>
               )}
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-0.5">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} className={cn("h-5 w-5", star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : tc.emptyStar)} />
-                  ))}
-                </div>
-                <span className="font-semibold text-gray-900">
-                  {rating > 0 ? rating.toFixed(1) : "–"}
-                </span>
-                {reviewCount > 0 && (
-                  <span className="text-lg text-gray-900">
-                    ({reviewCount}<span className="hidden sm:inline"> értékelés</span>)
-                  </span>
-                )}
-                <span className="ml-4 flex items-center gap-1 text-lg text-gray-900">
-                  <Eye className="h-4 w-4" />
-                  {viewCount} megtekintés
-                </span>
-              </div>
-              {/* Kategóriák az értékelés alatt – mobilon és weben egyformán */}
-              {(provider.categories ?? []).length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {(provider.categories as ServiceCategory[]).map((cat) => (
-                    <span key={cat} className={cn("text-xs font-medium px-2.5 py-1 rounded-full border", catBadgeClass)}>
-                      {CATEGORY_LABELS[cat] ?? cat}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <LoginGateLink
+                href={quoteHref}
+                message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+                className="tile-cta mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-full text-[16px] font-semibold"
+              >
+                <Send className="h-4 w-4" /> Ajánlatkérés
+              </LoginGateLink>
+              <ChatLink
+                href={`/profil?tab=chat&with=${provider.user_id}`}
+                className="btn-chat mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-full text-[16px] font-semibold"
+              >
+                <MessageCircle className="h-4 w-4" /> Chat
+              </ChatLink>
             </div>
-          </div>
+          </aside>
         </div>
+      </div>
 
-        <ProviderTabs provider={provider} />
-      </div>
-      </div>
+      {/* Mobil: rögzített alsó ajánlatkérő sáv */}
+      <div className="mobile-bottom-bar md:hidden fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(12px,env(safe-area-inset-bottom))]">
+        <div className="glass-strong flex items-center justify-between gap-3 rounded-[26px] py-2.5 pl-5 pr-2.5 shadow-[0_18px_40px_-18px_rgba(20,45,42,0.45)]">
+          <div className="min-w-0">
+            <p className="flex items-center gap-1 text-[16px] font-bold text-gray-900">
+              <Star className="h-4 w-4 fill-gray-900" />
+              {rating > 0 ? rating.toFixed(1) : "Új"}
+              {reviewCount > 0 && <span className="font-normal text-gray-500 text-[14px]">({reviewCount})</span>}
+            </p>
+            <p className="truncate text-[13px] text-gray-500">
+              {provider.pricing_text ? provider.pricing_text.split("\n")[0] : "Ajánlatkérés pár perc alatt"}
+            </p>
+          </div>
+          <LoginGateLink
+            href={quoteHref}
+            message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+            className="tile-cta flex h-12 shrink-0 items-center justify-center gap-2 rounded-full px-6 text-[16px] font-semibold"
+          >
+            <Send className="h-4 w-4" /> Ajánlatkérés
+          </LoginGateLink>
+        </div>
       </div>
     </div>
   );

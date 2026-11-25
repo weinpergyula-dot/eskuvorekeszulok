@@ -29,6 +29,13 @@ const FRAME_PATH = [
 
 type HeroWindow = Window & { __heroReady?: boolean; __heroProgress?: number };
 
+/* Visszatéréskor (a szolgáltatói profil Vissza gombja horgonnyal tér
+   vissza a listára, illetve a böngésző Vissza gombja) nem kell a
+   töltőképernyő: a látogató már látta a bannert. Ugyanezt a feltételt egy
+   beágyazott szkript is kiértékeli még a hidratálás előtt, így a
+   töltőképernyő fel sem villan. */
+const SKIP_TEST = `(function(){try{var h=location.hash;var nav=performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];var r=document.referrer;var fromProfile=false;try{var u=new URL(r);fromProfile=u.origin===location.origin&&u.pathname.indexOf("/providers/")===0}catch(e){}return !!h||fromProfile||(nav&&nav.type==="back_forward")}catch(e){return false}})()`;
+
 /**
  * Mobilos töltőképernyő a főoldalon: amíg a banner első diájának videója
  * be nem tölt, ez takarja az oldalt, hogy a tartalom ne a videó nélkül
@@ -44,6 +51,10 @@ export function HomeLoader() {
 
   useEffect(() => {
     if (state !== "on") return;
+    if (document.documentElement.classList.contains("skip-home-loader")) {
+      const t = setTimeout(() => setState("off"), 0);
+      return () => clearTimeout(t);
+    }
     const w = window as HeroWindow;
     const mobile = window.matchMedia("(max-width: 767px)").matches;
     if (!mobile) {
@@ -91,6 +102,11 @@ export function HomeLoader() {
       <noscript>
         <style>{".home-loader{display:none!important}"}</style>
       </noscript>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `if(${SKIP_TEST})document.documentElement.classList.add("skip-home-loader");`,
+        }}
+      />
       {/* A sütibanner (z-9998) fölött: az csak a töltés után jelenjen meg. */}
       <div
         aria-hidden

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, SearchX, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, List } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ProviderCard } from "./provider-card";
+import { ProviderRow, ProviderTile } from "./provider-tile";
 import { MeghivoPromoCard } from "./meghivo-promo-card";
 import type { Provider, ServiceCategory } from "@/lib/types";
 import { CATEGORY_LABELS, COUNTIES } from "@/lib/types";
@@ -144,10 +144,10 @@ function ViewToggle({ viewMode, setViewMode }: { viewMode: "grid" | "list"; setV
   // items-stretch on the parent makes these buttons match the sort button's height.
   return (
     <div className="flex items-stretch rounded-xl border border-gray-200 overflow-hidden">
-      <button onClick={() => setViewMode("grid")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "grid" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Csempés nézet">
+      <button onClick={() => setViewMode("grid")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "grid" ? "tile-cta text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Csempés nézet">
         <LayoutGrid className="h-4 w-4" />
       </button>
-      <button onClick={() => setViewMode("list")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "list" ? "bg-[#84AAA6] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Listás nézet">
+      <button onClick={() => setViewMode("list")} className={`px-2.5 flex items-center transition-colors cursor-pointer ${viewMode === "list" ? "tile-cta text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`} aria-label="Listás nézet">
         <List className="h-4 w-4" />
       </button>
     </div>
@@ -421,7 +421,7 @@ export function ProvidersContent({
           <button
             key={n}
             onClick={() => goToPage(n)}
-            className={`min-w-[36px] h-9 px-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${page === n ? "bg-[#84AAA6] border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
+            className={`min-w-[36px] h-9 px-2 rounded-full border text-sm font-medium transition-colors cursor-pointer ${page === n ? "tile-cta border-[#84AAA6] text-white" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
           >
             {n}
           </button>
@@ -563,7 +563,11 @@ export function ProvidersContent({
             <div className={gridCls}>
               {houseOfferHere && <MeghivoPromoCard listView={viewMode === "list"} />}
               {pageItems.map((p) => (
-                <ProviderCard key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} listView={viewMode === "list"} backTo={listUrl} />
+                viewMode === "list" ? (
+                  <ProviderRow key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} backTo={listUrl} />
+                ) : (
+                  <ProviderTile key={p.id} provider={p} isOwner={!!currentUserId && currentUserId === p.user_id} backTo={listUrl} />
+                )
               ))}
             </div>
 

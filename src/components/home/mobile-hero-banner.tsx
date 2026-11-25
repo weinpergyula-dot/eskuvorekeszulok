@@ -302,7 +302,7 @@ const subscribeReduced = (cb: () => void) => {
 };
 
 const CTA =
-  "inline-flex h-12 items-center justify-center gap-1.5 rounded-xl px-6 text-[15px] font-bold transition-colors";
+  "inline-flex h-12 items-center justify-center gap-1.5 rounded-full px-6 text-[15px] font-bold transition-colors";
 
 /**
  * Némított, beágyazott háttérvideó. A <video> nyers HTML-ként kerül a
