@@ -3,8 +3,7 @@ export const revalidate = 60;
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CATEGORY_LABELS, type ServiceCategory } from "@/lib/types";
 import { notFound } from "next/navigation";
-import { MapPin, Star, Eye, User, Send, MessageCircle } from "lucide-react";
-import { CATEGORY_LUCIDE_ICONS } from "@/lib/category-icons";
+import { Star, User, Send, MessageCircle } from "lucide-react";
 import { quoteHrefFor } from "@/lib/quote-href";
 import { ChatLink, LoginGateLink } from "@/components/providers/masked-contact";
 import { ProviderHero } from "@/components/providers/provider-hero";
@@ -76,18 +75,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
 
   const rating = provider.average_rating ?? 0;
   const reviewCount = provider.review_count ?? 0;
-  const viewCount = provider.view_count ?? 0;
-  const categories = (provider.categories ?? []) as ServiceCategory[];
-  const counties = provider.counties ?? [];
-  const firstCategory = categories[0];
+  const firstCategory = (provider.categories ?? [])[0] as ServiceCategory | undefined;
   const quoteHref = quoteHrefFor(provider);
-  const nationwide = counties.includes("Országosan");
 
-  const stats = [
-    { Icon: Star, value: rating > 0 ? rating.toFixed(1) : "Új", label: reviewCount > 0 ? `${reviewCount} értékelés` : "értékelés" },
-    { Icon: Eye, value: String(viewCount), label: "megtekintés" },
-    { Icon: MapPin, value: nationwide ? "Országos" : String(counties.length || "–"), label: nationwide ? "lefedettség" : "megye" },
-  ];
 
   /* A lista kártyáinak megjelenése: nagy, lapozó fotós kártya, alatta
      fehér, lekerekített blokkok; mobilon alul rögzített ajánlatkérő sáv,
@@ -117,35 +107,6 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 </>
               }
             />
-
-            {/* Számok */}
-            <div className="grid grid-cols-3 gap-2.5">
-              {stats.map(({ Icon, value, label }) => (
-                <div key={label} className="flex flex-col items-center rounded-[22px] bg-white px-2 py-3 text-center ring-1 ring-black/5 shadow-[0_14px_30px_-22px_rgba(20,45,42,0.5)]">
-                  <Icon className="h-5 w-5 text-[#84AAA6]" strokeWidth={1.8} />
-                  <span className="mt-1 text-[16px] font-bold text-gray-900 leading-tight">{value}</span>
-                  <span className="text-[12px] text-gray-500">{label}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Mit kínál */}
-            {categories.length > 0 && (
-              <section className="rounded-[26px] bg-white p-4 sm:p-5 ring-1 ring-black/5 shadow-[0_14px_30px_-22px_rgba(20,45,42,0.5)]">
-                <h2 className="text-[18px] font-bold text-gray-900">Mit kínál</h2>
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  {categories.map((cat) => {
-                    const Icon = CATEGORY_LUCIDE_ICONS[cat];
-                    return (
-                      <div key={cat} className="flex items-center gap-2.5 rounded-2xl bg-[#F0F6F5] px-3 py-2.5 text-[14px] text-gray-900">
-                        {Icon && <Icon className="h-4 w-4 shrink-0 text-[#6B8E8A]" strokeWidth={1.8} />}
-                        <span className="leading-tight">{CATEGORY_LABELS[cat] ?? cat}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
 
             {/* Bemutatkozás, galéria, árak, chat, értékelések */}
             <div className="rounded-[26px] bg-white p-4 sm:p-6 ring-1 ring-black/5 shadow-[0_14px_30px_-22px_rgba(20,45,42,0.5)]">
