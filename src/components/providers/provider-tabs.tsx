@@ -162,22 +162,24 @@ export function ProviderTabs({ provider }: { provider: Provider }) {
                   />
                 )}
               </div>
-              <ChatLink
-                href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="w-full flex items-center justify-center gap-2 text-[#5C8480] font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2 bg-white ring-1 ring-black/5 hover:bg-[#F7FAF9]"
-              >
-                <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
-                Chat indítása
-              </ChatLink>
-              {/* Ajánlatkérés – ugyanúgy előtöltve, mint a szolgáltatói kártyáról */}
-              <LoginGateLink
-                href={quoteHrefFor(provider)}
-                message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-                className="w-full flex items-center justify-center gap-2 text-[#5C8480] font-semibold py-2.5 rounded-full transition-colors cursor-pointer mt-2 bg-white ring-1 ring-black/5 hover:bg-[#F7FAF9]"
-              >
-                <Send className="h-4 w-4" strokeWidth={1.5} />
-                Ajánlatkérés
-              </LoginGateLink>
+              <div className="flex gap-2 pt-2">
+                <ChatLink
+                  href={`/profil?tab=chat&with=${provider.user_id}`}
+                  className="flex-1 min-w-0 flex items-center justify-center gap-1.5 text-[15px] text-[#5C8480] font-semibold py-2.5 px-3 rounded-full transition-colors cursor-pointer bg-white ring-1 ring-black/5 hover:bg-[#F7FAF9] whitespace-nowrap"
+                >
+                  <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
+                  Chat indítása
+                </ChatLink>
+                {/* Ajánlatkérés – ugyanúgy előtöltve, mint a szolgáltatói kártyáról */}
+                <LoginGateLink
+                  href={quoteHrefFor(provider)}
+                  message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
+                  className="flex-1 min-w-0 flex items-center justify-center gap-1.5 text-[15px] text-[#5C8480] font-semibold py-2.5 px-3 rounded-full transition-colors cursor-pointer bg-white ring-1 ring-black/5 hover:bg-[#F7FAF9] whitespace-nowrap"
+                >
+                  <Send className="h-4 w-4" strokeWidth={1.5} />
+                  Ajánlatkérés
+                </LoginGateLink>
+              </div>
             </div>
           </div>
         </div>
