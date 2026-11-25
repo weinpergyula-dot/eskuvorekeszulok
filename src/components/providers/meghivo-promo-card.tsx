@@ -128,9 +128,9 @@ export function MeghivoPromoCard({ listView = false }: { listView?: boolean }) {
 }
 
 /** Kicsinyített telefonkeret egy meghívó-minta képernyőképével. */
-function MiniPhone({ src, label, className = "" }: { src: string; label: string; className?: string }) {
+export function MiniPhone({ src, label, className = "", maxH = "max-h-[230px]" }: { src: string; label: string; className?: string; maxH?: string }) {
   return (
-    <div className={`mini-phone relative flex h-full max-h-[230px] flex-col items-center transition-transform duration-500 ease-out ${className}`}>
+    <div className={`mini-phone relative flex h-full ${maxH} flex-col items-center transition-transform duration-500 ease-out ${className}`}>
       <div className="aspect-[390/844] h-full rounded-[0.95rem] bg-[#0b0b0b] p-[3px] shadow-[0_22px_34px_-14px_rgba(0,0,0,0.85)] border border-[#C9A46A]/35">
         <div className="relative h-full overflow-hidden rounded-[0.75rem] bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}

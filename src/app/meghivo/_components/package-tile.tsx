@@ -29,15 +29,31 @@ export type Package = {
   extras: readonly { label: string; price: string }[];
 };
 
+/** Kedvezmény százalékban a régi és az új árból (pl. 49 900 → 39 900 = 20%). */
+function discountPct(pkg: Package): number | null {
+  if (!pkg.oldPrice) return null;
+  const num = (v: string) => Number(v.replace(/[^0-9]/g, ""));
+  const o = num(pkg.oldPrice), n = num(pkg.price);
+  return o > n && n > 0 ? Math.round((1 - n / o) * 100) : null;
+}
+
 function Head({ pkg }: { pkg: Package }) {
+  const pct = discountPct(pkg);
   return (
     <div>
-      <span
-        className="inline-flex items-center rounded-full bg-white/95 px-4 py-1.5 text-[13px] font-extrabold uppercase tracking-[0.22em] shadow-sm"
-        style={{ color: pkg.ink }}
-      >
-        {pkg.name}
-      </span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span
+          className="inline-flex items-center rounded-full bg-white/95 px-4 py-1.5 text-[13px] font-extrabold uppercase tracking-[0.22em] shadow-sm"
+          style={{ color: pkg.ink }}
+        >
+          {pkg.name}
+        </span>
+        {pct && (
+          <span className="inline-flex items-center rounded-full bg-black/25 px-3 py-1.5 text-[12px] font-bold uppercase tracking-[0.12em] text-white ring-1 ring-white/30">
+            Kedvezmény −{pct}%
+          </span>
+        )}
+      </div>
       <p className="mt-3 text-lg font-semibold leading-snug text-white sm:text-xl">
         {pkg.tagline}
       </p>
@@ -156,7 +172,7 @@ function PhoneSlot({ pkg }: { pkg: Package }) {
 
 export function PackageTile({ pkg, variant }: { pkg: Package; variant: "square" | "wide" }) {
   const shell =
-    "relative isolate flex flex-col overflow-hidden rounded-[28px] p-6 text-white shadow-[0_30px_70px_-30px_rgba(20,45,42,0.6)] ring-1 ring-white/25 sm:p-8";
+    "relative isolate flex flex-col overflow-hidden rounded-[32px] p-6 text-white shadow-[0_30px_70px_-30px_rgba(20,45,42,0.6)] ring-1 ring-white/25 sm:p-8";
 
   /* Mobilon a sorrend: fejléc → telefon → jellemzők → extrák, hogy a látvány
      előbb jöjjön, mint a hosszú felsorolások. Nagyobb kijelzőn rácsba
