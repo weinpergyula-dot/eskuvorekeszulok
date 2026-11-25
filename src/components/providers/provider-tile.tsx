@@ -249,7 +249,7 @@ export function ProviderTile({
                 <div className="mt-4 flex items-center gap-2">
                   <ChatLink
                     href={`/profil?tab=chat&with=${provider.user_id}`}
-                    className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] ring-1 ring-[#84AAA6]/25 hover:bg-[#E3EFED]"
+                    className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full btn-chat text-[14px] font-semibold"
                   >
                     <MessageCircle className="h-4 w-4" /> Chat
                   </ChatLink>
@@ -393,7 +393,7 @@ export function ProviderRow({
                 <div className="mt-3 flex items-center gap-2">
                   <ChatLink
                     href={`/profil?tab=chat&with=${provider.user_id}`}
-                    className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#F0F6F5] text-[14px] font-semibold text-[#5C8480] ring-1 ring-[#84AAA6]/25 hover:bg-[#E3EFED]"
+                    className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full btn-chat text-[14px] font-semibold"
                   >
                     <MessageCircle className="h-4 w-4" /> Chat
                   </ChatLink>

@@ -340,7 +340,7 @@ function ProviderRow({
             />
           )}
         </button>
-        <button type="button" onClick={onChat} className="tile-cta flex h-9 items-center gap-1.5 rounded-full px-4 text-[13px] font-semibold whitespace-nowrap cursor-pointer">
+        <button type="button" onClick={onChat} className="btn-chat flex h-9 items-center gap-1.5 rounded-full px-4 text-[13px] font-semibold whitespace-nowrap cursor-pointer">
           <MessageCircle className="h-3.5 w-3.5 shrink-0" />
           Chat
         </button>

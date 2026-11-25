@@ -130,13 +130,13 @@ export default async function ProviderProfilePage({ params }: PageProps) {
                 message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
                 className="tile-cta mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-full text-[16px] font-semibold"
               >
-                <Send className="h-4 w-4" /> Ajánlatot kérek
+                <Send className="h-4 w-4" /> Ajánlatkérés
               </LoginGateLink>
               <ChatLink
                 href={`/profil?tab=chat&with=${provider.user_id}`}
-                className="mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#F0F6F5] text-[16px] font-semibold text-[#5C8480] hover:bg-[#E3EFED]"
+                className="btn-chat mt-2.5 flex h-12 w-full items-center justify-center gap-2 rounded-full text-[16px] font-semibold"
               >
-                <MessageCircle className="h-4 w-4" /> Chat indítása
+                <MessageCircle className="h-4 w-4" /> Chat
               </ChatLink>
             </div>
           </aside>
@@ -159,9 +159,9 @@ export default async function ProviderProfilePage({ params }: PageProps) {
           <LoginGateLink
             href={quoteHref}
             message="Az ajánlatkérés csak regisztrált felhasználók számára érhető el."
-            className="tile-cta flex h-12 shrink-0 items-center justify-center rounded-full px-6 text-[16px] font-semibold"
+            className="tile-cta flex h-12 shrink-0 items-center justify-center gap-2 rounded-full px-6 text-[16px] font-semibold"
           >
-            Ajánlatot kérek
+            <Send className="h-4 w-4" /> Ajánlatkérés
           </LoginGateLink>
         </div>
       </div>

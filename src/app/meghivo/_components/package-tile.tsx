@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Plus } from "lucide-react";
+import { Check, Plus, Send } from "lucide-react";
 import { LivePhonePreview } from "./phone-preview";
 import { MeghivoQuoteCta } from "./quote-cta";
 
@@ -102,11 +102,10 @@ function Cta({ pkg }: { pkg: Package }) {
   return (
     <MeghivoQuoteCta
       href={`/profil?tab=quotes&form=meghivo&csomag=${pkg.name}`}
-      className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-[15px] font-bold shadow-md transition-transform hover:scale-[1.03]"
-      style={{ color: pkg.ink }}
+      className="tile-cta inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-semibold transition-transform hover:scale-[1.03]"
     >
-      Ajánlatot kérek
-      <ArrowRight className="h-4 w-4" />
+      <Send className="h-4 w-4" />
+      Ajánlatkérés
     </MeghivoQuoteCta>
   );
 }

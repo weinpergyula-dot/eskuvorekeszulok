@@ -161,7 +161,7 @@ export function LoginRequiredDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="login-required-title"
-        className="relative w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 text-center"
+        className="relative w-full max-w-sm bg-white rounded-[28px] shadow-xl p-6 text-center"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -211,7 +211,7 @@ export function LoginRequiredContent({ message }: { message: string }) {
         </a>
         <a
           href="/auth/register?type=visitor"
-          className="w-full border border-[#B8925A] text-[#B8925A] hover:bg-[#B8925A]/10 font-semibold py-2.5 rounded-lg transition-colors"
+          className="w-full border border-gray-200 bg-white text-gray-900 hover:bg-[#F0F6F5] font-semibold py-2.5 rounded-full transition-colors"
         >
           Regisztrálok látogatóként
         </a>

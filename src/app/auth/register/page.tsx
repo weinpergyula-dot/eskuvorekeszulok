@@ -58,7 +58,7 @@ function RoleCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center gap-4 rounded-full border border-[#84AAA6]/30 bg-[#F0F6F5] p-3 pr-4 text-left sm:rounded-[28px] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#84AAA6] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
+      className="group flex w-full items-center gap-4 rounded-2xl border border-[#84AAA6]/30 bg-[#F0F6F5] p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#84AAA6] hover:shadow-lg sm:h-full sm:flex-col sm:items-start sm:gap-0 sm:p-6"
     >
       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#84AAA6] shadow-sm sm:mb-4 sm:h-14 sm:w-14">
         <Icon className="h-6 w-6 text-white sm:h-7 sm:w-7" strokeWidth={1.75} />
